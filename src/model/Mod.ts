@@ -1,8 +1,9 @@
-import VersionNumber from "./VersionNumber";
+import VersionNumber from './VersionNumber';
 
 export default class Mod {
     private name: string = '';
-    private versionNumber: VersionNumber = new VersionNumber("0.0.0");
+    private versionNumber: VersionNumber = new VersionNumber('0.0.0');
+    private dependencies: string[] = [];
 
     public getName(): string {
         return this.name;
