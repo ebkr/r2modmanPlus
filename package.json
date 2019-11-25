@@ -2,7 +2,7 @@
   "name": "r2modman",
   "version": "0.0.1",
   "description": "It's r2modman, but easier to maintain",
-  "productName": "Quasar App",
+  "productName": "r2modmanPlus",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
   "author": "ebkr@github.com",
