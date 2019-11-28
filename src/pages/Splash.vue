@@ -4,7 +4,10 @@
     <div class="notification is-warning">
         <p>A new version of Risk of Rain 2 has been released. Many mods may be broken.</p>
     </div>
-    <progress-bar />
+    <progress-bar 
+        :max="requests.length * 100" 
+        :value="reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined"
+        :className="[reduceRequests().getProgress() > 0 ? 'is-info' : '']" />
     <div class="columns">
       <div class="column is-one-quarter">
         <aside class="menu">
@@ -87,6 +90,9 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
+import RequestItem from '../model/requests/RequestItem';
+import axios from 'axios';
+import ThunderstoreMod from '../model/ThunderstoreMod';
 
 @Component({
     components: {
@@ -99,20 +105,56 @@ export default class Splash extends Vue {
     loadingText: string = 'Initialising';
     heroType: string = 'is-info';
     view: string = 'main';
+    requests = [
+        new RequestItem('UpdateCheck', 0),
+        new RequestItem('ThunderstoreDownload', 0),
+    ];
 
     constructor() {
-      super();
+        super();
+    }
+
+    private reduceRequests(): RequestItem {
+        return this.requests.reduce((x, y) => x.merge(y));
     }
 
     private checkForUpdates() {
-      this.loadingText = 'Checking for updates';
-      setTimeout(()=>{
-        this.getThunderstoreMods();
-      }, 2000)
+        this.loadingText = 'Checking for updates';
+        setTimeout(()=>{
+            this.getRequestItem("UpdateCheck").setProgress(100);
+            this.getThunderstoreMods(0);
+        }, 2000)
     }
 
-    private getThunderstoreMods() {
-      this.loadingText = 'Getting mod list from Thunderstore';
+    private getRequestItem(name: string): RequestItem {
+        return this.requests.filter(ri => ri.getName() === name)[0];
+    }
+
+    private getThunderstoreMods(attempt: number) {
+        this.loadingText = 'Connecting to Thunderstore';
+        axios.get("https://thunderstore.io/api/v1/package", {
+            onDownloadProgress: progress => {
+                this.loadingText = "Getting mod list from Thunderstore"
+                this.getRequestItem("ThunderstoreDownload").setProgress((progress.loaded / progress.total) * 100);
+            }
+        }).then(response => {
+            console.log("Passed on attempt:", attempt);
+            this.getRequestItem("ThunderstoreDownload").setProgress(100);
+            let tsMods: ThunderstoreMod[] = [];
+            response.data.forEach((mod: any) => {
+                let tsMod = new ThunderstoreMod();
+                tsMods.push(tsMod.parseFromThunderstoreData(mod));
+            })
+            localStorage.setItem("ThunderstoreMods", JSON.stringify(tsMods));
+            this.$router.push({path: '/manager'});
+        }).catch(()=>{
+            if (attempt < 5) {
+                this.getThunderstoreMods(attempt + 1);
+            } else {
+                this.heroTitle = "Failed to get mods from Thunderstore";
+                this.loadingText = "You may be offline, however you may still use R2MM offline."
+            }
+        })
     }
 
     created() {

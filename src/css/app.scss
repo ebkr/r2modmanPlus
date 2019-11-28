@@ -13,8 +13,16 @@
 .menu {
     display: block;
     padding: 1em;
+    position: sticky;
+    top: 0;
 }
 
 .margin-right {
     margin-right: 1em;
+}
+
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }

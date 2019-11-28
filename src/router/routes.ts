@@ -2,12 +2,12 @@ import { RouteConfig } from 'vue-router'
 
 const routes: RouteConfig[] = [
     {
-        path: '/about',
-        component: () => import('pages/About.vue')
-    },
-    {
         path: '/',
         component: () => import('pages/Splash.vue')
+    },
+    {
+        path: '/manager',
+        component: () => import('pages/Manager.vue')
     },
 ];
 

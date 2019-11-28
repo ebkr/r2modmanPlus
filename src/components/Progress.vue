@@ -1,10 +1,10 @@
 <template>
     <div class="indent-container">
         <template v-if="value !== undefined">
-            <progress :class="['progress', 'is-small']" :max='max' :value='value'>{{value}}%</progress>
+            <progress :class="['progress', 'is-small', className]" :max='max' :value='value'>{{value}}%</progress>
         </template>
         <template v-if="value === undefined">
-            <progress :class="['progress', 'is-small']" :max='max'>{{max}}%</progress>
+            <progress :class="['progress', 'is-small', className]" :max='max'>{{max}}%</progress>
         </template>
     </div>
 </template>
@@ -19,7 +19,10 @@ export default class Progress extends Vue {
     max: number | undefined;
 
     @Prop()
-    value: number | undefined
+    value: number | undefined;
+
+    @Prop({default: ''})
+    className: string | undefined;
 }
 
 </script>
