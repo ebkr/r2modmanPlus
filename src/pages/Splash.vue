@@ -1,52 +1,52 @@
 <template>
   <div>
     <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
-    <div class="notification is-warning">
+    <div class='notification is-warning'>
         <p>A new version of Risk of Rain 2 has been released. Many mods may be broken.</p>
     </div>
     <progress-bar 
-        :max="requests.length * 100" 
-        :value="reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined"
-        :className="[reduceRequests().getProgress() > 0 ? 'is-info' : '']" />
-    <div class="columns">
-      <div class="column is-one-quarter">
-        <aside class="menu">
-          <p class="menu-label">Help</p>
-          <ul class="menu-list">
+        :max='requests.length * 100' 
+        :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
+        :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
+    <div class='columns'>
+      <div class='column is-one-quarter'>
+        <aside class='menu'>
+          <p class='menu-label'>Help</p>
+          <ul class='menu-list'>
             <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
             <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
             <li><a href="https://github.com/ebkr/r2modmanPlus" target="_blank"><i class="fab fa-github fa-lg" aria-hidden="true"/></a></li>
           </ul>
         </aside>
       </div>
-      <div class="column is-three-quarters">
+      <div class='column is-three-quarters'>
         <div>
           <br/>
-          <article class="media">
-            <div class="media-content">
-              <div class="content">
-                <div class="container" v-if="view !== 'main'">
-                    <i class="fas fa-long-arrow-alt-left margin-right"/>
+          <article class='media'>
+            <div class='media-content'>
+              <div class='content'>
+                <div class='container' v-if="view !== 'main'">
+                    <i class='fas fa-long-arrow-alt-left margin-right'/>
                     <strong><a @click="view = 'main'">Go back</a></strong>
                     <br/><br/>
                 </div>
-                <div class="container" v-if="view === 'main'">
+                <div class='container' v-if="view === 'main'">
                   <p>
-                    <span class="icon">
-                      <i class="fas fa-info-circle"/>
+                    <span class='icon'>
+                      <i class='fas fa-info-circle'/>
                     </span>
                     &nbsp;
                     <strong>Did you know?</strong>
                   </p>
                   <p>
-                    You can associate the "Install with Mod Manager" button on <a href="https://thunderstore.io" target="_blank">Thunderstore</a> with R2MM. <br/>
+                    You can associate the "Install with Mod Manager" button on <a href='https://thunderstore.io' target='_blank'>Thunderstore</a> with R2MM. <br/>
                     Just go to settings and click "Associate Install with Mod Manager button".
                   </p>
                 </div>
-                <div class="container" v-else-if="view === 'about'">
+                <div class='container' v-else-if="view === 'about'">
                   <p>
-                    <span class="icon">
-                      <i class="fas fa-address-card"/>
+                    <span class='icon'>
+                      <i class='fas fa-address-card'/>
                     </span>
                     &nbsp;
                     <strong>About r2modman</strong>
@@ -60,10 +60,10 @@
                       <li>TypeScript</li>
                   </ul>
                 </div>
-                <div class="container" v-else-if="view === 'faq'">
+                <div class='container' v-else-if="view === 'faq'">
                   <p>
-                    <span class="icon">
-                      <i class="fas fa-question-circle"/>
+                    <span class='icon'>
+                      <i class='fas fa-question-circle'/>
                     </span>
                     &nbsp;
                     <strong>FAQ</strong>
@@ -121,7 +121,7 @@ export default class Splash extends Vue {
     private checkForUpdates() {
         this.loadingText = 'Checking for updates';
         setTimeout(()=>{
-            this.getRequestItem("UpdateCheck").setProgress(100);
+            this.getRequestItem('UpdateCheck').setProgress(100);
             this.getThunderstoreMods(0);
         }, 2000)
     }
@@ -132,27 +132,27 @@ export default class Splash extends Vue {
 
     private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
-        axios.get("https://thunderstore.io/api/v1/package", {
+        axios.get('https://thunderstore.io/api/v1/package', {
             onDownloadProgress: progress => {
-                this.loadingText = "Getting mod list from Thunderstore"
-                this.getRequestItem("ThunderstoreDownload").setProgress((progress.loaded / progress.total) * 100);
+                this.loadingText = 'Getting mod list from Thunderstore'
+                this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
             }
         }).then(response => {
-            console.log("Passed on attempt:", attempt);
-            this.getRequestItem("ThunderstoreDownload").setProgress(100);
+            console.log('Passed on attempt:', attempt);
             let tsMods: ThunderstoreMod[] = [];
             response.data.forEach((mod: any) => {
                 let tsMod = new ThunderstoreMod();
                 tsMods.push(tsMod.parseFromThunderstoreData(mod));
             })
-            localStorage.setItem("ThunderstoreMods", JSON.stringify(tsMods));
+            localStorage.setItem('ThunderstoreMods', JSON.stringify(tsMods));
             this.$router.push({path: '/manager'});
-        }).catch(()=>{
+        }).catch((e)=>{
             if (attempt < 5) {
                 this.getThunderstoreMods(attempt + 1);
             } else {
-                this.heroTitle = "Failed to get mods from Thunderstore";
-                this.loadingText = "You may be offline, however you may still use R2MM offline."
+                this.heroTitle = 'Failed to get mods from Thunderstore';
+                this.loadingText = 'You may be offline, however you may still use R2MM offline.'
+                console.log('Failed with error:', e);
             }
         })
     }

@@ -9,7 +9,14 @@
                     </ul>
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
-                        <li><a @click="view = 'installed'" :class="[view === 'installed' ? 'is-active' : '']">Installed</a></li>
+                        <li>
+                            <a @click="view = 'installed'" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
+                            <template :v-if="view === 'installed'">
+                                <ul>
+                                    <li><input class="input" type="text" placeholder="Search installed mods"/></li>
+                                </ul>
+                            </template>
+                        </li>
                         <li><a @click="view = 'online'" :class="[view === 'online' ? 'is-active' : '']">Online</a></li>
                     </ul>
                     <p class="menu-label">Other</p>
@@ -20,30 +27,12 @@
                 </aside>
             </div>
             <div class='column is-three-quarters'>
-                <div class='card is-marginless is-radiusless is-shadowless sticky-top is-info'>
-                    <div class='card-header is-shadowless is-radiusless'>
-                        <input class='input' type='text' placeholder='Search for installed mods'>
-                    </div>
-                </div>
-                <div class='box is-marginless is-radiusless' v-for='(key, index) in thunderstoreModList' :key='index'>
-                    <article class="media">
-                        <div class="media-left">
-                            <figure class="image is-32x32">
-                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
-                            </figure>
-                        </div>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>{{key.name}}</p>
-                            </div>
-                        </div>
-                        <div class="media-right">
-                            <div class="content">
-                                <i class="fas fa-download margin-right"/>
-                                <!-- <a class="delete"></a> -->
-                            </div>
-                        </div>
-                    </article>
+                <div v-for='(key, index) in thunderstoreModList' :key='index'>
+                    <expandable-card
+                        :image="key.versions[0].icon"
+                        :title="key.name"
+                        :description="key.versions[0].description"
+                        :visible="false" />
                 </div>
             </div>
         </div>
@@ -53,26 +42,38 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Progress } from '../components/all';
+import { Hero, Progress, ExpandableCard } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Mod from '../model/Mod';
+import { Prop } from 'vue-property-decorator';
 
 @Component({
     components: {
         'hero': Hero,
         'progress-bar': Progress,
+        'expandable-card': ExpandableCard,
     }
 })
-export default class Splash extends Vue {
+export default class Manager extends Vue {
     view: string = 'installed';
     thunderstoreModList: ThunderstoreMod[] = [];
     localModList: Mod[] = [];
+    expandedOnline: {[key: string]: boolean} = {};
 
     constructor() {
         super();
-        let tsModStringUnsafe = localStorage.getItem("ThunderstoreMods");
+        let tsModStringUnsafe = localStorage.getItem('ThunderstoreMods');
         let tsModStringSafe: string = tsModStringUnsafe ? tsModStringUnsafe : '[]';
         this.thunderstoreModList = JSON.parse(tsModStringSafe);
+    }
+
+    toggleOnlineExpanded(toExpand: any): void {
+        this.expandedOnline[toExpand.name] = !this.expandedOnline[toExpand.name];
+        this.expandedOnline = this.expandedOnline;
+    }
+
+    isExpanded(key: any, arr: {[key: string]: boolean}): boolean {
+        return !!arr[key.name];
     }
 }
 

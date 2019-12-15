@@ -32,7 +32,7 @@ export default class VersionNumber {
             this.patch = numberArray[2];
         } catch(e) {
             // If an error was thrown, log reason.
-            console.log(e);
+            console.log(e, " - ", versionNumber);
         }
         return this;
     }
