@@ -114,10 +114,12 @@ export default class Splash extends Vue {
         super();
     }
 
+    // Used to produce a single, combined, RequestItem./
     private reduceRequests(): RequestItem {
         return this.requests.reduce((x, y) => x.merge(y));
     }
 
+    // Ensure that r2modman isn't outdated.
     private checkForUpdates() {
         this.loadingText = 'Checking for updates';
         setTimeout(()=>{
@@ -126,10 +128,12 @@ export default class Splash extends Vue {
         }, 2000)
     }
 
+    // Provide access to a request item, as item is not stored in a map.
     private getRequestItem(name: string): RequestItem {
         return this.requests.filter(ri => ri.getName() === name)[0];
     }
 
+    // Get the list of Thunderstore mods via /api/v1/package.
     private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
         axios.get('https://thunderstore.io/api/v1/package', {

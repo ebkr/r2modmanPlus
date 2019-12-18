@@ -4,6 +4,7 @@ import VersionNumber from './VersionNumber';
 export default class ThunderstoreVersion extends Mod {
 
     private downloads: number = 0;
+    private downloadUrl: string = '';
 
     public make(version: any): ThunderstoreVersion {
         this.setName(version.name);
@@ -22,5 +23,13 @@ export default class ThunderstoreVersion extends Mod {
 
     public setDownloadCount(downloads: number) {
         this.downloads = downloads;
+    }
+
+    public getDownloadUrl(): string {
+        return this.downloadUrl;
+    }
+
+    public setDownloadUrl(url: string) {
+        this.downloadUrl = url;
     }
 }
