@@ -1,19 +1,55 @@
 # r2modmanPlus
-r2modman is horrifying to maintain, so this project is aimed at creating a better manager, in an easier manner.
+r2modman is a nice manager for my first real project in Electron, however it has become extremely large, and quite hard to maintain.
+
+This project is aimed at creating a better manager, with a nicer stack to work with.
 
 
-## Stack
+## Tools
 - Electron + Node
 - TypeScript
 - Vue
 - Bulma
 
-## What's new?
-Nothing yet, I'm making it.
+## Any new features?
+Since I'm using Bulma for the frontend, the entire interface should be far nicer than the existing one, albeit requiring a larger window.
 
-I do have a few features planned though:
+The plan is to also support Manifest V2, prior to its release, meaning that end-users won't notice a single difference.
 
-- Game Install Detection.
-- Profile-Based BepInEx.
-- Manifest V2 support.
-- An easier-to-navigate interface (somehow).
+But as for actual new features:
+
+### Current:
+- Download counter.
+- Older mod versions now alert the user that it may not work.
+- Pinned mods are marked as essential.
+- Installed tab now says when there aren't any currently installed mods.
+
+### Planned:
+- Profiles will be symlink based, rather than clearing out the entire folder.
+- Mods will only download once across all profiles (unless uninstalled from all)
+- Manifest V2
+- Help and FAQ for technical support about mods not working.
+- Alerts when a new RoR2 update has been released.
+- Automatic game installation location detection.
+- Config file editor.
+- YAML to replace JSON for data storage.
+
+## Roadmap
+- Download ZIPs and extract to mods/cache directory.
+- Show locally installed mods.
+- Local mod installations.
+- Add profiles (mods/profiles/*).
+- Profile-scoped BepInEx installations.
+- Game detection.
+
+## After all that
+Who knows? But one thing's for sure, this manager will be far better than my existing r2modman.
+
+## Naming
+- r2modman
+- r2modmanPlus
+- r2modman+
+- R2 Mod Manager
+- R2
+
+I haven't fully decided on which name the new release will take, but it could be beneficial to shorten it.
+
