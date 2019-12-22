@@ -19,8 +19,8 @@ export default class ThunderstoreDownloader {
      * Callback should log this error.
     */
     public download(callback: Function, versionNumber: VersionNumber) {
-        const version = this.mod.getVersions()
-            .find((version: ThunderstoreVersion) => version.getVersionNumber() === versionNumber);
+        const tsVersions: ThunderstoreVersion[] = this.mod.getVersions();
+        const version: ThunderstoreVersion | undefined = tsVersions.find((v: ThunderstoreVersion) => v.getVersionNumber().toString() === versionNumber.toString());
         
         if (version !== undefined) {
             axios.get(version.getDownloadUrl(), {

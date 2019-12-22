@@ -1,13 +1,13 @@
 <template>
     <div class="card">
-        <a href="#" @click="toggleVisibility()">
-            <header class="card-header">
+        <a @click="toggleVisibility()">
+            <header class="card-header" :id='id'>
                 <div class="card-header-icon">
                     <figure class="image is-48x48">
                         <img :src="image" alt='Mod Logo'/>
                     </figure>
                 </div>
-                <p class="card-header-title">{{title}}</p>
+                <p class="card-header-title"><slot name="title"></slot></p>
                 <a href="#" class="card-header-icon" aria-label="more options">
                     
                     <span class="icon">
@@ -30,7 +30,7 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component
 export default class ExpandableCard extends Vue {
@@ -43,8 +43,17 @@ export default class ExpandableCard extends Vue {
     @Prop({default: ''})
     description: string | undefined;
 
-    @Prop({default: false})
-    visible: boolean | undefined;
+    @Prop()
+    id: string | undefined;
+
+    // Keep track of visibility
+    visible: boolean | undefined = false;
+
+    @Watch('visible')
+    visibilityChanged(current: boolean): boolean {
+        return current;
+    }
+
 
     toggleVisibility() {
         this.visible = !this.visible;

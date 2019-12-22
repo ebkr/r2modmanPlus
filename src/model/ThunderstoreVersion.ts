@@ -1,7 +1,8 @@
 import Mod from './Mod';
 import VersionNumber from './VersionNumber';
+import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class ThunderstoreVersion extends Mod {
+export default class ThunderstoreVersion extends Mod implements ReactiveObjectConverterInterface {
 
     private downloads: number = 0;
     private downloadUrl: string = '';
@@ -14,6 +15,14 @@ export default class ThunderstoreVersion extends Mod {
         this.setVersionNumber(new VersionNumber(version.version_number));
         this.setIcon(version.icon);
         this.setDownloadCount(version.downloads);
+        this.setDownloadUrl(version.download_url);
+        return this;
+    }
+
+    public fromReactive(reactive: any): ThunderstoreVersion {
+        super.fromReactive(reactive);
+        this.setDownloadCount(reactive.downloadCount);
+        this.setDownloadUrl(reactive.downloadUrl);
         return this;
     }
 

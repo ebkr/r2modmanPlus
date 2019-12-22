@@ -1,9 +1,7 @@
-import Mod from './Mod';
 import ThunderstoreVersion from './ThunderstoreVersion';
-import VersionNumber from './VersionNumber';
-import { version } from 'punycode';
+import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class ThunderstoreMod extends ThunderstoreVersion {
+export default class ThunderstoreMod extends ThunderstoreVersion implements ReactiveObjectConverterInterface {
     private versions: ThunderstoreVersion[] = [];
     private rating: number = 0;
     private owner: string = '';
@@ -13,6 +11,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
     private uuid4: string = '';
     private pinned: boolean = false;
     private deprecated: boolean = false;
+    private totalDownloads: number = 0;
 
     public parseFromThunderstoreData(data: any): ThunderstoreMod {
         this.setName(data.name);
@@ -20,6 +19,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         this.setOwner(data.owner);
         this.setDateCreated(data.date_created);
         this.setDateUpdated(data.date_updated);
+        console.log("tsm:", data);
         this.setDeprecatedStatus(data.is_deprecated);
         this.setPinnedStatus(data.is_pinned);
         for (const version of data.versions) {
@@ -31,6 +31,29 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
                 .map(version => version.getDownloadCount())
                 .reduce((x, y) => x + y)
         );
+        this.setRating(data.rating_score);
+        this.setTotalDownloads(
+            this.getVersions()
+                .map(x => x.getDownloadCount())
+                .reduce((x, y) => x + y)
+        );
+        return this;
+    }
+
+    public fromReactive(reactive: any): ThunderstoreMod {
+        this.setName(reactive.name);
+        this.setFullName(reactive.fullName);
+        this.setOwner(reactive.owner);
+        this.setPackageUrl(reactive.packageUrl);
+        this.setDateCreated(reactive.dateCreated);
+        this.setDateUpdated(reactive.dateUpdated);
+        this.setDeprecatedStatus(reactive.deprecated);
+        this.setPinnedStatus(reactive.pinnedStatus);
+        this.setVersions(reactive.versions.map((x: ThunderstoreVersion) => new ThunderstoreVersion().fromReactive(x)));
+        this.setDownloadCount(reactive.downloadCount);
+        this.setRating(reactive.rating);
+        this.setTotalDownloads(reactive.totalDownloads);
+        this.setUuid4(reactive.uuid4);
         return this;
     }
 
@@ -104,5 +127,13 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
 
     public setDeprecatedStatus(deprecated: boolean) {
         this.deprecated = deprecated;
+    }
+
+    public getTotalDownloads(): number {
+        return this.totalDownloads;
+    }
+
+    public setTotalDownloads(total: number) {
+        this.totalDownloads = total;
     }
 }

@@ -1,12 +1,23 @@
 import VersionNumber from './VersionNumber';
+import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class Mod {
+export default class Mod implements ReactiveObjectConverterInterface {
     private name: string = '';
     private versionNumber: VersionNumber = new VersionNumber('0.0.0');
     private dependencies: string[] = [];
     private fullName: string = '';
     private description: string = ''
     private icon: string = ''
+
+    public fromReactive(reactive: any): Mod {
+        this.setName(reactive.name);
+        this.setVersionNumber(reactive.versionNumber);
+        this.setDependencies(reactive.dependencies);
+        this.setFullName(reactive.fullName);
+        this.setDescription(reactive.description);
+        this.setIcon(reactive.icon);
+        return this;
+    }
 
     public getName(): string {
         return this.name;

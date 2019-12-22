@@ -12,13 +12,13 @@
                         <li>
                             <a @click="view = 'installed'" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
                             <ul v-if="view === 'installed'">
-                                <li><input class="input" type="text" placeholder="Search installed mods"/></li>
+                                <li><input v-model='searchFilter' class="input" type="text" placeholder="Search installed mods"/></li>
                             </ul>
                         </li>
                         <li>
                             <a @click="view = 'online'" :class="[view === 'online' ? 'is-active' : '']">Online</a>
                             <ul v-if="view === 'online'">
-                                <li><input class="input" type="text" placeholder="Search available mods"/></li>
+                                <li><input v-model='searchFilter' class="input" type="text" placeholder="Search available mods"/></li>
                             </ul>
                         </li>
                     </ul>
@@ -42,11 +42,20 @@
                     <div v-for='(key, index) in thunderstoreModList' :key='index'>
                         <expandable-card
                             :image="key.versions[0].icon"
-                            :title="key.name"
+                            :id="index"
                             :description="key.versions[0].description"
                             :visible="false">
-                                <a href="#" class="card-footer-item">Download</a>
-                                <a href="#" class="card-footer-item">View on Thunderstore</a>
+                                <template v-slot:title>
+                                    <span v-html='getTitle(key)'></span>
+                                </template>
+                                <a :href='`#${index}`' class="card-footer-item" @click="downloadMod(key, key.versions[0].versionNumber)">Download</a>
+                                <a :href='`#${index}`' class="card-footer-item">View on Thunderstore</a>
+                                <div class="card-footer-item">
+                                    <span><i class="fas fa-download"/> {{key.totalDownloads}}</span>
+                                </div>
+                                <div class="card-footer-item">
+                                    <span><i class="fas fa-thumbs-up"/> {{key.rating}}</span>
+                                </div>
                             </expandable-card>
                     </div>
                 </template>
@@ -58,7 +67,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch, Model } from 'vue-property-decorator';
 import { Hero, Progress, ExpandableCard } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -79,29 +88,55 @@ export default class Manager extends Vue {
     view: string = 'installed';
     thunderstoreModList: ThunderstoreMod[] = [];
     localModList: Mod[] = [];
-    expandedOnline: {[key: string]: boolean} = {};
+
+    searchFilter: string = '';
+
+    @Watch("searchFilter")
+    filterThunderstoreModList() {
+        this.generateModlist();
+        this.thunderstoreModList = this.thunderstoreModList.filter((x: ThunderstoreMod) => {
+            return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
+        });
+    }
+
+    @Watch("searchFilter")
+    filterLocalModList() {
+        this.localModList = this.localModList.filter((x: Mod) => {
+            x.getName()
+                .toLowerCase()
+                .search(this.searchFilter.toLowerCase()) >= 0
+        });
+    }
 
     constructor() {
         super();
         let tsModStringUnsafe = localStorage.getItem('ThunderstoreMods');
         let tsModStringSafe: string = tsModStringUnsafe ? tsModStringUnsafe : '[]';
-        this.thunderstoreModList = JSON.parse(tsModStringSafe);
+        this.thunderstoreModList = JSON.parse(tsModStringSafe)
+            .map((mod: ThunderstoreMod) => new ThunderstoreMod().fromReactive(mod));
     }
 
-    toggleOnlineExpanded(toExpand: any): void {
-        this.expandedOnline[toExpand.name] = !this.expandedOnline[toExpand.name];
-        this.expandedOnline = this.expandedOnline;
+    private generateModlist() {
+        let tsModStringUnsafe = localStorage.getItem('ThunderstoreMods');
+        let tsModStringSafe: string = tsModStringUnsafe ? tsModStringUnsafe : '[]';
+        this.thunderstoreModList = JSON.parse(tsModStringSafe)
+            .map((mod: ThunderstoreMod) => new ThunderstoreMod().fromReactive(mod));
     }
 
-    isExpanded(key: any, arr: {[key: string]: boolean}): boolean {
-        return !!arr[key.name];
-    }
-
-    downloadMod(key: ThunderstoreMod, version: VersionNumber) {
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(key);
+    downloadMod(vueMod: string, version: VersionNumber) {
+        const mod = new ThunderstoreMod().fromReactive(vueMod);
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(mod);
         downloader.download((progress: number, status: number, error: DownloadError)=>{
 
         }, version);
+    }
+
+    getTitle(key: any) {
+        console.log(key);
+        if (key.deprecated) {
+            return key.name.strike();
+        }
+        return key.name;
     }
 }
 
