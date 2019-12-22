@@ -5,7 +5,7 @@
             <div class="modal-content">
                 <div class='card'>
                     <header class="card-header" :id='id'>
-                        <p class='card-header-title' v-if="selectedMod !== null">Select a version of {{selectedMod.getName()}} to download</p>
+                        <p class='card-header-title' v-if="selectedThunderstoreMod !== null">Select a version of {{selectedThunderstoreMod.getName()}} to download</p>
                     </header>
                     <div class='card-content'>
                         <p>It's recommended to select the latest version of all mods.</p>
