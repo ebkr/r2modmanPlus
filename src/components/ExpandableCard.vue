@@ -1,30 +1,33 @@
 <template>
-    <div class="card">
-        <a @click="toggleVisibility()">
-            <header class="card-header" :id='id'>
-                <div class="card-header-icon">
-                    <figure class="image is-48x48">
-                        <img :src="image" alt='Mod Logo'/>
-                    </figure>
+    <div class="border-at-bottom">
+        <div class='card is-shadowless'>
+            <a @click='toggleVisibility()'>
+                <header class='card-header is-shadowless' :id='id'>
+                    <div class='card-header-icon'>
+                        <figure class='image is-48x48'>
+                            <img :src='image' alt='Mod Logo'/>
+                        </figure>
+                    </div>
+                    <p class='card-header-title'><slot name='title'></slot></p>
+                    <slot name='other-icons'></slot>
+                    <a href='#' class='card-header-icon' aria-label='more options'>
+                        <span class='icon'>
+                            <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible'></i>
+                            <i class='fas fa-angle-down' aria-hidden='true' v-if='visible'></i>
+                        </span>
+                    </a>
+                </header>
+            </a>
+            <div class='card-content' v-show='visible'>
+                <div class='content'>
+                    <p>{{description}}</p>
                 </div>
-                <p class="card-header-title"><slot name="title"></slot></p>
-                <a href="#" class="card-header-icon" aria-label="more options">
-                    
-                    <span class="icon">
-                        <i class="fas fa-angle-right" aria-hidden="true" v-if="!visible"></i>
-                        <i class="fas fa-angle-down" aria-hidden="true" v-if="visible"></i>
-                    </span>
-                </a>
-            </header>
-        </a>
-        <div class="card-content" v-show="visible">
-            <div class="content">
-                <p>{{description}}</p>
             </div>
+            <footer class='card-footer' v-show='visible'>
+                <slot></slot>
+                <div class="is-divider"></div>
+            </footer>
         </div>
-        <footer class="card-footer" v-show="visible">
-            <slot></slot>
-        </footer>
     </div>
 </template>
 

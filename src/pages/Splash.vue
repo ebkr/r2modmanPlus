@@ -93,6 +93,7 @@ import { Hero, Progress } from '../components/all';
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
 import ThunderstoreMod from '../model/ThunderstoreMod';
+import { ipcRenderer } from 'electron';
 
 @Component({
     components: {
@@ -142,21 +143,19 @@ export default class Splash extends Vue {
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
             }
         }).then(response => {
-            console.log('Passed on attempt:', attempt);
             let tsMods: ThunderstoreMod[] = [];
             response.data.forEach((mod: any) => {
                 let tsMod = new ThunderstoreMod();
                 tsMods.push(tsMod.parseFromThunderstoreData(mod));
             })
-            localStorage.setItem('ThunderstoreMods', JSON.stringify(tsMods));
+            ipcRenderer.send('saveThunderstoreModList', tsMods);
             this.$router.push({path: '/manager'});
         }).catch((e)=>{
             if (attempt < 5) {
                 this.getThunderstoreMods(attempt + 1);
             } else {
                 this.heroTitle = 'Failed to get mods from Thunderstore';
-                this.loadingText = 'You may be offline, however you may still use R2MM offline.'
-                console.log('Failed with error:', e);
+                this.loadingText = 'You may be offline, however you may still use R2MM offline.';
             }
         })
     }

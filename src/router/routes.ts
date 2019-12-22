@@ -9,6 +9,10 @@ const routes: RouteConfig[] = [
         path: '/manager',
         component: () => import('pages/Manager.vue')
     },
+    {
+        path: '/profiles',
+        component: () => import('pages/Profiles.vue')
+    },
 ];
 
 // Always leave this as last one

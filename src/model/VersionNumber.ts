@@ -1,6 +1,7 @@
 import { isNumber } from 'util';
+import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class VersionNumber {
+export default class VersionNumber implements ReactiveObjectConverterInterface {
     private major: number = 0;
     private minor: number = 0;
     private patch: number = 0;
@@ -34,6 +35,13 @@ export default class VersionNumber {
             // If an error was thrown, log reason.
             console.log(e, " - ", versionNumber);
         }
+        return this;
+    }
+
+    public fromReactive(reactive: any): VersionNumber {
+        this.major = reactive.major;
+        this.minor = reactive.minor;
+        this.patch = reactive.patch;
         return this;
     }
 }

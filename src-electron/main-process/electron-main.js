@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+import ServerStorage from './serverStorage'
 
 /**
  * Set `__statics` path to static files in production;
@@ -8,27 +9,30 @@ if (process.env.PROD) {
   global.__statics = require('path').join(__dirname, 'statics').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+let mainWindow;
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
-  mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    useContentSize: true,
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-    }
-  })
+    /**
+     * Initial window options
+     */
+    mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 700,
+        useContentSize: true,
+        webPreferences: {
+            nodeIntegration: true,
+            webSecurity: false,
+        }
+    })
 
-  mainWindow.loadURL(process.env.APP_URL)
+    // Initialise client to server communication listener
+    new ServerStorage(mainWindow);
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow.loadURL(process.env.APP_URL)
+
+    mainWindow.on('closed', () => {
+        mainWindow = null
+    })
 }
 
 app.on('ready', createWindow)

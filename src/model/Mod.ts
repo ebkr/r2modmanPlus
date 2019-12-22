@@ -11,7 +11,7 @@ export default class Mod implements ReactiveObjectConverterInterface {
 
     public fromReactive(reactive: any): Mod {
         this.setName(reactive.name);
-        this.setVersionNumber(reactive.versionNumber);
+        this.setVersionNumber(new VersionNumber('0.0.0').fromReactive(reactive.versionNumber));
         this.setDependencies(reactive.dependencies);
         this.setFullName(reactive.fullName);
         this.setDescription(reactive.description);

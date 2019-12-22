@@ -12,8 +12,14 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
+    "bulma": "^0.8.0",
+    "bulma-divider": "^0.2.0",
+    "bulma-steps": "^2.2.1",
+    "bulma-tooltip": "^3.0.2",
     "quasar": "^1.0.0",
     "vue-class-component": "^7.1.0",
     "vue-i18n": "^8.0.0",
@@ -31,6 +37,7 @@
     "electron": "^5.0.0",
     "electron-debug": "^3.0.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-packager": "^14.1.1",
     "eslint": "^5.10.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-loader": "^2.1.1",

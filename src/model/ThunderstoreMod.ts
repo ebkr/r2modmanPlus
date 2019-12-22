@@ -19,7 +19,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.setOwner(data.owner);
         this.setDateCreated(data.date_created);
         this.setDateUpdated(data.date_updated);
-        console.log("tsm:", data);
         this.setDeprecatedStatus(data.is_deprecated);
         this.setPinnedStatus(data.is_pinned);
         for (const version of data.versions) {
@@ -48,7 +47,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.setDateCreated(reactive.dateCreated);
         this.setDateUpdated(reactive.dateUpdated);
         this.setDeprecatedStatus(reactive.deprecated);
-        this.setPinnedStatus(reactive.pinnedStatus);
+        this.setPinnedStatus(reactive.pinned);
         this.setVersions(reactive.versions.map((x: ThunderstoreVersion) => new ThunderstoreVersion().fromReactive(x)));
         this.setDownloadCount(reactive.downloadCount);
         this.setRating(reactive.rating);
