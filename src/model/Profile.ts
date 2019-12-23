@@ -16,14 +16,17 @@ export default class Profile {
         activeProfile = this;
     }
 
+    // Profile name
     public getProfileName(): string {
         return this.profileName;
     }
 
+    // Directory of profile folder (/mods/profiles/)
     public getDirectory(): string {
         return this.directory;
     }
 
+    // Directory of profile (/mods/profiles/a_profile)
     public getPathOfProfile(): string {
         return path.join(this.directory, this.profileName);
     }

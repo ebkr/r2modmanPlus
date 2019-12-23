@@ -17,6 +17,7 @@
     "@quasar/extras": "^1.0.0",
     "@types/fs-extra": "^8.0.1",
     "@types/unzipper": "^0.10.1",
+    "@types/yaml": "^1.2.0",
     "axios": "^0.18.1",
     "bulma": "^0.8.0",
     "bulma-divider": "^0.2.0",
@@ -27,7 +28,8 @@
     "unzipper": "^0.10.5",
     "vue-class-component": "^7.1.0",
     "vue-i18n": "^8.0.0",
-    "vue-property-decorator": "^8.3.0"
+    "vue-property-decorator": "^8.3.0",
+    "yaml": "^1.7.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",
