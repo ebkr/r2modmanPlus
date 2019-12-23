@@ -31,20 +31,21 @@
         <div class="columns">
             <div class="column is-one-quarter">
                 <aside class="menu">
-                    <p class="menu-label">Game</p>
+                    <p class="menu-label">Risk of Rain 2</p>
                     <ul class="menu-list">
-                        <li><a>Play Risk of Rain 2</a></li>
+                        <li><a>Start modded</a></li>
+                        <li><a>Start vanilla</a></li>
                     </ul>
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
                         <li>
-                            <a @click="view = 'installed'" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
+                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
                             <ul v-if="view === 'installed'">
                                 <li><input v-model='searchFilter' class="input" type="text" placeholder="Search installed mods"/></li>
                             </ul>
                         </li>
                         <li>
-                            <a @click="view = 'online'" :class="[view === 'online' ? 'is-active' : '']">Online</a>
+                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']">Online</a>
                             <ul v-if="view === 'online'">
                                 <li><input v-model='searchFilter' class='input' type='text' placeholder='Search available mods'/></li>
                             </ul>
@@ -67,7 +68,7 @@
             </div>
             <div class='column is-three-quarters'>
                 <template v-if="view === 'online'">
-                    <div v-for='(key, index) in thunderstoreModList' :key='index'>
+                    <div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
                         <expandable-card
                             :image="key.versions[0].icon"
                             :id="index"
@@ -105,7 +106,7 @@
                         <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
                     </div>
                     <template v-if="localModList.length > 0">
-                        <div v-for='(key, index) in localModList' :key='index'>
+                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + index">
                             <expandable-card
                                 :image="key.icon"
                                 :id="index"
@@ -133,7 +134,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop, Watch, Model } from 'vue-property-decorator';
+import { Watch } from 'vue-property-decorator';
 import { Hero, Progress, ExpandableCard } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -144,11 +145,12 @@ import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList'
 
-import { ipcRenderer, app } from 'electron';
+import { ipcRenderer } from 'electron';
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
 import R2Error from '../model/errors/R2Error';
 import ModFromManifest from '../r2mm/mods/ModFromManifest';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 @Component({
     components: {
@@ -159,35 +161,29 @@ import ModFromManifest from '../r2mm/mods/ModFromManifest';
 })
 export default class Manager extends Vue {
     view: string = 'installed';
+
     thunderstoreModList: ThunderstoreMod[] = [];
-    versionNumbers: string[] = [];
+    searchableThunderstoreModList: ThunderstoreMod[] = [];
+    
     localModList: Mod[] = [];
+    searchableLocalModList: Mod[] = [];
+
+    versionNumbers: string[] = [];
     selectedMod: Mod | null = null;
     selectedThunderstoreMod: ThunderstoreMod | null = null;
 
     selectedVersion: string | null = null;
 
-    @Watch('selectedVersion')
-    onSelectedVersionChange(newValue: VersionNumber) {
-    }
-
     searchFilter: string = '';
 
-
-    @Watch("searchFilter")
-    filterThunderstoreModList() {
+    @Watch('searchFilter')
+    filterModLists() {
         this.generateModlist();
-        this.thunderstoreModList = this.thunderstoreModList.filter((x: ThunderstoreMod) => {
+        this.searchableLocalModList = this.localModList.filter((x: Mod) => {
             return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
-    }
-
-    @Watch("searchFilter")
-    filterLocalModList() {
-        this.localModList = this.localModList.filter((x: Mod) => {
-            x.getName()
-                .toLowerCase()
-                .search(this.searchFilter.toLowerCase()) >= 0
+        this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
+            return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
     }
 
@@ -213,10 +209,8 @@ export default class Manager extends Vue {
     }
 
     private generateModlist() {
-        let tsModStringUnsafe = localStorage.getItem('ThunderstoreMods');
-        let tsModStringSafe: string = tsModStringUnsafe ? tsModStringUnsafe : '[]';
-        this.thunderstoreModList = JSON.parse(tsModStringSafe)
-            .map((mod: ThunderstoreMod) => new ThunderstoreMod().fromReactive(mod));
+        this.searchableThunderstoreModList = this.thunderstoreModList;
+        this.searchableLocalModList = this.localModList;
     }
 
     downloadMod() {
@@ -232,7 +226,7 @@ export default class Manager extends Vue {
             return;
         }
         const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
-        downloader.download((progress: number, status: number, error: DownloadError)=>{
+        downloader.download((progress: number, status: number, error_: DownloadError)=>{
             if (status === StatusEnum.SUCCESS) {
                 const modFromManifest: Mod | R2Error = ModFromManifest.get(refSelectedThunderstoreMod.getFullName(), version.getVersionNumber());
                 if (!(modFromManifest instanceof R2Error)) {
@@ -265,15 +259,13 @@ export default class Manager extends Vue {
     }
 
     created() {
-        ipcRenderer.on('receiveThunderstoreModList', (_: any, data: ThunderstoreMod[]) => {
-            this.thunderstoreModList = data.map((mod: ThunderstoreMod) => new ThunderstoreMod().fromReactive(mod));
-        });
-        ipcRenderer.send('getThunderstoreModList');
-
         const newModList: Mod[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
         if (!(newModList instanceof R2Error)) {
             this.localModList = newModList;
         }
+        this.thunderstoreModList = ThunderstorePackages.PACKAGES;
+
+        this.generateModlist();
     }
 }
 
