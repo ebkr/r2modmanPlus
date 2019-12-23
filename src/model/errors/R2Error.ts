@@ -1,3 +1,5 @@
+import { ipcRenderer } from 'electron';
+
 export default class R2Error implements Error {
     public name: string;
     public message: string;
@@ -6,5 +8,6 @@ export default class R2Error implements Error {
     public constructor(name: string, message: string) {
         this.name = name;
         this.message = message;
+        ipcRenderer.send('log', [this.name, this.message]);
     }
 }

@@ -1,5 +1,7 @@
 import VersionNumber from './VersionNumber';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
+import ModFromManifest from 'src/r2mm/mods/ModFromManifest';
+import R2Error from './errors/R2Error';
 
 export default class Mod implements ReactiveObjectConverterInterface {
     private name: string = '';
@@ -8,6 +10,10 @@ export default class Mod implements ReactiveObjectConverterInterface {
     private fullName: string = '';
     private description: string = ''
     private icon: string = ''
+
+    public fromManifest(): Mod | R2Error {
+        return ModFromManifest.get(this.getFullName(), this.getVersionNumber());
+    }
 
     public fromReactive(reactive: any): Mod {
         this.setName(reactive.name);

@@ -104,6 +104,26 @@
                         <h3 class='title is-4'>Looks like you don't have any mods installed</h3>
                         <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
                     </div>
+                    <template v-if="localModList.length > 0">
+                        <div v-for='(key, index) in localModList' :key='index'>
+                            <expandable-card
+                                :image="key.icon"
+                                :id="index"
+                                :description="key.description"
+                                :visible="false">
+                                    <template v-slot:title>
+                                        <span>{{key.name}}</span>
+                                    </template>
+                                    <template v-slot:other-icons>
+                                        <!-- Show update and missing dependency icons -->
+                                    </template>
+                                    <a class='card-footer-item'>Uninstall</a>
+                                    <a class='card-footer-item'>Disable/Enable</a>
+                                    <a class='card-footer-item'>Update</a>
+                                    <a class='card-footer-item'>View on Thunderstore</a>
+                                </expandable-card>
+                        </div>
+                    </template>
                 </template>
             </div>
         </div>
@@ -122,10 +142,13 @@ import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader'
 import VersionNumber from '../model/VersionNumber';
 import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
+import ProfileModList from 'src/r2mm/mods/ProfileModList'
 
 import { ipcRenderer, app } from 'electron';
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
+import R2Error from '../model/errors/R2Error';
+import ModFromManifest from '../r2mm/mods/ModFromManifest';
 
 @Component({
     components: {
@@ -197,20 +220,36 @@ export default class Manager extends Vue {
     }
 
     downloadMod() {
-        if (this.selectedThunderstoreMod === null || this.selectedVersion === null) {
+        const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
+        const refSelectedVersion: string | null = this.selectedVersion;
+        if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
             // Shouldn't happen, but shouldn't cause an error.
             return;
         }
-        const version = this.selectedThunderstoreMod.getVersions()
-            .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === this.selectedVersion);
-        if (version !== undefined) {
-            const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(this.selectedThunderstoreMod, Profile.getActiveProfile());
-            downloader.download((progress: number, status: number, error: DownloadError)=>{
-                if (status === StatusEnum.SUCCESS) {
+        const version = refSelectedThunderstoreMod.getVersions()
+            .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
+        if (version === undefined) {
+            return;
+        }
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
+        downloader.download((progress: number, status: number, error: DownloadError)=>{
+            if (status === StatusEnum.SUCCESS) {
+                const modFromManifest: Mod | R2Error = ModFromManifest.get(refSelectedThunderstoreMod.getFullName(), version.getVersionNumber());
+                if (!(modFromManifest instanceof R2Error)) {
+                    const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
+                    if (!(newModList instanceof R2Error)) {
+                        this.localModList = newModList;
+                    }
+                } else {
+                    // Show that mod has failed to register for profile
+                }
+                if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
+                    // Close modal if no other modal has been opened.
                     this.closeModal();
                 }
-            }, version.getVersionNumber());
-        }
+            }
+        }, version.getVersionNumber());
+
     }
 
     getTitle(key: any) {
@@ -230,6 +269,11 @@ export default class Manager extends Vue {
             this.thunderstoreModList = data.map((mod: ThunderstoreMod) => new ThunderstoreMod().fromReactive(mod));
         });
         ipcRenderer.send('getThunderstoreModList');
+
+        const newModList: Mod[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
+        if (!(newModList instanceof R2Error)) {
+            this.localModList = newModList;
+        }
     }
 }
 
