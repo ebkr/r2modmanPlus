@@ -1,10 +1,4 @@
-export default class DownloadError implements Error {
-    public name: string;
-    public message: string;
-    public stack?: string | undefined;
+import R2Error from './R2Error';
 
-    public constructor(name: string, message: string) {
-        this.name = name;
-        this.message = message;
-    }
+export default class DownloadError extends R2Error {
 }

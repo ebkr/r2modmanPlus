@@ -4,7 +4,7 @@
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
                 <div class='card'>
-                    <header class="card-header" :id='id'>
+                    <header class="card-header">
                         <p class='card-header-title' v-if="selectedThunderstoreMod !== null">Select a version of {{selectedThunderstoreMod.getName()}} to download</p>
                     </header>
                     <div class='card-content'>
@@ -123,7 +123,9 @@ import VersionNumber from '../model/VersionNumber';
 import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, app } from 'electron';
+import Profile from '../model/Profile';
+import StatusEnum from '../model/enums/StatusEnum';
 
 @Component({
     components: {
@@ -202,9 +204,11 @@ export default class Manager extends Vue {
         const version = this.selectedThunderstoreMod.getVersions()
             .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === this.selectedVersion);
         if (version !== undefined) {
-            const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(this.selectedThunderstoreMod);
+            const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(this.selectedThunderstoreMod, Profile.getActiveProfile());
             downloader.download((progress: number, status: number, error: DownloadError)=>{
-                
+                if (status === StatusEnum.SUCCESS) {
+                    this.closeModal();
+                }
             }, version.getVersionNumber());
         }
     }

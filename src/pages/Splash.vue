@@ -93,7 +93,8 @@ import { Hero, Progress } from '../components/all';
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
 import ThunderstoreMod from '../model/ThunderstoreMod';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, app } from 'electron';
+import Profile from '../model/Profile';
 
 @Component({
     components: {
@@ -148,6 +149,8 @@ export default class Splash extends Vue {
                 let tsMod = new ThunderstoreMod();
                 tsMods.push(tsMod.parseFromThunderstoreData(mod));
             })
+            // Temporary. Creates a new standard profile until Profiles section is completed
+            new Profile('Default');
             ipcRenderer.send('saveThunderstoreModList', tsMods);
             this.$router.push({path: '/manager'});
         }).catch((e)=>{
