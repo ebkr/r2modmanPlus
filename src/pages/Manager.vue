@@ -140,17 +140,17 @@ import { Hero, Progress, ExpandableCard } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Mod from 'src/model/Mod';
 import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader';
-import VersionNumber from '../model/VersionNumber';
 import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
-import ProfileModList from 'src/r2mm/mods/ProfileModList'
+import ProfileModList from 'src/r2mm/mods/ProfileModList';
+import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
 
-import { ipcRenderer } from 'electron';
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
 import R2Error from '../model/errors/R2Error';
 import ModFromManifest from '../r2mm/mods/ModFromManifest';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
+import { throws } from 'assert';
 
 @Component({
     components: {
@@ -187,6 +187,7 @@ export default class Manager extends Vue {
         });
     }
 
+    // eslint-disable-next-line
     openModal(vueMod: any) {
         if (this.view === 'online') {
             const mod = new ThunderstoreMod().fromReactive(vueMod);
@@ -226,26 +227,37 @@ export default class Manager extends Vue {
             return;
         }
         const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
-        downloader.download((progress: number, status: number, error_: DownloadError)=>{
+        downloader.download((progress: number, status: number, error: DownloadError)=>{
             if (status === StatusEnum.SUCCESS) {
                 const modFromManifest: Mod | R2Error = ModFromManifest.get(refSelectedThunderstoreMod.getFullName(), version.getVersionNumber());
                 if (!(modFromManifest instanceof R2Error)) {
-                    const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
-                    if (!(newModList instanceof R2Error)) {
-                        this.localModList = newModList;
+                    const installError: R2Error | null = ProfileInstaller.installMod(modFromManifest);
+                    if (!(installError instanceof R2Error)) {
+                        const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
+                        if (!(newModList instanceof R2Error)) {
+                            this.localModList = newModList;
+                            this.filterModLists();
+                        }
+                    } else {
+                        // Show that installation failed
+                        console.log('Install failed');
                     }
                 } else {
                     // Show that mod has failed to register for profile
+                    console.log('Failed to add to mods.yml');
                 }
                 if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
                     // Close modal if no other modal has been opened.
                     this.closeModal();
                 }
+            } else if (status === StatusEnum.FAILURE) {
+                throws(() => error);
             }
         }, version.getVersionNumber());
 
     }
 
+    // eslint-disable-next-line
     getTitle(key: any) {
         if (key.deprecated) {
             return key.name.strike();
@@ -264,7 +276,6 @@ export default class Manager extends Vue {
             this.localModList = newModList;
         }
         this.thunderstoreModList = ThunderstorePackages.PACKAGES;
-
         this.generateModlist();
     }
 }
