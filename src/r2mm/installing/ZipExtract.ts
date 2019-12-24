@@ -7,10 +7,14 @@ import * as path from 'path';
 
 export default class ZipExtract {
 
-    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string): ZipExtrationError | FileWriteError | null {
+    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean) => void): ZipExtrationError | FileWriteError | null {
         try {
             fs.createReadStream(path.join(zipFolder, filename))
-                .pipe(unzipper.Extract({ path: path.join(zipFolder, outputFolderName) }));
+                .pipe(unzipper.Extract({ path: path.join(zipFolder, outputFolderName) })).promise().then(()=>{
+                    callback(true);
+                }).catch(()=>{
+                    callback(false);
+                });
         } catch(e) {
             const err: Error = e;
             return new ZipExtrationError(

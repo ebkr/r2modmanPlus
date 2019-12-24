@@ -118,7 +118,7 @@
                                     <template v-slot:other-icons>
                                         <!-- Show update and missing dependency icons -->
                                     </template>
-                                    <a class='card-footer-item'>Uninstall</a>
+                                    <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
                                     <a class='card-footer-item'>Disable/Enable</a>
                                     <a class='card-footer-item'>Update</a>
                                     <a class='card-footer-item'>View on Thunderstore</a>
@@ -151,6 +151,8 @@ import R2Error from '../model/errors/R2Error';
 import ModFromManifest from '../r2mm/mods/ModFromManifest';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { throws } from 'assert';
+import ManifestV2 from '../model/ManifestV2';
+import InvalidManifestError from '../model/errors/Manifest/InvalidManifestError';
 
 @Component({
     components: {
@@ -255,6 +257,30 @@ export default class Manager extends Vue {
             }
         }, version.getVersionNumber());
 
+    }
+
+    uninstallMod(vueMod: any) {
+        let mod: InvalidManifestError | ManifestV2 | Mod | R2Error = new ManifestV2().make(vueMod);
+        if (mod instanceof InvalidManifestError) {
+            // If Manifest V2 isn't creatable, then convert to standard mod.
+            mod = new Mod().fromReactive(vueMod);
+        }
+        if (mod instanceof R2Error) {
+            // Something went wrong
+            return;
+        }
+        const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
+        if (uninstallError instanceof R2Error) {
+            // Uninstall failed
+            return;
+        }
+        const modList: Mod[] | R2Error = ProfileModList.removeMod(mod);
+        if (modList instanceof R2Error) {
+            // Failed to remove mod from local list.
+            return;
+        }
+        this.localModList = modList;
+        this.filterModLists();
     }
 
     // eslint-disable-next-line

@@ -6,12 +6,43 @@ import BepInExTree from 'src/model/file/BepInExTree';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as yaml from'yaml';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
+import FileNotFoundError from 'src/model/errors/FileNotfoundError';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
 
 export default class ProfileInstaller {
+
+    /**
+     * Uninstalls a mod by looking through the top level of profile/BepInEx/*
+     * Any folder inside * locations with the mod name will be deleted.
+     * @param mod 
+     */
+    public static uninstallMod(mod: Mod): R2Error | null {
+        const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
+        try {
+            fs.readdirSync(bepInExLocation)
+                .forEach((file: string) => {
+                    fs.readdirSync(path.join(bepInExLocation, file))
+                        .forEach((folder: string) => {
+                            const folderPath: string = path.join(bepInExLocation, file, folder);
+                            if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
+                                fs.emptyDirSync(folderPath);
+                                fs.removeSync(folderPath);
+                            }
+                        });
+                })
+        } catch(e) {
+            const err: Error = e;
+            return new R2Error(
+                err.name ,
+                err.message
+            )
+        }
+        return null;
+    }
 
     public static installMod(mod: Mod | ManifestV2): R2Error | null {
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getFullName(), mod.getVersionNumber().toString());
