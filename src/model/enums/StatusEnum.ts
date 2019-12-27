@@ -1,5 +1,5 @@
 export default {
-    FAILURE: -1,
-    PENDING: 0,
-    SUCCESS: 1,
+    FAILURE: 0,
+    PENDING: 1,
+    SUCCESS: 2,
 };

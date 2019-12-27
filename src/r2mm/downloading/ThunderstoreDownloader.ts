@@ -46,12 +46,13 @@ export default class ThunderstoreDownloader {
             }).then(response => {
                 const buf: Buffer = Buffer.from(response.data)
                 callback(100, StatusEnum.PENDING);
-                const saveError: FileWriteError | null = this.saveToFile(buf, versionNumber);
-                if (saveError === null) {
-                    callback(100, StatusEnum.SUCCESS);
-                } else {
-                    callback(100, StatusEnum.FAILURE, saveError);
-                }
+                this.saveToFile(buf, versionNumber, (success: boolean) => {
+                    if (success) {
+                        callback(100, StatusEnum.SUCCESS);
+                    } else {
+                        callback(100, StatusEnum.FAILURE);
+                    }
+                });
             })
         } else {
             callback(0, StatusEnum.FAILURE, 
@@ -63,7 +64,7 @@ export default class ThunderstoreDownloader {
         }
     }
 
-    public saveToFile(response: Buffer, versionNumber: VersionNumber): R2Error | null {
+    public saveToFile(response: Buffer, versionNumber: VersionNumber, callback: (success: boolean) => void): R2Error | null {
         try {
             fs.mkdirsSync(path.join(cacheDirectory, this.mod.getFullName()));
             fs.writeFileSync(
@@ -77,7 +78,8 @@ export default class ThunderstoreDownloader {
             const extractError: R2Error | null = ZipExtract.extractAndDelete(
                 path.join(cacheDirectory, this.mod.getFullName()), 
                 versionNumber.toString() + '.zip', 
-                versionNumber.toString()
+                versionNumber.toString(),
+                callback
             );
             return extractError;
         } catch(e) {
