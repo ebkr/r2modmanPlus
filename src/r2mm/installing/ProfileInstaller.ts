@@ -10,6 +10,7 @@ import * as yaml from'yaml';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import FileNotFoundError from 'src/model/errors/FileNotfoundError';
+import ModMode from 'src/model/enums/ModMode';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
 
@@ -42,6 +43,59 @@ export default class ProfileInstaller {
             )
         }
         return null;
+    }
+
+    public static disableMod(mod: Mod): R2Error | void {
+        const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
+        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
+        if (files instanceof R2Error) {
+            console.log('Failed to produce BepInExTree');
+            return files;
+        }
+        this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
+    }
+
+    public static enableMod(mod: Mod): R2Error | void {
+        const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
+        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
+        if (files instanceof R2Error) {
+            console.log('Failed to produce BepInExTree');
+            return files;
+        }
+        this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
+    }
+
+    private static applyModMode(mod: Mod, tree: BepInExTree, location: string, mode: number) {
+        const files: string[] = [];
+        tree.getDirectories().forEach((directory: BepInExTree) => {
+            if (directory.getDirectoryName() !== mod.getName()) {
+                this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+            } else {
+                files.push(...this.getDescendantFiles(tree, location));
+            }
+        })
+        files.forEach((file: string) => {
+            if (mode === ModMode.DISABLED) {
+                if (file.toLowerCase().endsWith('.dll')) {
+                    fs.renameSync(file, file + '.old');
+                }
+            } else if (mode === ModMode.ENABLED) {
+                if (file.toLowerCase().endsWith('.dll.old')) {
+                    fs.renameSync(file, file.substring(0, file.length - ('.old').length));
+                }
+            }
+        })
+    }
+
+    private static getDescendantFiles(tree: BepInExTree, location: string): string[] {
+        const files: string[] = [];
+        tree.getDirectories().forEach((directory: BepInExTree) => {
+            files.push(...this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName())));
+        })
+        tree.getFiles().forEach((file: string) => {
+            files.push(file);
+        })
+        return files;
     }
 
     public static installMod(mod: Mod | ManifestV2): R2Error | null {

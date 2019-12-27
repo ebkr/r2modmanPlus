@@ -10,6 +10,7 @@ export default class Mod implements ReactiveObjectConverterInterface {
     private fullName: string = '';
     private description: string = ''
     private icon: string = ''
+    private enabled: boolean = true;
 
     public fromManifest(): Mod | R2Error {
         return ModFromManifest.get(this.getFullName(), this.getVersionNumber());
@@ -22,6 +23,7 @@ export default class Mod implements ReactiveObjectConverterInterface {
         this.setFullName(reactive.fullName);
         this.setDescription(reactive.description);
         this.setIcon(reactive.icon);
+        this.enabled = reactive.enabled;
         return this;
     }
 
@@ -71,6 +73,18 @@ export default class Mod implements ReactiveObjectConverterInterface {
 
     public setIcon(icon: string) {
         this.icon = icon;
+    }
+
+    public isEnabled(): boolean {
+        return this.enabled;
+    }
+
+    public enable() {
+        this.enabled = true;
+    }
+
+    public disable() {
+        this.enabled = false;
     }
 
 }
