@@ -292,11 +292,39 @@ export default class Manager extends Vue {
     }
 
     disableMod(vueMod: any) {
-        ProfileInstaller.disableMod(new Mod().fromReactive(vueMod));
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
+        if (disableErr instanceof R2Error) {
+            // Failed to disable
+            return;
+        }
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+            updatingMod.disable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            return;
+        }
+        this.localModList = updatedList;
+        this.filterModLists();
     }
 
     enableMod(vueMod: any) {
-        ProfileInstaller.enableMod(new Mod().fromReactive(vueMod));
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
+        if (disableErr instanceof R2Error) {
+            // Failed to disable
+            return;
+        }
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+            updatingMod.enable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            return;
+        }
+        this.localModList = updatedList;
+        this.filterModLists();
     }
 
     // eslint-disable-next-line

@@ -49,23 +49,28 @@ export default class ProfileInstaller {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
-            console.log('Failed to produce BepInExTree');
             return files;
         }
-        this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
+        const applyError: R2Error | void = this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
+        if (applyError instanceof R2Error) {
+            return applyError;
+        }
     }
 
     public static enableMod(mod: Mod): R2Error | void {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
-            console.log('Failed to produce BepInExTree');
             return files;
         }
-        this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
+        const applyError: R2Error | void = this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
+        if (applyError instanceof R2Error) {
+            return applyError;
+        }
+
     }
 
-    private static applyModMode(mod: Mod, tree: BepInExTree, location: string, mode: number) {
+    private static applyModMode(mod: Mod, tree: BepInExTree, location: string, mode: number): R2Error | void {
         const files: string[] = [];
         tree.getDirectories().forEach((directory: BepInExTree) => {
             if (directory.getDirectoryName() !== mod.getName()) {
@@ -75,14 +80,22 @@ export default class ProfileInstaller {
             }
         })
         files.forEach((file: string) => {
-            if (mode === ModMode.DISABLED) {
-                if (file.toLowerCase().endsWith('.dll')) {
-                    fs.renameSync(file, file + '.old');
+            try {
+                if (mode === ModMode.DISABLED) {
+                    if (file.toLowerCase().endsWith('.dll')) {
+                        fs.renameSync(file, file + '.old');
+                    }
+                } else if (mode === ModMode.ENABLED) {
+                    if (file.toLowerCase().endsWith('.dll.old')) {
+                        fs.renameSync(file, file.substring(0, file.length - ('.old').length));
+                    }
                 }
-            } else if (mode === ModMode.ENABLED) {
-                if (file.toLowerCase().endsWith('.dll.old')) {
-                    fs.renameSync(file, file.substring(0, file.length - ('.old').length));
-                }
+            } catch(e) {
+                const err: Error = e;
+                return new R2Error(
+                    `Failed to rename file ${file} with ModMode of ${mode}`,
+                    err.message
+                )
             }
         })
     }
