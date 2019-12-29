@@ -23,6 +23,7 @@
                     </div>
                     <div class='card-footer'>
                         <button class="button is-info" @click="downloadMod()">Download</button>
+                        <button class="button is-primary" @click="downloadMod()">Download with dependencies</button>
                     </div>
                 </div>
             </div>
