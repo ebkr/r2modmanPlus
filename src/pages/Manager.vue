@@ -113,13 +113,21 @@
                                 :description="key.description"
                                 :visible="false">
                                     <template v-slot:title>
-                                        <span>{{key.name}}</span>
+                                        <span v-if="key.enabled">
+                                            {{key.name}}
+                                        </span>
+                                        <span v-else>
+                                            <strike>{{key.name}}</strike>
+                                        </span>
                                     </template>
                                     <template v-slot:other-icons>
                                         <!-- Show update and missing dependency icons -->
                                     </template>
                                     <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
-                                    <a class='card-footer-item'>Disable/Enable</a>
+                                    <template>
+                                        <a class='card-footer-item' @click="disableMod(key)" v-if="key.enabled">Disable</a>
+                                        <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
+                                    </template>
                                     <a class='card-footer-item'>Update</a>
                                     <a class='card-footer-item'>View on Thunderstore</a>
                                 </expandable-card>
@@ -242,11 +250,11 @@ export default class Manager extends Vue {
                         }
                     } else {
                         // Show that installation failed
-                        console.log('Install failed');
+                        // (mod failed to be placed in /{profile} directory)
                     }
                 } else {
                     // Show that mod has failed to register for profile
-                    console.log('Failed to add to mods.yml');
+                    // (mod failed to add to mods.yml)
                 }
                 if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
                     // Close modal if no other modal has been opened.
@@ -280,6 +288,42 @@ export default class Manager extends Vue {
             return;
         }
         this.localModList = modList;
+        this.filterModLists();
+    }
+
+    disableMod(vueMod: any) {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
+        if (disableErr instanceof R2Error) {
+            // Failed to disable
+            return;
+        }
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+            updatingMod.disable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            return;
+        }
+        this.localModList = updatedList;
+        this.filterModLists();
+    }
+
+    enableMod(vueMod: any) {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
+        if (disableErr instanceof R2Error) {
+            // Failed to disable
+            return;
+        }
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+            updatingMod.enable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            return;
+        }
+        this.localModList = updatedList;
         this.filterModLists();
     }
 

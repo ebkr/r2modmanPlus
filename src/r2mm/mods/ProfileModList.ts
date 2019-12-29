@@ -90,4 +90,21 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
+    public static updateMod(mod: Mod, apply: (mod: Mod) => void): Mod[] | R2Error {
+        const list: Mod[] | R2Error = this.getModList(Profile.getActiveProfile());
+        if (list instanceof R2Error) {
+            return list;
+        }
+        const newList: Mod[] = [];
+        list.forEach((listMod: Mod) => {
+            if (listMod.getFullName() !== mod.getFullName()) {
+                newList.push(listMod);
+            } else {
+                apply(listMod);
+                newList.push(listMod);
+            }
+        });
+        return newList;
+    }
+
 }
