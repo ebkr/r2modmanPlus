@@ -28,7 +28,18 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeModal()"></button>
         </div>
-        <div class="columns">
+        <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
+            <div class="modal-background" @click="closeErrorModal()"></div>
+            <div class='modal-content'>
+                <div class='notification is-danger'>
+                    <h3 class='title'>Error</h3>
+                    <h5 class="title is-5">{{errorMessage}}</h5>
+                    <p>{{errorStack}}</p>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
+        </div>
+        <div class='columns' id='content'>
             <div class="column is-one-quarter">
                 <aside class="menu">
                     <p class="menu-label">Risk of Rain 2</p>
@@ -186,6 +197,9 @@ export default class Manager extends Vue {
 
     searchFilter: string = '';
 
+    errorMessage: string = '';
+    errorStack: string = '';
+
     @Watch('searchFilter')
     filterModLists() {
         this.generateModlist();
@@ -219,6 +233,16 @@ export default class Manager extends Vue {
         }
     }
 
+    closeErrorModal() {
+        this.errorMessage = '';
+        this.errorStack = '';
+    }
+
+    showError(error: R2Error) {
+        this.errorMessage = error.name;
+        this.errorStack = error.message;
+    }
+
     private generateModlist() {
         this.searchableThunderstoreModList = this.thunderstoreModList;
         this.searchableLocalModList = this.localModList;
@@ -228,7 +252,7 @@ export default class Manager extends Vue {
         const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
         const refSelectedVersion: string | null = this.selectedVersion;
         if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
-            // Shouldn't happen, but shouldn't cause an error.
+            // Shouldn't happen, but shouldn't throw an error.
             return;
         }
         const version = refSelectedThunderstoreMod.getVersions()
@@ -251,10 +275,12 @@ export default class Manager extends Vue {
                     } else {
                         // Show that installation failed
                         // (mod failed to be placed in /{profile} directory)
+                        this.showError(installError);
                     }
                 } else {
                     // Show that mod has failed to register for profile
                     // (mod failed to add to mods.yml)
+                    this.showError(modFromManifest);
                 }
                 if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
                     // Close modal if no other modal has been opened.
@@ -267,6 +293,7 @@ export default class Manager extends Vue {
 
     }
 
+    // eslint-disable-next-line
     uninstallMod(vueMod: any) {
         let mod: InvalidManifestError | ManifestV2 | Mod | R2Error = new ManifestV2().make(vueMod);
         if (mod instanceof InvalidManifestError) {
@@ -275,27 +302,32 @@ export default class Manager extends Vue {
         }
         if (mod instanceof R2Error) {
             // Something went wrong
+            this.showError(mod);
             return;
         }
         const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
         if (uninstallError instanceof R2Error) {
             // Uninstall failed
+            this.showError(uninstallError);
             return;
         }
         const modList: Mod[] | R2Error = ProfileModList.removeMod(mod);
         if (modList instanceof R2Error) {
             // Failed to remove mod from local list.
+            this.showError(modList);
             return;
         }
         this.localModList = modList;
         this.filterModLists();
     }
 
+    // eslint-disable-next-line
     disableMod(vueMod: any) {
         const mod: Mod = new Mod().fromReactive(vueMod);
         const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
+            this.showError(disableErr);
             return;
         }
         const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
@@ -303,17 +335,20 @@ export default class Manager extends Vue {
         });
         if (updatedList instanceof R2Error) {
             // Failed to update mod list.
+            this.showError(updatedList);
             return;
         }
         this.localModList = updatedList;
         this.filterModLists();
     }
 
+    // eslint-disable-next-line
     enableMod(vueMod: any) {
         const mod: Mod = new Mod().fromReactive(vueMod);
         const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
+            this.showError(disableErr);
             return;
         }
         const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
@@ -321,6 +356,7 @@ export default class Manager extends Vue {
         });
         if (updatedList instanceof R2Error) {
             // Failed to update mod list.
+            this.showError(updatedList);
             return;
         }
         this.localModList = updatedList;
@@ -335,7 +371,8 @@ export default class Manager extends Vue {
         return key.name;
     }
 
-    isThunderstoreModInstalled(vueMod: ThunderstoreMod) {
+    // eslint-disable-next-line
+    isThunderstoreModInstalled(vueMod: any) {
         const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(vueMod);
         return this.localModList.find((local: Mod) => local.getFullName() === mod.getFullName()) != undefined;
     }
