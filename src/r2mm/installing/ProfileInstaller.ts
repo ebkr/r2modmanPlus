@@ -22,6 +22,25 @@ export default class ProfileInstaller {
      * @param mod 
      */
     public static uninstallMod(mod: Mod): R2Error | null {
+        if (mod.getFullName().toLowerCase() === 'bbepis-bepinexpack') {
+            try {
+                fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
+                    .forEach((file: string) => {
+                        const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
+                        if (fs.lstatSync(filePath).isFile()) {
+                            if (file.toLowerCase() !== 'mods.yml') {
+                                fs.removeSync(filePath);
+                            }
+                        }
+                    })
+            } catch(e) {
+                const err: Error = e;
+                return new FileWriteError(
+                    'Failed to delete BepInEx file from profile root',
+                    err.message
+                )
+            }
+        }
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         try {
             fs.readdirSync(bepInExLocation)
@@ -33,8 +52,8 @@ export default class ProfileInstaller {
                                 fs.emptyDirSync(folderPath);
                                 fs.removeSync(folderPath);
                             }
-                        });
-                })
+                        })
+                });
         } catch(e) {
             const err: Error = e;
             return new R2Error(
@@ -215,13 +234,36 @@ export default class ProfileInstaller {
         return null;
     }
 
-    private static installBepInEx(location: string): R2Error | null {
+    private static installBepInEx(bieLocation: string): R2Error | null {
+        const location = path.join(bieLocation, 'BepInExPack');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;
         }
         files.getFiles().forEach((file: string) => {
-            // Copy files to RoR2 directory
+            try {
+                fs.copySync(file, path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(file)));
+            } catch(e) {
+                const err: Error = e;
+                return new FileWriteError(
+                    `Failed to copy file for BepInEx installation: ${file}`,
+                    err.message
+                )
+            }
+        })
+        files.getDirectories().forEach((directory: BepInExTree) => {
+            try {
+                fs.copySync(
+                    path.join(location, directory.getDirectoryName()), 
+                    path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(directory.getDirectoryName()))
+                );
+            } catch(e) {
+                const err: Error = e;
+                return new FileWriteError(
+                    `Failed to copy folder for BepInEx installation: ${directory.getDirectoryName()}`,
+                    err.message
+                )
+            }
         })
         return null;
     }
