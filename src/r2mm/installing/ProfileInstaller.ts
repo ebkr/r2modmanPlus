@@ -22,6 +22,25 @@ export default class ProfileInstaller {
      * @param mod 
      */
     public static uninstallMod(mod: Mod): R2Error | null {
+        if (mod.getFullName().toLowerCase() === 'bbepis-bepinexpack') {
+            try {
+                fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
+                    .forEach((file: string) => {
+                        const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
+                        if (fs.lstatSync(filePath).isFile()) {
+                            if (file.toLowerCase() !== 'mods.yml') {
+                                fs.removeSync(filePath);
+                            }
+                        }
+                    })
+            } catch(e) {
+                const err: Error = e;
+                return new FileWriteError(
+                    'Failed to delete BepInEx file from profile root',
+                    err.message
+                )
+            }
+        }
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         try {
             fs.readdirSync(bepInExLocation)
