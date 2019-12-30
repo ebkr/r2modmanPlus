@@ -1,5 +1,10 @@
 export default class ManagerSettings {
 
-    public static RiskOfRain2Directory: string | null;
+    public riskOfRain2Directory: string | null = null;
+    public linkedFiles: string[] = [];
+
+    public constructor() {
+        
+    }
 
 }

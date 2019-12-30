@@ -45,7 +45,7 @@
                 <aside class="menu">
                     <p class="menu-label">Risk of Rain 2</p>
                     <ul class="menu-list">
-                        <li><a>Start modded</a></li>
+                        <li><a @click="launchModded()">Start modded</a></li>
                         <li><a>Start vanilla</a></li>
                     </ul>
                     <p class="menu-label">Mods</p>
@@ -164,6 +164,7 @@ import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
+import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
@@ -376,6 +377,10 @@ export default class Manager extends Vue {
     isThunderstoreModInstalled(vueMod: any) {
         const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(vueMod);
         return this.localModList.find((local: Mod) => local.getFullName() === mod.getFullName()) != undefined;
+    }
+
+    launchModded() {
+        GameDirectoryResolver.getDirectory();
     }
 
     created() {
