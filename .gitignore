@@ -4,6 +4,7 @@
 node_modules
 /dist
 /mods
+/config
 /src-cordova/node_modules
 /src-cordova/platforms
 /src-cordova/plugins

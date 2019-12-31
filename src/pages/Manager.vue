@@ -40,13 +40,24 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
         </div>
+        <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
+            <div class="modal-background" @click="closeGameRunningModal()"></div>
+            <div class='modal-content'>
+                <div class='notification is-info'>
+                    <h3 class='title'>Risk of Rain 2 is launching</h3>
+                    <h5 class="title is-5">Close this message to continue modding.</h5>
+                    <p>This message will close automatically once you quit Risk of Rain 2.</p>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
+        </div>
         <div class='columns' id='content'>
             <div class="column is-one-quarter">
                 <aside class="menu">
                     <p class="menu-label">Risk of Rain 2</p>
                     <ul class="menu-list">
-                        <li><a>Start modded</a></li>
-                        <li><a>Start vanilla</a></li>
+                        <li><a @click="launchModded()">Start modded</a></li>
+                        <li><a @click="launchVanilla()">Start vanilla</a></li>
                     </ul>
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
@@ -164,6 +175,7 @@ import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
+import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
@@ -173,6 +185,15 @@ import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { throws } from 'assert';
 import ManifestV2 from '../model/ManifestV2';
 import InvalidManifestError from '../model/errors/Manifest/InvalidManifestError';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import GameRunner from '../r2mm/manager/GameRunner';
+
+import * as fs from 'fs-extra';
+import { isNull } from 'util';
+import ModLinker from '../r2mm/manager/ModLinker';
+
+const settings = new ManagerSettings();
+settings.load();
 
 @Component({
     components: {
@@ -200,6 +221,8 @@ export default class Manager extends Vue {
 
     errorMessage: string = '';
     errorStack: string = '';
+
+    gameRunning: boolean = false;
 
     @Watch('searchFilter')
     filterModLists() {
@@ -237,6 +260,10 @@ export default class Manager extends Vue {
     closeErrorModal() {
         this.errorMessage = '';
         this.errorStack = '';
+    }
+
+    closeGameRunningModal() {
+        this.gameRunning = false;
     }
 
     showError(error: R2Error) {
@@ -376,6 +403,56 @@ export default class Manager extends Vue {
     isThunderstoreModInstalled(vueMod: any) {
         const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(vueMod);
         return this.localModList.find((local: Mod) => local.getFullName() === mod.getFullName()) != undefined;
+    }
+
+    prepareLaunch() {
+        let dir: string | R2Error = '';
+        if (settings.riskOfRain2Directory === null) {
+            dir = GameDirectoryResolver.getDirectory();
+        } else {
+            dir = settings.riskOfRain2Directory;
+        }
+        if (dir instanceof R2Error) {
+            // Show folder selection dialog.
+            this.showError(dir);
+        } else {
+            const setInstallDirError: R2Error | void = settings.setRiskOfRain2Directory(dir);
+            if (setInstallDirError instanceof R2Error) {
+                this.showError(setInstallDirError);
+                return;
+            }
+        }
+    }
+
+    launchModded() {
+        this.prepareLaunch();
+        if (settings.riskOfRain2Directory !== null && fs.existsSync(settings.riskOfRain2Directory)) {
+            const newLinkedFiles = ModLinker.link(settings.riskOfRain2Directory, settings.linkedFiles);
+            if (newLinkedFiles instanceof R2Error) {
+                this.showError(newLinkedFiles);
+                return;
+            } else {
+                const saveError = settings.setLinkedFiles(newLinkedFiles);
+                if (saveError instanceof R2Error) {
+                    this.showError(saveError);
+                    return;
+                }
+            }
+            this.gameRunning = true;
+            GameRunner.playModded(settings.riskOfRain2Directory, ()=>{
+                this.gameRunning = false;
+            });
+        }
+    }
+
+    launchVanilla() {
+        this.prepareLaunch();
+        if (settings.riskOfRain2Directory !== null && fs.existsSync(settings.riskOfRain2Directory)) {
+            this.gameRunning = true;
+            GameRunner.playVanilla(settings.riskOfRain2Directory, ()=>{
+                this.gameRunning = false;
+            });
+        }
     }
 
     created() {

@@ -6,10 +6,8 @@ import BepInExTree from 'src/model/file/BepInExTree';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as yaml from'yaml';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
-import FileNotFoundError from 'src/model/errors/FileNotfoundError';
 import ModMode from 'src/model/enums/ModMode';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
