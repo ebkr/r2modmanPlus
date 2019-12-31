@@ -22,16 +22,17 @@ But as for actual new features:
 - Older mod versions now alert the user that it may not work.
 - Pinned mods are marked as essential.
 - Installed tab now says when there aren't any currently installed mods.
+- Mods will only download once across all profiles
+- Installs are semi-symlink based. (BepInEx root files are copied, rather than linked).
+- Automatic game installation location detection.
+- YAML is now used to store information
 
-### Planned:
-- Profiles will be symlink based, rather than clearing out the entire folder.
-- Mods will only download once across all profiles (unless uninstalled from all)
+
+### Major features planned:
 - Manifest V2
 - Help and FAQ for technical support about mods not working.
 - Alerts when a new RoR2 update has been released.
-- Automatic game installation location detection.
 - Config file editor.
-- YAML to replace JSON for data storage.
 
 ## Roadmap
 - Download ZIPs and extract to mods/cache directory.
