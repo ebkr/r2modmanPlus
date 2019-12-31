@@ -190,6 +190,7 @@ import GameRunner from '../r2mm/manager/GameRunner';
 
 import * as fs from 'fs-extra';
 import { isNull } from 'util';
+import ModLinker from '../r2mm/manager/ModLinker';
 
 const settings = new ManagerSettings();
 settings.load();
@@ -426,6 +427,17 @@ export default class Manager extends Vue {
     launchModded() {
         this.prepareLaunch();
         if (settings.riskOfRain2Directory !== null && fs.existsSync(settings.riskOfRain2Directory)) {
+            const newLinkedFiles = ModLinker.link(settings.riskOfRain2Directory, settings.linkedFiles);
+            if (newLinkedFiles instanceof R2Error) {
+                this.showError(newLinkedFiles);
+                return;
+            } else {
+                const saveError = settings.setLinkedFiles(newLinkedFiles);
+                if (saveError instanceof R2Error) {
+                    this.showError(saveError);
+                    return;
+                }
+            }
             this.gameRunning = true;
             GameRunner.playModded(settings.riskOfRain2Directory, ()=>{
                 this.gameRunning = false;
