@@ -11,6 +11,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from 'src/model/errors/R2Error';
+import { isUndefined } from 'util';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
 
@@ -64,7 +65,72 @@ export default class ThunderstoreDownloader {
         }
     }
 
-    public saveToFile(response: Buffer, versionNumber: VersionNumber, callback: (success: boolean) => void): R2Error | null {
+    public downloadWithDependencies(callback: (progress: number, status: number, error: R2Error | void) => void, mod: ThunderstoreMod, version: ThunderstoreVersion, modList: ThunderstoreMod[]) {
+        const dependencyList = this.buildDependencyList(version, modList);
+        if (dependencyList instanceof R2Error) {
+            callback(
+                0, 
+                StatusEnum.FAILURE, 
+                dependencyList
+            );
+            return;
+        }
+        let listStep = 0;
+        const downloader = new ThunderstoreDownloader(dependencyList[listStep], Profile.getActiveProfile());
+        const onFinalDownload = (progress: number, status: number, error: R2Error | void) => {
+            if (status === StatusEnum.SUCCESS) {
+                callback(100, StatusEnum.SUCCESS);
+            } else if (status === StatusEnum.FAILURE && error instanceof R2Error) {
+                callback(0, StatusEnum.FAILURE, error);
+            }
+        }
+        const onStepDownload = (progress: number, status: number, error: R2Error | void) => {
+            if (status === StatusEnum.SUCCESS) {
+                listStep += 1;
+                if (listStep < dependencyList.length) {
+                    const downloader = new ThunderstoreDownloader(dependencyList[listStep], Profile.getActiveProfile());
+                    downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
+                } else {
+                    const downloader = new ThunderstoreDownloader(mod, Profile.getActiveProfile());
+                    downloader.download(onFinalDownload, version.getVersionNumber());
+                }
+            } else if (status === StatusEnum.FAILURE && error instanceof R2Error) {
+                callback(
+                    0, 
+                    StatusEnum.FAILURE, 
+                    error)
+            }
+        }
+        downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
+    }
+
+    public buildDependencyList(version: ThunderstoreVersion, modList: ThunderstoreMod[]): ThunderstoreMod[] | R2Error {
+        const list: ThunderstoreMod[] = [];
+        try {
+            version.getDependencies().forEach((dependency: string) => {
+                const foundMod = modList.find((listMod: ThunderstoreMod) => dependency.startsWith(listMod.getFullName()));
+                if (isUndefined(foundMod)) {
+                    throw new Error(`Unable to find Thunderstore dependency with author-name of ${dependency}`)
+                } else {
+                    list.push(foundMod);
+                    const findDependencyError = this.buildDependencyList(foundMod, modList);
+                    if (findDependencyError instanceof R2Error) {
+                        throw findDependencyError;
+                    }
+                    list.push(...findDependencyError);
+                }
+            })
+        } catch(e) {
+            const err: Error = e;
+            return new R2Error(
+                `Failed to find all dependencies of mod ${version.getFullName()}`,
+                err.message
+            )
+        }
+        return list;
+    }
+
+    private saveToFile(response: Buffer, versionNumber: VersionNumber, callback: (success: boolean) => void): R2Error | null {
         try {
             fs.mkdirsSync(path.join(cacheDirectory, this.mod.getFullName()));
             fs.writeFileSync(
@@ -83,9 +149,7 @@ export default class ThunderstoreDownloader {
             );
             return extractError;
         } catch(e) {
-            console.log('Couldn\'t write file');
             const err: Error = e;
-            console.log(err);
             return new FileWriteError(
                 'File write error',
                 `Failed to write downloaded zip of ${this.mod.getFullName()} to profile directory of ${this.profile.getPathOfProfile()}. \nReason: ${err.message}`
