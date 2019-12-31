@@ -129,7 +129,7 @@
                         <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
                     </div>
                     <template v-if="localModList.length > 0">
-                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + index">
+                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.fullName">
                             <expandable-card
                                 :image="key.icon"
                                 :id="index"
