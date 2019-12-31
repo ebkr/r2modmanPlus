@@ -23,7 +23,7 @@
                     </div>
                     <div class='card-footer'>
                         <button class="button is-info" @click="downloadMod()">Download</button>
-                        <button class="button is-primary" @click="downloadMod()">Download with dependencies</button>
+                        <button class="button is-primary" @click="downloadWithDependencies()">Download with dependencies</button>
                     </div>
                 </div>
             </div>
@@ -189,7 +189,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import GameRunner from '../r2mm/manager/GameRunner';
 
 import * as fs from 'fs-extra';
-import { isNull } from 'util';
+import { isNull, isNullOrUndefined } from 'util';
 import ModLinker from '../r2mm/manager/ModLinker';
 
 const settings = new ManagerSettings();
@@ -291,24 +291,9 @@ export default class Manager extends Vue {
         const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
         downloader.download((progress: number, status: number, error: DownloadError)=>{
             if (status === StatusEnum.SUCCESS) {
-                const modFromManifest: Mod | R2Error = ModFromManifest.get(refSelectedThunderstoreMod.getFullName(), version.getVersionNumber());
-                if (!(modFromManifest instanceof R2Error)) {
-                    const installError: R2Error | null = ProfileInstaller.installMod(modFromManifest);
-                    if (!(installError instanceof R2Error)) {
-                        const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
-                        if (!(newModList instanceof R2Error)) {
-                            this.localModList = newModList;
-                            this.filterModLists();
-                        }
-                    } else {
-                        // Show that installation failed
-                        // (mod failed to be placed in /{profile} directory)
-                        this.showError(installError);
-                    }
-                } else {
-                    // Show that mod has failed to register for profile
-                    // (mod failed to add to mods.yml)
-                    this.showError(modFromManifest);
+                const installErr = this.installModAfterDownload(refSelectedThunderstoreMod, version);
+                if (installErr instanceof R2Error) {
+                    this.showError(installErr);
                 }
                 if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
                     // Close modal if no other modal has been opened.
@@ -319,6 +304,66 @@ export default class Manager extends Vue {
             }
         }, version.getVersionNumber());
 
+    }
+
+    installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
+        const modFromManifest: Mod | R2Error = ModFromManifest.get(mod.getFullName(), version.getVersionNumber());
+        if (!(modFromManifest instanceof R2Error)) {
+            const installError: R2Error | null = ProfileInstaller.installMod(modFromManifest);
+            if (!(installError instanceof R2Error)) {
+                const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
+                if (!(newModList instanceof R2Error)) {
+                    this.localModList = newModList;
+                    this.filterModLists();
+                }
+            } else {
+                // (mod failed to be placed in /{profile} directory)
+                return installError;
+            }
+        } else {
+            // (mod failed to add to mods.yml)
+            return modFromManifest;
+        }
+    }
+
+    downloadWithDependencies() {
+        const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
+        const refSelectedVersion: string | null = this.selectedVersion;
+        if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
+            // Shouldn't happen, but shouldn't throw an error.
+            return;
+        }
+        const version = refSelectedThunderstoreMod.getVersions()
+            .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
+        if (version === undefined) {
+            return;
+        }
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
+        downloader.downloadWithDependencies((progress: number, status: number, error: R2Error | void)=>{
+            if (status === StatusEnum.FAILURE) {
+                if (error instanceof R2Error) {
+                    this.showError(error);
+                }
+            } else if (status === StatusEnum.SUCCESS) {
+                // To get to this stage, it must have already succeeded once.
+                const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(version, this.thunderstoreModList);
+                if (dependencies instanceof R2Error) {
+                    return;
+                }
+                dependencies.forEach((mod: ThunderstoreMod) => {
+                    const installErr = this.installModAfterDownload(mod, mod.getVersions()[0]);
+                    if (installErr instanceof R2Error) {
+                        this.showError(installErr);
+                        return;
+                    }
+                })
+                this.installModAfterDownload(refSelectedThunderstoreMod, version);
+                if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
+                    // Close modal if no other modal has been opened.
+                    this.closeModal();
+                }
+            }
+        }, refSelectedThunderstoreMod, version, this.thunderstoreModList);
     }
 
     // eslint-disable-next-line
@@ -441,7 +486,7 @@ export default class Manager extends Vue {
             this.gameRunning = true;
             GameRunner.playModded(settings.riskOfRain2Directory, ()=>{
                 this.gameRunning = false;
-            });
+            }, settings);
         }
     }
 
@@ -451,7 +496,7 @@ export default class Manager extends Vue {
             this.gameRunning = true;
             GameRunner.playVanilla(settings.riskOfRain2Directory, ()=>{
                 this.gameRunning = false;
-            });
+            }, settings);
         }
     }
 

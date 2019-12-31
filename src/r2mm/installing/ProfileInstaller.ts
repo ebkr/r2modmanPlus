@@ -10,6 +10,7 @@ import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import ModMode from 'src/model/enums/ModMode';
 import { isNull } from 'util';
+import { lstatSync } from 'fs-extra';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
 
@@ -44,14 +45,16 @@ export default class ProfileInstaller {
         try {
             fs.readdirSync(bepInExLocation)
                 .forEach((file: string) => {
-                    fs.readdirSync(path.join(bepInExLocation, file))
-                        .forEach((folder: string) => {
-                            const folderPath: string = path.join(bepInExLocation, file, folder);
-                            if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
-                                fs.emptyDirSync(folderPath);
-                                fs.removeSync(folderPath);
-                            }
-                        })
+                    if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
+                        fs.readdirSync(path.join(bepInExLocation, file))
+                            .forEach((folder: string) => {
+                                const folderPath: string = path.join(bepInExLocation, file, folder);
+                                if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
+                                    fs.emptyDirSync(folderPath);
+                                    fs.removeSync(folderPath);
+                                }
+                            })
+                    }
                 });
         } catch(e) {
             const err: Error = e;
