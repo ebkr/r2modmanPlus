@@ -1,4 +1,4 @@
-import ManagerSettings from "./ManagerSettings";
+import ManagerSettings from './ManagerSettings';
 
 import * as child from 'child_process';
 import * as path from 'path';

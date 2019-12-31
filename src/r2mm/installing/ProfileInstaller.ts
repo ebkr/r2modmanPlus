@@ -9,6 +9,7 @@ import * as fs from 'fs-extra';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import ModMode from 'src/model/enums/ModMode';
+import { isNull } from 'util';
 
 const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
 
@@ -93,7 +94,7 @@ export default class ProfileInstaller {
             if (directory.getDirectoryName() !== mod.getName()) {
                 this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
             } else {
-                files.push(...this.getDescendantFiles(tree, location));
+                files.push(...this.getDescendantFiles(null, path.join(location, directory.getDirectoryName())));
             }
         })
         files.forEach((file: string) => {
@@ -117,8 +118,15 @@ export default class ProfileInstaller {
         })
     }
 
-    private static getDescendantFiles(tree: BepInExTree, location: string): string[] {
+    private static getDescendantFiles(tree: BepInExTree | null, location: string): string[] {
         const files: string[] = [];
+        if (isNull(tree)) {
+            const newTree = BepInExTree.buildFromLocation(location);
+            if (newTree instanceof R2Error) {
+                return files;
+            }
+            tree = newTree;
+        }
         tree.getDirectories().forEach((directory: BepInExTree) => {
             files.push(...this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName())));
         })

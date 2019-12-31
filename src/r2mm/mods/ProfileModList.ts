@@ -95,16 +95,15 @@ export default class ProfileModList {
         if (list instanceof R2Error) {
             return list;
         }
-        const newList: Mod[] = [];
-        list.forEach((listMod: Mod) => {
-            if (listMod.getFullName() !== mod.getFullName()) {
-                newList.push(listMod);
-            } else {
-                apply(listMod);
-                newList.push(listMod);
-            }
-        });
-        return newList;
+        list.filter((filteringMod: Mod) => filteringMod.getFullName() === mod.getFullName())
+            .forEach((filteringMod: Mod) => {
+                apply(filteringMod);
+            });
+        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        if (saveErr instanceof R2Error) {
+            return saveErr;
+        }
+        return this.getModList(Profile.getActiveProfile());
     }
 
 }
