@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron'
-import ServerStorage from './serverStorage'
+import Listeners from './ipcListeners'
 import { ipcMain } from 'electron';
 
 /**
@@ -27,7 +27,7 @@ function createWindow () {
     })
 
     // Initialise client to server communication listener
-    new ServerStorage(mainWindow);
+    new Listeners(mainWindow);
 
     mainWindow.loadURL(process.env.APP_URL)
 
