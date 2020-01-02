@@ -64,13 +64,13 @@
                         <li>
                             <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
                             <ul v-if="view === 'installed'">
-                                <li><input v-model='searchFilter' class="input" type="text" placeholder="Search installed mods"/></li>
+                                <li><input v-model='searchFilter' class="input" type="text" placeholder="Search mods"/></li>
                             </ul>
                         </li>
                         <li>
                             <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']">Online</a>
                             <ul v-if="view === 'online'">
-                                <li><input v-model='searchFilter' class='input' type='text' placeholder='Search available mods'/></li>
+                                <li><input v-model='searchFilter' class='input' type='text' placeholder='Search mods'/></li>
                             </ul>
                         </li>
                     </ul>
@@ -150,6 +150,9 @@
                                         <span class='card-header-icon has-tooltip-left' data-tooltip='An update is available' v-if="!isLatest(key)">
                                             <i class='fas fa-cloud-upload-alt'></i>
                                         </span>
+                                        <span class='card-header-icon has-tooltip-left' :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`" v-if="getMissingDependencies(key).length > 0">
+                                            <i class='fas fa-exclamation-circle'></i>
+                                        </span>
                                     </template>
                                     <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
                                     <template>
@@ -157,6 +160,7 @@
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
                                     <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
+                                    <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download Dependency</a>
                                 </expandable-card>
                         </div>
                     </template>
@@ -195,6 +199,7 @@ import ModLinker from '../r2mm/manager/ModLinker';
 import ModBridge from '../r2mm/mods/ModBridge';
 
 import * as fs from 'fs-extra';
+import { isUndefined } from 'util';
 
 const settings = new ManagerSettings();
 settings.load();
@@ -496,6 +501,29 @@ export default class Manager extends Vue {
             if (modal !== null) {
                 modal.className = 'modal is-active';
             }
+        }
+    }
+
+    getMissingDependencies(vueMod: any): string[] {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        return mod.getDependencies().filter((dependency: string) => {
+            // Include in filter is mod isn't found.
+            return isUndefined(this.localModList.find((localMod: Mod) => dependency.toLowerCase().startsWith(localMod.getFullName().toLowerCase())))
+        });
+    }
+
+    downloadDependency(missingDependency: string) {
+        const mod: ThunderstoreMod | undefined = this.thunderstoreModList.find((tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase()));
+        if (isUndefined(mod)) {
+            return;
+        }
+        this.selectedThunderstoreMod = mod;
+        this.selectedVersion = mod.getVersions()[0].getVersionNumber().toString();
+        this.versionNumbers = mod.getVersions()
+            .map((version: ThunderstoreVersion) => version.getVersionNumber().toString());
+        const modal: Element | null = document.getElementById('downloadModal');
+        if (modal !== null) {
+            modal.className = 'modal is-active';
         }
     }
 
