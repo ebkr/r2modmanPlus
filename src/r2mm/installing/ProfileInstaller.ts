@@ -49,7 +49,7 @@ export default class ProfileInstaller {
                         fs.readdirSync(path.join(bepInExLocation, file))
                             .forEach((folder: string) => {
                                 const folderPath: string = path.join(bepInExLocation, file, folder);
-                                if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
+                                if (folder === mod.getFullName() && fs.lstatSync(folderPath).isDirectory()) {
                                     fs.emptyDirSync(folderPath);
                                     fs.removeSync(folderPath);
                                 }
@@ -94,7 +94,7 @@ export default class ProfileInstaller {
     private static applyModMode(mod: Mod, tree: BepInExTree, location: string, mode: number): R2Error | void {
         const files: string[] = [];
         tree.getDirectories().forEach((directory: BepInExTree) => {
-            if (directory.getDirectoryName() !== mod.getName()) {
+            if (directory.getDirectoryName() !== mod.getFullName()) {
                 this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
             } else {
                 files.push(...this.getDescendantFiles(null, path.join(location, directory.getDirectoryName())));
@@ -167,7 +167,7 @@ export default class ProfileInstaller {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
-            const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
+            const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getFullName());
             try {
                 fs.ensureDirSync(profileLocation);
                 try {
@@ -196,9 +196,9 @@ export default class ProfileInstaller {
         tree.getFiles().forEach((file: string) => {
             let profileLocation: string;
             if (file.toLowerCase().endsWith('.mm.dll')) {
-                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'monomod', mod.getName());
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'monomod', mod.getFullName());
             } else {
-                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getFullName());
             }
             try {
                 fs.ensureDirSync(profileLocation);
