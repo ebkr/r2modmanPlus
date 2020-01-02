@@ -15,7 +15,11 @@
           <ul class='menu-list'>
             <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
             <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
-            <li><a href="https://github.com/ebkr/r2modmanPlus" target="_blank"><i class="fab fa-github fa-lg" aria-hidden="true"/></a></li>
+            <li>
+              <link-component :url="'https://github.com/ebkr/r2modmanPlus'" :target="'external'">
+                <i class="fab fa-github fa-lg" aria-hidden="true"/>
+              </link-component>
+            </li>
           </ul>
         </aside>
       </div>
@@ -39,7 +43,7 @@
                     <strong>Did you know?</strong>
                   </p>
                   <p>
-                    You can associate the "Install with Mod Manager" button on <a href='https://thunderstore.io' target='_blank'>Thunderstore</a> with R2MM. <br/>
+                    You can associate the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
                     Just go to settings and click "Associate Install with Mod Manager button".
                   </p>
                 </div>
@@ -89,7 +93,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Progress } from '../components/all';
+import { Hero, Progress, Link } from '../components/all';
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -101,6 +105,7 @@ import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
     components: {
         'hero': Hero,
         'progress-bar': Progress,
+        'link-component': Link,
     }
 })
 export default class Splash extends Vue {

@@ -36,6 +36,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
                 .map(x => x.getDownloadCount())
                 .reduce((x, y) => x + y)
         );
+        this.setPackageUrl(data.package_url);
         return this;
     }
 

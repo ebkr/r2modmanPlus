@@ -109,7 +109,9 @@
                                     </span>
                                 </template>
                                 <a class='card-footer-item' @click='openModal(key)'>Download</a>
-                                <a class='card-footer-item'>View on Thunderstore</a>
+                                <div class='card-footer-item'>
+                                    <link-component :url="key.packageUrl" :target="'external'">View on Thunderstore</link-component>
+                                </div>
                                 <div class='card-footer-item'>
                                     <span><i class='fas fa-download'/> {{key.totalDownloads}}</span>
                                 </div>
@@ -152,7 +154,6 @@
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
                                     <a class='card-footer-item'>Update</a>
-                                    <a class='card-footer-item'>View on Thunderstore</a>
                                 </expandable-card>
                         </div>
                     </template>
@@ -166,7 +167,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
-import { Hero, Progress, ExpandableCard } from '../components/all';
+import { Hero, Progress, ExpandableCard, Link } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Mod from 'src/model/Mod';
@@ -200,6 +201,7 @@ settings.load();
         'hero': Hero,
         'progress-bar': Progress,
         'expandable-card': ExpandableCard,
+        'link-component': Link,
     }
 })
 export default class Manager extends Vue {
