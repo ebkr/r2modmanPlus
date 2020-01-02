@@ -1,6 +1,5 @@
 import * as yaml from 'yaml';
 import Profile from 'src/model/Profile';
-import Mod from 'src/model/Mod';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -9,20 +8,22 @@ import R2Error from 'src/model/errors/R2Error';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
 import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
 import FileWriteError from 'src/model/errors/FileWriteError';
+import ManifestV2 from 'src/model/ManifestV2';
 
 export default class ProfileModList {
 
-    public static getModList(profile: Profile): Mod[] | R2Error {
+    public static getModList(profile: Profile): ManifestV2[] | R2Error {
         try {
             const buf: Buffer = fs.readFileSync(
                 path.join(profile.getPathOfProfile(), 'mods.yml')
             );
             try {
-                const modList: Mod[] = yaml.parse(buf.toString())
-                    .map((mod: Mod) => new Mod().fromReactive(mod));
+                const modList: ManifestV2[] = yaml.parse(buf.toString())
+                    .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
                 return modList;
             } catch(e) {
                 const err: Error = e;
+                console.log(err);
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
                     err.message
@@ -37,7 +38,7 @@ export default class ProfileModList {
         }
     }
 
-    private static saveModList(profile: Profile, modList: Mod[]): R2Error | null {
+    private static saveModList(profile: Profile, modList: ManifestV2[]): R2Error | null {
         try {
             const yamlModList: string = yaml.stringify(modList);
             try {
@@ -62,9 +63,9 @@ export default class ProfileModList {
         return null;
     }
 
-    public static addMod(mod: Mod): Mod[] | R2Error {
+    public static addMod(mod: ManifestV2): ManifestV2[] | R2Error {
         this.removeMod(mod);
-        let currentModList: Mod[] | R2Error = this.getModList(Profile.getActiveProfile());
+        let currentModList: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
@@ -76,12 +77,12 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static removeMod(mod: Mod): Mod[] | R2Error {
-        const currentModList: Mod[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static removeMod(mod: ManifestV2): ManifestV2[] | R2Error {
+        const currentModList: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             return currentModList;
         }
-        const newModList = currentModList.filter((m: Mod) => m.getFullName() !== mod.getFullName());
+        const newModList = currentModList.filter((m: ManifestV2) => m.getName() !== mod.getName());
         const saveError: R2Error | null = this.saveModList(Profile.getActiveProfile(), newModList);
         if (saveError !== null) {
             return saveError;
@@ -90,13 +91,13 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static updateMod(mod: Mod, apply: (mod: Mod) => void): Mod[] | R2Error {
-        const list: Mod[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static updateMod(mod: ManifestV2, apply: (mod: ManifestV2) => void): ManifestV2[] | R2Error {
+        const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
-        list.filter((filteringMod: Mod) => filteringMod.getFullName() === mod.getFullName())
-            .forEach((filteringMod: Mod) => {
+        list.filter((filteringMod: ManifestV2) => filteringMod.getName() === mod.getName())
+            .forEach((filteringMod: ManifestV2) => {
                 apply(filteringMod);
             });
         const saveErr = this.saveModList(Profile.getActiveProfile(), list);

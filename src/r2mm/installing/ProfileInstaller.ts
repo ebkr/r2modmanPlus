@@ -1,4 +1,3 @@
-import Mod from 'src/model/Mod';
 import R2Error from 'src/model/errors/R2Error';
 
 import ManifestV2 from 'src/model/ManifestV2';
@@ -21,8 +20,8 @@ export default class ProfileInstaller {
      * Any folder inside * locations with the mod name will be deleted.
      * @param mod 
      */
-    public static uninstallMod(mod: Mod): R2Error | null {
-        if (mod.getFullName().toLowerCase() === 'bbepis-bepinexpack') {
+    public static uninstallMod(mod: ManifestV2): R2Error | null {
+        if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             try {
                 fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
                     .forEach((file: string) => {
@@ -49,7 +48,7 @@ export default class ProfileInstaller {
                         fs.readdirSync(path.join(bepInExLocation, file))
                             .forEach((folder: string) => {
                                 const folderPath: string = path.join(bepInExLocation, file, folder);
-                                if (folder === mod.getFullName() && fs.lstatSync(folderPath).isDirectory()) {
+                                if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
                                     fs.emptyDirSync(folderPath);
                                     fs.removeSync(folderPath);
                                 }
@@ -66,7 +65,7 @@ export default class ProfileInstaller {
         return null;
     }
 
-    public static disableMod(mod: Mod): R2Error | void {
+    public static disableMod(mod: ManifestV2): R2Error | void {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
@@ -78,7 +77,7 @@ export default class ProfileInstaller {
         }
     }
 
-    public static enableMod(mod: Mod): R2Error | void {
+    public static enableMod(mod: ManifestV2): R2Error | void {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
@@ -91,10 +90,10 @@ export default class ProfileInstaller {
 
     }
 
-    private static applyModMode(mod: Mod, tree: BepInExTree, location: string, mode: number): R2Error | void {
+    private static applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): R2Error | void {
         const files: string[] = [];
         tree.getDirectories().forEach((directory: BepInExTree) => {
-            if (directory.getDirectoryName() !== mod.getFullName()) {
+            if (directory.getDirectoryName() !== mod.getName()) {
                 this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
             } else {
                 files.push(...this.getDescendantFiles(null, path.join(location, directory.getDirectoryName())));
@@ -139,19 +138,15 @@ export default class ProfileInstaller {
         return files;
     }
 
-    public static installMod(mod: Mod | ManifestV2): R2Error | null {
-        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getFullName(), mod.getVersionNumber().toString());
-        if (mod.getFullName().toLowerCase() === 'bbepis-bepinexpack') {
+    public static installMod(mod: ManifestV2): R2Error | null {
+        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+        if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             return this.installBepInEx(cachedLocationOfMod);
         }
-        if (mod instanceof ManifestV2) {
-            return this.installForManifestV2(mod);
-        } else {
-            return this.installForManifestV1(mod, cachedLocationOfMod);
-        }
+        return this.installForManifestV2(mod, cachedLocationOfMod);
     }
 
-    private static installForManifestV1(mod: Mod, location: string): R2Error | null {
+    private static installForManifestV2(mod: ManifestV2, location: string): R2Error | null {
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;
@@ -159,15 +154,11 @@ export default class ProfileInstaller {
         return this.resolveBepInExTree(location, path.basename(location), mod, files);
     }
 
-    private static installForManifestV2(mod: ManifestV2): null {
-        return null;
-    }
-
-    private static resolveBepInExTree(location: string, folderName: string, mod: Mod, tree: BepInExTree): R2Error | null {
+    private static resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): R2Error | null {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
-            const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getFullName());
+            const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
             try {
                 fs.ensureDirSync(profileLocation);
                 try {
@@ -180,7 +171,7 @@ export default class ProfileInstaller {
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(
-                        `Failed to move mod: ${mod.getFullName()} with directory of: ${profileLocation}`,
+                        `Failed to move mod: ${mod.getName()} with directory of: ${profileLocation}`,
                         err.message
                     );
                 }
@@ -196,9 +187,9 @@ export default class ProfileInstaller {
         tree.getFiles().forEach((file: string) => {
             let profileLocation: string;
             if (file.toLowerCase().endsWith('.mm.dll')) {
-                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'monomod', mod.getFullName());
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'monomod', mod.getName());
             } else {
-                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getFullName());
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
             }
             try {
                 fs.ensureDirSync(profileLocation);
@@ -211,7 +202,7 @@ export default class ProfileInstaller {
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(
-                        `Failed to move mod: ${mod.getFullName()} with file: ${path.join(location, file)}`,
+                        `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
                         err.message
                     );
                 }
