@@ -33,7 +33,7 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
             this.patch = numberArray[2];
         } catch(e) {
             // If an error was thrown, log reason.
-            console.log(e, " - ", versionNumber);
+            return new VersionNumber('0.0.0');
         }
         return this;
     }
@@ -43,5 +43,19 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
         this.minor = reactive.minor;
         this.patch = reactive.patch;
         return this;
+    }
+
+    public isNewerThan(version: VersionNumber): boolean {
+        const majorCompare = Math.sign(this.major - version.major);
+        const minorCompare = Math.sign(this.minor - version.minor);
+        const patchCompare = Math.sign(this.patch - version.patch);
+        if (majorCompare > 0) {
+            return true;
+        } else if (majorCompare === 0 && minorCompare > 0) {
+            return true;
+        } else if (minorCompare === 0 && minorCompare === 0 && patchCompare >= 0) {
+            return true;
+        }
+        return false;
     }
 }

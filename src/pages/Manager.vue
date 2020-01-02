@@ -18,8 +18,8 @@
                         </select>
                         <br/><br/>
                         <span class="tag is-dark" v-if='selectedVersion === null'>You need to select a version</span>
-                        <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>This is the latest version</span>
-                        <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>This is an outdated version</span>
+                        <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>{{selectedVersion}} is the latest version</span>
+                        <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>{{selectedVersion}} is an outdated version</span>
                     </div>
                     <div class='card-footer'>
                         <button class="button is-info" @click="downloadMod()">Download</button>
@@ -147,13 +147,16 @@
                                     </template>
                                     <template v-slot:other-icons>
                                         <!-- Show update and missing dependency icons -->
+                                        <span class='card-header-icon has-tooltip-left' data-tooltip='An update is available' v-if="!isLatest(key)">
+                                            <i class='fas fa-cloud-upload-alt'></i>
+                                        </span>
                                     </template>
                                     <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
                                     <template>
                                         <a class='card-footer-item' @click="disableMod(key)" v-if="key.enabled">Disable</a>
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
-                                    <a class='card-footer-item'>Update</a>
+                                    <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
                                 </expandable-card>
                         </div>
                     </template>
@@ -188,10 +191,10 @@ import ManifestV2 from '../model/ManifestV2';
 import InvalidManifestError from '../model/errors/Manifest/InvalidManifestError';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import GameRunner from '../r2mm/manager/GameRunner';
+import ModLinker from '../r2mm/manager/ModLinker';
+import ModBridge from '../r2mm/mods/ModBridge';
 
 import * as fs from 'fs-extra';
-import { isNull, isNullOrUndefined } from 'util';
-import ModLinker from '../r2mm/manager/ModLinker';
 
 const settings = new ManagerSettings();
 settings.load();
@@ -290,7 +293,7 @@ export default class Manager extends Vue {
         if (version === undefined) {
             return;
         }
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod);
         downloader.download((progress: number, status: number, error: DownloadError)=>{
             if (status === StatusEnum.SUCCESS) {
                 const installErr = this.installModAfterDownload(refSelectedThunderstoreMod, version);
@@ -340,7 +343,7 @@ export default class Manager extends Vue {
         if (version === undefined) {
             return;
         }
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod, Profile.getActiveProfile());
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod);
         downloader.downloadWithDependencies((progress: number, status: number, error: R2Error | void)=>{
             if (status === StatusEnum.FAILURE) {
                 if (error instanceof R2Error) {
@@ -467,6 +470,31 @@ export default class Manager extends Vue {
             if (setInstallDirError instanceof R2Error) {
                 this.showError(setInstallDirError);
                 return;
+            }
+        }
+    }
+
+    isLatest(vueMod: any): boolean {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, this.thunderstoreModList);
+        if (latestVersion instanceof ThunderstoreVersion) {
+            return mod.getVersionNumber()
+                .isNewerThan(latestVersion.getVersionNumber());
+        }
+        return false;
+    }
+
+    updateMod(vueMod: any) {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        const tsMod = ModBridge.getThunderstoreModFromMod(mod, this.thunderstoreModList);
+        if (tsMod instanceof ThunderstoreMod) {
+            this.selectedThunderstoreMod = tsMod;
+            this.selectedVersion = tsMod.getVersions()[0].getVersionNumber().toString();
+            this.versionNumbers = tsMod.getVersions()
+                .map((version: ThunderstoreVersion) => version.getVersionNumber().toString());
+            const modal: Element | null = document.getElementById('downloadModal');
+            if (modal !== null) {
+                modal.className = 'modal is-active';
             }
         }
     }

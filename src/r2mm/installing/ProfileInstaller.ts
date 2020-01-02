@@ -147,7 +147,6 @@ export default class ProfileInstaller {
         if (mod instanceof ManifestV2) {
             return this.installForManifestV2(mod);
         } else {
-            console.log('Installing mod from Manifest V1');
             return this.installForManifestV1(mod, cachedLocationOfMod);
         }
     }
@@ -155,10 +154,8 @@ export default class ProfileInstaller {
     private static installForManifestV1(mod: Mod, location: string): R2Error | null {
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
-            console.log('Failed to produce BepInExTree');
             return files;
         }
-        console.log('tree:', files);
         return this.resolveBepInExTree(location, path.basename(location), mod, files);
     }
 
@@ -170,7 +167,6 @@ export default class ProfileInstaller {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
-            console.log('found match of endFolder with name:', folderName);
             const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
             try {
                 fs.ensureDirSync(profileLocation);
