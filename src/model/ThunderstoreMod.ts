@@ -21,10 +21,11 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.setDateUpdated(data.date_updated);
         this.setDeprecatedStatus(data.is_deprecated);
         this.setPinnedStatus(data.is_pinned);
+        const versions = [];
         for (const version of data.versions) {
-            const tsVersion: ThunderstoreVersion = new ThunderstoreVersion().make(version);
-            this.versions = [...this.versions, tsVersion];
+            versions.push(new ThunderstoreVersion().make(version));
         }
+        this.setVersions(versions);
         this.setDownloadCount(
             this.versions
                 .map(version => version.getDownloadCount())

@@ -20,9 +20,9 @@ export default class ThunderstoreDownloader {
     private mod: ThunderstoreMod;
     private profile: Profile;
 
-    public constructor(mod: ThunderstoreMod, profile: Profile) {
+    public constructor(mod: ThunderstoreMod) {
         this.mod = mod;
-        this.profile = profile;
+        this.profile = Profile.getActiveProfile();
     }
 
     /** 
@@ -76,7 +76,7 @@ export default class ThunderstoreDownloader {
             return;
         }
         let listStep = 0;
-        const downloader = new ThunderstoreDownloader(dependencyList[listStep], Profile.getActiveProfile());
+        const downloader = new ThunderstoreDownloader(dependencyList[listStep]);
         const onFinalDownload = (progress: number, status: number, error: R2Error | void) => {
             if (status === StatusEnum.SUCCESS) {
                 callback(100, StatusEnum.SUCCESS);
@@ -88,10 +88,10 @@ export default class ThunderstoreDownloader {
             if (status === StatusEnum.SUCCESS) {
                 listStep += 1;
                 if (listStep < dependencyList.length) {
-                    const downloader = new ThunderstoreDownloader(dependencyList[listStep], Profile.getActiveProfile());
+                    const downloader = new ThunderstoreDownloader(dependencyList[listStep]);
                     downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
                 } else {
-                    const downloader = new ThunderstoreDownloader(mod, Profile.getActiveProfile());
+                    const downloader = new ThunderstoreDownloader(mod);
                     downloader.download(onFinalDownload, version.getVersionNumber());
                 }
             } else if (status === StatusEnum.FAILURE && error instanceof R2Error) {
@@ -101,7 +101,11 @@ export default class ThunderstoreDownloader {
                     error)
             }
         }
-        downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
+        if (dependencyList.length > 0) {
+            downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
+        } else {
+            onStepDownload(100, StatusEnum.SUCCESS);
+        }
     }
 
     public buildDependencyList(version: ThunderstoreVersion, modList: ThunderstoreMod[]): ThunderstoreMod[] | R2Error {
