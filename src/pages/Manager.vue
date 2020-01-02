@@ -131,7 +131,7 @@
                         <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
                     </div>
                     <template v-if="localModList.length > 0">
-                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.fullName">
+                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.name">
                             <expandable-card
                                 :image="key.icon"
                                 :id="index"
@@ -139,10 +139,10 @@
                                 :visible="false">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
-                                            {{key.name}}
+                                            {{key.displayName}}
                                         </span>
                                         <span v-else>
-                                            <strike>{{key.name}}</strike>
+                                            <strike>{{key.displayName}}</strike>
                                         </span>
                                     </template>
                                     <template v-slot:other-icons>
@@ -218,11 +218,10 @@ export default class Manager extends Vue {
     thunderstoreModList: ThunderstoreMod[] = [];
     searchableThunderstoreModList: ThunderstoreMod[] = [];
     
-    localModList: Mod[] = [];
-    searchableLocalModList: Mod[] = [];
+    localModList: ManifestV2[] = [];
+    searchableLocalModList: ManifestV2[] = [];
 
     versionNumbers: string[] = [];
-    selectedMod: Mod | null = null;
     selectedThunderstoreMod: ThunderstoreMod | null = null;
 
     selectedVersion: string | null = null;
@@ -237,7 +236,7 @@ export default class Manager extends Vue {
     @Watch('searchFilter')
     filterModLists() {
         this.generateModlist();
-        this.searchableLocalModList = this.localModList.filter((x: Mod) => {
+        this.searchableLocalModList = this.localModList.filter((x: ManifestV2) => {
             return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
         this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
@@ -317,22 +316,17 @@ export default class Manager extends Vue {
     }
 
     installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
-        const modFromManifest: Mod | R2Error = ModFromManifest.get(mod.getFullName(), version.getVersionNumber());
-        if (!(modFromManifest instanceof R2Error)) {
-            const installError: R2Error | null = ProfileInstaller.installMod(modFromManifest);
-            if (!(installError instanceof R2Error)) {
-                const newModList: Mod[] | R2Error = ProfileModList.addMod(modFromManifest);
-                if (!(newModList instanceof R2Error)) {
-                    this.localModList = newModList;
-                    this.filterModLists();
-                }
-            } else {
-                // (mod failed to be placed in /{profile} directory)
-                return installError;
+        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+        const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+        if (!(installError instanceof R2Error)) {
+            const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+            if (!(newModList instanceof R2Error)) {
+                this.localModList = newModList;
+                this.filterModLists();
             }
         } else {
-            // (mod failed to add to mods.yml)
-            return modFromManifest;
+            // (mod failed to be placed in /{profile} directory)
+            return installError;
         }
     }
 
@@ -378,23 +372,14 @@ export default class Manager extends Vue {
 
     // eslint-disable-next-line
     uninstallMod(vueMod: any) {
-        let mod: InvalidManifestError | ManifestV2 | Mod | R2Error = new ManifestV2().make(vueMod);
-        if (mod instanceof InvalidManifestError) {
-            // If Manifest V2 isn't creatable, then convert to standard mod.
-            mod = new Mod().fromReactive(vueMod);
-        }
-        if (mod instanceof R2Error) {
-            // Something went wrong
-            this.showError(mod);
-            return;
-        }
+        let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
         if (uninstallError instanceof R2Error) {
             // Uninstall failed
             this.showError(uninstallError);
             return;
         }
-        const modList: Mod[] | R2Error = ProfileModList.removeMod(mod);
+        const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
         if (modList instanceof R2Error) {
             // Failed to remove mod from local list.
             this.showError(modList);
@@ -406,14 +391,14 @@ export default class Manager extends Vue {
 
     // eslint-disable-next-line
     disableMod(vueMod: any) {
-        const mod: Mod = new Mod().fromReactive(vueMod);
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
             this.showError(disableErr);
             return;
         }
-        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
             updatingMod.disable();
         });
         if (updatedList instanceof R2Error) {
@@ -427,14 +412,14 @@ export default class Manager extends Vue {
 
     // eslint-disable-next-line
     enableMod(vueMod: any) {
-        const mod: Mod = new Mod().fromReactive(vueMod);
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
             this.showError(disableErr);
             return;
         }
-        const updatedList = ProfileModList.updateMod(mod, (updatingMod: Mod) => {
+        const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
             updatingMod.enable();
         });
         if (updatedList instanceof R2Error) {
@@ -457,7 +442,7 @@ export default class Manager extends Vue {
     // eslint-disable-next-line
     isThunderstoreModInstalled(vueMod: any) {
         const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(vueMod);
-        return this.localModList.find((local: Mod) => local.getFullName() === mod.getFullName()) != undefined;
+        return this.localModList.find((local: ManifestV2) => local.getName() === mod.getFullName()) != undefined;
     }
 
     prepareLaunch() {
@@ -480,7 +465,7 @@ export default class Manager extends Vue {
     }
 
     isLatest(vueMod: any): boolean {
-        const mod: Mod = new Mod().fromReactive(vueMod);
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, this.thunderstoreModList);
         if (latestVersion instanceof ThunderstoreVersion) {
             return mod.getVersionNumber()
@@ -490,7 +475,7 @@ export default class Manager extends Vue {
     }
 
     updateMod(vueMod: any) {
-        const mod: Mod = new Mod().fromReactive(vueMod);
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const tsMod = ModBridge.getThunderstoreModFromMod(mod, this.thunderstoreModList);
         if (tsMod instanceof ThunderstoreMod) {
             this.selectedThunderstoreMod = tsMod;
@@ -508,7 +493,7 @@ export default class Manager extends Vue {
         const mod: Mod = new Mod().fromReactive(vueMod);
         return mod.getDependencies().filter((dependency: string) => {
             // Include in filter is mod isn't found.
-            return isUndefined(this.localModList.find((localMod: Mod) => dependency.toLowerCase().startsWith(localMod.getFullName().toLowerCase())))
+            return isUndefined(this.localModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase())))
         });
     }
 
@@ -559,7 +544,7 @@ export default class Manager extends Vue {
     }
 
     created() {
-        const newModList: Mod[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
+        const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
         if (!(newModList instanceof R2Error)) {
             this.localModList = newModList;
         }
