@@ -8,6 +8,13 @@
         :max='requests.length * 100' 
         :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
         :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
+    <br/>
+    <nav class='level' v-if="isOffline">
+        <div class='level-item'>
+            <a class='button is-info' @click="continueOffline()">Continue in offline mode</a>
+        </div>
+    </nav>
+    <br/>
     <div class='columns'>
       <div class='column is-one-quarter'>
         <aside class='menu'>
@@ -117,10 +124,7 @@ export default class Splash extends Vue {
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
     ];
-
-    constructor() {
-        super();
-    }
+    isOffline: boolean = false;
 
     // Used to produce a single, combined, RequestItem./
     private reduceRequests(): RequestItem {
@@ -159,7 +163,8 @@ export default class Splash extends Vue {
             new Profile('Default');
             ThunderstorePackages.PACKAGES = tsMods;
             this.$router.push({path: '/profiles'});
-        }).catch((e)=>{
+        }).catch((e_)=>{
+            this.isOffline = true;
             if (attempt < 5) {
                 this.getThunderstoreMods(attempt + 1);
             } else {
@@ -167,6 +172,11 @@ export default class Splash extends Vue {
                 this.loadingText = 'You may be offline, however you may still use R2MM offline.';
             }
         })
+    }
+
+    continueOffline() {
+        ThunderstorePackages.PACKAGES = [];
+        this.$router.push({path: '/profiles'});
     }
 
     created() {
