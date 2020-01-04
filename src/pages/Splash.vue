@@ -146,7 +146,7 @@ export default class Splash extends Vue {
     }
 
     // Get the list of Thunderstore mods via /api/v1/package.
-    getThunderstoreMods(attempt: number) {
+    private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
         axios.get('https://thunderstore.io/api/v1/package', {
             onDownloadProgress: progress => {
