@@ -109,19 +109,19 @@ export default class ThunderstoreDownloader {
     }
 
     public buildDependencyList(version: ThunderstoreVersion, modList: ThunderstoreMod[]): ThunderstoreMod[] | R2Error {
-        const list: ThunderstoreMod[] = [];
+        const dependencySet: Set<ThunderstoreMod> = new Set<ThunderstoreMod>();
         try {
             version.getDependencies().forEach((dependency: string) => {
                 const foundMod = modList.find((listMod: ThunderstoreMod) => dependency.startsWith(listMod.getFullName()));
                 if (isUndefined(foundMod)) {
                     throw new Error(`Unable to find Thunderstore dependency with author-name of ${dependency}`)
                 } else {
-                    list.push(foundMod);
-                    const findDependencyError = this.buildDependencyList(foundMod, modList);
-                    if (findDependencyError instanceof R2Error) {
-                        throw findDependencyError;
+                    dependencySet.add(foundMod);
+                    const dependencies = this.buildDependencyList(foundMod.getVersions()[0], modList);
+                    if (dependencies instanceof R2Error) {
+                        throw dependencies;
                     }
-                    list.push(...findDependencyError);
+                    dependencies.forEach((dependency: ThunderstoreMod) => dependencySet.add(dependency));
                 }
             })
         } catch(e) {
@@ -131,7 +131,9 @@ export default class ThunderstoreDownloader {
                 err.message
             )
         }
-        return list;
+        const dependencyList: ThunderstoreMod[] = [];
+        dependencySet.forEach((dependency: ThunderstoreMod) => dependencyList.push(dependency));
+        return dependencyList;
     }
 
     private saveToFile(response: Buffer, versionNumber: VersionNumber, callback: (success: boolean) => void): R2Error | null {
