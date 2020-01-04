@@ -354,6 +354,7 @@ export default class Manager extends Vue {
                 if (dependencies instanceof R2Error) {
                     return;
                 }
+                console.log('Dependencies:', dependencies);
                 dependencies.forEach((mod: ThunderstoreMod) => {
                     const installErr = this.installModAfterDownload(mod, mod.getVersions()[0]);
                     if (installErr instanceof R2Error) {
