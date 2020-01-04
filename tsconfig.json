@@ -11,7 +11,8 @@
     "types": [
       "quasar",
       "node"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules"]
 }

@@ -26,6 +26,7 @@
     "bulma-tooltip": "^3.0.2",
     "fs-extra": "^8.1.0",
     "quasar": "^1.0.0",
+    "sanitize-filename": "^1.6.3",
     "unzipper": "^0.10.5",
     "vue-class-component": "^7.1.0",
     "vue-i18n": "^8.0.0",
