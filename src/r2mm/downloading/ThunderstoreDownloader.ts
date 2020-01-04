@@ -76,17 +76,30 @@ export default class ThunderstoreDownloader {
             return;
         }
         let listStep = 0;
+        const totalDownloads: number[] = [];
+        // Insert total number of download requests, with a progress of 0.
+        for (let emptyInitialiser=0; emptyInitialiser < dependencyList.length + 1; emptyInitialiser++) {
+            totalDownloads.push(0);
+        }
         const downloader = new ThunderstoreDownloader(dependencyList[listStep]);
         const onFinalDownload = (progress: number, status: number, error: R2Error | void) => {
             if (status === StatusEnum.SUCCESS) {
                 callback(100, StatusEnum.SUCCESS);
             } else if (status === StatusEnum.FAILURE && error instanceof R2Error) {
-                callback(0, StatusEnum.FAILURE, error);
+                callback(100, StatusEnum.FAILURE, error);
+            } else if (status === StatusEnum.PENDING) {
+                totalDownloads[totalDownloads.length - 1] = progress;
+                const overallProgress = totalDownloads.reduce((x: number, y: number) => x+y) / totalDownloads.length;
+                callback(overallProgress, status);
             }
         }
         const onStepDownload = (progress: number, status: number, error: R2Error | void) => {
             if (status === StatusEnum.SUCCESS) {
+                totalDownloads[listStep] = progress;
                 listStep += 1;
+                const overallProgress = totalDownloads.reduce((x: number, y: number) => x+y) / totalDownloads.length;
+                // Use as pending, as this means there are still more downloads to go.
+                callback(overallProgress, StatusEnum.PENDING);
                 if (listStep < dependencyList.length) {
                     const downloader = new ThunderstoreDownloader(dependencyList[listStep]);
                     downloader.download(onStepDownload, dependencyList[listStep].getVersions()[0].getVersionNumber());
@@ -99,6 +112,10 @@ export default class ThunderstoreDownloader {
                     0, 
                     StatusEnum.FAILURE, 
                     error)
+            } else if (status === StatusEnum.PENDING) {
+                totalDownloads[listStep] = progress;
+                const overallProgress = totalDownloads.reduce((x: number, y: number) => x+y) / totalDownloads.length;
+                callback(overallProgress, status);
             }
         }
         if (dependencyList.length > 0) {
@@ -166,7 +183,7 @@ export default class ThunderstoreDownloader {
 
     private isVersionAlreadyDownloaded(versionNumber: VersionNumber): boolean  {
         try {
-            fs.opendirSync(path.join(cacheDirectory, this.mod.getFullName(), versionNumber.toString()));
+            fs.readdirSync(path.join(cacheDirectory, this.mod.getFullName(), versionNumber.toString()));
             return true;
         } catch(e) {
             return false;

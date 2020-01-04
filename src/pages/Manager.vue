@@ -1,5 +1,19 @@
 <template>
     <div>
+        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadProgress.length > 0">
+            <div class="modal-background" @click="closeDownloadProgressModal()"></div>
+            <div class='modal-content'>
+                <div class='notification is-info'>
+                    <h3 class='title'>Downloading</h3>
+                    <p>{{currentDownloadProgress}}% complete</p>
+                    <progress-bar 
+                        :max='100'
+                        :value='currentDownloadProgress'
+                        :className="['is-dark']" />
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeDownloadProgressModal()"></button>
+        </div>
         <div id="downloadModal" class="modal">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
@@ -22,8 +36,7 @@
                         <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>{{selectedVersion}} is an outdated version</span>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadMod()">Download</button>
-                        <button class="button is-primary" @click="downloadWithDependencies()">Download with dependencies</button>
+                        <button class="button is-info" @click="downloadWithDependencies()">Download mod + dependencies</button>
                     </div>
                 </div>
             </div>
@@ -233,6 +246,12 @@ export default class Manager extends Vue {
 
     gameRunning: boolean = false;
 
+    // Increment by one each time new modal is shown
+    downloadProgress: number[] = [];
+    downloadingMod: boolean = false;
+    currentDownloadProgress: number = 0;
+
+
     @Watch('searchFilter')
     filterModLists() {
         this.generateModlist();
@@ -285,36 +304,6 @@ export default class Manager extends Vue {
         this.searchableLocalModList = this.localModList;
     }
 
-    downloadMod() {
-        const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
-        const refSelectedVersion: string | null = this.selectedVersion;
-        if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
-            // Shouldn't happen, but shouldn't throw an error.
-            return;
-        }
-        const version = refSelectedThunderstoreMod.getVersions()
-            .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
-        if (version === undefined) {
-            return;
-        }
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod);
-        downloader.download((progress: number, status: number, error: DownloadError)=>{
-            if (status === StatusEnum.SUCCESS) {
-                const installErr = this.installModAfterDownload(refSelectedThunderstoreMod, version);
-                if (installErr instanceof R2Error) {
-                    this.showError(installErr);
-                }
-                if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
-                    // Close modal if no other modal has been opened.
-                    this.closeModal();
-                }
-            } else if (status === StatusEnum.FAILURE) {
-                throws(() => error);
-            }
-        }, version.getVersionNumber());
-
-    }
-
     installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
         const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
@@ -326,7 +315,7 @@ export default class Manager extends Vue {
             }
         } else {
             // (mod failed to be placed in /{profile} directory)
-            return installError;
+            this.showError(installError);
         }
     }
 
@@ -343,31 +332,44 @@ export default class Manager extends Vue {
             return;
         }
         const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod);
+        const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(version, this.thunderstoreModList);
+        if (dependencies instanceof R2Error) {
+            this.showError(dependencies);
+            return;
+        }
+        this.downloadProgress.push(0);
+        const progressTrack = this.downloadProgress.length - 1;
+        this.currentDownloadProgress = 0;
+        this.downloadingMod = true;
+        this.closeModal();
         downloader.downloadWithDependencies((progress: number, status: number, error: R2Error | void)=>{
             if (status === StatusEnum.FAILURE) {
                 if (error instanceof R2Error) {
                     this.showError(error);
+                    this.downloadingMod = false;
                 }
             } else if (status === StatusEnum.SUCCESS) {
-                // To get to this stage, it must have already succeeded once.
-                const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(version, this.thunderstoreModList);
-                if (dependencies instanceof R2Error) {
-                    return;
-                }
                 dependencies.forEach((mod: ThunderstoreMod) => {
                     const installErr = this.installModAfterDownload(mod, mod.getVersions()[0]);
                     if (installErr instanceof R2Error) {
                         this.showError(installErr);
+                        this.downloadingMod = false;
                         return;
                     }
                 })
                 this.installModAfterDownload(refSelectedThunderstoreMod, version);
-                if (this.selectedThunderstoreMod === refSelectedThunderstoreMod) {
-                    // Close modal if no other modal has been opened.
-                    this.closeModal();
+                this.downloadingMod = false;
+            } else if (status === StatusEnum.PENDING) {
+                this.downloadProgress[progressTrack] = progress;
+                if (this.downloadProgress.length - 1 === progressTrack && !isNaN(progress)) {
+                    this.currentDownloadProgress = progress;
                 }
             }
         }, refSelectedThunderstoreMod, version, this.thunderstoreModList);
+    }
+
+    closeDownloadProgressModal() {
+        this.downloadingMod = false;
     }
 
     // eslint-disable-next-line
