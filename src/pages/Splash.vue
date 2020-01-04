@@ -158,7 +158,7 @@ export default class Splash extends Vue {
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
             ThunderstorePackages.PACKAGES = tsMods;
-            this.$router.push({path: '/manager'});
+            this.$router.push({path: '/profiles'});
         }).catch((e)=>{
             if (attempt < 5) {
                 this.getThunderstoreMods(attempt + 1);

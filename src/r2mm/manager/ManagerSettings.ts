@@ -13,6 +13,7 @@ export default class ManagerSettings {
 
     public riskOfRain2Directory: string | null = null;
     public linkedFiles: string[] = [];
+    public lastSelectedProfile: string = 'Default';
 
     public load(): R2Error | void {
         if (!fs.pathExistsSync(configPath)) {
@@ -23,6 +24,7 @@ export default class ManagerSettings {
                 const parsedYaml = yaml.parse(fs.readFileSync(configFile).toString());
                 this.riskOfRain2Directory = parsedYaml.riskOfRain2Directory;
                 this.linkedFiles = parsedYaml.linkedFiles;
+                this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -63,5 +65,11 @@ export default class ManagerSettings {
             )
         }
     }
+
+    public setProfile(profile: string): R2Error | void {
+        this.lastSelectedProfile = profile;
+        return this.save();
+    }
+
 
 }
