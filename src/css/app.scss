@@ -22,3 +22,12 @@
 .border-at-bottom {
     border-bottom: 1px solid #f5f5f5;
 }
+
+.image-parent {
+    position: relative;
+}
+.image-overlap {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
