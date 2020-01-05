@@ -12,8 +12,9 @@ const configFile: string = path.join(configPath, 'conf.yml');
 export default class ManagerSettings {
 
     public riskOfRain2Directory: string | null = null;
-    public linkedFiles: string[] = [];
     public lastSelectedProfile: string = 'Default';
+    public funkyModeEnabled: boolean = false;
+    public linkedFiles: string[] = [];
 
     public load(): R2Error | void {
         if (!fs.pathExistsSync(configPath)) {
@@ -71,5 +72,9 @@ export default class ManagerSettings {
         return this.save();
     }
 
+    public setFunkyMode(enabled: boolean): R2Error | void {
+        this.funkyModeEnabled = enabled;
+        return this.save()
+    }
 
 }

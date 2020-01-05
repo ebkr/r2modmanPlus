@@ -90,7 +90,7 @@
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
                         <li><a @click="view = 'config_editor'" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li>
-                        <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
+                        <li><a @click="view = 'this.settings'" :class="[view === 'this.settings' ? 'is-active' : '']">Settings</a></li>
                         <li>
                             <a @click="view = 'help'" :class="[view === 'help' ? 'is-active' : '']">Help</a>
                             <ul v-if="view === 'help'">
@@ -109,6 +109,7 @@
                             :image="key.versions[0].icon"
                             :id="index"
                             :description="key.versions[0].description"
+                            :funkyMode="settings.funkyModeEnabled"
                             :visible="false">
                                 <template v-slot:title>
                                     <span class='has-tooltip-left' data-tooltip='Essential mod' v-if="key.pinned">
@@ -149,6 +150,7 @@
                                 :image="key.icon"
                                 :id="index"
                                 :description="key.description"
+                                :funkyMode="settings.funkyModeEnabled"
                                 :visible="false">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
@@ -177,6 +179,45 @@
                                 </expandable-card>
                         </div>
                     </template>
+                </template>
+                <template v-if="view === 'this.settings'">
+                    <a @click="setAllModsEnabled(false)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Disable all mods</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="setAllModsEnabled(true)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Enable all mods</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="changeRoR2InstallDirectory()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Locate Risk of Rain 2 directory</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="setFunkyMode(!settings.funkyModeEnabled)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title' v-if="settings.funkyModeEnabled">Disable funky mode</p>
+                                    <p class='card-header-title' v-else>Enable funky mode</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
             </div>
         </div>
@@ -212,10 +253,8 @@ import ModLinker from '../r2mm/manager/ModLinker';
 import ModBridge from '../r2mm/mods/ModBridge';
 
 import * as fs from 'fs-extra';
-import { isUndefined } from 'util';
-
-const settings = new ManagerSettings();
-settings.load();
+import { isUndefined, isNull } from 'util';
+import { dialog, ipcRenderer, BrowserWindow } from 'electron';
 
 @Component({
     components: {
@@ -245,6 +284,8 @@ export default class Manager extends Vue {
     errorStack: string = '';
 
     gameRunning: boolean = false;
+
+    settings = new ManagerSettings();
 
     // Increment by one each time new modal is shown
     downloadProgress: number[] = [];
@@ -449,16 +490,16 @@ export default class Manager extends Vue {
 
     prepareLaunch() {
         let dir: string | R2Error = '';
-        if (settings.riskOfRain2Directory === null) {
+        if (this.settings.riskOfRain2Directory === null) {
             dir = GameDirectoryResolver.getDirectory();
         } else {
-            dir = settings.riskOfRain2Directory;
+            dir = this.settings.riskOfRain2Directory;
         }
         if (dir instanceof R2Error) {
             // Show folder selection dialog.
             this.showError(dir);
         } else {
-            const setInstallDirError: R2Error | void = settings.setRiskOfRain2Directory(dir);
+            const setInstallDirError: R2Error | void = this.settings.setRiskOfRain2Directory(dir);
             if (setInstallDirError instanceof R2Error) {
                 this.showError(setInstallDirError);
                 return;
@@ -516,36 +557,85 @@ export default class Manager extends Vue {
 
     launchModded() {
         this.prepareLaunch();
-        if (settings.riskOfRain2Directory !== null && fs.existsSync(settings.riskOfRain2Directory)) {
-            const newLinkedFiles = ModLinker.link(settings.riskOfRain2Directory, settings.linkedFiles);
+        if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
+            const newLinkedFiles = ModLinker.link(this.settings.riskOfRain2Directory, this.settings.linkedFiles);
             if (newLinkedFiles instanceof R2Error) {
                 this.showError(newLinkedFiles);
                 return;
             } else {
-                const saveError = settings.setLinkedFiles(newLinkedFiles);
+                const saveError = this.settings.setLinkedFiles(newLinkedFiles);
                 if (saveError instanceof R2Error) {
                     this.showError(saveError);
                     return;
                 }
             }
             this.gameRunning = true;
-            GameRunner.playModded(settings.riskOfRain2Directory, ()=>{
+            GameRunner.playModded(this.settings.riskOfRain2Directory, ()=>{
                 this.gameRunning = false;
-            }, settings);
+            }, this.settings);
         }
     }
 
     launchVanilla() {
         this.prepareLaunch();
-        if (settings.riskOfRain2Directory !== null && fs.existsSync(settings.riskOfRain2Directory)) {
+        if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
             this.gameRunning = true;
-            GameRunner.playVanilla(settings.riskOfRain2Directory, ()=>{
+            GameRunner.playVanilla(this.settings.riskOfRain2Directory, ()=>{
                 this.gameRunning = false;
-            }, settings);
+            }, this.settings);
         }
     }
 
+    changeRoR2InstallDirectory() {
+        const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
+        ipcRenderer.once('receive-folder-selection', (_sender: any, files: string[] | null) => {
+            if (!isNull(files) && files.length === 1) {
+                this.settings.setRiskOfRain2Directory(files[0]);
+            }
+        })
+        ipcRenderer.send('open-folder-dialog', {
+            title: 'Locate Risk of Rain 2 Directory',
+            defaultPath: ror2Directory,
+            properties: ['openDirectory'],
+            buttonLabel: 'Select Directory',
+        });
+    }
+
+    setAllModsEnabled(enabled: boolean) {
+        this.localModList.forEach((mod: ManifestV2) => {
+            let profileErr: R2Error | void;
+            if (enabled) {
+                profileErr = ProfileInstaller.enableMod(mod);
+            } else {
+                profileErr = ProfileInstaller.enableMod(mod);
+            }
+            if (profileErr instanceof R2Error) {
+                this.showError(profileErr);
+                return;
+            }
+            const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                if (enabled) {
+                    updatingMod.enable();
+                } else {
+                    updatingMod.disable();
+                }
+            })
+            if (update instanceof R2Error) {
+                this.showError(update);
+                return;
+            }
+            this.localModList = update;
+        });
+        this.filterModLists();
+    }
+
+    setFunkyMode(value: boolean) {
+        this.settings.setFunkyMode(value);
+    }
+
+
     created() {
+        this.settings.load();
         const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
         if (!(newModList instanceof R2Error)) {
             this.localModList = newModList;
