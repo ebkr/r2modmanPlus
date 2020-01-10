@@ -219,6 +219,15 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="exportProfile()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Export profile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -694,6 +703,13 @@ export default class Manager extends Vue {
 
     setFunkyMode(value: boolean) {
         this.settings.setFunkyMode(value);
+    }
+
+    exportProfile() {
+        const exportErr = ProfileModList.exportModList();
+        if (exportErr instanceof R2Error) {
+            this.showError(exportErr);
+        }
     }
 
 

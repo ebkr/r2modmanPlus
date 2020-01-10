@@ -9,6 +9,8 @@ import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
 import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import ManifestV2 from 'src/model/ManifestV2';
+import ExportFormat from 'src/model/exports/ExportFormat';
+import ExportMod from 'src/model/exports/ExportMod';
 
 export default class ProfileModList {
 
@@ -105,6 +107,19 @@ export default class ProfileModList {
             return saveErr;
         }
         return this.getModList(Profile.getActiveProfile());
+    }
+
+    public static exportModList(): R2Error | void{
+        const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+        if (list instanceof R2Error) {
+            return list;
+        }
+        const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
+        const exportFormat = new ExportFormat(Profile.getActiveProfile().getProfileName(), exportModList);
+        fs.writeFileSync(
+            path.join(Profile.getActiveProfile().getDirectory(), `r2mm_${Profile.getActiveProfile().getProfileName()}.yml`),
+            yaml.stringify(exportFormat)
+        );
     }
 
 }
