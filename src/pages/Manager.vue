@@ -42,6 +42,18 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeModal()"></button>
         </div>
+        <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
+            <div class="modal-background" @click="closeGameRunningModal()"></div>
+            <div class='modal-content'>
+                <div class='notification is-info'>
+                    <h3 class='title'>Risk of Rain 2 is launching</h3>
+                    <h5 class="title is-5">Close this message to continue modding.</h5>
+                    <p>This message will close automatically once you quit Risk of Rain 2.</p>
+                    <p>Closing r2modman will close the game</p>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
+        </div>
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
             <div class="modal-background" @click="closeErrorModal()"></div>
             <div class='modal-content'>
@@ -52,17 +64,6 @@
                 </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
-        </div>
-        <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
-            <div class="modal-background" @click="closeGameRunningModal()"></div>
-            <div class='modal-content'>
-                <div class='notification is-info'>
-                    <h3 class='title'>Risk of Rain 2 is launching</h3>
-                    <h5 class="title is-5">Close this message to continue modding.</h5>
-                    <p>This message will close automatically once you quit Risk of Rain 2.</p>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
         </div>
         <div class='columns' id='content'>
             <div class="column is-one-quarter">
@@ -89,14 +90,14 @@
                     </ul>
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
-                        <li><a @click="view = 'config_editor'" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li>
-                        <li><a @click="view = 'this.settings'" :class="[view === 'this.settings' ? 'is-active' : '']">Settings</a></li>
+                        <!-- <li><a @click="view = 'config_editor'" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li> -->
+                        <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
                         <li>
-                            <a @click="view = 'help'" :class="[view === 'help' ? 'is-active' : '']">Help</a>
+                            <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']">Help</a>
                             <ul v-if="view === 'help'">
-                                <li><a href='#'>Tips and tricks</a></li>
-                                <li><a href='#'>Game won't start</a></li>
-                                <li><a href='#'>Mods aren't working</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'tips&tricks'}]" @click="helpPage = 'tips&tricks'">Tips and tricks</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'gameWontStart'}]" @click="helpPage = 'gameWontStart'">Game won't start</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'modsNotWorking'}]" @click="helpPage = 'modsNotWorking'">Mods aren't working</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -175,12 +176,12 @@
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
                                     <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-                                    <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download Dependency</a>
+                                    <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download dependency</a>
                                 </expandable-card>
                         </div>
                     </template>
                 </template>
-                <template v-if="view === 'this.settings'">
+                <template v-if="view === 'settings'">
                     <a @click="setAllModsEnabled(false)">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -219,6 +220,70 @@
                         </div>
                     </a>
                 </template>
+                <template v-if="view === 'help'">
+                    <!-- tips&tricks -->
+                    <!-- gameWontStart -->
+                    <!-- modsNotWorking -->
+                    <div v-if="helpPage === 'tips&tricks'">
+                        <hero title='Tips and tricks' heroType='is-info' />
+                        <br/>
+                        <h5 class='title is-5'>Install with Mod Manager</h5>
+                        <p>Thunderstore has a way to install mods without having to search for them in the mod manager.</p>
+                        <p>Just go to the Settings tab, and associate r2modman with Thunderstore!</p>
+                        <br/>
+                        <h5 class='title is-5'>Server? No problem!</h5>
+                        <p>You can have multiple installs of r2modman, each one pointing to a different server, and of course, one for your regular modded game.</p>
+                        <br/>
+                        <h5 class='title is-5'>If only I could create a modpack</h5>
+                        <p>If only you could. Oh wait, you can.</p>
+                        <p>You can export your profile, and friends can later import the file and download the exact same mods.</p>
+                        <p>It makes joining servers easy, as well as removing the annoying clicks you'll all have to do.</p>
+                    </div>
+                    <div v-else-if="helpPage === 'gameWontStart'">
+                        <hero :title="'Game won\'t start'" heroType='is-info' />
+                        <br/>
+                        <h5 class='title is-5'>If the BepInEx console appears</h5>
+                        <p>It's very likely due to a broken mod.</p>
+                        <p>Remove (or disable) all mods except for BepInEx and R2API. See if the problem still occurs.</p>
+                        <br/>
+                        <h5 class='title is-5'>If it doesn't appear</h5>
+                        <p>Locate your Risk of Rain 2 install directory via the Settings page.</p>
+                        <p>If you're unsure where to find it, navigate to Steam, right click your game, and go to "Manage > Browse local files"</p>
+                    </div>
+                    <div v-else-if="helpPage === 'modsNotWorking'">
+                        <hero :title="'Mods aren\'t working'" heroType='is-info' />
+                        <br/>
+                        <h5 class='title is-5'>Are all dependencies installed?</h5>
+                        <p>Did you uninstall a mod's dependency?</p>
+                        <p>Almost every mod has something it depends upon.</p>
+                        <p>Look for the missing dependency icon (<i class='fas fa-exclamation-circle'></i>) on the "Installed" tab.</p>
+                        <p>If there is a missing dependency, you'll be able to resolve it by either reinstalling the mod, or by clicking the "Download dependency" button.</p>
+                        <br/>
+                        <h5 class='title is-5'>Are all of your mods up-to-date?</h5>
+                        <p>Your mods may have a fix to get it working with the latest version of Risk of Rain 2.</p>
+                        <p>You can update mods by going to the "Installed" tab, clicking on mods with the update icon, and clicking the update button.</p>
+                        <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
+                    </div>
+                    <div v-else>
+                        <hero :title="'Help with r2modman'" heroType='is-info' />
+                        <br/>
+                        <h5 class='title is-5'>How do I install mods?</h5>
+                        <p>Go to the "Online" tab, find a mod, and hit download. It'll also download the dependencies, saving you time.</p>
+                        <p>Once you've done that, start the game modded.</p>
+                        <br/>
+                        <h5 class='title is-5'>Launching the game with Steam</h5>
+                        <p>r2modman doesn't launch the game via Steam. This is due to problems that can occur with the Steam overlay.</p>
+                        <p>If you want to launch the game through Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
+                        <p>
+                            Once you've done that, <link-component url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts' :target="'external'">follow this guide</link-component>,
+                            replacing "BepInEx\core\BepInEx.Preloader.dll" with "r2modman\BepInEx\core\BepInEx.Preloader.dll"
+                        </p>
+                        <br/>
+                        <h5 class='title is-5'>Something isn't working</h5>
+                        <p>If you get any issues, look at the other pages that have appeared.</p>
+                        <p>Failing that, mention me on the <link-component url='https://discord.gg/5MbXZvd' :target="'external'">Thunderstore Discord Server!</link-component> @ Ebkr#3660</p>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
@@ -233,7 +298,6 @@ import { Hero, Progress, ExpandableCard, Link } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Mod from 'src/model/Mod';
 import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader';
-import DownloadError from '../model/errors/DownloadError';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
@@ -242,11 +306,8 @@ import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
 import R2Error from '../model/errors/R2Error';
-import ModFromManifest from '../r2mm/mods/ModFromManifest';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
-import { throws } from 'assert';
 import ManifestV2 from '../model/ManifestV2';
-import InvalidManifestError from '../model/errors/Manifest/InvalidManifestError';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import GameRunner from '../r2mm/manager/GameRunner';
 import ModLinker from '../r2mm/manager/ModLinker';
@@ -254,7 +315,7 @@ import ModBridge from '../r2mm/mods/ModBridge';
 
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
-import { dialog, ipcRenderer, BrowserWindow } from 'electron';
+import { ipcRenderer } from 'electron';
 
 @Component({
     components: {
@@ -291,6 +352,8 @@ export default class Manager extends Vue {
     downloadProgress: number[] = [];
     downloadingMod: boolean = false;
     currentDownloadProgress: number = 0;
+
+    helpPage: string = '';
 
 
     @Watch('searchFilter')
