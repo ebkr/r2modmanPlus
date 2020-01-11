@@ -17,8 +17,8 @@ ipcMain.on('get-browser-window', ()=>{
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 })
 
-ipcMain.on('open-folder-dialog', (_sender, dialogOptions) => {
+ipcMain.on('open-dialog', (_sender, dialogOptions) => {
     dialog.showOpenDialog(dialogOptions, (filePaths) => {
-        browserWindow.webContents.send('receive-folder-selection', filePaths);
+        browserWindow.webContents.send('receive-selection', filePaths);
     })
 })

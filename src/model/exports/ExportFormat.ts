@@ -8,4 +8,12 @@ export default class ExportFormat {
         this.profileName = name;
         this.mods = modList;
     }
+
+    public getProfileName(): string {
+        return this.profileName;
+    }
+
+    public getMods(): ExportMod[] {
+        return this.mods;
+    }
 }

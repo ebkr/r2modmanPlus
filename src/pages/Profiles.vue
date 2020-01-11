@@ -6,7 +6,7 @@
             <div class='modal-content'>
                  <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title'>Create a new profile</p>
+                        <p class='card-header-title'>{{addingProfileType}} a new profile</p>
                     </header>
                     <div class='card-content'>
                         <p>This profile will store its own mods independently from other profiles.</p>
@@ -44,6 +44,22 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
         </div>
+        <!-- Import modal -->
+        <div :class="['modal', {'is-active':(importingProfile !== false)}]">
+            <div class="modal-background"></div>
+            <div class='modal-content'>
+                 <div class='card'>
+                    <header class="card-header">
+                        <p class='card-header-title'>Importing profile</p>
+                    </header>
+                    <div class='card-content'>
+                        <p>This may take a while, as mods are being downloaded.</p>
+                        <p>Please do not close r2modman.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
+        </div>
         <!-- Content -->
         <hero title='Profile selection' subtitle='Profiles help to organise mods easily' heroType='is-info' />
         <div class='columns'>
@@ -69,7 +85,10 @@
                                     <a class='button is-info' @click="setProfileAndContinue()">Use selected profile</a>
                                 </div>
                                 <div class='level-item'>
-                                    <a class='button is-primary' @click="newProfile()">Create new</a>
+                                    <a class='button' @click="newProfile('Create')">Create new</a>
+                                </div>
+                                <div class='level-item'>
+                                    <a class='button' @click="importProfile()">Import profile</a>
                                 </div>
                                 <div class='level-item'>
                                     <a class='button is-danger' @click="removeProfile()">Delete selected profile</a>
@@ -88,11 +107,25 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
 import { Prop } from 'vue-property-decorator';
-import Profile from '../model/Profile';
-import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { isUndefined } from 'util';
+import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
+import { ipcRenderer } from 'electron';
 
+import Profile from '../model/Profile';
+import VersionNumber from '../model/VersionNumber';
+import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreVersion from '../model/ThunderstoreVersion';
+import ManifestV2 from '../model/ManifestV2';
+import ExportFormat from '../model/exports/ExportFormat';
+import ExportMod from '../model/exports/ExportMod';
+import R2Error from '../model/errors/R2Error';
+import StatusEnum from '../model/enums/StatusEnum';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ThunderstoreDownloader from '../r2mm/downloading/ThunderstoreDownloader';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
+import ProfileModList from '../r2mm/mods/ProfileModList';
+
+import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -106,15 +139,16 @@ let settings: ManagerSettings;
 })
 export default class Profiles extends Vue {
     
-    @Prop()
     private profileList: string[] = ['Default'];
 
     private selectedProfile: string = '';
 
     private addingProfile: boolean = false;
     private newProfileName: string = '';
+    private addingProfileType: string = 'Create';
 
     private removingProfile: boolean = false;
+    private importingProfile: boolean = false;
 
     doesProfileExist(nameToCheck: string): boolean {
         const safe: string | undefined = sanitize(nameToCheck);
@@ -130,9 +164,10 @@ export default class Profiles extends Vue {
         settings.setProfile(profile);
     }
 
-    newProfile() {
-        this.newProfileName = '';
+    newProfile(type: string, nameOverride: string | undefined) {
+        this.newProfileName = nameOverride || '';
         this.addingProfile = true;
+        this.addingProfileType = type;
     }
 
     createProfile(profile: string) {
@@ -144,10 +179,12 @@ export default class Profiles extends Vue {
         this.profileList.push(safeName);
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
         this.addingProfile = false;
+        ipcRenderer.emit('created-profile', safeName);
     }
 
     closeNewProfileModal() {
         this.addingProfile = false;
+        ipcRenderer.emit('created-profile', '');
     }
 
     removeProfile() {
@@ -157,18 +194,16 @@ export default class Profiles extends Vue {
     removeProfileAfterConfirmation() {
         fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
         fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
-        if (Profile.getActiveProfile().getProfileName().toLowerCase() === 'default') {
-            new Profile('Default');
-            this.selectedProfile = Profile.getActiveProfile().getProfileName();
-            this.closeRemoveProfileModal();
-            return;
-        }
-        for(let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
-            if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
-                this.profileList.splice(profileIteration, 1);
-                break;
+        if (Profile.getActiveProfile().getProfileName().toLowerCase() !== 'default') {
+            for(let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
+                if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
+                    this.profileList.splice(profileIteration, 1);
+                    break;
+                }
             }
         }
+        new Profile('Default');
+        this.selectedProfile = Profile.getActiveProfile().getProfileName();
         this.closeRemoveProfileModal();
     }
 
@@ -187,6 +222,76 @@ export default class Profiles extends Vue {
     setProfileAndContinue() {
         settings.setProfile(Profile.getActiveProfile().getProfileName());
         this.$router.push({path: '/manager'});
+    }
+
+    downloadImportedProfileMods(modList: ExportMod[]) {
+        let step = 0;
+        let currentMod: ThunderstoreMod;
+        const installStep = (progress: number, status: number, error: R2Error | void)=>{
+            if (status === StatusEnum.SUCCESS) {
+                const thunderstoreVersion: ThunderstoreVersion | undefined = currentMod.getVersions().find((version: ThunderstoreVersion) => 
+                    version.getVersionNumber().toString() === modList[step].getVersionNumber().toString()
+                );
+                if (isUndefined(thunderstoreVersion)) {
+                    this.importingProfile = false;
+                    return;
+                }
+                ProfileModList.addMod(new ManifestV2().fromThunderstoreMod(currentMod, thunderstoreVersion));
+                step += 1;
+                if (step < modList.length) {
+                    const tsMod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find((mod: ThunderstoreMod) => mod.getFullName() === modList[step].getName());
+                    if (isUndefined(tsMod)) {
+                        this.importingProfile = false;
+                        return;
+                    }
+                    currentMod = tsMod;
+                    const downloader = new ThunderstoreDownloader(tsMod)
+                    downloader.download(installStep, modList[step].getVersionNumber());
+                } else {
+                    this.importingProfile = false;
+                }
+            } else if (status === StatusEnum.FAILURE) {
+                this.importingProfile = false;
+                return;
+            }
+        }
+        if (modList.length > 0) {
+            const tsMod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find((mod: ThunderstoreMod) => mod.getFullName() === modList[step].getName());
+            if (!(tsMod instanceof ThunderstoreMod)) {
+                this.importingProfile = false;
+                return;
+            }
+            currentMod = tsMod;
+            const downloader = new ThunderstoreDownloader(tsMod);
+            downloader.download(installStep, modList[step].getVersionNumber());
+        }
+    }
+
+    importProfile(file: string) {
+        ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+            if (isNull(files) || files.length === 0) {
+                this.importingProfile = false;
+                return;
+            }
+            const read: string = fs.readFileSync(files[0]).toString();
+            const parsedYaml = yaml.parse(read);
+            const parsed: ExportFormat = new ExportFormat(parsedYaml.profileName, parsedYaml.mods.map((mod: any) => 
+                new ExportMod(mod.name, new VersionNumber(`${mod.version.major}.${mod.version.minor}.${mod.version.patch}`))
+            ));
+            this.newProfile('Import', parsed.getProfileName());
+            ipcRenderer.once('created-profile', (profileName: string) => {
+                if (profileName !== '') {
+                    this.importingProfile = true;
+                    this.downloadImportedProfileMods(parsed.getMods());
+                }
+            })
+        });
+        ipcRenderer.send('open-dialog', {
+            title: 'Import Profile',
+            properties: ['openFile'],
+            filters: ['.r2x'],
+            buttonLabel: 'Import',
+        });
     }
 
     created() {

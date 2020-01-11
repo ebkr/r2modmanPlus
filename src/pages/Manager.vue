@@ -669,12 +669,12 @@ export default class Manager extends Vue {
 
     changeRoR2InstallDirectory() {
         const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
-        ipcRenderer.once('receive-folder-selection', (_sender: any, files: string[] | null) => {
+        ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
             if (!isNull(files) && files.length === 1) {
                 this.settings.setRiskOfRain2Directory(files[0]);
             }
         })
-        ipcRenderer.send('open-folder-dialog', {
+        ipcRenderer.send('open-dialog', {
             title: 'Locate Risk of Rain 2 Directory',
             defaultPath: ror2Directory,
             properties: ['openDirectory'],
