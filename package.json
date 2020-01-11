@@ -12,7 +12,6 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@node-steam/vdf": "^2.1.0",
     "@quasar/extras": "^1.0.0",

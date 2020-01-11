@@ -182,6 +182,15 @@
                     </template>
                 </template>
                 <template v-if="view === 'settings'">
+                    <a @click="changeProfile()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Change profile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                     <a @click="setAllModsEnabled(false)">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -215,6 +224,15 @@
                                 <div class='card is-shadowless'>
                                     <p class='card-header-title' v-if="settings.funkyModeEnabled">Disable funky mode</p>
                                     <p class='card-header-title' v-else>Enable funky mode</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="exportProfile()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Export profile</p>
                                 </div>
                             </div>
                         </div>
@@ -694,6 +712,17 @@ export default class Manager extends Vue {
 
     setFunkyMode(value: boolean) {
         this.settings.setFunkyMode(value);
+    }
+
+    exportProfile() {
+        const exportErr = ProfileModList.exportModList();
+        if (exportErr instanceof R2Error) {
+            this.showError(exportErr);
+        }
+    }
+
+    changeProfile() {
+        this.$router.push({path: '/profiles'});
     }
 
 
