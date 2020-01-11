@@ -1,4 +1,6 @@
-export default class ExportMod {
+import ExportMod from './ExportMod';
+
+export default class ExportFormat {
     private profileName: string = '';
     private mods: ExportMod[] = [];
 

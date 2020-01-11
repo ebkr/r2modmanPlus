@@ -11,6 +11,7 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import ManifestV2 from 'src/model/ManifestV2';
 import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
+import { spawn } from 'child_process';
 
 export default class ProfileModList {
 
@@ -110,16 +111,22 @@ export default class ProfileModList {
     }
 
     public static exportModList(): R2Error | void{
+        const exportDirectory = path.join(process.cwd(), 'mods', 'exports');
+        try {
+            fs.ensureDirSync(exportDirectory);
+        } catch(e) {
+            const err: Error = e;
+            return new R2Error('Failed to ensure directory exists', err.message);
+        }
         const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(Profile.getActiveProfile().getProfileName(), exportModList);
-        fs.writeFileSync(
-            path.join(Profile.getActiveProfile().getDirectory(), `r2mm_${Profile.getActiveProfile().getProfileName()}.yml`),
-            yaml.stringify(exportFormat)
-        );
+        const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2x`);
+        fs.writeFileSync(exportPath, yaml.stringify(exportFormat));
+        spawn('powershell.exe', ['explorer', `/select,${exportPath}`]);
     }
 
 }

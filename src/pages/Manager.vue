@@ -182,6 +182,15 @@
                     </template>
                 </template>
                 <template v-if="view === 'settings'">
+                    <a @click="changeProfile()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Change profile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                     <a @click="setAllModsEnabled(false)">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -710,6 +719,10 @@ export default class Manager extends Vue {
         if (exportErr instanceof R2Error) {
             this.showError(exportErr);
         }
+    }
+
+    changeProfile() {
+        this.$router.push({path: '/profiles'});
     }
 
 
