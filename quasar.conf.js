@@ -85,6 +85,12 @@ module.exports = function (ctx) {
       // preloadChunks: false,
       // extractCSS: false,
 
+      win: {
+          publish: {
+            provider: 'github'
+          }
+      },
+
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack (cfg) {
         cfg.module.rules.push({
@@ -166,6 +172,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
     electron: {
       // bundler: 'builder', // or 'packager'
+      bundler: 'builder',
 
       extendWebpack (cfg) {
         // do something with Electron main process Webpack cfg
@@ -188,7 +195,17 @@ module.exports = function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        // appId: 'r2modman'
+        appId: 'ebkr-r2modman',
+        win: {
+            target: ['nsis'],
+            icon: 'src/assets/icon.png'
+        },
+        nsis: {
+            oneClick: false,
+            allowToChangeInstallationDirectory: true,
+            allowElevation: true,
+            perMachine: false
+        }
       }
     }
   }

@@ -101,12 +101,14 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress, Link } from '../components/all';
+
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Profile from '../model/Profile';
 
 import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
+import { ipcRenderer } from 'electron';
 
 @Component({
     components: {
@@ -133,11 +135,12 @@ export default class Splash extends Vue {
 
     // Ensure that r2modman isn't outdated.
     private checkForUpdates() {
-        this.loadingText = 'Checking for updates';
-        setTimeout(()=>{
+        this.loadingText = 'Preparing';
+        ipcRenderer.once('update-done', ()=>{
             this.getRequestItem('UpdateCheck').setProgress(100);
             this.getThunderstoreMods(0);
-        }, 2000)
+        });
+        ipcRenderer.send('update-app');
     }
 
     // Provide access to a request item, as item is not stored in a map.
