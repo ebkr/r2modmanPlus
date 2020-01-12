@@ -46,10 +46,10 @@
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Risk of Rain 2 is launching</h3>
+                    <h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
                     <h5 class="title is-5">Close this message to continue modding.</h5>
-                    <p>This message will close automatically once you quit Risk of Rain 2.</p>
-                    <p>Closing r2modman will close the game</p>
+                    <p>If this is taking a while, it's likely due to Steam starting.</p>
+                    <p>Please be patient, and have fun!</p>
                 </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>

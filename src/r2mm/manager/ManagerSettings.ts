@@ -12,6 +12,7 @@ const configFile: string = path.join(configPath, 'conf.yml');
 export default class ManagerSettings {
 
     public riskOfRain2Directory: string | null = null;
+    public steamDirectory: string | null = null;
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
     public linkedFiles: string[] = [];
@@ -26,6 +27,7 @@ export default class ManagerSettings {
                 this.riskOfRain2Directory = parsedYaml.riskOfRain2Directory;
                 this.linkedFiles = parsedYaml.linkedFiles;
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
+                this.steamDirectory = parsedYaml.steamDirectory;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -38,6 +40,11 @@ export default class ManagerSettings {
 
     public setRiskOfRain2Directory(dir: string): R2Error | void {
         this.riskOfRain2Directory = dir;
+        return this.save();
+    }
+
+    public setSteamDirectory(dir: string): R2Error | void {
+        this.steamDirectory = dir;
         return this.save();
     }
 

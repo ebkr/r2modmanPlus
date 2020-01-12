@@ -12,6 +12,26 @@ const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolver {
 
+    public static getSteamDirectory(): string | R2Error {
+        try {
+            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
+            const installKeyValue = queryResult.split('\n')[0].trim();
+            // Remove key (InstallPath) from string
+            const installValue = installKeyValue.substr(('InstallPath').length)
+                .trim()
+                // Remove colon
+                .substr(1)
+                .trim();
+            return installValue;
+        } catch(e) {
+            const err: Error = e;
+            return new R2Error(
+                'Unable to resolve steam install directory',
+                err.message
+            )
+        }
+    }
+
     public static getDirectory(): R2Error | string {
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
