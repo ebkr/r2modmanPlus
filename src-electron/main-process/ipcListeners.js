@@ -1,5 +1,6 @@
 import { ipcMain, BrowserWindow, dialog } from 'electron';
 import { spawnSync } from 'child_process';
+import { autoUpdater } from 'electron-updater';
 
 let browserWindow;
 
@@ -21,4 +22,9 @@ ipcMain.on('open-dialog', (_sender, dialogOptions) => {
     dialog.showOpenDialog(dialogOptions, (filePaths) => {
         browserWindow.webContents.send('receive-selection', filePaths);
     })
+})
+
+ipcMain.on('update-app', ()=>{
+    autoUpdater.checkForUpdatesAndNotify();
+    browserWindow.webContents.send('update-done');
 })

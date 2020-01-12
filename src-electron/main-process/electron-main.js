@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import Listeners from './ipcListeners'
 import { ipcMain } from 'electron';
+import { autoUpdater } from 'electron-updater';
 
 /**
  * Set `__statics` path to static files in production;
@@ -36,7 +37,9 @@ function createWindow () {
     })
 }
 
-app.on('ready', createWindow)
+app.on('ready', ()=>{
+    createWindow();
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -50,7 +53,7 @@ app.on('activate', () => {
     }
 })
 
-//------------------------------//
+//-----------------------------//
 
 ipcMain.on('log', (_, log) => {
     console.log(...log);
