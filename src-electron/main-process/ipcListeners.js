@@ -28,3 +28,7 @@ ipcMain.on('update-app', ()=>{
     autoUpdater.checkForUpdatesAndNotify();
     browserWindow.webContents.send('update-done');
 })
+
+ipcMain.on('install-via-thunderstore', (_sender, installString) => {
+    browserWindow.webContents.send('install-from-thunderstore-string', installString);
+})

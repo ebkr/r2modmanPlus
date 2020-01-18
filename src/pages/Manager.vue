@@ -237,6 +237,15 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="associateWithThunderstore()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Associate "Install with Mod Manager" button</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -333,7 +342,8 @@ import ModBridge from '../r2mm/mods/ModBridge';
 
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, app } from 'electron';
+import PathResolver from '../r2mm/manager/PathResolver';
 
 @Component({
     components: {
@@ -725,6 +735,10 @@ export default class Manager extends Vue {
         this.$router.push({path: '/profiles'});
     }
 
+    associateWithThunderstore() {
+        ipcRenderer.send('register-protocol');
+    }
+
 
     created() {
         this.settings.load();
@@ -734,6 +748,15 @@ export default class Manager extends Vue {
         }
         this.thunderstoreModList = ThunderstorePackages.PACKAGES;
         this.generateModlist();
+        ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
+            this.showError(
+                new R2Error(
+                    'Received install protocol',
+                    data
+                )
+            )  
+        })
+        this.showError(new R2Error('cwd', PathResolver.ROOT))
     }
 }
 

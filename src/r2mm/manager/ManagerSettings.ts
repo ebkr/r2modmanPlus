@@ -5,8 +5,9 @@ import R2Error from 'src/model/errors/R2Error';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
+import PathResolver from './PathResolver';
 
-const configPath: string = path.join(process.cwd(), 'config');
+const configPath: string = path.join(PathResolver.ROOT, 'config');
 const configFile: string = path.join(configPath, 'conf.yml');
 
 export default class ManagerSettings {

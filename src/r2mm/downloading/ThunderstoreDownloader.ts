@@ -12,8 +12,9 @@ import * as path from 'path';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from 'src/model/errors/R2Error';
 import { isUndefined } from 'util';
+import PathResolver from '../manager/PathResolver';
 
-const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
+const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
 
 export default class ThunderstoreDownloader {
 
@@ -155,7 +156,7 @@ export default class ThunderstoreDownloader {
 
     private saveToFile(response: Buffer, versionNumber: VersionNumber, callback: (success: boolean) => void): R2Error | null {
         try {
-            fs.mkdirsSync(path.join(cacheDirectory, this.mod.getFullName()));
+            fs.ensureDirSync(path.join(cacheDirectory, this.mod.getFullName()));
             fs.writeFileSync(
                 path.join(
                     cacheDirectory, 

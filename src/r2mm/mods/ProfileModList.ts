@@ -12,6 +12,7 @@ import ManifestV2 from 'src/model/ManifestV2';
 import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
 import { spawn } from 'child_process';
+import PathResolver from '../manager/PathResolver';
 
 export default class ProfileModList {
 
@@ -26,7 +27,6 @@ export default class ProfileModList {
                 return modList;
             } catch(e) {
                 const err: Error = e;
-                console.log(err);
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
                     err.message
@@ -111,7 +111,7 @@ export default class ProfileModList {
     }
 
     public static exportModList(): R2Error | void{
-        const exportDirectory = path.join(process.cwd(), 'mods', 'exports');
+        const exportDirectory = path.join(PathResolver.ROOT, 'mods', 'exports');
         try {
             fs.ensureDirSync(exportDirectory);
         } catch(e) {

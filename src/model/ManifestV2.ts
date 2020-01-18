@@ -8,6 +8,7 @@ import NetworkMode from './enums/NetworkMode';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 import * as path from 'path';
+import PathResolver from 'src/r2mm/manager/PathResolver';
 
 export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
@@ -96,7 +97,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         const versionNumber = reactive.versionNumber;
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
         this.setGameVersion(reactive.gameVersion);
-        this.icon = path.join(process.cwd(), 'mods', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.icon = path.join(PathResolver.ROOT, 'mods', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         if (!reactive.enabled) {
             this.disable();
         }

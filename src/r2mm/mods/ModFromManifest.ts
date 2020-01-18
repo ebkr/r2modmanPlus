@@ -7,8 +7,9 @@ import Mod from 'src/model/Mod';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
 import FileNotFoundError from 'src/model/errors/FileNotfoundError';
 import R2Error from 'src/model/errors/R2Error';
+import PathResolver from "../manager/PathResolver";
 
-const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
+const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
 
 export default class ModFromManifest {
     
