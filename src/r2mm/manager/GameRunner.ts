@@ -14,7 +14,6 @@ export default class GameRunner {
             return;
         }
         child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('exit', onComplete);
-        // child.spawn(path.join(ror2Directory, 'Risk of Rain 2.exe'), ['--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('exit', onComplete);
     }
 
     public static playVanilla(ror2Directory: string, onComplete: ()=>void, settings: ManagerSettings) {
