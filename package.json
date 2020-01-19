@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.4.2",
     "@types/fs-extra": "^8.0.1",
     "@types/unzipper": "^0.10.1",
     "@types/yaml": "^1.2.0",
@@ -25,7 +25,7 @@
     "electron-updater": "^4.2.0",
     "fs-extra": "^8.1.0",
     "node-ipc": "^9.1.1",
-    "quasar": "^1.0.0",
+    "quasar": "^1.7.4",
     "sanitize-filename": "^1.6.3",
     "unzipper": "^0.10.5",
     "vue-class-component": "^7.1.0",
@@ -34,7 +34,7 @@
     "yaml": "^1.7.2"
   },
   "devDependencies": {
-    "@quasar/app": "^1.0.0",
+    "@quasar/app": "^1.5.2",
     "@quasar/quasar-app-extension-typescript": "^1.0.0-beta.2",
     "@types/node": "^12.12.12",
     "@typescript-eslint/eslint-plugin": "^1.12.0",

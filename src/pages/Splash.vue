@@ -50,8 +50,8 @@
                     <strong>Did you know?</strong>
                   </p>
                   <p>
-                    You can associate the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
-                    Just go to settings and click "Associate Install with Mod Manager button".
+                    You can use the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
+                    If you have multiple installations, simply launch the one you want to associate with Thunderstore first!
                   </p>
                 </div>
                 <div class='container' v-else-if="view === 'about'">
@@ -152,49 +152,30 @@ export default class Splash extends Vue {
     // Get the list of Thunderstore mods via /api/v1/package.
     private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
-        // axios.get('https://thunderstore.io/api/v1/package', {
-        //     onDownloadProgress: progress => {
-        //         this.loadingText = 'Getting mod list from Thunderstore'
-        //         this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
-        //     }
-        // }).then(response => {
-        //     let tsMods: ThunderstoreMod[] = [];
-        //     response.data.forEach((mod: any) => {
-        //         let tsMod = new ThunderstoreMod();
-        //         tsMods.push(tsMod.parseFromThunderstoreData(mod));
-        //     })
-        //     // Temporary. Creates a new standard profile until Profiles section is completed
-        //     new Profile('Default');
-        //     ThunderstorePackages.PACKAGES = tsMods;
-        //     this.$router.push({path: '/profiles'});
-        // }).catch((e_)=>{
-        //     this.isOffline = true;
-        //     if (attempt < 5) {
-        //         this.getThunderstoreMods(attempt + 1);
-        //     } else {
-        //         this.heroTitle = 'Failed to get mods from Thunderstore';
-        //         this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-        //     }
-        // })
-        fetch('https://thunderstore.io/api/v1/package').then(response => response.json())
-            .then(response => {
-                let tsMods: ThunderstoreMod[] = [];
-                response.forEach((mod: any) => {
-                    let tsMod = new ThunderstoreMod();
-                    tsMods.push(tsMod.parseFromThunderstoreData(mod));
-                })
-                ThunderstorePackages.PACKAGES = tsMods;
-                this.$router.push({path: '/profiles'});
-            }).catch((e_)=>{
-                // console.log(e_);
-                this.isOffline = true;
-                if (attempt < 5) {
-                    this.getThunderstoreMods(attempt + 1);
-                } else {
-                    this.heroTitle = 'Failed to get mods from Thunderstore';
-                    this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-                }
+        axios.get('https://thunderstore.io/api/v1/package', {
+            onDownloadProgress: progress => {
+                this.loadingText = 'Getting mod list from Thunderstore'
+                this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
+            }
+        }).then(response => {
+            let tsMods: ThunderstoreMod[] = [];
+            response.data.forEach((mod: any) => {
+                let tsMod = new ThunderstoreMod();
+                tsMods.push(tsMod.parseFromThunderstoreData(mod));
             })
+            // Temporary. Creates a new standard profile until Profiles section is completed
+            new Profile('Default');
+            ThunderstorePackages.PACKAGES = tsMods;
+            this.$router.push({path: '/profiles'});
+        }).catch((e_)=>{
+            this.isOffline = true;
+            if (attempt < 5) {
+                this.getThunderstoreMods(attempt + 1);
+            } else {
+                this.heroTitle = 'Failed to get mods from Thunderstore';
+                this.loadingText = 'You may be offline, however you may still use R2MM offline.';
+            }
+        })
     }
 
     continueOffline() {

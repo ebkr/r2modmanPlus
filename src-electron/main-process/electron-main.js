@@ -18,6 +18,7 @@ function createWindow () {
     /**
      * Initial window options
      */
+
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 700,
@@ -27,6 +28,9 @@ function createWindow () {
             webSecurity: false,
         }
     })
+    if (process.env.PROD) {
+        mainWindow.setMenu(null);
+    }
 
     // Initialise client to server communication listener
     new Listeners(mainWindow);
@@ -85,6 +89,5 @@ ipcMain.on('log', (_, log) => {
     console.log(...log);
 });
 
-ipcMain.on('register-protocol', ()=>{
-    app.setAsDefaultProtocolClient('ror2mm', process.execPath);
-})
+// Register current application with Thunderstore Protocol
+app.setAsDefaultProtocolClient('ror2mm', process.execPath);

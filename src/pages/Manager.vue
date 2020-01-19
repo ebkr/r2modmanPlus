@@ -237,15 +237,6 @@
                             </div>
                         </div>
                     </a>
-                    <a @click="associateWithThunderstore()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Associate "Install with Mod Manager" button</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -323,6 +314,7 @@ import { Watch } from 'vue-property-decorator';
 import { Hero, Progress, ExpandableCard, Link } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import Mod from 'src/model/Mod';
 import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
@@ -343,7 +335,6 @@ import ModBridge from '../r2mm/mods/ModBridge';
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
 import { ipcRenderer, app } from 'electron';
-import PathResolver from '../r2mm/manager/PathResolver';
 
 @Component({
     components: {
@@ -463,8 +454,12 @@ export default class Manager extends Vue {
         if (version === undefined) {
             return;
         }
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(refSelectedThunderstoreMod);
-        const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(version, this.thunderstoreModList);
+        this.performDependencyDownload(refSelectedThunderstoreMod, version);
+    }
+
+    performDependencyDownload(thunderstoreMod: ThunderstoreMod, thunderstoreVersion: ThunderstoreVersion) {
+        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(thunderstoreMod);
+        const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(thunderstoreVersion, this.thunderstoreModList);
         if (dependencies instanceof R2Error) {
             this.showError(dependencies);
             return;
@@ -489,7 +484,7 @@ export default class Manager extends Vue {
                         return;
                     }
                 })
-                this.installModAfterDownload(refSelectedThunderstoreMod, version);
+                this.installModAfterDownload(thunderstoreMod, thunderstoreVersion);
                 this.downloadingMod = false;
             } else if (status === StatusEnum.PENDING) {
                 this.downloadProgress[progressTrack] = progress;
@@ -497,7 +492,7 @@ export default class Manager extends Vue {
                     this.currentDownloadProgress = progress;
                 }
             }
-        }, refSelectedThunderstoreMod, version, this.thunderstoreModList);
+        }, thunderstoreMod, thunderstoreVersion, this.thunderstoreModList);
     }
 
     closeDownloadProgressModal() {
@@ -735,10 +730,6 @@ export default class Manager extends Vue {
         this.$router.push({path: '/profiles'});
     }
 
-    associateWithThunderstore() {
-        ipcRenderer.send('register-protocol');
-    }
-
 
     created() {
         this.settings.load();
@@ -749,14 +740,13 @@ export default class Manager extends Vue {
         this.thunderstoreModList = ThunderstorePackages.PACKAGES;
         this.generateModlist();
         ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
-            this.showError(
-                new R2Error(
-                    'Received install protocol',
-                    data
-                )
-            )  
-        })
-        this.showError(new R2Error('cwd', PathResolver.ROOT))
+            const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
+            if (combo instanceof R2Error) {
+                this.showError(combo);
+                return;
+            }
+            this.performDependencyDownload(combo.getMod(), combo.getVersion());
+        });
     }
 }
 

@@ -26,18 +26,18 @@ But as for actual new features:
 - Installs are semi-symlink based. (BepInEx root files are copied, rather than linked).
 - Automatic game installation location detection.
 - YAML is now used to store information
+- Help and FAQ for technical support about mods not working.
 
 
 ### Major features planned:
 - Manifest V2
-- Help and FAQ for technical support about mods not working.
 - Alerts when a new RoR2 update has been released.
 - Config file editor.
 
 ## Roadmap
 - Download ZIPs and extract to mods/cache directory.
 - Show locally installed mods.
-- Local mod installations.
+- ~~Local mod installations.~~
 - Add profiles (mods/profiles/*).
 - Profile-scoped BepInEx installations.
 - Game detection.
