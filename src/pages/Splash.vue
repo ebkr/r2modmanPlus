@@ -2,7 +2,7 @@
   <div>
     <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
     <div class='notification is-warning'>
-        <p>A new version of Risk of Rain 2 has been released. Many mods may be broken.</p>
+        <p>Risk of Rain 2 updates may break mods. If a new update has been released, please be patient.</p>
     </div>
     <progress-bar 
         :max='requests.length * 100' 

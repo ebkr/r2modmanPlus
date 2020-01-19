@@ -290,7 +290,6 @@
                         <p>Once you've done that, start the game modded.</p>
                         <br/>
                         <h5 class='title is-5'>Launching the game with Steam</h5>
-                        <p>r2modman doesn't launch the game via Steam. This is due to problems that can occur with the Steam overlay.</p>
                         <p>If you want to launch the game through Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
                         <p>
                             Once you've done that, <link-component url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts' :target="'external'">follow this guide</link-component>,
