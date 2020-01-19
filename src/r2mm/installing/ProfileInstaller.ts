@@ -10,8 +10,9 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import ModMode from 'src/model/enums/ModMode';
 import { isNull } from 'util';
 import { lstatSync } from 'fs-extra';
+import PathResolver from '../manager/PathResolver';
 
-const cacheDirectory: string = path.join(process.cwd(), 'mods', 'cache');
+const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
 
 export default class ProfileInstaller {
 

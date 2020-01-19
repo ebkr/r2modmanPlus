@@ -50,8 +50,8 @@
                     <strong>Did you know?</strong>
                   </p>
                   <p>
-                    You can associate the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
-                    Just go to settings and click "Associate Install with Mod Manager button".
+                    You can use the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
+                    If you have multiple installations, simply launch the one you want to associate with Thunderstore first!
                   </p>
                 </div>
                 <div class='container' v-else-if="view === 'about'">
@@ -109,6 +109,7 @@ import Profile from '../model/Profile';
 
 import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
+import PathResolver from '../r2mm/manager/PathResolver';
 
 @Component({
     components: {

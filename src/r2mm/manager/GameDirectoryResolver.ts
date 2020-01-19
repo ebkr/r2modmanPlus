@@ -43,7 +43,6 @@ export default class GameDirectoryResolver {
                 .substr(1)
                 .trim();
             const dir = this.findAppManifest(installValue);
-            console.log(dir);
             return dir;
         } catch(e) {
             const err: Error = e;
