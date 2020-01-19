@@ -124,6 +124,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThunderstoreDownloader from '../r2mm/downloading/ThunderstoreDownloader';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../r2mm/mods/ProfileModList';
+import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 
 import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
@@ -236,7 +237,9 @@ export default class Profiles extends Vue {
                     this.importingProfile = false;
                     return;
                 }
-                ProfileModList.addMod(new ManifestV2().fromThunderstoreMod(currentMod, thunderstoreVersion));
+                const mod: ManifestV2 = new ManifestV2().fromThunderstoreMod(currentMod, thunderstoreVersion);
+                ProfileModList.addMod(mod);
+                ProfileInstaller.installMod(mod);
                 step += 1;
                 if (step < modList.length) {
                     const tsMod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find((mod: ThunderstoreMod) => mod.getFullName() === modList[step].getName());
