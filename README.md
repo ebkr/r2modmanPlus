@@ -23,3 +23,7 @@ Mention me on Discord via the Thunderstore server. @Ebkr#3660.
 If I'm not free, there's a high chance that someone else will be readily available to help!
 
 ## Screenshots
+
+![](https://i.imgur.com/z1yfnMT.png)
+
+![](https://i.imgur.com/9BbH8dd.png)
