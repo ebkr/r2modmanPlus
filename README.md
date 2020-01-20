@@ -1,6 +1,11 @@
 # r2modmanPlus 
 (Previously r2modman)
 
+## 3.0.2
+- Added basic sorting to Online tab (better sorting to come soon)
+- Fixed InstallPath bug.
+- Steam directory is now selectable in Settings.
+
 ## 3.0.1
 - Fixed a bug where profile importing doesn't install the mods.
 
