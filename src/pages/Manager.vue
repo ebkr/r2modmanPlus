@@ -65,6 +65,27 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
         </div>
+        <div id='sortModal' :class="['modal', {'is-active':(showThunderstoreSorting !== false)}]">
+            <div class="modal-background" @click="closeSortingModal()"></div>
+            <div class='modal-content'>
+                <div class='card'>
+                    <header class="card-header">
+                        <p class='card-header-title'>Sort mods</p>
+                    </header>
+                    <div class='card-content'>
+                        <p>Change the sorting order of mods</p>
+                        <br/>
+                        <select class='select' id='sorting-select' v-model="sortingStyleModel">
+                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
+                        </select>
+                    </div>
+                    <div class='card-footer'>
+                        <button class="button is-info" @click="applySort()">Apply sort</button>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeSortingModal()"></button>
+        </div>
         <div class='columns' id='content'>
             <div class="column is-one-quarter">
                 <aside class="menu">
@@ -84,6 +105,7 @@
                         <li>
                             <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']">Online</a>
                             <ul v-if="view === 'online'">
+                                <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
                                 <li><input v-model='searchFilter' class='input' type='text' placeholder='Search mods'/></li>
                             </ul>
                         </li>
@@ -332,6 +354,7 @@ import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
+import SortingStyle from '../model/enums/SortingStyle';
 import R2Error from '../model/errors/R2Error';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManifestV2 from '../model/ManifestV2';
@@ -382,6 +405,12 @@ export default class Manager extends Vue {
 
     helpPage: string = '';
 
+    sortingStyleModel: string = SortingStyle.LAST_UPDATED;
+    sortingStyle: string = SortingStyle.LAST_UPDATED;
+    sortDescending: boolean = true;
+
+    showThunderstoreSorting: boolean = false;
+
 
     @Watch('searchFilter')
     filterModLists() {
@@ -392,6 +421,30 @@ export default class Manager extends Vue {
         this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
             return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
+        this.searchableThunderstoreModList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+            let result: boolean;
+            switch(this.sortingStyle) {
+                case SortingStyle.LAST_UPDATED: 
+                    result = this.sortDescending ? a.getDateUpdated() < b.getDateUpdated(): a.getDateUpdated() > b.getDateUpdated();
+                    break;
+                case SortingStyle.ALPHABETICAL: 
+                    result = this.sortDescending ? a.getName().localeCompare(b.getName()) > 0: a.getName().localeCompare(b.getName()) < 0;
+                    break;
+                case SortingStyle.DOWNLOADS:
+                    result = this.sortDescending ? a.getDownloadCount() < b.getDownloadCount(): a.getDownloadCount() > b.getDownloadCount();
+                    break;
+                case SortingStyle.RATING: 
+                    result = this.sortDescending ? a.getRating() < b.getRating(): a.getRating() > b.getRating();
+                    break;
+                case SortingStyle.DEFAULT:
+                    result = true;
+                    break;
+                default:
+                    result = true;
+                    break;
+            }
+            return result ? 1 : -1;
+        })
     }
 
     // eslint-disable-next-line
@@ -423,6 +476,19 @@ export default class Manager extends Vue {
 
     closeGameRunningModal() {
         this.gameRunning = false;
+    }
+
+    openThunderstoreSortingModal() {
+        this.showThunderstoreSorting = true;
+    }
+
+    closeSortingModal() {
+        this.showThunderstoreSorting = false;
+    }
+
+    applySort() {
+        this.sortingStyle = this.sortingStyleModel;
+        this.filterModLists();
     }
 
     showError(error: R2Error) {
@@ -572,8 +638,41 @@ export default class Manager extends Vue {
     getTitle(key: any) {
         if (key.deprecated) {
             return key.name.strike();
+        } else {
+            const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(key);
+            if (this.isModDependencyDeprecated(mod)) {
+                return key.name.strike();
+            }
         }
         return key.name;
+    }
+
+    getSortOptions() {
+        const options = [];
+        const sorting: {[key: string]: string} = SortingStyle;
+        for(const key in sorting) {
+            options.push(sorting[key]);
+        }
+        return options;
+    }
+
+    isModDependencyDeprecated(mod: ThunderstoreMod): boolean {
+        let shouldStrikethrough = false;
+        this.thunderstoreModList.forEach((tsMod: ThunderstoreMod) => {
+            if (!shouldStrikethrough) {
+                mod.getDependencies().forEach((dependency: string) => {
+                    if (dependency.startsWith(tsMod.getFullName())) {
+                        if (tsMod.isDeprecated()) {
+                            shouldStrikethrough = true;
+                            return;
+                        } else {
+                            shouldStrikethrough = this.isModDependencyDeprecated(tsMod);
+                        }
+                    }
+                });
+            }
+        });
+        return shouldStrikethrough;
     }
 
     // eslint-disable-next-line
