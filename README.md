@@ -1,6 +1,9 @@
 # r2modmanPlus 
 (Previously r2modman)
 
+## 3.0.1
+- Fixed a bug where profile importing doesn't install the mods.
+
 ## What's new in V3?
 - A much, much, nicer interface.
 - Install detection.

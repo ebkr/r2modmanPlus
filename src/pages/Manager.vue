@@ -218,6 +218,15 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="changeSteamDirectory()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Locate Steam directory</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                     <a @click="setFunkyMode(!settings.funkyModeEnabled)">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -680,6 +689,21 @@ export default class Manager extends Vue {
         })
         ipcRenderer.send('open-dialog', {
             title: 'Locate Risk of Rain 2 Directory',
+            defaultPath: ror2Directory,
+            properties: ['openDirectory'],
+            buttonLabel: 'Select Directory',
+        });
+    }
+
+    changeSteamDirectory() {
+        const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
+        ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+            if (!isNull(files) && files.length === 1) {
+                this.settings.setSteamDirectory(files[0]);
+            }
+        })
+        ipcRenderer.send('open-dialog', {
+            title: 'Locate Steam Directory',
             defaultPath: ror2Directory,
             properties: ['openDirectory'],
             buttonLabel: 'Select Directory',

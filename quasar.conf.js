@@ -203,7 +203,7 @@ module.exports = function (ctx) {
         nsis: {
             oneClick: false,
             allowToChangeInstallationDirectory: true,
-            allowElevation: true,
+            allowElevation: false,
             perMachine: false
         }
       }
