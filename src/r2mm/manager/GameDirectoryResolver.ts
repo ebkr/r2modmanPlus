@@ -6,6 +6,7 @@ import * as child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { isUndefined } from 'util';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
@@ -15,13 +16,20 @@ export default class GameDirectoryResolver {
     public static getSteamDirectory(): string | R2Error {
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
-            const installKeyValue = queryResult.split('\n')[0].trim();
-            // Remove key (InstallPath) from string
-            const installValue = installKeyValue.substr(('InstallPath').length)
-                .trim()
-                // Remove colon
-                .substr(1)
-                .trim();
+            const installKeyValue = queryResult.split('\n');
+            let installValue: string | undefined;
+            installKeyValue.forEach((val: string) => {
+                if (val.trim().startsWith('InstallPath')) {
+                    installValue = val.substr(('InstallPath').length)
+                        .trim()
+                        // Remove colon
+                        .substr(1)
+                        .trim();
+                } 
+            })
+            if (isUndefined(installValue)) {
+                throw new R2Error('InstallPath not found', queryResult);
+            }
             return installValue;
         } catch(e) {
             const err: Error = e;
