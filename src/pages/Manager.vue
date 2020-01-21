@@ -268,6 +268,15 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="browseDataFolder()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Browse data folder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -351,6 +360,7 @@ import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
 import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
+import PathResolver from 'src/r2mm/manager/PathResolver';
 
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
@@ -366,6 +376,7 @@ import ModBridge from '../r2mm/mods/ModBridge';
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
 import { ipcRenderer, app } from 'electron';
+import { spawn } from 'child_process';
 
 @Component({
     components: {
@@ -405,8 +416,8 @@ export default class Manager extends Vue {
 
     helpPage: string = '';
 
-    sortingStyleModel: string = SortingStyle.LAST_UPDATED;
-    sortingStyle: string = SortingStyle.LAST_UPDATED;
+    sortingStyleModel: string = SortingStyle.DEFAULT;
+    sortingStyle: string = SortingStyle.DEFAULT;
     sortDescending: boolean = true;
 
     showThunderstoreSorting: boolean = false;
@@ -850,6 +861,10 @@ export default class Manager extends Vue {
 
     changeProfile() {
         this.$router.push({path: '/profiles'});
+    }
+
+    browseDataFolder() {
+        spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
     }
 
 
