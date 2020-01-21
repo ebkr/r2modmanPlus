@@ -1,14 +1,6 @@
 # r2modmanPlus 
 (Previously r2modman)
 
-## 3.0.2
-- Added basic sorting to Online tab (better sorting to come soon)
-- Fixed InstallPath bug.
-- Steam directory is now selectable in Settings.
-
-## 3.0.1
-- Fixed a bug where profile importing doesn't install the mods.
-
 ## What's new in V3?
 - A much, much, nicer interface.
 - Install detection.
@@ -24,6 +16,20 @@
 Updates in r2modmanPlus are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
 
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
+
+## Updates
+### 3.0.3
+- Fixed issue where updates wipe mods and cache folders. (Yes, this update will do it unfortunately).
+    - This fix required a change to the /mods and /config directory locations. Open Settings and "Browse data directory" for the new location.
+- Default selected sort is now "Default". Oops.
+
+### 3.0.2
+- Added basic sorting to Online tab (better sorting to come soon)
+- Fixed InstallPath bug.
+- Steam directory is now selectable in Settings.
+
+### 3.0.1
+- Fixed a bug where profile importing doesn't install the mods.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.

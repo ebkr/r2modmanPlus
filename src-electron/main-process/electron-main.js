@@ -33,7 +33,7 @@ function createWindow () {
     }
 
     // Initialise client to server communication listener
-    new Listeners(mainWindow);
+    new Listeners(mainWindow, app);
 
     mainWindow.loadURL(process.env.APP_URL)
 

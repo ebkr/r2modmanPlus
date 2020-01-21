@@ -3,10 +3,12 @@ import { spawnSync } from 'child_process';
 import { autoUpdater } from 'electron-updater';
 
 let browserWindow;
+let app;
 
 export default class Listeners {
-    constructor(window) {
+    constructor(window, electronApp) {
         browserWindow = window;
+        app = electronApp;
     }
 }
 
@@ -31,4 +33,8 @@ ipcMain.on('update-app', ()=>{
 
 ipcMain.on('install-via-thunderstore', (installString) => {
     browserWindow.webContents.send('install-from-thunderstore-string', installString);
+})
+
+ipcMain.on('get-appData-directory', ()=>{
+    browserWindow.webContents.send('receive-appData-directory', app.getPath('appData'));
 })
