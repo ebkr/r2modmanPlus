@@ -18,6 +18,9 @@ Updates in r2modmanPlus are now handled in the background. Leave the manager run
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
 
 ## Updates
+### 3.0.4
+- Fixed bug with updates being shown as duplicate entries (caused by 3.0.3)
+
 ### 3.0.3
 - Fixed issue where updates wipe mods and cache folders. (Yes, this update will do it unfortunately).
     - This fix required a change to the /mods and /config directory locations. Open Settings and "Browse data directory" for the new location.
