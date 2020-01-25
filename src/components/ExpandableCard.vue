@@ -3,13 +3,13 @@
         <div class='card is-shadowless'>
             <a @click='toggleVisibility()'>
                 <header class='card-header is-shadowless' :id='id'>
-                    <div class='card-header-icon'>
+                    <div class='card-header-icon' v-if="image !== ''">
                         <figure class='image is-48x48 image-parent'>
                             <img :src='image' alt='Mod Logo' class='image-overlap'/>
                             <img v-if="funkyMode" src='../assets/funky_mode.png' alt='Mod Logo' class='image-overlap'/>
                         </figure>
                     </div>
-                    <p class='card-header-title'><slot name='title'></slot></p>
+                    <span class='card-header-title'><slot name='title'></slot></span>
                     <slot name='other-icons'></slot>
                     <a class='card-header-icon' aria-label='more options'>
                         <span class='icon'>
@@ -19,7 +19,7 @@
                     </a>
                 </header>
             </a>
-            <div class='card-content' v-show='visible'>
+            <div class='card-content' v-show='visible' v-if="description !== ''">
                 <div class='content'>
                     <p>{{description}}</p>
                 </div>
@@ -38,11 +38,9 @@ import { Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component
 export default class ExpandableCard extends Vue {
+
     @Prop({default: ''})
     image: string | undefined;
-
-    @Prop({default: null})
-    title: string | undefined;
 
     @Prop({default: ''})
     description: string | undefined;

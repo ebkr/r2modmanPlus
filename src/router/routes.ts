@@ -13,6 +13,10 @@ const routes: RouteConfig[] = [
         path: '/profiles',
         component: () => import('pages/Profiles.vue')
     },
+    {
+        path: '/config-editor',
+        component: () => import('pages/ConfigEditor.vue')
+    },
 ];
 
 // Always leave this as last one
