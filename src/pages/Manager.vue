@@ -826,7 +826,7 @@ export default class Manager extends Vue {
             if (enabled) {
                 profileErr = ProfileInstaller.enableMod(mod);
             } else {
-                profileErr = ProfileInstaller.enableMod(mod);
+                profileErr = ProfileInstaller.disableMod(mod);
             }
             if (profileErr instanceof R2Error) {
                 this.showError(profileErr);
@@ -846,6 +846,7 @@ export default class Manager extends Vue {
             this.localModList = update;
         });
         this.filterModLists();
+        this.view = 'installed';
     }
 
     setFunkyMode(value: boolean) {
