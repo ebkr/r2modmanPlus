@@ -233,4 +233,8 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.enabled = false;
     }
 
+    public isEnabled(): boolean {
+        return this.enabled;
+    }
+
 }
