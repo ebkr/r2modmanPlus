@@ -133,7 +133,7 @@
                             :id="index"
                             :description="key.versions[0].description"
                             :funkyMode="settings.funkyModeEnabled"
-                            :visible="false">
+                            :expandedByDefault="settings.expandedCards">
                                 <template v-slot:title>
                                     <span class='has-tooltip-left' data-tooltip='Essential mod' v-if="key.pinned">
                                         <i class='fas fa-star'>&nbsp;</i>
@@ -174,7 +174,7 @@
                                 :id="index"
                                 :description="key.description"
                                 :funkyMode="settings.funkyModeEnabled"
-                                :visible="false">
+                                :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
                                             {{key.displayName}}
@@ -273,6 +273,16 @@
                             <div class='border-at-bottom'>
                                 <div class='card is-shadowless'>
                                     <p class='card-header-title'>Browse data folder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="toggleCardExpanded(!settings.expandedCards)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title' v-if="settings.expandedCards">Collapse cards</p>
+                                    <p class='card-header-title' v-else>Expand cards</p>
                                 </div>
                             </div>
                         </div>
@@ -868,6 +878,14 @@ export default class Manager extends Vue {
         spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
     }
 
+    toggleCardExpanded(expanded: boolean) {
+        if (expanded) {
+            this.settings.expandCards();
+        } else {
+            this.settings.collapseCards();
+        }
+        this.view = 'installed';
+    }
 
     created() {
         this.settings.load();
