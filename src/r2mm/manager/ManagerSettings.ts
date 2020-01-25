@@ -16,6 +16,7 @@ export default class ManagerSettings {
     public steamDirectory: string | null = null;
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
+    public expandedCards: boolean = false;
     public linkedFiles: string[] = [];
 
     public load(): R2Error | void {
@@ -29,6 +30,7 @@ export default class ManagerSettings {
                 this.linkedFiles = parsedYaml.linkedFiles;
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
                 this.steamDirectory = parsedYaml.steamDirectory;
+                this.expandedCards = parsedYaml.expandedCards || false;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -82,7 +84,17 @@ export default class ManagerSettings {
 
     public setFunkyMode(enabled: boolean): R2Error | void {
         this.funkyModeEnabled = enabled;
-        return this.save()
+        return this.save();
+    }
+
+    public expandCards(): R2Error | void {
+        this.expandedCards = true;
+        return this.save();
+    }
+
+    public collapseCards(): R2Error | void {
+        this.expandedCards = false;
+        return this.save();
     }
 
 }

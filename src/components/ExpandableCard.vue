@@ -11,7 +11,7 @@
                     </div>
                     <p class='card-header-title'><slot name='title'></slot></p>
                     <slot name='other-icons'></slot>
-                    <a href='#' class='card-header-icon' aria-label='more options'>
+                    <a class='card-header-icon' aria-label='more options'>
                         <span class='icon'>
                             <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible'></i>
                             <i class='fas fa-angle-down' aria-hidden='true' v-if='visible'></i>
@@ -53,17 +53,23 @@ export default class ExpandableCard extends Vue {
     @Prop({default: false})
     funkyMode: boolean | undefined;
 
+    @Prop({default: false})
+    expandedByDefault: boolean | undefined;
+
     // Keep track of visibility
     visible: boolean | undefined = false;
 
-    @Watch('visible')
-    visibilityChanged(current: boolean): boolean {
-        return current;
+    @Watch('expandedByDefault')
+    visibilityChanged(current: boolean) {
+        this.visible = current;
     }
-
 
     toggleVisibility() {
         this.visible = !this.visible;
+    }
+
+    created() {
+        this.visible = this.expandedByDefault;
     }
 }
 </script>
