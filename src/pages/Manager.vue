@@ -65,6 +65,27 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
         </div>
+        <div id='sortModal' :class="['modal', {'is-active':(showThunderstoreSorting !== false)}]">
+            <div class="modal-background" @click="closeSortingModal()"></div>
+            <div class='modal-content'>
+                <div class='card'>
+                    <header class="card-header">
+                        <p class='card-header-title'>Sort mods</p>
+                    </header>
+                    <div class='card-content'>
+                        <p>Change the sorting order of mods</p>
+                        <br/>
+                        <select class='select' id='sorting-select' v-model="sortingStyleModel">
+                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
+                        </select>
+                    </div>
+                    <div class='card-footer'>
+                        <button class="button is-info" @click="applySort()">Apply sort</button>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeSortingModal()"></button>
+        </div>
         <div class='columns' id='content'>
             <div class="column is-one-quarter">
                 <aside class="menu">
@@ -84,6 +105,7 @@
                         <li>
                             <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']">Online</a>
                             <ul v-if="view === 'online'">
+                                <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
                                 <li><input v-model='searchFilter' class='input' type='text' placeholder='Search mods'/></li>
                             </ul>
                         </li>
@@ -111,7 +133,7 @@
                             :id="index"
                             :description="key.versions[0].description"
                             :funkyMode="settings.funkyModeEnabled"
-                            :visible="false">
+                            :expandedByDefault="settings.expandedCards">
                                 <template v-slot:title>
                                     <span class='has-tooltip-left' data-tooltip='Essential mod' v-if="key.pinned">
                                         <i class='fas fa-star'>&nbsp;</i>
@@ -152,7 +174,7 @@
                                 :id="index"
                                 :description="key.description"
                                 :funkyMode="settings.funkyModeEnabled"
-                                :visible="false">
+                                :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
                                             {{key.displayName}}
@@ -218,6 +240,15 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="changeSteamDirectory()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Locate Steam directory</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                     <a @click="setFunkyMode(!settings.funkyModeEnabled)">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -233,6 +264,25 @@
                             <div class='border-at-bottom'>
                                 <div class='card is-shadowless'>
                                     <p class='card-header-title'>Export profile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="browseDataFolder()">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title'>Browse data folder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a @click="toggleCardExpanded(!settings.expandedCards)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title' v-if="settings.expandedCards">Collapse cards</p>
+                                    <p class='card-header-title' v-else>Expand cards</p>
                                 </div>
                             </div>
                         </div>
@@ -320,9 +370,11 @@ import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
 import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
+import PathResolver from 'src/r2mm/manager/PathResolver';
 
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
+import SortingStyle from '../model/enums/SortingStyle';
 import R2Error from '../model/errors/R2Error';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManifestV2 from '../model/ManifestV2';
@@ -334,6 +386,7 @@ import ModBridge from '../r2mm/mods/ModBridge';
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
 import { ipcRenderer, app } from 'electron';
+import { spawn } from 'child_process';
 
 @Component({
     components: {
@@ -373,6 +426,12 @@ export default class Manager extends Vue {
 
     helpPage: string = '';
 
+    sortingStyleModel: string = SortingStyle.DEFAULT;
+    sortingStyle: string = SortingStyle.DEFAULT;
+    sortDescending: boolean = true;
+
+    showThunderstoreSorting: boolean = false;
+
 
     @Watch('searchFilter')
     filterModLists() {
@@ -383,6 +442,30 @@ export default class Manager extends Vue {
         this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
             return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
+        this.searchableThunderstoreModList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+            let result: boolean;
+            switch(this.sortingStyle) {
+                case SortingStyle.LAST_UPDATED: 
+                    result = this.sortDescending ? a.getDateUpdated() < b.getDateUpdated(): a.getDateUpdated() > b.getDateUpdated();
+                    break;
+                case SortingStyle.ALPHABETICAL: 
+                    result = this.sortDescending ? a.getName().localeCompare(b.getName()) > 0: a.getName().localeCompare(b.getName()) < 0;
+                    break;
+                case SortingStyle.DOWNLOADS:
+                    result = this.sortDescending ? a.getDownloadCount() < b.getDownloadCount(): a.getDownloadCount() > b.getDownloadCount();
+                    break;
+                case SortingStyle.RATING: 
+                    result = this.sortDescending ? a.getRating() < b.getRating(): a.getRating() > b.getRating();
+                    break;
+                case SortingStyle.DEFAULT:
+                    result = true;
+                    break;
+                default:
+                    result = true;
+                    break;
+            }
+            return result ? 1 : -1;
+        })
     }
 
     // eslint-disable-next-line
@@ -414,6 +497,19 @@ export default class Manager extends Vue {
 
     closeGameRunningModal() {
         this.gameRunning = false;
+    }
+
+    openThunderstoreSortingModal() {
+        this.showThunderstoreSorting = true;
+    }
+
+    closeSortingModal() {
+        this.showThunderstoreSorting = false;
+    }
+
+    applySort() {
+        this.sortingStyle = this.sortingStyleModel;
+        this.filterModLists();
     }
 
     showError(error: R2Error) {
@@ -563,8 +659,41 @@ export default class Manager extends Vue {
     getTitle(key: any) {
         if (key.deprecated) {
             return key.name.strike();
+        } else {
+            const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(key);
+            if (this.isModDependencyDeprecated(mod)) {
+                return key.name.strike();
+            }
         }
         return key.name;
+    }
+
+    getSortOptions() {
+        const options = [];
+        const sorting: {[key: string]: string} = SortingStyle;
+        for(const key in sorting) {
+            options.push(sorting[key]);
+        }
+        return options;
+    }
+
+    isModDependencyDeprecated(mod: ThunderstoreMod): boolean {
+        let shouldStrikethrough = false;
+        this.thunderstoreModList.forEach((tsMod: ThunderstoreMod) => {
+            if (!shouldStrikethrough) {
+                mod.getDependencies().forEach((dependency: string) => {
+                    if (dependency.startsWith(tsMod.getFullName())) {
+                        if (tsMod.isDeprecated()) {
+                            shouldStrikethrough = true;
+                            return;
+                        } else {
+                            shouldStrikethrough = this.isModDependencyDeprecated(tsMod);
+                        }
+                    }
+                });
+            }
+        });
+        return shouldStrikethrough;
     }
 
     // eslint-disable-next-line
@@ -686,13 +815,28 @@ export default class Manager extends Vue {
         });
     }
 
+    changeSteamDirectory() {
+        const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
+        ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+            if (!isNull(files) && files.length === 1) {
+                this.settings.setSteamDirectory(files[0]);
+            }
+        })
+        ipcRenderer.send('open-dialog', {
+            title: 'Locate Steam Directory',
+            defaultPath: ror2Directory,
+            properties: ['openDirectory'],
+            buttonLabel: 'Select Directory',
+        });
+    }
+
     setAllModsEnabled(enabled: boolean) {
         this.localModList.forEach((mod: ManifestV2) => {
             let profileErr: R2Error | void;
             if (enabled) {
                 profileErr = ProfileInstaller.enableMod(mod);
             } else {
-                profileErr = ProfileInstaller.enableMod(mod);
+                profileErr = ProfileInstaller.disableMod(mod);
             }
             if (profileErr instanceof R2Error) {
                 this.showError(profileErr);
@@ -712,6 +856,7 @@ export default class Manager extends Vue {
             this.localModList = update;
         });
         this.filterModLists();
+        this.view = 'installed';
     }
 
     setFunkyMode(value: boolean) {
@@ -729,6 +874,18 @@ export default class Manager extends Vue {
         this.$router.push({path: '/profiles'});
     }
 
+    browseDataFolder() {
+        spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
+    }
+
+    toggleCardExpanded(expanded: boolean) {
+        if (expanded) {
+            this.settings.expandCards();
+        } else {
+            this.settings.collapseCards();
+        }
+        this.view = 'installed';
+    }
 
     created() {
         this.settings.load();

@@ -13,7 +13,6 @@ import 'bulma-steps/dist/js/bulma-steps.min.js';
 import 'bulma-divider/dist/css/bulma-divider.min.css';
 import 'bulma-tooltip/dist/css/bulma-tooltip.min.css';
 
-
 @Component
 export default class App extends Vue {} 
 </script>

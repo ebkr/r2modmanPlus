@@ -124,6 +124,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThunderstoreDownloader from '../r2mm/downloading/ThunderstoreDownloader';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../r2mm/mods/ProfileModList';
+import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 
 import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
@@ -236,7 +237,15 @@ export default class Profiles extends Vue {
                     this.importingProfile = false;
                     return;
                 }
-                ProfileModList.addMod(new ManifestV2().fromThunderstoreMod(currentMod, thunderstoreVersion));
+                const mod: ManifestV2 = new ManifestV2().fromThunderstoreMod(currentMod, thunderstoreVersion);
+                ProfileModList.addMod(mod);
+                ProfileInstaller.installMod(mod);
+                if (!modList[step].isEnabled()) {
+                    const profileErr = ProfileInstaller.disableMod(mod);
+                    const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                        updatingMod.disable();
+                    });
+                }
                 step += 1;
                 if (step < modList.length) {
                     const tsMod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find((mod: ThunderstoreMod) => mod.getFullName() === modList[step].getName());
@@ -275,9 +284,10 @@ export default class Profiles extends Vue {
             }
             const read: string = fs.readFileSync(files[0]).toString();
             const parsedYaml = yaml.parse(read);
-            const parsed: ExportFormat = new ExportFormat(parsedYaml.profileName, parsedYaml.mods.map((mod: any) => 
-                new ExportMod(mod.name, new VersionNumber(`${mod.version.major}.${mod.version.minor}.${mod.version.patch}`))
-            ));
+            const parsed: ExportFormat = new ExportFormat(parsedYaml.profileName, parsedYaml.mods.map((mod: any) => {
+                const enabled = isUndefined(mod.enabled) || mod.enabled;
+                return new ExportMod(mod.name, new VersionNumber(`${mod.version.major}.${mod.version.minor}.${mod.version.patch}`), enabled);
+            }));
             this.newProfile('Import', parsed.getProfileName());
             ipcRenderer.once('created-profile', (profileName: string) => {
                 if (profileName !== '') {

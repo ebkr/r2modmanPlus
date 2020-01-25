@@ -13,6 +13,7 @@ import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
+import { isUndefined } from 'util';
 
 export default class ProfileModList {
 
@@ -67,16 +68,26 @@ export default class ProfileModList {
     }
 
     public static addMod(mod: ManifestV2): ManifestV2[] | R2Error {
-        this.removeMod(mod);
         let currentModList: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
-        const saveError: R2Error | null = this.saveModList(Profile.getActiveProfile(), [...currentModList, mod]);
+        let modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
+        this.removeMod(mod);
+        currentModList = this.getModList(Profile.getActiveProfile());
+        if (currentModList instanceof R2Error) {
+            currentModList = [];
+        }
+        if (modIndex >= 0) {
+            currentModList.splice(modIndex, 0, mod);
+        } else {
+            currentModList.push(mod);
+        }
+        const saveError: R2Error | null = this.saveModList(Profile.getActiveProfile(), currentModList);
         if (saveError !== null) {
             return saveError;
         }
-        // Return mod list, or R2 error. We don't care at this point.
+        // Return mod list, or R2 error. We don't care at this point as this is handled elsewhere.
         return this.getModList(Profile.getActiveProfile());
     }
 
