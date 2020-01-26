@@ -112,7 +112,7 @@
                     </ul>
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
-                        <!-- <li><a @click="view = 'config_editor'" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li> -->
+                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li>
                         <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
                         <li>
                             <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']">Help</a>
@@ -885,6 +885,10 @@ export default class Manager extends Vue {
             this.settings.collapseCards();
         }
         this.view = 'installed';
+    }
+
+    openConfigEditor() {
+        this.$router.push('/config-editor');
     }
 
     created() {
