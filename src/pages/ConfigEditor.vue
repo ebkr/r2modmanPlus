@@ -96,7 +96,7 @@ export default class ConfigEditor extends Vue {
     private fileText: string = '';
 
     private editing: boolean = false;
-    private variableListMode: boolean = false;
+    private variableListMode: boolean = true;
     private variables: {[section: string]:{[variable: string]: string}} = {};
 
     editFile(fileName: string) {
@@ -136,7 +136,7 @@ export default class ConfigEditor extends Vue {
                     builtString += line + '\n';
                 } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
                     const sides = line.split('=');
-                    builtString += `${sides[0]} = ${this.variables[section][sides[0]]}\n`;
+                    builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()]}\n`;
                 } else {
                     builtString += line + '\n';
                 }
