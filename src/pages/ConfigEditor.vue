@@ -32,8 +32,8 @@
                                     <div class='sticky-top sticky-top--buttons'>
                                         <button class='button is-info' @click="saveChanges()">Save changes</button>
                                         <button class='button is-danger' @click="editing = false;">Cancel</button>
-                                        <button class='button has-tooltip-right' @click="switchVariableListMode()" v-if='variableListMode' data-tooltip='Changes will be discarded'>Full view</button>
-                                        <button class='button has-tooltip-right' @click="switchVariableListMode()" v-else-if='!variableListMode' data-tooltip='Changes will be discarded'>List view</button>
+                                        <button class='button has-tooltip-bottom' @click="switchVariableListMode()" v-if='variableListMode' data-tooltip='Changes will be discarded'>Full view</button>
+                                        <button class='button has-tooltip-bottom' @click="switchVariableListMode()" v-else-if='!variableListMode' data-tooltip='Changes will be discarded'>List view</button>
                                     </div>
                                     <br/>
                                     <h4 class='title is-4'>{{loadedFile}}</h4>
