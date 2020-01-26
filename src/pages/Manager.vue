@@ -139,6 +139,7 @@
                                         <i class='fas fa-star'>&nbsp;</i>
                                     </span>
                                     <span v-html='getTitle(key)'></span>
+                                    <i><span>&nbsp;by {{key.owner}}</span></i>
                                 </template>
                                 <template v-slot:other-icons>
                                     <span class='card-header-icon has-tooltip-left' data-tooltip='Mod already installed' v-if="isThunderstoreModInstalled(key)">
@@ -182,6 +183,7 @@
                                         <span v-else>
                                             <strike>{{key.displayName}}</strike>
                                         </span>
+                                        <i><span>&nbsp;by {{key.authorName}}</span></i>
                                     </template>
                                     <template v-slot:other-icons>
                                         <!-- Show update and missing dependency icons -->
@@ -440,7 +442,7 @@ export default class Manager extends Vue {
             return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
         this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
-            return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
+            return x.getFullName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 ||  this.searchFilter.trim() === ''
         });
         this.searchableThunderstoreModList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
             let result: boolean;
@@ -658,7 +660,7 @@ export default class Manager extends Vue {
     // eslint-disable-next-line
     getTitle(key: any) {
         if (key.deprecated) {
-            return key.name.strike();
+            return `DEPRECATED: ${key.name}`.strike();
         } else {
             const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(key);
             if (this.isModDependencyDeprecated(mod)) {
