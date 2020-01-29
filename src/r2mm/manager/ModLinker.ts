@@ -4,10 +4,18 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import ManagerSettings from './ManagerSettings';
 
 export default class ModLinker {
 
-    public static link(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
+    public static link(settings: ManagerSettings): string[] | R2Error {
+        if (!settings.legacyInstallMode) {
+            return this.performSymlink(settings.riskOfRain2Directory || '', settings.linkedFiles);
+        }
+        return this.performLegacyInstall(settings.riskOfRain2Directory || '', settings.linkedFiles);
+    }
+
+    private static performSymlink(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
         const newLinkedFiles: string[] = [];
         try {
             fs.emptyDirSync(path.join(installDirectory, 'r2modman'))
@@ -73,6 +81,46 @@ export default class ModLinker {
             )
         }
         return newLinkedFiles;
+    }
+
+    private static performLegacyInstall(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
+        const newLinkedFiles: string[] = [];
+        const dir: string = path.join(installDirectory, 'r2modman');
+        try {
+            fs.emptyDirSync(dir);
+            previouslyLinkedFiles.forEach((file: string) => {
+                fs.removeSync(file);
+            });
+            const profileFiles = fs.readdirSync(Profile.getActiveProfile().getPathOfProfile());
+            profileFiles.forEach((file: string) => {
+                if (fs.lstatSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file)).isFile()) {
+                    if (file.toLowerCase() !== 'mods.yml') {
+                        // Symlink Files in Install Root
+                        try {
+                            fs.removeSync(path.join(installDirectory, file));
+                            fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
+                            newLinkedFiles.push(path.join(installDirectory, file));
+                        } catch(e) {
+                            const err: Error = e;
+                            throw new FileWriteError(
+                                `Couldn't copy file ${file} to RoR2 directory`,
+                                err.message
+                            )
+                        }
+                    }
+                } else {
+                    fs.copySync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(dir, file));
+                    newLinkedFiles.push(path.join(dir, file));
+                }
+            })
+        } catch(e) {
+            const err: Error = e;
+            return new FileWriteError(
+                'Failed to produce a symlink between profile and RoR2',
+                err.message
+            );
+        }
+        return [];
     }
     
 }

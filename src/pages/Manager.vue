@@ -112,7 +112,7 @@
                     </ul>
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
-                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li>
+                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']" v-if="!settings.legacyInstallMode">Config Editor</a></li>
                         <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
                         <li>
                             <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']">Help</a>
@@ -206,6 +206,7 @@
                     </template>
                 </template>
                 <template v-if="view === 'settings'">
+                    <hero title='Settings' subtitle='Advanced options for r2modman' heroType='is-info' />
                     <a @click="changeProfile()">
                         <div class='container'>
                             <div class='border-at-bottom'>
@@ -289,6 +290,21 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title' v-if="settings.legacyInstallMode">
+                                        <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
+                                        <span class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.'>Install mods using Symlink</span>
+                                    </p>
+                                    <p class='card-header-title' v-else>
+                                        <span class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.'>Install mods in legacy mode</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -319,6 +335,9 @@
                         <h5 class='title is-5'>If it doesn't appear</h5>
                         <p>Locate your Risk of Rain 2 install directory via the Settings page.</p>
                         <p>If you're unsure where to find it, navigate to Steam, right click your game, and go to "Manage > Browse local files"</p>
+                        <br/>
+                        <h5 class='title is-5'>Symlink errors?</h5>
+                        <p>Follow <link-component :url="'https://github.com/ebkr/r2modmanPlus/wiki/Error:-Failed-to-produce-a-symlink-between-profile-and-RoR2'" :target="'external'">this guide</link-component> for more information.</p>
                     </div>
                     <div v-else-if="helpPage === 'modsNotWorking'">
                         <hero :title="'Mods aren\'t working'" heroType='is-info' />
@@ -774,7 +793,7 @@ export default class Manager extends Vue {
     launchModded() {
         this.prepareLaunch();
         if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-            const newLinkedFiles = ModLinker.link(this.settings.riskOfRain2Directory, this.settings.linkedFiles);
+            const newLinkedFiles = ModLinker.link(this.settings);
             if (newLinkedFiles instanceof R2Error) {
                 this.showError(newLinkedFiles);
                 return;
@@ -887,6 +906,13 @@ export default class Manager extends Vue {
             this.settings.collapseCards();
         }
         this.view = 'installed';
+    }
+
+    toggleLegacyInstallMode(expanded: boolean) {
+        const result: R2Error | void = this.settings.setLegacyInstallMode(expanded);
+        if (result instanceof R2Error) {
+            this.showError(result);
+        }
     }
 
     openConfigEditor() {
