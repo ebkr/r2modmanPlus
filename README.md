@@ -18,6 +18,11 @@ Updates in r2modmanPlus are now handled in the background. Leave the manager run
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
 
 ## Updates
+### 3.0.6
+- Added legacy install mode.
+- Version numbers are now visible on installed mods.
+- Added a title to the Settings page.
+
 ### 3.0.5
 - Added config editor.
 - Mod author is now visible.
@@ -49,6 +54,14 @@ If I'm not free, there's a high chance that someone else will be readily availab
 
 ## Screenshots
 
-![](https://i.imgur.com/z1yfnMT.png)
+Installed mod view
+![](https://i.imgur.com/NXJL28g.png)
 
-![](https://i.imgur.com/9BbH8dd.png)
+Downloadable mods
+![](https://i.imgur.com/hlTw8jf.png)
+
+Config Editor
+![](https://i.imgur.com/mkO4Q4H.png)
+
+Settings screen
+![](https://i.imgur.com/PhDRMqe.png)
