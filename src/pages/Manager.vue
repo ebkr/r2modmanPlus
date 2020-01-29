@@ -112,7 +112,7 @@
                     </ul>
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
-                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']">Config Editor</a></li>
+                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']" v-if="!settings.legacyInstallMode">Config Editor</a></li>
                         <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
                         <li>
                             <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']">Help</a>
@@ -348,6 +348,9 @@
                         <p>Your mods may have a fix to get it working with the latest version of Risk of Rain 2.</p>
                         <p>You can update mods by going to the "Installed" tab, clicking on mods with the update icon, and clicking the update button.</p>
                         <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
+                        <br/>
+                        <h5 class='title is-5'>Symlink errors?</h5>
+                        <p>Follow the instructions on <link-component :url="''" :target="'external'">View on Thunderstore</link-component></p>
                     </div>
                     <div v-else>
                         <hero :title="'Help with r2modman'" heroType='is-info' />

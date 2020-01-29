@@ -32,6 +32,7 @@ export default class ManagerSettings {
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
+                this.legacyInstallMode = parsedYaml.legacyInstallMode;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
