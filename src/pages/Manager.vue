@@ -289,6 +289,21 @@
                             </div>
                         </div>
                     </a>
+                    <a @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
+                        <div class='container'>
+                            <div class='border-at-bottom'>
+                                <div class='card is-shadowless'>
+                                    <p class='card-header-title' v-if="settings.legacyInstallMode">
+                                        <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
+                                        <span class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.'>Install mods using Symlink</span>
+                                    </p>
+                                    <p class='card-header-title' v-else>
+                                        <span class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.'>Install mods in legacy mode</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </template>
                 <template v-if="view === 'help'">
                     <!-- tips&tricks -->
@@ -774,7 +789,7 @@ export default class Manager extends Vue {
     launchModded() {
         this.prepareLaunch();
         if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-            const newLinkedFiles = ModLinker.link(this.settings.riskOfRain2Directory, this.settings.linkedFiles);
+            const newLinkedFiles = ModLinker.link(this.settings);
             if (newLinkedFiles instanceof R2Error) {
                 this.showError(newLinkedFiles);
                 return;
@@ -887,6 +902,13 @@ export default class Manager extends Vue {
             this.settings.collapseCards();
         }
         this.view = 'installed';
+    }
+
+    toggleLegacyInstallMode(expanded: boolean) {
+        const result: R2Error | void = this.settings.setLegacyInstallMode(expanded);
+        if (result instanceof R2Error) {
+            this.showError(result);
+        }
     }
 
     openConfigEditor() {

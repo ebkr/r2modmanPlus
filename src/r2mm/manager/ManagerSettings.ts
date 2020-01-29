@@ -17,6 +17,7 @@ export default class ManagerSettings {
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
     public expandedCards: boolean = false;
+    public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
 
     public load(): R2Error | void {
@@ -94,6 +95,11 @@ export default class ManagerSettings {
 
     public collapseCards(): R2Error | void {
         this.expandedCards = false;
+        return this.save();
+    }
+
+    public setLegacyInstallMode(enabled: boolean): R2Error | void {
+        this.legacyInstallMode = enabled;
         return this.save();
     }
 
