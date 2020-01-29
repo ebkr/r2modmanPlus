@@ -199,6 +199,10 @@
                                         <a class='card-footer-item' @click="disableMod(key)" v-if="key.enabled">Disable</a>
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
+                                    <span class='card-footer-item'>
+                                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
+                                        {{key.versionNumber}}
+                                    </span>
                                     <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
                                     <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download dependency</a>
                                 </expandable-card>
