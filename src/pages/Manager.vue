@@ -91,35 +91,37 @@
                 <aside class="menu">
                     <p class="menu-label">Risk of Rain 2</p>
                     <ul class="menu-list">
-                        <li><a @click="launchModded()">Start modded</a></li>
-                        <li><a @click="launchVanilla()">Start vanilla</a></li>
+                        <li><a @click="launchModded()"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a></li>
+                        <li><a @click="launchVanilla()"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start vanilla</a></li>
                     </ul>
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
                         <li>
-                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']">Installed</a>
+                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed</a>
                             <ul v-if="view === 'installed'">
                                 <li><input v-model='searchFilter' class="input" type="text" placeholder="Search mods"/></li>
                             </ul>
                         </li>
                         <li>
-                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']">Online</a>
+                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online</a>
                             <ul v-if="view === 'online'">
                                 <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
+                                <li class='is-size-7'>&nbsp;</li>
                                 <li><input v-model='searchFilter' class='input' type='text' placeholder='Search mods'/></li>
                             </ul>
                         </li>
                     </ul>
                     <p class='menu-label'>Other</p>
                     <ul class='menu-list'>
-                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']" v-if="!settings.legacyInstallMode">Config Editor</a></li>
-                        <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">Settings</a></li>
+                        <li><a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']" v-if="!settings.legacyInstallMode"><i class="fas fa-edit"/>&nbsp;&nbsp;Config Editor</a></li>
+                        <li><a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']"><i class="fas fa-cog"/>&nbsp;&nbsp;Settings</a></li>
                         <li>
-                            <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']">Help</a>
+                            <a @click="view = 'help'; helpPage = ''" :class="[view === 'help' ? 'is-active' : '']"><i class="fas fa-question-circle"/>&nbsp;&nbsp;Help</a>
                             <ul v-if="view === 'help'">
-                                <li><a href='#' :class="[{'is-active': helpPage === 'tips&tricks'}]" @click="helpPage = 'tips&tricks'">Tips and tricks</a></li>
-                                <li><a href='#' :class="[{'is-active': helpPage === 'gameWontStart'}]" @click="helpPage = 'gameWontStart'">Game won't start</a></li>
-                                <li><a href='#' :class="[{'is-active': helpPage === 'modsNotWorking'}]" @click="helpPage = 'modsNotWorking'">Mods aren't working</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'tips&tricks'}]" @click="helpPage = 'tips&tricks'"><i class="fas fa-lightbulb"/>&nbsp;&nbsp;Tips and tricks</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'gameWontStart'}]" @click="helpPage = 'gameWontStart'"><i class="fas fa-gamepad"/>&nbsp;&nbsp;Game won't start</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'modsNotWorking'}]" @click="helpPage = 'modsNotWorking'"><i class="fas fa-ban"/>&nbsp;&nbsp;Mods aren't working</a></li>
+                                <li><a href='#' :class="[{'is-active': helpPage === 'likeR2'}]" @click="helpPage = 'likeR2'"><i class="fas fa-heart"/>&nbsp;&nbsp;Like r2modman?</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -314,6 +316,7 @@
                     <!-- tips&tricks -->
                     <!-- gameWontStart -->
                     <!-- modsNotWorking -->
+                    <!-- likeR2 -->
                     <div v-if="helpPage === 'tips&tricks'">
                         <hero title='Tips and tricks' heroType='is-info' />
                         <br/>
@@ -356,6 +359,19 @@
                         <p>Your mods may have a fix to get it working with the latest version of Risk of Rain 2.</p>
                         <p>You can update mods by going to the "Installed" tab, clicking on mods with the update icon, and clicking the update button.</p>
                         <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
+                    </div>
+                    <div v-else-if="helpPage === 'likeR2'">
+                        <hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger' />
+                        <br/>
+                        <h5 class='title is-5'>You can help support r2modman in multiple ways!</h5>
+                        <div class="content">
+                            <ul>
+                                <li>Leave a thumbs-up on <link-component url='https://thunderstore.io/package/ebkr/r2modman/' :target="'external'">r2modman's Thunderstore page</link-component>.</li>
+                                <li>Star the project on <link-component url='https://github.com/ebkr/r2modmanPlus/' :target="'external'">GitHub</link-component>.</li>
+                                <li>Don't forget to show your friends!</li>
+                            </ul>
+                        </div>
+                        <p>But most importantly, recommend new feature ideas! r2modman needs your help to be the best possible mod manager for Risk of Rain 2!</p>
                     </div>
                     <div v-else>
                         <hero :title="'Help with r2modman'" heroType='is-info' />
