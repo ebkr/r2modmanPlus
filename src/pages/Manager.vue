@@ -605,6 +605,7 @@ export default class Manager extends Vue {
                     }
                 })
                 this.installModAfterDownload(thunderstoreMod, thunderstoreVersion);
+                this.filterModLists();
                 this.downloadingMod = false;
             } else if (status === StatusEnum.PENDING) {
                 this.downloadProgress[progressTrack] = progress;
