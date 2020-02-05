@@ -18,6 +18,11 @@ Updates in r2modmanPlus are now handled in the background. Leave the manager run
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
 
 ## Updates
+### 3.0.7
+- Menu icons!
+- Profile import errors are now shown.
+- Downloaded mods via the Thunderstore site now refresh in manager.
+
 ### 3.0.6
 - Added legacy install mode.
 - Version numbers are now visible on installed mods.
@@ -30,22 +35,6 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 - "Disable all mods" now functions correctly.
 - Clicking dropdown arrow no longer sends you back to the top of the page.
 - Added setting to pre-expand or collapse all cards.
-
-### 3.0.4
-- Fixed bug with updates being shown as duplicate entries (caused by 3.0.3)
-
-### 3.0.3
-- Fixed issue where updates wipe mods and cache folders. (Yes, this update will do it unfortunately).
-    - This fix required a change to the /mods and /config directory locations. Open Settings and "Browse data directory" for the new location.
-- Default selected sort is now "Default". Oops.
-
-### 3.0.2
-- Added basic sorting to Online tab (better sorting to come soon)
-- Fixed InstallPath bug.
-- Steam directory is now selectable in Settings.
-
-### 3.0.1
-- Fixed a bug where profile importing doesn't install the mods.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
