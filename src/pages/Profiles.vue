@@ -60,6 +60,18 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
         </div>
+        <!-- Error modal -->
+        <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
+            <div class="modal-background" v-on:click="errorMessage = ''"></div>
+            <div class='modal-content'>
+                <div class='notification is-danger'>
+                    <h3 class='title'>Error</h3>
+                    <h5 class="title is-5">{{errorMessage}}</h5>
+                    <p>{{errorStack}}</p>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" v-on:click="errorMessage = ''"></button>
+        </div>
         <!-- Content -->
         <hero title='Profile selection' subtitle='Profiles help to organise mods easily' heroType='is-info' />
         <div class='columns'>
@@ -150,6 +162,14 @@ export default class Profiles extends Vue {
 
     private removingProfile: boolean = false;
     private importingProfile: boolean = false;
+
+    errorMessage: string = '';
+    errorStack: string = '';
+
+    showError(error: R2Error) {
+        this.errorMessage = error.name;
+        this.errorStack = error.message;
+    }
 
     doesProfileExist(nameToCheck: string): boolean {
         const safe: string | undefined = sanitize(nameToCheck);
@@ -245,6 +265,9 @@ export default class Profiles extends Vue {
                     const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
                         updatingMod.disable();
                     });
+                    if (update instanceof R2Error) {
+                        this.showError(update);
+                    }
                 }
                 step += 1;
                 if (step < modList.length) {
@@ -260,6 +283,9 @@ export default class Profiles extends Vue {
                     this.importingProfile = false;
                 }
             } else if (status === StatusEnum.FAILURE) {
+                if (error instanceof R2Error) {
+                    this.showError(error);
+                }
                 this.importingProfile = false;
                 return;
             }

@@ -147,7 +147,7 @@ export default class ConfigEditor extends Vue {
     }
 
     backToManager() {
-        this.$router.back();
+        this.$router.push('/manager');
     }
 
     switchVariableListMode() {
