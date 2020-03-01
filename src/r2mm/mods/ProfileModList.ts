@@ -13,11 +13,13 @@ import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
-import { isUndefined } from 'util';
 
 export default class ProfileModList {
 
     public static getModList(profile: Profile): ManifestV2[] | R2Error {
+        if (!fs.existsSync(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
+            fs.writeFileSync(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
+        }
         try {
             const buf: Buffer = fs.readFileSync(
                 path.join(profile.getPathOfProfile(), 'mods.yml')
