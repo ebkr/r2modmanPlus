@@ -1,5 +1,0 @@
-12:11:20 [INFO]: Loading settings
-12:11:20 [INFO]: Getting local mod list
-12:11:20 [ACTION_STOPPED]: Failed to retrieve local mod list
--> Cannot read property 'getPathOfProfile' of undefined
-12:11:20 [INFO]: Binding mod lists to view
