@@ -54,17 +54,6 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
         </div>
-        <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
-            <div class="modal-background" @click="closeErrorModal()"></div>
-            <div class='modal-content'>
-                <div class='notification is-danger'>
-                    <h3 class='title'>Error</h3>
-                    <h5 class="title is-5">{{errorMessage}}</h5>
-                    <p>{{errorStack}}</p>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
-        </div>
         <div id='sortModal' :class="['modal', {'is-active':(showThunderstoreSorting !== false)}]">
             <div class="modal-background" @click="closeSortingModal()"></div>
             <div class='modal-content'>
@@ -85,6 +74,62 @@
                 </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeSortingModal()"></button>
+        </div>
+        <modal v-show="showingDependencyList" v-if="selectedManifestMod !== null" @close-modal="closeDependencyListModal">
+            <template v-slot:title>
+                <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling {{selectedManifestMod.getName()}}</p>
+                <p v-if="dependencyListDisplayType === 'uninstall'" class='card-header-title'>Uninstalling {{selectedManifestMod.getName()}}</p>
+                <p v-if="dependencyListDisplayType === 'view'" class='card-header-title'>Mods associated with {{selectedManifestMod.getName()}}</p>
+            </template>
+            <template v-slot:body>
+                <div v-if="dependencyListDisplayType === 'disable'" class='notification is-warning'>
+                    <p>Other mods depend on this mod. Disabling this mod will disable all other dependants.</p>
+                </div>
+                <div v-if="dependencyListDisplayType === 'uninstall'" class='notification is-warning'>
+                    <p>Other mods depend on this mod. Uninstalling this mod will remove all mods that depend on it.</p>
+                </div>
+                <p v-if="dependencyListDisplayType === 'disable'">Mods to be disabled:</p>
+                <p v-if="dependencyListDisplayType === 'uninstall'">Mods to be uninstalled:</p>
+                <br v-if="dependencyListDisplayType !== 'view'"/>
+                <div v-if="dependencyListDisplayType !== 'view'">
+                    <ul class="list">
+                        <li class="list-item">{{selectedManifestMod.getName()}}</li>
+                        <li class="list-item" v-for='(key, index) in getDependantList(selectedManifestMod)' :key='`dependant-${index}`'>{{key.getName()}}</li>
+                    </ul>
+                </div>
+                <div v-if="dependencyListDisplayType === 'view'">
+                    <div v-if="getDependencyList(selectedManifestMod).size > 0">
+                        <h3 class="subtitle is-5">Dependencies</h3>
+                        <ul class="list">
+                            <li class="list-item" v-for='(key, index) in getDependencyList(selectedManifestMod)' :key='`dependency-${index}`'>{{key.getName()}}</li>
+                        </ul>
+                    </div>
+                    <br v-if="getDependencyList(selectedManifestMod).size > 0"/>
+                    <div v-if="getDependantList(selectedManifestMod).size > 0">
+                        <h3 class="subtitle is-5">Dependants</h3>
+                        <ul class="list">
+                            <li class="list-item" v-for='(key, index) in getDependantList(selectedManifestMod)' :key='`dependant-${index}`'>{{key.getName()}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <button v-if="dependencyListDisplayType === 'disable'" class="button is-info" @click="disableMod(selectedManifestMod)">Disable</button>
+                <!-- TODO: Implement uninstall function for dependants -->
+                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info">Uninstall</button>
+                <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closeDependencyListModal()">Done</button>
+            </template>
+        </modal>
+        <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
+            <div class="modal-background" @click="closeErrorModal()"></div>
+            <div class='modal-content'>
+                <div class='notification is-danger'>
+                    <h3 class='title'>Error</h3>
+                    <h5 class="title is-5">{{errorMessage}}</h5>
+                    <p>{{errorStack}}</p>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
         </div>
         <div class='columns' id='content'>
             <div class="column is-one-quarter">
@@ -137,11 +182,17 @@
                             :funkyMode="settings.funkyModeEnabled"
                             :expandedByDefault="settings.expandedCards">
                                 <template v-slot:title>
-                                    <span class='has-tooltip-left' data-tooltip='Essential mod' v-if="key.pinned">
-                                        <i class='fas fa-star'>&nbsp;</i>
+                                    <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
+                                        <span class="tag is-info">Essential</span>&nbsp;
+                                        {{key.fullName}} by {{key.owner}}
                                     </span>
-                                    <span v-html='getTitle(key)'></span>
-                                    <i><span>&nbsp;by {{key.owner}}</span></i>
+                                    <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
+                                        <span class="tag is-danger">Deprecated</span>&nbsp;
+                                        <strike>{{key.fullName}} by {{key.owner}}</strike>
+                                    </span>
+                                    <span v-else>
+                                        {{key.fullName}} by {{key.owner}}
+                                    </span>
                                 </template>
                                 <template v-slot:other-icons>
                                     <span class='card-header-icon has-tooltip-left' data-tooltip='Mod already installed' v-if="isThunderstoreModInstalled(key)">
@@ -180,12 +231,12 @@
                                 :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
-                                            {{key.displayName}}
+                                            {{key.displayName}} by {{key.authorName}}
                                         </span>
-                                        <span v-else>
-                                            <strike>{{key.displayName}}</strike>
+                                        <span v-else class='has-tooltip-left' data-tooltip='This mod will not be used in-game'>
+                                            <span class="tag is-warning">Disabled</span>&nbsp;
+                                            <strike>{{key.displayName}} by {{key.authorName}}</strike>
                                         </span>
-                                        <i><span>&nbsp;by {{key.authorName}}</span></i>
                                     </template>
                                     <template v-slot:other-icons>
                                         <!-- Show update and missing dependency icons -->
@@ -198,9 +249,10 @@
                                     </template>
                                     <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
                                     <template>
-                                        <a class='card-footer-item' @click="disableMod(key)" v-if="key.enabled">Disable</a>
+                                        <a class='card-footer-item' @click="disableModRequireConfirmation(key)" v-if="key.enabled">Disable</a>
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                                     </template>
+                                    <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
                                     <span class='card-footer-item'>
                                         <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
                                         {{key.versionNumber}}
@@ -401,7 +453,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
-import { Hero, Progress, ExpandableCard, Link } from '../components/all';
+import { Hero, Progress, ExpandableCard, Link, Modal } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
@@ -413,9 +465,12 @@ import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
 import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 import PathResolver from 'src/r2mm/manager/PathResolver';
 
+import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
+
 import Profile from '../model/Profile';
 import StatusEnum from '../model/enums/StatusEnum';
 import SortingStyle from '../model/enums/SortingStyle';
+import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 import R2Error from '../model/errors/R2Error';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManifestV2 from '../model/ManifestV2';
@@ -423,6 +478,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import GameRunner from '../r2mm/manager/GameRunner';
 import ModLinker from '../r2mm/manager/ModLinker';
 import ModBridge from '../r2mm/mods/ModBridge';
+import Dependants from '../r2mm/mods/Dependants';
 
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
@@ -435,6 +491,7 @@ import { spawn } from 'child_process';
         'progress-bar': Progress,
         'expandable-card': ExpandableCard,
         'link-component': Link,
+        'modal': Modal
     }
 })
 export default class Manager extends Vue {
@@ -448,6 +505,7 @@ export default class Manager extends Vue {
 
     versionNumbers: string[] = [];
     selectedThunderstoreMod: ThunderstoreMod | null = null;
+    selectedManifestMod: ManifestV2 | null = null;
 
     selectedVersion: string | null = null;
 
@@ -472,6 +530,10 @@ export default class Manager extends Vue {
     sortDescending: boolean = true;
 
     showThunderstoreSorting: boolean = false;
+
+    showingDependencyList: boolean = false;
+    dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
+
 
 
     @Watch('searchFilter')
@@ -636,6 +698,10 @@ export default class Manager extends Vue {
         this.downloadingMod = false;
     }
 
+    closeDependencyListModal() {
+        this.showingDependencyList = false;
+    }
+
     // eslint-disable-next-line
     uninstallMod(vueMod: any) {
         let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
@@ -655,14 +721,44 @@ export default class Manager extends Vue {
         this.filterModLists();
     }
 
-    // eslint-disable-next-line
+    disableModRequireConfirmation(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+    }
+
+    viewDependencyList(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        this.showDependencyList(mod, DependencyListDisplayType.VIEW);
+    }
+
     disableMod(vueMod: any) {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            Dependants.getDependantList(mod, this.localModList).forEach(dependant => {
+                const result = this.performDisable(dependant);
+                if (result instanceof R2Error) {
+                    throw result;
+                }
+            });
+            const result = this.performDisable(mod);
+            if (result instanceof R2Error) {
+                throw result;
+            }
+        } catch(e) {
+            // Failed to disable mod.
+            const err: R2Error = e;
+            Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+        }
+        this.closeDependencyListModal();
+    }
+
+    // eslint-disable-next-line
+    performDisable(mod: ManifestV2): R2Error | void {
         const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
             this.showError(disableErr);
-            return;
+            return disableErr;
         }
         const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
             updatingMod.disable();
@@ -670,20 +766,40 @@ export default class Manager extends Vue {
         if (updatedList instanceof R2Error) {
             // Failed to update mod list.
             this.showError(updatedList);
-            return;
+            return updatedList;
         }
         this.localModList = updatedList;
         this.filterModLists();
     }
 
-    // eslint-disable-next-line
     enableMod(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            Dependants.getDependencyList(mod, this.localModList).forEach(dependant => {
+                const result = this.performEnable(dependant);
+                if (result instanceof R2Error) {
+                    throw result;
+                }
+            });
+            const result = this.performEnable(mod);
+            if (result instanceof R2Error) {
+                throw result;
+            }
+        } catch(e) {
+            // Failed to disable mod.
+            const err: R2Error = e;
+            Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+        }
+    }
+
+    // eslint-disable-next-line
+    performEnable(vueMod: any): R2Error | void {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
         if (disableErr instanceof R2Error) {
             // Failed to disable
             this.showError(disableErr);
-            return;
+            return disableErr;
         }
         const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
             updatingMod.enable();
@@ -691,23 +807,23 @@ export default class Manager extends Vue {
         if (updatedList instanceof R2Error) {
             // Failed to update mod list.
             this.showError(updatedList);
-            return;
+            return updatedList;
         }
         this.localModList = updatedList;
         this.filterModLists();
     }
 
     // eslint-disable-next-line
-    getTitle(key: any) {
+    isModDeprecated(key: any) {
         if (key.deprecated) {
-            return `DEPRECATED: ${key.name}`.strike();
+            return true;
         } else {
             const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(key);
             if (this.isModDependencyDeprecated(mod)) {
-                return key.name.strike();
+                return true;
             }
         }
-        return key.name;
+        return false;
     }
 
     getSortOptions() {
@@ -809,6 +925,21 @@ export default class Manager extends Vue {
         if (modal !== null) {
             modal.className = 'modal is-active';
         }
+    }
+
+    showDependencyList(vueMod: any, displayType: string) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        this.selectedManifestMod = mod;
+        this.dependencyListDisplayType = displayType;
+        this.showingDependencyList = true;
+    }
+
+    getDependantList(mod: ManifestV2): Set<ManifestV2> {
+        return Dependants.getDependantList(mod, this.localModList);
+    }
+
+    getDependencyList(mod: ManifestV2): Set<ManifestV2> {
+        return Dependants.getDependencyList(mod, this.localModList);
     }
 
     launchModded() {
@@ -941,17 +1072,23 @@ export default class Manager extends Vue {
     }
 
     created() {
+        Logger.Log(LogSeverity.INFO, 'Loading settings');
         this.settings.load();
+        Logger.Log(LogSeverity.INFO, 'Getting local mod list');
         const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
         if (!(newModList instanceof R2Error)) {
             this.localModList = newModList;
+        } else {
+            Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
         }
+        Logger.Log(LogSeverity.INFO, 'Binding mod lists to view');
         this.thunderstoreModList = ThunderstorePackages.PACKAGES;
         this.generateModlist();
         ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
             const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
             if (combo instanceof R2Error) {
                 this.showError(combo);
+                Logger.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
                 return;
             }
             this.performDependencyDownload(combo.getMod(), combo.getVersion());
