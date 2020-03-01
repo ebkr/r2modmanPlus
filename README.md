@@ -18,6 +18,11 @@ Updates in r2modmanPlus are now handled in the background. Leave the manager run
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
 
 ## Updates
+### 3.0.8
+- Tags!
+- Squashed some bugs
+- Improved dependency management
+
 ### 3.0.7
 - Menu icons!
 - Profile import errors are now shown.
@@ -27,14 +32,6 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 - Added legacy install mode.
 - Version numbers are now visible on installed mods.
 - Added a title to the Settings page.
-
-### 3.0.5
-- Added config editor.
-- Mod author is now visible.
-- Disabled exported mods are now imported and disabled.
-- "Disable all mods" now functions correctly.
-- Clicking dropdown arrow no longer sends you back to the top of the page.
-- Added setting to pre-expand or collapse all cards.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
