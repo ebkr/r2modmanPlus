@@ -10,7 +10,7 @@
                     <div class='media-content'>
                         <div class='content'>
                             <div class='container' v-if="editing === false">
-                                <div v-if="view !== 'main'">
+                                <div>
                                     <i class='fas fa-long-arrow-alt-left margin-right'/>
                                     <strong><a @click="backToManager()">Go back</a></strong>
                                     <br/><br/>
@@ -120,7 +120,6 @@ export default class ConfigEditor extends Vue {
                 this.variables[section][sides[0].trim()] = sides[1].trim();
             }
         });
-        console.log(this.variables);
         this.editing = true;
     }
 
@@ -161,7 +160,7 @@ export default class ConfigEditor extends Vue {
     updateVariableText(section: string, variable: string) {
         const element: HTMLElement | null = document.getElementById(`${section}-${variable}`);
         if (element instanceof HTMLElement) {
-            const inputField = <HTMLInputElement>(element);
+            const inputField = element as HTMLInputElement;
             this.variables[section][variable] = inputField.value;
         }
     }
