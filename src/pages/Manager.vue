@@ -742,12 +742,21 @@ export default class Manager extends Vue {
 
     disableModRequireConfirmation(vueMod: any) {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-        this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+        if (this.getDependantList(mod).size === 0) {
+            this.performDisable(mod);
+        } else {
+            this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+        }
     }
 
     uninstallModRequireConfirmation(vueMod: any) {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-        this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
+        if (this.getDependantList(mod).size === 0) {
+            this.performUninstallMod(mod);
+            this.filterModLists();
+        } else {
+            this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
+        }
     }
 
     viewDependencyList(vueMod: any) {
@@ -981,9 +990,12 @@ export default class Manager extends Vue {
                 }
             }
             this.gameRunning = true;
-            GameRunner.playModded(this.settings.riskOfRain2Directory, ()=>{
+            GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null)=>{
+                if (!isNull(err)) {
+                    this.showError(err);
+                }
                 this.gameRunning = false;
-            }, this.settings);
+            });
         }
     }
 
@@ -991,9 +1003,12 @@ export default class Manager extends Vue {
         this.prepareLaunch();
         if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
             this.gameRunning = true;
-            GameRunner.playVanilla(this.settings.riskOfRain2Directory, ()=>{
+            GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null)=>{
+                if (!isNull(err)) {
+                    this.showError(err);
+                }
                 this.gameRunning = false;
-            }, this.settings);
+            });
         }
     }
 
