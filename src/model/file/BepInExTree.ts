@@ -59,6 +59,14 @@ export default class BepInExTree {
         return this.files;
     }
 
+    public getRecursiveFiles(): string[] {
+        const files = [...this.files];
+        this.directories.forEach(tree => {
+            files.push(...tree.getRecursiveFiles());
+        });
+        return files;
+    }
+
     public getDirectories(): BepInExTree[] {
         return this.directories;
     }

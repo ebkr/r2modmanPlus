@@ -77,11 +77,15 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, ExpandableCard } from '../components/all';
 
-import Profile from 'src/model/Profile'
-import ConfigFile from 'src/model/file/ConfigFile'
+import Profile from 'src/model/Profile';
+import ConfigFile from 'src/model/file/ConfigFile';
+
+import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import BepInExTree from '../model/file/BepInExTree';
+import R2Error from '../model/errors/R2Error';
 
 @Component({
     components: {
@@ -165,12 +169,16 @@ export default class ConfigEditor extends Vue {
     created() {
         const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
         if (fs.pathExistsSync(configLocation)) {
-            const files: string[] = fs.readdirSync(configLocation);
-            files.forEach((file: string) => {
-                if (path.extname(file).toLowerCase() === '.cfg') {
-                    this.configFiles.push(new ConfigFile(file.substring(0, file.length - 4), path.join(configLocation, file)));
-                }
-            })
+            const tree: BepInExTree | R2Error = BepInExTree.buildFromLocation(configLocation);
+            if (tree instanceof BepInExTree) {
+                tree.getRecursiveFiles().forEach(file => {
+                    if (path.extname(file).toLowerCase() === '.cfg') {
+                        this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file));
+                    }
+                });
+            } else {
+                Logger.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
+            }
         }
     }
 
