@@ -115,8 +115,7 @@
             </template>
             <template v-slot:footer>
                 <button v-if="dependencyListDisplayType === 'disable'" class="button is-info" @click="disableMod(selectedManifestMod)">Disable</button>
-                <!-- TODO: Implement uninstall function for dependants -->
-                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info">Uninstall</button>
+                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info" @click="uninstallMod(selectedManifestMod)">Uninstall</button>
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closeDependencyListModal()">Done</button>
             </template>
         </modal>
@@ -247,7 +246,7 @@
                                             <i class='fas fa-exclamation-circle'></i>
                                         </span>
                                     </template>
-                                    <a class='card-footer-item' @click="uninstallMod(key)">Uninstall</a>
+                                    <a class='card-footer-item' @click="uninstallModRequireConfirmation(key)">Uninstall</a>
                                     <template>
                                         <a class='card-footer-item' @click="disableModRequireConfirmation(key)" v-if="key.enabled">Disable</a>
                                         <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
@@ -702,28 +701,53 @@ export default class Manager extends Vue {
         this.showingDependencyList = false;
     }
 
-    // eslint-disable-next-line
     uninstallMod(vueMod: any) {
         let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            Dependants.getDependantList(mod, this.localModList).forEach(dependant => {
+                const result = this.performUninstallMod(dependant);
+                if (result instanceof R2Error) {
+                    throw result;
+                }
+            });
+            const result = this.performUninstallMod(mod);
+            if (result instanceof R2Error) {
+                throw result;
+            }
+        } catch(e) {
+            // Failed to uninstall mod.
+            const err: R2Error = e;
+            Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+        }
+        this.closeDependencyListModal();
+        this.filterModLists();
+    }
+
+    // eslint-disable-next-line
+    performUninstallMod(mod: ManifestV2): R2Error | void {
         const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
         if (uninstallError instanceof R2Error) {
             // Uninstall failed
             this.showError(uninstallError);
-            return;
+            return uninstallError;
         }
         const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
         if (modList instanceof R2Error) {
             // Failed to remove mod from local list.
             this.showError(modList);
-            return;
+            return modList;
         }
         this.localModList = modList;
-        this.filterModLists();
     }
 
     disableModRequireConfirmation(vueMod: any) {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+    }
+
+    uninstallModRequireConfirmation(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
     }
 
     viewDependencyList(vueMod: any) {
