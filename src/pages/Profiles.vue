@@ -18,7 +18,8 @@
                         <span class="tag is-danger" v-else-if='doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is already in use</span>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="createProfile(newProfileName)">Create</button>
+                        <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
+                        <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
                     </div>
                 </div>
             </div>
