@@ -7,22 +7,26 @@ import R2Error from 'src/model/errors/R2Error';
 
 export default class GameRunner {
 
-    public static playModded(ror2Directory: string, onComplete: ()=>void, settings: ManagerSettings) {
+    public static playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
-            onComplete();
+            onComplete(steamDir);
             return;
         }
-        child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('exit', onComplete);
+        child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('error', err => {
+            onComplete(new R2Error('Error starting Steam', err.message));
+        });
     }
 
-    public static playVanilla(ror2Directory: string, onComplete: ()=>void, settings: ManagerSettings) {
+    public static playVanilla(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
-            onComplete();
+            onComplete(steamDir);
             return;
         }
-        child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'false']).on('exit', onComplete);
+        child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'false']).on('error', err => {
+            onComplete(new R2Error('Error starting Steam', err.message));
+        });
     }
 
 
