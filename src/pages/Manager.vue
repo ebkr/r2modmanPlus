@@ -5,7 +5,7 @@
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading</h3>
-                    <p>{{currentDownloadProgress}}% complete</p>
+                    <p>{{Math.floor(currentDownloadProgress)}}% complete</p>
                     <progress-bar 
                         :max='100'
                         :value='currentDownloadProgress'
