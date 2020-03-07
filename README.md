@@ -18,6 +18,12 @@ Updates in r2modmanPlus are now handled in the background. Leave the manager run
 If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
 
 ## Updates
+### 3.0.9
+- Delete configs in editor
+- Profile importing shows progress
+- Version number when clicked takes you to that mod's version page.
+- Download progress has been rounded, no more recurring numbers.
+
 ### 3.0.8
 - Tags!
 - Squashed some bugs
@@ -27,11 +33,6 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 - Menu icons!
 - Profile import errors are now shown.
 - Downloaded mods via the Thunderstore site now refresh in manager.
-
-### 3.0.6
-- Added legacy install mode.
-- Version numbers are now visible on installed mods.
-- Added a title to the Settings page.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
