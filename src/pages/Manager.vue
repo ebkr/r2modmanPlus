@@ -254,7 +254,7 @@
                                     <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
                                     <span class='card-footer-item'>
                                         <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
-                                        {{key.versionNumber}}
+                                         <link-component :url="`${key.websiteUrl}${key.versionNumber}`" :target="'external'">{{key.versionNumber}}</link-component>
                                     </span>
                                     <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
                                     <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download dependency</a>
