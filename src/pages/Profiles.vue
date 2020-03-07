@@ -51,7 +51,7 @@
             <div class='modal-content'>
                  <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title'>Importing profile</p>
+                        <p class='card-header-title'>Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
                     </header>
                     <div class='card-content'>
                         <p>This may take a while, as mods are being downloaded.</p>
@@ -163,6 +163,8 @@ export default class Profiles extends Vue {
 
     private removingProfile: boolean = false;
     private importingProfile: boolean = false;
+    private numberOfModsImported: number = 0;
+    private totalModsToImport: number = 0;
 
     errorMessage: string = '';
     errorStack: string = '';
@@ -247,10 +249,13 @@ export default class Profiles extends Vue {
     }
 
     downloadImportedProfileMods(modList: ExportMod[]) {
+        this.numberOfModsImported = 0;
+        this.totalModsToImport = modList.length;
         let step = 0;
         let currentMod: ThunderstoreMod;
         const installStep = (progress: number, status: number, error: R2Error | void)=>{
             if (status === StatusEnum.SUCCESS) {
+                this.numberOfModsImported += 1;
                 const thunderstoreVersion: ThunderstoreVersion | undefined = currentMod.getVersions().find((version: ThunderstoreVersion) => 
                     version.getVersionNumber().toString() === modList[step].getVersionNumber().toString()
                 );
