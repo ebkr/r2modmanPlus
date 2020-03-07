@@ -23,7 +23,7 @@
                                                 <span>{{file.name}}</span>
                                             </template>
                                             <a class='card-footer-item' @click="editFile(file.name)">Edit Config</a>
-                                            <a class='card-footer-item'>Delete</a>
+                                            <a class='card-footer-item' @click="deleteConfig(file.name)">Delete</a>
                                     </expandable-card>
                                 </div>
                             </div>
@@ -163,6 +163,13 @@ export default class ConfigEditor extends Vue {
             const inputField = element as HTMLInputElement;
             this.variables[section][variable] = inputField.value;
         }
+    }
+
+    deleteConfig(fileName: string) {
+        const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
+        const filePath: string = path.join(configLocation, `${fileName}.cfg`);
+        fs.removeSync(filePath);
+        this.configFiles = this.configFiles.filter(file => file.getName() !== fileName);
     }
 
     created() {
