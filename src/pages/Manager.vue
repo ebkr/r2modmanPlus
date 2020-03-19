@@ -223,10 +223,13 @@
                     <template v-if="localModList.length > 0">
                         <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.name">
                             <expandable-card
+                                @moveUp="moveUp(key)"
+                                @moveDown="moveDown(key)"
                                 :image="key.icon"
                                 :id="index"
                                 :description="key.description"
                                 :funkyMode="settings.funkyModeEnabled"
+                                :manualSort="true"
                                 :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
                                         <span v-if="key.enabled">
@@ -973,6 +976,28 @@ export default class Manager extends Vue {
 
     getDependencyList(mod: ManifestV2): Set<ManifestV2> {
         return Dependants.getDependencyList(mod, this.localModList);
+    }
+
+    moveUp(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const updatedList = ProfileModList.shiftModEntryUp(mod);
+        if (updatedList instanceof R2Error) {
+            this.showError(updatedList);
+            return;
+        }
+        this.localModList = updatedList;
+        this.filterModLists();
+    }
+
+    moveDown(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const updatedList = ProfileModList.shiftModEntryDown(mod);
+        if (updatedList instanceof R2Error) {
+            this.showError(updatedList);
+            return;
+        }
+        this.localModList = updatedList;
+        this.filterModLists();
     }
 
     launchModded() {

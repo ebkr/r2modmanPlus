@@ -11,7 +11,14 @@
                     </div>
                     <span class='card-header-title'><slot name='title'></slot></span>
                     <slot name='other-icons'></slot>
-                    <a class='card-header-icon' aria-label='more options'>
+                    <!-- Allow movement of mod order -->
+                    <a class='card-header-icon' v-if="manualSort" v-on:click.stop.prevent="emitMove('Up')">
+                        <i class="fas fa-angle-double-up"></i>
+                    </a>
+                    <a class='card-header-icon' v-if="manualSort" v-on:click.stop.prevent="emitMove('Down')">
+                        <i class="fas fa-angle-double-down"></i>
+                    </a>
+                    <a class='card-header-icon'>
                         <span class='icon'>
                             <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible'></i>
                             <i class='fas fa-angle-down' aria-hidden='true' v-if='visible'></i>
@@ -54,6 +61,9 @@ export default class ExpandableCard extends Vue {
     @Prop({default: false})
     expandedByDefault: boolean | undefined;
 
+    @Prop({default: false})
+    manualSort: boolean | undefined;
+
     // Keep track of visibility
     visible: boolean | undefined = false;
 
@@ -64,6 +74,10 @@ export default class ExpandableCard extends Vue {
 
     toggleVisibility() {
         this.visible = !this.visible;
+    }
+
+    emitMove(direction: string) {
+        this.$emit("move" + direction);
     }
 
     created() {

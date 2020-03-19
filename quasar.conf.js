@@ -197,7 +197,7 @@ module.exports = function (ctx) {
 
         appId: 'ebkr-r2modman',
         win: {
-            target: ['nsis'],
+            target: ['nsis', 'portable'],
             icon: 'src/assets/icon.png'
         },
         nsis: {
