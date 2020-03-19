@@ -142,4 +142,46 @@ export default class ProfileModList {
         spawn('powershell.exe', ['explorer', `/select,${exportPath}`]);
     }
 
+    public static shiftModEntryUp(mod: ManifestV2): ManifestV2[] | R2Error {
+        let list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+        if (list instanceof R2Error) {
+            return list;
+        }
+        const index = list.findIndex((stored: ManifestV2) => stored.getName() === mod.getName())
+        if (index === 0) {
+            return list;
+        } else {
+            list = list.filter((stored: ManifestV2) => stored.getName() !== mod.getName());
+            const start = list.slice(0, index - 1);
+            const end = list.slice(index - 1);
+            list = [...start, mod, ...end];
+        }
+        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        if (saveErr instanceof R2Error) {
+            return saveErr;
+        }
+        return this.getModList(Profile.getActiveProfile());
+    }
+
+    public static shiftModEntryDown(mod: ManifestV2): ManifestV2[] | R2Error {
+        let list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+        if (list instanceof R2Error) {
+            return list;
+        }
+        const index = list.findIndex((stored: ManifestV2) => stored.getName() === mod.getName())
+        if (index === list.length) {
+            return list;
+        } else {
+            list = list.filter((stored: ManifestV2) => stored.getName() !== mod.getName());
+            const start = list.slice(0, index + 1);
+            const end = list.slice(index + 1);
+            list = [...start, mod, ...end];
+        }
+        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        if (saveErr instanceof R2Error) {
+            return saveErr;
+        }
+        return this.getModList(Profile.getActiveProfile());
+    }
+
 }
