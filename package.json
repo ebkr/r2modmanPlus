@@ -51,7 +51,8 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
+    "minimist": "^1.2.2"
   },
   "engines": {
     "node": ">= 8.9.0",
