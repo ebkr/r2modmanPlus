@@ -172,7 +172,8 @@
                 </aside>
             </div>
             <div class='column is-three-quarters'>
-                <template v-if="view === 'online'">
+                <div v-show="view === 'online'">
+                <template>
                     <div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
                         <expandable-card
                             :image="key.versions[0].icon"
@@ -211,6 +212,7 @@
                             </expandable-card>
                     </div>
                 </template>
+                </div>
                 <template v-if="view === 'installed'">
                     <div class='fixed-center text-center' v-if="localModList.length === 0">
                         <div>

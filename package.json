@@ -47,7 +47,7 @@
     "electron-debug": "^3.0.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-packager": "^14.1.1",
-    "eslint": "^5.10.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
