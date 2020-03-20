@@ -159,7 +159,12 @@ export default class ProfileInstaller {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
-            const profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
+            let profileLocation = '';
+            if (folderName.toLowerCase() !== 'config') {
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
+            } else {
+                profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName);
+            }
             try {
                 fs.ensureDirSync(profileLocation);
                 try {
