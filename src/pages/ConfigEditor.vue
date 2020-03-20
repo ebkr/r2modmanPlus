@@ -15,7 +15,11 @@
                                     <strong><a @click="backToManager()">Go back</a></strong>
                                     <br/><br/>
                                 </div>
-                                <div v-for='(file, index) in configFiles' :key="`config-file-${file.name}`">
+                                <div>
+                                    <input class="input" type="text" placeholder="Search for config files" v-model="filterText"/>
+                                    <br/><br/>
+                                </div>
+                                <div v-for='(file, index) in shownConfigFiles' :key="`config-file-${file.name}`">
                                     <expandable-card
                                         :id="index"
                                         :visible="false">
@@ -30,19 +34,17 @@
                             <div class='container' v-else>
                                 <div>
                                     <div class='sticky-top sticky-top--buttons'>
-                                        <button class='button is-info' @click="saveChanges()">Save changes</button>
+                                        <button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
                                         <button class='button is-danger' @click="editing = false;">Cancel</button>
-                                        <button class='button has-tooltip-bottom' @click="switchVariableListMode()" v-if='variableListMode' data-tooltip='Changes will be discarded'>Full view</button>
-                                        <button class='button has-tooltip-bottom' @click="switchVariableListMode()" v-else-if='!variableListMode' data-tooltip='Changes will be discarded'>List view</button>
                                     </div>
                                     <br/>
                                     <h4 class='title is-4'>{{loadedFile}}</h4>
-                                    <pre id='editor' v-if="!variableListMode" contenteditable>{{fileText}}</pre>
-                                    <div v-else>
+                                    <div>
                                         <h5 class='subtitle is-5'>Sections</h5>
                                         <ul>
                                             <li v-for='(_, key) in variables' :key="`section-link-${key}`">
-                                                <a :href="`#section-${key}`">{{key}}</a>
+                                                <a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
+                                                <a :href="`#section-${key}`" v-else>{{[UNTITLED]}}</a>
                                             </li>
                                         </ul>
                                         <hr/>
@@ -50,12 +52,12 @@
                                             <br/>
                                             <h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
                                             <div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
-                                                <div class='field has-addons'>
+                                                <div class='field has-addons has-tooltip-top' :data-tooltip="getCommentDisplay(varValue.comments)">
                                                     <div class='control is-expanded'>
                                                         <input class='input' type='text' :value="varName" width="250" disabled readonly/>
                                                     </div>
                                                     <div class='control is-expanded'>
-                                                        <input :id="`${key}-${varName}`" class='input' type='text' :value="varValue" @change="updateVariableText(key, varName, this)"/>
+                                                        <input :id="`${key}-${varName}`" class='input' type='text' :value="varValue.value" @change="updateVariableText(key, varName, this)"/>
                                                     </div>
                                                     <hr class='hr'/>
                                                 </div>
@@ -74,11 +76,12 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Watch } from 'vue-property-decorator';
 import { Hero, ExpandableCard } from '../components/all';
 
 import Profile from 'src/model/Profile';
 import ConfigFile from 'src/model/file/ConfigFile';
+import ConfigLine from 'src/model/file/ConfigLine';
 
 import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
@@ -95,13 +98,21 @@ import R2Error from '../model/errors/R2Error';
 })
 export default class ConfigEditor extends Vue {
     
+    private shownConfigFiles: ConfigFile[] = [];
     private configFiles: ConfigFile[] = [];
     private loadedFile: string = '';
     private fileText: string = '';
 
     private editing: boolean = false;
     private variableListMode: boolean = true;
-    private variables: {[section: string]:{[variable: string]: string}} = {};
+    private variables: {[section: string]:{[variable: string]: ConfigLine}} = {};
+
+    private filterText: string = '';
+
+    @Watch("filterText")
+    textChanged() {
+        this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
+    }
 
     editFile(fileName: string) {
         const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
@@ -111,15 +122,21 @@ export default class ConfigEditor extends Vue {
         // Find all variables offered within config script.
         this.variables = {};
         let section = 'root';
+        let comments: string[] = [];
         this.fileText.split('\n').forEach((line: string) => {
             if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
                 section = line.trim().substring(1, line.trim().length - 1);
                 this.variables[section] = {};
+                comments = [];
             } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
                 const sides = line.split('=');
-                this.variables[section][sides[0].trim()] = sides[1].trim();
+                this.variables[section][sides[0].trim()] = new ConfigLine(sides[1].trim(), comments);
+                comments = [];
+            } else if (line.trim().startsWith('#')) {
+                comments.push(line.trim());
             }
         });
+        window.scrollTo(0, 0);
         this.editing = true;
     }
 
@@ -139,13 +156,14 @@ export default class ConfigEditor extends Vue {
                     builtString += line + '\n';
                 } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
                     const sides = line.split('=');
-                    builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()]}\n`;
+                    builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()].getValue()}\n`;
                 } else {
                     builtString += line + '\n';
                 }
             });
             fs.writeFileSync(path.join(configLocation, `${this.loadedFile}.cfg`), builtString);
         }
+        window.scrollTo(0, 0);
         this.editing = false;
     }
 
@@ -153,15 +171,11 @@ export default class ConfigEditor extends Vue {
         this.$router.push('/manager');
     }
 
-    switchVariableListMode() {
-        this.variableListMode = !this.variableListMode;
-    }
-
     updateVariableText(section: string, variable: string) {
         const element: HTMLElement | null = document.getElementById(`${section}-${variable}`);
         if (element instanceof HTMLElement) {
             const inputField = element as HTMLInputElement;
-            this.variables[section][variable] = inputField.value;
+            this.variables[section][variable].setValue(inputField.value);
         }
     }
 
@@ -170,6 +184,11 @@ export default class ConfigEditor extends Vue {
         const filePath: string = path.join(configLocation, `${fileName}.cfg`);
         fs.removeSync(filePath);
         this.configFiles = this.configFiles.filter(file => file.getName() !== fileName);
+    }
+
+    getCommentDisplay(comments: string[]): string {
+        const split = comments.reduce((x: string, y: string) => x + y).split('#');
+        return split.join('\n').trim();
     }
 
     created() {
@@ -186,6 +205,7 @@ export default class ConfigEditor extends Vue {
                 Logger.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
             }
         }
+        this.textChanged();
     }
 
 }

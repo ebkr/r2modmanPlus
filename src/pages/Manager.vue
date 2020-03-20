@@ -141,13 +141,13 @@
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
                         <li>
-                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed</a>
+                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})</a>
                             <ul v-if="view === 'installed'">
                                 <li><input v-model='searchFilter' class="input" type="text" placeholder="Search mods"/></li>
                             </ul>
                         </li>
                         <li>
-                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online</a>
+                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})</a>
                             <ul v-if="view === 'online'">
                                 <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
                                 <li class='is-size-7'>&nbsp;</li>
@@ -173,281 +173,287 @@
             </div>
             <div class='column is-three-quarters'>
                 <div v-show="view === 'online'">
-                <template>
-                    <div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
-                        <expandable-card
-                            :image="key.versions[0].icon"
-                            :id="index"
-                            :description="key.versions[0].description"
-                            :funkyMode="settings.funkyModeEnabled"
-                            :expandedByDefault="settings.expandedCards">
-                                <template v-slot:title>
-                                    <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
-                                        <span class="tag is-info">Essential</span>&nbsp;
-                                        {{key.fullName}} by {{key.owner}}
-                                    </span>
-                                    <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
-                                        <span class="tag is-danger">Deprecated</span>&nbsp;
-                                        <strike>{{key.fullName}} by {{key.owner}}</strike>
-                                    </span>
-                                    <span v-else>
-                                        {{key.fullName}} by {{key.owner}}
-                                    </span>
-                                </template>
-                                <template v-slot:other-icons>
-                                    <span class='card-header-icon has-tooltip-left' data-tooltip='Mod already installed' v-if="isThunderstoreModInstalled(key)">
-                                        <i class='fas fa-check'></i>
-                                    </span>
-                                </template>
-                                <a class='card-footer-item' @click='openModal(key)'>Download</a>
-                                <div class='card-footer-item'>
-                                    <link-component :url="key.packageUrl" :target="'external'">View on Thunderstore</link-component>
-                                </div>
-                                <div class='card-footer-item'>
-                                    <span><i class='fas fa-download'/> {{key.totalDownloads}}</span>
-                                </div>
-                                <div class='card-footer-item'>
-                                    <span><i class='fas fa-thumbs-up'/> {{key.rating}}</span>
-                                </div>
-                            </expandable-card>
-                    </div>
-                </template>
-                </div>
-                <template v-if="view === 'installed'">
-                    <div class='fixed-center text-center' v-if="localModList.length === 0">
-                        <div>
-                            <i class="fas fa-exclamation fa-5x"></i>
-                        </div>
-                        <br/>
-                        <h3 class='title is-4'>Looks like you don't have any mods installed</h3>
-                        <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
-                    </div>
-                    <template v-if="localModList.length > 0">
-                        <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.name">
+                    <template>
+                        <div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
                             <expandable-card
-                                @moveUp="moveUp(key)"
-                                @moveDown="moveDown(key)"
-                                :image="key.icon"
+                                :image="key.versions[0].icon"
                                 :id="index"
-                                :description="key.description"
+                                :description="key.versions[0].description"
                                 :funkyMode="settings.funkyModeEnabled"
-                                :manualSort="true"
                                 :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
-                                        <span v-if="key.enabled">
-                                            {{key.displayName}} by {{key.authorName}}
+                                        <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
+                                            <span class="tag is-info">Essential</span>&nbsp;
+                                            {{key.fullName}} by {{key.owner}}
                                         </span>
-                                        <span v-else class='has-tooltip-left' data-tooltip='This mod will not be used in-game'>
-                                            <span class="tag is-warning">Disabled</span>&nbsp;
-                                            <strike>{{key.displayName}} by {{key.authorName}}</strike>
+                                        <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
+                                            <span class="tag is-danger">Deprecated</span>&nbsp;
+                                            <strike>{{key.fullName}} by {{key.owner}}</strike>
+                                        </span>
+                                        <span v-else>
+                                            {{key.fullName}} by {{key.owner}}
                                         </span>
                                     </template>
                                     <template v-slot:other-icons>
-                                        <!-- Show update and missing dependency icons -->
-                                        <span class='card-header-icon has-tooltip-left' data-tooltip='An update is available' v-if="!isLatest(key)">
-                                            <i class='fas fa-cloud-upload-alt'></i>
-                                        </span>
-                                        <span class='card-header-icon has-tooltip-left' :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`" v-if="getMissingDependencies(key).length > 0">
-                                            <i class='fas fa-exclamation-circle'></i>
+                                        <span class='card-header-icon has-tooltip-left' data-tooltip='Mod already installed' v-if="isThunderstoreModInstalled(key)">
+                                            <i class='fas fa-check'></i>
                                         </span>
                                     </template>
-                                    <a class='card-footer-item' @click="uninstallModRequireConfirmation(key)">Uninstall</a>
-                                    <template>
-                                        <a class='card-footer-item' @click="disableModRequireConfirmation(key)" v-if="key.enabled">Disable</a>
-                                        <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
-                                    </template>
-                                    <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
-                                    <span class='card-footer-item'>
-                                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
-                                         <link-component :url="`${key.websiteUrl}${key.versionNumber}`" :target="'external'">{{key.versionNumber}}</link-component>
-                                    </span>
-                                    <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-                                    <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download dependency</a>
+                                    <a class='card-footer-item' @click='openModal(key)'>Download</a>
+                                    <div class='card-footer-item'>
+                                        <link-component :url="key.packageUrl" :target="'external'">View on Thunderstore</link-component>
+                                    </div>
+                                    <div class='card-footer-item'>
+                                        <span><i class='fas fa-download'/> {{key.totalDownloads}}</span>
+                                    </div>
+                                    <div class='card-footer-item'>
+                                        <span><i class='fas fa-thumbs-up'/> {{key.rating}}</span>
+                                    </div>
                                 </expandable-card>
                         </div>
                     </template>
-                </template>
-                <template v-if="view === 'settings'">
-                    <hero title='Settings' subtitle='Advanced options for r2modman' heroType='is-info' />
-                    <a @click="changeProfile()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Change profile</p>
+                </div>
+                <div v-show="view === 'installed'">
+                    <template>
+                        <div class='fixed-center text-center' v-if="localModList.length === 0">
+                            <div>
+                                <i class="fas fa-exclamation fa-5x"></i>
+                            </div>
+                            <br/>
+                            <h3 class='title is-4'>Looks like you don't have any mods installed</h3>
+                            <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a @click="view = 'online'">here</a>.</h4>
+                        </div>
+                        <template v-if="localModList.length > 0">
+                            <div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.name">
+                                <expandable-card
+                                    @moveUp="moveUp(key)"
+                                    @moveDown="moveDown(key)"
+                                    :image="key.icon"
+                                    :id="index"
+                                    :description="key.description"
+                                    :funkyMode="settings.funkyModeEnabled"
+                                    :manualSort="true"
+                                    :expandedByDefault="settings.expandedCards">
+                                        <template v-slot:title>
+                                            <span v-if="key.enabled">
+                                                {{key.displayName}} by {{key.authorName}}
+                                            </span>
+                                            <span v-else class='has-tooltip-left' data-tooltip='This mod will not be used in-game'>
+                                                <span class="tag is-warning">Disabled</span>&nbsp;
+                                                <strike>{{key.displayName}} by {{key.authorName}}</strike>
+                                            </span>
+                                        </template>
+                                        <template v-slot:other-icons>
+                                            <!-- Show update and missing dependency icons -->
+                                            <span class='card-header-icon has-tooltip-left' data-tooltip='An update is available' v-if="!isLatest(key)">
+                                                <i class='fas fa-cloud-upload-alt'></i>
+                                            </span>
+                                            <span class='card-header-icon has-tooltip-left' :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`" v-if="getMissingDependencies(key).length > 0">
+                                                <i class='fas fa-exclamation-circle'></i>
+                                            </span>
+                                        </template>
+                                        <a class='card-footer-item' @click="uninstallModRequireConfirmation(key)">Uninstall</a>
+                                        <template>
+                                            <a class='card-footer-item' @click="disableModRequireConfirmation(key)" v-if="key.enabled">Disable</a>
+                                            <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
+                                        </template>
+                                        <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+                                        <span class='card-footer-item'>
+                                            <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
+                                            <link-component :url="`${key.websiteUrl}${key.versionNumber}`" :target="'external'">{{key.versionNumber}}</link-component>
+                                        </span>
+                                        <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
+                                        <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0" @click="downloadDependency(getMissingDependencies(key)[0])">Download dependency</a>
+                                    </expandable-card>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+                <div v-show="view === 'settings'">
+                    <template>
+                        <hero title='Settings' subtitle='Advanced options for r2modman' heroType='is-info' />
+                        <a @click="changeProfile()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Change profile</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="setAllModsEnabled(false)">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Disable all mods</p>
+                        </a>
+                        <a @click="setAllModsEnabled(false)">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Disable all mods</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="setAllModsEnabled(true)">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Enable all mods</p>
+                        </a>
+                        <a @click="setAllModsEnabled(true)">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Enable all mods</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="changeRoR2InstallDirectory()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Locate Risk of Rain 2 directory</p>
+                        </a>
+                        <a @click="changeRoR2InstallDirectory()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Locate Risk of Rain 2 directory</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="changeSteamDirectory()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Locate Steam directory</p>
+                        </a>
+                        <a @click="changeSteamDirectory()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Locate Steam directory</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="setFunkyMode(!settings.funkyModeEnabled)">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title' v-if="settings.funkyModeEnabled">Disable funky mode</p>
-                                    <p class='card-header-title' v-else>Enable funky mode</p>
+                        </a>
+                        <a @click="setFunkyMode(!settings.funkyModeEnabled)">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title' v-if="settings.funkyModeEnabled">Disable funky mode</p>
+                                        <p class='card-header-title' v-else>Enable funky mode</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="exportProfile()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Export profile</p>
+                        </a>
+                        <a @click="exportProfile()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Export profile</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="browseDataFolder()">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title'>Browse data folder</p>
+                        </a>
+                        <a @click="browseDataFolder()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Browse data folder</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="toggleCardExpanded(!settings.expandedCards)">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title' v-if="settings.expandedCards">Collapse cards</p>
-                                    <p class='card-header-title' v-else>Expand cards</p>
+                        </a>
+                        <a @click="toggleCardExpanded(!settings.expandedCards)">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title' v-if="settings.expandedCards">Collapse cards</p>
+                                        <p class='card-header-title' v-else>Expand cards</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                    <a @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
-                        <div class='container'>
-                            <div class='border-at-bottom'>
-                                <div class='card is-shadowless'>
-                                    <p class='card-header-title' v-if="settings.legacyInstallMode">
-                                        <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
-                                        <span class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.'>Install mods using Symlink</span>
-                                    </p>
-                                    <p class='card-header-title' v-else>
-                                        <span class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.'>Install mods in legacy mode</span>
-                                    </p>
+                        </a>
+                        <a @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title' v-if="settings.legacyInstallMode">
+                                            <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
+                                            <span class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.'>Install mods using Symlink</span>
+                                        </p>
+                                        <p class='card-header-title' v-else>
+                                            <span class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.'>Install mods in legacy mode</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                        </a>
+                    </template>
+                </div>
+                <div v-show="view === 'help'">
+                    <template>
+                        <!-- tips&tricks -->
+                        <!-- gameWontStart -->
+                        <!-- modsNotWorking -->
+                        <!-- likeR2 -->
+                        <div v-if="helpPage === 'tips&tricks'">
+                            <hero title='Tips and tricks' heroType='is-info' />
+                            <br/>
+                            <h5 class='title is-5'>Install with Mod Manager</h5>
+                            <p>Thunderstore has a way to install mods without having to search for them in the mod manager.</p>
+                            <p>Just go to the Settings tab, and associate r2modman with Thunderstore!</p>
+                            <br/>
+                            <h5 class='title is-5'>Server? No problem!</h5>
+                            <p>You can have multiple installs of r2modman, each one pointing to a different server, and of course, one for your regular modded game.</p>
+                            <br/>
+                            <h5 class='title is-5'>If only I could create a modpack</h5>
+                            <p>If only you could. Oh wait, you can.</p>
+                            <p>You can export your profile, and friends can later import the file and download the exact same mods.</p>
+                            <p>It makes joining servers easy, as well as removing the annoying clicks you'll all have to do.</p>
                         </div>
-                    </a>
-                </template>
-                <template v-if="view === 'help'">
-                    <!-- tips&tricks -->
-                    <!-- gameWontStart -->
-                    <!-- modsNotWorking -->
-                    <!-- likeR2 -->
-                    <div v-if="helpPage === 'tips&tricks'">
-                        <hero title='Tips and tricks' heroType='is-info' />
-                        <br/>
-                        <h5 class='title is-5'>Install with Mod Manager</h5>
-                        <p>Thunderstore has a way to install mods without having to search for them in the mod manager.</p>
-                        <p>Just go to the Settings tab, and associate r2modman with Thunderstore!</p>
-                        <br/>
-                        <h5 class='title is-5'>Server? No problem!</h5>
-                        <p>You can have multiple installs of r2modman, each one pointing to a different server, and of course, one for your regular modded game.</p>
-                        <br/>
-                        <h5 class='title is-5'>If only I could create a modpack</h5>
-                        <p>If only you could. Oh wait, you can.</p>
-                        <p>You can export your profile, and friends can later import the file and download the exact same mods.</p>
-                        <p>It makes joining servers easy, as well as removing the annoying clicks you'll all have to do.</p>
-                    </div>
-                    <div v-else-if="helpPage === 'gameWontStart'">
-                        <hero :title="'Game won\'t start'" heroType='is-info' />
-                        <br/>
-                        <h5 class='title is-5'>If the BepInEx console appears</h5>
-                        <p>It's very likely due to a broken mod.</p>
-                        <p>Remove (or disable) all mods except for BepInEx and R2API. See if the problem still occurs.</p>
-                        <br/>
-                        <h5 class='title is-5'>If it doesn't appear</h5>
-                        <p>Locate your Risk of Rain 2 install directory via the Settings page.</p>
-                        <p>If you're unsure where to find it, navigate to Steam, right click your game, and go to "Manage > Browse local files"</p>
-                        <br/>
-                        <h5 class='title is-5'>Symlink errors?</h5>
-                        <p>Follow <link-component :url="'https://github.com/ebkr/r2modmanPlus/wiki/Error:-Failed-to-produce-a-symlink-between-profile-and-RoR2'" :target="'external'">this guide</link-component> for more information.</p>
-                    </div>
-                    <div v-else-if="helpPage === 'modsNotWorking'">
-                        <hero :title="'Mods aren\'t working'" heroType='is-info' />
-                        <br/>
-                        <h5 class='title is-5'>Are all dependencies installed?</h5>
-                        <p>Did you uninstall a mod's dependency?</p>
-                        <p>Almost every mod has something it depends upon.</p>
-                        <p>Look for the missing dependency icon (<i class='fas fa-exclamation-circle'></i>) on the "Installed" tab.</p>
-                        <p>If there is a missing dependency, you'll be able to resolve it by either reinstalling the mod, or by clicking the "Download dependency" button.</p>
-                        <br/>
-                        <h5 class='title is-5'>Are all of your mods up-to-date?</h5>
-                        <p>Your mods may have a fix to get it working with the latest version of Risk of Rain 2.</p>
-                        <p>You can update mods by going to the "Installed" tab, clicking on mods with the update icon, and clicking the update button.</p>
-                        <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
-                    </div>
-                    <div v-else-if="helpPage === 'likeR2'">
-                        <hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger' />
-                        <br/>
-                        <h5 class='title is-5'>You can help support r2modman in multiple ways!</h5>
-                        <div class="content">
-                            <ul>
-                                <li>Leave a thumbs-up on <link-component url='https://thunderstore.io/package/ebkr/r2modman/' :target="'external'">r2modman's Thunderstore page</link-component>.</li>
-                                <li>Star the project on <link-component url='https://github.com/ebkr/r2modmanPlus/' :target="'external'">GitHub</link-component>.</li>
-                                <li>Don't forget to show your friends!</li>
-                            </ul>
+                        <div v-else-if="helpPage === 'gameWontStart'">
+                            <hero :title="'Game won\'t start'" heroType='is-info' />
+                            <br/>
+                            <h5 class='title is-5'>If the BepInEx console appears</h5>
+                            <p>It's very likely due to a broken mod.</p>
+                            <p>Remove (or disable) all mods except for BepInEx and R2API. See if the problem still occurs.</p>
+                            <br/>
+                            <h5 class='title is-5'>If it doesn't appear</h5>
+                            <p>Locate your Risk of Rain 2 install directory via the Settings page.</p>
+                            <p>If you're unsure where to find it, navigate to Steam, right click your game, and go to "Manage > Browse local files"</p>
+                            <br/>
+                            <h5 class='title is-5'>Symlink errors?</h5>
+                            <p>Follow <link-component :url="'https://github.com/ebkr/r2modmanPlus/wiki/Error:-Failed-to-produce-a-symlink-between-profile-and-RoR2'" :target="'external'">this guide</link-component> for more information.</p>
                         </div>
-                        <p>But most importantly, recommend new feature ideas! r2modman needs your help to be the best possible mod manager for Risk of Rain 2!</p>
-                    </div>
-                    <div v-else>
-                        <hero :title="'Help with r2modman'" heroType='is-info' />
-                        <br/>
-                        <h5 class='title is-5'>How do I install mods?</h5>
-                        <p>Go to the "Online" tab, find a mod, and hit download. It'll also download the dependencies, saving you time.</p>
-                        <p>Once you've done that, start the game modded.</p>
-                        <br/>
-                        <h5 class='title is-5'>Launching the game with Steam</h5>
-                        <p>If you want to launch the game through Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
-                        <p>
-                            Once you've done that, <link-component url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts' :target="'external'">follow this guide</link-component>,
-                            replacing "BepInEx\core\BepInEx.Preloader.dll" with "r2modman\BepInEx\core\BepInEx.Preloader.dll"
-                        </p>
-                        <br/>
-                        <h5 class='title is-5'>Something isn't working</h5>
-                        <p>If you get any issues, look at the other pages that have appeared.</p>
-                        <p>Failing that, mention me on the <link-component url='https://discord.gg/5MbXZvd' :target="'external'">Thunderstore Discord Server!</link-component> @ Ebkr#3660</p>
-                    </div>
-                </template>
+                        <div v-else-if="helpPage === 'modsNotWorking'">
+                            <hero :title="'Mods aren\'t working'" heroType='is-info' />
+                            <br/>
+                            <h5 class='title is-5'>Are all dependencies installed?</h5>
+                            <p>Did you uninstall a mod's dependency?</p>
+                            <p>Almost every mod has something it depends upon.</p>
+                            <p>Look for the missing dependency icon (<i class='fas fa-exclamation-circle'></i>) on the "Installed" tab.</p>
+                            <p>If there is a missing dependency, you'll be able to resolve it by either reinstalling the mod, or by clicking the "Download dependency" button.</p>
+                            <br/>
+                            <h5 class='title is-5'>Are all of your mods up-to-date?</h5>
+                            <p>Your mods may have a fix to get it working with the latest version of Risk of Rain 2.</p>
+                            <p>You can update mods by going to the "Installed" tab, clicking on mods with the update icon, and clicking the update button.</p>
+                            <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
+                        </div>
+                        <div v-else-if="helpPage === 'likeR2'">
+                            <hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger' />
+                            <br/>
+                            <h5 class='title is-5'>You can help support r2modman in multiple ways!</h5>
+                            <div class="content">
+                                <ul>
+                                    <li>Leave a thumbs-up on <link-component url='https://thunderstore.io/package/ebkr/r2modman/' :target="'external'">r2modman's Thunderstore page</link-component>.</li>
+                                    <li>Star the project on <link-component url='https://github.com/ebkr/r2modmanPlus/' :target="'external'">GitHub</link-component>.</li>
+                                    <li>Don't forget to show your friends!</li>
+                                </ul>
+                            </div>
+                            <p>But most importantly, recommend new feature ideas! r2modman needs your help to be the best possible mod manager for Risk of Rain 2!</p>
+                        </div>
+                        <div v-else>
+                            <hero :title="'Help with r2modman'" heroType='is-info' />
+                            <br/>
+                            <h5 class='title is-5'>How do I install mods?</h5>
+                            <p>Go to the "Online" tab, find a mod, and hit download. It'll also download the dependencies, saving you time.</p>
+                            <p>Once you've done that, start the game modded.</p>
+                            <br/>
+                            <h5 class='title is-5'>Launching the game with Steam</h5>
+                            <p>If you want to launch the game through Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
+                            <p>
+                                Once you've done that, <link-component url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts' :target="'external'">follow this guide</link-component>,
+                                replacing "BepInEx\core\BepInEx.Preloader.dll" with "r2modman\BepInEx\core\BepInEx.Preloader.dll"
+                            </p>
+                            <br/>
+                            <h5 class='title is-5'>Something isn't working</h5>
+                            <p>If you get any issues, look at the other pages that have appeared.</p>
+                            <p>Failing that, mention me on the <link-component url='https://discord.gg/5MbXZvd' :target="'external'">Thunderstore Discord Server!</link-component> @ Ebkr#3660</p>
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
