@@ -51,7 +51,8 @@
             <div class='modal-content'>
                  <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title'>Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
+                        <p class='card-header-title' v-if="totalModsToImport > 0">Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
+                        <p class='card-header-title' v-else>Importing profile</p>
                     </header>
                     <div class='card-content'>
                         <p>This may take a while, as mods are being downloaded.</p>
@@ -59,7 +60,6 @@
                     </div>
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
         </div>
         <!-- Error modal -->
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
@@ -123,6 +123,7 @@ import { Prop } from 'vue-property-decorator';
 import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
 import { ipcRenderer } from 'electron';
+import AdmZip from 'adm-zip';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
@@ -314,7 +315,19 @@ export default class Profiles extends Vue {
                 this.importingProfile = false;
                 return;
             }
-            const read: string = fs.readFileSync(files[0]).toString();
+            let read = '';
+            if (files[0].endsWith('.r2x')) {
+                read = fs.readFileSync(files[0]).toString();
+            } else if (files[0].endsWith('.r2z')) {
+                const zip = new AdmZip(files[0]);
+                console.log(zip.getEntries());
+                const result: Buffer | null = zip.readFile('export.r2x');
+                if (isNull(result)) {
+                    return;
+                }
+                read = result.toString();
+                // Read export.r2x.
+            }
             const parsedYaml = yaml.parse(read);
             const parsed: ExportFormat = new ExportFormat(parsedYaml.profileName, parsedYaml.mods.map((mod: any) => {
                 const enabled = isUndefined(mod.enabled) || mod.enabled;
@@ -323,15 +336,29 @@ export default class Profiles extends Vue {
             this.newProfile('Import', parsed.getProfileName());
             ipcRenderer.once('created-profile', (profileName: string) => {
                 if (profileName !== '') {
-                    this.importingProfile = true;
-                    this.downloadImportedProfileMods(parsed.getMods());
+                    if (files[0].endsWith('.r2z')) {   
+                        const zip = new AdmZip(files[0]);
+                        zip.getEntries().forEach(entry => {
+                            if (entry.entryName.startsWith("config/")) {
+                                console.log(entry.entryName);
+                                zip.extractEntryTo(entry.entryName, path.join(Profile.getDirectory(), profileName, 'BepInEx'), true, true);
+                            }
+                        });
+                        // Extract config folder
+                    }
+                    if (parsed.getMods().length > 0) {
+                        this.importingProfile = true;
+                        setTimeout(() => {
+                            this.downloadImportedProfileMods(parsed.getMods());
+                        }, 100);
+                    }
                 }
             })
         });
         ipcRenderer.send('open-dialog', {
             title: 'Import Profile',
             properties: ['openFile'],
-            filters: ['.r2x'],
+            filters: ['.r2x', '.r2z'],
             buttonLabel: 'Import',
         });
     }

@@ -52,7 +52,7 @@
                                             <br/>
                                             <h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
                                             <div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
-                                                <div class='field has-addons has-tooltip-top' :data-tooltip="getCommentDisplay(varValue.comments)">
+                                                <div class='field has-addons has-tooltip-top' :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
                                                     <div class='control is-expanded'>
                                                         <input class='input' type='text' :value="varName" width="250" disabled readonly/>
                                                     </div>
@@ -187,7 +187,10 @@ export default class ConfigEditor extends Vue {
     }
 
     getCommentDisplay(comments: string[]): string {
-        const split = comments.reduce((x: string, y: string) => x + y).split('#');
+        let split: string[] = [];
+        if (comments.length > 0) {
+            split = comments.reduce((x: string, y: string) => x + y).split('#');
+        }
         return split.join('\n').trim();
     }
 
