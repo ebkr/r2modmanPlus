@@ -51,7 +51,8 @@
             <div class='modal-content'>
                  <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title'>Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
+                        <p class='card-header-title' v-if="totalModsToImport > 0">Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
+                        <p class='card-header-title' v-else>Importing profile</p>
                     </header>
                     <div class='card-content'>
                         <p>This may take a while, as mods are being downloaded.</p>
@@ -59,7 +60,6 @@
                     </div>
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
         </div>
         <!-- Error modal -->
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
@@ -346,8 +346,12 @@ export default class Profiles extends Vue {
                         });
                         // Extract config folder
                     }
-                    this.importingProfile = true;
-                    this.downloadImportedProfileMods(parsed.getMods());
+                    if (parsed.getMods().length > 0) {
+                        this.importingProfile = true;
+                        setTimeout(() => {
+                            this.downloadImportedProfileMods(parsed.getMods());
+                        }, 100);
+                    }
                 }
             })
         });
