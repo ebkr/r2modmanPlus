@@ -123,6 +123,7 @@ import { Prop } from 'vue-property-decorator';
 import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
 import { ipcRenderer } from 'electron';
+import AdmZip from 'adm-zip';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
@@ -314,7 +315,19 @@ export default class Profiles extends Vue {
                 this.importingProfile = false;
                 return;
             }
-            const read: string = fs.readFileSync(files[0]).toString();
+            let read = '';
+            if (files[0].endsWith('.r2x')) {
+                read = fs.readFileSync(files[0]).toString();
+            } else if (files[0].endsWith('.r2z')) {
+                const zip = new AdmZip(files[0]);
+                console.log(zip.getEntries());
+                const result: Buffer | null = zip.readFile('export.r2x');
+                if (isNull(result)) {
+                    return;
+                }
+                read = result.toString();
+                // Read export.r2x.
+            }
             const parsedYaml = yaml.parse(read);
             const parsed: ExportFormat = new ExportFormat(parsedYaml.profileName, parsedYaml.mods.map((mod: any) => {
                 const enabled = isUndefined(mod.enabled) || mod.enabled;
@@ -323,6 +336,16 @@ export default class Profiles extends Vue {
             this.newProfile('Import', parsed.getProfileName());
             ipcRenderer.once('created-profile', (profileName: string) => {
                 if (profileName !== '') {
+                    if (files[0].endsWith('.r2z')) {   
+                        const zip = new AdmZip(files[0]);
+                        zip.getEntries().forEach(entry => {
+                            if (entry.entryName.startsWith("config/")) {
+                                console.log(entry.entryName);
+                                zip.extractEntryTo(entry.entryName, path.join(Profile.getDirectory(), profileName, 'BepInEx'), true, true);
+                            }
+                        });
+                        // Extract config folder
+                    }
                     this.importingProfile = true;
                     this.downloadImportedProfileMods(parsed.getMods());
                 }
@@ -331,7 +354,7 @@ export default class Profiles extends Vue {
         ipcRenderer.send('open-dialog', {
             title: 'Import Profile',
             properties: ['openFile'],
-            filters: ['.r2x'],
+            filters: ['.r2x', '.r2z'],
             buttonLabel: 'Import',
         });
     }

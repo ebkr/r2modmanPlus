@@ -12,7 +12,7 @@ export default class Profile {
 
     public constructor(name: string) {
         this.profileName = name;
-        this.directory = path.join(PathResolver.ROOT, 'mods', 'profiles')
+        this.directory = this.getDirectory();
         if (!fs.existsSync(path.join(this.directory, this.profileName))) {
             fs.mkdirsSync(path.join(this.directory, this.profileName));
         }
@@ -26,7 +26,11 @@ export default class Profile {
 
     // Directory of profile folder (/mods/profiles/)
     public getDirectory(): string {
-        return this.directory;
+        return Profile.getDirectory();
+    }
+
+    public static getDirectory(): string {
+        return path.join(PathResolver.ROOT, 'mods', 'profiles');
     }
 
     // Directory of profile (/mods/profiles/a_profile)

@@ -13,6 +13,7 @@ import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
+import AdmZip from 'adm-zip';
 
 export default class ProfileModList {
 
@@ -74,7 +75,7 @@ export default class ProfileModList {
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
-        let modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
+        const modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
         this.removeMod(mod);
         currentModList = this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
@@ -137,8 +138,11 @@ export default class ProfileModList {
         }
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(Profile.getActiveProfile().getProfileName(), exportModList);
-        const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2x`);
-        fs.writeFileSync(exportPath, yaml.stringify(exportFormat));
+        const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2z`);
+        const zip = new AdmZip();
+        zip.addFile('export.r2x', Buffer.from(yaml.stringify(exportFormat)));
+        zip.addLocalFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'), 'config');
+        zip.writeZip(exportPath);
         spawn('powershell.exe', ['explorer', `/select,${exportPath}`]);
     }
 

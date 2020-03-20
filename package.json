@@ -14,9 +14,11 @@
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
     "@quasar/extras": "^1.4.2",
+    "@types/adm-zip": "^0.4.32",
     "@types/fs-extra": "^8.0.1",
     "@types/unzipper": "^0.10.1",
     "@types/yaml": "^1.2.0",
+    "adm-zip": "^0.4.14",
     "axios": "^0.18.1",
     "bulma": "^0.8.0",
     "bulma-divider": "^0.2.0",
@@ -51,8 +53,8 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
-    "typescript": "^3.3.3",
-    "minimist": "^1.2.2"
+    "minimist": "^1.2.2",
+    "typescript": "^3.3.3"
   },
   "engines": {
     "node": ">= 8.9.0",
