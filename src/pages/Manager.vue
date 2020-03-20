@@ -141,13 +141,13 @@
                     <p class="menu-label">Mods</p>
                     <ul class="menu-list">
                         <li>
-                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed</a>
+                            <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})</a>
                             <ul v-if="view === 'installed'">
                                 <li><input v-model='searchFilter' class="input" type="text" placeholder="Search mods"/></li>
                             </ul>
                         </li>
                         <li>
-                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online</a>
+                            <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})</a>
                             <ul v-if="view === 'online'">
                                 <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
                                 <li class='is-size-7'>&nbsp;</li>
