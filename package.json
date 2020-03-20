@@ -1,8 +1,8 @@
 {
   "name": "r2modman",
-  "version": "3.0.9",
-  "description": "It's r2modman, but better",
-  "productName": "r2modmanPlus",
+  "version": "3.0.10",
+  "description": "r2modman",
+  "productName": "r2modman",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
   "author": "ebkr@github.com",
