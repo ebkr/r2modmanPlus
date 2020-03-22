@@ -232,7 +232,9 @@
                                     :id="index"
                                     :description="key.description"
                                     :funkyMode="settings.funkyModeEnabled"
-                                    :manualSort="true"
+                                    :showSort="true"
+                                    :manualSortUp="index > 0"
+                                    :manualSortDown="index < searchableLocalModList.length - 1"
                                     :expandedByDefault="settings.expandedCards">
                                         <template v-slot:title>
                                             <span v-if="key.enabled">

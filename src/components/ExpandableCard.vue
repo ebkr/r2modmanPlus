@@ -12,12 +12,18 @@
                     <span class='card-header-title'><slot name='title'></slot></span>
                     <slot name='other-icons'></slot>
                     <!-- Allow movement of mod order -->
-                    <a class='card-header-icon' v-if="manualSort" v-on:click.stop.prevent="emitMove('Up')">
+                    <a class='card-header-icon' v-if="manualSortUp && showSort" v-on:click.stop.prevent="emitMove('Up')">
                         <i class="fas fa-angle-double-up"></i>
                     </a>
-                    <a class='card-header-icon' v-if="manualSort" v-on:click.stop.prevent="emitMove('Down')">
+                    <span class='card-header-icon has-text-grey-lighter' v-else-if="showSort">
+                        <i class="fas fa-angle-double-up"></i>
+                    </span>
+                    <a class='card-header-icon' v-if="manualSortDown && showSort" v-on:click.stop.prevent="emitMove('Down')">
                         <i class="fas fa-angle-double-down"></i>
                     </a>
+                    <span class='card-header-icon has-text-grey-lighter' v-else-if="showSort">
+                        <i class="fas fa-angle-double-down"></i>
+                    </span>
                     <a class='card-header-icon'>
                         <span class='icon'>
                             <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible'></i>
@@ -62,7 +68,13 @@ export default class ExpandableCard extends Vue {
     expandedByDefault: boolean | undefined;
 
     @Prop({default: false})
-    manualSort: boolean | undefined;
+    showSort: boolean | undefined;
+
+    @Prop({default: false})
+    manualSortUp: boolean | undefined;
+
+    @Prop({default: false})
+    manualSortDown: boolean | undefined;
 
     // Keep track of visibility
     visible: boolean | undefined = false;
