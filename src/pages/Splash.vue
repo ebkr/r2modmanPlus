@@ -110,6 +110,7 @@ import Profile from '../model/Profile';
 import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
 import PathResolver from '../r2mm/manager/PathResolver';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -190,7 +191,12 @@ export default class Splash extends Vue {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
-            this.checkForUpdates();
+            ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
+                // ManagerInformation.IS_PORTABLE = isPortable;
+                ManagerInformation.IS_PORTABLE = true;
+                this.checkForUpdates();
+            });
+            ipcRenderer.send('get-is-portable');
         });
         ipcRenderer.send('get-appData-directory');
     }

@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div class='notification is-warning' v-if="portableUpdateAvailable">
+            <div class='container'>
+                <p>
+                    An update is available. <link-component :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`" :target="'external'">Click here to go to the release page.</link-component>
+                </p>
+            </div>
+        </div>
         <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadProgress.length > 0">
             <div class="modal-background" @click="closeDownloadProgressModal()"></div>
             <div class='modal-content'>
@@ -184,14 +191,14 @@
                                     <template v-slot:title>
                                         <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
                                             <span class="tag is-info">Essential</span>&nbsp;
-                                            {{key.fullName}} by {{key.owner}}
+                                            {{key.name}} by {{key.owner}}
                                         </span>
                                         <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
                                             <span class="tag is-danger">Deprecated</span>&nbsp;
-                                            <strike>{{key.fullName}} by {{key.owner}}</strike>
+                                            <strike>{{key.name}} by {{key.owner}}</strike>
                                         </span>
                                         <span v-else>
-                                            {{key.fullName}} by {{key.owner}}
+                                            {{key.name}} by {{key.owner}}
                                         </span>
                                     </template>
                                     <template v-slot:other-icons>
@@ -480,6 +487,7 @@ import PathResolver from 'src/r2mm/manager/PathResolver';
 import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
 import Profile from '../model/Profile';
+import VersionNumber from '../model/VersionNumber';
 import StatusEnum from '../model/enums/StatusEnum';
 import SortingStyle from '../model/enums/SortingStyle';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
@@ -491,6 +499,7 @@ import GameRunner from '../r2mm/manager/GameRunner';
 import ModLinker from '../r2mm/manager/ModLinker';
 import ModBridge from '../r2mm/mods/ModBridge';
 import Dependants from '../r2mm/mods/Dependants';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
@@ -546,6 +555,8 @@ export default class Manager extends Vue {
     showingDependencyList: boolean = false;
     dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 
+    portableUpdateAvailable: boolean = false;
+    updateTagName: string = '';
 
 
     @Watch('searchFilter')
@@ -930,9 +941,9 @@ export default class Manager extends Vue {
         const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, this.thunderstoreModList);
         if (latestVersion instanceof ThunderstoreVersion) {
             return mod.getVersionNumber()
-                .isNewerThan(latestVersion.getVersionNumber());
+                .isEqualTo(latestVersion.getVersionNumber());
         }
-        return false;
+        return true;
     }
 
     updateMod(vueMod: any) {
@@ -1145,6 +1156,39 @@ export default class Manager extends Vue {
         this.$router.push('/config-editor');
     }
 
+    isManagerUpdateAvailable() {
+        if (!ManagerInformation.IS_PORTABLE) {
+            return;
+        }
+        fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
+            .then(response => response.json())
+            .then((parsed: any) => {
+                parsed.sort((a: any, b: any) => {
+                    if (!isNull(b)) {
+                        const versionA = new VersionNumber(a.name);
+                        const versionB = new VersionNumber(b.name);
+                        return versionA.isNewerThan(versionB);
+                    }
+                    return 1;
+                })
+                let foundMatch = false;
+                parsed.forEach((release: any) => {
+                    if (!foundMatch && !release.draft) {
+                        const releaseVersion = new VersionNumber(release.name);
+                        if (releaseVersion.isNewerThan(ManagerInformation.VERSION)) {
+                            this.portableUpdateAvailable = true;
+                            this.updateTagName = release.tag_name;
+                            foundMatch = true;
+                            return;
+                        }
+                    }
+                })
+            }).catch(err => {
+                // Do nothing, potentially offline. Try next launch.
+            });
+        return;
+    }
+
     created() {
         Logger.Log(LogSeverity.INFO, 'Loading settings');
         this.settings.load();
@@ -1167,6 +1211,8 @@ export default class Manager extends Vue {
             }
             this.performDependencyDownload(combo.getMod(), combo.getVersion());
         });
+        this.isManagerUpdateAvailable();
+        // this.portableUpdateAvailable = true;
     }
 }
 

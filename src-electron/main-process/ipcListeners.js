@@ -1,6 +1,7 @@
 import { ipcMain, BrowserWindow, dialog } from 'electron';
 import { spawnSync } from 'child_process';
 import { autoUpdater } from 'electron-updater';
+import os from 'os';
 
 let browserWindow;
 let app;
@@ -38,3 +39,8 @@ ipcMain.on('install-via-thunderstore', (installString) => {
 ipcMain.on('get-appData-directory', ()=>{
     browserWindow.webContents.send('receive-appData-directory', app.getPath('appData'));
 })
+
+ipcMain.on('get-is-portable', ()=>{
+    browserWindow.webContents.send('receive-is-portable', process.execPath.startsWith(os.tmpdir()));
+})
+
