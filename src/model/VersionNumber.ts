@@ -53,9 +53,16 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
             return true;
         } else if (majorCompare === 0 && minorCompare > 0) {
             return true;
-        } else if (minorCompare === 0 && minorCompare === 0 && patchCompare >= 0) {
+        } else if (majorCompare === 0 && minorCompare === 0 && patchCompare > 0) {
             return true;
         }
         return false;
+    }
+
+    public isEqualTo(version: VersionNumber): boolean {
+        const majorCompare = Math.sign(this.major - version.major);
+        const minorCompare = Math.sign(this.minor - version.minor);
+        const patchCompare = Math.sign(this.patch - version.patch);
+        return (majorCompare === 0 && minorCompare === 0 && patchCompare === 0);
     }
 }
