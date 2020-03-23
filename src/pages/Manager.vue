@@ -184,14 +184,14 @@
                                     <template v-slot:title>
                                         <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
                                             <span class="tag is-info">Essential</span>&nbsp;
-                                            {{key.fullName}} by {{key.owner}}
+                                            {{key.name}} by {{key.owner}}
                                         </span>
                                         <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
                                             <span class="tag is-danger">Deprecated</span>&nbsp;
-                                            <strike>{{key.fullName}} by {{key.owner}}</strike>
+                                            <strike>{{key.name}} by {{key.owner}}</strike>
                                         </span>
                                         <span v-else>
-                                            {{key.fullName}} by {{key.owner}}
+                                            {{key.name}} by {{key.owner}}
                                         </span>
                                     </template>
                                     <template v-slot:other-icons>
