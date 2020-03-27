@@ -17,9 +17,9 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: white;
+    background-color: transparent;
     padding: 1em;
-    box-shadow: 1px 1px 3px 0px lightgrey;
+    box-shadow: 1px 1px 3px 0px #0000003b;
 }
 .sticky-top--buttons {
     z-index: 101;
@@ -29,7 +29,7 @@
 }
 
 .border-at-bottom {
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid #00000017;
 }
 
 .image-parent {
@@ -39,4 +39,8 @@
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.card {
+    border: 0 !important;
 }
