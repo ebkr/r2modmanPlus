@@ -7,11 +7,20 @@ import * as path from 'path';
 
 export default class ZipExtract {
 
-    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean) => void): ZipExtrationError | FileWriteError | null {
+    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean) => void): ZipExtrationError | null {
         try {
             fs.createReadStream(path.join(zipFolder, filename))
                 .pipe(unzipper.Extract({ path: path.join(zipFolder, outputFolderName) })).promise().then(()=>{
                     callback(true);
+                    try {
+                        fs.removeSync(path.join(zipFolder, filename));
+                    } catch(e) {
+                        const err: Error = e;
+                        return new FileWriteError(
+                            'Failed to delete file',
+                            err.message
+                        );
+                    }
                 }).catch(()=>{
                     callback(false);
                 });
@@ -19,16 +28,6 @@ export default class ZipExtract {
             const err: Error = e;
             return new ZipExtrationError(
                 'Failed to extract zip file',
-                err.message
-            );
-        }
-        
-        try {
-            fs.removeSync(path.join(zipFolder, filename));
-        } catch(e) {
-            const err: Error = e;
-            return new FileWriteError(
-                'Failed to delete file',
                 err.message
             );
         }
