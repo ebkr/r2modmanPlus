@@ -477,7 +477,6 @@ import { Hero, Progress, ExpandableCard, Link, Modal } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import Mod from 'src/model/Mod';
-import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader';
 import BetterThunderstoreDownloader from 'src/r2mm/downloading/BetterThunderstoreDownloader';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
@@ -663,7 +662,7 @@ export default class Manager extends Vue {
         }
     }
 
-    async performDownload() {
+    performDownload() {
         const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
         const refSelectedVersion: string | null = this.selectedVersion;
         if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
@@ -704,60 +703,6 @@ export default class Manager extends Vue {
             this.downloadingMod = false;
         });
     }
-
-    // downloadWithDependencies() {
-    //     const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
-    //     const refSelectedVersion: string | null = this.selectedVersion;
-    //     if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
-    //         // Shouldn't happen, but shouldn't throw an error.
-    //         return;
-    //     }
-    //     const version = refSelectedThunderstoreMod.getVersions()
-    //         .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
-    //     if (version === undefined) {
-    //         return;
-    //     }
-    //     this.performDependencyDownload(refSelectedThunderstoreMod, version);
-    // }
-
-    // performDependencyDownload(thunderstoreMod: ThunderstoreMod, thunderstoreVersion: ThunderstoreVersion) {
-    //     const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(thunderstoreMod);
-    //     const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(thunderstoreVersion, this.thunderstoreModList);
-    //     if (dependencies instanceof R2Error) {
-    //         this.showError(dependencies);
-    //         return;
-    //     }
-    //     this.downloadProgress.push(0);
-    //     const progressTrack = this.downloadProgress.length - 1;
-    //     this.currentDownloadProgress = 0;
-    //     this.downloadingMod = true;
-    //     this.closeModal();
-    //     downloader.downloadWithDependencies((progress: number, status: number, error: R2Error | void)=>{
-    //         if (status === StatusEnum.FAILURE) {
-    //             if (error instanceof R2Error) {
-    //                 this.showError(error);
-    //                 this.downloadingMod = false;
-    //             }
-    //         } else if (status === StatusEnum.SUCCESS) {
-    //             dependencies.forEach((mod: ThunderstoreMod) => {
-    //                 const installErr = this.installModAfterDownload(mod, mod.getVersions()[0]);
-    //                 if (installErr instanceof R2Error) {
-    //                     this.showError(installErr);
-    //                     this.downloadingMod = false;
-    //                     return;
-    //                 }
-    //             })
-    //             this.installModAfterDownload(thunderstoreMod, thunderstoreVersion);
-    //             this.filterModLists();
-    //             this.downloadingMod = false;
-    //         } else if (status === StatusEnum.PENDING) {
-    //             this.downloadProgress[progressTrack] = progress;
-    //             if (this.downloadProgress.length - 1 === progressTrack && !isNaN(progress)) {
-    //                 this.currentDownloadProgress = progress;
-    //             }
-    //         }
-    //     }, thunderstoreMod, thunderstoreVersion, this.thunderstoreModList);
-    // }
 
     closeDownloadProgressModal() {
         this.downloadingMod = false;
