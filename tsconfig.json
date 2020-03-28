@@ -12,7 +12,7 @@
       "quasar",
       "node"
     ],
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
   },
   "exclude": ["node_modules"]
 }
