@@ -38,8 +38,16 @@ export default class ThunderstoreCombo {
         return this.mod;
     }
 
+    public setMod(mod: ThunderstoreMod) {
+        this.mod = mod;
+    }
+
     public getVersion(): ThunderstoreVersion {
         return this.version;
+    }
+
+    public setVersion(version: ThunderstoreVersion) {
+        this.version = version;
     }
 
 }

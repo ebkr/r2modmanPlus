@@ -7,15 +7,15 @@
                 </p>
             </div>
         </div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadProgress.length > 0">
+        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadObject !== null">
             <div class="modal-background" @click="closeDownloadProgressModal()"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading</h3>
-                    <p>{{Math.floor(currentDownloadProgress)}}% complete</p>
+                    <h3 class='title'>Downloading {{downloadObject.modName}}</h3>
+                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
                     <progress-bar 
                         :max='100'
-                        :value='currentDownloadProgress'
+                        :value='downloadObject.progress'
                         :className="['is-dark']" />
                 </div>
             </div>
@@ -43,7 +43,7 @@
                         <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>{{selectedVersion}} is an outdated version</span>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadWithDependencies()">Download mod + dependencies</button>
+                        <button class="button is-info" @click="performDownload()">Download with dependencies</button>
                     </div>
                 </div>
             </div>
@@ -189,8 +189,8 @@
                                 :funkyMode="settings.funkyModeEnabled"
                                 :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
-                                        <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='This is a heavily depended on mod'>
-                                            <span class="tag is-info">Essential</span>&nbsp;
+                                        <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='Pinned on Thunderstore'>
+                                            <span class="tag is-info">Pinned</span>&nbsp;
                                             {{key.name}} by {{key.owner}}
                                         </span>
                                         <span v-else-if="isModDeprecated(key)" class='has-tooltip-left' data-tooltip='This mod is potentially broken'>
@@ -477,7 +477,7 @@ import { Hero, Progress, ExpandableCard, Link, Modal } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import Mod from 'src/model/Mod';
-import ThunderstoreDownloader from 'src/r2mm/downloading/ThunderstoreDownloader';
+import BetterThunderstoreDownloader from 'src/r2mm/downloading/BetterThunderstoreDownloader';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
@@ -540,9 +540,8 @@ export default class Manager extends Vue {
     settings = new ManagerSettings();
 
     // Increment by one each time new modal is shown
-    downloadProgress: number[] = [];
+    downloadObject: any | null = null;
     downloadingMod: boolean = false;
-    currentDownloadProgress: number = 0;
 
     helpPage: string = '';
 
@@ -663,7 +662,7 @@ export default class Manager extends Vue {
         }
     }
 
-    downloadWithDependencies() {
+    performDownload() {
         const refSelectedThunderstoreMod: ThunderstoreMod | null = this.selectedThunderstoreMod;
         const refSelectedVersion: string | null = this.selectedVersion;
         if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
@@ -675,46 +674,34 @@ export default class Manager extends Vue {
         if (version === undefined) {
             return;
         }
-        this.performDependencyDownload(refSelectedThunderstoreMod, version);
-    }
 
-    performDependencyDownload(thunderstoreMod: ThunderstoreMod, thunderstoreVersion: ThunderstoreVersion) {
-        const downloader: ThunderstoreDownloader = new ThunderstoreDownloader(thunderstoreMod);
-        const dependencies: ThunderstoreMod[] | R2Error = downloader.buildDependencyList(thunderstoreVersion, this.thunderstoreModList);
-        if (dependencies instanceof R2Error) {
-            this.showError(dependencies);
-            return;
+        const statusMap = {
+            progress: 0,
+            modName: refSelectedThunderstoreMod.getName()
         }
-        this.downloadProgress.push(0);
-        const progressTrack = this.downloadProgress.length - 1;
-        this.currentDownloadProgress = 0;
+
+        this.downloadObject = statusMap;
         this.downloadingMod = true;
         this.closeModal();
-        downloader.downloadWithDependencies((progress: number, status: number, error: R2Error | void)=>{
+        BetterThunderstoreDownloader.download(refSelectedThunderstoreMod, version, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
-                if (error instanceof R2Error) {
-                    this.showError(error);
+                if (!isNull(err)) {
                     this.downloadingMod = false;
+                    this.showError(err);
                 }
-            } else if (status === StatusEnum.SUCCESS) {
-                dependencies.forEach((mod: ThunderstoreMod) => {
-                    const installErr = this.installModAfterDownload(mod, mod.getVersions()[0]);
-                    if (installErr instanceof R2Error) {
-                        this.showError(installErr);
-                        this.downloadingMod = false;
-                        return;
-                    }
-                })
-                this.installModAfterDownload(thunderstoreMod, thunderstoreVersion);
-                this.filterModLists();
-                this.downloadingMod = false;
             } else if (status === StatusEnum.PENDING) {
-                this.downloadProgress[progressTrack] = progress;
-                if (this.downloadProgress.length - 1 === progressTrack && !isNaN(progress)) {
-                    this.currentDownloadProgress = progress;
-                }
+                console.log(modName, progress);
+                this.downloadObject = Object.assign({}, {
+                    progress: progress,
+                    modName: modName
+                });
             }
-        }, thunderstoreMod, thunderstoreVersion, this.thunderstoreModList);
+        }, (downloadedMods: ThunderstoreCombo[]) => {
+            downloadedMods.forEach(combo => {
+                this.installModAfterDownload(combo.getMod(), combo.getVersion())
+            })
+            this.downloadingMod = false;
+        });
     }
 
     closeDownloadProgressModal() {
@@ -1209,7 +1196,8 @@ export default class Manager extends Vue {
                 Logger.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
                 return;
             }
-            this.performDependencyDownload(combo.getMod(), combo.getVersion());
+            // this.performDependencyDownload(combo.getMod(), combo.getVersion());
+
         });
         this.isManagerUpdateAvailable();
         // this.portableUpdateAvailable = true;
