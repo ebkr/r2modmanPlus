@@ -10,6 +10,7 @@ import ipcServer from 'node-ipc';
  */
 if (process.env.PROD) {
     global.__statics = require('path').join(__dirname, 'statics').replace(/\\/g, '\\\\')
+    global.__assets = require('path').join(__dirname, 'assets').replace(/\\/g, '\\\\')
 }
 
 let mainWindow;
@@ -28,9 +29,9 @@ function createWindow () {
             webSecurity: false,
         }
     })
-    if (process.env.PROD) {
-        mainWindow.setMenu(null);
-    }
+    // if (process.env.PROD) {
+    //     mainWindow.setMenu(null);
+    // }
 
     // Initialise client to server communication listener
     new Listeners(mainWindow, app);

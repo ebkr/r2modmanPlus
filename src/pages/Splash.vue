@@ -189,6 +189,7 @@ export default class Splash extends Vue {
 
     created() {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
+            console.log(appData);
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
