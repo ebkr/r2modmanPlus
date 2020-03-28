@@ -34,7 +34,7 @@ export default class ManagerSettings {
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
-                this.darkTheme = parsedYaml.darkTheme;
+                this.darkTheme = parsedYaml.darkTheme || false;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -106,8 +106,8 @@ export default class ManagerSettings {
         return this.save();
     }
 
-    public setDarkTheme(bool: boolean): R2Error | void {
-        this.darkTheme = bool;
+    public toggleDarkTheme(): R2Error | void {
+        this.darkTheme = !this.darkTheme;
         return this.save();
     }
 }

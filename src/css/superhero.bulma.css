@@ -27,4 +27,24 @@
     border-bottom: 1px solid #080a1471 !important;
 }
 
+.list {
+    background-color: #1a2531;
+}
+
+.is-success {
+    background-color: #008f5f !important;
+}
+
+.card-header {
+    background-color: transparent;
+}
+
+.card-footer {
+    background-color: transparent;
+}
+
+.card {
+    background-color: #1f2d3b;
+}
+
 /*# sourceMappingURL=bulmaswatch.min.css.map */

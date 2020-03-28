@@ -242,6 +242,7 @@
                                     :showSort="true"
                                     :manualSortUp="index > 0"
                                     :manualSortDown="index < searchableLocalModList.length - 1"
+                                    :darkTheme="settings.darkTheme"
                                     :expandedByDefault="settings.expandedCards">
                                         <template v-slot:title>
                                             <span v-if="key.enabled">
@@ -1150,7 +1151,7 @@ export default class Manager extends Vue {
     }
 
     toggleDarkTheme() {
-        const result: R2Error | void = this.settings.setDarkTheme(!this.settings.darkTheme);
+        const result: R2Error | void = this.settings.toggleDarkTheme();
         if (result instanceof R2Error) {
             this.showError(result);
         }
