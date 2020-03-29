@@ -29,9 +29,9 @@ function createWindow () {
             webSecurity: false,
         }
     })
-    // if (process.env.PROD) {
-    //     mainWindow.setMenu(null);
-    // }
+    if (process.env.PROD) {
+        mainWindow.setMenu(null);
+    }
 
     // Initialise client to server communication listener
     new Listeners(mainWindow, app);

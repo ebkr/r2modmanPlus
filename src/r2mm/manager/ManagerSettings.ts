@@ -7,8 +7,8 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
 
-let configPath: string = '';
-let configFile: string = '';
+let configPath = '';
+let configFile = '';
 
 export default class ManagerSettings {
 
@@ -34,7 +34,7 @@ export default class ManagerSettings {
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
-                this.darkTheme = parsedYaml.darkTheme || false;
+                this.darkTheme = parsedYaml.darkTheme;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(

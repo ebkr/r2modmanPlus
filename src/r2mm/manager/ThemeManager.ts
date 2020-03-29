@@ -9,8 +9,6 @@ export default class ThemeManager {
         const settings = new ManagerSettings();
         settings.load();
         if (!settings.darkTheme) {
-            // darkThemeNode = node;
-            // node.remove();
             const node = document.getElementById('darkThemeStyle');
             if (!isNull(node)) {
                 darkThemeNode = node;

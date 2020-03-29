@@ -114,6 +114,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import ThemeManager from '../r2mm/manager/ThemeManager';
 
 @Component({
     components: {
@@ -189,9 +190,9 @@ export default class Splash extends Vue {
 
     created() {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
-            console.log(appData);
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
+            ThemeManager.apply();
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 // ManagerInformation.IS_PORTABLE = isPortable;
                 ManagerInformation.IS_PORTABLE = true;
