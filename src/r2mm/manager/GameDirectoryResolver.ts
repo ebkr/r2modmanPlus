@@ -7,6 +7,7 @@ import * as vdf from '@node-steam/vdf';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { isUndefined } from 'util';
+import ManagerSettings from './ManagerSettings';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
@@ -14,6 +15,11 @@ const appManifest = 'appmanifest_632360.acf';
 export default class GameDirectoryResolver {
 
     public static getSteamDirectory(): string | R2Error {
+        const settings = new ManagerSettings();
+        settings.load();
+        if (settings.steamDirectory != null) {
+            return settings.steamDirectory;
+        }
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
             const installKeyValue = queryResult.split('\n');
@@ -41,6 +47,11 @@ export default class GameDirectoryResolver {
     }
 
     public static getDirectory(): R2Error | string {
+        const settings = new ManagerSettings();
+        settings.load();
+        if (settings.riskOfRain2Directory != null) {
+            return settings.riskOfRain2Directory;
+        }
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
             const installKeyValue = queryResult.split('\n')[0].trim();
