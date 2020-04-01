@@ -701,7 +701,6 @@ export default class Manager extends Vue {
                     this.showError(err);
                 }
             } else if (status === StatusEnum.PENDING) {
-                console.log(modName, progress);
                 this.downloadObject = Object.assign({}, {
                     progress: progress,
                     modName: modName
