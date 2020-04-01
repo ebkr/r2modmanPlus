@@ -54,7 +54,11 @@ export default class BetterThunderstoreDownloader {
             const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName()));
             if (!isUndefined(matchingProvider)) {
                 // Get latest version of dependency
-                const matchingVersion = matchingProvider.getVersions()[0];
+                const matchingVersion = matchingProvider.getVersions().reduce((one: ThunderstoreVersion, two: ThunderstoreVersion) => {
+                    if (one.getVersionNumber().isNewerThan(two.getVersionNumber())) {
+                        return one;
+                    } return two;
+                });
                 let otherVersionAlreadyAdded = false;
                 builder.forEach(v => {
                     // If otherVersionAlreadyAdded, or full names are equal
@@ -69,7 +73,7 @@ export default class BetterThunderstoreDownloader {
             }
         })
         foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySet(found.getVersion(), allMods, builder));
+        foundDependencies.forEach(found => this.buildDependencySetUsingLatest(found.getVersion(), allMods, builder));
         return builder;
     }
 
@@ -105,7 +109,7 @@ export default class BetterThunderstoreDownloader {
                 // If no dependencies, end here.
                 if (dependencies.length === 0) {
                     callback(100, mod.getName(), StatusEnum.PENDING, err);
-                    // Install all mods
+                    completedCallback([combo]);
                     return;
                 }
                 // If dependencies, queue and download.
