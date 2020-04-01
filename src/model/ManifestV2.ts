@@ -71,7 +71,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setDescription(version.getDescription());
         this.setNetworkMode(NetworkMode.BOTH);
         this.setPackageType(PackageType.OTHER);
-        this.setInstallMode(InstallMode.EXTRACT);
+        this.setInstallMode(InstallMode.MANAGED);
         this.setDependencies(version.getDependencies());
         this.setVersionNumber(version.getVersionNumber());
         this.setWebsiteUrl(mod.getPackageUrl());

@@ -242,6 +242,7 @@
                                     :showSort="true"
                                     :manualSortUp="index > 0"
                                     :manualSortDown="index < searchableLocalModList.length - 1"
+                                    :darkTheme="settings.darkTheme"
                                     :expandedByDefault="settings.expandedCards">
                                         <template v-slot:title>
                                             <span v-if="key.enabled">
@@ -379,6 +380,15 @@
                                 </div>
                             </div>
                         </a>
+                        <a @click="toggleDarkTheme()">
+                            <div class='container'>
+                                <div class='border-at-bottom'>
+                                    <div class='card is-shadowless'>
+                                        <p class='card-header-title'>Switch theme</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </template>
                 </div>
                 <div v-show="view === 'help'">
@@ -495,6 +505,7 @@ import R2Error from '../model/errors/R2Error';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ThemeManager from '../r2mm/manager/ThemeManager';
 import GameRunner from '../r2mm/manager/GameRunner';
 import ModLinker from '../r2mm/manager/ModLinker';
 import ModBridge from '../r2mm/mods/ModBridge';
@@ -1137,6 +1148,14 @@ export default class Manager extends Vue {
         if (result instanceof R2Error) {
             this.showError(result);
         }
+    }
+
+    toggleDarkTheme() {
+        const result: R2Error | void = this.settings.toggleDarkTheme();
+        if (result instanceof R2Error) {
+            this.showError(result);
+        }
+        ThemeManager.apply();
     }
 
     openConfigEditor() {

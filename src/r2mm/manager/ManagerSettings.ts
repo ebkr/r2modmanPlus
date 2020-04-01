@@ -7,8 +7,8 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
 
-const configPath: string = path.join(PathResolver.ROOT, 'config');
-const configFile: string = path.join(configPath, 'conf.yml');
+let configPath = '';
+let configFile = '';
 
 export default class ManagerSettings {
 
@@ -19,11 +19,12 @@ export default class ManagerSettings {
     public expandedCards: boolean = false;
     public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
+    public darkTheme: boolean = false;
 
     public load(): R2Error | void {
-        if (!fs.pathExistsSync(configPath)) {
-            fs.mkdirsSync(configPath);
-        }
+        configPath = path.join(PathResolver.ROOT, 'config');
+        configFile = path.join(configPath, 'conf.yml');
+        fs.ensureDirSync(configPath);
         if (fs.existsSync(configFile)) {
             try {
                 const parsedYaml = yaml.parse(fs.readFileSync(configFile).toString());
@@ -33,6 +34,7 @@ export default class ManagerSettings {
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
+                this.darkTheme = parsedYaml.darkTheme;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -40,6 +42,8 @@ export default class ManagerSettings {
                     err.message
                 )
             }
+        } else {
+            this.save();
         }
     }
 
@@ -104,4 +108,8 @@ export default class ManagerSettings {
         return this.save();
     }
 
+    public toggleDarkTheme(): R2Error | void {
+        this.darkTheme = !this.darkTheme;
+        return this.save();
+    }
 }

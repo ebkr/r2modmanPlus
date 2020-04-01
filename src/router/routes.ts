@@ -1,21 +1,34 @@
 import { RouteConfig } from 'vue-router'
+import Profile from 'src/model/Profile';
 
 const routes: RouteConfig[] = [
     {
         path: '/',
-        component: () => import('pages/Splash.vue')
-    },
-    {
-        path: '/manager',
-        component: () => import('pages/Manager.vue')
+        component: () => import('pages/Splash.vue'),
+        meta: {
+            title: () => 'r2modman'
+        }
     },
     {
         path: '/profiles',
-        component: () => import('pages/Profiles.vue')
+        component: () => import('pages/Profiles.vue'),
+        meta: {
+            title: () => 'r2modman'
+        }
+    },
+    {
+        path: '/manager',
+        component: () => import('pages/Manager.vue'),
+        meta: {
+            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+        }
     },
     {
         path: '/config-editor',
-        component: () => import('pages/ConfigEditor.vue')
+        component: () => import('pages/ConfigEditor.vue'),
+        meta: {
+            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+        }
     },
 ];
 
