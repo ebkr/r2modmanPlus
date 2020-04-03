@@ -14,19 +14,15 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 
 ## Latest Updates
 ### 3.0.11
+- Fixed "Install with Mod Manager" support.
+- Deleted config files now live-update.
+
+### 3.0.11
 - Dark theme!
 - Improved download progress.
 - Better modpack support.
 - Visual fix for sorting buttons.
 - Other fixes.
-
-### 3.0.10
-- Configs are now included in exports.
-- Improved config editor.
-- Switching between tabs is now faster.
-- Manual mod sorting.
-- Mod count.
-- General fixes.
 
 ### 3.0.9
 - Delete configs in editor.
