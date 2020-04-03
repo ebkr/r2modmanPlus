@@ -109,7 +109,7 @@ export default class ConfigEditor extends Vue {
 
     private filterText: string = '';
 
-    @Watch("filterText")
+    @Watch('filterText')
     textChanged() {
         this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
     }
@@ -184,6 +184,7 @@ export default class ConfigEditor extends Vue {
         const filePath: string = path.join(configLocation, `${fileName}.cfg`);
         fs.removeSync(filePath);
         this.configFiles = this.configFiles.filter(file => file.getName() !== fileName);
+        this.textChanged();
     }
 
     getCommentDisplay(comments: string[]): string {
