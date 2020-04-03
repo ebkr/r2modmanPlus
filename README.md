@@ -13,7 +13,7 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 
 
 ## Latest Updates
-### 3.0.11
+### 3.0.12
 - Fixed "Install with Mod Manager" support.
 - Deleted config files now live-update.
 
