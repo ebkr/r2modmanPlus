@@ -685,16 +685,18 @@ export default class Manager extends Vue {
         if (version === undefined) {
             return;
         }
+        this.downloadHandler(refSelectedThunderstoreMod, version);
+    }
 
+    downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
         const statusMap = {
             progress: 0,
-            modName: refSelectedThunderstoreMod.getName()
+            modName: tsMod.getName()
         }
-
         this.downloadObject = statusMap;
         this.downloadingMod = true;
         this.closeModal();
-        BetterThunderstoreDownloader.download(refSelectedThunderstoreMod, version, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
+        BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 if (!isNull(err)) {
                     this.downloadingMod = false;
@@ -1214,7 +1216,7 @@ export default class Manager extends Vue {
                 Logger.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
                 return;
             }
-            // this.performDependencyDownload(combo.getMod(), combo.getVersion());
+            this.downloadHandler(combo.getMod(), combo.getVersion());
 
         });
         this.isManagerUpdateAvailable();
