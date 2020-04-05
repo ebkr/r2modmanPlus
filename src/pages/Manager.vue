@@ -133,6 +133,11 @@
                     <h3 class='title'>Error</h3>
                     <h5 class="title is-5">{{errorMessage}}</h5>
                     <p>{{errorStack}}</p>
+                    <div v-if="errorSolution !== ''">
+                        <br/>
+                        <h5 class="title is-5">Suggestion</h5>
+                        <p>{{errorSolution}}</p>
+                    </div>
                 </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
@@ -545,6 +550,7 @@ export default class Manager extends Vue {
 
     errorMessage: string = '';
     errorStack: string = '';
+    errorSolution: string = '';
 
     gameRunning: boolean = false;
 
@@ -651,6 +657,7 @@ export default class Manager extends Vue {
     showError(error: R2Error) {
         this.errorMessage = error.name;
         this.errorStack = error.message;
+        this.errorSolution = error.solution;
     }
 
     private generateModlist() {

@@ -200,7 +200,8 @@ export default class BetterThunderstoreDownloader {
             const err: Error = e;
             return new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${err.message}`
+                `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${err.message}`,
+                'Try running r2modman as an administrator'
             );
         }
         return null;
