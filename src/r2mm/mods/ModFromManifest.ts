@@ -32,7 +32,8 @@ export default class ModFromManifest {
                     const err: Error = e;
                     return new FileNotFoundError(
                         `Unable to locate icon.png for mod: ${modName}`,
-                        err.message
+                        err.message,
+                        null
                     );
                 }
                 return mod;
@@ -40,14 +41,16 @@ export default class ModFromManifest {
                 const err: Error = e;
                 return new YamlParseError(
                     `Failed to parse manifest of mod: ${modName}`,
-                    err.message
+                    err.message,
+                    null
                 );
             }
         } catch(e) {
             const err: Error = e;
             return new FileNotFoundError(
                 `Error reading manifest file of mod: ${modName}`,
-                err.message
+                err.message,
+                null
             );
         }
     }

@@ -32,7 +32,8 @@ export default class BepInExTree {
             const err: Error = e;
             return new R2Error(
                 `Error reading directory in BepInExTree build for directory: ${location}`,
-                err.message
+                err.message,
+                'Relaunch the manager as admin, directory failed to be read.'
             )
         }
         return currentTree;

@@ -23,7 +23,8 @@ export default class ModLinker {
             const err: Error = e;
             return new R2Error(
                 'Failed to ensure directory was created',
-                err.message
+                err.message,
+                'If r2modman was installed in the Risk of Rain 2 directory, please reinstall in a different location. \nIf not, try running the manager as an administrator.'
             ) 
         }
         try {
@@ -48,7 +49,8 @@ export default class ModLinker {
                                     const err: Error = e;
                                     throw new FileWriteError(
                                         `Couldn't copy file ${file} to RoR2 directory`,
-                                        err.message
+                                        err.message,
+                                        'Try running r2modman as an administrator'
                                     )
                                 }
                             }
@@ -63,21 +65,24 @@ export default class ModLinker {
                     const err: Error = e;
                     return new FileWriteError(
                         'Failed to produce a symlink between profile and RoR2',
-                        err.message
+                        err.message,
+                        'You may have to switch install mode in the settings'
                     );
                 }
             } catch(e) {
                 const err: Error = e;
                 return new R2Error(
                     `Unable to read directory for profile ${Profile.getActiveProfile().getProfileName()}`,
-                    err.message
+                    err.message,
+                    'Try running r2modman as an administrator'
                 ) 
             }
         } catch(e) {
             const err: Error = e;
             return new R2Error(
                 'Unable to delete file',
-                err.message
+                err.message,
+                'Try running r2modman as an administrator'
             )
         }
         return newLinkedFiles;
@@ -104,7 +109,8 @@ export default class ModLinker {
                             const err: Error = e;
                             throw new FileWriteError(
                                 `Couldn't copy file ${file} to RoR2 directory`,
-                                err.message
+                                err.message,
+                                'Try running r2modman as an administrator'
                             )
                         }
                     }
@@ -117,7 +123,8 @@ export default class ModLinker {
             const err: Error = e;
             return new FileWriteError(
                 'Failed to produce a symlink between profile and RoR2',
-                err.message
+                err.message,
+                'If r2modman was installed in the Risk of Rain 2 directory, please reinstall in a different location. \nIf not, try running the manager as an administrator.'
             );
         }
         return [];

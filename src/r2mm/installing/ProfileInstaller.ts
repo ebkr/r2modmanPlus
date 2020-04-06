@@ -37,7 +37,8 @@ export default class ProfileInstaller {
                 const err: Error = e;
                 return new FileWriteError(
                     'Failed to delete BepInEx file from profile root',
-                    err.message
+                    err.message,
+                    'Is the game still running?'
                 )
             }
         }
@@ -60,7 +61,8 @@ export default class ProfileInstaller {
             const err: Error = e;
             return new R2Error(
                 err.name ,
-                err.message
+                err.message,
+                'Is the game still running? If so, close it and try again.'
             )
         }
         return null;
@@ -115,7 +117,8 @@ export default class ProfileInstaller {
                 const err: Error = e;
                 return new R2Error(
                     `Failed to rename file ${file} with ModMode of ${mode}`,
-                    err.message
+                    err.message,
+                    'Try going to settings, and re-select the profile from the profile selection screen'
                 )
             }
         })
@@ -178,14 +181,16 @@ export default class ProfileInstaller {
                     const err: Error = e;
                     return new FileWriteError(
                         `Failed to move mod: ${mod.getName()} with directory of: ${profileLocation}`,
-                        err.message
+                        err.message,
+                        'Is the game still running? If not, try running r2modman as an administrator'
                     );
                 }
             } catch(e) {
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to create directories for: ${profileLocation}`,
-                    err.message
+                    err.message,
+                    'Is the game still running? If not, try running r2modman as an administrator'
                 );
             }
         }
@@ -209,14 +214,16 @@ export default class ProfileInstaller {
                     const err: Error = e;
                     return new FileWriteError(
                         `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
-                        err.message
+                        err.message,
+                        'Is the game still running? If not, try running r2modman as an administrator'
                     );
                 }
             } catch(e) {
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to create directories for: ${profileLocation}`,
-                    err.message
+                    err.message,
+                    'Try running r2modman as an administrator'
                 );
             }
         });
@@ -249,7 +256,8 @@ export default class ProfileInstaller {
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to copy file for BepInEx installation: ${file}`,
-                    err.message
+                    err.message,
+                    'Is the game still running? If not, try running r2modman as an administrator'
                 )
             }
         })
@@ -263,7 +271,8 @@ export default class ProfileInstaller {
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to copy folder for BepInEx installation: ${directory.getDirectoryName()}`,
-                    err.message
+                    err.message,
+                    'Is the game still running? If not, try running r2modman as an administrator'
                 )
             }
         })

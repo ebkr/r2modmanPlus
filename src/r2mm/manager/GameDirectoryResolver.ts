@@ -34,14 +34,17 @@ export default class GameDirectoryResolver {
                 } 
             })
             if (isUndefined(installValue)) {
-                throw new R2Error('InstallPath not found', queryResult);
+                const err = new Error();
+                err.message = queryResult;
+                throw err;
             }
             return installValue;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
                 'Unable to resolve steam install directory',
-                err.message
+                err.message,
+                'Try manually setting the Steam directory through the settings'
             )
         }
     }
@@ -67,7 +70,8 @@ export default class GameDirectoryResolver {
             const err: Error = e;
             return new R2Error(
                 'Unable to resolve steam install directory',
-                err.message
+                err.message,
+                'Try manually locating the Risk of Rain 2 install directory through the settings'
             )
         }
     }
@@ -94,7 +98,8 @@ export default class GameDirectoryResolver {
                         // Need to throw when inside forEach.
                         throw new VdfParseError(
                             'Unable to parse libraryfolders.vdf',
-                            err.message
+                            err.message,
+                            null
                         ) 
                     }
                 }
@@ -106,7 +111,8 @@ export default class GameDirectoryResolver {
             const err: Error = e;
             return new FileNotFoundError(
                 'Unable to read directory',
-                err.message
+                err.message,
+                null
             )
         }
         // Look through given directories for ${appManifest}
@@ -127,13 +133,15 @@ export default class GameDirectoryResolver {
             const err: Error = e;
             return new R2Error(
                 'An error occured whilst searching Steam library locations',
-                err.message
+                err.message,
+                null
             )
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
                 'Unable to locate Risk of Rain 2 Installation Directory',
-                `Searched locations: ${locations}`
+                `Searched locations: ${locations}`,
+                null
             )
         }
         // Game manifest found at ${manifestLocation}
@@ -147,14 +155,16 @@ export default class GameDirectoryResolver {
             } else {
                 return new FileNotFoundError(
                     'Risk of Rain 2 does not exist in Steam\'s specified location',
-                    `Failed to find directory: ${riskOfRain2Path}`
+                    `Failed to find directory: ${riskOfRain2Path}`,
+                    null
                 )
             }
         } catch(e) {
             const err: Error = e;
             return new R2Error(
                 `An error occured whilst locating the Risk Of Rain 2 install directory from manifest in ${manifestLocation}`,
-                err.message
+                err.message,
+                null
             )
         }
     }

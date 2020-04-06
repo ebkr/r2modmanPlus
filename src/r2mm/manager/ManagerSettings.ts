@@ -39,7 +39,8 @@ export default class ManagerSettings {
                 const err: Error = e;
                 return new YamlParseError(
                     'Failed to parse conf.yml',
-                    err.message
+                    err.message,
+                    'Did you modify the conf.yml file? If not, delete it, and re-launch the manager'
                 )
             }
         } else {
@@ -71,14 +72,16 @@ export default class ManagerSettings {
                 const err: Error = e;
                 return new FileWriteError(
                     'Failed to write conf.yml',
-                    err.message
+                    err.message,
+                    'Try running r2modman as an administrator'
                 )
             }
         } catch(e) {
             const err: Error = e;
             return new YamlConvertError(
                 'Failed to write convert yaml',
-                err.message
+                err.message,
+                null
             )
         }
     }

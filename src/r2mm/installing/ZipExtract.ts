@@ -18,7 +18,8 @@ export default class ZipExtract {
                         const err: Error = e;
                         return new FileWriteError(
                             'Failed to delete file',
-                            err.message
+                            err.message,
+                            null
                         );
                     }
                 }).catch(()=>{
@@ -28,7 +29,8 @@ export default class ZipExtract {
             const err: Error = e;
             return new ZipExtrationError(
                 'Failed to extract zip file',
-                err.message
+                err.message,
+                null
             );
         }
         return null;

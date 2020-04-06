@@ -33,14 +33,16 @@ export default class ProfileModList {
                 const err: Error = e;
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
-                    err.message
+                    err.message,
+                    null
                 );
             }
         } catch(e) {
             const err: Error = e;
             return new FileNotFoundError(
                 'Unable to locate file',
-                err.message
+                err.message,
+                null
             )
         }
     }
@@ -57,14 +59,16 @@ export default class ProfileModList {
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to create mods.yml for profile: ${profile.getProfileName()}`,
-                    err.message
+                    err.message,
+                    'Try running r2modman as an administrator'
                 )
             }
         } catch(e) {
             const err: Error = e;
             return new YamlConvertError(
-                'Failed to convert modLiist to yaml',
-                err.message
+                'Failed to convert modList to yaml',
+                err.message,
+                null
             );
         }
         return null;
@@ -130,7 +134,8 @@ export default class ProfileModList {
             fs.ensureDirSync(exportDirectory);
         } catch(e) {
             const err: Error = e;
-            return new R2Error('Failed to ensure directory exists', err.message);
+            return new R2Error('Failed to ensure directory exists', err.message,
+                'Try running r2modman as an administrator');
         }
         const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {

@@ -60,7 +60,8 @@ export default class ThunderstoreDownloader {
             callback(0, StatusEnum.FAILURE, 
                 new DownloadError(
                     'Download failure', 
-                    `Failed to find version of mod: ${this.mod.getName()}, with version of: ${versionNumber.toString}`
+                    `Failed to find version of mod: ${this.mod.getName()}, with version of: ${versionNumber.toString}`,
+                    'Relaunch the manager to update the mod list'
                 )
             );
         }
@@ -146,7 +147,8 @@ export default class ThunderstoreDownloader {
             const err: Error = e;
             return new R2Error(
                 `Failed to find all dependencies of mod ${version.getFullName()}`,
-                err.message
+                err.message,
+                'Relaunch the manager to update the mod list'
             )
         }
         const dependencyList: ThunderstoreMod[] = [];
@@ -176,7 +178,8 @@ export default class ThunderstoreDownloader {
             const err: Error = e;
             return new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${this.mod.getFullName()} to profile directory of ${this.profile.getPathOfProfile()}. \nReason: ${err.message}`
+                `Failed to write downloaded zip of ${this.mod.getFullName()} to profile directory of ${this.profile.getPathOfProfile()}. \nReason: ${err.message}`,
+                'Try running r2modman as an administrator'
             );
         }
         return null;

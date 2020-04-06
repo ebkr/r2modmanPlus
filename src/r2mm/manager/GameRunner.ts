@@ -14,7 +14,7 @@ export default class GameRunner {
             return;
         }
         child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('error', err => {
-            onComplete(new R2Error('Error starting Steam', err.message));
+            onComplete(new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings'));
         });
     }
 
@@ -25,7 +25,7 @@ export default class GameRunner {
             return;
         }
         child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'false']).on('error', err => {
-            onComplete(new R2Error('Error starting Steam', err.message));
+            onComplete(new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings'));
         });
     }
 

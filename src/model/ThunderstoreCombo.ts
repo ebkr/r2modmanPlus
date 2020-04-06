@@ -18,14 +18,16 @@ export default class ThunderstoreCombo {
         if (isUndefined(foundMod)) {
             return new R2Error(
                 'Mod does not exist', 
-                `Unable to resolve ${packageName} to a suitable Thunderstore mod`
+                `Unable to resolve ${packageName} to a suitable Thunderstore mod`,
+                'Relaunch the manager to update the mod list'
             );
         }
         const foundVersion = foundMod?.getVersions().find((version: ThunderstoreVersion) => version.getVersionNumber().toString() === packageVersion);
         if (isUndefined(foundVersion)) {
             return new R2Error(
                 'Mod does not exist', 
-                `Unable to find version ${packageVersion} of mod ${packageName}`
+                `Unable to find version ${packageVersion} of mod ${packageName}`,
+                'Relaunch the manager to update the mod list'
             );
         }
         const combo = new ThunderstoreCombo();
