@@ -44,3 +44,10 @@
 .card {
     border: 0 !important;
 }
+
+.is-text {
+    color: inherit;
+    &--bold {
+        font-weight: 500;
+    }
+}

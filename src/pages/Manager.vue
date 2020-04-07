@@ -82,6 +82,7 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeSortingModal()"></button>
         </div>
+
         <modal v-show="showingDependencyList" v-if="selectedManifestMod !== null" @close-modal="closeDependencyListModal">
             <template v-slot:title>
                 <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling {{selectedManifestMod.getName()}}</p>
@@ -126,6 +127,24 @@
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closeDependencyListModal()">Done</button>
             </template>
         </modal>
+
+        <modal v-show="fixingPreloader" @close-modal="closePreloaderFixModal">
+            <template v-slot:title>
+                <p class='card-header-title'>Attempting to fix preloader issues</p>
+            </template>
+            <template v-slot:body>
+                <div class='notification is-warning'>
+                    <p>You will not not be able to launch the game until Steam has verified the integrity of the game.</p>
+                </div>
+                <p>Steam will be started, and will attempt to verify the integrity of Risk of Rain 2.</p>
+                <br/>
+                <p>Please check the Steam window for validation progress. If the window has not yet appeared, please be patient.</p>
+            </template>
+            <template v-slot:footer>
+                <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closePreloaderFixModal()">I understand</button>
+            </template>
+        </modal>
+
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
             <div class="modal-background" @click="closeErrorModal()"></div>
             <div class='modal-content'>
@@ -287,113 +306,58 @@
                 <div v-show="view === 'settings'">
                     <template>
                         <hero title='Settings' subtitle='Advanced options for r2modman' heroType='is-info' />
-                        <a @click="changeProfile()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Change profile</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="setAllModsEnabled(false)">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Disable all mods</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="setAllModsEnabled(true)">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Enable all mods</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="changeRoR2InstallDirectory()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Locate Risk of Rain 2 directory</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="changeSteamDirectory()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Locate Steam directory</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="setFunkyMode(!settings.funkyModeEnabled)">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title' v-if="settings.funkyModeEnabled">Disable funky mode</p>
-                                        <p class='card-header-title' v-else>Enable funky mode</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="exportProfile()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Export profile</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="browseDataFolder()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Browse data folder</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="toggleCardExpanded(!settings.expandedCards)">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title' v-if="settings.expandedCards">Collapse cards</p>
-                                        <p class='card-header-title' v-else>Expand cards</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title' v-if="settings.legacyInstallMode">
-                                            <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
-                                            <span class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.'>Install mods using Symlink</span>
-                                        </p>
-                                        <p class='card-header-title' v-else>
-                                            <span class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.'>Install mods in legacy mode</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a @click="toggleDarkTheme()">
-                            <div class='container'>
-                                <div class='border-at-bottom'>
-                                    <div class='card is-shadowless'>
-                                        <p class='card-header-title'>Switch theme</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        <ul class="list">
+                            <li class="list-item" @click="browseDataFolder()">
+                                <a class="is-text is-text--bold"><p>Browse data folder</p></a>
+                            </li>
+                            <li class="list-item" @click="changeProfile()">
+                                <a class="is-text is-text--bold"><p>Change profile</p></a>
+                            </li>
+                            <li class="list-item" @click="setAllModsEnabled(false)">
+                                <a class="is-text is-text--bold"><p>Disable all mods</p></a>
+                            </li>
+                            <li class="list-item" @click="setAllModsEnabled(true)">
+                                <a class="is-text is-text--bold"><p>Enable all mods</p></a>
+                            </li>
+                            <li class="list-item" @click="setFunkyMode(!settings.funkyModeEnabled)">
+                                <a class="is-text is-text--bold">
+                                    <p v-if="settings.funkyModeEnabled">Disable funky mode</p>
+                                    <p v-else>Enable funky mode</p>
+                                </a>
+                            </li>
+                            <li class="list-item" @click="toggleCardExpanded(!settings.expandedCards)">
+                                <a class="is-text is-text--bold">
+                                    <p v-if="settings.expandedCards">Collapse cards</p>
+                                    <p v-else>Expand cards</p>
+                                </a>
+                            </li>
+                            <li class="list-item" @click="exportProfile()">
+                                <a class="is-text is-text--bold"><p>Export profile</p></a>
+                            </li>
+                            <li class="list-item" @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
+                                <a class="is-text is-text--bold">
+                                    <p class='has-tooltip-top' data-tooltip='Symlink is the preferred method for installing mods.' v-if="settings.legacyInstallMode">
+                                        <i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
+                                        <span>Install mods using Symlink</span>
+                                    </p>
+                                    <p class='has-tooltip-top' data-tooltip='Legacy mode may break some mods, use only if necessary.' v-else>
+                                        <span>Install mods in legacy mode</span>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="list-item" @click="changeRoR2InstallDirectory()">
+                                <a class="is-text is-text--bold"><p>Locate Risk of Rain 2 directory</p></a>
+                            </li>
+                            <li class="list-item" @click="changeSteamDirectory()">
+                                <a class="is-text is-text--bold"><p>Locate Steam directory</p></a>
+                            </li>
+                            <li class="list-item" @click="fixPreloader()">
+                                <a class="is-text is-text--bold"><p class='has-tooltip-top' data-tooltip='This will attempt to fix any preloader errors.'>Run preloader fixer</p></a>
+                            </li>
+                            <li class="list-item" @click="toggleDarkTheme()">
+                                <a class="is-text is-text--bold"><p>Switch theme</p></a>
+                            </li>
+                        </ul>
                     </template>
                 </div>
                 <div v-show="view === 'help'">
@@ -465,8 +429,8 @@
                             <p>Go to the "Online" tab, find a mod, and hit download. It'll also download the dependencies, saving you time.</p>
                             <p>Once you've done that, start the game modded.</p>
                             <br/>
-                            <h5 class='title is-5'>Launching the game with Steam</h5>
-                            <p>If you want to launch the game through Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
+                            <h5 class='title is-5'>Launching the game modded using Steam</h5>
+                            <p>If you want to launch the game modded using Steam, you need to launch the game via r2modman at least once (per profile switch).</p>
                             <p>
                                 Once you've done that, <link-component url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts' :target="'external'">follow this guide</link-component>,
                                 replacing "BepInEx\core\BepInEx.Preloader.dll" with "r2modman\BepInEx\core\BepInEx.Preloader.dll"
@@ -498,6 +462,7 @@ import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
 import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
 import PathResolver from 'src/r2mm/manager/PathResolver';
+import PreloaderFixer from 'src/r2mm/manager/PreloaderFixer';
 
 import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
@@ -573,6 +538,8 @@ export default class Manager extends Vue {
 
     portableUpdateAvailable: boolean = false;
     updateTagName: string = '';
+
+    fixingPreloader: boolean = false;
 
 
     @Watch('searchFilter')
@@ -658,6 +625,19 @@ export default class Manager extends Vue {
         this.errorMessage = error.name;
         this.errorStack = error.message;
         this.errorSolution = error.solution;
+    }
+
+    closePreloaderFixModal() {
+        this.fixingPreloader = false;
+    }
+
+    fixPreloader() {
+        const res = PreloaderFixer.fix();
+        if (res instanceof R2Error) {
+            this.showError(res);
+        } else {
+            this.fixingPreloader = true;
+        }
     }
 
     private generateModlist() {
