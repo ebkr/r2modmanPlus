@@ -25,7 +25,7 @@ export default class ConfigFile {
             fs.writeFileSync(this.path, text);
         } catch(e) {
             const err: Error = e;
-            return new FileWriteError('Failed to update config file', err.message);
+            return new FileWriteError('Failed to update config file', err.message, 'Try running r2modman as an administator');
         }
     }
 
