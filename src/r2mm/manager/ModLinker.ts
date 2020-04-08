@@ -5,10 +5,13 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
+import { Logger, LogSeverity } from '../logging/Logger';
 
 export default class ModLinker {
 
-    public static link(settings: ManagerSettings): string[] | R2Error {
+    public static link(): string[] | R2Error {
+        const settings = new ManagerSettings()
+        settings.load();
         if (!settings.legacyInstallMode) {
             return this.performSymlink(settings.riskOfRain2Directory || '', settings.linkedFiles);
         }
@@ -28,7 +31,9 @@ export default class ModLinker {
             ) 
         }
         try {
+            Logger.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
             previouslyLinkedFiles.forEach((file: string) => {
+                Logger.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
                 fs.removeSync(file);
             });
             try {

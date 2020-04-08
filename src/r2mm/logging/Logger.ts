@@ -19,7 +19,8 @@ export class Logger {
 }
 
 export enum LogSeverity {
-    ACTION_STOPPED = "ACTION_STOPPED",
-    BREAKING = "BREAKING",
-    INFO = "INFO"
+    ACTION_STOPPED = 'ACTION_STOPPED',
+    BREAKING = 'BREAKING',
+    INFO = 'INFO',
+    ERROR = 'ERROR'
 }

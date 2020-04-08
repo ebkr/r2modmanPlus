@@ -1010,7 +1010,7 @@ export default class Manager extends Vue {
     launchModded() {
         this.prepareLaunch();
         if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-            const newLinkedFiles = ModLinker.link(this.settings);
+            const newLinkedFiles = ModLinker.link();
             if (newLinkedFiles instanceof R2Error) {
                 this.showError(newLinkedFiles);
                 return;
@@ -1028,6 +1028,9 @@ export default class Manager extends Vue {
                 }
                 this.gameRunning = false;
             });
+        } else {
+            return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist', 
+                'Set the Risk of Rain 2 directory in the settings screen');
         }
     }
 
@@ -1041,6 +1044,9 @@ export default class Manager extends Vue {
                 }
                 this.gameRunning = false;
             });
+        } else {
+            return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist', 
+                'Set the Risk of Rain 2 directory in the settings screen');
         }
     }
 
