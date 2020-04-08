@@ -13,6 +13,12 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 
 
 ## Latest Updates
+### 3.0.13
+- Common errors now come with suggested actions.
+- Settings screen has been slightly modified to allow more options.
+- Added tool to fix BepInEx preloader issues.
+- Added logging related to game startup.
+
 ### 3.0.12
 - Fixed "Install with Mod Manager" support.
 - Deleted config files now live-update.
@@ -23,12 +29,6 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 - Better modpack support.
 - Visual fix for sorting buttons.
 - Other fixes.
-
-### 3.0.9
-- Delete configs in editor.
-- Profile importing shows progress.
-- Version number when clicked takes you to that mod's version page.
-- Download progress has been rounded, no more recurring numbers.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
