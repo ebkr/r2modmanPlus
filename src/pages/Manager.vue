@@ -61,28 +61,6 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
         </div>
-        <div id='sortModal' :class="['modal', {'is-active':(showThunderstoreSorting !== false)}]">
-            <div class="modal-background" @click="closeSortingModal()"></div>
-            <div class='modal-content'>
-                <div class='card'>
-                    <header class="card-header">
-                        <p class='card-header-title'>Sort mods</p>
-                    </header>
-                    <div class='card-content'>
-                        <p>Change the sorting order of mods</p>
-                        <br/>
-                        <select class='select' id='sorting-select' v-model="sortingStyleModel">
-                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-                        </select>
-                    </div>
-                    <div class='card-footer'>
-                        <button class="button is-info" @click="applySort()">Apply sort</button>
-                    </div>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeSortingModal()"></button>
-        </div>
-
         <modal v-show="showingDependencyList" v-if="selectedManifestMod !== null" @close-modal="closeDependencyListModal">
             <template v-slot:title>
                 <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling {{selectedManifestMod.getName()}}</p>
@@ -127,7 +105,6 @@
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closeDependencyListModal()">Done</button>
             </template>
         </modal>
-
         <modal v-show="fixingPreloader" @close-modal="closePreloaderFixModal">
             <template v-slot:title>
                 <p class='card-header-title'>Attempting to fix preloader issues</p>
@@ -144,7 +121,6 @@
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closePreloaderFixModal()">I understand</button>
             </template>
         </modal>
-
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
             <div class="modal-background" @click="closeErrorModal()"></div>
             <div class='modal-content'>
@@ -173,17 +149,9 @@
                     <ul class="menu-list">
                         <li>
                             <a @click="view = 'installed'; searchFilter = ''" :class="[view === 'installed' ? 'is-active' : '']"><i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})</a>
-                            <ul v-if="view === 'installed'">
-                                <li><input v-model='searchFilter' class="input" type="text" placeholder="Search mods"/></li>
-                            </ul>
                         </li>
                         <li>
                             <a @click="view = 'online'; searchFilter = ''" :class="[view === 'online' ? 'is-active' : '']"><i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})</a>
-                            <ul v-if="view === 'online'">
-                                <li><a class='button' @click="openThunderstoreSortingModal()">Sort</a></li>
-                                <li class='is-size-7'>&nbsp;</li>
-                                <li><input v-model='searchFilter' class='input' type='text' placeholder='Search mods'/></li>
-                            </ul>
                         </li>
                     </ul>
                     <p class='menu-label'>Other</p>
@@ -204,6 +172,22 @@
             </div>
             <div class='column is-three-quarters'>
                 <div v-show="view === 'online'">
+                    <div class='sticky-top sticky-top--search border-at-bottom'>
+                        <div class='card is-shadowless'>
+                            <div class='card-header-title'>
+                                <span>Search:&nbsp;&nbsp;</span>
+                                <input v-model='searchFilter' class="input" type="text"/>
+                                <span>&nbsp;&nbsp;Sort:&nbsp;&nbsp;</span>
+                                <select class='select select--content-spacing' id='sorting-select' v-model="sortingStyleModel">
+                                    <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
+                                </select>
+                                <span>&nbsp;</span>
+                                <select class='select select--content-spacing' id='sorting-select' v-model="sortingDirectionModel" :disabled="sortingStyleModel === 'Default'">
+                                    <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <template>
                         <div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
                             <expandable-card
@@ -211,6 +195,7 @@
                                 :id="index"
                                 :description="key.versions[0].description"
                                 :funkyMode="settings.funkyModeEnabled"
+                                :darkTheme="settings.darkTheme"
                                 :expandedByDefault="settings.expandedCards">
                                     <template v-slot:title>
                                         <span v-if="key.pinned" class='has-tooltip-left' data-tooltip='Pinned on Thunderstore'>
@@ -245,6 +230,14 @@
                     </template>
                 </div>
                 <div v-show="view === 'installed'">
+                    <div class='sticky-top sticky-top--search border-at-bottom'>
+                        <div class='card is-shadowless'>
+                            <div class='card-header-title'>
+                                <span>Search:&nbsp;&nbsp;</span>
+                                <input v-model='searchFilter' class="input" type="text"/>
+                            </div>
+                        </div>
+                    </div>
                     <template>
                         <div class='fixed-center text-center' v-if="localModList.length === 0">
                             <div>
@@ -470,6 +463,7 @@ import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
 import StatusEnum from '../model/enums/StatusEnum';
 import SortingStyle from '../model/enums/SortingStyle';
+import SortingDirection from '../model/enums/SortingDirection';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 import R2Error from '../model/errors/R2Error';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
@@ -529,6 +523,8 @@ export default class Manager extends Vue {
 
     sortingStyleModel: string = SortingStyle.DEFAULT;
     sortingStyle: string = SortingStyle.DEFAULT;
+
+    sortingDirectionModel: string = SortingDirection.STANDARD;
     sortDescending: boolean = true;
 
     showThunderstoreSorting: boolean = false;
@@ -616,8 +612,11 @@ export default class Manager extends Vue {
         this.showThunderstoreSorting = false;
     }
 
+    @Watch('sortingStyleModel')
+    @Watch('sortingDirectionModel')
     applySort() {
         this.sortingStyle = this.sortingStyleModel;
+        this.sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
         this.filterModLists();
     }
 
@@ -872,6 +871,15 @@ export default class Manager extends Vue {
     getSortOptions() {
         const options = [];
         const sorting: {[key: string]: string} = SortingStyle;
+        for(const key in sorting) {
+            options.push(sorting[key]);
+        }
+        return options;
+    }
+
+    getSortDirections() {
+        const options = [];
+        const sorting: {[key: string]: string} = SortingDirection;
         for(const key in sorting) {
             options.push(sorting[key]);
         }
