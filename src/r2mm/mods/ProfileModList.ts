@@ -146,7 +146,11 @@ export default class ProfileModList {
         const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2z`);
         const zip = new AdmZip();
         zip.addFile('export.r2x', Buffer.from(yaml.stringify(exportFormat)));
-        zip.addLocalFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'), 'config');
+        const configDir = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config')
+        const cwd = process.cwd();
+        process.chdir(configDir);
+        zip.addLocalFolder(".", 'config/');
+        process.chdir(cwd);
         zip.writeZip(exportPath);
         spawn('powershell.exe', ['explorer', `/select,${exportPath}`]);
     }
