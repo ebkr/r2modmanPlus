@@ -15,7 +15,7 @@
                         <br/><br/>
                         <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">Profile name required</span>
                         <span class="tag is-success" v-else-if='!doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is available</span>
-                        <span class="tag is-danger" v-else-if='doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is already in use</span>
+                        <span class="tag is-danger" v-else-if='doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters</span>
                     </div>
                     <div class='card-footer'>
                         <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
@@ -176,6 +176,9 @@ export default class Profiles extends Vue {
     }
 
     doesProfileExist(nameToCheck: string): boolean {
+        if (isNull(nameToCheck.match(new RegExp('^[a-zA-Z0-9](\\s|[a-zA-Z0-9])*$')))) {
+            return true;
+        }
         const safe: string | undefined = sanitize(nameToCheck);
         if (isUndefined(safe)) {
             return true;
@@ -217,8 +220,13 @@ export default class Profiles extends Vue {
     }
 
     removeProfileAfterConfirmation() {
-        fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
-        fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+        try {
+            fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
+            fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+        } catch(e) {
+            const err: Error = e;
+            this.showError(new R2Error('Error whilst deleting profile', err.message, null));
+        }
         if (Profile.getActiveProfile().getProfileName().toLowerCase() !== 'default') {
             for(let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
                 if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
@@ -229,6 +237,11 @@ export default class Profiles extends Vue {
         }
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
+
+        settings = new ManagerSettings();
+        settings.load();
+        settings.setProfile(Profile.getActiveProfile().getProfileName());
+
         this.closeRemoveProfileModal();
     }
 
