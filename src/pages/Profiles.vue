@@ -220,8 +220,13 @@ export default class Profiles extends Vue {
     }
 
     removeProfileAfterConfirmation() {
-        fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
-        fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+        try {
+            fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
+            fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+        } catch(e) {
+            const err: Error = e;
+            this.showError(new R2Error('Error whilst deleting profile', err.message, null));
+        }
         if (Profile.getActiveProfile().getProfileName().toLowerCase() !== 'default') {
             for(let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
                 if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
@@ -232,6 +237,11 @@ export default class Profiles extends Vue {
         }
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
+
+        settings = new ManagerSettings();
+        settings.load();
+        settings.setProfile(Profile.getActiveProfile().getProfileName());
+
         this.closeRemoveProfileModal();
     }
 
