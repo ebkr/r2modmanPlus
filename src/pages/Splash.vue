@@ -194,8 +194,7 @@ export default class Splash extends Vue {
             fs.ensureDirSync(PathResolver.ROOT);
             ThemeManager.apply();
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
-                // ManagerInformation.IS_PORTABLE = isPortable;
-                ManagerInformation.IS_PORTABLE = true;
+                ManagerInformation.IS_PORTABLE = isPortable;
                 this.checkForUpdates();
             });
             ipcRenderer.send('get-is-portable');
