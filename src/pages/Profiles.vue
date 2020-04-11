@@ -15,7 +15,7 @@
                         <br/><br/>
                         <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">Profile name required</span>
                         <span class="tag is-success" v-else-if='!doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is available</span>
-                        <span class="tag is-danger" v-else-if='doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is already in use</span>
+                        <span class="tag is-danger" v-else-if='doesProfileExist(newProfileName)'>"{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters</span>
                     </div>
                     <div class='card-footer'>
                         <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
@@ -176,6 +176,9 @@ export default class Profiles extends Vue {
     }
 
     doesProfileExist(nameToCheck: string): boolean {
+        if (isNull(nameToCheck.match(new RegExp('^[a-zA-Z0-9](\\s|[a-zA-Z0-9])*$')))) {
+            return true;
+        }
         const safe: string | undefined = sanitize(nameToCheck);
         if (isUndefined(safe)) {
             return true;
