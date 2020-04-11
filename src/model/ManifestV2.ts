@@ -76,6 +76,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setVersionNumber(version.getVersionNumber());
         this.setWebsiteUrl(mod.getPackageUrl());
         this.setGameVersion('0');
+        this.icon = path.join(PathResolver.ROOT, 'mods', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         return this;
     }
 
