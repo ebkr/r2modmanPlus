@@ -13,6 +13,12 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 
 
 ## Latest Updates
+### 3.0.14
+- Moved search and sort options to be above the mod list.
+- Profile names are now restricted to letters, numbers, and spaces.
+- Update banner will stop appearing for non-portable versions on/after this version.
+- Deleting the selected profile will no longer be re-created on launch.
+
 ### 3.0.13
 - Common errors now come with suggested actions.
 - Settings screen has been slightly modified to allow more options.
@@ -22,13 +28,6 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 ### 3.0.12
 - Fixed "Install with Mod Manager" support.
 - Deleted config files now live-update.
-
-### 3.0.11
-- Dark theme!
-- Improved download progress.
-- Better modpack support.
-- Visual fix for sorting buttons.
-- Other fixes.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
