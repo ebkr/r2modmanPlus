@@ -27,6 +27,13 @@
     padding: 0.7em;
     box-shadow: 0px 0px 0px 0px transparent;
 }
+.sticky-top--search {
+    background-color: inherit;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    box-shadow: unset;
+}
 
 .border-at-bottom {
     border-bottom: 1px solid #00000017;
@@ -50,4 +57,14 @@
     &--bold {
         font-weight: 500;
     }
+}
+
+.scrollable {
+    position: relative;
+    max-height: 100%;
+}
+
+.select--content-spacing {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
