@@ -115,6 +115,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import ThemeManager from '../r2mm/manager/ThemeManager';
+import { Logger, LogSeverity } from '../r2mm/logging/Logger';
 
 @Component({
     components: {
@@ -193,6 +194,7 @@ export default class Splash extends Vue {
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
             ThemeManager.apply();
+            Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
                 this.checkForUpdates();

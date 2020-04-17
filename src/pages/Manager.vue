@@ -298,7 +298,7 @@
                 </div>
                 <div v-show="view === 'settings'">
                     <template>
-                        <hero title='Settings' subtitle='Advanced options for r2modman' heroType='is-info' />
+                        <hero title='Settings' :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()' heroType='is-info' />
                         <ul class="list">
                             <li class="list-item" @click="browseDataFolder()">
                                 <a class="is-text is-text--bold"><p>Browse data folder</p></a>
@@ -536,6 +536,8 @@ export default class Manager extends Vue {
     updateTagName: string = '';
 
     fixingPreloader: boolean = false;
+
+    managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
 
 
     @Watch('searchFilter')
@@ -1198,16 +1200,13 @@ export default class Manager extends Vue {
     }
 
     created() {
-        Logger.Log(LogSeverity.INFO, 'Loading settings');
         this.settings.load();
-        Logger.Log(LogSeverity.INFO, 'Getting local mod list');
         const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
         if (!(newModList instanceof R2Error)) {
             this.localModList = newModList;
         } else {
             Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
         }
-        Logger.Log(LogSeverity.INFO, 'Binding mod lists to view');
         this.thunderstoreModList = ThunderstorePackages.PACKAGES;
         this.generateModlist();
         ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
@@ -1221,7 +1220,6 @@ export default class Manager extends Vue {
 
         });
         this.isManagerUpdateAvailable();
-        // this.portableUpdateAvailable = true;
     }
 }
 

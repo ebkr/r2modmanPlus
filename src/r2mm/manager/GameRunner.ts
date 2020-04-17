@@ -16,7 +16,7 @@ export default class GameRunner {
             return;
         }
         Logger.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir} -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll`);
+        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll`);
         child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'true', '--doorstop-target', 'r2modman\\BepInEx\\core\\BepInEx.Preloader.dll']).on('error', err => {
             Logger.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
             Logger.Log(LogSeverity.ERROR, err.message);
@@ -32,7 +32,7 @@ export default class GameRunner {
             return;
         }
         Logger.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir} -applaunch 632360 --doorstop-enable false`);
+        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable false`);
         child.spawn(`${steamDir}/Steam.exe`, ['-applaunch', '632360', '--doorstop-enable', 'false']).on('error', err => {
             Logger.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting vanilla');
             Logger.Log(LogSeverity.ERROR, err.message);
