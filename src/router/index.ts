@@ -22,6 +22,10 @@ export default function(/* { store, ssrContext } */) {
         base: process.env.VUE_ROUTER_BASE
     });
 
+    // Router.beforeEach((to: Route, from: Route) => {
+    //     Vue. to.meta.depth > from.meta.depth ? '' : '';
+    // });
+
     Router.afterEach((to: Route, ignored: Route) => {
         document.title = to.meta.title();
     });
