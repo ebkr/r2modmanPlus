@@ -14,6 +14,7 @@ import ExportMod from 'src/model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
 import AdmZip from 'adm-zip';
+import Axios from 'axios';
 
 export default class ProfileModList {
 
@@ -128,7 +129,7 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static exportModList(): R2Error | void{
+    public static exportModListToFile(): R2Error | string {
         const exportDirectory = path.join(PathResolver.ROOT, 'mods', 'exports');
         try {
             fs.ensureDirSync(exportDirectory);
@@ -148,7 +149,26 @@ export default class ProfileModList {
         zip.addFile('export.r2x', Buffer.from(yaml.stringify(exportFormat)));
         zip.addLocalFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'), 'config');
         zip.writeZip(exportPath);
-        spawn('powershell.exe', ['explorer', `/select,${exportPath}`]);
+        return exportPath;
+    }
+
+    public static exportModList(): R2Error | void {
+        const exportResult: R2Error | string = this.exportModListToFile();
+        if (exportResult instanceof R2Error) {
+            return exportResult;
+        } else {
+            spawn('powershell.exe', ['explorer', `/select,${exportResult}`]);
+        }
+    }
+
+    public static exportModListAsCode(callback: (code: string) => void): R2Error | void {
+        const exportResult: R2Error | string = this.exportModListToFile();
+        if (exportResult instanceof R2Error) {
+            return exportResult;
+        } else {
+            const profileBuffer = '#r2modman\n' + fs.readFileSync(exportResult).toString('base64');
+            Axios.post('https://hastebin.com/documents', profileBuffer).then(resp => callback(resp.data.key));
+        }
     }
 
     public static shiftModEntryUp(mod: ManifestV2): ManifestV2[] | R2Error {

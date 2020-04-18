@@ -121,6 +121,17 @@
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="closePreloaderFixModal()">I understand</button>
             </template>
         </modal>
+        <modal v-show="exportCode !== ''" @close-modal="() => {exportCode = '';}">
+            <template v-slot:title>
+                <p class='card-header-title'>Profile exported</p>
+            </template>
+            <template v-slot:body>
+                <p>Your code: <strong>{{exportCode}}</strong> has been copied to your clipboard. Just give it to a friend!</p>
+            </template>
+            <template v-slot:footer>
+                <button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="exportCode = '';">Done</button>
+            </template>
+        </modal>
         <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
             <div class="modal-background" @click="closeErrorModal()"></div>
             <div class='modal-content'>
@@ -325,7 +336,10 @@
                                 </a>
                             </li>
                             <li class="list-item" @click="exportProfile()">
-                                <a class="is-text is-text--bold"><p>Export profile</p></a>
+                                <a class="is-text is-text--bold"><p>Export profile as file</p></a>
+                            </li>
+                            <li class="list-item" @click="exportProfileAsCode()">
+                                <a class="is-text is-text--bold"><p id="codeExportButton">Export profile as code</p></a>
                             </li>
                             <li class="list-item" @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
                                 <a class="is-text is-text--bold">
@@ -478,7 +492,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 
 import * as fs from 'fs-extra';
 import { isUndefined, isNull } from 'util';
-import { ipcRenderer, app } from 'electron';
+import { ipcRenderer, app, clipboard } from 'electron';
 import { spawn } from 'child_process';
 
 @Component({
@@ -538,6 +552,8 @@ export default class Manager extends Vue {
     fixingPreloader: boolean = false;
 
     managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
+
+    exportCode: string = '';
 
 
     @Watch('searchFilter')
@@ -1126,6 +1142,26 @@ export default class Manager extends Vue {
     exportProfile() {
         const exportErr = ProfileModList.exportModList();
         if (exportErr instanceof R2Error) {
+            this.showError(exportErr);
+        }
+    }
+
+    exportProfileAsCode() {
+        const uploadText = 'Uploading profile, please wait.';
+        const regularText = 'Export profile as code';
+        const element: HTMLElement | null = document.getElementById('codeExportButton');
+        if (isNull(element) || element.innerHTML === uploadText) {
+            return;
+        }
+        element.innerHTML = uploadText;
+        const exportErr = ProfileModList.exportModListAsCode(code => {
+            console.log(code);
+            this.exportCode = code;
+            clipboard.writeText(code, 'clipboard');
+            element.innerHTML = regularText;
+        });
+        if (exportErr instanceof R2Error) {
+            element.innerHTML = regularText;
             this.showError(exportErr);
         }
     }
