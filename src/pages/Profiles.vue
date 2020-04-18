@@ -254,7 +254,7 @@ export default class Profiles extends Vue {
     doesProfileExist(nameToCheck: string): boolean {
         if (
             isNull(
-                nameToCheck.match(new RegExp('^[a-zA-Z0-9](\\s|[a-zA-Z0-9])*$'))
+                nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))
             )
         ) {
             return true;
