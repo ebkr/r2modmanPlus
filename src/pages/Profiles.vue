@@ -112,11 +112,7 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p
-              class="card-header-title"
-              v-if="totalModsToImport > 0"
-            >Importing profile ({{numberOfModsImported}} / {{totalModsToImport}})</p>
-            <p class="card-header-title" v-else>Importing profile</p>
+            <p class="card-header-title">{{percentageImported}}% imported</p>
           </header>
           <div class="card-content">
             <p>This may take a while, as mods are being downloaded.</p>
@@ -200,6 +196,7 @@ import Axios from 'axios';
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
 import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ManifestV2 from '../model/ManifestV2';
 import ExportFormat from '../model/exports/ExportFormat';
@@ -212,6 +209,7 @@ import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 import PathResolver from '../r2mm/manager/PathResolver';
+import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
 
 import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
@@ -236,8 +234,7 @@ export default class Profiles extends Vue {
 
     private removingProfile: boolean = false;
     private importingProfile: boolean = false;
-    private numberOfModsImported: number = 0;
-    private totalModsToImport: number = 0;
+    private percentageImported: number = 0;
 
     private showImportModal: boolean = false;
     private showCodeModal: boolean = false;
@@ -361,94 +358,40 @@ export default class Profiles extends Vue {
     }
 
     downloadImportedProfileMods(modList: ExportMod[]) {
-        this.numberOfModsImported = 0;
-        this.totalModsToImport = modList.length;
-        let step = 0;
-        let currentMod: ThunderstoreMod;
-        const installStep = (
-            progress: number,
-            status: number,
-            error: R2Error | void
-        ) => {
-            if (status === StatusEnum.SUCCESS) {
-                this.numberOfModsImported += 1;
-                const thunderstoreVersion:
-                    | ThunderstoreVersion
-                    | undefined = currentMod
-                    .getVersions()
-                    .find(
-                        (version: ThunderstoreVersion) =>
-                            version.getVersionNumber().toString() ===
-                            modList[step].getVersionNumber().toString()
-                    );
-                if (isUndefined(thunderstoreVersion)) {
+        this.percentageImported = 0;
+        BetterThunderstoreDownloader.downloadImportedMods(modList,
+        (progress: number, modName: string, status: number, err: R2Error | null) => {
+            if (status == StatusEnum.FAILURE) {
+                this.importingProfile = false;
+                if (err instanceof R2Error) {
+                    this.showError(err);
+                }
+            } else if (status == StatusEnum.PENDING) {
+                this.percentageImported = Math.floor(progress);
+            }
+        }, (comboList: ThunderstoreCombo[]) => {
+            let keepIterating = true;
+            comboList.forEach(comboMod => {
+                if (!keepIterating) {
+                    return;
+                }
+                const installResult: R2Error | ManifestV2 = this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
+                if (installResult instanceof R2Error) {
+                    this.showError(installResult);
+                    keepIterating = false;
                     this.importingProfile = false;
                     return;
                 }
-                const mod: ManifestV2 = new ManifestV2().fromThunderstoreMod(
-                    currentMod,
-                    thunderstoreVersion
-                );
-                ProfileModList.addMod(mod);
-                ProfileInstaller.installMod(mod);
-                if (!modList[step].isEnabled()) {
-                    const profileErr = ProfileInstaller.disableMod(mod);
-                    const update:
-                        | ManifestV2[]
-                        | R2Error = ProfileModList.updateMod(
-                        mod,
-                        (updatingMod: ManifestV2) => {
-                            updatingMod.disable();
-                        }
-                    );
-                    if (update instanceof R2Error) {
-                        this.showError(update);
+                modList.forEach(imported => {
+                    if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
+                        ProfileModList.updateMod(installResult, modToDisable => {
+                            modToDisable.disable();
+                        });
                     }
-                }
-                step += 1;
-                if (step < modList.length) {
-                    const tsMod:
-                        | ThunderstoreMod
-                        | undefined = ThunderstorePackages.PACKAGES.find(
-                        (mod: ThunderstoreMod) =>
-                            mod.getFullName() === modList[step].getName()
-                    );
-                    if (isUndefined(tsMod)) {
-                        this.importingProfile = false;
-                        return;
-                    }
-                    currentMod = tsMod;
-                    const downloader = new ThunderstoreDownloader(tsMod);
-                    downloader.download(
-                        installStep,
-                        modList[step].getVersionNumber()
-                    );
-                } else {
-                    this.importingProfile = false;
-                }
-            } else if (status === StatusEnum.FAILURE) {
-                if (error instanceof R2Error) {
-                    this.showError(error);
-                }
-                this.importingProfile = false;
-                return;
-            }
-        };
-        if (modList.length > 0) {
-            const tsMod:
-                | ThunderstoreMod
-                | undefined = ThunderstorePackages.PACKAGES.find(
-                (mod: ThunderstoreMod) =>
-                    mod.getFullName() === modList[step].getName()
-            );
-            if (!(tsMod instanceof ThunderstoreMod)) {
-                this.importingProfile = false;
-                return;
-            }
-            currentMod = tsMod;
-            const downloader = new ThunderstoreDownloader(tsMod);
-            downloader.download(installStep, modList[step].getVersionNumber());
-        }
+                })
+            })
+            this.importingProfile = false;
+        });
     }
 
     importProfileUsingCode() {
@@ -546,6 +489,21 @@ export default class Profiles extends Vue {
             filters: ['.r2x', '.r2z'],
             buttonLabel: 'Import'
         });
+    }
+
+    installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | ManifestV2 {
+        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+        const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+        if (!(installError instanceof R2Error)) {
+            const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+            if (newModList instanceof R2Error) {
+                return newModList;
+            }
+            return manifestMod;
+        } else {
+            // (mod failed to be placed in /{profile} directory)
+            return installError;
+        }
     }
 
     created() {

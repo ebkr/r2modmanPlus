@@ -13,6 +13,8 @@ import fs from 'fs-extra';
 import * as path from 'path';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import Profile from 'src/model/Profile';
+import ThunderstorePackages from '../data/ThunderstorePackages';
+import ExportMod from 'src/model/exports/ExportMod';
 
 const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
 
@@ -113,7 +115,7 @@ export default class BetterThunderstoreDownloader {
                     return;
                 }
                 // If dependencies, queue and download.
-                this.queueDownloadDependencies(mod, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+                this.queueDownloadDependencies(dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
                         callback(0, modName, status, err);
                     } else if (status === StatusEnum.PENDING) {
@@ -121,7 +123,6 @@ export default class BetterThunderstoreDownloader {
                     } else if (status === StatusEnum.SUCCESS) {
                         callback(this.generateProgressPercentage(progress, downloadCount, dependencies.length + 1), modName, StatusEnum.PENDING, err);
                         downloadCount += 1;
-                        downloadCount <= dependencies.length + 1
                         if (downloadCount >= dependencies.length + 1) {
                             callback(100, modName, StatusEnum.PENDING, err);
                             completedCallback([...dependencies, combo]);
@@ -132,6 +133,42 @@ export default class BetterThunderstoreDownloader {
         })
     }
 
+    public static downloadImportedMods(modList: ExportMod[],
+                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void, 
+                                       completedCallback: (mods: ThunderstoreCombo[]) => void) {
+        const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
+        const comboList: ThunderstoreCombo[] = [];
+        modList.forEach(importMod => {
+            tsMods.forEach(mod => {
+                if (mod.getFullName() == importMod.getName()) {
+                    mod.getVersions().forEach(version => {
+                        if (version.getVersionNumber().isEqualTo(importMod.getVersionNumber())) {
+                            const combo = new ThunderstoreCombo();
+                            combo.setMod(mod);
+                            combo.setVersion(version);
+                            comboList.push(combo);
+                        }
+                    });
+                }
+            });
+        });
+        let downloadCount = 0;
+        this.queueDownloadDependencies(comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+            if (status === StatusEnum.FAILURE) {
+                callback(0, modName, status, err);
+            } else if (status === StatusEnum.PENDING) {
+                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, status, err);
+            } else if (status === StatusEnum.SUCCESS) {
+                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, StatusEnum.PENDING, err);
+                downloadCount += 1;
+                if (downloadCount >= comboList.length) {
+                    callback(100, modName, StatusEnum.PENDING, err);
+                    completedCallback(comboList);
+                }
+            }
+        });
+    }
+
     private static generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
         const onePercent = 1/total/100;
         const currentDownloadProgress = (onePercent * progress);
@@ -139,7 +176,7 @@ export default class BetterThunderstoreDownloader {
         return completedProgress + (total * currentDownloadProgress);
     }
 
-    private static queueDownloadDependencies(mod: ThunderstoreMod, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    private static queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
         const entry = entries.next();
         if (!entry.done) {
             this.downloadAndSave(entry.value[1] as ThunderstoreCombo, (progress: number, status: number, err: R2Error | null) => {
@@ -149,7 +186,7 @@ export default class BetterThunderstoreDownloader {
                     callback(progress, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.SUCCESS) {
                     callback(100, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                    this.queueDownloadDependencies(mod, entries, callback);
+                    this.queueDownloadDependencies(entries, callback);
                 }
             });
         }
