@@ -132,8 +132,11 @@ export default class Splash extends Vue {
     requests = [
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
+        new RequestItem('ExclusionsList', 0)
     ];
     isOffline: boolean = false;
+
+    exclusionMap: Map<string, boolean> = new Map();
 
     // Used to produce a single, combined, RequestItem./
     private reduceRequests(): RequestItem {
@@ -145,9 +148,26 @@ export default class Splash extends Vue {
         this.loadingText = 'Preparing';
         ipcRenderer.once('update-done', ()=>{
             this.getRequestItem('UpdateCheck').setProgress(100);
-            this.getThunderstoreMods(0);
+            this.getExclusions();
         });
         ipcRenderer.send('update-app');
+    }
+
+    private getExclusions() {
+        this.loadingText = 'Connecting to GitHub repository';
+        axios.get('https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md', {
+            onDownloadProgress: progress => {
+                this.loadingText = 'Downloading exclusions'
+                this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
+            }
+        }).then(response => {
+            this.getRequestItem('ExclusionsList').setProgress(100);
+            response.data.split('\n').forEach((exclude: string) => {
+                this.exclusionMap.set(exclude, true);
+            });
+        }).finally(() => {
+            this.getThunderstoreMods(0);
+        })
     }
 
     // Provide access to a request item, as item is not stored in a map.
@@ -166,8 +186,10 @@ export default class Splash extends Vue {
         }).then(response => {
             let tsMods: ThunderstoreMod[] = [];
             response.data.forEach((mod: any) => {
-                let tsMod = new ThunderstoreMod();
-                tsMods.push(tsMod.parseFromThunderstoreData(mod));
+                let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
+                if (!this.exclusionMap.has(tsMod.getFullName())) {
+                    tsMods.push(tsMod.parseFromThunderstoreData(mod));
+                }
             })
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
