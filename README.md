@@ -1,18 +1,20 @@
 # r2modman
 
-## Regarding Auto Updating
-Updates in r2modmanPlus are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
-
-If you're coming from versions prior to 3.0.0, you'll need to manually update, and profiles won't carry across.
-
 ## Installing
 1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
 2. Inside the downloaded ZIP file. Run the "r2modman Setup X.X.X.exe" (where X represents the version number).
 3. Follow the installer steps.
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
-
 ## Latest Updates
+### 3.0.15
+- Profile exporting can now be done using codes.
+- Profile imports now use mod version numbers specified in the export.
+- Profile names now allow underscores, hyphens, and periods. These characters are not allowed at the start.
+- Manager version number in settings and log.
+- Tools and utilities no longer appear in the Online tab.
+- Other minor fixes.
+
 ### 3.0.14
 - Moved search and sort options to be above the mod list.
 - Profile names are now restricted to letters, numbers, and spaces.
@@ -25,9 +27,8 @@ If you're coming from versions prior to 3.0.0, you'll need to manually update, a
 - Added tool to fix BepInEx preloader issues.
 - Added logging related to game startup.
 
-### 3.0.12
-- Fixed "Install with Mod Manager" support.
-- Deleted config files now live-update.
+## Regarding Auto Updating
+Updates in r2modman are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
 
 ## Problem?
 Mention me on Discord via the Thunderstore server. @Ebkr#3660.
