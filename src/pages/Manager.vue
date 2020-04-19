@@ -37,7 +37,7 @@
                                 {{value}}
                             </option>
                         </select>
-                        <br/><br/>
+                        &nbsp;&nbsp;
                         <span class="tag is-dark" v-if='selectedVersion === null'>You need to select a version</span>
                         <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>{{selectedVersion}} is the latest version</span>
                         <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>{{selectedVersion}} is an outdated version</span>
