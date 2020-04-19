@@ -170,10 +170,8 @@ export default class BetterThunderstoreDownloader {
     }
 
     private static generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
-        const onePercent = 1/total/100;
-        const currentDownloadProgress = (onePercent * progress);
         const completedProgress = (currentIndex / total) * 100;
-        return completedProgress + (total * currentDownloadProgress);
+        return completedProgress + (progress * 1/total);
     }
 
     private static queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
