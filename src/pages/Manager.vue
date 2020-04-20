@@ -1154,11 +1154,15 @@ export default class Manager extends Vue {
             return;
         }
         element.innerHTML = uploadText;
-        const exportErr = ProfileModList.exportModListAsCode(code => {
-            console.log(code);
-            this.exportCode = code;
-            clipboard.writeText(code, 'clipboard');
-            element.innerHTML = regularText;
+        const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
+            if (!isNull(err)) {
+                this.showError(err);
+                element.innerHTML = regularText;
+            } else {
+                this.exportCode = code;
+                clipboard.writeText(code, 'clipboard');
+                element.innerHTML = regularText;
+            }
         });
         if (exportErr instanceof R2Error) {
             element.innerHTML = regularText;
