@@ -161,13 +161,18 @@ export default class ProfileModList {
         }
     }
 
-    public static exportModListAsCode(callback: (code: string) => void): R2Error | void {
+    public static exportModListAsCode(callback: (code: string, err: R2Error | null) => void): R2Error | void {
         const exportResult: R2Error | string = this.exportModListToFile();
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
             const profileBuffer = '#r2modman\n' + fs.readFileSync(exportResult).toString('base64');
-            Axios.post('https://hastebin.com/documents', profileBuffer).then(resp => callback(resp.data.key));
+            Axios.post('https://hastebin.com/documents', profileBuffer)
+                .then(resp => callback(resp.data.key, null))
+                .catch(e => {
+                    const err: Error = e;
+                    callback('', new R2Error('Failed to export profile', err.message, null));
+                });
         }
     }
 
