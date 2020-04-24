@@ -5,7 +5,7 @@
   "productName": "r2modman",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
-  "author": "ebkr@github.com",`
+  "author": "ebkr@github.com",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
