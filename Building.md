@@ -2,7 +2,6 @@
 ### Prerequisites
 - Node.js (Built on 13.2.0)
 - Yarn
-- VS Code
 
 ### Setting up
 1. Navigate to the root directory, and run `yarn install`.
