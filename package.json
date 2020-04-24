@@ -10,7 +10,10 @@
     "scripts": {
         "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
         "test": "echo \"No test specified\" && exit 0",
-        "run-dev": "quasar dev -m electron"
+        "run": "quasar dev -m electron",
+        "build-win": "quasar build --mode electron -T win32",
+        "build-linux": "quasar build --mode electron -T linux",
+        "publish": "quasar build --mode electron --publish always"
     },
     "dependencies": {
         "@node-steam/vdf": "^2.1.0",

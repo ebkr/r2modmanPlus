@@ -196,6 +196,11 @@ module.exports = function(ctx) {
                     allowToChangeInstallationDirectory: true,
                     allowElevation: false,
                     perMachine: false
+                },
+                linux: {
+                    target: ['deb'],
+                    icon: 'src/assets/icon.png',
+                    maintainer: "ebkr"
                 }
             }
         }
