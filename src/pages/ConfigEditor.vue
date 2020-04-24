@@ -1,83 +1,84 @@
 <template>
-    <div>
-        <hero title='Config editor' subtitle='Make changes to your configuration files' heroType='is-info'/>
-        <div class='notification is-warning'>
-            <p class='container'>Configuration files are generated after launching the game, with the mod installed, at
-                least once.</p>
-        </div>
-        <div class='columns'>
-            <div class='column is-full'>
-                <article class='media'>
-                    <div class='media-content'>
-                        <div class='content'>
-                            <div class='container' v-if="editing === false">
-                                <div>
-                                    <i class='fas fa-long-arrow-alt-left margin-right'/>
-                                    <strong><a @click="backToManager()">Go back</a></strong>
-                                    <br/><br/>
-                                </div>
-                                <div>
-                                    <input class="input" type="text" placeholder="Search for config files"
-                                           v-model="filterText"/>
-                                    <br/><br/>
-                                </div>
-                                <div v-for='(file, index) in shownConfigFiles' :key="`config-file-${file.name}`">
-                                    <expandable-card
-                                            :id="index"
-                                            :visible="false">
-                                        <template v-slot:title>
-                                            <span>{{file.name}}</span>
-                                        </template>
-                                        <a class='card-footer-item' @click="editFile(file.name)">Edit Config</a>
-                                        <a class='card-footer-item' @click="deleteConfig(file.name)">Delete</a>
-                                    </expandable-card>
-                                </div>
-                            </div>
-                            <div class='container' v-else>
-                                <div>
-                                    <div class='sticky-top sticky-top--buttons'>
-                                        <button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
-                                        <button class='button is-danger' @click="editing = false;">Cancel</button>
-                                    </div>
-                                    <br/>
-                                    <h4 class='title is-4'>{{loadedFile}}</h4>
-                                    <div>
-                                        <h5 class='subtitle is-5'>Sections</h5>
-                                        <ul>
-                                            <li v-for='(_, key) in variables' :key="`section-link-${key}`">
-                                                <a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
-                                                <a :href="`#section-${key}`" v-else>{{[UNTITLED]}}</a>
-                                            </li>
-                                        </ul>
-                                        <hr/>
-                                        <div v-for='(vars, key) in variables' :key="`section-${key}`">
-                                            <br/>
-                                            <h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
-                                            <div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
-                                                <div class='field has-addons has-tooltip-top'
-                                                     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
-                                                    <div class='control is-expanded'>
-                                                        <input class='input' type='text' :value="varName" width="250"
-                                                               disabled readonly/>
-                                                    </div>
-                                                    <div class='control is-expanded'>
-                                                        <input :id="`${key}-${varName}`" class='input' type='text'
-                                                               :value="varValue.value"
-                                                               @change="updateVariableText(key, varName, this)"/>
-                                                    </div>
-                                                    <hr class='hr'/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </div>
+	<div>
+		<hero title='Config editor' subtitle='Make changes to your configuration files' heroType='is-info'/>
+		<div class='notification is-warning'>
+			<p class='container'>Configuration files are generated after launching the game, with the mod installed, at
+				least once.
+			</p>
+		</div>
+		<div class='columns'>
+			<div class='column is-full'>
+				<article class='media'>
+					<div class='media-content'>
+						<div class='content'>
+							<div class='container' v-if="editing === false">
+								<div>
+									<i class='fas fa-long-arrow-alt-left margin-right'/>
+									<strong><a @click="backToManager()">Go back</a></strong>
+									<br/><br/>
+								</div>
+								<div>
+									<input class="input" type="text" placeholder="Search for config files"
+									       v-model="filterText"/>
+									<br/><br/>
+								</div>
+								<div v-for='(file, index) in shownConfigFiles' :key="`config-file-${file.name}`">
+									<expandable-card
+											:id="index"
+											:visible="false">
+										<template v-slot:title>
+											<span>{{file.name}}</span>
+										</template>
+										<a class='card-footer-item' @click="editFile(file.name)">Edit Config</a>
+										<a class='card-footer-item' @click="deleteConfig(file.name)">Delete</a>
+									</expandable-card>
+								</div>
+							</div>
+							<div class='container' v-else>
+								<div>
+									<div class='sticky-top sticky-top--buttons'>
+										<button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
+										<button class='button is-danger' @click="editing = false;">Cancel</button>
+									</div>
+									<br/>
+									<h4 class='title is-4'>{{loadedFile}}</h4>
+									<div>
+										<h5 class='subtitle is-5'>Sections</h5>
+										<ul>
+											<li v-for='(_, key) in variables' :key="`section-link-${key}`">
+												<a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
+												<a :href="`#section-${key}`" v-else>{{[UNTITLED]}}</a>
+											</li>
+										</ul>
+										<hr/>
+										<div v-for='(vars, key) in variables' :key="`section-${key}`">
+											<br/>
+											<h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
+											<div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
+												<div class='field has-addons has-tooltip-top'
+												     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
+													<div class='control is-expanded'>
+														<input class='input' type='text' :value="varName" width="250"
+														       disabled readonly/>
+													</div>
+													<div class='control is-expanded'>
+														<input :id="`${key}-${varName}`" class='input' type='text'
+														       :value="varValue.value"
+														       @change="updateVariableText(key, varName, this)"/>
+													</div>
+													<hr class='hr'/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script lang='ts'>
