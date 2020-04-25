@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import Listeners from './ipcListeners'
+import Persist from './window-state-persist';
 import { ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import ipcServer from 'node-ipc';
@@ -20,9 +21,14 @@ function createWindow () {
      * Initial window options
      */
 
+    const windowSize = Persist.getSize(app, {
+        defaultWidth: 1200,
+        defaultHeight: 700
+    });
+
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 700,
+        width: windowSize.width,
+        height: windowSize.height,
         useContentSize: true,
         webPreferences: {
             nodeIntegration: true,
@@ -32,6 +38,8 @@ function createWindow () {
     if (process.env.PROD) {
         mainWindow.setMenu(null);
     }
+
+    Persist.handle(mainWindow, app);
 
     // Initialise client to server communication listener
     new Listeners(mainWindow, app);
