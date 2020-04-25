@@ -40,7 +40,12 @@ export default class Persist {
           'windowHeight': winSize[1]
         });
         const configFilePath = path.join(app.getPath('appData'), 'r2modmanPlus-local', 'config', 'window.yml');
-        fs.writeFileSync(configFilePath, yamlString);
+        try {
+          fs.ensureDirSync(configFilePath);
+          fs.writeFileSync(configFilePath, yamlString);
+        } catch (e) {
+          // Do nothing
+        }
       }, 100);
     });
   }
