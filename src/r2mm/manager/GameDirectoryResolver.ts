@@ -1,5 +1,5 @@
 import R2Error from 'src/model/errors/R2Error';
-import FileNotFoundError from 'src/model/errors/FileNotfoundError';
+import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import VdfParseError from 'src/model/errors/Vdf/VdfParseError';
 
 import * as child from 'child_process';

@@ -5,7 +5,7 @@ import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
 import Mod from 'src/model/Mod';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
-import FileNotFoundError from 'src/model/errors/FileNotfoundError';
+import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import R2Error from 'src/model/errors/R2Error';
 import PathResolver from "../manager/PathResolver";
 
