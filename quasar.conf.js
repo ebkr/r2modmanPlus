@@ -198,7 +198,7 @@ module.exports = function(ctx) {
           perMachine: false
         },
         linux: {
-          target: ['deb'],
+          target: ['AppImage', 'snap'],
           icon: 'src/assets/icon.png',
           maintainer: 'ebkr'
         }
