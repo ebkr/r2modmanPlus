@@ -167,7 +167,7 @@ export default class ProfileModList {
             return exportResult;
         } else {
             const profileBuffer = '#r2modman\n' + fs.readFileSync(exportResult).toString('base64');
-            Axios.post('https://hasteb.in/documents', profileBuffer)
+            Axios.post('https://hastebin-plus.herokuapp.com/documents', profileBuffer)
                 .then(resp => callback(resp.data.key, null))
                 .catch(e => {
                     const err: Error = e;
