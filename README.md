@@ -7,6 +7,13 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.16 (Bug fixes)
+- Profile code export host has changed. We'll see how reliable this one is in comparison.
+- Fixed a bug where saving a config file produced a new line at the end.
+- Window resize now persists between launches.
+- Config editor section title backgrounds aren't transparent anymore.
+- Error shown if code export fails.
+
 ### 3.0.15
 - Profile exporting can now be done using codes.
 - Profile imports now use mod version numbers specified in the export.
