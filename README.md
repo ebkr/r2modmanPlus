@@ -7,6 +7,9 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.17
+- Fixed a bug with window persistence.
+
 ### 3.0.16 (Bug fixes)
 - Profile code export host has changed. We'll see how reliable this one is in comparison.
 - Fixed a bug where saving a config file produced a new line at the end.
