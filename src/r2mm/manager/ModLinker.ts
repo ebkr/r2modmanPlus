@@ -6,16 +6,21 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
 import { Logger, LogSeverity } from '../logging/Logger';
+import GameDirectoryResolver from './GameDirectoryResolver';
 
 export default class ModLinker {
 
     public static link(): string[] | R2Error {
         const settings = new ManagerSettings()
         settings.load();
-        if (!settings.legacyInstallMode) {
-            return this.performSymlink(settings.riskOfRain2Directory || '', settings.linkedFiles);
+        const riskOfRain2Directory: string | R2Error = GameDirectoryResolver.getDirectory();
+        if (riskOfRain2Directory instanceof R2Error) {
+            return riskOfRain2Directory;
         }
-        return this.performLegacyInstall(settings.riskOfRain2Directory || '', settings.linkedFiles);
+        if (!settings.legacyInstallMode) {
+            return this.performSymlink(riskOfRain2Directory, settings.linkedFiles);
+        }
+        return this.performLegacyInstall(riskOfRain2Directory, settings.linkedFiles);
     }
 
     private static performSymlink(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
