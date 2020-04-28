@@ -8,7 +8,8 @@
 
 ## Latest Updates
 ### 3.0.17
-- Fixed a bug with window persistence.
+- Fixed a bug with window size persistence.
+- Hopefully fixed the path join on null error.
 
 ### 3.0.16 (Bug fixes)
 - Profile code export host has changed. We'll see how reliable this one is in comparison.
