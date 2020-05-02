@@ -204,8 +204,6 @@ import ExportMod from '../model/exports/ExportMod';
 import R2Error from '../model/errors/R2Error';
 import StatusEnum from '../model/enums/StatusEnum';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import ThunderstoreDownloader from '../r2mm/downloading/ThunderstoreDownloader';
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 import PathResolver from '../r2mm/manager/PathResolver';

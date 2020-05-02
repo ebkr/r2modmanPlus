@@ -87,11 +87,12 @@ export default class BetterThunderstoreDownloader {
         combo.setMod(mod);
         combo.setVersion(modVersion);
         let downloadCount = 0;
+        const downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
         this.downloadAndSave(combo, (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
             } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, dependencies.length + 1), mod.getName(), status, err);
+                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), mod.getName(), status, err);
             } else if (status === StatusEnum.SUCCESS) {
                 // Determine if modpack
                 // If modpack, use specified dependencies.
@@ -119,9 +120,9 @@ export default class BetterThunderstoreDownloader {
                     if (status === StatusEnum.FAILURE) {
                         callback(0, modName, status, err);
                     } else if (status === StatusEnum.PENDING) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, dependencies.length + 1), modName, status, err);
+                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
                     } else if (status === StatusEnum.SUCCESS) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, dependencies.length + 1), modName, StatusEnum.PENDING, err);
+                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
                         downloadCount += 1;
                         if (downloadCount >= dependencies.length + 1) {
                             callback(100, modName, StatusEnum.PENDING, err);
@@ -188,6 +189,10 @@ export default class BetterThunderstoreDownloader {
                 }
             });
         }
+    }
+    
+    private static calculateInitialDownloadSize(list: ThunderstoreCombo[]): number {
+        return list.filter(value => !this.isVersionAlreadyDownloaded(value)).length;
     }
 
     private static downloadAndSave(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void) {
