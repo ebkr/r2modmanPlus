@@ -66,6 +66,21 @@
 					<h5 class="title is-5">Close this message to continue modding.</h5>
 					<p>If this is taking a while, it's likely due to Steam starting.</p>
 					<p>Please be patient, and have fun!</p>
+					<br/>
+					<h5 class="title is-5">View the log below.</h5>
+					<div class='log-display'>
+						<div v-if='logLines.length > 0'>
+							<p class='is-family-code log-line' v-for='(key, index) in logLines' :key="'log-' + index"
+							   v-if='logLines.length > 0'>
+								{{key}}
+							</p>
+						</div>
+						<p class='is-family-code log-line' v-else>
+							Waiting for game to start...
+						</p>
+					</div>
+					<br/>
+					<button class='button'>Copy log to clipboard</button>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
@@ -683,6 +698,7 @@
 	import { isUndefined, isNull } from 'util';
 	import { ipcRenderer, app, clipboard } from 'electron';
 	import { spawn } from 'child_process';
+	import BepInExLog from '../r2mm/logging/BepInExLog';
 
 	@Component({
 		components: {
@@ -743,6 +759,8 @@
 		managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
 
 		exportCode: string = '';
+
+		logLines: string[] = BepInExLog.getLines();
 
 
 		@Watch('searchFilter')
@@ -1238,10 +1256,10 @@
 				}
 				this.gameRunning = true;
 				GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-					if (!isNull(err)) {
+					if (err instanceof R2Error) {
 						this.showError(err);
 					}
-					this.gameRunning = false;
+					this.logLines = BepInExLog.getLines();
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',

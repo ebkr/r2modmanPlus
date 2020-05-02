@@ -80,3 +80,17 @@
     margin: 0.5em;
     margin-right: 0;
 }
+
+.log-display {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #166797;
+    padding: 1em;
+}
+
+.log-line {
+    line-break: anywhere;
+    word-break: break-word;
+    margin-bottom: 1em;
+}
