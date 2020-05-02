@@ -13,6 +13,7 @@ import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 
 const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
+const modModeExtensions: string[] = [".dll", ".language"];
 
 export default class ProfileInstaller {
 
@@ -105,13 +106,17 @@ export default class ProfileInstaller {
         files.forEach((file: string) => {
             try {
                 if (mode === ModMode.DISABLED) {
-                    if (file.toLowerCase().endsWith('.dll')) {
-                        fs.renameSync(file, file + '.old');
-                    }
+                    modModeExtensions.forEach(ext => {
+                        if (file.toLowerCase().endsWith(ext)) {
+                            fs.renameSync(file, file + '.old');
+                        }
+                    });
                 } else if (mode === ModMode.ENABLED) {
-                    if (file.toLowerCase().endsWith('.dll.old')) {
-                        fs.renameSync(file, file.substring(0, file.length - ('.old').length));
-                    }
+                    modModeExtensions.forEach(ext => {
+                        if (file.toLowerCase().endsWith(ext + ".old")) {
+                            fs.renameSync(file, file.substring(0, file.length - ('.old').length));
+                        }
+                    });
                 }
             } catch(e) {
                 const err: Error = e;
