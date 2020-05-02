@@ -8,21 +8,21 @@ import R2Error from 'src/model/errors/R2Error';
 import { Logger, LogSeverity } from '../logging/Logger';
 import Profile from '../../model/Profile';
 import BepInExLog from '../logging/BepInExLog';
+import Timeout = NodeJS.Timeout;
 
-let tail: child.ChildProcessWithoutNullStreams | undefined;
-
-// setInterval(() => {
-//     exec('tasklist', function(err, stdout, stderr) {
-//     });
-// }, 100)
+let webSocket: WebSocket | undefined;
+let attemptInterval: Timeout | undefined;
+let logDisplayInterval: Timeout | undefined;
 
 export default class GameRunner {
 
     public static playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
-        if (tail !== undefined) {
-            tail.kill()
-            tail = undefined;
+        
+        if (attemptInterval !== undefined) {
+            clearInterval(attemptInterval);
+            attemptInterval = undefined;
         }
+        
         Logger.Log(LogSeverity.INFO, 'Launching modded');
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
@@ -41,15 +41,35 @@ export default class GameRunner {
             Logger.Log(LogSeverity.ERROR, err.message);
             onComplete(new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings'));
         });
-        
-        // Read log
+    
         BepInExLog.start();
-        onComplete(null);
-        tail = child.spawn('powershell.exe', ['Get-Content', `"${path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log')}"`, '-Wait']);
-        tail.stdout.on('data', data => {
-            BepInExLog.add(data.toString());
-            onComplete(null);
-        });
+        
+        let didUpdate = false;
+        attemptInterval = setInterval(() => {
+            try {
+                var socket = new WebSocket('ws://localhost:5892/Log')
+                socket.addEventListener('message', message => {
+                    BepInExLog.add(message.data.toString())
+                    didUpdate = true;
+                })
+                if (logDisplayInterval !== undefined) {
+                    clearInterval(logDisplayInterval);
+                    logDisplayInterval = undefined;
+                }
+                logDisplayInterval = setInterval(() => {
+                    if (didUpdate) {
+                        onComplete(null);
+                        didUpdate = false;
+                    }
+                }, 100);
+                if (attemptInterval !== undefined) {
+                    clearInterval(attemptInterval);
+                    attemptInterval = undefined;
+                }
+            } catch (e) {
+                // Do nothing. No websocket connection currently available.
+            }
+        }, 500);
     }
 
     public static playVanilla(ror2Directory: string, onComplete: (err: R2Error | null) => void) {

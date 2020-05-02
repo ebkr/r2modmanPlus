@@ -6,15 +6,14 @@ export default class BepInExLog {
 		this.lines = [];
 	}
 	
-	public static add(data: string) {
+	public static async add(data: string) {
 		data.split("\n").forEach(line => {
 			this.lines.push(line);
-			console.log('Adding line:', line);
 		});
 	}
 	
 	public static getLines() {
-		return this.lines;
+		return [...this.lines];
 	}
 	
 }
