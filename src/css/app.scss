@@ -93,4 +93,21 @@
     line-break: anywhere;
     word-break: break-word;
     margin-bottom: 1em;
+    padding-left: 1em;
+}
+.log-line--Info {
+    border-left: 5px solid #42abec;
+}
+.log-line--Error {
+    border-left: 5px solid #ec4242;
+}
+.log-line--Message {
+    border-left: 5px solid #b3eea1;
+}
+.log-line--Warning {
+    border-left: 5px solid #e8d617;
+}
+
+.expanded-modal {
+    width: 70% !important;
 }

@@ -60,27 +60,30 @@
 		</div>
 		<div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
 			<div class="modal-background" @click="closeGameRunningModal()"></div>
-			<div class='modal-content'>
+			<div class='modal-content expanded-modal'>
 				<div class='notification is-info'>
 					<h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
 					<h5 class="title is-5">Close this message to continue modding.</h5>
 					<p>If this is taking a while, it's likely due to Steam starting.</p>
 					<p>Please be patient, and have fun!</p>
-					<br/>
-					<h5 class="title is-5">View the log below.</h5>
-					<div class='log-display'>
-						<div v-if='logLines.length > 0'>
-							<p class='is-family-code log-line' v-for='(key, index) in logLines' :key="'log-' + index"
-							   v-if='logLines.length > 0'>
-								{{key}}
+					<div v-if='isLoggingEnabled()'>
+						<br/>
+						<h5 class="title is-5">View the log below.</h5>
+						<div id='log-display' class='log-display'>
+							<div v-if='logLines.length > 0'>
+								<div class='is-family-code' v-for='(key, index) in logLines' :key="'log-' +
+								index"
+								   v-if='logLines.length > 0'>
+									<p :class="['log-line', 'log-line--' + key.Level]">{{key.Data}}</p>
+								</div>
+							</div>
+							<p class='is-family-code log-line' v-else>
+								Waiting for game to start...
 							</p>
 						</div>
-						<p class='is-family-code log-line' v-else>
-							Waiting for game to start...
-						</p>
+						<br/>
+						<button class='button'>Copy log to clipboard</button>
 					</div>
-					<br/>
-					<button class='button'>Copy log to clipboard</button>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
@@ -312,6 +315,11 @@
 									<span v-if="key.pinned" class='has-tooltip-left'
 									      data-tooltip='Pinned on Thunderstore'>
 										<span class="tag is-info">Pinned</span>&nbsp;
+										{{key.name}} by {{key.owner}}
+									</span>
+									<span v-else-if="key.getSortPriority() === 2" class='has-tooltip-left'
+									      data-tooltip='Extra manager functionality is provided'>
+										<span class="tag is-dark">Integration</span>&nbsp;
 										{{key.name}} by {{key.owner}}
 									</span>
 									<span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
@@ -698,7 +706,8 @@
 	import { isUndefined, isNull } from 'util';
 	import { ipcRenderer, app, clipboard } from 'electron';
 	import { spawn } from 'child_process';
-	import BepInExLog from '../r2mm/logging/BepInExLog';
+	import WebSlogIntegration from '../r2mm/logging/WebSlogIntegration';
+	import SlogMessage from '../model/logging/SlogMessage';
 
 	@Component({
 		components: {
@@ -760,7 +769,7 @@
 
 		exportCode: string = '';
 
-		logLines: string[] = BepInExLog.getLines();
+		logLines: SlogMessage[] = WebSlogIntegration.getLines();
 
 
 		@Watch('searchFilter')
@@ -1242,6 +1251,11 @@
 
 		launchModded() {
 			this.prepareLaunch();
+			if (this.localModList.find(value => value.getName().toLowerCase() === "twiner-webslog")) {
+				WebSlogIntegration.enable();
+			} else {
+				WebSlogIntegration.disable();
+			}
 			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
 				const newLinkedFiles = ModLinker.link();
 				if (newLinkedFiles instanceof R2Error) {
@@ -1259,7 +1273,13 @@
 					if (err instanceof R2Error) {
 						this.showError(err);
 					}
-					this.logLines = BepInExLog.getLines();
+					this.logLines = WebSlogIntegration.getLines();
+					setTimeout(() => {
+						const div: HTMLElement | null = document.getElementById('log-display');
+						if (div !== null) {
+							div.scroll({top: div.scrollHeight, left: 0, behavior: 'smooth' })
+						}
+					}, 50)
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
@@ -1444,6 +1464,10 @@
 				// Do nothing, potentially offline. Try next launch.
 			});
 			return;
+		}
+
+		isLoggingEnabled() {
+			return WebSlogIntegration.isEnabled();
 		}
 
 		created() {

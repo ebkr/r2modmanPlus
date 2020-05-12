@@ -12,6 +12,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     private pinned: boolean = false;
     private deprecated: boolean = false;
     private totalDownloads: number = 0;
+    private sortPriority: number = 0;
 
     public parseFromThunderstoreData(data: any): ThunderstoreMod {
         this.setName(data.name);
@@ -38,6 +39,16 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
                 .reduce((x, y) => x + y)
         );
         this.setPackageUrl(data.package_url);
+        
+        const integrations = ["twiner-webslog"];
+        
+        if (this.isPinned()) {
+            this.sortPriority = 1;
+        } else if (integrations.find(value => value === this.getFullName().toLowerCase()) !== undefined) {
+            this.sortPriority = 2;
+        } else {
+            this.sortPriority = 3;
+        }
         return this;
     }
 
@@ -55,6 +66,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.setRating(reactive.rating);
         this.setTotalDownloads(reactive.totalDownloads);
         this.setUuid4(reactive.uuid4);
+        this.sortPriority = reactive.sortPriority;
         return this;
     }
 
@@ -136,5 +148,9 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
 
     public setTotalDownloads(total: number) {
         this.totalDownloads = total;
+    }
+    
+    public getSortPriority(): number {
+        return this.sortPriority;
     }
 }

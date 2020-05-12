@@ -1,0 +1,24 @@
+{
+  "nested": {
+    "WebSlogMessage": {
+      "fields": {
+        "Source": {
+          "type": "string",
+          "id": 1
+        },
+        "Level": {
+          "type": "string",
+          "id": 2
+        },
+        "LevelCode": {
+          "type": "int32",
+          "id": 3
+        },
+        "Data": {
+          "type": "string",
+          "id": 4
+        }
+      }
+    }
+  }
+}
