@@ -82,9 +82,9 @@
 							</p>
 						</div>
 						<br/>
-						<button class='button'>
-							<link-component :url="logFilePath" :target="'file'">Show LogOutput file</link-component>
-						</button>
+						<link-component :url="logFilePath" :target="'file'" extraClass="button">
+							Show LogOutput file
+						</link-component>
 					</div>
 				</div>
 			</div>
@@ -106,9 +106,9 @@
 							</div>
 						</div>
 						<br/>
-						<button class='button'>
-							<link-component :url="logFilePath" :target="'file'">Show LogOutput file</link-component>
-						</button>
+						<link-component :url="logFilePath" :target="'file'" extraClass="button">
+							Show LogOutput file
+						</link-component>
 					</div>
 				</div>
 			</div>
@@ -462,9 +462,14 @@
 									   @click="downloadDependency(getMissingDependencies(key)[0])">
 										Download dependency
 									</a>
-									<a class='card-footer-item' v-if="key.getName().toLowerCase() === 'twiner-webslog'">
-										<strike v-if='logLines.length === 0'>View log</strike>
-										<span v-else @click='showLogModal = true'>View log</span>
+									<a class='card-footer-item'
+									   v-if="key.getName().toLowerCase() === 'twiner-webslog' && logLines.length === 0">
+										<strike>View log</strike>
+									</a>
+									<a class='card-footer-item'
+									   v-else-if="key.getName().toLowerCase() === 'twiner-webslog'"
+									   @click='showLogModal = true'>
+										<span>View log</span>
 									</a>
 								</expandable-card>
 							</div>
