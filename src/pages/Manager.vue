@@ -60,7 +60,7 @@
 		</div>
 		<div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
 			<div class="modal-background" @click="closeGameRunningModal()"></div>
-			<div class='modal-content expanded-modal'>
+			<div :class='["modal-content", {"expanded-modal":isLoggingEnabled()}]'>
 				<div class='notification is-info'>
 					<h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
 					<h5 class="title is-5">Close this message to continue modding.</h5>
@@ -69,7 +69,7 @@
 					<div v-if='isLoggingEnabled()'>
 						<br/>
 						<h5 class="title is-5">View the log below.</h5>
-						<div id='log-display' class='log-display'>
+						<div class='log-display'>
 							<div v-if='logLines.length > 0'>
 								<div class='is-family-code' v-for='(key, index) in logLines' :key="'log-' +
 								index"
@@ -82,11 +82,37 @@
 							</p>
 						</div>
 						<br/>
-						<button class='button'>Copy log to clipboard</button>
+						<button class='button'>
+							<link-component :url="logFilePath" :target="'file'">Show LogOutput file</link-component>
+						</button>
 					</div>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
+		</div>
+		<div id='logModal' :class="['modal', {'is-active':(showLogModal === true)}]">
+			<div class="modal-background" @click="showLogModal = false"></div>
+			<div :class='["modal-content", {"expanded-modal":isLoggingEnabled()}]'>
+				<div class='notification is-info'>
+					<h3 class='title'>Logs</h3>
+					<div v-if='isLoggingEnabled()'>
+						<div class='log-display'>
+							<div v-if='logLines.length > 0'>
+								<div class='is-family-code' v-for='(key, index) in logLines' :key="'log-' +
+								index"
+								     v-if='logLines.length > 0'>
+									<p :class="['log-line', 'log-line--' + key.Level]">{{key.Data}}</p>
+								</div>
+							</div>
+						</div>
+						<br/>
+						<button class='button'>
+							<link-component :url="logFilePath" :target="'file'">Show LogOutput file</link-component>
+						</button>
+					</div>
+				</div>
+			</div>
+			<button class="modal-close is-large" aria-label="close" @click="showLogModal = false"></button>
 		</div>
 		<modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
 		       @close-modal="closeDependencyListModal">
@@ -241,7 +267,7 @@
 						<li>
 							<a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
 							   v-if="!settings.legacyInstallMode">
-								<i class="fas fa-edit"/>&nbsp;&nbsp;Config Editor
+								<i class="fas fa-pencil-ruler"/>&nbsp;&nbsp;Config Editor
 							</a>
 						</li>
 						<li>
@@ -401,7 +427,13 @@
 									<template v-slot:other-icons>
 										<!-- Show update and missing dependency icons -->
 										<span class='card-header-icon has-tooltip-left'
-										      data-tooltip='An update is available' v-if="!isLatest(key)">
+										      data-tooltip='View the latest log produced using WebSlog'
+										      v-if="key.getName().toLowerCase() === 'twiner-webslog'">
+											<i class="fas fa-edit"></i>
+										</span>
+										<span class='card-header-icon has-tooltip-left'
+										      data-tooltip='An update is available'
+										      v-if="!isLatest(key)">
 											<i class='fas fa-cloud-upload-alt'></i>
 										</span>
 										<span class='card-header-icon has-tooltip-left'
@@ -429,6 +461,10 @@
 									<a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
 									   @click="downloadDependency(getMissingDependencies(key)[0])">
 										Download dependency
+									</a>
+									<a class='card-footer-item' v-if="key.getName().toLowerCase() === 'twiner-webslog'">
+										<strike v-if='logLines.length === 0'>View log</strike>
+										<span v-else @click='showLogModal = true'>View log</span>
 									</a>
 								</expandable-card>
 							</div>
@@ -708,6 +744,7 @@
 	import { spawn } from 'child_process';
 	import WebSlogIntegration from '../r2mm/logging/WebSlogIntegration';
 	import SlogMessage from '../model/logging/SlogMessage';
+	import * as path from 'path';
 
 	@Component({
 		components: {
@@ -770,6 +807,9 @@
 		exportCode: string = '';
 
 		logLines: SlogMessage[] = WebSlogIntegration.getLines();
+		logFilePath: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log');
+
+		showLogModal: boolean = false;
 
 
 		@Watch('searchFilter')
@@ -1291,6 +1331,7 @@
 			this.prepareLaunch();
 			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
 				this.gameRunning = true;
+				WebSlogIntegration.start();
 				GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
 					if (!isNull(err)) {
 						this.showError(err);
