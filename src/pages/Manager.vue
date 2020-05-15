@@ -206,13 +206,13 @@
 					<p class="menu-label">Mods</p>
 					<ul class="menu-list">
 						<li>
-							<a @click="() => {view = 'installed'; searchFilter = ''}"
+							<a @click="() => {view = 'installed'; localSearchFilter = ''}"
 							   :class="[view === 'installed' ? 'is-active' : '']">
 								<i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
 							</a>
 						</li>
 						<li>
-							<a @click="() => {view = 'online'; searchFilter = ''}"
+							<a @click="() => {view = 'online'; thunderstoreSearchFilter = ''}"
 							   :class="[view === 'online' ? 'is-active' : '']">
 								<i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})
 							</a>
@@ -271,7 +271,7 @@
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
 								<span>Search:&nbsp;&nbsp;</span>
-								<input v-model='searchFilter' class="input" type="text"/>
+								<input v-model='thunderstoreSearchFilter' class="input" type="text"/>
 								<span>&nbsp;&nbsp;Sort:&nbsp;&nbsp;</span>
 								<select class='select select--content-spacing' v-model="sortingStyleModel">
 									<option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
@@ -355,7 +355,7 @@
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
 								<span>Search:&nbsp;&nbsp;</span>
-								<input v-model='searchFilter' class="input" type="text"/>
+								<input v-model='localSearchFilter' class="input" type="text"/>
 							</div>
 						</div>
 					</div>
@@ -729,7 +729,9 @@
 
 		selectedVersion: string | null = null;
 
-		searchFilter: string = '';
+
+		thunderstoreSearchFilter: string = '';
+		localSearchFilter: string = '';
 
 		errorMessage: string = '';
 		errorStack: string = '';
@@ -772,15 +774,28 @@
 				this.pageNumber * this.getPageResultSize());
 		}
 
-		@Watch('searchFilter')
-		filterModLists() {
-			this.generateModlist();
+		@Watch('localSearchFilter')
+		filterLocalModList() {
 			this.searchableLocalModList = this.localModList.filter((x: ManifestV2) => {
-				return x.getName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 || this.searchFilter.trim() === '';
+				return x.getName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
+		}
+
+		@Watch('thunderstoreSearchFilter')
+		filterThunderstoreModList() {
 			this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
-				return x.getFullName().toLowerCase().search(this.searchFilter.toLowerCase()) >= 0 || this.searchFilter.trim() === '';
+				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
+			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
+				(this.pageNumber - 1) * this.getPageResultSize(),
+				this.pageNumber * this.getPageResultSize());
+		}
+
+		@Watch('sortingStyleModel')
+		@Watch('sortingDirectionModel')
+		applySort() {
+			this.sortingStyle = this.sortingStyleModel;
+			this.sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
 			this.searchableThunderstoreModList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
 				let result: boolean;
 				switch (this.sortingStyle) {
@@ -805,9 +820,7 @@
 				}
 				return result ? 1 : -1;
 			});
-			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
-				(this.pageNumber - 1) * this.getPageResultSize(),
-				this.pageNumber * this.getPageResultSize());
+			this.filterThunderstoreModList();
 		}
 
 		updatePageNumber(page: number) {
@@ -850,14 +863,6 @@
 			this.gameRunning = false;
 		}
 
-		@Watch('sortingStyleModel')
-		@Watch('sortingDirectionModel')
-		applySort() {
-			this.sortingStyle = this.sortingStyleModel;
-			this.sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
-			this.filterModLists();
-		}
-
 		showError(error: R2Error) {
 			this.errorMessage = error.name;
 			this.errorStack = error.message;
@@ -889,7 +894,8 @@
 				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
 					this.localModList = newModList;
-					this.filterModLists();
+					this.filterThunderstoreModList();
+					this.filterLocalModList();
 				}
 			} else {
 				// (mod failed to be placed in /{profile} directory)
@@ -967,7 +973,8 @@
 				Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
 			}
 			this.closeDependencyListModal();
-			this.filterModLists();
+			this.filterThunderstoreModList();
+			this.filterLocalModList();
 		}
 
 		// eslint-disable-next-line
@@ -1000,7 +1007,8 @@
 			const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
 			if (this.getDependantList(mod).size === 0) {
 				this.performUninstallMod(mod);
-				this.filterModLists();
+				this.filterThunderstoreModList();
+				this.filterLocalModList();
 			} else {
 				this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
 			}
@@ -1049,7 +1057,7 @@
 				return updatedList;
 			}
 			this.localModList = updatedList;
-			this.filterModLists();
+			this.filterLocalModList();
 		}
 
 		enableMod(vueMod: any) {
@@ -1090,7 +1098,7 @@
 				return updatedList;
 			}
 			this.localModList = updatedList;
-			this.filterModLists();
+			this.filterLocalModList();
 		}
 
 		// eslint-disable-next-line
@@ -1239,7 +1247,7 @@
 				return;
 			}
 			this.localModList = updatedList;
-			this.filterModLists();
+			this.filterLocalModList();
 		}
 
 		moveDown(vueMod: any) {
@@ -1250,7 +1258,7 @@
 				return;
 			}
 			this.localModList = updatedList;
-			this.filterModLists();
+			this.filterLocalModList();
 		}
 
 		launchModded() {
@@ -1351,7 +1359,7 @@
 				}
 				this.localModList = update;
 			});
-			this.filterModLists();
+			this.filterLocalModList();
 			this.view = 'installed';
 		}
 
@@ -1476,7 +1484,8 @@
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
 			this.thunderstoreModList = ThunderstorePackages.PACKAGES;
-			this.filterModLists();
+			this.filterLocalModList();
+			this.filterThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
 				if (combo instanceof R2Error) {
