@@ -1471,7 +1471,7 @@
 		}
 
 		getPaginationSize() {
-			return Math.ceil(this.thunderstoreModList.length / this.getPageResultSize());
+			return Math.ceil(this.searchableThunderstoreModList.length / this.getPageResultSize());
 		}
 
 		getPageResultSize() {
