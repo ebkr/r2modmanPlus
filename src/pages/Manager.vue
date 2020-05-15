@@ -782,6 +782,11 @@
 		}
 
 		@Watch('thunderstoreSearchFilter')
+		onThunderstoreFilterUpdate() {
+			this.pageNumber = 1;
+			this.filterThunderstoreModList();
+		}
+
 		filterThunderstoreModList() {
 			this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
