@@ -889,6 +889,9 @@
 
 		installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
+				ProfileInstaller.uninstallMod(manifestMod);
+			}
 			const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
 			if (!(installError instanceof R2Error)) {
 				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
