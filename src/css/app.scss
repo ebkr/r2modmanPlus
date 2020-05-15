@@ -80,3 +80,26 @@
     margin: 0.5em;
     margin-right: 0;
 }
+
+.pagination {
+    position: fixed;
+    background-color: white;
+    width: 75vw;
+    z-index: 999;
+    padding: 1em;
+    bottom: 0;
+    border-top: 1px solid #00000017;
+}
+
+.pagination--invisible {
+    visibility: hidden;
+}
+
+.smaller-font {
+    font-size: 0.9em;
+}
+
+.in-mod-list {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}

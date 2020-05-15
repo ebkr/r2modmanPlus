@@ -285,7 +285,7 @@
 						</div>
 					</div>
 					<template>
-						<div v-for='(key, index) in searchableThunderstoreModList' :key="'online-' + index">
+						<div v-for='(key, index) in pagedThunderstoreModList' :key="'online-' + index">
 							<expandable-card
 									:image="key.versions[0].icon"
 									:id="index"
@@ -329,6 +329,26 @@
 							</expandable-card>
 						</div>
 					</template>
+					<div class='in-mod-list'>
+						<p class='notification'>
+							Use the numbers below to change page
+						</p>
+					</div>
+					<br/>
+					<div class='pagination--invisible smaller-font'>
+						<a v-for='index in getPaginationSize()' :key='"pagination-" + index' class='pagination-link'>
+							{{index}}
+						</a>
+					</div>
+					<div class='pagination'>
+						<div class='smaller-font'>
+							<a v-for='index in getPaginationSize()' :key='"pagination-" + index'
+							   :class='["pagination-link", {"is-current": index === pageNumber}]'
+							   @click='updatePageNumber(index)'>
+								{{index}}
+							</a>
+						</div>
+					</div>
 				</div>
 				<div v-show="view === 'installed'">
 					<div class='sticky-top sticky-top--search border-at-bottom'>
@@ -698,6 +718,7 @@
 
 		thunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
+		pagedThunderstoreModList: ThunderstoreMod[] = [];
 
 		localModList: ManifestV2[] = [];
 		searchableLocalModList: ManifestV2[] = [];
@@ -730,8 +751,6 @@
 		sortingDirectionModel: string = SortingDirection.STANDARD;
 		sortDescending: boolean = true;
 
-		showThunderstoreSorting: boolean = false;
-
 		showingDependencyList: boolean = false;
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 
@@ -744,6 +763,14 @@
 
 		exportCode: string = '';
 
+		pageNumber: number = 1;
+
+		@Watch('pageNumber')
+		changePage() {
+			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
+				(this.pageNumber - 1) * this.getPageResultSize(),
+				this.pageNumber * this.getPageResultSize());
+		}
 
 		@Watch('searchFilter')
 		filterModLists() {
@@ -778,6 +805,18 @@
 				}
 				return result ? 1 : -1;
 			});
+			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
+				(this.pageNumber - 1) * this.getPageResultSize(),
+				this.pageNumber * this.getPageResultSize());
+		}
+
+		updatePageNumber(page: number) {
+			this.pageNumber = page;
+			window.scrollTo({
+				top: 0,
+				left: 0,
+				behavior: 'auto'
+			});
 		}
 
 		// eslint-disable-next-line
@@ -809,14 +848,6 @@
 
 		closeGameRunningModal() {
 			this.gameRunning = false;
-		}
-
-		openThunderstoreSortingModal() {
-			this.showThunderstoreSorting = true;
-		}
-
-		closeSortingModal() {
-			this.showThunderstoreSorting = false;
 		}
 
 		@Watch('sortingStyleModel')
@@ -1428,6 +1459,14 @@
 			return;
 		}
 
+		getPaginationSize() {
+			return Math.ceil(this.thunderstoreModList.length / this.getPageResultSize());
+		}
+
+		getPageResultSize() {
+			return 80;
+		}
+
 		created() {
 			this.settings.load();
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
@@ -1437,7 +1476,7 @@
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
 			this.thunderstoreModList = ThunderstorePackages.PACKAGES;
-			this.generateModlist();
+			this.filterModLists();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
 				if (combo instanceof R2Error) {
