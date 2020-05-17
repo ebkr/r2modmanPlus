@@ -330,12 +330,12 @@
 						</div>
 					</template>
 					<div class='in-mod-list' v-if='getPaginationSize() > 1'>
-						<p class='notification'>
+						<p class='notification margin-right'>
 							Use the numbers below to change page
 						</p>
 					</div>
 					<div class='in-mod-list' v-else-if='getPaginationSize() === 0'>
-						<p class='notification'>
+						<p class='notification margin-right'>
 							No mods with that name found
 						</p>
 					</div>
