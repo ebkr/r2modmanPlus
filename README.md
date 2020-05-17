@@ -7,6 +7,14 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.18
+- Lots of performance improvements.
+    - Pagination.
+    - Simplified actions taken on tab switching.
+- Mod updates fully clean from previous installs.
+- Language mods using AssetPlusRequester can now be disabled.
+- Download progress no longer includes cached dependencies.
+
 ### 3.0.17
 - Fixed a bug with window size persistence.
 - Hopefully fixed the path join on null error.
@@ -17,26 +25,6 @@
 - Window resize now persists between launches.
 - Config editor section title backgrounds aren't transparent anymore.
 - Error shown if code export fails.
-
-### 3.0.15
-- Profile exporting can now be done using codes.
-- Profile imports now use mod version numbers specified in the export.
-- Profile names now allow underscores, hyphens, and periods. These characters are not allowed at the start.
-- Manager version number in settings and log.
-- Tools and utilities no longer appear in the Online tab.
-- Other minor fixes.
-
-### 3.0.14
-- Moved search and sort options to be above the mod list.
-- Profile names are now restricted to letters, numbers, and spaces.
-- Update banner will stop appearing for non-portable versions on/after this version.
-- Deleting the selected profile will no longer be re-created on launch.
-
-### 3.0.13
-- Common errors now come with suggested actions.
-- Settings screen has been slightly modified to allow more options.
-- Added tool to fix BepInEx preloader issues.
-- Added logging related to game startup.
 
 ## Regarding Auto Updating
 Updates in r2modman are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
