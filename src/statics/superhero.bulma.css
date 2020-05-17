@@ -47,16 +47,22 @@
     background-color: #1f2d3b;
 }
 
-.button {
-    border-radius: 4px;
-}
-
-.input {
+.button, .input, .pagination-link, .notification {
     border-radius: 4px;
 }
 
 .sticky-top {
     background-color: #1f2d3b !important;
+}
+
+.pagination {
+    position: fixed;
+    background-color: #1f2d3b;
+    width: 75vw;
+    z-index: 10;
+    padding: 1em;
+    bottom: 0;
+    border-top: 1px solid #080a1471;
 }
 
 /*# sourceMappingURL=bulmaswatch.min.css.map */
