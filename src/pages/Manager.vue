@@ -672,7 +672,7 @@
 	import Vue from 'vue';
 	import Component from 'vue-class-component';
 	import { Watch } from 'vue-property-decorator';
-	import { Hero, Progress, ExpandableCard, Link, Modal } from '../components/all';
+	import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 	import ThunderstoreMod from '../model/ThunderstoreMod';
 	import ThunderstoreCombo from '../model/ThunderstoreCombo';
@@ -705,8 +705,8 @@
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
 	import * as fs from 'fs-extra';
-	import { isUndefined, isNull } from 'util';
-	import { ipcRenderer, app, clipboard } from 'electron';
+	import { isNull, isUndefined } from 'util';
+	import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
 
 	@Component({
@@ -893,11 +893,6 @@
 			}
 		}
 
-		private generateModlist() {
-			this.searchableThunderstoreModList = this.thunderstoreModList;
-			this.searchableLocalModList = this.localModList;
-		}
-
 		installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
 			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
@@ -933,11 +928,10 @@
 		}
 
 		downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
-			const statusMap = {
+			this.downloadObject = {
 				progress: 0,
 				modName: tsMod.getName()
 			};
-			this.downloadObject = statusMap;
 			this.downloadingMod = true;
 			this.closeModal();
 			BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
@@ -1172,7 +1166,7 @@
 		}
 
 		prepareLaunch() {
-			let dir: string | R2Error = '';
+			let dir: string | R2Error;
 			if (this.settings.riskOfRain2Directory === null) {
 				dir = GameDirectoryResolver.getDirectory();
 			} else {
