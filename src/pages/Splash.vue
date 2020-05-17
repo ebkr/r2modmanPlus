@@ -32,7 +32,6 @@
       </div>
       <div class='column is-three-quarters'>
         <div>
-          <br/>
           <article class='media'>
             <div class='media-content'>
               <div class='content'>
@@ -50,8 +49,21 @@
                     <strong>Did you know?</strong>
                   </p>
                   <p>
-                    You can use the "Install with Mod Manager" button on <link-component :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component> with R2MM. <br/>
-                    If you have multiple installations, simply launch the one you want to associate with Thunderstore first!
+                    You can use the "Install with Mod Manager" button on <link-component
+                          :url="'https://thunderstore.io'" :target="'external'">Thunderstore</link-component>
+                    with r2modman.
+                  </p>
+                  <br/>
+                  <p>
+                    <span class='icon'>
+                      <i class='fas fa-question-circle'/>
+                    </span>
+                    &nbsp;
+                    <strong>Got any problems?</strong>
+                  </p>
+                  <p>
+                    Send a screenshot of the error in the Thunderstore modding discord server. Feel free to ping me
+                    if it doesn't get resolved.
                   </p>
                 </div>
                 <div class='container' v-else-if="view === 'about'">
@@ -62,7 +74,7 @@
                     &nbsp;
                     <strong>About r2modman</strong>
                   </p>
-                  <p>It's created by ebkr, using Quasar.</p>
+                  <p>It's created by Ebkr, using Quasar.</p>
                   <p>Quasar provides the following development tools that r2modman is built upon:</p>
                   <ul>
                       <li>Electron</li>
@@ -86,6 +98,13 @@
                               Head on over to the online tab, and download BepInEx and R2API.
                           </p>
                       </li>
+                    <li>
+                      <strong><p>Starting the game with mods</p></strong>
+                      <p>
+                        You have to start the game from within the manager. Starting through Steam will not work
+                        without taking manual steps.
+                      </p>
+                    </li>
                   </ul>
                 </div>
               </div>
