@@ -717,6 +717,7 @@
 		view: string = 'installed';
 
 		thunderstoreModList: ThunderstoreMod[] = [];
+		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 
@@ -788,20 +789,19 @@
 		}
 
 		filterThunderstoreModList() {
-			this.searchableThunderstoreModList = this.thunderstoreModList.filter((x: Mod) => {
+			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
-			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
-				(this.pageNumber - 1) * this.getPageResultSize(),
-				this.pageNumber * this.getPageResultSize());
+			this.changePage();
 		}
 
 		@Watch('sortingStyleModel')
 		@Watch('sortingDirectionModel')
-		applySort() {
+		sortThunderstoreModList() {
 			this.sortingStyle = this.sortingStyleModel;
 			this.sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
-			this.searchableThunderstoreModList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+			const sortedList = [...this.thunderstoreModList];
+			sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
 				let result: boolean;
 				switch (this.sortingStyle) {
 					case SortingStyle.LAST_UPDATED:
@@ -825,6 +825,7 @@
 				}
 				return result ? 1 : -1;
 			});
+			this.sortedThunderstoreModList = sortedList;
 			this.filterThunderstoreModList();
 		}
 
@@ -902,7 +903,7 @@
 				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
 					this.localModList = newModList;
-					this.filterThunderstoreModList();
+					this.sortThunderstoreModList();
 					this.filterLocalModList();
 				}
 			} else {
@@ -981,7 +982,7 @@
 				Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
 			}
 			this.closeDependencyListModal();
-			this.filterThunderstoreModList();
+			this.sortThunderstoreModList();
 			this.filterLocalModList();
 		}
 
@@ -1015,7 +1016,7 @@
 			const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
 			if (this.getDependantList(mod).size === 0) {
 				this.performUninstallMod(mod);
-				this.filterThunderstoreModList();
+				this.sortThunderstoreModList();
 				this.filterLocalModList();
 			} else {
 				this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
@@ -1493,7 +1494,7 @@
 			}
 			this.thunderstoreModList = ThunderstorePackages.PACKAGES;
 			this.filterLocalModList();
-			this.filterThunderstoreModList();
+			this.sortThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
 				if (combo instanceof R2Error) {
