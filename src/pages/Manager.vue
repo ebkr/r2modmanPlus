@@ -783,7 +783,7 @@
 		@Watch('localSearchFilter')
 		filterLocalModList() {
 			this.searchableLocalModList = this.localModList.filter((x: ManifestV2) => {
-				return x.getName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
+				return x.getName().toLowerCase().search(this.localSearchFilter.toLowerCase()) >= 0 || this.localSearchFilter.trim() === '';
 			});
 		}
 
