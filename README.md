@@ -7,6 +7,9 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.19
+- Fixed a bug where the installed search bar wasn't working
+
 ### 3.0.18
 - Lots of performance improvements.
     - Pagination.
@@ -40,15 +43,15 @@ If I'm not free, there's a high chance that someone else will be readily availab
 
 Installed mod view
 
-![](https://i.imgur.com/8BAxYiB.png)
+![](https://i.imgur.com/XNVQBuQ.png)
 
 Downloadable mods
 
-![](https://i.imgur.com/DNl7kVy.png)
+![](https://i.imgur.com/Do6Awz0.png)
 
 Dark theme
 
-![](https://i.imgur.com/rPLesah.png)
+![](https://i.imgur.com/szsyGWB.png)
 
 Config editor
 
