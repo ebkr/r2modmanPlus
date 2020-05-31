@@ -70,6 +70,30 @@
 			</div>
 			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
 		</div>
+		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
+			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
+			<div class='modal-content'>
+				<div class='notification is-danger'>
+					<h3 class='title'>Failed to set the Steam directory</h3>
+					<p>The directory must contain "Steam.exe".</p>
+					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
+				</div>
+			</div>
+			<button class="modal-close is-large" aria-label="close"
+			        @click="showSteamIncorrectDirectoryModal = false"></button>
+		</div>
+		<div id='ror2IncorrectDir' :class="['modal', {'is-active':(showRor2IncorrectDirectoryModal !== false)}]">
+			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
+			<div class='modal-content'>
+				<div class='notification is-danger'>
+					<h3 class='title'>Failed to set the Risk of Rain 2 directory</h3>
+					<p>The directory must contain "Risk of Rain 2.exe".</p>
+					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
+				</div>
+			</div>
+			<button class="modal-close is-large" aria-label="close"
+			        @click="showRor2IncorrectDirectoryModal = false"></button>
+		</div>
 		<modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
 		       @close-modal="closeDependencyListModal">
 			<template v-slot:title>
@@ -720,58 +744,41 @@
 	})
 	export default class Manager extends Vue {
 		view: string = 'installed';
-
 		thunderstoreModList: ThunderstoreMod[] = [];
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
-
 		localModList: ManifestV2[] = [];
 		searchableLocalModList: ManifestV2[] = [];
-
 		versionNumbers: string[] = [];
 		selectedThunderstoreMod: ThunderstoreMod | null = null;
 		selectedManifestMod: ManifestV2 | null = null;
-
 		selectedVersion: string | null = null;
-
-
 		thunderstoreSearchFilter: string = '';
 		localSearchFilter: string = '';
-
 		errorMessage: string = '';
 		errorStack: string = '';
 		errorSolution: string = '';
-
 		gameRunning: boolean = false;
-
 		settings = new ManagerSettings();
-
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
-
 		helpPage: string = '';
-
 		sortingStyleModel: string = SortingStyle.DEFAULT;
 		sortingStyle: string = SortingStyle.DEFAULT;
-
 		sortingDirectionModel: string = SortingDirection.STANDARD;
 		sortDescending: boolean = true;
-
 		showingDependencyList: boolean = false;
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
-
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
-
 		fixingPreloader: boolean = false;
-
 		managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
-
 		exportCode: string = '';
-
 		pageNumber: number = 1;
+		showSteamIncorrectDirectoryModal: boolean = false;
+		showRor2IncorrectDirectoryModal: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1315,8 +1322,14 @@
 		changeRoR2InstallDirectory() {
 			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
-				if (!isNull(files) && files.length === 1) {
-					this.settings.setRiskOfRain2Directory(files[0]);
+				if (files !== null && files.length === 1) {
+					const containsSteamExecutable = fs.readdirSync(files[0])
+						.find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
+					if (containsSteamExecutable) {
+						this.settings.setRiskOfRain2Directory(files[0]);
+					} else {
+						this.showRor2IncorrectDirectoryModal = true;
+					}
 				}
 			});
 			ipcRenderer.send('open-dialog', {
@@ -1330,8 +1343,14 @@
 		changeSteamDirectory() {
 			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
-				if (!isNull(files) && files.length === 1) {
-					this.settings.setSteamDirectory(files[0]);
+				if (files !== null && files.length === 1) {
+					const containsSteamExecutable = fs.readdirSync(files[0])
+						.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+					if (containsSteamExecutable) {
+						this.settings.setSteamDirectory(files[0]);
+					} else {
+						this.showSteamIncorrectDirectoryModal = true;
+					}
 				}
 			});
 			ipcRenderer.send('open-dialog', {
