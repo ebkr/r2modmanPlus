@@ -7,6 +7,12 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.20
+- Custom parameters can now be passed in to the game.
+- Directory setting now checks for specific executables.
+- Other small fixes
+
+
 ### 3.0.19
 - Fixed a bug where the installed search bar wasn't working
 
@@ -21,13 +27,6 @@
 ### 3.0.17
 - Fixed a bug with window size persistence.
 - Hopefully fixed the path join on null error.
-
-### 3.0.16 (Bug fixes)
-- Profile code export host has changed. We'll see how reliable this one is in comparison.
-- Fixed a bug where saving a config file produced a new line at the end.
-- Window resize now persists between launches.
-- Config editor section title backgrounds aren't transparent anymore.
-- Error shown if code export fails.
 
 ## Regarding Auto Updating
 Updates in r2modman are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
