@@ -20,6 +20,7 @@ export default class ManagerSettings {
     public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
     public darkTheme: boolean = false;
+    public launchParameters: string = '';
 
     public load(): R2Error | void {
         configPath = path.join(PathResolver.ROOT, 'config');
@@ -35,13 +36,14 @@ export default class ManagerSettings {
                 this.expandedCards = parsedYaml.expandedCards || false;
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
                 this.darkTheme = parsedYaml.darkTheme;
+                this.launchParameters = parsedYaml.launchParameters || '';
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
                     'Failed to parse conf.yml',
                     err.message,
                     'Did you modify the conf.yml file? If not, delete it, and re-launch the manager'
-                )
+                );
             }
         } else {
             this.save();
@@ -113,6 +115,11 @@ export default class ManagerSettings {
 
     public toggleDarkTheme(): R2Error | void {
         this.darkTheme = !this.darkTheme;
+        return this.save();
+    }
+    
+    public setLaunchParameters(launchParams: string): R2Error | void {
+        this.launchParameters = launchParams;
         return this.save();
     }
 }

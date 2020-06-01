@@ -186,6 +186,40 @@
 				</button>
 			</template>
 		</modal>
+		<modal v-show="showLaunchParameterModal === true" @close-modal="() => {showLaunchParameterModal = false;}">
+			<template v-slot:title>
+				<p class='card-header-title'>Set custom launch parameters</p>
+			</template>
+			<template v-slot:body>
+				<p>Some parameters are provided by default:</p>
+				<br/>
+				<p>Modded:
+					<br/>
+					<code>
+						--doorstop-enable true --doorstop-target r2modman\BepInEx\core\BepInEx.Preloader.dll
+					</code>
+				</p>
+				<br/>
+				<p>Vanilla:
+					<br>
+					<code>
+						--doorstop-enable false
+					</code>
+				</p>
+				<br/>
+				<p>
+					<strong>Please note that these are called against the Steam executable. Be careful when
+						entering custom launch parameters.</strong>
+				</p>
+				<br/>
+				<input class='input' v-model='launchParametersModel' placeholder='Enter parameters'/>
+			</template>
+			<template v-slot:footer>
+				<button class='button is-info' @click='updateLaunchParameters()'>
+					Update launch parameters
+				</button>
+			</template>
+		</modal>
 		<modal v-show="exportCode !== ''" @close-modal="() => {exportCode = '';}">
 			<template v-slot:title>
 				<p class='card-header-title'>Profile exported</p>
@@ -541,6 +575,14 @@
 									</p>
 								</a>
 							</li>
+							<li class="list-item" @click="showLaunchParameters()">
+								<a class="is-text is-text--bold">
+									<p class='has-tooltip-top'
+									   data-tooltip='Set additional launch parameters.'>
+										Set additional launch parameters (debugging)
+									</p>
+								</a>
+							</li>
 							<li class="list-item" @click="toggleDarkTheme()">
 								<a class="is-text is-text--bold">
 									<p>Switch theme</p>
@@ -779,6 +821,8 @@
 		pageNumber: number = 1;
 		showSteamIncorrectDirectoryModal: boolean = false;
 		showRor2IncorrectDirectoryModal: boolean = false;
+		launchParametersModel: string = '';
+		showLaunchParameterModal: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1502,8 +1546,19 @@
 			return 80;
 		}
 
+		showLaunchParameters() {
+			this.launchParametersModel = this.settings.launchParameters;
+			this.showLaunchParameterModal = true;
+		}
+
+		updateLaunchParameters() {
+			this.settings.setLaunchParameters(this.launchParametersModel);
+			this.showLaunchParameterModal = false;
+		}
+
 		created() {
 			this.settings.load();
+			this.launchParametersModel = this.settings.launchParameters;
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
 				this.localModList = newModList;
