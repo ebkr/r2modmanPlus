@@ -281,7 +281,7 @@
 						<li>
 							<a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
 							   v-if="!settings.legacyInstallMode">
-								<i class="fas fa-edit"/>&nbsp;&nbsp;Config Editor
+								<i class="fas fa-edit"/>&nbsp;&nbsp;Config editor
 							</a>
 						</li>
 						<li>
