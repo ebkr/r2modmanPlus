@@ -516,6 +516,18 @@
 									<p>Disable all mods</p>
 								</a>
 							</li>
+							<li class="list-item" @click="toggleIgnoreCache()">
+								<a class="is-text is-text--bold" >
+									<p class='has-tooltip-top' v-if='!settings.ignoreCache'
+									   data-tooltip='This enforces that mods are re-downloaded. The cache will still be written to.'>
+										Disable download cache
+									</p>
+									<p v-else>
+										<i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
+										Enable download cache
+									</p>
+								</a>
+							</li>
 							<li class="list-item" @click="setAllModsEnabled(true)">
 								<a class="is-text is-text--bold">
 									<p>Enable all mods</p>
@@ -1554,6 +1566,10 @@
 		updateLaunchParameters() {
 			this.settings.setLaunchParameters(this.launchParametersModel);
 			this.showLaunchParameterModal = false;
+		}
+
+		toggleIgnoreCache() {
+			this.settings.setIgnoreCache(!this.settings.ignoreCache);
 		}
 
 		created() {
