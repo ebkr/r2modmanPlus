@@ -511,6 +511,19 @@
 									<p>Change profile</p>
 								</a>
 							</li>
+							<li class="list-item" @click="copyLogToClipboard()" v-if='logFileExists()'>
+								<a class="is-text is-text--bold">
+									<p>Copy LogOutput contents to clipboard</p>
+								</a>
+							</li>
+							<li class="list-item" v-else-if='!logFileExists()'>
+								<a class="is-text is-text--bold">
+									<p class='has-tooltip-top'
+									   data-tooltip='No log file was found for the profile. You must have started the game modded at least once (with BepInEx installed).'>
+										<strike>Copy LogOutput contents to clipboard</strike>
+									</p>
+								</a>
+							</li>
 							<li class="list-item" @click="setAllModsEnabled(false)">
 								<a class="is-text is-text--bold">
 									<p>Disable all mods</p>
@@ -786,6 +799,7 @@
 	import { isNull, isUndefined } from 'util';
 	import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
+	import * as path from 'path';
 
 	@Component({
 		components: {
@@ -1570,6 +1584,23 @@
 
 		toggleIgnoreCache() {
 			this.settings.setIgnoreCache(!this.settings.ignoreCache);
+		}
+
+		copyLogToClipboard() {
+			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			if (this.logFileExists()) {
+				const text = fs.readFileSync(logOutputPath).toString();
+				if (text.length >= 1992) {
+					clipboard.writeText(text, 'clipboard');
+				} else {
+					clipboard.writeText("```\n" + text + "\n```", 'clipboard');
+				}
+			}
+		}
+
+		logFileExists() {
+			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			return fs.existsSync(logOutputPath);
 		}
 
 		created() {
