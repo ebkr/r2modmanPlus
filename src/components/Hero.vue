@@ -1,6 +1,6 @@
 <template>
     <section :class="['hero', heroType]">
-        <div class="hero-body">
+        <div class="hero-body non-selectable">
             <div class="container">
                 <h1 class="title">
                     {{title}}
