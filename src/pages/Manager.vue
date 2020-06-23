@@ -252,7 +252,7 @@
 			<button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
 		</div>
 		<div class='columns' id='content'>
-			<div class="column is-one-quarter">
+			<div class="column is-one-quarter non-selectable">
 				<aside class="menu">
 					<p class="menu-label">Risk of Rain 2</p>
 					<ul class="menu-list">
