@@ -18,13 +18,13 @@
     z-index: 100;
     background-color: white !important;
     padding: 1em;
-    box-shadow: 1px 1px 3px 0px #0000003b;
+    box-shadow: 1px 1px 3px 0 #0000003b;
 }
 .sticky-top--buttons {
     z-index: 101;
     float: right;
     padding: 0.7em;
-    box-shadow: 0px 0px 0px 0px transparent;
+    box-shadow: 0 0 0 0 transparent;
 }
 .sticky-top--search {
     background-color: inherit;
@@ -109,4 +109,14 @@ select {
 
 .non-selectable, .non-selectable *, button, a  {
     user-select: none;
+}
+
+.file-drop {
+    position: fixed;
+    z-index: 998;
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent;
+    vertical-align: middle;
 }

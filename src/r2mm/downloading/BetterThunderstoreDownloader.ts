@@ -15,6 +15,7 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import Profile from 'src/model/Profile';
 import ThunderstorePackages from '../data/ThunderstorePackages';
 import ExportMod from 'src/model/exports/ExportMod';
+import ManagerSettings from '../manager/ManagerSettings';
 
 const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
 
@@ -87,8 +88,13 @@ export default class BetterThunderstoreDownloader {
         combo.setMod(mod);
         combo.setVersion(modVersion);
         let downloadCount = 0;
-        const downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
-        this.downloadAndSave(combo, (progress: number, status: number, err: R2Error | null) => {
+    
+        const settings = new ManagerSettings();
+        settings.load();
+        
+        const downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+        
+        this.downloadAndSave(combo, settings, (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -115,8 +121,9 @@ export default class BetterThunderstoreDownloader {
                     completedCallback([combo]);
                     return;
                 }
+                
                 // If dependencies, queue and download.
-                this.queueDownloadDependencies(dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+                this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
                         callback(0, modName, status, err);
                     } else if (status === StatusEnum.PENDING) {
@@ -153,8 +160,12 @@ export default class BetterThunderstoreDownloader {
                 }
             });
         });
+    
+        const settings = new ManagerSettings();
+        settings.load();
+        
         let downloadCount = 0;
-        this.queueDownloadDependencies(comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -175,28 +186,28 @@ export default class BetterThunderstoreDownloader {
         return completedProgress + (progress * 1/total);
     }
 
-    private static queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    private static queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
         const entry = entries.next();
         if (!entry.done) {
-            this.downloadAndSave(entry.value[1] as ThunderstoreCombo, (progress: number, status: number, err: R2Error | null) => {
+            this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, (progress: number, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     callback(0, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.PENDING) {
                     callback(progress, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.SUCCESS) {
                     callback(100, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                    this.queueDownloadDependencies(entries, callback);
+                    this.queueDownloadDependencies(settings, entries, callback);
                 }
             });
         }
     }
     
-    private static calculateInitialDownloadSize(list: ThunderstoreCombo[]): number {
-        return list.filter(value => !this.isVersionAlreadyDownloaded(value)).length;
+    private static calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
+        return list.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.ignoreCache).length;
     }
 
-    private static downloadAndSave(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void) {
-        if (this.isVersionAlreadyDownloaded(combo)) {
+    private static downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
+        if (this.isVersionAlreadyDownloaded(combo) && !settings.ignoreCache) {
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
