@@ -106,3 +106,7 @@
 select {
     border-radius: 4px;
 }
+
+.non-selectable, .non-selectable *, button, a  {
+    user-select: none;
+}
