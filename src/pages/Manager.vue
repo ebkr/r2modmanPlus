@@ -325,7 +325,7 @@
 			</div>
 			<div class='column is-three-quarters'>
 				<div v-show="view === 'online'">
-					<div class='sticky-top sticky-top--search border-at-bottom'>
+					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
 								<span>Search:&nbsp;&nbsp;</span>
