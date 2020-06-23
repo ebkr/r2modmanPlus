@@ -9,6 +9,7 @@ import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 import * as path from 'path';
 import PathResolver from 'src/r2mm/manager/PathResolver';
+import R2Error from './errors/R2Error';
 
 export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
@@ -55,8 +56,16 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setDependencies(data.Dependencies);
         this.setIncompatibilities(data.Incompatibilities);
         this.setOptionalDependencies(data.OptionalDependencies);
-        this.setVersionNumber(new VersionNumber(data.VersionNumber));
+        this.setVersionNumber(new VersionNumber(data.Version));
         return this;
+    }
+
+    public makeSafe(data: any): R2Error | ManifestV2 {
+        if (data.ManifestVersion === undefined || data.ManifestVersion != 2) {
+            return new R2Error('Manifest is not V2', 'Manifest version is not supported',
+                'Contact the mod author to ask for a ManifestV2 zip. If they\'re unsure how, they can follow the guide here:\nhttps://github.com/ebkr/r2modmanPlus/wiki/Installing-mods-locally#developers');
+        }
+        return this.make(data);
     }
 
     private fromUnsupported(data: any): ManifestV2 {

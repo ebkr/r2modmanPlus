@@ -1,5 +1,15 @@
 <template>
 	<div>
+        <div class='file-drop'>
+            <div :class="['modal', {'is-active':showDragAndDropModal}]">
+                <div class="modal-background" @click="closeGameRunningModal()"></div>
+                <div class='modal-content'>
+                    <div class='notification is-info'>
+                        <h3 class='title' id='dragText'>{{dragAndDropText}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -568,6 +578,12 @@
 									<p id="codeExportButton">Export profile as code</p>
 								</a>
 							</li>
+                            <li class="list-item has-tooltip-top" @click="installLocalMod()"
+                            data-tooltip="A zip containing a manifest.json file. Must be a valid ManifestV2 format.">
+                                <a class="is-text is-text--bold">
+                                    <p>Import local mod</p>
+                                </a>
+                            </li>
 							<li class="list-item" @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
 								<a class="is-text is-text--bold">
 									<p class='has-tooltip-top'
@@ -800,6 +816,9 @@
 	import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
 	import * as path from 'path';
+    import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
+
+    import FileDragDrop from '../r2mm/data/FileDragDrop';
 
 	@Component({
 		components: {
@@ -849,6 +868,8 @@
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
 		showLaunchParameterModal: boolean = false;
+		dragAndDropText: string = 'Drag and drop file here to install mod';
+		showDragAndDropModal: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1603,6 +1624,45 @@
 			return fs.existsSync(logOutputPath);
 		}
 
+		installLocalMod() {
+            ipcRenderer.once(
+                'receive-selection',
+                (_sender: any, files: string[] | null) => {
+                    if (files !== null && files.length > 0) {
+                        this.installLocalModAfterFileSelection(files[0]);
+                    }
+                }
+            );
+            ipcRenderer.send('open-dialog', {
+                title: 'Import mod',
+                properties: ['openFile'],
+                filters: ['.zip'],
+                buttonLabel: 'Import'
+            });
+        }
+
+        installLocalModAfterFileSelection(file: string) {
+		    const convertError = LocalModInstaller.extractToCache(file, ((success, error) => {
+		        if (!success && error !== null) {
+		            this.showError(error);
+		            return;
+                }
+                const updatedModListResult = ProfileModList.getModList(Profile.getActiveProfile());
+                if (updatedModListResult instanceof R2Error) {
+                    this.showError(updatedModListResult);
+                    return;
+                }
+                this.localModList = updatedModListResult;
+                this.filterLocalModList();
+                this.sortThunderstoreModList();
+            }));
+		    if (convertError instanceof R2Error) {
+		        this.showError(convertError);
+		        return;
+            }
+		    this.view = 'installed';
+        }
+
 		created() {
 			this.settings.load();
 			this.launchParametersModel = this.settings.launchParameters;
@@ -1626,6 +1686,39 @@
 
 			});
 			this.isManagerUpdateAvailable();
+
+			// Bind drag and drop listeners
+            const defaultDragText = 'Drag and drop file here to install mod';
+
+            document.ondragover = (ev) => {
+                this.dragAndDropText = defaultDragText;
+                this.showDragAndDropModal = true;
+                ev.preventDefault();
+            }
+
+            document.ondragleave = (ev) => {
+                this.showDragAndDropModal = false;
+                ev.preventDefault();
+            }
+
+            document.body.ondrop = (ev) => {
+                if (FileDragDrop.areMultipleFilesDragged(ev)) {
+                    this.dragAndDropText = 'Only a single mod can be installed at a time';
+                    return;
+                } else if (!FileDragDrop.areAllFileExtensionsIn(ev, [".zip"])) {
+                    this.dragAndDropText = 'Mod must be a .zip file';
+                    return;
+                } else {
+                    this.errorMessage = '';
+                    this.installLocalModAfterFileSelection(FileDragDrop.getFiles(ev)[0].path);
+                }
+                this.showDragAndDropModal = false;
+                ev.preventDefault()
+            }
+
+            document.onclick = () => {
+                this.showDragAndDropModal = false;
+            }
 		}
 	}
 
