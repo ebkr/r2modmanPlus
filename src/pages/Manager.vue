@@ -378,10 +378,10 @@
 									<link-component :url="key.packageUrl" :target="'external'">View on Thunderstore
 									</link-component>
 								</div>
-								<div class='card-footer-item'>
+								<div class='card-footer-item non-selectable'>
 									<span><i class='fas fa-download'/> {{key.totalDownloads}}</span>
 								</div>
-								<div class='card-footer-item'>
+								<div class='card-footer-item non-selectable'>
 									<span><i class='fas fa-thumbs-up'/> {{key.rating}}</span>
 								</div>
 							</expandable-card>
