@@ -15,8 +15,7 @@ const appManifest = 'appmanifest_632360.acf';
 export default class GameDirectoryResolver {
 
     public static getSteamDirectory(): string | R2Error {
-        const settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         if (settings.steamDirectory != null) {
             return settings.steamDirectory;
         }
@@ -31,7 +30,7 @@ export default class GameDirectoryResolver {
                         // Remove colon
                         .substr(1)
                         .trim();
-                } 
+                }
             })
             if (isUndefined(installValue)) {
                 const err = new Error();
@@ -50,8 +49,7 @@ export default class GameDirectoryResolver {
     }
 
     public static getDirectory(): R2Error | string {
-        const settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         if (settings.riskOfRain2Directory != null) {
             return settings.riskOfRain2Directory;
         }
@@ -100,7 +98,7 @@ export default class GameDirectoryResolver {
                             'Unable to parse libraryfolders.vdf',
                             err.message,
                             null
-                        ) 
+                        )
                     }
                 }
             })

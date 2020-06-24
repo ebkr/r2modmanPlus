@@ -80,20 +80,19 @@ export default class BetterThunderstoreDownloader {
         return builder;
     }
 
-    public static download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[], 
-                           callback: (progress: number, modName: string, status: number, err: R2Error | null) => void, 
+    public static download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+                           callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
         combo.setVersion(modVersion);
         let downloadCount = 0;
-    
-        const settings = new ManagerSettings();
-        settings.load();
-        
+
+        const settings = ManagerSettings.getSingleton();
+
         const downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
-        
+
         this.downloadAndSave(combo, settings, (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
@@ -121,7 +120,7 @@ export default class BetterThunderstoreDownloader {
                     completedCallback([combo]);
                     return;
                 }
-                
+
                 // If dependencies, queue and download.
                 this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
@@ -142,7 +141,7 @@ export default class BetterThunderstoreDownloader {
     }
 
     public static downloadImportedMods(modList: ExportMod[],
-                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void, 
+                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
         const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
         const comboList: ThunderstoreCombo[] = [];
@@ -160,10 +159,9 @@ export default class BetterThunderstoreDownloader {
                 }
             });
         });
-    
-        const settings = new ManagerSettings();
-        settings.load();
-        
+
+        const settings = ManagerSettings.getSingleton();
+
         let downloadCount = 0;
         this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
@@ -201,7 +199,7 @@ export default class BetterThunderstoreDownloader {
             });
         }
     }
-    
+
     private static calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
         return list.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.ignoreCache).length;
     }
@@ -234,15 +232,15 @@ export default class BetterThunderstoreDownloader {
             fs.ensureDirSync(path.join(cacheDirectory, combo.getMod().getFullName()));
             fs.writeFileSync(
                 path.join(
-                    cacheDirectory, 
-                    combo.getMod().getFullName(), 
+                    cacheDirectory,
+                    combo.getMod().getFullName(),
                     combo.getVersion().getVersionNumber().toString() + '.zip'
-                ), 
+                ),
                 response
             );
             const extractError: R2Error | null = ZipExtract.extractAndDelete(
-                path.join(cacheDirectory, combo.getMod().getFullName()), 
-                combo.getVersion().getVersionNumber().toString() + '.zip', 
+                path.join(cacheDirectory, combo.getMod().getFullName()),
+                combo.getVersion().getVersionNumber().toString() + '.zip',
                 combo.getVersion().getVersionNumber().toString(),
                 callback
             );

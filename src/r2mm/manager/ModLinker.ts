@@ -11,8 +11,7 @@ import GameDirectoryResolver from './GameDirectoryResolver';
 export default class ModLinker {
 
     public static link(): string[] | R2Error {
-        const settings = new ManagerSettings()
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         const riskOfRain2Directory: string | R2Error = GameDirectoryResolver.getDirectory();
         if (riskOfRain2Directory instanceof R2Error) {
             return riskOfRain2Directory;
@@ -33,7 +32,7 @@ export default class ModLinker {
                 'Failed to ensure directory was created',
                 err.message,
                 'If r2modman was installed in the Risk of Rain 2 directory, please reinstall in a different location. \nIf not, try running the manager as an administrator.'
-            ) 
+            )
         }
         try {
             Logger.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
@@ -85,7 +84,7 @@ export default class ModLinker {
                     `Unable to read directory for profile ${Profile.getActiveProfile().getProfileName()}`,
                     err.message,
                     'Try running r2modman as an administrator'
-                ) 
+                )
             }
         } catch(e) {
             const err: Error = e;
@@ -139,5 +138,5 @@ export default class ModLinker {
         }
         return [];
     }
-    
+
 }

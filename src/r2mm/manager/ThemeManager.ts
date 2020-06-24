@@ -6,8 +6,7 @@ let darkThemeNode: any = undefined;
 export default class ThemeManager {
 
     public static apply() {
-        const settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         if (!settings.darkTheme) {
             const node = document.getElementById('darkThemeStyle');
             if (!isNull(node)) {

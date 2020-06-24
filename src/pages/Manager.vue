@@ -510,126 +510,7 @@
 						<hero title='Settings'
 						      :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
 						      heroType='is-info'/>
-						<ul class="list">
-							<li class="list-item" @click="browseDataFolder()">
-								<a class="is-text is-text--bold">
-									<p>Browse data folder</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeProfile()">
-								<a class="is-text is-text--bold">
-									<p>Change profile</p>
-								</a>
-							</li>
-							<li class="list-item" @click="copyLogToClipboard()" v-if='logFileExists()'>
-								<a class="is-text is-text--bold">
-									<p>Copy LogOutput contents to clipboard</p>
-								</a>
-							</li>
-							<li class="list-item" v-else-if='!logFileExists()'>
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='No log file was found for the profile. You must have started the game modded at least once (with BepInEx installed).'>
-										<strike>Copy LogOutput contents to clipboard</strike>
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setAllModsEnabled(false)">
-								<a class="is-text is-text--bold">
-									<p>Disable all mods</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleIgnoreCache()">
-								<a class="is-text is-text--bold" >
-									<p class='has-tooltip-top' v-if='!settings.ignoreCache'
-									   data-tooltip='This enforces that mods are re-downloaded. The cache will still be written to.'>
-										Disable download cache
-									</p>
-									<p v-else>
-										<i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
-										Enable download cache
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setAllModsEnabled(true)">
-								<a class="is-text is-text--bold">
-									<p>Enable all mods</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setFunkyMode(!settings.funkyModeEnabled)">
-								<a class="is-text is-text--bold">
-									<p v-if="settings.funkyModeEnabled">Disable funky mode</p>
-									<p v-else>Enable funky mode</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleCardExpanded(!settings.expandedCards)">
-								<a class="is-text is-text--bold">
-									<p v-if="settings.expandedCards">Collapse cards</p>
-									<p v-else>Expand cards</p>
-								</a>
-							</li>
-							<li class="list-item" @click="exportProfile()">
-								<a class="is-text is-text--bold">
-									<p>Export profile as file</p>
-								</a>
-							</li>
-							<li class="list-item" @click="exportProfileAsCode()">
-								<a class="is-text is-text--bold">
-									<p id="codeExportButton">Export profile as code</p>
-								</a>
-							</li>
-                            <li class="list-item has-tooltip-top" @click="installLocalMod()"
-                            data-tooltip="A zip containing a manifest.json file. Must be a valid ManifestV2 format.">
-                                <a class="is-text is-text--bold">
-                                    <p>Import local mod</p>
-                                </a>
-                            </li>
-							<li class="list-item" @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='Symlink is the preferred method for installing mods.'
-									   v-if="settings.legacyInstallMode">
-										<i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
-										<span>Install mods using Symlink</span>
-									</p>
-									<p class='has-tooltip-top'
-									   data-tooltip='Legacy mode may break some mods, use only if necessary.' v-else>
-										<span>Install mods in legacy mode</span>
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeRoR2InstallDirectory()">
-								<a class="is-text is-text--bold">
-									<p>Locate Risk of Rain 2 directory</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeSteamDirectory()">
-								<a class="is-text is-text--bold">
-									<p>Locate Steam directory</p>
-								</a>
-							</li>
-							<li class="list-item" @click="fixPreloader()">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='This will attempt to fix any preloader errors.'>
-										Run preloader fixer
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="showLaunchParameters()">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='Set additional launch parameters.'>
-										Set additional launch parameters (debugging)
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleDarkTheme()">
-								<a class="is-text is-text--bold">
-									<p>Switch theme</p>
-								</a>
-							</li>
-						</ul>
+                        <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
 					</template>
 				</div>
 				<div v-show="view === 'help'">
@@ -819,14 +700,17 @@
     import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';
+    import SettingsView from '../components/settings-components/SettingsView.vue';
 
 	@Component({
 		components: {
+            SettingsView,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'expandable-card': ExpandableCard,
 			'link-component': Link,
-			'modal': Modal
+			'modal': Modal,
+            'settings-view': SettingsView,
 		}
 	})
 	export default class Manager extends Vue {
@@ -847,7 +731,7 @@
 		errorStack: string = '';
 		errorSolution: string = '';
 		gameRunning: boolean = false;
-		settings = new ManagerSettings();
+		settings = ManagerSettings.getSingleton();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
@@ -1390,7 +1274,7 @@
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings screen');
+					'Set the Risk of Rain 2 directory in the settings-components screen');
 			}
 		}
 
@@ -1406,7 +1290,7 @@
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings screen');
+					'Set the Risk of Rain 2 directory in the settings-components screen');
 			}
 		}
 
@@ -1493,25 +1377,15 @@
 		}
 
 		exportProfileAsCode() {
-			const uploadText = 'Uploading profile, please wait.';
-			const regularText = 'Export profile as code';
-			const element: HTMLElement | null = document.getElementById('codeExportButton');
-			if (isNull(element) || element.innerHTML === uploadText) {
-				return;
-			}
-			element.innerHTML = uploadText;
 			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
 				if (!isNull(err)) {
 					this.showError(err);
-					element.innerHTML = regularText;
 				} else {
 					this.exportCode = code;
 					clipboard.writeText(code, 'clipboard');
-					element.innerHTML = regularText;
 				}
 			});
 			if (exportErr instanceof R2Error) {
-				element.innerHTML = regularText;
 				this.showError(exportErr);
 			}
 		}
@@ -1663,8 +1537,58 @@
 		    this.view = 'installed';
         }
 
+        handleSettingsCallbacks(invokedSetting: any) {
+		    switch(invokedSetting) {
+		        case "BrowseDataFolder":
+		            this.browseDataFolder();
+		            break;
+                case "ChangeGameDirectory":
+                    this.changeRoR2InstallDirectory();
+                    break;
+                case "ChangeSteamDirectory":
+                    this.changeSteamDirectory();
+                    break;
+                case "CopyLogToClipboard":
+                    this.copyLogToClipboard();
+                    break;
+                case "SwitchModInstallMode":
+                    this.toggleLegacyInstallMode(!this.settings.legacyInstallMode);
+                    break;
+                case "ToggleDownloadCache":
+                    this.toggleIgnoreCache();
+                    break;
+                case "RunPreloaderFix":
+                    this.fixPreloader();
+                    break;
+                case "SetLaunchParameters":
+                    this.showLaunchParameters();
+                    break;
+                case "ChangeProfile":
+                    this.changeProfile();
+                    break;
+                case "ImportLocalMod":
+                    this.installLocalMod();
+                    break;
+                case "ExportFile":
+                    this.exportProfile();
+                    break;
+                case "ExportCode":
+                    this.exportProfileAsCode();
+                    break;
+                case "ToggleFunkyMode":
+                    this.setFunkyMode(!this.settings.funkyModeEnabled);
+                    break;
+                case "SwitchTheme":
+                    this.toggleDarkTheme();
+                    break;
+                case "SwitchCard":
+                    this.toggleCardExpanded(!this.settings.expandedCards);
+                    break;
+            }
+        }
+
 		created() {
-			this.settings.load();
+
 			this.launchParametersModel = this.settings.launchParameters;
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
