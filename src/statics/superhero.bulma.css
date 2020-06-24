@@ -65,4 +65,8 @@
     border-top: 1px solid #080a1471;
 }
 
+.panel-block {
+    border-bottom: 1px solid #080a1471 !important;
+}
+
 /*# sourceMappingURL=bulmaswatch.min.css.map */

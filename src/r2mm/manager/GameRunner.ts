@@ -11,8 +11,7 @@ export default class GameRunner {
 
     public static playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         Logger.Log(LogSeverity.INFO, 'Launching modded');
-        const settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);
@@ -31,8 +30,7 @@ export default class GameRunner {
 
     public static playVanilla(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         Logger.Log(LogSeverity.INFO, 'Launching vanilla');
-        const settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);

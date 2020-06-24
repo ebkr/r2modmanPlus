@@ -212,6 +212,7 @@ import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstore
 import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 
 let settings: ManagerSettings;
 
@@ -331,8 +332,7 @@ export default class Profiles extends Vue {
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
 
-        settings = new ManagerSettings();
-        settings.load();
+        const settings = ManagerSettings.getSingleton();
         settings.setProfile(Profile.getActiveProfile().getProfileName());
 
         this.closeRemoveProfileModal();
@@ -351,6 +351,7 @@ export default class Profiles extends Vue {
     }
 
     setProfileAndContinue() {
+        console.log(settings);
         settings.setProfile(Profile.getActiveProfile().getProfileName());
         this.$router.push({ path: '/manager' });
     }
@@ -505,12 +506,27 @@ export default class Profiles extends Vue {
     }
 
     created() {
-        settings = new ManagerSettings();
-        settings.load();
+        settings = ManagerSettings.getSingleton();
 
         this.selectedProfile = settings.lastSelectedProfile;
         new Profile(this.selectedProfile);
 
+        // Set default paths
+        if (settings.riskOfRain2Directory === null) {
+            const result = GameDirectoryResolver.getDirectory();
+            if (!(result instanceof R2Error)) {
+                settings.setRiskOfRain2Directory(result);
+            }
+        }
+
+        if (settings.steamDirectory === null) {
+            const result = GameDirectoryResolver.getSteamDirectory();
+            if (!(result instanceof R2Error)) {
+                settings.setSteamDirectory(result);
+            }
+        }
+
+        // Read profiles
         try {
             const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
             fs.readdirSync(profilesDirectory).forEach((file: string) => {
