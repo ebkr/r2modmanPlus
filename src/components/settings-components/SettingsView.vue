@@ -41,6 +41,7 @@
     import * as fs from 'fs-extra';
     import * as path from 'path';
     import Profile from '../../model/Profile';
+    import LogOutput from '../../r2mm/data/LogOutput';
 
     @Component({
         components: {
@@ -53,6 +54,8 @@
 
         private tabs = ["All", "Profile", "Locations", "Debugging", "Other"];
 
+        private logOutput: LogOutput = LogOutput.getSingleton();
+
         private settingsList = [
             new SettingsRow(
                 'Locations',
@@ -61,7 +64,6 @@
                 () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
-                    console.log("Browsing data folder");
                     this.emitInvoke("BrowseDataFolder");
                 }
             ),
@@ -97,11 +99,7 @@
                 'Debugging',
                 'Copy LogOutput contents to clipboard',
                 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-                () => {
-                    const profilePath = Profile.getActiveProfile().getPathOfProfile()
-                    const fileExists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
-                    return fileExists ? 'LogOutput.log exists' : 'No LogOutput.log available';
-                },
+                this.doesLogOutputExist,
                 'fa-clipboard',
                 () => this.emitInvoke("CopyLogToClipboard")
             ),
@@ -225,6 +223,10 @@
 
         emitInvoke(invoked: string) {
             this.$emit("setting-invoked", invoked);
+        }
+
+        doesLogOutputExist() {
+            return this.logOutput.exists ? "LogOutput.log exists" : "LogOutput.log does not exist";
         }
 
     }
