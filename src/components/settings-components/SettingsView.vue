@@ -60,7 +60,7 @@
             new SettingsRow(
                 'Locations',
                 'Browse data folder',
-                'Open the data folder where mods and profiles are stored.',
+                'Open the directory where mods and profiles are stored.',
                 () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
@@ -94,6 +94,16 @@
                 },
                 'fa-folder-open',
                 () => this.emitInvoke("ChangeSteamDirectory")
+            ),
+            new SettingsRow(
+                'Locations',
+                'Browse profile folder',
+                'Open the directory where mods are stored for the current profile.',
+                () => {
+                    return Profile.getActiveProfile().getPathOfProfile();
+                },
+                'fa-door-open',
+                () => this.emitInvoke("BrowseProfileFolder")
             ),
             new SettingsRow(
                 'Debugging',
