@@ -1398,6 +1398,10 @@
 			spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
 		}
 
+        browseProfileFolder() {
+			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
+		}
+
 		toggleCardExpanded(expanded: boolean) {
 			if (expanded) {
 				this.settings.expandCards();
@@ -1542,6 +1546,9 @@
 		        case "BrowseDataFolder":
 		            this.browseDataFolder();
 		            break;
+                case "BrowseProfileFolder":
+                    this.browseProfileFolder();
+                    break;
                 case "ChangeGameDirectory":
                     this.changeRoR2InstallDirectory();
                     break;

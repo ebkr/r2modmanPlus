@@ -41,6 +41,7 @@
     import * as fs from 'fs-extra';
     import * as path from 'path';
     import Profile from '../../model/Profile';
+    import LogOutput from '../../r2mm/data/LogOutput';
 
     @Component({
         components: {
@@ -53,15 +54,16 @@
 
         private tabs = ["All", "Profile", "Locations", "Debugging", "Other"];
 
+        private logOutput: LogOutput = LogOutput.getSingleton();
+
         private settingsList = [
             new SettingsRow(
                 'Locations',
                 'Browse data folder',
-                'Open the data folder where mods and profiles are stored.',
+                'Open the directory where mods and profiles are stored.',
                 () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
-                    console.log("Browsing data folder");
                     this.emitInvoke("BrowseDataFolder");
                 }
             ),
@@ -94,14 +96,20 @@
                 () => this.emitInvoke("ChangeSteamDirectory")
             ),
             new SettingsRow(
+                'Locations',
+                'Browse profile folder',
+                'Open the directory where mods are stored for the current profile.',
+                () => {
+                    return Profile.getActiveProfile().getPathOfProfile();
+                },
+                'fa-door-open',
+                () => this.emitInvoke("BrowseProfileFolder")
+            ),
+            new SettingsRow(
                 'Debugging',
                 'Copy LogOutput contents to clipboard',
                 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-                () => {
-                    const profilePath = Profile.getActiveProfile().getPathOfProfile()
-                    const fileExists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
-                    return fileExists ? 'LogOutput.log exists' : 'No LogOutput.log available';
-                },
+                this.doesLogOutputExist,
                 'fa-clipboard',
                 () => this.emitInvoke("CopyLogToClipboard")
             ),
@@ -225,6 +233,10 @@
 
         emitInvoke(invoked: string) {
             this.$emit("setting-invoked", invoked);
+        }
+
+        doesLogOutputExist() {
+            return this.logOutput.exists ? "LogOutput.log exists" : "LogOutput.log does not exist";
         }
 
     }

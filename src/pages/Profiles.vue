@@ -351,7 +351,6 @@ export default class Profiles extends Vue {
     }
 
     setProfileAndContinue() {
-        console.log(settings);
         settings.setProfile(Profile.getActiveProfile().getProfileName());
         this.$router.push({ path: '/manager' });
     }
@@ -421,7 +420,6 @@ export default class Profiles extends Vue {
             read = fs.readFileSync(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
             const zip = new AdmZip(files[0]);
-            console.log(zip.getEntries());
             const result: Buffer | null = zip.readFile('export.r2x');
             if (isNull(result)) {
                 return;
@@ -450,7 +448,6 @@ export default class Profiles extends Vue {
                     const zip = new AdmZip(files[0]);
                     zip.getEntries().forEach(entry => {
                         if (entry.entryName.startsWith('config/')) {
-                            console.log(entry.entryName);
                             zip.extractEntryTo(
                                 entry.entryName,
                                 path.join(
