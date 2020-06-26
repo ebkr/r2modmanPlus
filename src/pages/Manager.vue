@@ -365,14 +365,14 @@
 									<span v-if="key.pinned" class='has-tooltip-left'
 									      data-tooltip='Pinned on Thunderstore'>
 										<span class="tag is-info">Pinned</span>&nbsp;
-										{{key.name}} by {{key.owner}}
+										<span class="selectable">{{key.name}} by {{key.owner}}</span>
 									</span>
 									<span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
 									      data-tooltip='This mod is potentially broken'>
 										<span class="tag is-danger">Deprecated</span>&nbsp;
-										<strike>{{key.name}} by {{key.owner}}</strike>
+										<strike class="selectable">{{key.name}} by {{key.owner}}</strike>
 									</span>
-									<span v-else>
+									<span v-else class='selectable'>
 										{{key.name}} by {{key.owner}}
 									</span>
 								</template>
@@ -459,13 +459,13 @@
 										:darkTheme="settings.darkTheme"
 										:expandedByDefault="settings.expandedCards">
 									<template v-slot:title>
-										<span v-if="key.enabled">
+										<span v-if="key.enabled" class='selectable'>
 											{{key.displayName}} by {{key.authorName}}
 										</span>
 										<span v-else class='has-tooltip-left'
 										      data-tooltip='This mod will not be used in-game'>
 											<span class="tag is-warning">Disabled</span>&nbsp;
-											<strike>{{key.displayName}} by {{key.authorName}}</strike>
+											<strike class='selectable'>{{key.displayName}} by {{key.authorName}}</strike>
 										</span>
 									</template>
 									<template v-slot:other-icons>
