@@ -111,6 +111,10 @@ select {
     user-select: none;
 }
 
+.selectable {
+    user-select: text;
+}
+
 .file-drop {
     position: fixed;
     z-index: 998;
