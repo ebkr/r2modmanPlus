@@ -41,7 +41,6 @@ export default class LocalModInstaller {
                     }
                 );
             } catch(e) {
-                console.log(e);
                 const err: Error = e;
                 return new R2Error('Failed to convert manifest to JSON', err.message, null);
             }

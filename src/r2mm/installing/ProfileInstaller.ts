@@ -20,7 +20,7 @@ export default class ProfileInstaller {
     /**
      * Uninstalls a mod by looking through the top level of profile/BepInEx/*
      * Any folder inside * locations with the mod name will be deleted.
-     * @param mod 
+     * @param mod
      */
     public static uninstallMod(mod: ManifestV2): R2Error | null {
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
@@ -177,7 +177,7 @@ export default class ProfileInstaller {
                 fs.ensureDirSync(profileLocation);
                 try {
                     fs.copySync(
-                        location, 
+                        location,
                         profileLocation
                     );
                     // Copy is complete, end recursive tree.
@@ -211,7 +211,7 @@ export default class ProfileInstaller {
                 fs.ensureDirSync(profileLocation);
                 try {
                     fs.copySync(
-                        file, 
+                        file,
                         path.join(profileLocation, path.basename(file))
                     );
                     // Copy is complete;
@@ -269,7 +269,7 @@ export default class ProfileInstaller {
         files.getDirectories().forEach((directory: BepInExTree) => {
             try {
                 fs.copySync(
-                    path.join(location, directory.getDirectoryName()), 
+                    path.join(location, directory.getDirectoryName()),
                     path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(directory.getDirectoryName()))
                 );
             } catch(e) {

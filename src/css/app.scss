@@ -124,3 +124,20 @@ select {
     background-color: transparent;
     vertical-align: middle;
 }
+
+.panel-heading {
+    border-bottom: 1px solid lightgray;
+}
+
+.settings-panel {
+    padding-top: 1em !important;
+    padding-bottom: 1em !important;
+
+    &__content > * {
+        line-height: 1.5em !important;
+    }
+}
+
+.tabs {
+    margin-bottom: 0 !important;
+}

@@ -19,9 +19,10 @@ export default class ZipExtract {
                         err.message,
                         null
                     );
+                } finally {
+                    callback(result);
                 }
             }
-            return result;
         })
     }
 

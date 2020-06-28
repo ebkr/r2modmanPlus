@@ -12,7 +12,7 @@ export default class PreloaderFixer {
             return dirResult;
         }
         if (!fs.existsSync(path.join(dirResult, 'Risk of Rain 2.exe'))) {
-            return new R2Error('Risk of Rain 2 directory is invalid', 'could not find "Risk of Rain 2.exe"', 
+            return new R2Error('Risk of Rain 2 directory is invalid', 'could not find "Risk of Rain 2.exe"',
                 'Set the Risk of Rain 2 directory in the settings section');
         }
         try {
