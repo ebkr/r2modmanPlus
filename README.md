@@ -7,6 +7,9 @@
     - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
 
 ## Latest Updates
+### 3.0.22
+- Fixed a bug where download progress would appear to freeze at 100%.
+
 ### 3.0.21
 - Settings screen overhaul.
 - NSIS fix for most, if not all, installation aborted errors (thanks to iDeathHD).
