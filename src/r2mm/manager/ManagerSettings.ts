@@ -12,6 +12,17 @@ let configFile = '';
 
 export default class ManagerSettings {
 
+    private static LOADED_SETTINGS: ManagerSettings | undefined;
+
+    public static getSingleton(): ManagerSettings {
+        if (this.LOADED_SETTINGS === undefined) {
+            console.log("Loading settings");
+            this.LOADED_SETTINGS = new ManagerSettings();
+            this.LOADED_SETTINGS.load();
+        }
+        return this.LOADED_SETTINGS;
+    }
+
     public riskOfRain2Directory: string | null = null;
     public steamDirectory: string | null = null;
     public lastSelectedProfile: string = 'Default';
@@ -21,6 +32,7 @@ export default class ManagerSettings {
     public linkedFiles: string[] = [];
     public darkTheme: boolean = false;
     public launchParameters: string = '';
+    public ignoreCache: boolean = false;
 
     public load(): R2Error | void {
         configPath = path.join(PathResolver.ROOT, 'config');
@@ -37,6 +49,7 @@ export default class ManagerSettings {
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
                 this.darkTheme = parsedYaml.darkTheme;
                 this.launchParameters = parsedYaml.launchParameters || '';
+                this.ignoreCache = parsedYaml.ignoreCache || false;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -117,9 +130,14 @@ export default class ManagerSettings {
         this.darkTheme = !this.darkTheme;
         return this.save();
     }
-    
+
     public setLaunchParameters(launchParams: string): R2Error | void {
         this.launchParameters = launchParams;
+        return this.save();
+    }
+
+    public setIgnoreCache(ignore: boolean): R2Error | void {
+        this.ignoreCache = ignore;
         return this.save();
     }
 }

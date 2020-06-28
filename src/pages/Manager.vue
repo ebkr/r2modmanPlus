@@ -1,5 +1,15 @@
 <template>
 	<div>
+        <div class='file-drop'>
+            <div :class="['modal', {'is-active':showDragAndDropModal}]">
+                <div class="modal-background" @click="closeGameRunningModal()"></div>
+                <div class='modal-content'>
+                    <div class='notification is-info'>
+                        <h3 class='title' id='dragText'>{{dragAndDropText}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -500,95 +510,7 @@
 						<hero title='Settings'
 						      :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
 						      heroType='is-info'/>
-						<ul class="list">
-							<li class="list-item" @click="browseDataFolder()">
-								<a class="is-text is-text--bold">
-									<p>Browse data folder</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeProfile()">
-								<a class="is-text is-text--bold">
-									<p>Change profile</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setAllModsEnabled(false)">
-								<a class="is-text is-text--bold">
-									<p>Disable all mods</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setAllModsEnabled(true)">
-								<a class="is-text is-text--bold">
-									<p>Enable all mods</p>
-								</a>
-							</li>
-							<li class="list-item" @click="setFunkyMode(!settings.funkyModeEnabled)">
-								<a class="is-text is-text--bold">
-									<p v-if="settings.funkyModeEnabled">Disable funky mode</p>
-									<p v-else>Enable funky mode</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleCardExpanded(!settings.expandedCards)">
-								<a class="is-text is-text--bold">
-									<p v-if="settings.expandedCards">Collapse cards</p>
-									<p v-else>Expand cards</p>
-								</a>
-							</li>
-							<li class="list-item" @click="exportProfile()">
-								<a class="is-text is-text--bold">
-									<p>Export profile as file</p>
-								</a>
-							</li>
-							<li class="list-item" @click="exportProfileAsCode()">
-								<a class="is-text is-text--bold">
-									<p id="codeExportButton">Export profile as code</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleLegacyInstallMode(!settings.legacyInstallMode)">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='Symlink is the preferred method for installing mods.'
-									   v-if="settings.legacyInstallMode">
-										<i class='fas fa-exclamation'>&nbsp;&nbsp;</i>
-										<span>Install mods using Symlink</span>
-									</p>
-									<p class='has-tooltip-top'
-									   data-tooltip='Legacy mode may break some mods, use only if necessary.' v-else>
-										<span>Install mods in legacy mode</span>
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeRoR2InstallDirectory()">
-								<a class="is-text is-text--bold">
-									<p>Locate Risk of Rain 2 directory</p>
-								</a>
-							</li>
-							<li class="list-item" @click="changeSteamDirectory()">
-								<a class="is-text is-text--bold">
-									<p>Locate Steam directory</p>
-								</a>
-							</li>
-							<li class="list-item" @click="fixPreloader()">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='This will attempt to fix any preloader errors.'>
-										Run preloader fixer
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="showLaunchParameters()">
-								<a class="is-text is-text--bold">
-									<p class='has-tooltip-top'
-									   data-tooltip='Set additional launch parameters.'>
-										Set additional launch parameters (debugging)
-									</p>
-								</a>
-							</li>
-							<li class="list-item" @click="toggleDarkTheme()">
-								<a class="is-text is-text--bold">
-									<p>Switch theme</p>
-								</a>
-							</li>
-						</ul>
+                        <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
 					</template>
 				</div>
 				<div v-show="view === 'help'">
@@ -774,14 +696,21 @@
 	import { isNull, isUndefined } from 'util';
 	import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
+	import * as path from 'path';
+    import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
+
+    import FileDragDrop from '../r2mm/data/FileDragDrop';
+    import SettingsView from '../components/settings-components/SettingsView.vue';
 
 	@Component({
 		components: {
+            SettingsView,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'expandable-card': ExpandableCard,
 			'link-component': Link,
-			'modal': Modal
+			'modal': Modal,
+            'settings-view': SettingsView,
 		}
 	})
 	export default class Manager extends Vue {
@@ -802,7 +731,7 @@
 		errorStack: string = '';
 		errorSolution: string = '';
 		gameRunning: boolean = false;
-		settings = new ManagerSettings();
+		settings = ManagerSettings.getSingleton();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
@@ -823,6 +752,8 @@
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
 		showLaunchParameterModal: boolean = false;
+		dragAndDropText: string = 'Drag and drop file here to install mod';
+		showDragAndDropModal: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1343,7 +1274,7 @@
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings screen');
+					'Set the Risk of Rain 2 directory in the settings-components screen');
 			}
 		}
 
@@ -1359,7 +1290,7 @@
 				});
 			} else {
 				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings screen');
+					'Set the Risk of Rain 2 directory in the settings-components screen');
 			}
 		}
 
@@ -1446,25 +1377,15 @@
 		}
 
 		exportProfileAsCode() {
-			const uploadText = 'Uploading profile, please wait.';
-			const regularText = 'Export profile as code';
-			const element: HTMLElement | null = document.getElementById('codeExportButton');
-			if (isNull(element) || element.innerHTML === uploadText) {
-				return;
-			}
-			element.innerHTML = uploadText;
 			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
 				if (!isNull(err)) {
 					this.showError(err);
-					element.innerHTML = regularText;
 				} else {
 					this.exportCode = code;
 					clipboard.writeText(code, 'clipboard');
-					element.innerHTML = regularText;
 				}
 			});
 			if (exportErr instanceof R2Error) {
-				element.innerHTML = regularText;
 				this.showError(exportErr);
 			}
 		}
@@ -1475,6 +1396,10 @@
 
 		browseDataFolder() {
 			spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
+		}
+
+        browseProfileFolder() {
+			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -1556,8 +1481,121 @@
 			this.showLaunchParameterModal = false;
 		}
 
+		toggleIgnoreCache() {
+			this.settings.setIgnoreCache(!this.settings.ignoreCache);
+		}
+
+		copyLogToClipboard() {
+			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			if (this.logFileExists()) {
+				const text = fs.readFileSync(logOutputPath).toString();
+				if (text.length >= 1992) {
+					clipboard.writeText(text, 'clipboard');
+				} else {
+					clipboard.writeText("```\n" + text + "\n```", 'clipboard');
+				}
+			}
+		}
+
+		logFileExists() {
+			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			return fs.existsSync(logOutputPath);
+		}
+
+		installLocalMod() {
+            ipcRenderer.once(
+                'receive-selection',
+                (_sender: any, files: string[] | null) => {
+                    if (files !== null && files.length > 0) {
+                        this.installLocalModAfterFileSelection(files[0]);
+                    }
+                }
+            );
+            ipcRenderer.send('open-dialog', {
+                title: 'Import mod',
+                properties: ['openFile'],
+                filters: ['.zip'],
+                buttonLabel: 'Import'
+            });
+        }
+
+        installLocalModAfterFileSelection(file: string) {
+		    const convertError = LocalModInstaller.extractToCache(file, ((success, error) => {
+		        if (!success && error !== null) {
+		            this.showError(error);
+		            return;
+                }
+                const updatedModListResult = ProfileModList.getModList(Profile.getActiveProfile());
+                if (updatedModListResult instanceof R2Error) {
+                    this.showError(updatedModListResult);
+                    return;
+                }
+                this.localModList = updatedModListResult;
+                this.filterLocalModList();
+                this.sortThunderstoreModList();
+            }));
+		    if (convertError instanceof R2Error) {
+		        this.showError(convertError);
+		        return;
+            }
+		    this.view = 'installed';
+        }
+
+        handleSettingsCallbacks(invokedSetting: any) {
+		    switch(invokedSetting) {
+		        case "BrowseDataFolder":
+		            this.browseDataFolder();
+		            break;
+                case "BrowseProfileFolder":
+                    this.browseProfileFolder();
+                    break;
+                case "ChangeGameDirectory":
+                    this.changeRoR2InstallDirectory();
+                    break;
+                case "ChangeSteamDirectory":
+                    this.changeSteamDirectory();
+                    break;
+                case "CopyLogToClipboard":
+                    this.copyLogToClipboard();
+                    break;
+                case "SwitchModInstallMode":
+                    this.toggleLegacyInstallMode(!this.settings.legacyInstallMode);
+                    break;
+                case "ToggleDownloadCache":
+                    this.toggleIgnoreCache();
+                    break;
+                case "RunPreloaderFix":
+                    this.fixPreloader();
+                    break;
+                case "SetLaunchParameters":
+                    this.showLaunchParameters();
+                    break;
+                case "ChangeProfile":
+                    this.changeProfile();
+                    break;
+                case "ImportLocalMod":
+                    this.installLocalMod();
+                    break;
+                case "ExportFile":
+                    this.exportProfile();
+                    break;
+                case "ExportCode":
+                    this.exportProfileAsCode();
+                    break;
+                case "ToggleFunkyMode":
+                    this.setFunkyMode(!this.settings.funkyModeEnabled);
+                    break;
+                case "SwitchTheme":
+                    this.toggleDarkTheme();
+                    break;
+                case "SwitchCard":
+                    this.toggleCardExpanded(!this.settings.expandedCards);
+                    break;
+            }
+        }
+
 		created() {
-			this.settings.load();
+
 			this.launchParametersModel = this.settings.launchParameters;
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
@@ -1579,6 +1617,39 @@
 
 			});
 			this.isManagerUpdateAvailable();
+
+			// Bind drag and drop listeners
+            const defaultDragText = 'Drag and drop file here to install mod';
+
+            document.ondragover = (ev) => {
+                this.dragAndDropText = defaultDragText;
+                this.showDragAndDropModal = true;
+                ev.preventDefault();
+            }
+
+            document.ondragleave = (ev) => {
+                this.showDragAndDropModal = false;
+                ev.preventDefault();
+            }
+
+            document.body.ondrop = (ev) => {
+                if (FileDragDrop.areMultipleFilesDragged(ev)) {
+                    this.dragAndDropText = 'Only a single mod can be installed at a time';
+                    return;
+                } else if (!FileDragDrop.areAllFileExtensionsIn(ev, [".zip"])) {
+                    this.dragAndDropText = 'Mod must be a .zip file';
+                    return;
+                } else {
+                    this.errorMessage = '';
+                    this.installLocalModAfterFileSelection(FileDragDrop.getFiles(ev)[0].path);
+                }
+                this.showDragAndDropModal = false;
+                ev.preventDefault()
+            }
+
+            document.onclick = () => {
+                this.showDragAndDropModal = false;
+            }
 		}
 	}
 
