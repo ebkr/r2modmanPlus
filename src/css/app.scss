@@ -107,6 +107,14 @@ select {
     border-radius: 4px;
 }
 
+.non-selectable, .non-selectable *, button, a  {
+    user-select: none;
+}
+
+.selectable {
+    user-select: text;
+}
+
 .file-drop {
     position: fixed;
     z-index: 998;
