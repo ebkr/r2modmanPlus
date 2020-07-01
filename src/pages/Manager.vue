@@ -562,7 +562,7 @@
 								Follow
 								<link-component
 										:url="'https://github.com/ebkr/r2modmanPlus/wiki/Error:-Failed-to-produce-a-symlink-between-profile-and-RoR2'"
-										:target="'external'">
+										:target="'external'" class='selectable'>
 									this guide
 								</link-component>
 								for more information.
@@ -596,14 +596,14 @@
 								<ul>
 									<li>Leave a thumbs-up on
 										<link-component url='https://thunderstore.io/package/ebkr/r2modman/'
-										                :target="'external'">
+										                :target="'external'" class='selectable'>
 											r2modman's Thunderstore page
 										</link-component>
 										.
 									</li>
 									<li>Star the project on
 										<link-component url='https://github.com/ebkr/r2modmanPlus/'
-										                :target="'external'">
+										                :target="'external'" class='selectable'>
 											GitHub
 										</link-component>
 										.
@@ -633,6 +633,7 @@
 								<link-component
 										url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts'
 										:target="'external'"
+										class='selectable'
 								>follow this guide
 								</link-component>
 								,
@@ -643,7 +644,7 @@
 							<h5 class='title is-5'>Something isn't working</h5>
 							<p>If you get any issues, look at the other pages that have appeared.</p>
 							<p>Failing that, mention me on the
-								<link-component url='https://discord.gg/5MbXZvd' :target="'external'">Thunderstore
+								<link-component url='https://discord.gg/5MbXZvd' :target="'external'" class='selectable'>Thunderstore
 									Discord Server!
 								</link-component>
 								@ Ebkr#3660
