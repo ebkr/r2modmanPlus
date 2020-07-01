@@ -334,7 +334,7 @@
 				</aside>
 			</div>
 			<div class='column is-three-quarters'>
-				<div v-show="view === 'online'">
+				<div v-if="view === 'online'">
 					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
@@ -353,7 +353,7 @@
 						</div>
 					</div>
 					<template>
-						<div v-for='(key, index) in pagedThunderstoreModList' :key="'online-' + index">
+						<div v-for='(key, index) in pagedThunderstoreModList' :key="'online-' + key.getFullName()">
 							<expandable-card
 									:image="key.versions[0].icon"
 									:id="index"
@@ -423,7 +423,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-show="view === 'installed'">
+				<div v-if="view === 'installed'">
 					<div class='sticky-top sticky-top--search border-at-bottom'>
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
@@ -445,7 +445,7 @@
 							</h4>
 						</div>
 						<template v-if="localModList.length > 0">
-							<div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.name">
+							<div v-for='(key, index) in searchableLocalModList' :key="'local-' + key.getName()">
 								<expandable-card
 										@moveUp="moveUp(key)"
 										@moveDown="moveDown(key)"
