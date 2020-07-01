@@ -4,9 +4,9 @@
             <i :class="['fas', icon]" aria-hidden="true"></i>&nbsp;&nbsp;
         </span>
         <div class="settings-panel__content">
-            <p class="title is-6 is-marginless selectable">{{action}}</p>
+            <p class="title is-6 is-marginless">{{action}}</p>
             <p class="subtitle is-italic is-bold is-6 is-marginless">{{description}}</p>
-            <p class="subtitle is-6 text-grey selectable">{{value}}</p>
+            <p class="subtitle is-6 text-grey">{{value}}</p>
         </div>
     </a>
 </template>
