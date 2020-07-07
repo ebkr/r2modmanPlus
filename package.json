@@ -9,7 +9,7 @@
     "private": true,
     "scripts": {
         "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
-        "test": "mocha -r ts-node/register tests/**/*.test.ts --experimental-modules --exit",
+        "test": "mocha -r ts-node/register tests/**/*.test.ts --experimental-modules",
         "run": "quasar dev -m electron",
         "build-win": "quasar build --mode electron -T win32",
         "build-linux": "quasar build --mode electron -T linux",
@@ -63,6 +63,7 @@
         "eslint-plugin-vue": "^5.0.0",
         "minimist": "^1.2.2",
         "mocha": "^8.0.1",
+        "mock-require": "^3.0.3",
         "ts-node": "^8.10.2",
         "typescript": "^3.3.3"
     },
