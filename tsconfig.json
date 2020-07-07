@@ -1,18 +1,21 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "sourceMap": true,
-    "target": "es6",
-    "strict": true,
-    "experimentalDecorators": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "types": [
-      "quasar",
-      "node"
-    ],
-    "allowSyntheticDefaultImports": true
-  },
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "allowJs": true,
+        "sourceMap": true,
+        "target": "es2015",
+        "strict": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "types": [
+            "quasar",
+            "node",
+            "mocha"
+        ],
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }

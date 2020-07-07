@@ -1,8 +1,8 @@
 import * as yaml from 'yaml';
 import Profile from 'src/model/Profile';
 
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import fs from 'fs-extra';
+import path from 'path';
 import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import R2Error from 'src/model/errors/R2Error';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';

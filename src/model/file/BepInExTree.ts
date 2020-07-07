@@ -1,6 +1,6 @@
 import R2Error from "../errors/R2Error";
 
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import * as path from 'path';
 
 /**

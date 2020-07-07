@@ -209,9 +209,9 @@ import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 import PathResolver from '../r2mm/manager/PathResolver';
 import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
 
-import * as yaml from 'yaml';
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import yaml from 'yaml';
+import fs from 'fs-extra';
+import path from 'path';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 
 let settings: ManagerSettings;

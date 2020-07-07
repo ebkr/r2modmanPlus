@@ -693,11 +693,11 @@
 	import Dependants from '../r2mm/mods/Dependants';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
-	import * as fs from 'fs-extra';
+	import fs from 'fs-extra';
 	import { isNull, isUndefined } from 'util';
 	import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
-	import * as path from 'path';
+	import path from 'path';
     import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';

@@ -1,6 +1,6 @@
-import * as fs from 'fs-extra';
 import Profile from '../../model/Profile';
-import path from "path";
+import * as path from 'path'
+import * as fs from 'fs-extra'
 
 export default class LogOutput {
 

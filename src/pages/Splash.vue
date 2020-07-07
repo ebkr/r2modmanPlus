@@ -143,8 +143,8 @@ import { ipcRenderer } from 'electron';
 import PathResolver from '../r2mm/manager/PathResolver';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import path from 'path';
+import fs from 'fs-extra';
 import ThemeManager from '../r2mm/manager/ThemeManager';
 import { Logger, LogSeverity } from '../r2mm/logging/Logger';
 

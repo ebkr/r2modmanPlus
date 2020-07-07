@@ -1,5 +1,5 @@
 import yaml from 'yaml';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import * as path from 'path';
 
 let resizeTimeout = undefined;

@@ -1,6 +1,6 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import * as yaml from 'yaml';
+import path from 'path';
+import fs from 'fs-extra';
+import yaml from 'yaml';
 import R2Error from 'src/model/errors/R2Error';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
 import FileWriteError from 'src/model/errors/FileWriteError';

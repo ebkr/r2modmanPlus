@@ -3,8 +3,8 @@ import R2Error from 'src/model/errors/R2Error';
 import ManifestV2 from 'src/model/ManifestV2';
 import BepInExTree from 'src/model/file/BepInExTree';
 
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import path from 'path';
+import fs from 'fs-extra';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import ModMode from 'src/model/enums/ModMode';
