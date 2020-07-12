@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import LogOutput from '../../../src/r2mm/data/LogOutput';
 import Profile from '../../../src/model/Profile';
-import '../../test-setup.test';
+import TestSetup from '../../test-setup.test';
 import * as fs from 'fs-extra';
 import * as path from "path";
 
@@ -11,6 +11,14 @@ const timeout = (ms: number) => {
 }
 
 describe('LogOutput', () => {
+
+    before(() => {
+        TestSetup.setUp();
+    });
+
+    after(() => {
+        TestSetup.tearDown();
+    });
 
     context('Singleton construction', () => {
         it('Singletons should be the same object', () => {

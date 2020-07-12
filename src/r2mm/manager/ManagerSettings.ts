@@ -1,10 +1,10 @@
-import path from 'path';
-import fs from 'fs-extra';
-import yaml from 'yaml';
-import R2Error from 'src/model/errors/R2Error';
-import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
-import FileWriteError from 'src/model/errors/FileWriteError';
-import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
+import * as path from 'path';
+import * as fs from 'fs-extra';
+import * as yaml from 'yaml';
+import R2Error from '../../model/errors/R2Error';
+import YamlParseError from '../../model/errors/Yaml/YamlParseError';
+import FileWriteError from '../../model/errors/FileWriteError';
+import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
 
 let configPath = '';
@@ -16,7 +16,6 @@ export default class ManagerSettings {
 
     public static getSingleton(): ManagerSettings {
         if (this.LOADED_SETTINGS === undefined) {
-            console.log("Loading settings");
             this.LOADED_SETTINGS = new ManagerSettings();
             this.LOADED_SETTINGS.load();
         }
