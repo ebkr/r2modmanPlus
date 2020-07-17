@@ -339,7 +339,7 @@
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
 								<span>Search:&nbsp;&nbsp;</span>
-								<input v-model='thunderstoreSearchFilter' class="input" type="text"/>
+								<input v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
 								<span>&nbsp;&nbsp;Sort:&nbsp;&nbsp;</span>
 								<select class='select select--content-spacing' v-model="sortingStyleModel">
 									<option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
@@ -427,8 +427,8 @@
 					<div class='sticky-top sticky-top--search border-at-bottom'>
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
-								<span>Search:&nbsp;&nbsp;</span>
-								<input v-model='localSearchFilter' class="input" type="text"/>
+								<span class="non-selectable">Search:&nbsp;&nbsp;</span>
+								<input v-model='localSearchFilter' class="input" type="text" placeholder="Search for an installed mod"/>
 							</div>
 						</div>
 					</div>
@@ -507,9 +507,6 @@
 				</div>
 				<div v-show="view === 'settings'">
 					<template>
-						<hero title='Settings'
-						      :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
-						      heroType='is-info'/>
                         <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
 					</template>
 				</div>
@@ -746,7 +743,6 @@
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
 		fixingPreloader: boolean = false;
-		managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
 		exportCode: string = '';
 		pageNumber: number = 1;
 		showSteamIncorrectDirectoryModal: boolean = false;
