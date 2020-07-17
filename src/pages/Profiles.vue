@@ -46,12 +46,10 @@
           <div class="card-footer">
             <button
               class="button is-info"
-              @click="importProfile(); showImportModal = false;"
-            >From file</button>
+              @click="importProfile(); showImportModal = false;">From file</button>
             <button
               class="button is-primary"
-              @click="profileImportCode = ''; showImportModal = false; showCodeModal = true;"
-            >From code</button>
+              @click="profileImportCode = ''; showImportModal = false; showCodeModal = true;">From code</button>
           </div>
         </div>
       </div>
@@ -186,7 +184,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
-import { Prop } from 'vue-property-decorator';
 import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
 import { ipcRenderer } from 'electron';
@@ -441,8 +438,9 @@ export default class Profiles extends Vue {
                 );
             })
         );
+        console.log("Calling newProfile");
         this.newProfile('Import', parsed.getProfileName());
-        ipcRenderer.once('created-profile', (profileName: string) => {
+        ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
             if (profileName !== '') {
                 if (files[0].endsWith('.r2z')) {
                     const zip = new AdmZip(files[0]);
@@ -472,10 +470,11 @@ export default class Profiles extends Vue {
         });
     }
 
-    importProfile(file: string) {
+    importProfile() {
         ipcRenderer.once(
             'receive-selection',
             (_sender: any, files: string[] | null) => {
+                console.log(event);
                 this.importProfileHandler(files);
             }
         );

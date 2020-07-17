@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, dialog, clipboard } from 'electron';
+import { ipcMain, dialog } from 'electron';
 import { spawnSync } from 'child_process';
 import { autoUpdater } from 'electron-updater';
 import os from 'os';
@@ -22,12 +22,14 @@ ipcMain.on('get-browser-window', ()=>{
 })
 
 ipcMain.on('open-dialog', (_sender, dialogOptions) => {
-    dialog.showOpenDialog(dialogOptions, (filePaths) => {
-        browserWindow.webContents.send('receive-selection', filePaths);
+    console.log("Opening dialog");
+    dialog.showOpenDialog(dialogOptions).then(result => {
+        browserWindow.webContents.send('receive-selection', result.filePaths);
     })
 })
 
 ipcMain.on('update-app', ()=>{
+    autoUpdater.autoDownload = true;
     autoUpdater.checkForUpdatesAndNotify();
     browserWindow.webContents.send('update-done');
 })
