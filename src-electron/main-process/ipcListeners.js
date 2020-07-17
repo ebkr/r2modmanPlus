@@ -22,7 +22,6 @@ ipcMain.on('get-browser-window', ()=>{
 })
 
 ipcMain.on('open-dialog', (_sender, dialogOptions) => {
-    console.log("Opening dialog");
     dialog.showOpenDialog(dialogOptions).then(result => {
         browserWindow.webContents.send('receive-selection', result.filePaths);
     })
