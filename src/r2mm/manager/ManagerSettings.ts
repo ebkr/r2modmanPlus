@@ -16,7 +16,6 @@ export default class ManagerSettings {
 
     public static getSingleton(): ManagerSettings {
         if (this.LOADED_SETTINGS === undefined) {
-            console.log("Loading settings");
             this.LOADED_SETTINGS = new ManagerSettings();
             this.LOADED_SETTINGS.load();
         }
