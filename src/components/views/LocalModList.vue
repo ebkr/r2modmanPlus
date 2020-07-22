@@ -424,6 +424,12 @@
             );
             if (mod === undefined) {
                 this.manifestModAsThunderstoreMod = null;
+                const error = new R2Error(
+                    `${missingDependency} could not be found`,
+                    'You may be offline, or the mod was removed from Thunderstore.',
+                    'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
+                );
+                this.$emit('error', error);
                 return;
             }
             this.manifestModAsThunderstoreMod = mod;

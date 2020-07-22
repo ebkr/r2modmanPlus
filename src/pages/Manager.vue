@@ -448,7 +448,7 @@
 							<LocalModList
                                 :search-query="localSearchFilter"
                                 :mod-list="localModList"
-                                @error="this.showError($event)"
+                                @error="showError($event)"
                             />
 						</template>
 					</template>
