@@ -125,15 +125,15 @@
                 <span class='card-footer-item'>
 										<i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
 										<Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
-                                                        :target="'external'">
+                                              :target="'external'">
 											{{key.getVersionNumber().toString()}}
 										</Link>
 									</span>
                 <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-<!--                <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"-->
-<!--                   @click="downloadDependency(getMissingDependencies(key)[0])">-->
-<!--                    Download dependency-->
-<!--                </a>-->
+                <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
+                   @click="downloadDependency(getMissingDependencies(key)[0])">
+                    Download dependency
+                </a>
             </expandable-card>
         </div>
     </div>
@@ -173,10 +173,7 @@
         @Prop()
         private searchQuery: string = '';
 
-        @Prop()
-        private modList: ManifestV2[] | null = null;
-
-        @PropSync("modList", { type: Array })
+        @PropSync('modList', { type: Array })
         private modifiableModList!: ManifestV2[];
 
         private searchableModList: ManifestV2[] = [];
@@ -186,15 +183,18 @@
         private manifestModAsThunderstoreMod: ThunderstoreMod | null = null;
         private dependencyListDisplayType: string = 'view';
 
-        @Watch("modifiableModList")
+        @Watch('modifiableModList')
         modListUpdated() {
-            console.log("Mod list updated");
+            this.filterModList();
         }
 
-        @Watch("searchQuery")
+        @Watch('searchQuery')
         filterModList() {
+            if (this.searchQuery.trim() === '') {
+                this.searchableModList = this.modifiableModList;
+            }
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return x.getName().toLowerCase().search(this.searchQuery.toLowerCase()) >= 0 || this.searchQuery.trim() === '';
+                return x.getName().toLowerCase().search(this.searchQuery.toLowerCase()) >= 0;
             });
         }
 
@@ -202,10 +202,10 @@
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             const updatedList = ProfileModList.shiftModEntryUp(mod);
             if (updatedList instanceof R2Error) {
-                this.$emit("error", updatedList);
+                this.$emit('error', updatedList);
                 return;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.filterModList();
         }
 
@@ -213,10 +213,10 @@
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             const updatedList = ProfileModList.shiftModEntryDown(mod);
             if (updatedList instanceof R2Error) {
-                this.$emit("error", updatedList);
+                this.$emit('error', updatedList);
                 return;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.filterModList();
         }
 
@@ -250,16 +250,16 @@
             const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
-                this.$emit("error", uninstallError);
+                this.$emit('error', uninstallError);
                 return uninstallError;
             }
             const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
-                this.$emit("error", modList);
+                this.$emit('error', modList);
                 return modList;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, modList);
         }
 
         disableMod(vueMod: any) {
@@ -268,13 +268,13 @@
                 Dependants.getDependantList(mod, this.modifiableModList).forEach(dependant => {
                     const result = this.performDisable(dependant);
                     if (result instanceof R2Error) {
-                        this.$emit("error", result);
+                        this.$emit('error', result);
                         return;
                     }
                 });
                 const result = this.performDisable(mod);
                 if (result instanceof R2Error) {
-                    this.$emit("error", result);
+                    this.$emit('error', result);
                     return;
                 }
             } catch (e) {
@@ -289,7 +289,7 @@
             const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
-                this.$emit("error", disableErr);
+                this.$emit('error', disableErr);
                 return disableErr;
             }
             const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
@@ -297,10 +297,10 @@
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
-                this.$emit("error", updatedList);
+                this.$emit('error', updatedList);
                 return updatedList;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.filterModList();
         }
 
@@ -310,13 +310,13 @@
                 Dependants.getDependantList(mod, this.modifiableModList).forEach(dependant => {
                     const result = this.performUninstallMod(dependant);
                     if (result instanceof R2Error) {
-                        this.$emit("error", result);
+                        this.$emit('error', result);
                         return;
                     }
                 });
                 const result = this.performUninstallMod(mod);
                 if (result instanceof R2Error) {
-                    this.$emit("error", result);
+                    this.$emit('error', result);
                     return;
                 }
             } catch (e) {
@@ -327,10 +327,10 @@
             this.selectedManifestMod = null;
             const result: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
             if (result instanceof R2Error) {
-                this.$emit("error", result);
+                this.$emit('error', result);
                 return;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, result);
             this.filterModList();
         }
 
@@ -390,7 +390,7 @@
             const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
-                this.$emit("error", disableErr);
+                this.$emit('error', disableErr);
                 return disableErr;
             }
             const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
@@ -398,10 +398,10 @@
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
-                this.$emit("error", updatedList);
+                this.$emit('error', updatedList);
                 return updatedList;
             }
-            // TODO: Update mod list
+            ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.filterModList();
         }
 
@@ -413,11 +413,20 @@
             );
             if (mod instanceof ThunderstoreMod) {
                 this.manifestModAsThunderstoreMod = mod;
-                console.log("Updating");
             } else {
                 this.manifestModAsThunderstoreMod = null;
-                console.log("Not updating")
             }
+        }
+
+        downloadDependency(missingDependency: string) {
+            const mod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find(
+                (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase())
+            );
+            if (mod === undefined) {
+                this.manifestModAsThunderstoreMod = null;
+                return;
+            }
+            this.manifestModAsThunderstoreMod = mod;
         }
 
         created() {
@@ -429,11 +438,11 @@
         }
 
         destroy() {
-            ipcRenderer.removeListener("update-local-mod-list", this.onUpdateModList);
+            ipcRenderer.removeListener('update-local-mod-list', this.onUpdateModList);
         }
 
         emitError(error: R2Error) {
-            this.$emit("error", error);
+            this.$emit('error', error);
         }
 
     }
