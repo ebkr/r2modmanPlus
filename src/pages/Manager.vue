@@ -447,7 +447,6 @@
 						<template v-if="localModList.length > 0">
 							<LocalModList
                                 :search-query="localSearchFilter"
-                                :mod-list="localModList"
                                 @error="showError($event)"
                             />
 						</template>
@@ -667,7 +666,7 @@
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
-		localModList: ManifestV2[] = [];
+		// localModList: ManifestV2[] = [];
 		searchableLocalModList: ManifestV2[] = [];
 		versionNumbers: string[] = [];
 		selectedThunderstoreMod: ThunderstoreMod | null = null;
@@ -762,6 +761,11 @@
 			this.filterThunderstoreModList();
 		}
 
+
+		get localModList() : ManifestV2[] {
+			return this.$store.state.list;
+		}
+
 		updatePageNumber(page: number) {
 			this.pageNumber = page;
 			window.scrollTo({
@@ -830,7 +834,8 @@
 			if (!(installError instanceof R2Error)) {
 				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
-					this.localModList = newModList;
+					this.$store.dispatch("updateModList", newModList);
+					// this.localModList = newModList;
 					this.sortThunderstoreModList();
 					this.filterLocalModList();
 				}
@@ -927,7 +932,8 @@
 				this.showError(modList);
 				return modList;
 			}
-			this.localModList = modList;
+			this.$store.dispatch("updateModList",modList);
+			// this.localModList = modList;
 		}
 
 		disableMod(vueMod: any) {
@@ -967,7 +973,8 @@
 				this.showError(updatedList);
 				return updatedList;
 			}
-			this.localModList = updatedList;
+			// this.localModList = updatedList;
+			this.$store.dispatch("updateModList",updatedList);
 			this.filterLocalModList();
 		}
 
@@ -988,7 +995,8 @@
 				this.showError(updatedList);
 				return updatedList;
 			}
-			this.localModList = updatedList;
+			this.$store.dispatch("updateModList",updatedList);
+			// this.localModList = updatedList;
 			this.filterLocalModList();
 		}
 
@@ -1325,7 +1333,9 @@
                     this.showError(updatedModListResult);
                     return;
                 }
-                this.localModList = updatedModListResult;
+				this.$store.dispatch("updateModList",updatedModListResult);
+				// this.localModList = updatedModListResult;
+
                 this.filterLocalModList();
                 this.sortThunderstoreModList();
             }));
@@ -1390,11 +1400,12 @@
         }
 
 		created() {
-            ipcRenderer.on("update-local-mod-list", this.onUpdateModList);
+            // ipcRenderer.on("update-local-mod-list", this.onUpdateModList);
 			this.launchParametersModel = this.settings.launchParameters;
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
-				this.localModList = newModList;
+				this.$store.dispatch("updateModList",newModList);
+				// this.localModList = newModList;
 			} else {
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
@@ -1447,13 +1458,15 @@
             }
 		}
 
-        onUpdateModList(event: IpcRendererEvent, newModList: ManifestV2[]) {
-            this.localModList = newModList;
-        }
+        // onUpdateModList(event: IpcRendererEvent, newModList: ManifestV2[]) {
+			// this.$store.dispatch("updateModList",newModList);
+			// this.localModList = newModList;
 
-        destroy() {
-            ipcRenderer.removeListener("update-local-mod-list", this.onUpdateModList);
-        }
+        // }
+
+        // destroy() {
+            // ipcRenderer.removeListener("update-local-mod-list", this.onUpdateModList);
+        // }
 	}
 
 </script>

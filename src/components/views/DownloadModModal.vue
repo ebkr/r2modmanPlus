@@ -181,7 +181,8 @@
                 this.downloadingMod = false;
                 const modList = ProfileModList.getModList(Profile.getActiveProfile());
                 if (!(modList instanceof R2Error)) {
-                    ipcRenderer.emit('update-local-mod-list', null, modList);
+                    // ipcRenderer.emit('update-local-mod-list', null, modList);
+                    this.$store.dispatch("updateModList",modList);
                 }
             });
         }

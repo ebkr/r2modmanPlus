@@ -173,8 +173,12 @@
         @Prop()
         private searchQuery: string = '';
 
-        @PropSync('modList', { type: Array })
-        private modifiableModList!: ManifestV2[];
+        // @PropSync('modList', { type: Array })
+        // private modifiableModList!: ManifestV2[];
+
+        get modifiableModList(): ManifestV2[] {
+            return this.$store.state.list;
+        }
 
         private searchableModList: ManifestV2[] = [];
         private settings: ManagerSettings = ManagerSettings.getSingleton();
@@ -191,7 +195,7 @@
         @Watch('searchQuery')
         filterModList() {
             if (this.searchQuery.trim() === '') {
-                this.searchableModList = this.modifiableModList;
+                this.searchableModList = {...this.modifiableModList};
             }
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
                 return x.getName().toLowerCase().search(this.searchQuery.toLowerCase()) >= 0;
@@ -205,7 +209,8 @@
                 this.$emit('error', updatedList);
                 return;
             }
-            ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -216,7 +221,8 @@
                 this.$emit('error', updatedList);
                 return;
             }
-            ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -259,7 +265,8 @@
                 this.$emit('error', modList);
                 return modList;
             }
-            ipcRenderer.emit('update-local-mod-list', null, modList);
+            // ipcRenderer.emit('update-local-mod-list', null, modList);
+            this.$store.dispatch("updateModList",modList);
         }
 
         disableMod(vueMod: any) {
@@ -300,7 +307,8 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
+             this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -330,7 +338,8 @@
                 this.$emit('error', result);
                 return;
             }
-            ipcRenderer.emit('update-local-mod-list', null, result);
+            // ipcRenderer.emit('update-local-mod-list', null, result);
+             this.$store.dispatch("updateModList",result);
             this.filterModList();
         }
 
@@ -401,7 +410,8 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            ipcRenderer.emit('update-local-mod-list', null, updatedList);
+            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
+             this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -439,13 +449,13 @@
             this.filterModList();
         }
 
-        onUpdateModList(event: IpcRendererEvent, newModList: ManifestV2[]) {
-            this.filterModList();
-        }
+        // onUpdateModList(event: IpcRendererEvent, newModList: ManifestV2[]) {
+        //     this.filterModList();
+        // }
 
-        destroy() {
-            ipcRenderer.removeListener('update-local-mod-list', this.onUpdateModList);
-        }
+        // destroy() {
+        //     ipcRenderer.removeListener('update-local-mod-list', this.onUpdateModList);
+        // }
 
         emitError(error: R2Error) {
             this.$emit('error', error);
