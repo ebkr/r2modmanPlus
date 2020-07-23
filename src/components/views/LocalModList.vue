@@ -173,9 +173,6 @@
         @Prop()
         private searchQuery: string = '';
 
-        // @PropSync('modList', { type: Array })
-        // private modifiableModList!: ManifestV2[];
-
         get modifiableModList(): ManifestV2[] {
             return this.$store.state.list;
         }
@@ -209,7 +206,6 @@
                 this.$emit('error', updatedList);
                 return;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
@@ -221,7 +217,6 @@
                 this.$emit('error', updatedList);
                 return;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
             this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
@@ -265,7 +260,6 @@
                 this.$emit('error', modList);
                 return modList;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, modList);
             this.$store.dispatch("updateModList",modList);
         }
 
@@ -307,7 +301,6 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
              this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
@@ -338,7 +331,6 @@
                 this.$emit('error', result);
                 return;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, result);
              this.$store.dispatch("updateModList",result);
             this.filterModList();
         }
@@ -410,7 +402,6 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            // ipcRenderer.emit('update-local-mod-list', null, updatedList);
              this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
@@ -448,14 +439,6 @@
         created() {
             this.filterModList();
         }
-
-        // onUpdateModList(event: IpcRendererEvent, newModList: ManifestV2[]) {
-        //     this.filterModList();
-        // }
-
-        // destroy() {
-        //     ipcRenderer.removeListener('update-local-mod-list', this.onUpdateModList);
-        // }
 
         emitError(error: R2Error) {
             this.$emit('error', error);
