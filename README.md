@@ -3,7 +3,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ebkr/r2modmanPlus?color=teal&style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)
 
-| [Features](#features) | [Changelog](#changelog) | [What is a mod manager?](#what_is_a_mod_manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback_and_suggestions) | [Screenshots](#screenshots) |
+| [Features](#features) | [Changelog](#changelog) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Screenshots](#screenshots) |
 |---|---|---|---|---|---|---|
 
 ## Features
