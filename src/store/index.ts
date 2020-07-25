@@ -12,6 +12,19 @@ Vue.use(Vuex);
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    state: {
+      list:[]
+    },
+    actions: {
+      updateModList({commit},modList) {
+        commit("setList",modList);
+      }
+    },
+    mutations: {
+      setList(state,list) {
+        state.list = list;
+      }
+    },
     modules: {
       // example
     },

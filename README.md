@@ -1,12 +1,30 @@
 # r2modman
 
-## Installing
-1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
-2. Inside the downloaded ZIP file. Run the "r2modman Setup X.X.X.exe" (where X represents the version number).
-3. Follow the installer steps.
-    - Installing to the Risk of Rain 2 folder will cause problems. DO NOT DO THIS. It's an application, not a mod.
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ebkr/r2modmanPlus?color=teal&style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)
 
-## Latest Updates
+| [Features](#features) | [Changelog](#changelog) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Screenshots](#screenshots) |
+|---|---|---|---|---|---|---|
+
+## Features
+- A clean user interface designed to make modding as simple as possible.
+- Safer mod installs allowing you to play the game through Steam normally.
+- Mod profiles to switch between different sets of mods quickly and easily.
+- Export profiles to easily share both your mods and configs with friends.
+- Download and install mods directly from the manager.
+- View and update any outdated mods.
+- Edit configs directly from the manager.
+- Manager auto-updates.
+- And more!
+
+
+## Changelog
+### Upcoming
+- Updating a mod now shows the version you currently have installed.
+- Mod cards no longer expand if not previously opened when searching.
+- Profiles can now be renamed.
+- Backend library updates and code cleanup.
+
 ### 3.0.22
 - Fixed a bug where download progress would appear to freeze at 100%.
 
@@ -18,36 +36,40 @@
 - (Debug) Downloads can now skip reading from the cache.
 - General fixes.
 
-### 3.0.20
-- Custom parameters can now be passed in to the game.
-- Directory setting now checks for specific executables.
-- Other small fixes
+## What is a mod manager?
+It's quite simple really, a mod manager is an application to make it easier to control which mods you have installed.
 
+You can choose to update, enable/disable or even uninstall mods with a simple click, all whilst keeping it available on another profile.
 
-### 3.0.19
-- Fixed a bug where the installed search bar wasn't working
+## Installing
 
-### 3.0.18
-- Lots of performance improvements.
-    - Pagination.
-    - Simplified actions taken on tab switching.
-- Mod updates fully clean from previous installs.
-- Language mods using AssetPlusRequester can now be disabled.
-- Download progress no longer includes cached dependencies.
+### First time installing
+#### Do not install r2modman inside the Risk of Rain 2 folder.
+1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
+3. Follow the steps in the installer.
 
-### 3.0.17
-- Fixed a bug with window size persistence.
-- Hopefully fixed the path join on null error.
+### Updating
+r2modman will automatically download any available updates whilst you use it.
 
-## Regarding Auto Updating
-Updates in r2modman are now handled in the background. Leave the manager running for a minute or two, and you'll be notified that an update is ready to install.
+If an update has been downloaded, it will be installed once you have closed the application.
 
-## Problem?
-Mention me on Discord via the Thunderstore server. @Ebkr#3660.
+## Help
+### Manager errors:
+1. Check the [wiki](https://github.com/ebkr/r2modmanPlus/wiki).
+2. If you can't find the solution, join the [modding discord server]() and ask for help in the **#tech-support** channel.
 
-You could also [view the wiki](https://github.com/ebkr/r2modmanPlus/wiki) for any common errors.
+### Mod errors:
+1. Join the [modding discord server]() and ask for help in the **#tech-support** channel.
 
-If I'm not free, there's a high chance that someone else will be readily available to help!
+## Feedback and suggestions
+Feedback can help r2modman become the best mod manager for Risk of Rain 2.
+It's encouraged to provide as much feedback as you'd like, and fully open to criticism.
+
+Suggestions are welcome and there are already some suggestions that have made it in to the manager!
+From small features such as always-expanded cards, all the way to larger features such as code-based profile exports.
+
+The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Screenshots
 
@@ -70,3 +92,6 @@ Config editor
 Profiles
 
 ![](https://i.imgur.com/HtWQIWZ.png)
+
+
+

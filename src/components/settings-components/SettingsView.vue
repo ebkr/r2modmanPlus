@@ -51,8 +51,6 @@
     import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
     import R2Error from '../../model/errors/R2Error';
     import PathResolver from '../../r2mm/manager/PathResolver';
-    import * as fs from 'fs-extra';
-    import * as path from 'path';
     import Profile from '../../model/Profile';
     import LogOutput from '../../r2mm/data/LogOutput';
     import VersionNumber from '../../model/VersionNumber';
