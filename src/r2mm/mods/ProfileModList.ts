@@ -218,4 +218,8 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
+    public static getDisabledModCount(modList: ManifestV2[]): number {
+        return modList.filter(value => !value.isEnabled()).length;
+    }
+
 }

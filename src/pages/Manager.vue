@@ -993,6 +993,34 @@
 		    this.view = 'installed';
         }
 
+        setAllModsEnabled(enabled: boolean) {
+            this.localModList.forEach((mod: ManifestV2) => {
+                let profileErr: R2Error | void;
+                if (enabled) {
+                    profileErr = ProfileInstaller.enableMod(mod);
+                } else {
+                    profileErr = ProfileInstaller.disableMod(mod);
+                }
+                if (profileErr instanceof R2Error) {
+                    this.showError(profileErr);
+                    return;
+                }
+                const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                    if (enabled) {
+                        updatingMod.enable();
+                    } else {
+                        updatingMod.disable();
+                    }
+                });
+                if (update instanceof R2Error) {
+                    this.showError(update);
+                    return;
+                }
+                this.$store.dispatch("updateModList", update);
+            });
+            this.view = 'installed';
+        }
+
         handleSettingsCallbacks(invokedSetting: any) {
 		    switch(invokedSetting) {
 		        case "BrowseDataFolder":
@@ -1043,15 +1071,20 @@
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.expandedCards);
                     break;
+                case "EnableAll":
+                    this.setAllModsEnabled(true);
+                    break;
+                case "DisableAll":
+                    this.setAllModsEnabled(false);
+                    break;
             }
         }
 
 		created() {
-            // ipcRenderer.on("update-local-mod-list", this.onUpdateModList);
 			this.launchParametersModel = this.settings.launchParameters;
 			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
-				this.$store.dispatch("updateModList",newModList);
+				this.$store.dispatch("updateModList", newModList);
 				// this.localModList = newModList;
 			} else {
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
