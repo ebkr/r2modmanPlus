@@ -1,7 +1,8 @@
 # r2modman
 
-![Discord](https://img.shields.io/discord/727304496522461185?label=r2modman%20Discord&style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)
+<a href="https://discord.gg/jE2zWHY"><img alt="Discord" src="https://img.shields.io/discord/727304496522461185?label=r2modman%20Discord&style=for-the-badge"/></a>
+
+![[GitHub]https://github.com/ebkr/r2modmanPlus](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)
 
 | [Features](#features) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Changelog](#changelog) | [Screenshots](#screenshots) |
 |---|---|---|---|---|---|---|
