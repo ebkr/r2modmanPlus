@@ -54,6 +54,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.24
+- Fixed profile importing from 3.0.23 change
+
 ### 3.0.23
 - Updating a mod now shows the version you currently have installed.
 - Mod cards no longer expand if not previously opened when searching.
