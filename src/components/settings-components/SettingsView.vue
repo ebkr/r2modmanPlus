@@ -56,6 +56,8 @@
     import VersionNumber from '../../model/VersionNumber';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
     import { Hero } from '../all';
+    import ProfileModList from '../../r2mm/mods/ProfileModList';
+    import ManifestV2 from '../../model/ManifestV2';
 
     @Component({
         components: {
@@ -71,6 +73,10 @@
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
+
+        get localModList(): ManifestV2[] {
+            return this.$store.state.list;
+        }
 
         private settingsList = [
             new SettingsRow(
@@ -174,6 +180,22 @@
                 () => `Current profile: ${Profile.getActiveProfile().getProfileName()}`,
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')
+            ),
+            new SettingsRow(
+                'Profile',
+                'Enable all mods',
+                'Enable all mods for the current profile',
+                () => `${this.localModList.length - ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} enabled`,
+                'fa-file-import',
+                () => this.emitInvoke('EnableAll')
+            ),
+            new SettingsRow(
+                'Profile',
+                'Disable all mods',
+                'Disable all mods for the current profile',
+                () => `${ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} disabled`,
+                'fa-file-import',
+                () => this.emitInvoke('DisableAll')
             ),
             new SettingsRow(
                 'Profile',
