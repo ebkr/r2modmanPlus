@@ -1,9 +1,9 @@
 # r2modman
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ebkr/r2modmanPlus?color=teal&style=for-the-badge)
+![Discord](https://img.shields.io/discord/727304496522461185?label=r2modman%20Discord&style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)
 
-| [Features](#features) | [Changelog](#changelog) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Screenshots](#screenshots) |
+| [Features](#features) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Changelog](#changelog) | [Screenshots](#screenshots) |
 |---|---|---|---|---|---|---|
 
 ## Features
@@ -16,25 +16,6 @@
 - Edit configs directly from the manager.
 - Manager auto-updates.
 - And more!
-
-
-## Changelog
-### Upcoming
-- Updating a mod now shows the version you currently have installed.
-- Mod cards no longer expand if not previously opened when searching.
-- Profiles can now be renamed.
-- Backend library updates and code cleanup.
-
-### 3.0.22
-- Fixed a bug where download progress would appear to freeze at 100%.
-
-### 3.0.21
-- Settings screen overhaul.
-- NSIS fix for most, if not all, installation aborted errors (thanks to iDeathHD).
-- Local mod installs using ManifestV2.
-- LogOutput.log can now be copied to clipboard.
-- (Debug) Downloads can now skip reading from the cache.
-- General fixes.
 
 ## What is a mod manager?
 It's quite simple really, a mod manager is an application to make it easier to control which mods you have installed.
@@ -70,6 +51,26 @@ Suggestions are welcome and there are already some suggestions that have made it
 From small features such as always-expanded cards, all the way to larger features such as code-based profile exports.
 
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
+
+## Changelog
+### 3.0.23
+- Updating a mod now shows the version you currently have installed.
+- Mod cards no longer expand if not previously opened when searching.
+- Profiles can now be renamed.
+- Backend library updates and code cleanup.
+- Re-added enable/disable all settings.
+- Changed code export host.
+
+### 3.0.22
+- Fixed a bug where download progress would appear to freeze at 100%.
+
+### 3.0.21
+- Settings screen overhaul.
+- NSIS fix for most, if not all, installation aborted errors (thanks to iDeathHD).
+- Local mod installs using ManifestV2.
+- LogOutput.log can now be copied to clipboard.
+- (Debug) Downloads can now skip reading from the cache.
+- General fixes.
 
 ## Screenshots
 
