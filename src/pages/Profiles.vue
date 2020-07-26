@@ -416,7 +416,7 @@ export default class Profiles extends Vue {
     }
 
     importProfileUsingCode() {
-        Axios.get(`https://hastebin-plus.herokuapp.com/raw/${this.profileImportCode}`)
+        Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
             .then(resp => resp.data)
             .then(resp => {
                 if (resp.startsWith("#r2modman")) {
