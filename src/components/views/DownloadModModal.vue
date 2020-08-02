@@ -116,8 +116,6 @@
         getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
-                console.log(this.thunderstoreMod);
-                console.log(this.thunderstoreMod.getVersionNumber().toString());
                 this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
