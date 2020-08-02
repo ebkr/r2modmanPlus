@@ -92,15 +92,20 @@
                 :darkTheme="settings.darkTheme"
                 :expandedByDefault="settings.expandedCards">
                 <template v-slot:title>
-										<span v-if="key.enabled" class='selectable'>
-											{{key.getDisplayName()}} by {{key.getAuthorName()}}
-										</span>
-                    <span v-else class='has-tooltip-left'
-                          data-tooltip='This mod will not be used in-game'>
-											<span class="tag is-warning">Disabled</span>&nbsp;
-											<strike
-                                                class='selectable'>{{key.getDisplayName()}} by {{key.getAuthorName()}}</strike>
-										</span>
+                    <span :class="['selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
+                        <span v-if="key.isDeprecated()" class="tag is-danger">
+                            Deprecated
+                        </span>&nbsp;
+                        <span v-if="!key.isEnabled()" class="tag is-warning">
+                            Disabled
+                        </span>&nbsp;
+                        <template v-if="key.isEnabled()">
+                            {{key.getDisplayName()}} by {{key.getAuthorName()}}
+                        </template>
+                        <template v-else>
+                            <strike class='selectable'>{{key.getDisplayName()}} by {{key.getAuthorName()}}</strike>
+                        </template>
+                    </span>
                 </template>
                 <template v-slot:other-icons>
                     <!-- Show update and missing dependency icons -->
@@ -157,8 +162,8 @@
     import Profile from '../../model/Profile';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import DownloadModModal from './DownloadModModal.vue';
-    import { IpcRenderer, ipcRenderer, IpcRendererEvent } from 'electron';
     import { ExpandableCard, Link, Modal } from '../all';
+    import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
 
     @Component({
         components: {
@@ -434,6 +439,10 @@
                 return;
             }
             this.manifestModAsThunderstoreMod = mod;
+        }
+
+        getTooltipText(mod: ManifestV2) {
+            return ModListTooltipManager.getTooltipText(mod);
         }
 
         created() {
