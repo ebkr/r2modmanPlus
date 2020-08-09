@@ -77,11 +77,15 @@
         @Prop()
         pagedModList!: ThunderstoreMod[];
 
+        get thunderstorePackages(): ThunderstoreMod[] {
+            return this.$store.state.thunderstoreModList;
+        }
+
         private settings: ManagerSettings = ManagerSettings.getSingleton();
         private modToDownload: ThunderstoreMod | null = null;
 
         get localModList(): ManifestV2[] {
-            return this.$store.state.list;
+            return this.$store.state.localModList;
         }
 
         isModDeprecated(key: any) {
@@ -98,7 +102,7 @@
 
         isModDependencyDeprecated(mod: ThunderstoreMod): boolean {
             let shouldStrikethrough = false;
-            ThunderstorePackages.PACKAGES.forEach((tsMod: ThunderstoreMod) => {
+            this.thunderstorePackages.forEach((tsMod: ThunderstoreMod) => {
                 if (!shouldStrikethrough) {
                     mod.getDependencies().forEach((dependency: string) => {
                         if (dependency.startsWith(tsMod.getFullName())) {

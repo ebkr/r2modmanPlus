@@ -179,7 +179,11 @@
         private searchQuery: string = '';
 
         get modifiableModList(): ManifestV2[] {
-            return this.$store.state.list;
+            return this.$store.state.localModList;
+        }
+
+        get thunderstorePackages(): ThunderstoreMod[] {
+            return this.$store.state.thunderstoreModList;
         }
 
         private searchableModList: ManifestV2[] = [];
@@ -228,7 +232,7 @@
 
         isLatest(vueMod: any): boolean {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, ThunderstorePackages.PACKAGES);
+            const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, this.thunderstorePackages);
             if (latestVersion instanceof ThunderstoreVersion) {
                 return mod.getVersionNumber()
                     .isEqualTo(latestVersion.getVersionNumber());
@@ -415,7 +419,7 @@
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             const mod = ModBridge.getThunderstoreModFromMod(
                 this.selectedManifestMod,
-                ThunderstorePackages.PACKAGES
+                this.thunderstorePackages
             );
             if (mod instanceof ThunderstoreMod) {
                 this.manifestModAsThunderstoreMod = mod;
@@ -425,7 +429,7 @@
         }
 
         downloadDependency(missingDependency: string) {
-            const mod: ThunderstoreMod | undefined = ThunderstorePackages.PACKAGES.find(
+            const mod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
                 (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase())
             );
             if (mod === undefined) {

@@ -112,6 +112,10 @@
         @Prop()
         showDownloadModal: boolean = false;
 
+        get thunderstorePackages(): ThunderstoreMod[] {
+            return this.$store.state.thunderstoreModList;
+        }
+
         @Watch('thunderstoreMod')
         getModVersions() {
             this.currentVersion = null;
@@ -157,7 +161,7 @@
                 assignId: assignId
             };
             this.downloadingMod = true;
-            BetterThunderstoreDownloader.download(tsMod, tsVersion, ThunderstorePackages.PACKAGES, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
                         this.downloadingMod = false;
