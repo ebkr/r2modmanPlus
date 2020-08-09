@@ -505,7 +505,6 @@
 	})
 	export default class Manager extends Vue {
 		view: string = 'installed';
-		thunderstoreModList: ThunderstoreMod[] = [];
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
@@ -557,6 +556,15 @@
 			this.filterThunderstoreModList();
 		}
 
+		get thunderstoreModList() {
+            return this.$store.state.thunderstoreModList;
+        }
+
+        @Watch("thunderstoreModList")
+        thunderstoreModListUpdate() {
+		    this.sortThunderstoreModList();
+        }
+
 		filterThunderstoreModList() {
 			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
@@ -600,7 +608,7 @@
 
 
 		get localModList() : ManifestV2[] {
-			return this.$store.state.list;
+			return this.$store.state.localModList;
 		}
 
 		updatePageNumber(page: number) {
@@ -981,7 +989,7 @@
                     this.showError(updatedModListResult);
                     return;
                 }
-				this.$store.dispatch("updateModList",updatedModListResult);
+				this.$store.dispatch("updateModList", updatedModListResult);
 
                 this.filterLocalModList();
                 this.sortThunderstoreModList();
@@ -1089,7 +1097,6 @@
 			} else {
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
-			this.thunderstoreModList = ThunderstorePackages.PACKAGES;
 			this.filterLocalModList();
 			this.sortThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {

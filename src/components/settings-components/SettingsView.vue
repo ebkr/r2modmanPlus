@@ -58,6 +58,7 @@
     import { Hero } from '../all';
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import ManifestV2 from '../../model/ManifestV2';
+    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 
     @Component({
         components: {
@@ -73,9 +74,10 @@
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
+        private downloadingThunderstoreModList: boolean = false;
 
         get localModList(): ManifestV2[] {
-            return this.$store.state.list;
+            return this.$store.state.localModList;
         }
 
         private settingsList = [
@@ -246,13 +248,28 @@
             new SettingsRow(
                 'Other',
                 'Switch card display type',
-                'Switch between expanded or collapsed cards',
+                'Switch between expanded or collapsed cards.',
                 () => {
                     const settings = ManagerSettings.getSingleton();
                     return settings.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchCard')
+            ),
+            new SettingsRow(
+                'Other',
+                'Refresh online mod list',
+                'Check for any new mod releases.',
+                () => "",
+                'fa-exchange-alt',
+                () => {
+                    if (!this.downloadingThunderstoreModList) {
+                        this.downloadingThunderstoreModList = true;
+                        ThunderstorePackages.update()
+                            .then(_ => this.downloadingThunderstoreModList = false);
+                        this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                    }
+                }
             )
         ];
 
