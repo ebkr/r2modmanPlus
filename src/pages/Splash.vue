@@ -147,6 +147,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import ThemeManager from '../r2mm/manager/ThemeManager';
 import { Logger, LogSeverity } from '../r2mm/logging/Logger';
+import FolderMigration from '../migrations/FolderMigration';
 
 @Component({
     components: {
@@ -241,7 +242,7 @@ export default class Splash extends Vue {
         this.$router.push({path: '/profiles'});
     }
 
-    created() {
+    async created() {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
@@ -249,7 +250,11 @@ export default class Splash extends Vue {
             Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
-                this.checkForUpdates();
+                this.loadingText = 'Migrating mods (this may take a while)';
+                setTimeout(() => {
+                    FolderMigration.checkAndMigrate()
+                        .then(this.checkForUpdates);
+                }, 100);
             });
             ipcRenderer.send('get-is-portable');
         });

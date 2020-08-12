@@ -216,6 +216,7 @@ import * as yaml from 'yaml';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
+import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 
 let settings: ManagerSettings;
 
@@ -448,6 +449,8 @@ export default class Profiles extends Vue {
                 return;
             }
             read = result.toString();
+        } else if (files[0].endsWith(".json")) {
+            return this.importAlternativeManagerProfile(files[0]);
         }
         const parsedYaml = yaml.parse(read);
         const parsed: ExportFormat = new ExportFormat(
@@ -494,6 +497,32 @@ export default class Profiles extends Vue {
         });
     }
 
+    importAlternativeManagerProfile(file: string) {
+        try {
+            const fileString = fs.readFileSync(file).toString();
+            const jsonContent = JSON.parse(fileString);
+            const ror2Itf = jsonContent as Itf_RoR2MM;
+            if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
+                this.newProfile('Import', ror2Itf.name);
+                const itfPackages = ror2Itf.packages;
+                ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
+                    const packages = itfPackages.map(value => {
+                        console.log(`Converting ${value}`);
+                        return ExportMod.fromFullString(value);
+                    });
+                    this.importingProfile = true;
+                    setTimeout(() => {
+                        this.downloadImportedProfileMods(packages);
+                    }, 100);
+                });
+            }
+        } catch (e) {
+            const err = new R2Error("Failed to import profile", e.message, null);
+            this.showError(err);
+            return;
+        }
+    }
+
     importProfile() {
         ipcRenderer.once(
             'receive-selection',
@@ -504,7 +533,7 @@ export default class Profiles extends Vue {
         ipcRenderer.send('open-dialog', {
             title: 'Import Profile',
             properties: ['openFile'],
-            filters: ['.r2x', '.r2z'],
+            filters: ['.r2x', '.r2z', '.json'],
             buttonLabel: 'Import'
         });
     }
