@@ -17,6 +17,24 @@ export default class ExportMod {
         return exportFormat;
     }
 
+    public static fromFullString(modStr: string): ExportMod {
+        const name = modStr.match(new RegExp("(.+)-\\d+\\.\\d+\\.\\d+$"));
+        let resolvedName: string;
+        if (name !== null) {
+            resolvedName = name[1];
+        } else {
+            resolvedName = "";
+        }
+        const version = modStr.match(new RegExp("\\d+\\.\\d+\\.\\d+$"));
+        let resolvedVersion: VersionNumber;
+        if (version !== null) {
+            resolvedVersion = new VersionNumber(version[0]);
+        } else {
+            resolvedVersion = new VersionNumber("0.0.0");
+        }
+        return new ExportMod(resolvedName, resolvedVersion, true);
+    }
+
     public getName(): string {
         return this.name;
     }

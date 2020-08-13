@@ -9,10 +9,10 @@ import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import R2Error from 'src/model/errors/R2Error';
 import PathResolver from "../manager/PathResolver";
 
-const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
+const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
 
 export default class ModFromManifest {
-    
+
     public static get(modName: string, versionNumber: VersionNumber): Mod | R2Error {
         try {
             const buf: Buffer = fs.readFileSync(

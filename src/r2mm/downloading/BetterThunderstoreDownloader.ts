@@ -17,7 +17,7 @@ import ThunderstorePackages from '../data/ThunderstorePackages';
 import ExportMod from 'src/model/exports/ExportMod';
 import ManagerSettings from '../manager/ManagerSettings';
 
-const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
+const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
 
 export default class BetterThunderstoreDownloader {
 

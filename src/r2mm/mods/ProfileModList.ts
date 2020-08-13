@@ -130,7 +130,7 @@ export default class ProfileModList {
     }
 
     public static exportModListToFile(): R2Error | string {
-        const exportDirectory = path.join(PathResolver.ROOT, 'mods', 'exports');
+        const exportDirectory = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'exports');
         try {
             fs.ensureDirSync(exportDirectory);
         } catch(e) {
