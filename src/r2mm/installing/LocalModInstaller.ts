@@ -16,7 +16,7 @@ export default class LocalModInstaller {
         if (result !== null) {
             const fileContents = result.toString();
             try {
-                const parsed = JSON.parse(fileContents);
+                const parsed = JSON.parse(fileContents.trim());
                 const mod: R2Error | ManifestV2 = new ManifestV2().makeSafe(parsed);
                 if (mod instanceof R2Error) {
                     return mod;
