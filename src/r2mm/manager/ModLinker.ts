@@ -2,8 +2,8 @@ import R2Error from 'src/model/errors/R2Error';
 import Profile from 'src/model/Profile';
 import FileWriteError from 'src/model/errors/FileWriteError';
 
-import fs from 'fs-extra';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 import ManagerSettings from './ManagerSettings';
 import { Logger, LogSeverity } from '../logging/Logger';
 import GameDirectoryResolver from './GameDirectoryResolver';

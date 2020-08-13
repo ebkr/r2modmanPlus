@@ -478,11 +478,11 @@
 	import ModLinker from '../r2mm/manager/ModLinker';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
-	import fs from 'fs-extra';
+    import * as path from 'path';
+    import * as fs from 'fs-extra';
 	import { isNull, isUndefined } from 'util';
     import { clipboard, ipcRenderer, IpcRendererEvent } from 'electron';
 	import { spawn } from 'child_process';
-	import path from 'path';
     import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';

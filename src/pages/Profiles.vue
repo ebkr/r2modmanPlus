@@ -213,8 +213,8 @@ import PathResolver from '../r2mm/manager/PathResolver';
 import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
 
 import yaml from 'yaml';
-import fs from 'fs-extra';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 

@@ -1,7 +1,7 @@
 import GameDirectoryResolver from './GameDirectoryResolver';
 import R2Error from 'src/model/errors/R2Error';
-import fs from 'fs-extra';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import { spawnSync } from 'child_process';
 
 export default class PreloaderFixer {

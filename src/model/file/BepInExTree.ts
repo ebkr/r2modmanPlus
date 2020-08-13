@@ -1,7 +1,7 @@
 import R2Error from "../errors/R2Error";
 
-import fs from 'fs-extra';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 
 /**
  * The purpose of this class is to create a navigatable tree.

@@ -4,8 +4,8 @@ import VdfParseError from 'src/model/errors/Vdf/VdfParseError';
 
 import child from 'child_process';
 import vdf from '@node-steam/vdf';
-import fs from 'fs-extra';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 import { isUndefined } from 'util';
 import ManagerSettings from './ManagerSettings';
 
