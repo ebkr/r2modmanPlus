@@ -1,7 +1,7 @@
 import VersionNumber from "src/model/VersionNumber";
 
-import * as path from 'path';
 import * as yaml from 'yaml';
+import * as path from 'path';
 import * as fs from 'fs-extra';
 import Mod from 'src/model/Mod';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';

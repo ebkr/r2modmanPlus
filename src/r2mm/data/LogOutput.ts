@@ -1,11 +1,13 @@
-import * as fs from 'fs-extra';
 import Profile from '../../model/Profile';
-import path from "path";
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import Timeout = NodeJS.Timeout;
 
 export default class LogOutput {
 
     private _exists: boolean = false;
 
+    private static INTERVAL: Timeout | undefined;
     private static LOG_OUTPUT: LogOutput | undefined;
 
     public static getSingleton(): LogOutput {
@@ -15,11 +17,17 @@ export default class LogOutput {
         return this.LOG_OUTPUT;
     }
 
+    public static disconnect() {
+        if (this.INTERVAL !== undefined) {
+            clearInterval(this.INTERVAL);
+        }
+    }
+
     private constructor() {
         const profilePath = Profile.getActiveProfile().getPathOfProfile()
         this._exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
 
-        setInterval(() => {
+        LogOutput.INTERVAL = setInterval(() => {
             this.exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
         }, 1000);
     }

@@ -212,9 +212,9 @@ import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 import PathResolver from '../r2mm/manager/PathResolver';
 import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
 
-import * as yaml from 'yaml';
-import * as fs from 'fs-extra';
+import * as  yaml from 'yaml';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 
@@ -500,14 +500,13 @@ export default class Profiles extends Vue {
     importAlternativeManagerProfile(file: string) {
         try {
             const fileString = fs.readFileSync(file).toString();
-            const jsonContent = JSON.parse(fileString);
+            const jsonContent = JSON.parse(fileString.trim());
             const ror2Itf = jsonContent as Itf_RoR2MM;
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
                 this.newProfile('Import', ror2Itf.name);
                 const itfPackages = ror2Itf.packages;
                 ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
                     const packages = itfPackages.map(value => {
-                        console.log(`Converting ${value}`);
                         return ExportMod.fromFullString(value);
                     });
                     this.importingProfile = true;

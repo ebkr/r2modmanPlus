@@ -1,7 +1,6 @@
-import * as path from 'path';
-import * as process from 'process';
-import * as fs from 'fs-extra';
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import PathResolver from '../r2mm/manager/PathResolver';
 
 let activeProfile: Profile;
 

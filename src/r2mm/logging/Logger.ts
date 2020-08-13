@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 
 export class Logger {
@@ -15,7 +15,7 @@ export class Logger {
         fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), this.logList.join('\n'));
     }
 
-    
+
 }
 
 export enum LogSeverity {

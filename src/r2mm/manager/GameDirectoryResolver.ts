@@ -2,10 +2,10 @@ import R2Error from 'src/model/errors/R2Error';
 import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import VdfParseError from 'src/model/errors/Vdf/VdfParseError';
 
-import * as child from 'child_process';
-import * as vdf from '@node-steam/vdf';
-import * as fs from 'fs-extra';
+import child from 'child_process';
+import vdf from '@node-steam/vdf';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import { isUndefined } from 'util';
 import ManagerSettings from './ManagerSettings';
 

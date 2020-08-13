@@ -7,7 +7,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 import { ipcRenderer } from 'electron';
 import 'bulma/css/bulma.css';
 // import 'src/css/superhero.bulma.css';
@@ -36,5 +36,5 @@ export default class App extends Vue {
         ipcRenderer.send('get-assets-path');
     }
 
-} 
+}
 </script>

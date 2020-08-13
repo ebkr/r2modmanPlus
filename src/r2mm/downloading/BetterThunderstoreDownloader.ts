@@ -8,9 +8,8 @@ import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from 'src/model/errors/R2Error';
 import PathResolver from 'src/r2mm/manager/PathResolver';
-import fs from 'fs-extra';
-
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import FileWriteError from 'src/model/errors/FileWriteError';
 import Profile from 'src/model/Profile';
 import ThunderstorePackages from '../data/ThunderstorePackages';

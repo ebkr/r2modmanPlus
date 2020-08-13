@@ -92,8 +92,8 @@
 
 	import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
-	import * as fs from 'fs-extra';
-	import * as path from 'path';
+    import * as path from 'path';
+    import * as fs from 'fs-extra';
 	import BepInExTree from '../model/file/BepInExTree';
 	import R2Error from '../model/errors/R2Error';
 
