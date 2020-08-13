@@ -10,6 +10,8 @@ import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import * as path from 'path';
 import PathResolver from 'src/r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
+import ModBridge from '../r2mm/mods/ModBridge';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
@@ -85,7 +87,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setVersionNumber(version.getVersionNumber());
         this.setWebsiteUrl(mod.getPackageUrl());
         this.setGameVersion('0');
-        this.icon = path.join(PathResolver.ROOT, 'mods', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.icon = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         return this;
     }
 
@@ -107,7 +109,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         const versionNumber = reactive.versionNumber;
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
         this.setGameVersion(reactive.gameVersion);
-        this.icon = path.join(PathResolver.ROOT, 'mods', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.icon = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         if (!reactive.enabled) {
             this.disable();
         }
@@ -245,6 +247,11 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
     public isEnabled(): boolean {
         return this.enabled;
+    }
+
+    public isDeprecated(): boolean {
+        const tsMod = ModBridge.getThunderstoreModFromMod(this, ThunderstorePackages.PACKAGES);
+        return tsMod !== undefined ? tsMod.isDeprecated() : false;
     }
 
 }

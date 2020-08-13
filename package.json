@@ -18,10 +18,6 @@
     "dependencies": {
         "@node-steam/vdf": "^2.1.0",
         "@quasar/extras": "^1.4.2",
-        "@types/adm-zip": "^0.4.32",
-        "@types/fs-extra": "^9.0.1",
-        "@types/unzipper": "^0.10.1",
-        "@types/yaml": "^1.2.0",
         "adm-zip": "^0.4.14",
         "axios": "^0.18.1",
         "bulma": "^0.8.0",
@@ -40,6 +36,10 @@
         "yaml": "^1.7.2"
     },
     "devDependencies": {
+        "@types/adm-zip": "^0.4.32",
+        "@types/fs-extra": "^8.0.1",
+        "@types/unzipper": "^0.10.1",
+        "@types/yaml": "^1.2.0",
         "@quasar/app": "^1.5.2",
         "@quasar/quasar-app-extension-testing": "^1.0.0",
         "@quasar/quasar-app-extension-typescript": "^1.0.0-beta.2",

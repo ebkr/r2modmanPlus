@@ -16,12 +16,12 @@ export default class LocalModInstaller {
         if (result !== null) {
             const fileContents = result.toString();
             try {
-                const parsed = JSON.parse(fileContents);
+                const parsed = JSON.parse(fileContents.trim());
                 const mod: R2Error | ManifestV2 = new ManifestV2().makeSafe(parsed);
                 if (mod instanceof R2Error) {
                     return mod;
                 }
-                const cacheDirectory: string = path.join(PathResolver.ROOT, 'mods', 'cache');
+                const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
                 ZipExtract.extractOnly(
                     zipFile,
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),

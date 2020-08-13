@@ -147,6 +147,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import ThemeManager from '../r2mm/manager/ThemeManager';
 import { Logger, LogSeverity } from '../r2mm/logging/Logger';
+import FolderMigration from '../migrations/FolderMigration';
 
 @Component({
     components: {
@@ -196,6 +197,7 @@ export default class Splash extends Vue {
             response.data.split('\n').forEach((exclude: string) => {
                 this.exclusionMap.set(exclude, true);
             });
+            ThunderstorePackages.EXCLUSIONS = this.exclusionMap;
         }).finally(() => {
             this.getThunderstoreMods(0);
         })
@@ -215,16 +217,10 @@ export default class Splash extends Vue {
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
             }
         }).then(response => {
-            let tsMods: ThunderstoreMod[] = [];
-            response.data.forEach((mod: any) => {
-                let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
-                if (!this.exclusionMap.has(tsMod.getFullName())) {
-                    tsMods.push(tsMod.parseFromThunderstoreData(mod));
-                }
-            })
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
-            ThunderstorePackages.PACKAGES = tsMods;
+            ThunderstorePackages.handlePackageApiResponse(response);
+            this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
             this.$router.push({path: '/profiles'});
         }).catch((e_)=>{
             this.isOffline = true;
@@ -246,7 +242,7 @@ export default class Splash extends Vue {
         this.$router.push({path: '/profiles'});
     }
 
-    created() {
+    async created() {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
             PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.ROOT);
@@ -254,7 +250,11 @@ export default class Splash extends Vue {
             Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
-                this.checkForUpdates();
+                this.loadingText = 'Migrating mods (this may take a while)';
+                setTimeout(() => {
+                    FolderMigration.checkAndMigrate()
+                        .then(this.checkForUpdates);
+                }, 100);
             });
             ipcRenderer.send('get-is-portable');
         });

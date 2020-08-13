@@ -1,35 +1,37 @@
 <template>
   <div>
     <!-- Create modal -->
-    <div :class="['modal', {'is-active':(addingProfile !== false)}]">
+    <div :class="['modal', {'is-active':(addingProfile !== false || renamingProfile !== false)}]">
       <div class="modal-background" @click="closeNewProfileModal()"></div>
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{addingProfileType}} a new profile</p>
+            <p class="card-header-title">{{addingProfileType}} a profile</p>
           </header>
           <div class="card-content">
             <p>This profile will store its own mods independently from other profiles.</p>
-            <br />
+            <br/>
             <input class="input" v-model="newProfileName" />
-            <br />
-            <br />
-            <span
-              class="tag is-dark"
-              v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''"
-            >Profile name required</span>
-            <span
-              class="tag is-success"
-              v-else-if="!doesProfileExist(newProfileName)"
-            >"{{makeProfileNameSafe(newProfileName)}}" is available</span>
-            <span
-              class="tag is-danger"
-              v-else-if="doesProfileExist(newProfileName)"
-            >"{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters</span>
+            <br/><br/>
+            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
+                Profile name required
+            </span>
+            <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
+                "{{makeProfileNameSafe(newProfileName)}}" is available
+            </span>
+            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
+                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+            </span>
           </div>
           <div class="card-footer">
-            <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-            <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+              <template v-if="addingProfile">
+                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
+                  <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+              </template>
+              <template v-if="renamingProfile">
+                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
+                  <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+              </template>
           </div>
         </div>
       </div>
@@ -44,14 +46,10 @@
             <p class="card-header-title">How are you importing a profile?</p>
           </header>
           <div class="card-footer">
-            <button
-              class="button is-info"
-              @click="importProfile(); showImportModal = false;"
-            >From file</button>
-            <button
-              class="button is-primary"
-              @click="profileImportCode = ''; showImportModal = false; showCodeModal = true;"
-            >From code</button>
+            <button class="button is-info"
+              @click="importProfile(); showImportModal = false;">From file</button>
+            <button class="button is-primary"
+              @click="profileImportCode = ''; showImportModal = false; showCodeModal = true;">From code</button>
           </div>
         </div>
       </div>
@@ -159,22 +157,28 @@
                   </a>
                 </div>
               </div>
-              <nav class="level">
-                <div class="level-item">
-                  <a class="button is-info" @click="setProfileAndContinue()">Use selected profile</a>
+                <div class="container">
+                  <nav class="level">
+                    <div class="level-item">
+                      <a class="button is-info" @click="setProfileAndContinue()">Select profile</a>
+                    </div>
+                      <div class="level-item">
+                          <a class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
+                          <a class="button" @click="renameProfile()" v-else>Rename</a>
+                      </div>
+                    <div class="level-item">
+                      <a class="button" @click="newProfile('Create', undefined)">Create new</a>
+                    </div>
+                    <div class="level-item">
+                      <!-- <a class='button' @click="importProfile()">Import profile</a> -->
+                      <a class="button" @click="showImportModal = true">Import</a>
+                    </div>
+                    <div class="level-item">
+                      <a class="button is-danger" @click="removeProfile()">Delete</a>
+                    </div>
+                  </nav>
                 </div>
-                <div class="level-item">
-                  <a class="button" @click="newProfile('Create')">Create new</a>
                 </div>
-                <div class="level-item">
-                  <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                  <a class="button" @click="showImportModal = true">Import profile</a>
-                </div>
-                <div class="level-item">
-                  <a class="button is-danger" @click="removeProfile()">Delete selected profile</a>
-                </div>
-              </nav>
-            </div>
           </article>
         </div>
       </div>
@@ -186,7 +190,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
-import { Prop } from 'vue-property-decorator';
 import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
 import { ipcRenderer } from 'electron';
@@ -213,6 +216,7 @@ import yaml from 'yaml';
 import fs from 'fs-extra';
 import path from 'path';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
+import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 
 let settings: ManagerSettings;
 
@@ -238,6 +242,8 @@ export default class Profiles extends Vue {
     private showImportModal: boolean = false;
     private showCodeModal: boolean = false;
     private profileImportCode: string = '';
+
+    private renamingProfile: boolean = false;
 
     errorMessage: string = '';
     errorStack: string = '';
@@ -267,6 +273,21 @@ export default class Profiles extends Vue {
         );
     }
 
+    renameProfile() {
+        this.newProfileName = this.selectedProfile;
+        this.addingProfileType = "Rename";
+        this.renamingProfile = true;
+    }
+
+    performRename(newName: string) {
+        fs.renameSync(
+            path.join(Profile.getDirectory(), this.selectedProfile),
+            path.join(Profile.getDirectory(), newName)
+        );
+        this.closeNewProfileModal();
+        this.updateProfileList();
+    }
+
     selectProfile(profile: string) {
         new Profile(profile);
         this.selectedProfile = profile;
@@ -293,7 +314,10 @@ export default class Profiles extends Vue {
 
     closeNewProfileModal() {
         this.addingProfile = false;
-        ipcRenderer.emit('created-profile', '');
+        this.renamingProfile = false;
+        if (this.addingProfile) {
+            ipcRenderer.emit('created-profile', '');
+        }
     }
 
     removeProfile() {
@@ -393,7 +417,7 @@ export default class Profiles extends Vue {
     }
 
     importProfileUsingCode() {
-        Axios.get(`https://hastebin-plus.herokuapp.com/raw/${this.profileImportCode}`)
+        Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
             .then(resp => resp.data)
             .then(resp => {
                 if (resp.startsWith("#r2modman")) {
@@ -425,7 +449,8 @@ export default class Profiles extends Vue {
                 return;
             }
             read = result.toString();
-            // Read export.r2x.
+        } else if (files[0].endsWith(".json")) {
+            return this.importAlternativeManagerProfile(files[0]);
         }
         const parsedYaml = yaml.parse(read);
         const parsed: ExportFormat = new ExportFormat(
@@ -442,7 +467,7 @@ export default class Profiles extends Vue {
             })
         );
         this.newProfile('Import', parsed.getProfileName());
-        ipcRenderer.once('created-profile', (profileName: string) => {
+        ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
             if (profileName !== '') {
                 if (files[0].endsWith('.r2z')) {
                     const zip = new AdmZip(files[0]);
@@ -472,7 +497,33 @@ export default class Profiles extends Vue {
         });
     }
 
-    importProfile(file: string) {
+    importAlternativeManagerProfile(file: string) {
+        try {
+            const fileString = fs.readFileSync(file).toString();
+            const jsonContent = JSON.parse(fileString);
+            const ror2Itf = jsonContent as Itf_RoR2MM;
+            if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
+                this.newProfile('Import', ror2Itf.name);
+                const itfPackages = ror2Itf.packages;
+                ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
+                    const packages = itfPackages.map(value => {
+                        console.log(`Converting ${value}`);
+                        return ExportMod.fromFullString(value);
+                    });
+                    this.importingProfile = true;
+                    setTimeout(() => {
+                        this.downloadImportedProfileMods(packages);
+                    }, 100);
+                });
+            }
+        } catch (e) {
+            const err = new R2Error("Failed to import profile", e.message, null);
+            this.showError(err);
+            return;
+        }
+    }
+
+    importProfile() {
         ipcRenderer.once(
             'receive-selection',
             (_sender: any, files: string[] | null) => {
@@ -482,7 +533,7 @@ export default class Profiles extends Vue {
         ipcRenderer.send('open-dialog', {
             title: 'Import Profile',
             properties: ['openFile'],
-            filters: ['.r2x', '.r2z'],
+            filters: ['.r2x', '.r2z', '.json'],
             buttonLabel: 'Import'
         });
     }
@@ -499,6 +550,20 @@ export default class Profiles extends Vue {
         } else {
             // (mod failed to be placed in /{profile} directory)
             return installError;
+        }
+    }
+
+    updateProfileList() {
+        try {
+            this.profileList = ["Default"];
+            const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
+            fs.readdirSync(profilesDirectory).forEach((file: string) => {
+                if (fs.lstatSync(path.join(profilesDirectory, file)).isDirectory() && file.toLowerCase() !== 'default') {
+                    this.profileList.push(file);
+                }
+            });
+        } catch (e) {
+            return;
         }
     }
 
@@ -523,22 +588,7 @@ export default class Profiles extends Vue {
             }
         }
 
-        // Read profiles
-        try {
-            const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
-            fs.readdirSync(profilesDirectory).forEach((file: string) => {
-                if (
-                    fs
-                        .lstatSync(path.join(profilesDirectory, file))
-                        .isDirectory() &&
-                    file.toLowerCase() !== 'default'
-                ) {
-                    this.profileList.push(file);
-                }
-            });
-        } catch (e) {
-            return;
-        }
+        this.updateProfileList();
     }
 }
 </script>

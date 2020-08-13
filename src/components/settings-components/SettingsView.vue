@@ -1,36 +1,49 @@
 <template>
-    <div class="margin-right">
-        <div class="tabs">
-            <ul>
-                <li v-for="(key, index) in tabs" :key="`tab-${key}`"
-                    :class="[{'is-active': activeTab === key}]"
-                    @click="changeTab(key)">
-                    <a>{{key}}</a>
-                </li>
-            </ul>
+    <div>
+        <div class='sticky-top sticky-top--search border-at-bottom'>
+            <div class='card is-shadowless'>
+                <div class='card-header-title'>
+                    <span class="non-selectable">Search:&nbsp;&nbsp;</span>
+                    <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
+                </div>
+            </div>
         </div>
-        <template v-if="activeTab === 'All'">
-                <SettingsItem v-for="(key, index) in settingsList" :key="`setting-${key.action}`"
-                    :action="key.action"
-                    :description="key.description"
-                    :value="key.value()"
-                    :icon="key.icon"
-                    @click="key.clickAction()"/>
-        </template>
-        <template v-else>
-            <SettingsItem v-for="(key, index) in getFilteredSettings()" :key="`setting-${key.action}`"
-                          :action="key.action"
-                          :description="key.description"
-                          :value="key.value()"
-                          :icon="key.icon"
-                          @click="key.clickAction()"/>
-        </template>
+        <Hero title='Settings'
+              :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
+              heroType='is-info'/>
+        <div class="margin-right">
+            <div class="tabs">
+                <ul>
+                    <li v-for="(key, index) in tabs" :key="`tab-${key}`"
+                        :class="[{'is-active': activeTab === key}]"
+                        @click="changeTab(key)">
+                        <a>{{key}}</a>
+                    </li>
+                </ul>
+            </div>
+            <template v-if="activeTab === 'All'">
+                <SettingsItem v-for="(key, index) in searchableSettings" :key="`setting-${key.action}`"
+                              :action="key.action"
+                              :description="key.description"
+                              :value="key.value()"
+                              :icon="key.icon"
+                              @click="key.clickAction()"/>
+            </template>
+            <template v-else>
+                <SettingsItem v-for="(key, index) in getFilteredSettings()" :key="`setting-${key.action}`"
+                              :action="key.action"
+                              :description="key.description"
+                              :value="key.value()"
+                              :icon="key.icon"
+                              @click="key.clickAction()"/>
+            </template>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 
-    import { Vue } from 'vue-property-decorator';
+    import { Vue, Watch } from 'vue-property-decorator';
     import Component from 'vue-class-component';
     import SettingsItem from './SettingsItem.vue';
     import SettingsRow from '../../model/settings/SettingsRow';
@@ -40,19 +53,32 @@
     import PathResolver from '../../r2mm/manager/PathResolver';
     import Profile from '../../model/Profile';
     import LogOutput from '../../r2mm/data/LogOutput';
+    import VersionNumber from '../../model/VersionNumber';
+    import ManagerInformation from '../../_managerinf/ManagerInformation';
+    import { Hero } from '../all';
+    import ProfileModList from '../../r2mm/mods/ProfileModList';
+    import ManifestV2 from '../../model/ManifestV2';
+    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 
     @Component({
         components: {
-            SettingsItem
+            SettingsItem,
+            Hero
         }
     })
     export default class SettingsView extends Vue {
 
         private activeTab: string = 'All';
-
-        private tabs = ["All", "Profile", "Locations", "Debugging", "Other"];
-
+        private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Other'];
         private logOutput: LogOutput = LogOutput.getSingleton();
+        private search: string = '';
+        private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
+        private searchableSettings: SettingsRow[] = [];
+        private downloadingThunderstoreModList: boolean = false;
+
+        get localModList(): ManifestV2[] {
+            return this.$store.state.localModList;
+        }
 
         private settingsList = [
             new SettingsRow(
@@ -62,7 +88,7 @@
                 () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
-                    this.emitInvoke("BrowseDataFolder");
+                    this.emitInvoke('BrowseDataFolder');
                 }
             ),
             new SettingsRow(
@@ -72,12 +98,12 @@
                 () => {
                     const directory = GameDirectoryResolver.getDirectory();
                     if (directory instanceof R2Error) {
-                        return "Please set manually";
+                        return 'Please set manually';
                     }
                     return directory;
                 },
                 'fa-folder-open',
-                () => this.emitInvoke("ChangeGameDirectory")
+                () => this.emitInvoke('ChangeGameDirectory')
             ),
             new SettingsRow(
                 'Locations',
@@ -86,12 +112,12 @@
                 () => {
                     const directory = GameDirectoryResolver.getSteamDirectory();
                     if (directory instanceof R2Error) {
-                        return "Please set manually";
+                        return 'Please set manually';
                     }
                     return directory;
                 },
                 'fa-folder-open',
-                () => this.emitInvoke("ChangeSteamDirectory")
+                () => this.emitInvoke('ChangeSteamDirectory')
             ),
             new SettingsRow(
                 'Locations',
@@ -101,7 +127,7 @@
                     return Profile.getActiveProfile().getPathOfProfile();
                 },
                 'fa-door-open',
-                () => this.emitInvoke("BrowseProfileFolder")
+                () => this.emitInvoke('BrowseProfileFolder')
             ),
             new SettingsRow(
                 'Debugging',
@@ -109,7 +135,7 @@
                 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
                 this.doesLogOutputExist,
                 'fa-clipboard',
-                () => this.emitInvoke("CopyLogToClipboard")
+                () => this.emitInvoke('CopyLogToClipboard')
             ),
             new SettingsRow(
                 'Debugging',
@@ -120,7 +146,7 @@
                     return settings.legacyInstallMode ? 'Current: legacy (no config editor)' : 'Current: symlink (preferred)';
                 },
                 'fa-exchange-alt',
-                () => this.emitInvoke("SwitchModInstallMode")
+                () => this.emitInvoke('SwitchModInstallMode')
             ),
             new SettingsRow(
                 'Debugging',
@@ -131,7 +157,7 @@
                     return settings.ignoreCache ? 'Current: cache is disabled' : 'Current: cache is enabled (recommended)';
                 },
                 'fa-exchange-alt',
-                () => this.emitInvoke("ToggleDownloadCache")
+                () => this.emitInvoke('ToggleDownloadCache')
             ),
             new SettingsRow(
                 'Debugging',
@@ -139,7 +165,7 @@
                 'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
                 () => 'This will delete the Risk of Rain 2/Managed folder, and verify the files through Steam',
                 'fa-wrench',
-                () => this.emitInvoke("RunPreloaderFix")
+                () => this.emitInvoke('RunPreloaderFix')
             ),
             new SettingsRow(
                 'Debugging',
@@ -147,7 +173,7 @@
                 'Provide custom arguments used to start the game.',
                 () => 'These commands are used against the Steam.exe on game startup',
                 'fa-wrench',
-                () => this.emitInvoke("SetLaunchParameters")
+                () => this.emitInvoke('SetLaunchParameters')
             ),
             new SettingsRow(
                 'Profile',
@@ -155,7 +181,23 @@
                 'Change the mod profile.',
                 () => `Current profile: ${Profile.getActiveProfile().getProfileName()}`,
                 'fa-file-import',
-                () => this.emitInvoke("ChangeProfile")
+                () => this.emitInvoke('ChangeProfile')
+            ),
+            new SettingsRow(
+                'Profile',
+                'Enable all mods',
+                'Enable all mods for the current profile',
+                () => `${this.localModList.length - ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} enabled`,
+                'fa-file-import',
+                () => this.emitInvoke('EnableAll')
+            ),
+            new SettingsRow(
+                'Profile',
+                'Disable all mods',
+                'Disable all mods for the current profile',
+                () => `${ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} disabled`,
+                'fa-file-import',
+                () => this.emitInvoke('DisableAll')
             ),
             new SettingsRow(
                 'Profile',
@@ -163,7 +205,7 @@
                 'Install a mod offline from your files.',
                 () => 'Not all mods can be installed locally',
                 'fa-file-import',
-                () => this.emitInvoke("ImportLocalMod")
+                () => this.emitInvoke('ImportLocalMod')
             ),
             new SettingsRow(
                 'Profile',
@@ -171,7 +213,7 @@
                 'Export your mod list and configs as a file.',
                 () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
-                () => this.emitInvoke("ExportFile")
+                () => this.emitInvoke('ExportFile')
             ),
             new SettingsRow(
                 'Profile',
@@ -179,7 +221,7 @@
                 'Export your mod list and configs as a code.',
                 () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
-                () => this.emitInvoke("ExportCode")
+                () => this.emitInvoke('ExportCode')
             ),
             new SettingsRow(
                 'Other',
@@ -190,7 +232,7 @@
                     return settings.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
                 },
                 'fa-exchange-alt',
-                () => this.emitInvoke("ToggleFunkyMode")
+                () => this.emitInvoke('ToggleFunkyMode')
             ),
             new SettingsRow(
                 'Other',
@@ -201,28 +243,52 @@
                     return settings.darkTheme ? 'Current: dark theme' : 'Current: light theme (default)';
                 },
                 'fa-exchange-alt',
-                () => this.emitInvoke("SwitchTheme")
+                () => this.emitInvoke('SwitchTheme')
             ),
             new SettingsRow(
                 'Other',
                 'Switch card display type',
-                'Switch between expanded or collapsed cards',
+                'Switch between expanded or collapsed cards.',
                 () => {
                     const settings = ManagerSettings.getSingleton();
                     return settings.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
                 },
                 'fa-exchange-alt',
-                () => this.emitInvoke("SwitchCard")
+                () => this.emitInvoke('SwitchCard')
             ),
+            new SettingsRow(
+                'Other',
+                'Refresh online mod list',
+                'Check for any new mod releases.',
+                () => "",
+                'fa-exchange-alt',
+                () => {
+                    if (!this.downloadingThunderstoreModList) {
+                        this.downloadingThunderstoreModList = true;
+                        ThunderstorePackages.update()
+                            .then(_ => this.downloadingThunderstoreModList = false);
+                        this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                    }
+                }
+            )
         ];
 
+        @Watch('search')
+        onSearchChange() {
+            this.searchableSettings = this.settingsList
+                .filter(value =>
+                    value.action.toLowerCase().search(this.search.toLowerCase()) >= 0
+                    || value.description.toLowerCase().search(this.search.toLowerCase()) >= 0);
+        }
+
         getFilteredSettings(): Array<SettingsRow> {
-            return this.settingsList.filter(value => value.group.toLowerCase() === this.activeTab.toLowerCase())
-                .sort((a, b) => a.action.localeCompare(b.action))
+            return this.searchableSettings.filter(value => value.group.toLowerCase() === this.activeTab.toLowerCase())
+                .sort((a, b) => a.action.localeCompare(b.action));
         }
 
         created() {
             this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
+            this.searchableSettings = this.settingsList;
         }
 
         changeTab(tab: string) {
@@ -230,11 +296,11 @@
         }
 
         emitInvoke(invoked: string) {
-            this.$emit("setting-invoked", invoked);
+            this.$emit('setting-invoked', invoked);
         }
 
         doesLogOutputExist() {
-            return this.logOutput.exists ? "LogOutput.log exists" : "LogOutput.log does not exist";
+            return this.logOutput.exists ? 'LogOutput.log exists' : 'LogOutput.log does not exist';
         }
 
     }

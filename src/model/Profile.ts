@@ -29,7 +29,7 @@ export default class Profile {
     }
 
     public static getDirectory(): string {
-        return path.join(PathResolver.ROOT, 'mods', 'profiles');
+        return path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'profiles');
     }
 
     // Directory of profile (/mods/profiles/a_profile)

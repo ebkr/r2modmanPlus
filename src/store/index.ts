@@ -10,16 +10,36 @@ Vue.use(Vuex);
  * directly export the Store instantiation
  */
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
-    },
+export default function(/* { ssrContext } */) {
+    const Store = new Vuex.Store({
+        state: {
+            localModList: [],
+            thunderstoreModList: [],
+        },
+        actions: {
+            updateModList({ commit }, modList) {
+                commit('setLocalModList', modList);
+            },
+            updateThunderstoreModList({ commit }, modList) {
+                commit('setThunderstoreModList', modList);
+            }
+        },
+        mutations: {
+            setLocalModList(state, list) {
+                state.localModList = list;
+            },
+            setThunderstoreModList(state, list) {
+                state.thunderstoreModList = list;
+            }
+        },
+        modules: {
+            // example
+        },
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV === 'true',
-  });
+        // enable strict mode (adds overhead!)
+        // for dev mode only
+        strict: process.env.DEV === 'true'
+    });
 
-  return Store;
+    return Store;
 }

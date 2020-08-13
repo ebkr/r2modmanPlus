@@ -5,6 +5,8 @@ import { ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import ipcServer from 'node-ipc';
 
+app.allowRendererProcessReuse = true;
+
 /**
  * Set `__statics` path to static files in production;
  * The reason we are setting it here is that the path needs to be evaluated at runtime

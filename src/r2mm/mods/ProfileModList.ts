@@ -1,8 +1,8 @@
 import * as yaml from 'yaml';
 import Profile from 'src/model/Profile';
 
-import fs from 'fs-extra';
-import path from 'path';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import R2Error from 'src/model/errors/R2Error';
 import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
@@ -130,7 +130,7 @@ export default class ProfileModList {
     }
 
     public static exportModListToFile(): R2Error | string {
-        const exportDirectory = path.join(PathResolver.ROOT, 'mods', 'exports');
+        const exportDirectory = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'exports');
         try {
             fs.ensureDirSync(exportDirectory);
         } catch(e) {
@@ -167,7 +167,7 @@ export default class ProfileModList {
             return exportResult;
         } else {
             const profileBuffer = '#r2modman\n' + fs.readFileSync(exportResult).toString('base64');
-            Axios.post('https://hastebin-plus.herokuapp.com/documents', profileBuffer)
+            Axios.post('https://r2modman-hastebin.herokuapp.com/documents', profileBuffer)
                 .then(resp => callback(resp.data.key, null))
                 .catch(e => {
                     const err: Error = e;
@@ -216,6 +216,10 @@ export default class ProfileModList {
             return saveErr;
         }
         return this.getModList(Profile.getActiveProfile());
+    }
+
+    public static getDisabledModCount(modList: ManifestV2[]): number {
+        return modList.filter(value => !value.isEnabled()).length;
     }
 
 }
