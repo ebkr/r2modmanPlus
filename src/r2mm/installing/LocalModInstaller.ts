@@ -4,14 +4,16 @@ import ManifestV2 from '../../model/ManifestV2';
 import InvalidManifestError from '../../model/errors/Manifest/InvalidManifestError';
 import ProfileInstaller from './ProfileInstaller';
 import ZipExtract from './ZipExtract';
-import path from "path";
+import * as path from "path";
+import * as fs from "fs";
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 
 export default class LocalModInstaller {
 
     public static extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void {
-        const zip = new AdmZip(zipFile);
+        const zipFileBuffer = fs.readFileSync(zipFile);
+        const zip = new AdmZip(zipFileBuffer);
         const result: Buffer | null = zip.readFile('manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
