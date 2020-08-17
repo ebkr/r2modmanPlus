@@ -87,7 +87,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setVersionNumber(version.getVersionNumber());
         this.setWebsiteUrl(mod.getPackageUrl());
         this.setGameVersion('0');
-        this.icon = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         return this;
     }
 
@@ -109,7 +109,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         const versionNumber = reactive.versionNumber;
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
         this.setGameVersion(reactive.gameVersion);
-        this.icon = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         if (!reactive.enabled) {
             this.disable();
         }

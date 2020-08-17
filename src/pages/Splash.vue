@@ -250,11 +250,14 @@ export default class Splash extends Vue {
             Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
-                this.loadingText = 'Migrating mods (this may take a while)';
-                setTimeout(() => {
-                    FolderMigration.checkAndMigrate()
-                        .then(this.checkForUpdates);
-                }, 100);
+                // TODO: Re-enable folder migration
+                // this.loadingText = 'Migrating mods (this may take a while)';
+                // setTimeout(() => {
+                //     FolderMigration.checkAndMigrate()
+                //         .then(this.checkForUpdates);
+                // }, 100);
+                this.loadingText = 'Checking for updates';
+                setTimeout(this.checkForUpdates, 100);
             });
             ipcRenderer.send('get-is-portable');
         });

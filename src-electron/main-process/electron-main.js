@@ -34,12 +34,10 @@ function createWindow () {
         useContentSize: true,
         webPreferences: {
             nodeIntegration: true,
-            webSecurity: false,
-        }
-    })
-    if (process.env.PROD) {
-        mainWindow.setMenu(null);
-    }
+            webSecurity: false
+        },
+        autoHideMenuBar: process.env.PROD
+    });
 
     Persist.handle(mainWindow, app);
 
