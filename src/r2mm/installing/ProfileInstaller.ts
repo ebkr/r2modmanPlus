@@ -12,7 +12,7 @@ import { isNull } from 'util';
 import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 
-const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
+const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
 const modModeExtensions: string[] = [".dll", ".language"];
 
 export default class ProfileInstaller {

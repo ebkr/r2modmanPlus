@@ -9,7 +9,7 @@ import FileNotFoundError from 'src/model/errors/FileNotFoundError';
 import R2Error from 'src/model/errors/R2Error';
 import PathResolver from "../manager/PathResolver";
 
-const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
+const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
 
 export default class ModFromManifest {
 

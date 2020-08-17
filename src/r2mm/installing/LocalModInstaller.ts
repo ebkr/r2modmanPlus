@@ -23,7 +23,7 @@ export default class LocalModInstaller {
                 if (mod instanceof R2Error) {
                     return mod;
                 }
-                const cacheDirectory: string = path.join(PathResolver.ROOT, 'games', 'Risk of Rain 2', 'cache');
+                const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
                 ZipExtract.extractOnly(
                     zipFile,
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
