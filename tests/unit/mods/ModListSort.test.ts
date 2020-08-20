@@ -174,7 +174,7 @@ describe('ModListSort', () => {
             expect(sortedList[0]).equals(modList[0]);
         });
 
-        // Expect disabled mods to be hidden
+        // Expect disabled mods to appear first
         it("Disabled mods sort (FIRST)", () => {
             const modList: ManifestV2[] = [
                 new ManifestV2().make({
@@ -201,7 +201,7 @@ describe('ModListSort', () => {
             }
         });
 
-        // Expect disabled mods to be hidden
+        // Expect disabled mods to appear last
         it("Disabled mods sort (LAST)", () => {
             const modList: ManifestV2[] = [
                 new ManifestV2().make({
