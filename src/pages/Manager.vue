@@ -150,21 +150,21 @@
 				<aside class="menu">
 					<p class="menu-label">Risk of Rain 2</p>
 					<ul class="menu-list">
-						<li><a @click="launchModded()"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a></li>
+						<li><a href="#" @click="launchModded()"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a></li>
 						<li>
-							<a @click="launchVanilla()"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start vanilla</a>
+							<a href="#" @click="launchVanilla()"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start vanilla</a>
 						</li>
 					</ul>
 					<p class="menu-label">Mods</p>
 					<ul class="menu-list">
 						<li>
-							<a @click="() => {view = 'installed'; localSearchFilter = ''}"
+							<a href="#" @click="() => {view = 'installed';}"
 							   :class="[view === 'installed' ? 'is-active' : '']">
 								<i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
 							</a>
 						</li>
 						<li>
-							<a @click="() => {view = 'online'; thunderstoreSearchFilter = ''}"
+							<a href="#" @click="() => {view = 'online'; thunderstoreSearchFilter = ''}"
 							   :class="[view === 'online' ? 'is-active' : '']">
 								<i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})
 							</a>
@@ -173,18 +173,18 @@
 					<p class='menu-label'>Other</p>
 					<ul class='menu-list'>
 						<li>
-							<a @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
+							<a href="#" @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
 							   v-if="!settings.legacyInstallMode">
 								<i class="fas fa-edit"/>&nbsp;&nbsp;Config editor
 							</a>
 						</li>
 						<li>
-							<a @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">
+							<a href="#" @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">
 								<i class="fas fa-cog"/>&nbsp;&nbsp;Settings
 							</a>
 						</li>
 						<li>
-							<a @click="() => {view = 'help'; helpPage = ''}"
+							<a href="#" @click="() => {view = 'help'; helpPage = ''}"
 							   :class="[view === 'help' ? 'is-active' : '']">
 								<i class="fas fa-question-circle"/>&nbsp;&nbsp;Help</a>
 							<ul v-if="view === 'help'">
@@ -222,17 +222,21 @@
 					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
 						<div class='card is-shadowless'>
 							<div class='card-header-title'>
-								<span>Search:&nbsp;&nbsp;</span>
-								<input v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
-								<span>&nbsp;&nbsp;Sort:&nbsp;&nbsp;</span>
-								<select class='select select--content-spacing' v-model="sortingStyleModel">
-									<option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-								</select>
-								<span>&nbsp;</span>
-								<select class='select select--content-spacing' v-model="sortingDirectionModel"
-								        :disabled="sortingStyleModel === 'Default'">
-									<option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
-								</select>
+                                <div class="input-group input-group--flex margin-right">
+                                    <label for="thunderstore-search-filter">Search</label>
+                                    <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="thunderstore-sort">Sort</label>
+                                    <select id="thunderstore-sort" class='select select--content-spacing' v-model="sortingStyleModel">
+                                        <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
+                                    </select>
+                                    <span>&nbsp;</span>
+                                    <select class='select select--content-spacing' v-model="sortingDirectionModel"
+                                            :disabled="sortingStyleModel === 'Default'">
+                                        <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
+                                    </select>
+                                </div>
 							</div>
 						</div>
 					</div>
@@ -267,14 +271,6 @@
 					</div>
 				</div>
 				<div v-show="view === 'installed'">
-					<div class='sticky-top sticky-top--search border-at-bottom'>
-						<div class='card is-shadowless'>
-							<div class='card-header-title'>
-								<span class="non-selectable">Search:&nbsp;&nbsp;</span>
-								<input v-model='localSearchFilter' class="input" type="text" placeholder="Search for an installed mod"/>
-							</div>
-						</div>
-					</div>
 					<template>
 						<div class='fixed-center text-center' v-if="localModList.length === 0">
 							<div>
@@ -289,7 +285,6 @@
 						</div>
 						<template v-if="localModList.length > 0">
 							<LocalModList
-                                :search-query="localSearchFilter"
                                 @error="showError($event)"
                             />
 						</template>
@@ -508,9 +503,7 @@
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
-		searchableLocalModList: ManifestV2[] = [];
 		thunderstoreSearchFilter: string = '';
-		localSearchFilter: string = '';
 		errorMessage: string = '';
 		errorStack: string = '';
 		errorSolution: string = '';
@@ -542,12 +535,6 @@
 			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
 				(this.pageNumber - 1) * this.getPageResultSize(),
 				this.pageNumber * this.getPageResultSize());
-		}
-
-		filterLocalModList() {
-			this.searchableLocalModList = this.localModList.filter((x: ManifestV2) => {
-				return x.getName().toLowerCase().search(this.localSearchFilter.toLowerCase()) >= 0 || this.localSearchFilter.trim() === '';
-			});
 		}
 
 		@Watch('thunderstoreSearchFilter')
@@ -667,7 +654,6 @@
 					this.$store.dispatch("updateModList", newModList);
 					// this.localModList = newModList;
 					this.sortThunderstoreModList();
-					this.filterLocalModList();
 				}
 			} else {
 				// (mod failed to be placed in /{profile} directory)
@@ -990,8 +976,6 @@
                     return;
                 }
 				this.$store.dispatch("updateModList", updatedModListResult);
-
-                this.filterLocalModList();
                 this.sortThunderstoreModList();
             }));
 		    if (convertError instanceof R2Error) {
@@ -1097,7 +1081,6 @@
 			} else {
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
-			this.filterLocalModList();
 			this.sortThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);

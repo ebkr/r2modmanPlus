@@ -141,3 +141,30 @@ select {
 .tabs {
     margin-bottom: 0 !important;
 }
+
+.no-break {
+    word-break: keep-all;
+    white-space: nowrap;
+}
+
+.input-group {
+
+    &--flex {
+        flex: 1;
+    }
+
+    display: block;
+    white-space: nowrap;
+
+    & label {
+        display: block;
+        font-size: 0.9em;
+        opacity: 0.8;
+        margin-bottom: 0.2em;
+    }
+}
+
+select[disabled] {
+    opacity: 0.3 !important;
+    color: gray;
+}

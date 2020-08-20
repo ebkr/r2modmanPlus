@@ -1,5 +1,43 @@
 <template>
     <div>
+
+        <div class='sticky-top sticky-top--search border-at-bottom'>
+            <div class='card is-shadowless'>
+                <div class='card-header-title'>
+
+                    <div class="input-group input-group--flex margin-right">
+                        <label for="local-search" class="non-selectable">Search</label>
+                        <input id="local-search" v-model='searchQuery' class="input margin-right" type="text" placeholder="Search for an installed mod"/>
+                    </div>
+
+                    <div class="input-group margin-right">
+                        <label for="local-sort-order" class="non-selectable">Sort</label>
+                        <select id="local-sort-order" class="select select--content-spacing" v-model="sortOrder">
+                            <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
+                                {{key}}
+                            </option>
+                        </select>
+                        <span>&nbsp;</span>
+                        <select id="local-sort-direction" class="select select--content-spacing" v-model="sortDirection">
+                            <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
+                                {{key}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="local-deprecated-position" class="non-selectable">Disabled</label>
+                        <select id="local-deprecated-position" class="select select--content-spacing" v-model="deprecatedPosition">
+                            <option v-for="(key, index) in getDeprecatedFilterOptions()" :key="`${index}-deprecated-position-option`">
+                                {{key}}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <DownloadModModal
             :show-download-modal="manifestModAsThunderstoreMod !== null"
             :thunderstore-mod="manifestModAsThunderstoreMod"
@@ -146,14 +184,13 @@
 
 <script lang="ts">
 
-    import { Vue, Component, Prop, Watch, PropSync } from 'vue-property-decorator';
+    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
     import ManifestV2 from '../../model/ManifestV2';
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import R2Error from '../../model/errors/R2Error';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
     import ThunderstoreVersion from '../../model/ThunderstoreVersion';
     import ModBridge from '../../r2mm/mods/ModBridge';
-    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import Mod from '../../model/Mod';
     import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
     import Dependants from '../../r2mm/mods/Dependants';
@@ -164,6 +201,11 @@
     import DownloadModModal from './DownloadModModal.vue';
     import { ExpandableCard, Link, Modal } from '../all';
     import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
+    import ModListSort from '../../r2mm/mods/ModListSort';
+    import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+    import { SortDeprecatedFilter } from '../../model/real_enums/sort/SortDeprecatedFilter';
+    import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
+    import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 
     @Component({
         components: {
@@ -175,11 +217,9 @@
     })
     export default class LocalModList extends Vue {
 
-        @Prop()
-        private searchQuery: string = '';
-
         get modifiableModList(): ManifestV2[] {
-            return this.$store.state.localModList;
+            return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
+                this.deprecatedPosition, this.sortOrder);
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
@@ -192,6 +232,12 @@
         private selectedManifestMod: ManifestV2 | null = null;
         private manifestModAsThunderstoreMod: ThunderstoreMod | null = null;
         private dependencyListDisplayType: string = 'view';
+
+        // Filtering
+        private deprecatedPosition: SortLocalDisabledMods = SortLocalDisabledMods.CUSTOM;
+        private sortOrder: SortNaming = SortNaming.CUSTOM;
+        private sortDirection: SortDirection = SortDirection.STANDARD;
+        private searchQuery: string = '';
 
         @Watch('modifiableModList')
         modListUpdated() {
@@ -447,6 +493,18 @@
 
         getTooltipText(mod: ManifestV2) {
             return ModListTooltipManager.getTooltipText(mod);
+        }
+
+        getDeprecatedFilterOptions() {
+            return Object.values(SortLocalDisabledMods);
+        }
+
+        getSortOrderOptions() {
+            return Object.values(SortNaming);
+        }
+
+        getSortDirectionOptions() {
+            return Object.values(SortDirection);
         }
 
         created() {
