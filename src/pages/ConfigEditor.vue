@@ -17,12 +17,32 @@
 									<strong><a @click="backToManager()">Go back</a></strong>
 									<br/><br/>
 								</div>
-								<div>
-									<input class="input" type="text" placeholder="Search for config files"
-									       v-model="filterText"/>
-									<br/><br/>
-								</div>
-								<div v-for='(file, index) in shownConfigFiles' :key="`config-file-${file.name}`">
+                                <div class='card is-shadowless'>
+                                    <div class='card-header-title'>
+
+                                        <div class="input-group input-group--flex margin-right">
+                                            <label for="local-search" class="non-selectable">Search</label>
+                                            <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for config files"/>
+                                        </div>
+
+                                        <div class="input-group margin-right">
+                                            <label for="config-sort-order" class="non-selectable">Sort</label>
+                                            <select id="config-sort-order" class="select select--content-spacing" v-model="sortOrder">
+                                                <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
+                                                    {{key}}
+                                                </option>
+                                            </select>
+                                            <span>&nbsp;</span>
+                                            <select id="config-sort-direction" class="select select--content-spacing" v-model="sortDirection">
+                                                <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
+                                                    {{key}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+								<div v-for='(file, index) in sortedConfigFiles' :key="`config-file-${file.name}`">
 									<expandable-card
 											:id="index"
 											:visible="false">
@@ -38,7 +58,7 @@
 								<div>
 									<div class='sticky-top sticky-top--buttons'>
 										<button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
-										<button class='button is-danger' @click="editing = false;">Cancel</button>
+										<button class='button is-danger' @click="editing = false; this.updateConfigList();">Cancel</button>
 									</div>
 									<br/>
 									<h4 class='title is-4'>{{loadedFile}}</h4>
@@ -82,22 +102,25 @@
 </template>
 
 <script lang='ts'>
-	import Vue from 'vue';
-	import { Component, Watch } from 'vue-property-decorator';
-	import { Hero, ExpandableCard } from '../components/all';
+    import Vue from 'vue';
+    import { Component, Watch } from 'vue-property-decorator';
+    import { ExpandableCard, Hero } from '../components/all';
 
-	import Profile from 'src/model/Profile';
-	import ConfigFile from 'src/model/file/ConfigFile';
-	import ConfigLine from 'src/model/file/ConfigLine';
+    import Profile from 'src/model/Profile';
+    import ConfigFile from 'src/model/file/ConfigFile';
+    import ConfigLine from 'src/model/file/ConfigLine';
 
-	import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
+    import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
-	import BepInExTree from '../model/file/BepInExTree';
-	import R2Error from '../model/errors/R2Error';
+    import BepInExTree from '../model/file/BepInExTree';
+    import R2Error from '../model/errors/R2Error';
+    import { SortConfigFile } from '../model/real_enums/sort/SortConfigFile';
+    import { SortDirection } from '../model/real_enums/sort/SortDirection';
+    import ConfigSort from '../r2mm/configs/ConfigSort';
 
-	@Component({
+    @Component({
 		components: {
 			'hero': Hero,
 			'expandable-card': ExpandableCard
@@ -114,11 +137,17 @@
 		private variables: { [section: string]: { [variable: string]: ConfigLine } } = {};
 
 		private filterText: string = '';
+		private sortOrder: SortConfigFile = SortConfigFile.NAME;
+		private sortDirection: SortDirection = SortDirection.STANDARD;
 
 		@Watch('filterText')
 		textChanged() {
 			this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
 		}
+
+		get sortedConfigFiles(): ConfigFile[] {
+		    return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
+        }
 
 		editFile(fileName: string) {
 			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
@@ -164,6 +193,7 @@
 			fs.writeFileSync(path.join(configLocation, `${this.loadedFile}.cfg`), builtString.trim());
 			window.scrollTo(0, 0);
 			this.editing = false;
+            this.updateConfigList();
 		}
 
 		backToManager() {
@@ -182,8 +212,7 @@
 			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
 			const filePath: string = path.join(configLocation, `${fileName}.cfg`);
 			fs.removeSync(filePath);
-			this.configFiles = this.configFiles.filter(file => file.getName() !== fileName);
-			this.textChanged();
+            this.updateConfigList();
 		}
 
 		getCommentDisplay(comments: string[]): string {
@@ -194,22 +223,36 @@
 			return split.join('\n').trim();
 		}
 
+        getSortOrderOptions() {
+		    return Object.values(SortConfigFile);
+        }
+
+        getSortDirectionOptions() {
+		    return Object.values(SortDirection);
+        }
+
 		created() {
-			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
-			if (fs.pathExistsSync(configLocation)) {
-				const tree: BepInExTree | R2Error = BepInExTree.buildFromLocation(configLocation);
-				if (tree instanceof BepInExTree) {
-					tree.getRecursiveFiles().forEach(file => {
-						if (path.extname(file).toLowerCase() === '.cfg') {
-							this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file));
-						}
-					});
-				} else {
-					Logger.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
-				}
-			}
-			this.textChanged();
+		    this.updateConfigList();
 		}
+
+		updateConfigList() {
+		    this.configFiles = [];
+            const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
+            if (fs.pathExistsSync(configLocation)) {
+                const tree: BepInExTree | R2Error = BepInExTree.buildFromLocation(configLocation);
+                if (tree instanceof BepInExTree) {
+                    tree.getRecursiveFiles().forEach(file => {
+                        if (path.extname(file).toLowerCase() === '.cfg') {
+                            const fileStat = fs.lstatSync(file);
+                            this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
+                        }
+                    });
+                } else {
+                    Logger.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
+                }
+            }
+            this.textChanged();
+        }
 
 	}
 </script>
