@@ -158,7 +158,7 @@
 					<p class="menu-label">Mods</p>
 					<ul class="menu-list">
 						<li>
-							<a href="#" @click="() => {view = 'installed'; localSearchFilter = ''}"
+							<a href="#" @click="() => {view = 'installed';}"
 							   :class="[view === 'installed' ? 'is-active' : '']">
 								<i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
 							</a>
@@ -285,7 +285,6 @@
 						</div>
 						<template v-if="localModList.length > 0">
 							<LocalModList
-                                :search-query="localSearchFilter"
                                 @error="showError($event)"
                             />
 						</template>
@@ -504,9 +503,7 @@
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
-		searchableLocalModList: ManifestV2[] = [];
 		thunderstoreSearchFilter: string = '';
-		localSearchFilter: string = '';
 		errorMessage: string = '';
 		errorStack: string = '';
 		errorSolution: string = '';
@@ -538,12 +535,6 @@
 			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
 				(this.pageNumber - 1) * this.getPageResultSize(),
 				this.pageNumber * this.getPageResultSize());
-		}
-
-		filterLocalModList() {
-			this.searchableLocalModList = this.localModList.filter((x: ManifestV2) => {
-				return x.getName().toLowerCase().search(this.localSearchFilter.toLowerCase()) >= 0 || this.localSearchFilter.trim() === '';
-			});
 		}
 
 		@Watch('thunderstoreSearchFilter')
@@ -663,7 +654,6 @@
 					this.$store.dispatch("updateModList", newModList);
 					// this.localModList = newModList;
 					this.sortThunderstoreModList();
-					this.filterLocalModList();
 				}
 			} else {
 				// (mod failed to be placed in /{profile} directory)
@@ -986,8 +976,6 @@
                     return;
                 }
 				this.$store.dispatch("updateModList", updatedModListResult);
-
-                this.filterLocalModList();
                 this.sortThunderstoreModList();
             }));
 		    if (convertError instanceof R2Error) {
@@ -1093,7 +1081,6 @@
 			} else {
 				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
-			this.filterLocalModList();
 			this.sortThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
