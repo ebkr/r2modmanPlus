@@ -27,7 +27,7 @@
 
                     <div class="input-group">
                         <label for="local-deprecated-position" class="non-selectable">Disabled</label>
-                        <select id="local-deprecated-position" class="select select--content-spacing" v-model="deprecatedPosition">
+                        <select id="local-deprecated-position" class="select select--content-spacing" v-model="sortDisabledPosition">
                             <option v-for="(key, index) in getDeprecatedFilterOptions()" :key="`${index}-deprecated-position-option`">
                                 {{key}}
                             </option>
@@ -124,7 +124,7 @@
                 :id="index"
                 :description="key.description"
                 :funkyMode="settings.funkyModeEnabled"
-                :showSort="true"
+                :showSort="canShowSortIcons()"
                 :manualSortUp="index > 0"
                 :manualSortDown="index < searchableModList.length - 1"
                 :darkTheme="settings.darkTheme"
@@ -184,7 +184,7 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+    import { Component, Vue, Watch } from 'vue-property-decorator';
     import ManifestV2 from '../../model/ManifestV2';
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import R2Error from '../../model/errors/R2Error';
@@ -203,7 +203,6 @@
     import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
     import ModListSort from '../../r2mm/mods/ModListSort';
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-    import { SortDeprecatedFilter } from '../../model/real_enums/sort/SortDeprecatedFilter';
     import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
     import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 
@@ -219,7 +218,7 @@
 
         get modifiableModList(): ManifestV2[] {
             return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
-                this.deprecatedPosition, this.sortOrder);
+                this.sortDisabledPosition, this.sortOrder);
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
@@ -234,7 +233,7 @@
         private dependencyListDisplayType: string = 'view';
 
         // Filtering
-        private deprecatedPosition: SortLocalDisabledMods = SortLocalDisabledMods.CUSTOM;
+        private sortDisabledPosition: SortLocalDisabledMods = SortLocalDisabledMods.CUSTOM;
         private sortOrder: SortNaming = SortNaming.CUSTOM;
         private sortDirection: SortDirection = SortDirection.STANDARD;
         private searchQuery: string = '';
@@ -505,6 +504,12 @@
 
         getSortDirectionOptions() {
             return Object.values(SortDirection);
+        }
+
+        canShowSortIcons() {
+            return this.sortDirection === SortDirection.STANDARD
+                && this.sortOrder === SortNaming.CUSTOM
+                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM;
         }
 
         created() {

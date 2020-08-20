@@ -8,7 +8,7 @@ import NetworkMode from './enums/NetworkMode';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 import * as path from 'path';
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
 import ModBridge from '../r2mm/mods/ModBridge';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';

@@ -1,12 +1,12 @@
-import VersionNumber from "src/model/VersionNumber";
+import VersionNumber from "../../model/VersionNumber";
 
 import * as yaml from 'yaml';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import Mod from 'src/model/Mod';
-import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
-import FileNotFoundError from 'src/model/errors/FileNotFoundError';
-import R2Error from 'src/model/errors/R2Error';
+import Mod from '../../model/Mod';
+import YamlParseError from '../../model/errors/Yaml/YamlParseError';
+import FileNotFoundError from '../../model/errors/FileNotFoundError';
+import R2Error from '../../model/errors/R2Error';
 import PathResolver from "../manager/PathResolver";
 
 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');

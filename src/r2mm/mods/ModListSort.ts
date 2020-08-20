@@ -14,11 +14,11 @@ export default class ModListSort {
      * @param sortNaming
      */
     public static sortLocalModList(modList: ManifestV2[], sortDirection: SortDirection,
-                                   deprecatedPosition: SortLocalDisabledMods, sortNaming: SortNaming): ManifestV2[] {
+                                   disabledModPosition: SortLocalDisabledMods, sortNaming: SortNaming): ManifestV2[] {
 
         let updatedModList = [...modList];
-        if (deprecatedPosition === SortLocalDisabledMods.NONE) {
-            updatedModList = updatedModList.filter(value => !value.isDeprecated());
+        if (disabledModPosition === SortLocalDisabledMods.NONE) {
+            updatedModList = updatedModList.filter(value => value.isEnabled());
         }
         updatedModList = updatedModList.sort((a, b) => {
             if (a === b) return 0;
@@ -31,10 +31,10 @@ export default class ModListSort {
         }
         return updatedModList.sort((a, b) => {
             // Sort by deprecated filter
-            if (deprecatedPosition === SortLocalDisabledMods.FIRST) {
+            if (disabledModPosition === SortLocalDisabledMods.FIRST) {
                 const comparedPosition = this.compareDeprecated(a, b);
                 if (comparedPosition !== 0) return -comparedPosition;
-            } else if (deprecatedPosition === SortLocalDisabledMods.LAST) {
+            } else if (disabledModPosition === SortLocalDisabledMods.LAST) {
                 const comparedPosition = this.compareDeprecated(a, b);
                 if (comparedPosition !== 0) return comparedPosition;
             }

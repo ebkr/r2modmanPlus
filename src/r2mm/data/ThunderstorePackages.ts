@@ -1,4 +1,4 @@
-import ThunderstoreMod from 'src/model/ThunderstoreMod';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 import axios from 'axios';
 
 export default class ThunderstorePackages {

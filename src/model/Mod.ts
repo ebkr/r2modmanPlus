@@ -1,6 +1,6 @@
 import VersionNumber from './VersionNumber';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
-import ModFromManifest from 'src/r2mm/mods/ModFromManifest';
+import ModFromManifest from '../r2mm/mods/ModFromManifest';
 import R2Error from './errors/R2Error';
 
 export default class Mod implements ReactiveObjectConverterInterface {
