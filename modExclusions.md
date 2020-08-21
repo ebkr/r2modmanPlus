@@ -11,3 +11,5 @@ HoodedDeath-RiskOfDeathModManager
 Elaviers-GCManager
 
 MythicManiac-MythicModManager
+
+Higgs1-Lighthouse
