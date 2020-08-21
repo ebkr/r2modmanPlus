@@ -339,15 +339,8 @@ export default class Profiles extends Vue {
                 .getProfileName()
                 .toLowerCase() !== 'default'
         ) {
-            for (
-                let profileIteration = 0;
-                profileIteration < this.profileList.length;
-                profileIteration++
-            ) {
-                if (
-                    this.profileList[profileIteration] ===
-                    Profile.getActiveProfile().getProfileName()
-                ) {
+            for (let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
+                if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
                     this.profileList.splice(profileIteration, 1);
                     break;
                 }
@@ -408,6 +401,7 @@ export default class Profiles extends Vue {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
                         ProfileModList.updateMod(installResult, modToDisable => {
                             modToDisable.disable();
+                            ProfileInstaller.disableMod(modToDisable);
                         });
                     }
                 })
