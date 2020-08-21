@@ -46,7 +46,7 @@
         />
 
         <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
-               @close-modal="selectedManifestMod = null">
+               @close-modal="showingDependencyList = null">
             <template v-slot:title>
                 <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling
                     {{selectedManifestMod.getName()}}
