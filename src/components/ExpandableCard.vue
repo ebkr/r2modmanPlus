@@ -35,6 +35,7 @@
             <div class='card-content' v-show='visible' v-if="description !== ''">
                 <div class='content'>
                     <p>{{description}}</p>
+                    <slot name='description'></slot>
                 </div>
             </div>
             <footer class='card-footer' v-show='visible'>

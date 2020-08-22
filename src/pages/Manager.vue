@@ -1104,7 +1104,9 @@
             }
 
             document.ondragleave = (ev) => {
-                this.showDragAndDropModal = false;
+                if (ev.relatedTarget === null) {
+                    this.showDragAndDropModal = false;
+                }
                 ev.preventDefault();
             }
 

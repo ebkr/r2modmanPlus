@@ -36,6 +36,9 @@
 										<i class='fas fa-check'></i>
 									</span>
                 </template>
+                <template v-slot:description>
+                    <p><strong>Last updated: {{getReadableDate(key.getDateUpdated())}}</strong></p>
+                </template>
                 <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
                 <div class='card-footer-item'>
                     <Link :url="key.getPackageUrl()" :target="'external'">
@@ -127,6 +130,11 @@
         showDownloadModal(mod: any) {
             const tsMod = new ThunderstoreMod().fromReactive(mod);
             this.modToDownload = tsMod;
+        }
+
+        getReadableDate(date: Date): string {
+            const dateObject: Date = new Date(date);
+            return `${dateObject.toDateString()}, ${dateObject.toLocaleTimeString()}`
         }
 
         emitError(error: R2Error) {
