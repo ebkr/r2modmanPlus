@@ -54,8 +54,16 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.25
+- Installed mod list now has sort filters.
+- Thunderstore mod list can be updated via settings. No more having to restart!
+- Deprecated mod labels are now shown on the installed tab.
+- Configs can be sorted by last updated.
+- Exports with disabled mods are now properly disabled on import.
+- Other minor bug fixes.
+
 ### 3.0.24
-- Fixed profile importing from 3.0.23 change
+- Fixed profile importing from 3.0.23 change.
 
 ### 3.0.23
 - Updating a mod now shows the version you currently have installed.
@@ -64,17 +72,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Backend library updates and code cleanup.
 - Re-added enable/disable all settings.
 - Changed code export host.
-
-### 3.0.22
-- Fixed a bug where download progress would appear to freeze at 100%.
-
-### 3.0.21
-- Settings screen overhaul.
-- NSIS fix for most, if not all, installation aborted errors (thanks to iDeathHD).
-- Local mod installs using ManifestV2.
-- LogOutput.log can now be copied to clipboard.
-- (Debug) Downloads can now skip reading from the cache.
-- General fixes.
 
 ## Screenshots
 
@@ -92,7 +89,7 @@ Dark theme
 
 Config editor
 
-![](https://i.imgur.com/mkO4Q4H.png)
+![](https://i.imgur.com/U9av2H7.png)
 
 Profiles
 
