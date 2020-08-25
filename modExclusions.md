@@ -14,5 +14,4 @@ MythicManiac-MythicModManager
 
 Higgs1-Lighthouse
 
-
 ethanbrews-Forecast_Mod_Manager
