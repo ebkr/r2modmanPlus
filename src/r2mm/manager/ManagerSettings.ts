@@ -41,7 +41,7 @@ export default class ManagerSettings {
             try {
                 const parsedYaml = yaml.parse(fs.readFileSync(configFile).toString());
                 this.riskOfRain2Directory = parsedYaml.riskOfRain2Directory;
-                this.linkedFiles = parsedYaml.linkedFiles;
+                this.linkedFiles = parsedYaml.linkedFiles || [];
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
