@@ -44,27 +44,29 @@ export default class ProfileInstaller {
             }
         }
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
-        try {
-            fs.readdirSync(bepInExLocation)
-                .forEach((file: string) => {
-                    if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
-                        fs.readdirSync(path.join(bepInExLocation, file))
-                            .forEach((folder: string) => {
-                                const folderPath: string = path.join(bepInExLocation, file, folder);
-                                if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
-                                    fs.emptyDirSync(folderPath);
-                                    fs.removeSync(folderPath);
-                                }
-                            })
-                    }
-                });
-        } catch(e) {
-            const err: Error = e;
-            return new R2Error(
-                err.name ,
-                err.message,
-                'Is the game still running? If so, close it and try again.'
-            )
+        if (fs.existsSync(bepInExLocation)) {
+            try {
+                fs.readdirSync(bepInExLocation)
+                    .forEach((file: string) => {
+                        if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
+                            fs.readdirSync(path.join(bepInExLocation, file))
+                                .forEach((folder: string) => {
+                                    const folderPath: string = path.join(bepInExLocation, file, folder);
+                                    if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
+                                        fs.emptyDirSync(folderPath);
+                                        fs.removeSync(folderPath);
+                                    }
+                                })
+                        }
+                    });
+            } catch (e) {
+                const err: Error = e;
+                return new R2Error(
+                    err.name,
+                    err.message,
+                    'Is the game still running? If so, close it and try again.'
+                )
+            }
         }
         return null;
     }
