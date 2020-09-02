@@ -54,6 +54,10 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.28
+- Bug preventing RainOfStages from being uninstalled has been fixed.
+- Skin mods can now be disabled.
+
 ### 3.0.27
 - "Property join of null" error has now been resolved.
 - Prevents mods failing to install dependencies if BepInEx isn't resolved to be installed first.
@@ -68,9 +72,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Configs can be sorted by last updated.
 - Exports with disabled mods are now properly disabled on import.
 - Other minor bug fixes.
-
-### 3.0.24
-- Fixed profile importing from 3.0.23 change.
 
 ## Screenshots
 
