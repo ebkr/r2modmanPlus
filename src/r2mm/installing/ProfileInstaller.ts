@@ -13,7 +13,7 @@ import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 
 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-const modModeExtensions: string[] = [".dll", ".language"];
+const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
 
 export default class ProfileInstaller {
 
