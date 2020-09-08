@@ -1,8 +1,8 @@
 import Mod from 'src/model/Mod';
-import ThunderstoreMod from 'src/model/ThunderstoreMod';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { isUndefined } from 'util';
-import ThunderstoreVersion from 'src/model/ThunderstoreVersion';
-import ManifestV2 from 'src/model/ManifestV2';
+import ThunderstoreVersion from '../../model/ThunderstoreVersion';
+import ManifestV2 from '../../model/ManifestV2';
 import ThunderstorePackages from '../data/ThunderstorePackages';
 
 export default class ModBridge {
