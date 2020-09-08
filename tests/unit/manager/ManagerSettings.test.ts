@@ -23,12 +23,6 @@ describe('ManagerSettings', () => {
         });
     });
 
-    it('Ensure file is created on construction', () => {
-        expect(fs.existsSync(path.join(PathResolver.ROOT, 'config', 'conf.yml'))).equals(false);
-        ManagerSettings.getSingleton().load();
-        expect(fs.existsSync(path.join(PathResolver.ROOT, 'config', 'conf.yml'))).equals(true);
-    });
-
     context('Ensure values saved', () => {
         it('Expand/collapse cards', () => {
             booleanSettingTestHelper(

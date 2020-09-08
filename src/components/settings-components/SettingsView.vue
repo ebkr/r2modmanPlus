@@ -133,11 +133,11 @@
             new SettingsRow(
                 'Locations',
                 'Change data folder directory',
-                'Open the directory where mods are stored for the current profile.',
+                'Open the directory where mods are stored for the current profile. The folder will not be deleted, and existing profiles will not carry across.',
                 () => {
                     return PathResolver.ROOT;
                 },
-                'fa-door-open',
+                'fa-folder-open',
                 () => this.emitInvoke('ChangeDataFolder')
             ),
             new SettingsRow(
