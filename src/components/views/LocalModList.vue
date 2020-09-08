@@ -284,7 +284,7 @@
             const mod: Mod = new Mod().fromReactive(vueMod);
             return mod.getDependencies().filter((dependency: string) => {
                 // Include in filter if mod isn't found.
-                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase())) === undefined;
+                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")) === undefined;
             });
         }
 
@@ -470,7 +470,7 @@
 
         downloadDependency(missingDependency: string) {
             const mod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
-                (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase())
+                (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
             );
             if (mod === undefined) {
                 this.manifestModAsThunderstoreMod = null;
