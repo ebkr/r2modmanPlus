@@ -3,6 +3,7 @@ import ThunderstoreMod from 'src/model/ThunderstoreMod';
 import { isUndefined } from 'util';
 import ThunderstoreVersion from 'src/model/ThunderstoreVersion';
 import ManifestV2 from 'src/model/ManifestV2';
+import ThunderstorePackages from '../data/ThunderstorePackages';
 
 export default class ModBridge {
 
@@ -22,6 +23,16 @@ export default class ModBridge {
 
     public static getThunderstoreModFromMod(mod: ManifestV2, modList: ThunderstoreMod[]): ThunderstoreMod | undefined {
         return modList.find((tsMod: ThunderstoreMod) => tsMod.getFullName() === mod.getName());
+    }
+
+    public static isLatestVersion(vueMod: any): boolean {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, ThunderstorePackages.PACKAGES);
+        if (latestVersion instanceof ThunderstoreVersion) {
+            return mod.getVersionNumber()
+                .isEqualTo(latestVersion.getVersionNumber());
+        }
+        return true;
     }
 
 }

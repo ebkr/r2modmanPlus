@@ -59,6 +59,7 @@
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+    import ModBridge from '../../r2mm/mods/ModBridge';
 
     @Component({
         components: {
@@ -222,6 +223,20 @@
                 () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
                 () => this.emitInvoke('ExportCode')
+            ),
+            new SettingsRow(
+                'Profile',
+                'Update all mods',
+                'Quickly update every installed mod to their latest versions.',
+                () => {
+                    const outdatedMods = this.localModList.filter(mod => !ModBridge.isLatestVersion(mod));
+                    if (outdatedMods.length === 1) {
+                        return "1 mod has an update available";
+                    }
+                    return `${outdatedMods.length} mods have an update available`;
+                },
+                'fa-cloud-upload-alt',
+                () => this.emitInvoke('UpdateAllMods')
             ),
             new SettingsRow(
                 'Other',
