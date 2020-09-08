@@ -3,6 +3,7 @@
         <DownloadModModal
             :show-download-modal="modToDownload !== null"
             :thunderstore-mod="modToDownload"
+            :update-all-mods="false"
             @closed-modal="modToDownload = null;"
             @error="emitError($event)"
         />

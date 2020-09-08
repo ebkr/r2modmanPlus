@@ -41,6 +41,7 @@
         <DownloadModModal
             :show-download-modal="manifestModAsThunderstoreMod !== null"
             :thunderstore-mod="manifestModAsThunderstoreMod"
+            :update-all-mods="false"
             @closed-modal="manifestModAsThunderstoreMod = null;"
             @error="emitError($event)"
         />
@@ -276,13 +277,7 @@
         }
 
         isLatest(vueMod: any): boolean {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, this.thunderstorePackages);
-            if (latestVersion instanceof ThunderstoreVersion) {
-                return mod.getVersionNumber()
-                    .isEqualTo(latestVersion.getVersionNumber());
-            }
-            return true;
+            return ModBridge.isLatestVersion(vueMod);
         }
 
         getMissingDependencies(vueMod: any): string[] {

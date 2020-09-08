@@ -15,7 +15,7 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
-        <div id="downloadModal" :class="['modal', {'is-active':showDownloadModal}]">
+        <div id="downloadModal" :class="['modal', {'is-active':showDownloadModal}]" v-if="!updateAllMods">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
                 <div class='card'>
@@ -67,6 +67,23 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="updateAllModal" :class="['modal', {'is-active':showDownloadModal}]" v-if="updateAllMods">
+            <div class="modal-background" @click="closeModal()"></div>
+            <div class="modal-content">
+                <div class='card'>
+                    <header class="card-header">
+                        <p class='card-header-title'>Update all installed mods</p>
+                    </header>
+                    <div class='card-content'>
+                        <p>All installed mods will be updated to their latest versions.</p>
+                        <p>Any missing dependencies will be installed.</p>
+                    </div>
+                    <div class='card-footer'>
+                        <button class="button is-info" @click="downloadLatest()">Update all</button>
+                    </div>
+                </div>
+            </div>
             <button class="modal-close is-large" aria-label="close" @click="closeModal()"></button>
         </div>
     </div>
@@ -112,6 +129,9 @@
         @Prop()
         showDownloadModal: boolean = false;
 
+        @Prop({ default: false })
+        updateAllMods: boolean = true;
+
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList;
         }
@@ -153,8 +173,53 @@
             this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 
+        downloadLatest() {
+            this.closeModal();
+            assignId += 1;
+            this.downloadObject = {
+                progress: 0,
+                modName: '',
+                assignId: assignId
+            };
+            this.downloadingMod = true;
+            const localMods = ProfileModList.getModList(Profile.getActiveProfile());
+            if (localMods instanceof R2Error) {
+                this.downloadingMod = false;
+                this.$emit('error', localMods);
+                return;
+            }
+            const outdatedMods = localMods.filter(mod => !ModBridge.isLatestVersion(mod));
+            BetterThunderstoreDownloader.downloadLatestOfAll(outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                if (status === StatusEnum.FAILURE) {
+                    if (err !== null) {
+                        this.downloadingMod = false;
+                        this.$emit('error', err);
+                        return;
+                    }
+                } else if (status === StatusEnum.PENDING) {
+                    if (this.downloadObject.assignId === assignId) {
+                        this.downloadObject = Object.assign({}, {
+                            progress: progress,
+                            modName: modName
+                        });
+                    }
+                }
+            }, (downloadedMods: ThunderstoreCombo[]) => {
+                downloadedMods.forEach(combo => {
+                    this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                });
+                this.downloadingMod = false;
+                const modList = ProfileModList.getModList(Profile.getActiveProfile());
+                if (!(modList instanceof R2Error)) {
+                    // ipcRenderer.emit('update-local-mod-list', null, modList);
+                    this.$store.dispatch('updateModList', modList);
+                }
+            });
+        }
+
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
+            assignId += 1;
             this.downloadObject = {
                 progress: 0,
                 modName: tsMod.getName(),
@@ -184,30 +249,40 @@
                 const modList = ProfileModList.getModList(Profile.getActiveProfile());
                 if (!(modList instanceof R2Error)) {
                     // ipcRenderer.emit('update-local-mod-list', null, modList);
-                    this.$store.dispatch("updateModList",modList);
+                    this.$store.dispatch('updateModList', modList);
                 }
             });
         }
 
         installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
             const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-            if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                const result = ProfileInstaller.uninstallMod(manifestMod);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return result;
-                }
+            const profileModList = ProfileModList.getModList(Profile.getActiveProfile());
+            if (profileModList instanceof R2Error) {
+                return profileModList;
             }
-            const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
-            if (!(installError instanceof R2Error)) {
-                const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
-                if (newModList instanceof R2Error) {
-                    this.$emit('error', newModList);
-                    return newModList;
+            const modAlreadyInstalled = profileModList.find(
+                value => value.getName() === mod.getFullName()
+                    && value.getVersionNumber().isEqualTo(version.getVersionNumber())
+            );
+            if (!modAlreadyInstalled) {
+                if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
+                    const result = ProfileInstaller.uninstallMod(manifestMod);
+                    if (result instanceof R2Error) {
+                        this.$emit('error', result);
+                        return result;
+                    }
                 }
-            } else {
-                this.$emit('error', installError);
-                return installError;
+                const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+                if (!(installError instanceof R2Error)) {
+                    const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+                    if (newModList instanceof R2Error) {
+                        this.$emit('error', newModList);
+                        return newModList;
+                    }
+                } else {
+                    this.$emit('error', installError);
+                    return installError;
+                }
             }
         }
 

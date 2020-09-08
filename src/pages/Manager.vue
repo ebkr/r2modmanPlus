@@ -129,6 +129,15 @@
 				</button>
 			</template>
 		</modal>
+
+        <DownloadModModal
+            :show-download-modal="showUpdateAllModal"
+            :update-all-mods="true"
+            :thunderstore-mod="null"
+            @closed-modal="showUpdateAllModal = false;"
+            @error="showError($event)"
+        />
+
 		<div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
 			<div class="modal-background" @click="closeErrorModal()"></div>
 			<div class='modal-content'>
@@ -484,12 +493,15 @@
     import SettingsView from '../components/settings-components/SettingsView.vue';
     import LocalModList from '../components/views/LocalModList.vue';
     import OnlineModList from '../components/views/OnlineModList.vue';
+    import ModBridge from '../r2mm/mods/ModBridge';
+    import DownloadModModal from '../components/views/DownloadModModal.vue';
 
 	@Component({
 		components: {
             OnlineModList,
             LocalModList,
             SettingsView,
+            DownloadModModal,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
@@ -529,6 +541,7 @@
 		showLaunchParameterModal: boolean = false;
 		dragAndDropText: string = 'Drag and drop file here to install mod';
 		showDragAndDropModal: boolean = false;
+		showUpdateAllModal: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1068,6 +1081,10 @@
                     break;
                 case "DisableAll":
                     this.setAllModsEnabled(false);
+                    break;
+                case "UpdateAllMods":
+                    this.showUpdateAllModal = true;
+                    console.log("Update all");
                     break;
             }
         }

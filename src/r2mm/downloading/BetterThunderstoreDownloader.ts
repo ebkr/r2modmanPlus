@@ -15,6 +15,8 @@ import Profile from 'src/model/Profile';
 import ThunderstorePackages from '../data/ThunderstorePackages';
 import ExportMod from 'src/model/exports/ExportMod';
 import ManagerSettings from '../manager/ManagerSettings';
+import ManifestV2 from '../../model/ManifestV2';
+import ModBridge from '../mods/ModBridge';
 
 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
 
@@ -77,6 +79,41 @@ export default class BetterThunderstoreDownloader {
         foundDependencies.forEach(found => builder.push(found));
         foundDependencies.forEach(found => this.buildDependencySetUsingLatest(found.getVersion(), allMods, builder));
         return builder;
+    }
+
+    public static downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+                                      callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                                      completedCallback: (modList: ThunderstoreCombo[]) => void) {
+
+        const dependencies: ThunderstoreCombo[] = [];
+        mods.forEach(value => {
+            const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
+            if (tsMod !== undefined) {
+                this.buildDependencySetUsingLatest(tsMod.getVersions()![0], allMods, dependencies);
+                const combo = new ThunderstoreCombo();
+                combo.setMod(tsMod);
+                combo.setVersion(tsMod.getVersions()![0])
+                dependencies.push(combo);
+            }
+        });
+
+        let downloadCount = 0;
+        const downloadableDependencySize = this.calculateInitialDownloadSize(ManagerSettings.getSingleton(), dependencies);
+
+        this.queueDownloadDependencies(ManagerSettings.getSingleton(), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+            if (status === StatusEnum.FAILURE) {
+                callback(0, modName, status, err);
+            } else if (status === StatusEnum.PENDING) {
+                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
+            } else if (status === StatusEnum.SUCCESS) {
+                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
+                downloadCount += 1;
+                if (downloadCount >= dependencies.length) {
+                    callback(100, modName, StatusEnum.PENDING, err);
+                    completedCallback([...dependencies]);
+                }
+            }
+        });
     }
 
     public static download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
