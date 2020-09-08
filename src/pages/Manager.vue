@@ -80,6 +80,24 @@
 				</button>
 			</template>
 		</modal>
+        <modal v-show="showDependencyStrings" @close-modal="showDependencyStrings = false;">
+            <template v-slot:title>
+                <p class='card-header-title'>Dependency string list</p>
+            </template>
+            <template v-slot:body>
+                <ul>
+                    <li v-for="(key, index) in localModList" :key="`dep-str-${index}`">
+                        {{key.getName()}}-{{key.getVersionNumber().toString()}}
+                    </li>
+                </ul>
+            </template>
+            <template v-slot:footer>
+                <button class="button is-info"
+                        @click="showDependencyStrings = false;">
+                    Close
+                </button>
+            </template>
+        </modal>
 		<modal v-show="showLaunchParameterModal === true" @close-modal="() => {showLaunchParameterModal = false;}">
 			<template v-slot:title>
 				<p class='card-header-title'>Set custom launch parameters</p>
@@ -542,6 +560,7 @@
 		dragAndDropText: string = 'Drag and drop file here to install mod';
 		showDragAndDropModal: boolean = false;
 		showUpdateAllModal: boolean = false;
+        showDependencyStrings: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1084,7 +1103,9 @@
                     break;
                 case "UpdateAllMods":
                     this.showUpdateAllModal = true;
-                    console.log("Update all");
+                    break;
+                case "ShowDependencyStrings":
+                    this.showDependencyStrings = true;
                     break;
             }
         }

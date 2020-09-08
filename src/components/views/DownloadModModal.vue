@@ -129,8 +129,8 @@
         @Prop()
         showDownloadModal: boolean = false;
 
-        @Prop({ default: false })
-        updateAllMods: boolean = true;
+        @Prop({default: true})
+        updateAllMods: boolean | undefined;
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList;
