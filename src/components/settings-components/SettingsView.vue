@@ -70,7 +70,7 @@
     export default class SettingsView extends Vue {
 
         private activeTab: string = 'All';
-        private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Other'];
+        private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
         private logOutput: LogOutput = LogOutput.getSingleton();
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
@@ -285,7 +285,15 @@
                         this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                     }
                 }
-            )
+            ),
+            new SettingsRow(
+                'Modpacks',
+                'Show dependency strings',
+                'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
+                () => `Show dependency strings for ${this.localModList.length} mod(s)`,
+                'fa-file-alt',
+                () => this.emitInvoke('ShowDependencyStrings')
+            ),
         ];
 
         @Watch('search')
