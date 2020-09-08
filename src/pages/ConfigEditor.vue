@@ -215,13 +215,11 @@
             this.updateConfigList();
 		}
 
-		getCommentDisplay(comments: string[]): string {
-			let split: string[] = [];
-			if (comments.length > 0) {
-				split = comments.reduce((x: string, y: string) => x + y).split('#');
-			}
-			return split.join('\n').trim();
-		}
+        getCommentDisplay(comments: string[]): string {
+            return comments.join("\n")
+                .replace(new RegExp("#+", "g"), "")
+                .trim();
+        }
 
         getSortOrderOptions() {
 		    return Object.values(SortConfigFile);
