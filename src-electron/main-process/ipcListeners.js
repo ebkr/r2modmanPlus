@@ -45,6 +45,11 @@ ipcMain.on('get-is-portable', ()=>{
     browserWindow.webContents.send('receive-is-portable', process.execPath.startsWith(os.tmpdir()));
 })
 
+ipcMain.on('restart', ()=>{
+    app.relaunch();
+    app.exit();
+})
+
 ipcMain.on('get-assets-path', ()=>{
     if (process.env.PROD) {
         browserWindow.webContents.send('receive-assets-path', global.__statics);

@@ -123,12 +123,22 @@
             new SettingsRow(
                 'Locations',
                 'Browse profile folder',
-                'Open the directory where mods are stored for the current profile.',
+                'Change the directory where mods and profiles are stored.',
                 () => {
                     return Profile.getActiveProfile().getPathOfProfile();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')
+            ),
+            new SettingsRow(
+                'Locations',
+                'Change data folder directory',
+                'Open the directory where mods are stored for the current profile. The folder will not be deleted, and existing profiles will not carry across.',
+                () => {
+                    return PathResolver.ROOT;
+                },
+                'fa-folder-open',
+                () => this.emitInvoke('ChangeDataFolder')
             ),
             new SettingsRow(
                 'Debugging',

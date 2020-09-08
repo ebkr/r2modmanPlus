@@ -244,8 +244,8 @@ export default class Splash extends Vue {
 
     async created() {
         ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
-            PathResolver.ROOT = path.join(appData, 'r2modmanPlus-local');
-            fs.ensureDirSync(PathResolver.ROOT);
+            PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
+            fs.ensureDirSync(PathResolver.APPDATA_DIR);
             ThemeManager.apply();
             Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {

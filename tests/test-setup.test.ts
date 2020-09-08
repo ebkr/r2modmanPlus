@@ -6,13 +6,13 @@ import Profile from '../src/model/Profile';
 export default class TestSetup {
 
     public static setUp() {
-        PathResolver.ROOT = '__test_data__';
+        PathResolver.APPDATA_DIR = '__test_data__';
         new Profile('Default');
     }
 
     public static tearDown() {
-        fs.emptyDirSync(PathResolver.ROOT);
-        fs.removeSync(PathResolver.ROOT);
+        fs.emptyDirSync(PathResolver.APPDATA_DIR);
+        fs.removeSync(PathResolver.APPDATA_DIR);
     }
 
 }

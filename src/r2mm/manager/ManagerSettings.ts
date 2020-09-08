@@ -32,9 +32,10 @@ export default class ManagerSettings {
     public darkTheme: boolean = false;
     public launchParameters: string = '';
     public ignoreCache: boolean = false;
+    public dataDirectory: string = PathResolver.APPDATA_DIR;
 
     public load(): R2Error | void {
-        configPath = path.join(PathResolver.ROOT, 'config');
+        configPath = path.join(PathResolver.APPDATA_DIR, 'config');
         configFile = path.join(configPath, 'conf.yml');
         fs.ensureDirSync(configPath);
         if (fs.existsSync(configFile)) {
@@ -49,6 +50,7 @@ export default class ManagerSettings {
                 this.darkTheme = parsedYaml.darkTheme;
                 this.launchParameters = parsedYaml.launchParameters || '';
                 this.ignoreCache = parsedYaml.ignoreCache || false;
+                this.dataDirectory = parsedYaml.dataDirectory || PathResolver.APPDATA_DIR;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -137,6 +139,11 @@ export default class ManagerSettings {
 
     public setIgnoreCache(ignore: boolean): R2Error | void {
         this.ignoreCache = ignore;
+        return this.save();
+    }
+
+    public setDataDirectory(dataDirectory: string): R2Error | void {
+        this.dataDirectory = dataDirectory;
         return this.save();
     }
 }

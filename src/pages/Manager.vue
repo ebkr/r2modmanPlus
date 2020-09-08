@@ -1045,6 +1045,28 @@
             this.view = 'installed';
         }
 
+        changeDataFolder() {
+            const dir: string = PathResolver.ROOT;
+            ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+                if (files !== null && files.length === 1) {
+                    const filesInDirectory = fs.readdirSync(files[0]);
+                    if (filesInDirectory.length > 0 && files[0] !== PathResolver.APPDATA_DIR) {
+                        this.showError(new R2Error("Selected directory is not empty", `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`, "Select an empty directory or create a new one."));
+                        return;
+                    } else {
+                        ManagerSettings.getSingleton().setDataDirectory(files[0]);
+                        ipcRenderer.send('restart');
+                    }
+                }
+            });
+            ipcRenderer.send('open-dialog', {
+                title: 'Select a new folder to store r2modman data',
+                defaultPath: dir,
+                properties: ['openDirectory'],
+                buttonLabel: 'Select Data Folder'
+            });
+        }
+
         handleSettingsCallbacks(invokedSetting: any) {
 		    switch(invokedSetting) {
 		        case "BrowseDataFolder":
@@ -1106,6 +1128,9 @@
                     break;
                 case "ShowDependencyStrings":
                     this.showDependencyStrings = true;
+                    break;
+                case "ChangeDataFolder":
+                    this.changeDataFolder();
                     break;
             }
         }
