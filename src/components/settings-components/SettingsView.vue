@@ -275,14 +275,16 @@
                 'Other',
                 'Refresh online mod list',
                 'Check for any new mod releases.',
-                () => "",
+                () => this.downloadingThunderstoreModList ? "Checking for new releases" : "",
                 'fa-exchange-alt',
                 () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
                         ThunderstorePackages.update()
-                            .then(_ => this.downloadingThunderstoreModList = false);
-                        this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                            .then(_ => {
+                                this.downloadingThunderstoreModList = false;
+                                this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                            });
                     }
                 }
             ),
