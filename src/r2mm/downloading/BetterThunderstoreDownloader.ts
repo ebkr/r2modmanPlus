@@ -26,7 +26,7 @@ export default class BetterThunderstoreDownloader {
         const foundDependencies = new Array<ThunderstoreCombo>();
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName()));
+            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
             if (!isUndefined(matchingProvider)) {
                 const version = new VersionNumber(dependency.substring(matchingProvider.getFullName().length + 1));
                 // Find ThunderstoreVersion with VersionNumber matching ${version}
@@ -55,7 +55,7 @@ export default class BetterThunderstoreDownloader {
         const foundDependencies = new Array<ThunderstoreCombo>();
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName()));
+            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
             if (!isUndefined(matchingProvider)) {
                 // Get latest version of dependency
                 const matchingVersion = matchingProvider.getVersions().reduce((one: ThunderstoreVersion, two: ThunderstoreVersion) => {
