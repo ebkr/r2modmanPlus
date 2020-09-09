@@ -39,10 +39,10 @@ If an update has been downloaded, it will be installed once you have closed the 
 ## Help
 ### Manager errors:
 1. Check the [wiki](https://github.com/ebkr/r2modmanPlus/wiki).
-2. If you can't find the solution, join the [modding discord server]() and ask for help in the **#tech-support** channel.
+2. If you can't find the solution, join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
 
 ### Mod errors:
-1. Join the [modding discord server]() and ask for help in the **#tech-support** channel.
+1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
 
 ## Feedback and suggestions
 Feedback can help r2modman become the best mod manager for Risk of Rain 2.
@@ -54,6 +54,15 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.29
+- Update all option in settings.
+- Improved dark theme.
+- RainOfStagesShared now installs correctly.
+- Refresh mod list setting now works as expected.
+- Config editor tooltips no longer produce extra lines.
+- Added the ability to change the data folder location.
+- Modpack helper to retrieve dependency strings.
+
 ### 3.0.28
 - Bug preventing RainOfStages from being uninstalled has been fixed.
 - Skin mods can now be disabled.
@@ -61,17 +70,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 ### 3.0.27
 - "Property join of null" error has now been resolved.
 - Prevents mods failing to install dependencies if BepInEx isn't resolved to be installed first.
-
-### 3.0.26
-- Fixed error thrown related to libraryfolders.vdf not being parsed.
-
-### 3.0.25
-- Installed mod list now has sort filters.
-- Thunderstore mod list can be updated via settings. No more having to restart!
-- Deprecated mod labels are now shown on the installed tab.
-- Configs can be sorted by last updated.
-- Exports with disabled mods are now properly disabled on import.
-- Other minor bug fixes.
 
 ## Screenshots
 
