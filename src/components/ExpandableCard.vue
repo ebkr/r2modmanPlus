@@ -1,6 +1,6 @@
 <template>
     <div class="border-at-bottom">
-        <div class='card is-shadowless' :class="{'disabled-card': !enabled, 'expanded-card': visible}">
+        <div class='card is-shadowless' :class="{'disabled-card': !enabled}">
             <a @click='toggleVisibility()'>
                 <header class='card-header is-shadowless' :id='id'>
                     <div class='card-header-icon mod-logo' v-if="image !== ''">
