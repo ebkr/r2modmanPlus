@@ -19,15 +19,15 @@
 									<span v-if="key.isPinned()" class='has-tooltip-left'
                                           data-tooltip='Pinned on Thunderstore'>
 										<span class="tag is-info">Pinned</span>&nbsp;
-										<span class="selectable">{{key.getName()}} by {{key.getOwner()}}</span>
+										<span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
 									</span>
                     <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
                           data-tooltip='This mod is potentially broken'>
 										<span class="tag is-danger">Deprecated</span>&nbsp;
-										<strike class="selectable">{{key.getName()}} by {{key.getOwner()}}</strike>
+										<strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
 									</span>
                     <span v-else class='selectable'>
-										{{key.getName()}} by {{key.getOwner()}}
+										{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
 									</span>
                 </template>
                 <template v-slot:other-icons>
@@ -38,14 +38,12 @@
 									</span>
                 </template>
                 <template v-slot:description>
-                    <p><strong>Last updated: {{getReadableDate(key.getDateUpdated())}}</strong></p>
+                    <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
                 </template>
                 <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
-                <div class='card-footer-item'>
-                    <Link :url="key.getPackageUrl()" :target="'external'">
-                        View on Thunderstore
-                    </Link>
-                </div>
+                <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
+                    View on Thunderstore
+                </Link>
                 <div class='card-footer-item non-selectable'>
                     <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
                 </div>
