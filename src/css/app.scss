@@ -1,6 +1,10 @@
 @charset "utf-8";
 @import "fontawesome-free-5.11.2/css/all.min.css";
 
+@import "bulma";
+@import "bulma-steps";
+@import "bulma-divider";
+@import "bulma-tooltip";
 .menu {
     display: block;
     padding: 1em;
