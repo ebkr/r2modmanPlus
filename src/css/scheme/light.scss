@@ -37,7 +37,7 @@ $content-heading-color               :           var(--content-heading-color    
 
 $notification-background-color       :           var(--notification-background-color       , $scheme-background);
 
-$card-background-color               :           var(--card-background-color               , #ffffff);
+$card-background-color               :           var(--card-background-color               , $scheme-background);
 $card-header-color                   :           var(--card-header-color                   , $scheme-text-strong);
 $card-color                          :           var(--card-color                          , $scheme-text);
 $card-footer-border-top              : 1px solid var(--card-footer-border-top              , $scheme-border);
@@ -55,8 +55,8 @@ $tabs-border-bottom-color            :           var(--tabs-border-bottom-color 
 $tabs-link-hover-border-bottom-color :           var(--tabs-link-hover-border-bottom-color , currentcolor);
 $tabs-link-active-border-bottom-color:           var(--tabs-link-active-border-bottom-color, currentcolor);
 
-$input-color                         :           var(--input-color                         , $scheme-text-strong  );
-$input-background-color              :           var(--input-background-color              , #ffffff  );
+$input-color                         :           var(--input-color                         , $scheme-text-strong);
+$input-background-color              :           var(--input-background-color              , $scheme-background);
 $input-placeholder-color             :           var(--input-placeholder-color             , #3636364d);
 $input-border-color                  :           var(--input-border-color                  , $scheme-border);
 $input-hover-border-color            :           var(--input-hover-border-color            , $scheme-border-hover);

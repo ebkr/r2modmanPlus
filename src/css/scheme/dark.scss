@@ -30,7 +30,6 @@
     
     --code-background                   : #{$night-2};
 
-    --card-background-color             : var(--background); // inherit from background color
     --card-header-color                 : #{$night-d};
     --card-color                        : #{$night-b};
 
@@ -44,7 +43,6 @@
     --tabs-link-active-color            : #{$primary-2};
 
     --input-color                       : #{$night-d};
-    --input-background-color            : var(--background); // inherit from background color
     --input-placeholder-color           : #{rgba($night-d, 0.3)};
     --input-focus-border-color          : #{$primary-2};
     --input-disabled-color              : #{$night-b};
