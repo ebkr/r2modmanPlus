@@ -23,9 +23,11 @@ $hr-background-color                 :           var(--hr-background-color      
 $button-color                        :           var(--button-color                        , $scheme-text-strong);
 $button-background-color             :           var(--button-background-color             , $scheme-background);
 $button-border-color                 :           var(--button-border-color                 , $scheme-border);
+$button-hover-color                  :           var(--button-hover-color                  , $button-color);
 $button-hover-border-color           :           var(--button-hover-border-color           , $scheme-border-hover);
 $button-active-color                 :           var(--button-active-color                 , $button-color);
 $button-active-border-color          :           var(--button-active-border-color          , $scheme-border-active);
+$button-disabled-color               :           var(--button-disabled-color               , $button-color);
 $button-disabled-background-color    :           var(--button-disabled-background-color    , $button-background-color);
 $button-disabled-border-color        :           var(--button-disabled-border-color        , $button-border-color);
 

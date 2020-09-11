@@ -21,6 +21,10 @@ a {
     }
 }
 
+.button[disabled], fieldset[disabled] .button {
+    color: $button-disabled-color;
+}
+
 select {
     color: $select-color;
     background-color: $select-background-color;
