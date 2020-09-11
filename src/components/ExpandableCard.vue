@@ -1,7 +1,7 @@
 <template>
     <div class="border-at-bottom">
         <div class='card is-shadowless'>
-            <a @click='toggleVisibility()'>
+            <div @click='toggleVisibility()' class='cursor-pointer'>
                 <header class='card-header is-shadowless' :id='id'>
                     <div class='card-header-icon' v-if="image !== ''">
                         <figure class='image is-48x48 image-parent'>
@@ -12,18 +12,12 @@
                     <span class='card-header-title'><slot name='title'></slot></span>
                     <slot name='other-icons'></slot>
                     <!-- Allow movement of mod order -->
-                    <a class='card-header-icon' v-if="manualSortUp && showSort" v-on:click.stop.prevent="emitMove('Up')">
+                    <a v-if='showSort' class='card-header-icon' :class='{ "disabled": !manualSortUp }' v-on:click.stop.prevent="manualSortUp && emitMove('Up')">
                         <i class="fas fa-angle-double-up"></i>
                     </a>
-                    <span class='card-header-icon' :class="{'has-text-grey-lighter': !darkTheme, 'has-text-grey-dark': darkTheme}" v-else-if="showSort">
-                        <i class="fas fa-angle-double-up"></i>
-                    </span>
-                    <a class='card-header-icon' v-if="manualSortDown && showSort" v-on:click.stop.prevent="emitMove('Down')">
+                    <a v-if='showSort' class='card-header-icon' :class='{ "disabled": !manualSortDown }' v-on:click.stop.prevent="manualSortDown && emitMove('Down')">
                         <i class="fas fa-angle-double-down"></i>
                     </a>
-                    <span class='card-header-icon' :class="{'has-text-grey-lighter': !darkTheme, 'has-text-grey-dark': darkTheme}" v-else-if="showSort">
-                        <i class="fas fa-angle-double-down"></i>
-                    </span>
                     <a class='card-header-icon'>
                         <span class='icon'>
                             <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible'></i>
@@ -31,7 +25,7 @@
                         </span>
                     </a>
                 </header>
-            </a>
+            </div>
             <div class='card-content' v-show='visible' v-if="description !== ''">
                 <div class='content'>
                     <p>{{description}}</p>

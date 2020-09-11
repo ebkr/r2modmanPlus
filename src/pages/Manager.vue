@@ -247,7 +247,7 @@
 			<div class='column is-three-quarters'>
 				<div v-show="view === 'online'">
 					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
-						<div class='card is-shadowless'>
+						<div class='card is-shadowless is-square'>
 							<div class='card-header-title'>
                                 <div class="input-group input-group--flex margin-right">
                                     <label for="thunderstore-search-filter">Search</label>

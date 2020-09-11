@@ -19,17 +19,9 @@ import * as path from 'path';
 export default class App extends Vue {
 
     created() {
-        ipcRenderer.once('receive-assets-path', (_sender: any, dir: string) => {
-            const node = document.getElementById('darkThemeStyle');
-            if (isNull(node)) {
-                const darkThemeStyle = fs.readFileSync(path.join(dir, 'superhero.bulma.css')).toString();
-                const node = document.createElement('style') as HTMLStyleElement;
-                node.setAttribute('id', 'darkThemeStyle');
-                node.innerText = darkThemeStyle;
-                document.head.appendChild(node);
-            }
-        })
-        ipcRenderer.send('get-assets-path');
+        this.$watch('$q.dark.isActive', () => {
+            document.documentElement.classList.toggle('html--dark', this.$q.dark.isActive);
+        });
     }
 
 }

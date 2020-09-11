@@ -2,7 +2,7 @@
     <div>
 
         <div class='sticky-top sticky-top--search border-at-bottom'>
-            <div class='card is-shadowless'>
+            <div class='card is-shadowless is-square'>
                 <div class='card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">

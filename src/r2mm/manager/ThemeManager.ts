@@ -1,23 +1,11 @@
+import { Dark } from "quasar";
 import ManagerSettings from "./ManagerSettings";
-import { isNull, isUndefined } from "util";
-
-let darkThemeNode: any = undefined;
 
 export default class ThemeManager {
 
-    public static apply() {
+    public static apply () {
         const settings = ManagerSettings.getSingleton();
-        if (!settings.darkTheme) {
-            const node = document.getElementById('darkThemeStyle');
-            if (!isNull(node)) {
-                darkThemeNode = node;
-                node.remove();
-            }
-        } else {
-            if (!isUndefined(darkThemeNode)) {
-                document.head.appendChild(darkThemeNode);
-            }
-        }
+        Dark.set(settings.darkTheme);
     }
 
 }

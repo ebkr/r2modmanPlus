@@ -1,0 +1,60 @@
+:root.html--dark {
+    // dark theme palette
+    $night-1  : #1f2d3b;
+    $night-2  : #283850;
+    $night-3  : #3a4958;
+    $night-4  : #495b6d;
+    $night-5  : #546a80;
+    $night-9  : #90a5bd;
+    $night-b  : #bdcbdb;
+    $night-c  : #cedef1;
+    $night-d  : #d9e3ee;
+    $night-e  : #e6eff8;
+    $primary-1: #3273dc;
+    $primary-2: #5596ff;
+    
+    // overriding variables with dark theme colors
+    
+    --background                        : #{$night-1};
+    --text                              : #{$night-c};
+    --link                              : #{$primary-2};
+    --link-hover                        : #{$night-e};
+    --shadow                            : #00000080;
+    --border                            : #{$night-3};
+    --border-hover                      : #{$night-5};
+    --border-active                     : #{$night-9};
+
+    --text-strong                       : #{$night-e};
+    
+    --hr-background-color               : #{$night-2};
+    
+    --code-background                   : #{$night-2};
+
+    --card-background-color             : var(--background); // inherit from background color
+    --card-header-color                 : #{$night-d};
+    --card-color                        : #{$night-b};
+
+    --menu-item-color                   : #{$night-b};
+    --menu-item-hover-background-color  : #{$night-2};
+    --menu-item-hover-color             : #{$night-d};
+    --menu-label-color                  : #{$night-9};
+
+    --tabs-link-color                   : #{$night-b};
+    --tabs-link-hover-color             : #{$night-d};
+    --tabs-link-active-color            : #{$primary-2};
+
+    --input-color                       : #{$night-d};
+    --input-background-color            : var(--background); // inherit from background color
+    --input-placeholder-color           : #{rgba($night-d, 0.3)};
+    --input-focus-border-color          : #{$primary-2};
+    --input-disabled-color              : #{$night-b};
+    --input-disabled-background-color   : #{$night-2};
+    --input-disabled-border-color       : #{$night-2};
+    --input-disabled-placeholder-color  : #{rgba($night-b, 0.3)};
+
+    --pagination-color                  : #{$night-e};
+    --pagination-hover-color            : #{$night-e};
+    --pagination-focus-color            : #{$night-e};
+
+    --panel-block-hover-background-color: #{$night-2};
+}
