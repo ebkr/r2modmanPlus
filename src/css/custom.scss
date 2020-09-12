@@ -9,11 +9,9 @@ body.body--dark {
 
 a {
     color: $scheme-link;
-    &:not(.disabled):not([disabled]) {
-        &:hover, &:focus {
-            color: $scheme-link-hover; 
-        } 
-    }
+    &:hover, &:focus {
+        color: $scheme-link-hover; 
+    } 
     
     &.disabled, &[disabled] {
         color: $scheme-link;
