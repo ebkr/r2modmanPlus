@@ -129,7 +129,8 @@
                 :manualSortUp="index > 0"
                 :manualSortDown="index < searchableModList.length - 1"
                 :darkTheme="settings.darkTheme"
-                :expandedByDefault="settings.expandedCards">
+                :expandedByDefault="settings.expandedCards"
+                :enabled="key.isEnabled()">
                 <template v-slot:title>
                     <span :class="['selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
                         <span v-if="key.isDeprecated()" class="tag is-danger">
@@ -138,12 +139,14 @@
                         <span v-if="!key.isEnabled()" class="tag is-warning">
                             Disabled
                         </span>&nbsp;
-                        <template v-if="key.isEnabled()">
-                            {{key.getDisplayName()}} by {{key.getAuthorName()}}
-                        </template>
-                        <template v-else>
-                            <strike class='selectable'>{{key.getDisplayName()}} by {{key.getAuthorName()}}</strike>
-                        </template>
+                        <span class="card-title">
+                            <template v-if="key.isEnabled()">
+                                {{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span>
+                            </template>
+                            <template v-else>
+                                <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
+                            </template>
+                        </span>
                     </span>
                 </template>
                 <template v-slot:other-icons>
@@ -166,13 +169,12 @@
                     <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                 </template>
                 <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
-                <span class='card-footer-item'>
-										<i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
-										<Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
-                                              :target="'external'">
-											{{key.getVersionNumber().toString()}}
-										</Link>
-									</span>
+                <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
+                      :target="'external'"
+                      class="card-footer-item">
+                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
+                        {{key.getVersionNumber().toString()}}
+                </Link>
                 <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
                 <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
                    @click="downloadDependency(getMissingDependencies(key)[0])">

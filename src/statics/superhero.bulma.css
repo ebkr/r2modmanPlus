@@ -52,6 +52,20 @@
     background-color: #1f2d3b;
 }
 
+.card-footer-item:not(.non-selectable)::before {
+    border-color: #374765;
+}
+
+.card-footer-item:not(.non-selectable):hover::before, 
+.card-footer-item:not(.non-selectable):active::before, 
+.card-footer-item:not(.non-selectable):focus::before {
+    background: #374765;
+}
+
+.card-byline, .card-timestamp {
+    color: #86919e;
+}
+
 .button, .input, .pagination-link, .notification {
     border-radius: 4px;
 }

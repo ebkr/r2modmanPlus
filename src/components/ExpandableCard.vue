@@ -1,9 +1,9 @@
 <template>
     <div class="border-at-bottom">
-        <div class='card is-shadowless'>
+        <div class='card is-shadowless' :class="{'disabled-card': !enabled}">
             <a @click='toggleVisibility()'>
                 <header class='card-header is-shadowless' :id='id'>
-                    <div class='card-header-icon' v-if="image !== ''">
+                    <div class='card-header-icon mod-logo' v-if="image !== ''">
                         <figure class='image is-48x48 image-parent'>
                             <img :src='image' alt='Mod Logo' class='image-overlap'/>
                             <img v-if="funkyMode" src='../assets/funky_mode.png' alt='Mod Logo' class='image-overlap'/>
@@ -79,6 +79,9 @@ export default class ExpandableCard extends Vue {
 
     @Prop({default: false})
     darkTheme: boolean | undefined;
+
+    @Prop({default: true})
+    enabled: boolean | undefined;
 
     // Keep track of visibility
     visible: boolean | undefined = false;
