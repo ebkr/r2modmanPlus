@@ -52,6 +52,10 @@
     background-color: #1f2d3b;
 }
 
+.card-footer-item:not(.non-selectable)::before {
+    border-color: #374765;
+}
+
 .card-footer-item:not(.non-selectable):hover::before, 
 .card-footer-item:not(.non-selectable):active::before, 
 .card-footer-item:not(.non-selectable):focus::before {
@@ -59,7 +63,7 @@
 }
 
 .card-byline, .card-timestamp {
-    color: #7e8a98;
+    color: #86919e;
 }
 
 .button, .input, .pagination-link, .notification {
