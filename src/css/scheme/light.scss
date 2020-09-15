@@ -1,11 +1,14 @@
 // custom vars
 $scheme-background: var(--background, #ffffff);
 $scheme-text: var(--text, #4a4a4a);
+$scheme-text-secondary: var(--text-secondary, #6b6464);
 $scheme-text-strong: var(--text-strong, #363636);
-$scheme-link: var(--link, #3273dc);
+$scheme-primary: var(--scheme-primary, #3273dc);
+$scheme-link: var(--link, $scheme-primary);
 $scheme-link-hover: var(--link-hover, $scheme-text-strong);
 $scheme-shadow: var(--shadow, #0000003b);
 $scheme-border: var(--border, #dbdbdb);
+$scheme-border-secondary: var(--border-secondary, #efefef);
 $scheme-border-hover: var(--border-hover, #b5b5b5);
 $scheme-border-active: var(--border-active, #4a4a4a);
 
@@ -18,7 +21,7 @@ $strong-color: $scheme-text-strong;
 $title-color: var(--title-color, $scheme-text-strong);
 $subtitle-color: var(--subtitle-color, $scheme-text);
 
-$hr-background-color: var(--hr-background-color, #f5f5f5);
+$hr-background-color: var(--hr-background-color, $scheme-border-secondary);
 
 $button-color: var(--button-color, $scheme-text-strong);
 $button-background-color: var(--button-background-color, $scheme-background);
@@ -63,7 +66,7 @@ $input-hover-border-color: var(--input-hover-border-color, $scheme-border-hover)
 $input-focus-border-color: var(--input-focus-border-color, #3273dc);
 $input-disabled-color: var(--input-disabled-color, #7a7a7a);
 $input-disabled-background-color: var(--input-disabled-background-color, #f5f5f5);
-$input-disabled-border-color: var(--input-disabled-border-color, #f5f5f5);
+$input-disabled-border-color: var(--input-disabled-border-color, $scheme-border-secondary);
 $input-disabled-placeholder-color: var(--input-disabled-placeholder-color, #7a7a7a4a);
 
 $pagination-color: var(--pagination-color, $scheme-text-strong);
