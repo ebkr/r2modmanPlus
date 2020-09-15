@@ -164,7 +164,7 @@
 					this.variables[section] = {};
 					comments = [];
 				} else if (!line.trim().startsWith('#') && line.search('=') > 0) {
-					const sides = line.split('=');
+					const sides = line.split('=', 2);
 					this.variables[section][sides[0].trim()] = new ConfigLine(sides[1].trim(), comments);
 					comments = [];
 				} else if (line.trim().startsWith('#')) {
