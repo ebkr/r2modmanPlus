@@ -29,7 +29,7 @@
           <nav class='level' v-if="isOffline">
             <div class='level-item'>
               <a class='button is-info' @click="continueOffline()">Continue offline</a>&nbsp;
-              <a class='button is-dark' @click="retryConnection()">Try to reconnect</a>
+              <a class='button' @click="retryConnection()">Try to reconnect</a>
             </div>
             <br/><br/>
           </nav>
