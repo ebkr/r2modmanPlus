@@ -1,0 +1,263 @@
+// fix color vars that we can't override
+html {
+    background-color: $scheme-background;
+}
+
+body.body--dark {
+    color: $scheme-text;
+}
+
+a {
+    color: $scheme-link;
+    &:hover, &:focus {
+        color: $scheme-link-hover; 
+    } 
+    
+    &.disabled, &[disabled] {
+        color: $scheme-link;
+        opacity: 0.4 !important;
+    }
+}
+
+.button[disabled], fieldset[disabled] .button {
+    color: $button-disabled-color;
+}
+
+select {
+    color: $select-color;
+    background-color: $select-background-color;
+    border-color: $select-border-color;
+    &:not(.disabled):not([disabled]) {
+        &:hover, &:focus {
+            border-color: $select-hover-border-color; 
+        } 
+    }
+}
+
+.menu-list a.is-active {
+    color: $menu-item-active-color;
+}
+
+.pagination-link.is-current {
+    background-color: $pagination-current-background-color;
+    border-color: $pagination-current-border-color !important;
+    color: $pagination-current-color !important;
+}
+
+// custom
+.menu {
+    display: block;
+    padding: 1em;
+    position: sticky;
+    top: 0;
+}
+
+.margin-right {
+    margin-right: 1em;
+}
+
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1em;
+    box-shadow: 1px 1px 3px 0 $scheme-shadow;
+}
+.sticky-top--buttons {
+    z-index: 101;
+    float: right;
+    padding: 0.7em;
+    box-shadow: 0 0 0 0 transparent;
+}
+.sticky-top--search {
+    background-color: inherit;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    box-shadow: unset;
+}
+
+.border-at-bottom {
+    border-bottom: 1px solid $scheme-border;
+}
+
+.image-parent {
+    position: relative;
+}
+.image-overlap {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.card {
+    border: 0 !important;
+}
+
+.disabled-card {
+    .mod-logo, .card-title, .card-content {
+        opacity: 0.6;
+    }
+}
+
+.card-footer-borderless, .card-footer-borderless .card-footer-item {
+    border: none !important;
+    // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
+    position: relative;
+    z-index: 1;
+}
+
+.card-footer-item:not(.non-selectable) {
+
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        z-index: -1;
+        background-color: transparent;
+        border: 1px solid $scheme-border-secondary;
+        border-radius: 4px;
+    }
+
+    &:hover, &:active, &:focus {
+        color: #ffffff;
+        &::before {
+            background-color: $scheme-primary;
+            border: 0;
+        }
+    }
+}
+
+.card-byline, .card-timestamp {
+    color:$scheme-text-secondary;
+}
+
+.card-timestamp strong {
+    color: inherit;
+}
+
+.is-text {
+    color: inherit;
+    &--bold {
+        font-weight: 500;
+    }
+}
+
+.scrollable {
+    position: relative;
+    max-height: 100%;
+}
+
+.select--content-spacing {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.card {
+    border-radius: 4px;
+}
+
+.is-square {
+    border-radius: 0;
+}
+
+.subtitle {
+    background-color: inherit;
+}
+
+.card-footer > .button {
+    margin: 0.5em 0 0.5em 0.5em;
+}
+
+.pagination {
+    position: fixed;
+    background-color: $scheme-background;
+    width: 75vw;
+    z-index: 10;
+    padding: 1em;
+    bottom: 0;
+    border-top: 1px solid $scheme-border;
+}
+
+.pagination--invisible {
+    visibility: hidden;
+}
+
+.smaller-font {
+    font-size: 0.9em;
+}
+
+.in-mod-list {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+select {
+    border-radius: 4px;
+}
+
+.non-selectable, .non-selectable *, button, a  {
+    user-select: none;
+}
+
+.selectable {
+    user-select: text;
+}
+
+.file-drop {
+    position: fixed;
+    z-index: 998;
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent;
+    vertical-align: middle;
+}
+
+.panel-heading {
+    border-bottom: 1px solid lightgray;
+}
+
+.settings-panel {
+    padding-top: 1em !important;
+    padding-bottom: 1em !important;
+
+    &__content > * {
+        line-height: 1.5em !important;
+    }
+}
+
+.tabs {
+    margin-bottom: 0 !important;
+}
+
+.no-break {
+    word-break: keep-all;
+    white-space: nowrap;
+}
+
+.input-group {
+
+    &--flex {
+        flex: 1;
+    }
+
+    display: block;
+    white-space: nowrap;
+
+    & label {
+        display: block;
+        font-size: 0.9em;
+        opacity: 0.8;
+        margin-bottom: 0.2em;
+    }
+}
+
+select[disabled] {
+    opacity: 0.3 !important;
+    color: gray;
+}
