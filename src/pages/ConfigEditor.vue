@@ -73,7 +73,7 @@
 										<hr/>
 										<div v-for='(vars, key) in variables' :key="`section-${key}`">
 											<br/>
-											<h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
+											<h5 :id="`section-${key}`" class='subtitle subtitle--is-background is-5 sticky-top'>[{{key}}]</h5>
 											<div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
 												<div class='field has-addons has-tooltip-top has-tooltip-multiline'
 												     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">

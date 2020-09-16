@@ -167,6 +167,10 @@ select {
 
 .subtitle {
     background-color: inherit;
+
+    &--is-background {
+        background-color: $scheme-background;
+    }
 }
 
 .card-footer > .button {
