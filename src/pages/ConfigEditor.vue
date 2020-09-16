@@ -49,25 +49,25 @@
 										<template v-slot:title>
 											<span>{{file.name}}</span>
 										</template>
-										<a class='card-footer-item' @click="editFile(file.name)">Edit Config</a>
-										<a class='card-footer-item' @click="deleteConfig(file.name)">Delete</a>
+										<a class='card-footer-item' @click="editFile(file)">Edit Config</a>
+										<a class='card-footer-item' @click="deleteConfig(file.getPath())">Delete</a>
 									</expandable-card>
 								</div>
 							</div>
-							<div class='container' v-else>
+							<div class='container' v-else-if="editing && loadedFile.getPath().toLowerCase().endsWith('.cfg')">
 								<div>
 									<div class='sticky-top sticky-top--buttons'>
 										<button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
-										<button class='button is-danger' @click="editing = false; this.updateConfigList();">Cancel</button>
+										<button class='button is-danger' @click="editing = false; updateConfigList();">Cancel</button>
 									</div>
 									<br/>
-									<h4 class='title is-4'>{{loadedFile}}</h4>
+									<h4 class='title is-4'>{{loadedFile.getName()}}</h4>
 									<div>
 										<h5 class='subtitle is-5'>Sections</h5>
 										<ul>
 											<li v-for='(_, key) in variables' :key="`section-link-${key}`">
 												<a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
-												<a :href="`#section-${key}`" v-else>{{[UNTITLED]}}</a>
+												<a :href="`#section-${key}`" v-else>[UNTITLED]</a>
 											</li>
 										</ul>
 										<hr/>
@@ -75,7 +75,7 @@
 											<br/>
 											<h5 :id="`section-${key}`" class='subtitle is-5 sticky-top'>[{{key}}]</h5>
 											<div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
-												<div class='field has-addons has-tooltip-top'
+												<div class='field has-addons has-tooltip-top has-tooltip-multiline'
 												     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
 													<div class='control is-expanded'>
 														<input class='input' type='text' :value="varName" width="250"
@@ -93,6 +93,15 @@
 									</div>
 								</div>
 							</div>
+                            <div class='container' v-else-if="editing">
+                                <div class='sticky-top sticky-top--buttons'>
+                                    <button class='button is-info' @click="saveFreeText">Save changes</button>&nbsp;
+                                    <button class='button is-danger' @click="editing = false; updateConfigList();">Cancel</button>
+                                </div>
+                                <br/>
+                                <h4 class='title is-4'>{{loadedFile.getName()}}</h4>
+                                <QuillEditor v-model="fileText" @input="updateFreeText"/>
+                            </div>
 						</div>
 					</div>
 				</article>
@@ -120,17 +129,20 @@
     import { SortDirection } from '../model/real_enums/sort/SortDirection';
     import ConfigSort from '../r2mm/configs/ConfigSort';
 
+    import QuillEditor from '../components/QuillEditor.vue';
+
     @Component({
 		components: {
 			'hero': Hero,
-			'expandable-card': ExpandableCard
+			'expandable-card': ExpandableCard,
+            QuillEditor
 		}
 	})
 	export default class ConfigEditor extends Vue {
 
 		private shownConfigFiles: ConfigFile[] = [];
 		private configFiles: ConfigFile[] = [];
-		private loadedFile: string = '';
+		private loadedFile: ConfigFile | null = null;
 		private fileText: string = '';
 
 		private editing: boolean = false;
@@ -149,34 +161,36 @@
 		    return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
         }
 
-		editFile(fileName: string) {
+		editFile(file: ConfigFile) {
 			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
-			this.loadedFile = fileName;
-			this.fileText = fs.readFileSync(path.join(configLocation, `${fileName}.cfg`)).toString();
+			this.loadedFile = file;
+			this.fileText = fs.readFileSync(file.getPath()).toString();
 
-			// Find all variables offered within config script.
-			this.variables = {};
-			let section = 'root';
-			let comments: string[] = [];
-			this.fileText.split('\n').forEach((line: string) => {
-				if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
-					section = line.trim().substring(1, line.trim().length - 1);
-					this.variables[section] = {};
-					comments = [];
-				} else if (!line.trim().startsWith('#') && line.search('=') > 0) {
-					const sides = line.split('=');
-					this.variables[section][sides[0].trim()] = new ConfigLine(sides[1].trim(), comments);
-					comments = [];
-				} else if (line.trim().startsWith('#')) {
-					comments.push(line.trim());
-				}
-			});
+			if (file.getPath().toLowerCase().endsWith(".cfg")) {
+                // Find all variables offered within config script.
+                this.variables = {};
+                let section = 'root';
+                let comments: string[] = [];
+                this.fileText.split('\n').forEach((line: string) => {
+                    if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
+                        section = line.trim().substring(1, line.trim().length - 1);
+                        this.variables[section] = {};
+                        comments = [];
+                    } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
+                        const sides = line.split('=');
+                        const rightSide = sides.splice(1).join("=");
+                        this.variables[section][sides[0].trim()] = new ConfigLine(rightSide.trim(), comments);
+                        comments = [];
+                    } else if (line.trim().startsWith('#')) {
+                        comments.push(line.trim());
+                    }
+                });
+            }
 			window.scrollTo(0, 0);
 			this.editing = true;
 		}
 
 		saveChanges() {
-			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
 			let builtString = '';
 			let section = 'root';
 			this.fileText.split('\n').forEach((line: string) => {
@@ -190,7 +204,7 @@
 					builtString += line + '\n';
 				}
 			});
-			fs.writeFileSync(path.join(configLocation, `${this.loadedFile}.cfg`), builtString.trim());
+			fs.writeFileSync(this.loadedFile!.getPath(), builtString.trim());
 			window.scrollTo(0, 0);
 			this.editing = false;
             this.updateConfigList();
@@ -209,9 +223,7 @@
 		}
 
 		deleteConfig(fileName: string) {
-			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
-			const filePath: string = path.join(configLocation, `${fileName}.cfg`);
-			fs.removeSync(filePath);
+			fs.removeSync(fileName);
             this.updateConfigList();
 		}
 
@@ -240,9 +252,12 @@
                 const tree: BepInExTree | R2Error = BepInExTree.buildFromLocation(configLocation);
                 if (tree instanceof BepInExTree) {
                     tree.getRecursiveFiles().forEach(file => {
-                        if (path.extname(file).toLowerCase() === '.cfg') {
+                        if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt' || path.extname(file).toLowerCase() === '.xml') {
                             const fileStat = fs.lstatSync(file);
                             this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
+                        } else if (path.extname(file).toLowerCase() === '.json') {
+                            const fileStat = fs.lstatSync(file);
+                            this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 5), file, fileStat.mtime));
                         }
                     });
                 } else {
@@ -250,6 +265,17 @@
                 }
             }
             this.textChanged();
+        }
+
+        updateFreeText(text: string) {
+		    this.fileText = text;
+        }
+
+        saveFreeText() {
+            fs.writeFileSync(this.loadedFile!.getPath(), this.fileText);
+            window.scrollTo(0, 0);
+            this.editing = false;
+            this.updateConfigList();
         }
 
 	}
