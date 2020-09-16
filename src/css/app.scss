@@ -57,7 +57,7 @@
     }
 }
 
-.card .card-footer, .card .card-footer-item {
+.card-footer-borderless, .card-footer-borderless .card-footer-item {
     border: none !important;
     // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
     position: relative;

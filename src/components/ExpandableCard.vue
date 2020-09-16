@@ -38,7 +38,7 @@
                     <slot name='description'></slot>
                 </div>
             </div>
-            <footer class='card-footer' v-show='visible'>
+            <footer class='card-footer card-footer-borderless' v-show='visible'>
                 <slot></slot>
                 <div class="is-divider"></div>
             </footer>
