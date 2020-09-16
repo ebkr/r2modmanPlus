@@ -10,9 +10,9 @@ body.body--dark {
 a {
     color: $scheme-link;
     &:hover, &:focus {
-        color: $scheme-link-hover; 
-    } 
-    
+        color: $scheme-link-hover;
+    }
+
     &.disabled, &[disabled] {
         color: $scheme-link;
         opacity: 0.4 !important;
@@ -29,8 +29,8 @@ select {
     border-color: $select-border-color;
     &:not(.disabled):not([disabled]) {
         &:hover, &:focus {
-            border-color: $select-hover-border-color; 
-        } 
+            border-color: $select-hover-border-color;
+        }
     }
 }
 
@@ -260,4 +260,30 @@ select {
 select[disabled] {
     opacity: 0.3 !important;
     color: gray;
+}
+
+[data-tooltip]::before {
+    max-width: 90vw !important;
+    width: 90vw !important;
+    white-space: pre-wrap !important;
+}
+
+.ql-editor {
+    counter-reset: line;
+    padding-left: 0;
+    font-size: 1rem;
+
+    * {
+        line-height: 0.8em;
+    }
+}
+
+.ql-editor p:before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    border-right: 1px solid $scheme-border;
+    padding: 0 .5em;
+    margin-right: .5em;
+    color: $scheme-text;
 }
