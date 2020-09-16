@@ -264,7 +264,7 @@ select[disabled] {
 
 [data-tooltip]::before {
     max-width: 90vw !important;
-    width: 90vw !important;
+    width: max-content !important;
     white-space: pre-wrap !important;
 }
 
