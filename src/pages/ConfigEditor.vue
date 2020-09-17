@@ -42,17 +42,13 @@
 
                                     </div>
                                 </div>
-								<div v-for='(file, index) in sortedConfigFiles' :key="`config-file-${file.name}`">
-									<expandable-card
-											:id="index"
-											:visible="false">
-										<template v-slot:title>
-											<span>{{file.name}}</span>
-										</template>
-										<a class='card-footer-item' @click="editFile(file)">Edit Config</a>
-										<a class='card-footer-item' @click="deleteConfig(file.getPath())">Delete</a>
-									</expandable-card>
-								</div>
+								<config-card v-for='(file, index) in sortedConfigFiles' 
+									:key="`config-file-${file.name}`"
+									:id="index"
+									:title="file.name"
+									@click="editFile(file)"
+									@delete="deleteConfig(file.getPath())">
+								</config-card>
 							</div>
 							<div class='container' v-else-if="editing && loadedFile.getPath().toLowerCase().endsWith('.cfg')">
 								<div>
@@ -113,7 +109,7 @@
 <script lang='ts'>
     import Vue from 'vue';
     import { Component, Watch } from 'vue-property-decorator';
-    import { ExpandableCard, Hero } from '../components/all';
+    import { ExpandableCard, Hero, ConfigCard } from '../components/all';
 
     import Profile from 'src/model/Profile';
     import ConfigFile from 'src/model/file/ConfigFile';
@@ -135,6 +131,7 @@
 		components: {
 			'hero': Hero,
 			'expandable-card': ExpandableCard,
+			'config-card': ConfigCard,
             QuillEditor
 		}
 	})

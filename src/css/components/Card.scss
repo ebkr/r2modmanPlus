@@ -1,0 +1,62 @@
+@mixin button-hover-effect ($margin: 10px, $is-border: false) {
+    // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
+    position: relative;
+	z-index: 1;
+	
+    &::before {
+        content: "";
+        display: block;
+		position: absolute;
+        top: $margin;
+        left: $margin;
+        width: calc(100% - #{$margin * 2});
+        height: calc(100% - #{$margin * 2});
+        z-index: -1;
+        background-color: transparent;
+        border: 1px solid $scheme-border-secondary;
+        border-radius: 4px;
+    }
+
+    &:hover, &:active, &:focus {
+        color: #ffffff;
+        &::before {
+			@if $is-border {
+				border-color: $scheme-border-hover;
+				
+			} @else {
+				background-color: $scheme-primary;
+				border: 0;
+			}
+		}
+    }
+}
+
+.card {
+	&--is-disabled {
+		.mod-logo, .card-title, .card-content {
+			opacity: 0.6;
+		}
+	}
+	
+	&--is-clickable {
+		display: block;
+		padding: 8px;
+		@include button-hover-effect($margin: 4px, $is-border: true);
+	}
+}
+
+.card-footer-borderless, .card-footer-borderless .card-footer-item {
+    border: none !important;
+}
+
+.card-footer-item:not(.non-selectable) {
+	@include button-hover-effect;
+}
+
+.card-byline, .card-timestamp {
+    color:$scheme-text-secondary;
+}
+
+.card-timestamp strong {
+    color: inherit;
+}

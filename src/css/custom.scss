@@ -90,55 +90,7 @@ select {
     left: 0;
 }
 
-.card {
-    border: 0 !important;
-}
-
-.disabled-card {
-    .mod-logo, .card-title, .card-content {
-        opacity: 0.6;
-    }
-}
-
-.card-footer-borderless, .card-footer-borderless .card-footer-item {
-    border: none !important;
-    // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
-    position: relative;
-    z-index: 1;
-}
-
-.card-footer-item:not(.non-selectable) {
-
-    &::before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        z-index: -1;
-        background-color: transparent;
-        border: 1px solid $scheme-border-secondary;
-        border-radius: 4px;
-    }
-
-    &:hover, &:active, &:focus {
-        color: #ffffff;
-        &::before {
-            background-color: $scheme-primary;
-            border: 0;
-        }
-    }
-}
-
-.card-byline, .card-timestamp {
-    color:$scheme-text-secondary;
-}
-
-.card-timestamp strong {
-    color: inherit;
-}
+@import "components/Card";
 
 .is-text {
     color: inherit;
