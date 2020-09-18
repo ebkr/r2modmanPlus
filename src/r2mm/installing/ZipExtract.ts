@@ -4,6 +4,7 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import * as fs from 'fs-extra';
 import * as unzipper from 'unzipper';
 import * as path from 'path';
+import AdmZip from 'adm-zip';
 
 export default class ZipExtract {
 
@@ -22,26 +23,34 @@ export default class ZipExtract {
                 } finally {
                     callback(result);
                 }
+            } else {
+                try {
+                    // Clear from cache as failed.
+                    fs.rmdirSync(path.join(zipFolder, outputFolderName));
+                    fs.rmdirSync(path.join(zipFolder, filename));
+                } catch(e) {
+                    // Ignore for now
+                } finally {
+                    callback(result);
+                }
             }
         })
     }
 
     public static extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): ZipExtrationError | null {
-        try {
-            fs.createReadStream(zip)
-                .pipe(unzipper.Extract({ path: outputFolder })).promise().then(()=>{
-                callback(true);
-            }).catch(()=>{
+        const adm = new AdmZip(zip);
+        adm.extractAllToAsync(outputFolder, true, (e) => {
+            if (e) {
                 callback(false);
-            });
-        } catch(e) {
-            const err: Error = e;
-            return new ZipExtrationError(
-                'Failed to extract zip file',
-                err.message,
-                null
-            );
-        }
+                return new ZipExtrationError(
+                    'Failed to extract zip file',
+                    e.message,
+                    null
+                );
+            } else {
+                callback(true);
+            }
+        });
         return null;
     }
 
