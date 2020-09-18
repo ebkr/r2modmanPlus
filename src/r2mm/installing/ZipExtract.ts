@@ -32,7 +32,7 @@ export default class ZipExtract {
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
                         e.message,
-                        null
+                        'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
                     ));
                 } finally {
                     callback(result);
