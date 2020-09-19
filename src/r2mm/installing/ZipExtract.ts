@@ -2,7 +2,6 @@ import ZipExtrationError from 'src/model/errors/ZipExtractionError';
 import FileWriteError from 'src/model/errors/FileWriteError';
 
 import * as fs from 'fs-extra';
-import * as unzipper from 'unzipper';
 import * as path from 'path';
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
