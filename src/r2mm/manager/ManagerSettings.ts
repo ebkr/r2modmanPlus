@@ -26,7 +26,7 @@ export default class ManagerSettings {
     public steamDirectory: string | null = null;
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
-    public allIconDisplayMode: boolean = true;
+    public allIconDisplayMode: boolean = false;
     public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
     public darkTheme: boolean = false;
