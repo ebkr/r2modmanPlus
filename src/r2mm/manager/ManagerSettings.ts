@@ -45,7 +45,7 @@ export default class ManagerSettings {
                 this.linkedFiles = parsedYaml.linkedFiles || [];
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
                 this.steamDirectory = parsedYaml.steamDirectory;
-                this.allIconDisplayMode = parsedYaml.expandedCards || false;
+                this.allIconDisplayMode = parsedYaml.allIconDisplayMode || false;
                 this.legacyInstallMode = parsedYaml.legacyInstallMode;
                 this.darkTheme = parsedYaml.darkTheme;
                 this.launchParameters = parsedYaml.launchParameters || '';
