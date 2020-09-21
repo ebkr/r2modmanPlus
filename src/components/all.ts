@@ -1,14 +1,15 @@
-import Hero from './Hero.vue';
-import Progress from './Progress.vue';
-import Link from './Link.vue';
 import ExpandableCard from './ExpandableCard.vue';
+import ExternalLink from './ExternalLink.vue';
+import Hero from './Hero.vue';
 import Modal from './Modal.vue';
+import Progress from './Progress.vue';
 
 export * from "./cards/all";
 export {
-    Hero, 
-    Progress, 
-    Link,
+    Hero,
+    Progress,
+    ExternalLink,
     ExpandableCard,
     Modal
-}
+};
+

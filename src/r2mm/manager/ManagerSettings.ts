@@ -26,7 +26,7 @@ export default class ManagerSettings {
     public steamDirectory: string | null = null;
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
-    public expandedCards: boolean = false;
+    public allIconDisplayMode: boolean = true;
     public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
     public darkTheme: boolean = false;
@@ -112,13 +112,13 @@ export default class ManagerSettings {
         return this.save();
     }
 
-    public expandCards(): R2Error | void {
-        this.expandedCards = true;
+    public setIconDisplayModeAll (): R2Error | void {
+        this.allIconDisplayMode = true;
         return this.save();
     }
 
-    public collapseCards(): R2Error | void {
-        this.expandedCards = false;
+    public setIconDisplayModeReduced (): R2Error | void {
+        this.allIconDisplayMode = false;
         return this.save();
     }
 

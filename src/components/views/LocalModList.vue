@@ -2,7 +2,7 @@
     <div>
 
         <div class='sticky-top sticky-top--search border-at-bottom'>
-            <div class='card is-shadowless is-square'>
+            <div class='card is-shadowless is-square card--is-compressed'>
                 <div class='card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">
@@ -116,71 +116,17 @@
             </template>
         </Modal>
 
-
-        <div v-for='(key, index) in searchableModList' :key="'local-' + key.getName()">
-            <expandable-card
-                @moveUp="moveUp(key)"
-                @moveDown="moveDown(key)"
-                :image="key.icon"
-                :id="index"
-                :description="key.description"
-                :funkyMode="settings.funkyModeEnabled"
-                :showSort="canShowSortIcons()"
-                :manualSortUp="index > 0"
-                :manualSortDown="index < searchableModList.length - 1"
-                :darkTheme="settings.darkTheme"
-                :expandedByDefault="settings.expandedCards"
-                :enabled="key.isEnabled()">
-                <template v-slot:title>
-                    <span :class="['selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
-                        <span v-if="key.isDeprecated()" class="tag is-danger">
-                            Deprecated
-                        </span>&nbsp;
-                        <span v-if="!key.isEnabled()" class="tag is-warning">
-                            Disabled
-                        </span>&nbsp;
-                        <span class="card-title">
-                            <template v-if="key.isEnabled()">
-                                {{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span>
-                            </template>
-                            <template v-else>
-                                <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
-                            </template>
-                        </span>
-                    </span>
-                </template>
-                <template v-slot:other-icons>
-                    <!-- Show update and missing dependency icons -->
-                    <span class='card-header-icon has-tooltip-left'
-                          data-tooltip='An update is available' v-if="!isLatest(key)">
-											<i class='fas fa-cloud-upload-alt'></i>
-										</span>
-                    <span class='card-header-icon has-tooltip-left'
-                          :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`"
-                          v-if="getMissingDependencies(key).length > 0">
-											<i class='fas fa-exclamation-circle'></i>
-										</span>
-                </template>
-                <a class='card-footer-item'
-                   @click="uninstallModRequireConfirmation(key)">Uninstall</a>
-                <template>
-                    <a class='card-footer-item' @click="disableModRequireConfirmation(key)"
-                       v-if="key.enabled">Disable</a>
-                    <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
-                </template>
-                <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
-                <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
-                      :target="'external'"
-                      class="card-footer-item">
-                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
-                        {{key.getVersionNumber().toString()}}
-                </Link>
-                <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-                <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
-                   @click="downloadDependency(getMissingDependencies(key)[0])">
-                    Download dependency
-                </a>
-            </expandable-card>
+        <div>
+            <local-mod-card v-for='(key, index) in searchableModList' :key="'local-' + key.getName()"
+                            :id="index"
+                            :manifest="key"
+                            :missingDependencies="getMissingDependencies(key)"
+                            :funkyMode="settings.funkyModeEnabled"
+                            @update:enabled="toggleMod(key, $event)"
+                            @update-mod="updateMod(key)"
+                            @uninstall-mod="uninstallModRequireConfirmation(key)">
+                                <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+            </local-mod-card>
         </div>
     </div>
 </template>
@@ -202,7 +148,7 @@
     import Profile from '../../model/Profile';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import DownloadModModal from './DownloadModModal.vue';
-    import { ExpandableCard, Link, Modal } from '../all';
+    import { ExpandableCard, ExternalLink, Modal, LocalModCard } from '../all';
     import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
     import ModListSort from '../../r2mm/mods/ModListSort';
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
@@ -212,8 +158,9 @@
     @Component({
         components: {
             DownloadModModal,
-            Link,
+            ExternalLink,
             ExpandableCard,
+            LocalModCard,
             Modal
         }
     })
@@ -393,13 +340,27 @@
             this.showingDependencyList = true;
         }
 
+        /**
+         * @returns whether the mod was uninstalled. If the mod was not uninstalled, an uninstall comfirmation is shown
+         */
         uninstallModRequireConfirmation(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            const mod: ManifestV2 = new ManifestV2();
+            if (vueMod instanceof ThunderstoreMod) {
+                vueMod = this.searchableModList.find((local: ManifestV2) => local.getName() === vueMod!.getFullName());
+                if (vueMod === undefined) {
+                    return;
+                }
+            }
+            
+            mod.fromReactive(vueMod);
+            
             if (this.getDependantList(mod).size === 0) {
                 this.performUninstallMod(mod);
                 this.filterModList();
+                return true;
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
+                return false;
             }
         }
 
@@ -434,6 +395,14 @@
                 // Failed to disable mod.
                 const err: R2Error = e;
                 Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+            }
+        }
+        
+        toggleMod(vueMod: any, enabled: boolean) {
+            if (enabled) {
+                this.enableMod(vueMod);
+            } else {
+                this.disableModRequireConfirmation(vueMod);
             }
         }
 
@@ -485,10 +454,6 @@
                 return;
             }
             this.manifestModAsThunderstoreMod = mod;
-        }
-
-        getTooltipText(mod: ManifestV2) {
-            return ModListTooltipManager.getTooltipText(mod);
         }
 
         getDeprecatedFilterOptions() {

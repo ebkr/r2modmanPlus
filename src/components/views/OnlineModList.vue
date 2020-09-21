@@ -7,51 +7,13 @@
             @closed-modal="modToDownload = null;"
             @error="emitError($event)"
         />
-        <div v-for='(key, index) in pagedModList' :key="'online-' + key.getFullName()">
-            <ExpandableCard
-                :image="key.getVersions()[0].getIcon()"
-                :id="index"
-                :description="key.getVersions()[0].getDescription()"
-                :funkyMode="settings.funkyModeEnabled"
-                :darkTheme="settings.darkTheme"
-                :expandedByDefault="settings.expandedCards">
-                <template v-slot:title>
-									<span v-if="key.isPinned()" class='has-tooltip-left'
-                                          data-tooltip='Pinned on Thunderstore'>
-										<span class="tag is-info">Pinned</span>&nbsp;
-										<span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
-									</span>
-                    <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
-                          data-tooltip='This mod is potentially broken'>
-										<span class="tag is-danger">Deprecated</span>&nbsp;
-										<strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
-									</span>
-                    <span v-else class='selectable'>
-										{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
-									</span>
-                </template>
-                <template v-slot:other-icons>
-									<span class='card-header-icon has-tooltip-left'
-                                          data-tooltip='Mod already installed'
-                                          v-if="isThunderstoreModInstalled(key)">
-										<i class='fas fa-check'></i>
-									</span>
-                </template>
-                <template v-slot:description>
-                    <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
-                </template>
-                <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
-                <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
-                    View on Thunderstore
-                </Link>
-                <div class='card-footer-item non-selectable'>
-                    <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
-                </div>
-                <div class='card-footer-item non-selectable'>
-                    <span><i class='fas fa-thumbs-up'/> {{key.getRating()}}</span>
-                </div>
-            </ExpandableCard>
-        </div>
+        <online-mod-card v-for='(key, index) in pagedModList' :key="'online-' + key.getFullName()"
+                         :id="index"
+                         :mod="key"
+                         :funkyMode="settings.funkyModeEnabled"
+                         @install-mod="showDownloadModal(key)"
+                         @uninstall-mod="$emit('uninstall-mod', key)">
+        </online-mod-card>
     </div>
 </template>
 
@@ -61,7 +23,7 @@
     import Component from 'vue-class-component';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import { ExpandableCard, Link } from '../all';
+    import { ExpandableCard, ExternalLink, OnlineModCard } from '../all';
     import DownloadModModal from './DownloadModModal.vue';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ManifestV2 from '../../model/ManifestV2';
@@ -71,7 +33,8 @@
         components: {
             DownloadModModal,
             ExpandableCard,
-            Link
+            ExternalLink,
+            OnlineModCard,
         }
     })
     export default class OnlineModList extends Vue {
@@ -129,11 +92,6 @@
         showDownloadModal(mod: any) {
             const tsMod = new ThunderstoreMod().fromReactive(mod);
             this.modToDownload = tsMod;
-        }
-
-        getReadableDate(date: Date): string {
-            const dateObject: Date = new Date(date);
-            return `${dateObject.toDateString()}, ${dateObject.toLocaleTimeString()}`
         }
 
         emitError(error: R2Error) {

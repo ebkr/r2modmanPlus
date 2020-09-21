@@ -131,7 +131,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Progress, Link } from '../components/all';
+import { Hero, Progress, ExternalLink } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
@@ -153,7 +153,7 @@ import FolderMigration from '../migrations/FolderMigration';
     components: {
         'hero': Hero,
         'progress-bar': Progress,
-        'link-component': Link,
+        'link-component': ExternalLink,
     }
 })
 export default class Splash extends Vue {

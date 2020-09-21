@@ -91,12 +91,17 @@ select {
 }
 
 @import "components/Card";
+@import "components/Icon";
 
 .is-text {
     color: inherit;
     &--bold {
         font-weight: 500;
     }
+}
+
+.is-secondary {
+    color: $scheme-text-secondary;
 }
 
 .scrollable {
@@ -242,4 +247,9 @@ select[disabled] {
     padding: 0 .5em;
     margin-right: .5em;
     color: $scheme-text;
+}
+
+.image.is-72x72 {
+    width: 72px;
+    height: 72px;
 }

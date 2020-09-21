@@ -1,0 +1,11 @@
+.icon {
+	$link-colors: map-merge($colors, $scheme-text-colors);
+	
+	// --link: #{nth(map-get($colors, "warning"), 1)};
+	@each $name, $pair in $link-colors {
+		$color: nth($pair, 1);
+		&.is-#{$name} {
+			color: $color;
+		}
+	}
+}

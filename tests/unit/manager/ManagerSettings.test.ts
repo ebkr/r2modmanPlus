@@ -24,11 +24,11 @@ describe('ManagerSettings', () => {
     });
 
     context('Ensure values saved', () => {
-        it('Expand/collapse cards', () => {
+        it('Icon display mode', () => {
             booleanSettingTestHelper(
-                'expandedCards',
-                () => ManagerSettings.getSingleton().expandCards(),
-                () => ManagerSettings.getSingleton().collapseCards()
+                'allIconDisplayMode',
+                () => ManagerSettings.getSingleton().setIconDisplayModeAll(),
+                () => ManagerSettings.getSingleton().setIconDisplayModeReduced()
             );
         });
 

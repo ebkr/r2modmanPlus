@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class='manager' :class='{"show-all-icons": settings.allIconDisplayMode}'>
         <div class='file-drop'>
             <div :class="['modal', {'is-active':showDragAndDropModal}]">
                 <div class="modal-background" @click="closeGameRunningModal()"></div>
@@ -247,7 +247,7 @@
 			<div class='column is-three-quarters'>
 				<div v-show="view === 'online'">
 					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
-						<div class='card is-shadowless is-square'>
+						<div class='card is-shadowless is-square card--is-compressed'>
 							<div class='card-header-title'>
                                 <div class="input-group input-group--flex margin-right">
                                     <label for="thunderstore-search-filter">Search</label>
@@ -270,6 +270,7 @@
 					<OnlineModList
                         :local-mod-list="localModList"
                         :paged-mod-list="pagedThunderstoreModList"
+						@uninstall-mod="uninstallMod($event)"
                     />
 					<div class='in-mod-list' v-if='getPaginationSize() > 1'>
 						<p class='notification margin-right'>
@@ -312,6 +313,7 @@
 						</div>
 						<template v-if="localModList.length > 0">
 							<LocalModList
+								ref="localModList"
                                 @error="showError($event)"
                             />
 						</template>
@@ -470,7 +472,7 @@
 	import Vue from 'vue';
 	import Component from 'vue-class-component';
 	import { Watch } from 'vue-property-decorator';
-	import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
+	import { ExpandableCard, Hero, ExternalLink, Modal, Progress } from '../components/all';
 
 	import ThunderstoreMod from '../model/ThunderstoreMod';
 	import ThunderstoreCombo from '../model/ThunderstoreCombo';
@@ -523,7 +525,7 @@
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
-			'link-component': Link,
+			'link-component': ExternalLink,
 			'modal': Modal,
             'settings-view': SettingsView,
 		}
@@ -879,13 +881,12 @@
 			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
 		}
 
-		toggleCardExpanded(expanded: boolean) {
-			if (expanded) {
-				this.settings.expandCards();
+		toggleIconDisplayMode(allIconDisplayMode: boolean) {
+			if (allIconDisplayMode) {
+				this.settings.setIconDisplayModeAll();
 			} else {
-				this.settings.collapseCards();
+				this.settings.setIconDisplayModeReduced();
 			}
-			this.view = 'installed';
 		}
 
 		toggleLegacyInstallMode(expanded: boolean) {
@@ -977,6 +978,14 @@
 		logFileExists() {
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
 			return fs.existsSync(logOutputPath);
+		}
+		
+		uninstallMod(mod: ThunderstoreMod) {
+			const localModList = this.$refs.localModList as LocalModList;
+			if (!localModList.uninstallModRequireConfirmation(mod)) {
+				this.view = 'installed';
+				localModList.uninstallModRequireConfirmation(mod);
+			}
 		}
 
 		installLocalMod() {
@@ -1115,7 +1124,7 @@
                     this.toggleDarkTheme();
                     break;
                 case "SwitchCard":
-                    this.toggleCardExpanded(!this.settings.expandedCards);
+                    this.toggleIconDisplayMode(!this.settings.allIconDisplayMode);
                     break;
                 case "EnableAll":
                     this.setAllModsEnabled(true);

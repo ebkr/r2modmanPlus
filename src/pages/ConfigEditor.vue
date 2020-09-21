@@ -42,13 +42,15 @@
 
                                     </div>
                                 </div>
-								<config-card v-for='(file, index) in sortedConfigFiles' 
-									:key="`config-file-${file.name}`"
-									:id="index"
-									:title="file.name"
-									@click="editFile(file)"
-									@delete="deleteConfig(file.getPath())">
-								</config-card>
+								<div>
+									<config-card v-for='(file, index) in sortedConfigFiles' 
+										:key="`config-file-${file.name}`"
+										:id="index"
+										:title="file.name"
+										@click="editFile(file)"
+										@delete="deleteConfig(file.getPath())">
+									</config-card>
+								</div>
 							</div>
 							<div class='container' v-else-if="editing && loadedFile.getPath().toLowerCase().endsWith('.cfg')">
 								<div>

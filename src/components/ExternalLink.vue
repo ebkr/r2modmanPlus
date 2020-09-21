@@ -19,7 +19,7 @@
     import { spawn } from "child_process";
 
     @Component
-    export default class Link extends Vue {
+    export default class ExternalLink extends Vue {
 
         @Prop({default: ''})
         url: string | undefined;

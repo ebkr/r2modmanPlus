@@ -272,11 +272,11 @@
             ),
             new SettingsRow(
                 'Other',
-                'Switch card display type',
-                'Switch between expanded or collapsed cards.',
+                'Toggle icon display mode',
+                'Switch between all icons (notifications and actions) and reduced icons (notifications only).',
                 () => {
                     const settings = ManagerSettings.getSingleton();
-                    return settings.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
+                    return settings.allIconDisplayMode ? 'Current: all (default)' : 'Current: reduced';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchCard')
