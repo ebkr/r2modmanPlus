@@ -8,6 +8,10 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import 'bulma-steps/dist/js/bulma-steps.min.js';
+import ProfileProvider from './providers/ror2/model_implementation/ProfileProvider';
+import ProfileImpl from './r2mm/model_implementation/ProfileImpl';
+
+ProfileProvider.provide(() => new ProfileImpl());
 
 @Component
 export default class App extends Vue {
