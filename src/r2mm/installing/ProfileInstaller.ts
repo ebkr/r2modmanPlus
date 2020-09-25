@@ -11,18 +11,24 @@ import ModMode from '../../model/enums/ModMode';
 import { isNull } from 'util';
 import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 
-const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+let cacheDirectory: string;
 const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
 
-export default class ProfileInstaller {
+export default class ProfileInstaller extends ProfileInstallerProvider {
+
+    constructor() {
+        super();
+        cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+    }
 
     /**
      * Uninstalls a mod by looking through the top level of profile/BepInEx/*
      * Any folder inside * locations with the mod name will be deleted.
      * @param mod
      */
-    public static uninstallMod(mod: ManifestV2): R2Error | null {
+    public uninstallMod(mod: ManifestV2): R2Error | null {
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             try {
                 fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
@@ -71,7 +77,7 @@ export default class ProfileInstaller {
         return null;
     }
 
-    public static disableMod(mod: ManifestV2): R2Error | void {
+    public disableMod(mod: ManifestV2): R2Error | void {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
@@ -83,7 +89,7 @@ export default class ProfileInstaller {
         }
     }
 
-    public static enableMod(mod: ManifestV2): R2Error | void {
+    public enableMod(mod: ManifestV2): R2Error | void {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
@@ -96,7 +102,7 @@ export default class ProfileInstaller {
 
     }
 
-    private static applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): R2Error | void {
+    applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): R2Error | void {
         const files: string[] = [];
         tree.getDirectories().forEach((directory: BepInExTree) => {
             if (directory.getDirectoryName() !== mod.getName()) {
@@ -131,7 +137,7 @@ export default class ProfileInstaller {
         })
     }
 
-    private static getDescendantFiles(tree: BepInExTree | null, location: string): string[] {
+    getDescendantFiles(tree: BepInExTree | null, location: string): string[] {
         const files: string[] = [];
         if (isNull(tree)) {
             const newTree = BepInExTree.buildFromLocation(location);
@@ -149,7 +155,7 @@ export default class ProfileInstaller {
         return files;
     }
 
-    public static installMod(mod: ManifestV2): R2Error | null {
+    public installMod(mod: ManifestV2): R2Error | null {
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             return this.installBepInEx(cachedLocationOfMod);
@@ -157,7 +163,7 @@ export default class ProfileInstaller {
         return this.installForManifestV2(mod, cachedLocationOfMod);
     }
 
-    private static installForManifestV2(mod: ManifestV2, location: string): R2Error | null {
+    installForManifestV2(mod: ManifestV2, location: string): R2Error | null {
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             console.log("Install failed");
@@ -166,7 +172,7 @@ export default class ProfileInstaller {
         return this.resolveBepInExTree(location, path.basename(location), mod, files);
     }
 
-    private static resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): R2Error | null {
+    resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): R2Error | null {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
@@ -251,7 +257,7 @@ export default class ProfileInstaller {
         return null;
     }
 
-    private static installBepInEx(bieLocation: string): R2Error | null {
+    installBepInEx(bieLocation: string): R2Error | null {
         const location = path.join(bieLocation, 'BepInExPack');
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {

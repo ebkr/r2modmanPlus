@@ -8,6 +8,8 @@ import ThunderstoreDownloaderProvider from '../../../src/providers/ror2/download
 import BetterThunderstoreDownloader from '../../../src/r2mm/downloading/BetterThunderstoreDownloader';
 import LocalModInstaller from '../../../src/r2mm/installing/LocalModInstaller';
 import LocalModInstallerProvider from '../../../src/providers/ror2/installing/LocalModInstallerProvider';
+import ProfileInstallerProvider from '../../../src/providers/ror2/installing/ProfileInstallerProvider';
+import ProfileInstaller from '../../../src/r2mm/installing/ProfileInstaller';
 
 describe('Providers', () => {
 
@@ -74,6 +76,23 @@ describe('Providers', () => {
             LocalModInstallerProvider.provide(() => new LocalModInstaller());
             assert.doesNotThrow(() => {
                 LocalModInstallerProvider.instance;
+            });
+        });
+
+    });
+
+    context("ProfileInstaller", async () => {
+
+        it("Not provided", () => {
+            assert.throws(() => {
+                ProfileInstallerProvider.instance;
+            })
+        });
+
+        it("Provided", () => {
+            ProfileInstallerProvider.provide(() => new ProfileInstaller());
+            assert.doesNotThrow(() => {
+                ProfileInstallerProvider.instance;
             });
         });
 

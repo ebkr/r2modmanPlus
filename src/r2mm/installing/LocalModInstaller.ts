@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import ProfileInstaller from './ProfileInstaller';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
 import * as path from "path";
 import * as fs from "fs";
@@ -29,7 +29,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
                     success => {
                         if (success) {
-                            const profileInstallResult = ProfileInstaller.installMod(mod);
+                            const profileInstallResult = ProfileInstallerProvider.instance.installMod(mod);
                             if (profileInstallResult instanceof R2Error) {
                                 callback(false, profileInstallResult);
                                 return;

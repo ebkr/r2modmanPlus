@@ -23,6 +23,8 @@ import { Logger, LogSeverity } from './r2mm/logging/Logger';
 import ManagerInformation from './_managerinf/ManagerInformation';
 import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';
 import LocalModInstaller from './r2mm/installing/LocalModInstaller';
+import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
+import ProfileInstaller from './r2mm/installing/ProfileInstaller';
 
 @Component
 export default class App extends Vue {
@@ -64,6 +66,7 @@ export default class App extends Vue {
         ThunderstoreDownloaderProvider.provide(() => betterThunderstoreDownloader);
 
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
+        ProfileInstallerProvider.provide(() => new ProfileInstaller());
     }
 
 }

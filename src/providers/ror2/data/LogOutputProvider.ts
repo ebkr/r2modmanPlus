@@ -1,6 +1,6 @@
 import ProviderUtils from '../ProviderUtils';
 
-export default class LogOutputProvider {
+export default abstract class LogOutputProvider {
 
     static provider: () => LogOutputProvider;
     static provide(provided: () => LogOutputProvider): void {
@@ -14,17 +14,10 @@ export default class LogOutputProvider {
         return LogOutputProvider.provider();
     }
 
-    get exists(): boolean {
-        throw ProviderUtils.throwGetterError(LogOutputProvider.instance, this.constructor.name, "exists");
-    }
+    abstract get exists(): boolean;
 
+    abstract set exists(value: boolean);
 
-    set exists(value: boolean) {
-        throw ProviderUtils.throwSetterError(LogOutputProvider.instance, this.constructor.name, "exists");
-    }
-
-    public disconnect() {
-        throw ProviderUtils.throwMethodError(LogOutputProvider.instance, this.constructor.name, "disconnect");
-    }
+    public abstract disconnect(): void;
 
 }

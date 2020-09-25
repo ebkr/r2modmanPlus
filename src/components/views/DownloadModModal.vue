@@ -99,11 +99,9 @@
     import R2Error from '../../model/errors/R2Error';
     import StatusEnum from '../../model/enums/StatusEnum';
     import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
-    import ProfileInstaller from '../../r2mm/installing/ProfileInstaller';
+    import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import ModBridge from '../../r2mm/mods/ModBridge';
-    import { ipcRenderer } from 'electron';
     import Profile from '../../model/Profile';
     import { Progress } from '../all';
 
@@ -243,14 +241,12 @@
                         }
                     }
                 }, (downloadedMods: ThunderstoreCombo[]) => {
-                    console.log("Downloaded:", downloadedMods);
                     downloadedMods.forEach(combo => {
                         this.installModAfterDownload(combo.getMod(), combo.getVersion());
                     });
                     this.downloadingMod = false;
                     const modList = ProfileModList.getModList(Profile.getActiveProfile());
                     if (!(modList instanceof R2Error)) {
-                        // ipcRenderer.emit('update-local-mod-list', null, modList);
                         this.$store.dispatch('updateModList', modList);
                     }
                 });
@@ -269,13 +265,13 @@
             );
             if (!modAlreadyInstalled) {
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                    const result = ProfileInstaller.uninstallMod(manifestMod);
+                    const result = ProfileInstallerProvider.instance.uninstallMod(manifestMod);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return result;
                     }
                 }
-                const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+                const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
                 if (!(installError instanceof R2Error)) {
                     const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
                     if (newModList instanceof R2Error) {

@@ -1,6 +1,6 @@
 import ProviderUtils from '../ProviderUtils';
 
-export default class ProfileProvider {
+export default abstract class ProfileProvider {
 
     static provider: () => ProfileProvider;
 
@@ -15,8 +15,6 @@ export default class ProfileProvider {
         return ProfileProvider.provider();
     }
 
-    public ensureProfileDirectory(directory: string, profile: string) {
-        throw ProviderUtils.throwMethodError(ProfileProvider.instance, this.constructor.name, "ensureProfileDirectory");
-    }
+    public abstract ensureProfileDirectory(directory: string, profile: string): void;
 
 }

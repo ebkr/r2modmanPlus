@@ -208,7 +208,7 @@ import R2Error from '../model/errors/R2Error';
 import StatusEnum from '../model/enums/StatusEnum';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ProfileModList from '../r2mm/mods/ProfileModList';
-import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
+import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
 import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
@@ -401,7 +401,7 @@ export default class Profiles extends Vue {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
                         ProfileModList.updateMod(installResult, modToDisable => {
                             modToDisable.disable();
-                            ProfileInstaller.disableMod(modToDisable);
+                            ProfileInstallerProvider.instance.disableMod(modToDisable);
                         });
                     }
                 })
@@ -533,7 +533,7 @@ export default class Profiles extends Vue {
 
     installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | ManifestV2 {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+        const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
         if (!(installError instanceof R2Error)) {
             const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
             if (newModList instanceof R2Error) {

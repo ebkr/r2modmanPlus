@@ -197,7 +197,7 @@
     import Mod from '../../model/Mod';
     import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
     import Dependants from '../../r2mm/mods/Dependants';
-    import ProfileInstaller from '../../r2mm/installing/ProfileInstaller';
+    import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
     import { Logger, LogSeverity } from '../../r2mm/logging/Logger';
     import Profile from '../../model/Profile';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
@@ -299,7 +299,7 @@
         }
 
         performUninstallMod(mod: ManifestV2): R2Error | void {
-            const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
+            const uninstallError: R2Error | null = ProfileInstallerProvider.instance.uninstallMod(mod);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
                 this.$emit('error', uninstallError);
@@ -338,7 +338,7 @@
         }
 
         performDisable(mod: ManifestV2): R2Error | void {
-            const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
+            const disableErr: R2Error | void = ProfileInstallerProvider.instance.disableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
                 this.$emit('error', disableErr);
@@ -439,7 +439,7 @@
 
         performEnable(vueMod: any): R2Error | void {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
+            const disableErr: R2Error | void = ProfileInstallerProvider.instance.enableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
                 this.$emit('error', disableErr);

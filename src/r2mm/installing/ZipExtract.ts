@@ -10,7 +10,6 @@ export default class ZipExtract {
 
     public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): ZipExtrationError | null {
         return this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), result => {
-            console.log("Extract result");
             if (result) {
                 try {
                     fs.removeSync(path.join(zipFolder, filename));

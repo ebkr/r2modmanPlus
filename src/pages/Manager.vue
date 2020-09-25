@@ -479,7 +479,7 @@
 	import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 	import ThunderstoreVersion from '../model/ThunderstoreVersion';
 	import ProfileModList from '../r2mm/mods/ProfileModList';
-	import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
+	import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 	import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 	import PathResolver from '../r2mm/manager/PathResolver';
 	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
@@ -678,9 +678,9 @@
 		installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
 			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-				ProfileInstaller.uninstallMod(manifestMod);
+                ProfileInstallerProvider.instance.uninstallMod(manifestMod);
 			}
-			const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+			const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
 			if (!(installError instanceof R2Error)) {
 				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
@@ -1022,9 +1022,9 @@
             this.localModList.forEach((mod: ManifestV2) => {
                 let profileErr: R2Error | void;
                 if (enabled) {
-                    profileErr = ProfileInstaller.enableMod(mod);
+                    profileErr = ProfileInstallerProvider.instance.enableMod(mod);
                 } else {
-                    profileErr = ProfileInstaller.disableMod(mod);
+                    profileErr = ProfileInstallerProvider.instance.disableMod(mod);
                 }
                 if (profileErr instanceof R2Error) {
                     this.showError(profileErr);

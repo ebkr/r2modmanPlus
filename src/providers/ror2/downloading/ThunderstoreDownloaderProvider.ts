@@ -7,7 +7,7 @@ import R2Error from '../../../model/errors/R2Error';
 import ExportMod from '../../../model/exports/ExportMod';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 
-export default class ThunderstoreDownloaderProvider {
+export default abstract class ThunderstoreDownloaderProvider {
 
     static provider: () => ThunderstoreDownloaderProvider;
 
@@ -22,54 +22,32 @@ export default class ThunderstoreDownloaderProvider {
         return ThunderstoreDownloaderProvider.provider();
     }
 
-    public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "buildDependencySet");
-    }
+    public abstract buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
 
-    public buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "buildDependencySetUsingLatest");
-    }
+    public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
 
-    public downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public abstract downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
                                callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                               completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "downloadLatestOfAll");
-    }
+                               completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
-    public download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public abstract download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                     callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                    completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "download");
-    }
+                    completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
-    public downloadImportedMods(modList: ExportMod[],
+    public abstract downloadImportedMods(modList: ExportMod[],
                                 callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                                completedCallback: (mods: ThunderstoreCombo[]) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "downloadImportedMods");
-    }
+                                completedCallback: (mods: ThunderstoreCombo[]) => void): void;
 
-    public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "generateProgressPercentage");
-    }
+    public abstract generateProgressPercentage(progress: number, currentIndex: number, total: number): number;
 
-    public queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "queueDownloadDependencies");
-    }
+    public abstract queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void): void
 
-    public calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "calculateInitialDownloadSize");
-    }
+    public abstract calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number;
 
-    public downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "downloadAndSave");
-    }
+    public abstract downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void): void;
 
-    public saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "saveToFile");
-    }
+    public abstract saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void): void;
 
-    public isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean  {
-        throw ProviderUtils.throwMethodError(ThunderstoreDownloaderProvider.instance, this.constructor.name, "isVersionAlreadyDownloaded");
-    }
+    public abstract isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean;
 
 }
