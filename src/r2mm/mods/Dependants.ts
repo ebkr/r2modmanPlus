@@ -1,4 +1,4 @@
-import ManifestV2 from 'src/model/ManifestV2';
+import ManifestV2 from '../../model/ManifestV2';
 
 export default class Dependants {
 

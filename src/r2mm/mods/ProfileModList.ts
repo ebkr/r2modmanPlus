@@ -1,16 +1,16 @@
 import * as yaml from 'yaml';
-import Profile from 'src/model/Profile';
+import Profile from '../../model/Profile';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import FileNotFoundError from 'src/model/errors/FileNotFoundError';
-import R2Error from 'src/model/errors/R2Error';
-import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
-import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
-import FileWriteError from 'src/model/errors/FileWriteError';
-import ManifestV2 from 'src/model/ManifestV2';
-import ExportFormat from 'src/model/exports/ExportFormat';
-import ExportMod from 'src/model/exports/ExportMod';
+import FileNotFoundError from '../../model/errors/FileNotFoundError';
+import R2Error from '../../model/errors/R2Error';
+import YamlParseError from '../../model/errors/Yaml/YamlParseError';
+import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
+import FileWriteError from '../../model/errors/FileWriteError';
+import ManifestV2 from '../../model/ManifestV2';
+import ExportFormat from '../../model/exports/ExportFormat';
+import ExportMod from '../../model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
 import AdmZip from 'adm-zip';

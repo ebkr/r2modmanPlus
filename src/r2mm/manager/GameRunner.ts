@@ -3,7 +3,7 @@ import ManagerSettings from './ManagerSettings';
 import * as child from 'child_process';
 import * as path from 'path';
 import GameDirectoryResolver from './GameDirectoryResolver';
-import R2Error from 'src/model/errors/R2Error';
+import R2Error from '../../model/errors/R2Error';
 import { Logger, LogSeverity } from '../logging/Logger';
 import { exec } from 'child_process';
 

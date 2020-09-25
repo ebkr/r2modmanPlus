@@ -1,6 +1,6 @@
-import R2Error from 'src/model/errors/R2Error';
-import Profile from 'src/model/Profile';
-import FileWriteError from 'src/model/errors/FileWriteError';
+import R2Error from '../../model/errors/R2Error';
+import Profile from '../../model/Profile';
+import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
 import * as fs from 'fs-extra';

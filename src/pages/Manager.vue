@@ -475,16 +475,16 @@
 
 	import ThunderstoreMod from '../model/ThunderstoreMod';
 	import ThunderstoreCombo from '../model/ThunderstoreCombo';
-	import Mod from 'src/model/Mod';
-	import BetterThunderstoreDownloader from 'src/r2mm/downloading/BetterThunderstoreDownloader';
+	import Mod from '../model/Mod';
+	import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
 	import ThunderstoreVersion from '../model/ThunderstoreVersion';
-	import ProfileModList from 'src/r2mm/mods/ProfileModList';
-	import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
-	import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
-	import PathResolver from 'src/r2mm/manager/PathResolver';
-	import PreloaderFixer from 'src/r2mm/manager/PreloaderFixer';
+	import ProfileModList from '../r2mm/mods/ProfileModList';
+	import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
+	import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
+	import PathResolver from '../r2mm/manager/PathResolver';
+	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
-	import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
+	import { Logger, LogSeverity } from '../r2mm/logging/Logger';
 
 	import Profile from '../model/Profile';
 	import VersionNumber from '../model/VersionNumber';

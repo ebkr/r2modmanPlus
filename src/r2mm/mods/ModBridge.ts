@@ -1,4 +1,3 @@
-import Mod from 'src/model/Mod';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { isUndefined } from 'util';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';

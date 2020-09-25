@@ -138,7 +138,7 @@ import axios from 'axios';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import Profile from '../model/Profile';
 
-import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
 import PathResolver from '../r2mm/manager/PathResolver';
 import ManagerInformation from '../_managerinf/ManagerInformation';

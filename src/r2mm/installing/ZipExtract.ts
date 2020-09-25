@@ -1,5 +1,5 @@
-import ZipExtrationError from 'src/model/errors/ZipExtractionError';
-import FileWriteError from 'src/model/errors/FileWriteError';
+import ZipExtrationError from '../../model/errors/ZipExtractionError';
+import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';

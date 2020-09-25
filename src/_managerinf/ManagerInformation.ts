@@ -1,4 +1,4 @@
-import VersionNumber from 'src/model/VersionNumber';
+import VersionNumber from '../model/VersionNumber';
 
 export default class ManagerInformation {
     public static VERSION: VersionNumber = new VersionNumber('3.0.31');

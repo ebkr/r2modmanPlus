@@ -1,6 +1,6 @@
-import R2Error from 'src/model/errors/R2Error';
-import FileNotFoundError from 'src/model/errors/FileNotFoundError';
-import VdfParseError from 'src/model/errors/Vdf/VdfParseError';
+import R2Error from '../../model/errors/R2Error';
+import FileNotFoundError from '../../model/errors/FileNotFoundError';
+import VdfParseError from '../../model/errors/Vdf/VdfParseError';
 
 import child from 'child_process';
 import * as vdf from '@node-steam/vdf';

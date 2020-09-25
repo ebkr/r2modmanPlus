@@ -115,11 +115,11 @@
     import { Component, Watch } from 'vue-property-decorator';
     import { ExpandableCard, Hero } from '../components/all';
 
-    import Profile from 'src/model/Profile';
-    import ConfigFile from 'src/model/file/ConfigFile';
-    import ConfigLine from 'src/model/file/ConfigLine';
+    import Profile from '../model/Profile';
+    import ConfigFile from '../model/file/ConfigFile';
+    import ConfigLine from '../model/file/ConfigLine';
 
-    import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
+    import { Logger, LogSeverity } from '../r2mm/logging/Logger';
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
