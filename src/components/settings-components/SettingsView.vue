@@ -52,7 +52,7 @@
     import R2Error from '../../model/errors/R2Error';
     import PathResolver from '../../r2mm/manager/PathResolver';
     import Profile from '../../model/Profile';
-    import LogOutput from '../../r2mm/data/LogOutput';
+    import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
     import VersionNumber from '../../model/VersionNumber';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
     import { Hero } from '../all';
@@ -71,7 +71,7 @@
 
         private activeTab: string = 'All';
         private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
-        private logOutput: LogOutput = LogOutput.getSingleton();
+        private logOutput: LogOutputProvider = LogOutputProvider.instance;
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
