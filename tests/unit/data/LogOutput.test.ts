@@ -43,5 +43,5 @@ describe('LogOutput', () => {
 
 after(async () => {
     // Interval is required to be disconnected to allow test runner to close.
-    LogOutput.disconnect();
+    LogOutput.getSingleton().disconnect();
 })

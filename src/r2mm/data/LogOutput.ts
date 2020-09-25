@@ -17,12 +17,6 @@ export default class LogOutput {
         return this.LOG_OUTPUT;
     }
 
-    public static disconnect() {
-        if (this.INTERVAL !== undefined) {
-            clearInterval(this.INTERVAL);
-        }
-    }
-
     private constructor() {
         const profilePath = Profile.getActiveProfile().getPathOfProfile()
         this._exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
@@ -32,7 +26,6 @@ export default class LogOutput {
         }, 1000);
     }
 
-
     get exists(): boolean {
         return this._exists;
     }
@@ -40,5 +33,12 @@ export default class LogOutput {
 
     set exists(value: boolean) {
         this._exists = value;
+    }
+
+
+    public disconnect() {
+        if (LogOutput.INTERVAL !== undefined) {
+            clearInterval(LogOutput.INTERVAL);
+        }
     }
 }

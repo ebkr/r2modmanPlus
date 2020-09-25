@@ -10,8 +10,11 @@ import Component from 'vue-class-component';
 import 'bulma-steps/dist/js/bulma-steps.min.js';
 import ProfileProvider from './providers/ror2/model_implementation/ProfileProvider';
 import ProfileImpl from './r2mm/model_implementation/ProfileImpl';
+import LogOutput from './r2mm/data/LogOutput';
+import LogOutputProvider from './providers/ror2/data/LogOutputProvider';
 
 ProfileProvider.provide(() => new ProfileImpl());
+LogOutputProvider.provide(() => LogOutput.getSingleton())
 
 @Component
 export default class App extends Vue {

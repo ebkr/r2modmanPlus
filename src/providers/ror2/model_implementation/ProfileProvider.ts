@@ -1,4 +1,5 @@
 import ProviderError from '../../../model/errors/ProviderError';
+import ProviderUtils from '../ProviderUtils';
 
 export default class ProfileProvider {
 
@@ -10,21 +11,13 @@ export default class ProfileProvider {
 
     public static get instance(): ProfileProvider {
         if (ProfileProvider.provider === undefined) {
-            throw new ProviderError(
-                "ProfileProvider has not been provided",
-                "A provider needs to be specified for the ProfileProvider class",
-                "Declare the provider in your custom App.vue override"
-            );
+            throw ProviderUtils.throwNotProvidedError("ProfileProvider");
         }
         return ProfileProvider.provider();
     }
 
     public ensureProfileDirectory(directory: string, profile: string) {
-        throw new ProviderError(
-            'Provider does not implement method: ensureProfileDirectory',
-            `ProfileProvider (${ProfileProvider.provider().constructor.name}) does not implement ProfileProvider::ensureProfileDirectory`,
-            'Override the behaviour of the ensureProfileDirectory method.'
-        );
+        throw ProviderUtils.throwMethodError(ProfileProvider.instance, this.constructor.name, "ensureProfileDirectory");
     }
 
 }
