@@ -4,6 +4,8 @@ import ProfileProvider from '../../../src/providers/ror2/model_implementation/Pr
 import ProfileImpl from '../../../src/r2mm/model_implementation/ProfileImpl';
 import LogOutputProvider from '../../../src/providers/ror2/data/LogOutputProvider';
 import LogOutput from '../../../src/r2mm/data/LogOutput';
+import ThunderstoreDownloaderProvider from '../../../src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import BetterThunderstoreDownloader from '../../../src/r2mm/downloading/BetterThunderstoreDownloader';
 
 describe('Providers', () => {
 
@@ -37,6 +39,23 @@ describe('Providers', () => {
             assert.doesNotThrow(() => {
                 LogOutputProvider.instance;
             }, new RegExp("has not been provided"));
+        });
+
+    });
+
+    context("ThunderstoreDownloaderProvider", async () => {
+
+        it("Not provided", () => {
+            assert.throws(() => {
+                ThunderstoreDownloaderProvider.instance;
+            })
+        });
+
+        it("Provided", () => {
+            ThunderstoreDownloaderProvider.provide(() => new BetterThunderstoreDownloader());
+            assert.doesNotThrow(() => {
+                ThunderstoreDownloaderProvider.instance;
+            });
         });
 
     });

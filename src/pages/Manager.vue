@@ -476,7 +476,7 @@
 	import ThunderstoreMod from '../model/ThunderstoreMod';
 	import ThunderstoreCombo from '../model/ThunderstoreCombo';
 	import Mod from '../model/Mod';
-	import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
+	import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 	import ThunderstoreVersion from '../model/ThunderstoreVersion';
 	import ProfileModList from '../r2mm/mods/ProfileModList';
 	import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
@@ -701,7 +701,7 @@
 			};
 			this.downloadingMod = true;
 			this.closeModal();
-			BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
+			ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
 					if (!isNull(err)) {
 						this.downloadingMod = false;

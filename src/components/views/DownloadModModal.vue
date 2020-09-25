@@ -95,7 +95,7 @@
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-    import BetterThunderstoreDownloader from '../../r2mm/downloading/BetterThunderstoreDownloader';
+    import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
     import R2Error from '../../model/errors/R2Error';
     import StatusEnum from '../../model/enums/StatusEnum';
     import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -129,7 +129,7 @@
         @Prop()
         showDownloadModal: boolean = false;
 
-        @Prop({default: true})
+        @Prop({ default: true })
         updateAllMods: boolean | undefined;
 
         get thunderstorePackages(): ThunderstoreMod[] {
@@ -189,7 +189,7 @@
                 return;
             }
             const outdatedMods = localMods.filter(mod => !ModBridge.isLatestVersion(mod));
-            BetterThunderstoreDownloader.downloadLatestOfAll(outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
                         this.downloadingMod = false;
@@ -226,32 +226,35 @@
                 assignId: assignId
             };
             this.downloadingMod = true;
-            BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                if (status === StatusEnum.FAILURE) {
-                    if (err !== null) {
-                        this.downloadingMod = false;
-                        this.$emit('error', err);
-                        return;
+            setTimeout(() => {
+                ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                    if (status === StatusEnum.FAILURE) {
+                        if (err !== null) {
+                            this.downloadingMod = false;
+                            this.$emit('error', err);
+                            return;
+                        }
+                    } else if (status === StatusEnum.PENDING) {
+                        if (this.downloadObject.assignId === assignId) {
+                            this.downloadObject = Object.assign({}, {
+                                progress: progress,
+                                modName: modName
+                            });
+                        }
                     }
-                } else if (status === StatusEnum.PENDING) {
-                    if (this.downloadObject.assignId === assignId) {
-                        this.downloadObject = Object.assign({}, {
-                            progress: progress,
-                            modName: modName
-                        });
+                }, (downloadedMods: ThunderstoreCombo[]) => {
+                    console.log("Downloaded:", downloadedMods);
+                    downloadedMods.forEach(combo => {
+                        this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                    });
+                    this.downloadingMod = false;
+                    const modList = ProfileModList.getModList(Profile.getActiveProfile());
+                    if (!(modList instanceof R2Error)) {
+                        // ipcRenderer.emit('update-local-mod-list', null, modList);
+                        this.$store.dispatch('updateModList', modList);
                     }
-                }
-            }, (downloadedMods: ThunderstoreCombo[]) => {
-                downloadedMods.forEach(combo => {
-                    this.installModAfterDownload(combo.getMod(), combo.getVersion());
                 });
-                this.downloadingMod = false;
-                const modList = ProfileModList.getModList(Profile.getActiveProfile());
-                if (!(modList instanceof R2Error)) {
-                    // ipcRenderer.emit('update-local-mod-list', null, modList);
-                    this.$store.dispatch('updateModList', modList);
-                }
-            });
+            }, 1);
         }
 
         installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {

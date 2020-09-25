@@ -160,6 +160,7 @@ export default class ProfileInstaller {
     private static installForManifestV2(mod: ManifestV2, location: string): R2Error | null {
         const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
+            console.log("Install failed");
             return files;
         }
         return this.resolveBepInExTree(location, path.basename(location), mod, files);

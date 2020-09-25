@@ -1,4 +1,3 @@
-import ProviderError from '../../../model/errors/ProviderError';
 import ProviderUtils from '../ProviderUtils';
 
 export default class ProfileProvider {

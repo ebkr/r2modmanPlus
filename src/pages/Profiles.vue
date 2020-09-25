@@ -210,7 +210,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
 import PathResolver from '../r2mm/manager/PathResolver';
-import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
+import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
 import * as  yaml from 'yaml';
 import * as path from 'path';
@@ -374,7 +374,7 @@ export default class Profiles extends Vue {
 
     downloadImportedProfileMods(modList: ExportMod[]) {
         this.percentageImported = 0;
-        BetterThunderstoreDownloader.downloadImportedMods(modList,
+        ThunderstoreDownloaderProvider.instance.downloadImportedMods(modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;

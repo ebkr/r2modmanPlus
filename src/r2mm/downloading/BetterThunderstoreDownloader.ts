@@ -9,7 +9,7 @@ import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import fs from 'fs';
 import FileWriteError from '../../model/errors/FileWriteError';
 import Profile from '../../model/Profile';
 import ThunderstorePackages from '../data/ThunderstorePackages';
@@ -17,12 +17,19 @@ import ExportMod from '../../model/exports/ExportMod';
 import ManagerSettings from '../manager/ManagerSettings';
 import ManifestV2 from '../../model/ManifestV2';
 import ModBridge from '../mods/ModBridge';
+import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
-const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+let cacheDirectory: string;
 
-export default class BetterThunderstoreDownloader {
+export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
-    public static buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
+
+    constructor() {
+        super();
+        cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+    }
+
+    public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
         const foundDependencies = new Array<ThunderstoreCombo>();
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
@@ -51,7 +58,7 @@ export default class BetterThunderstoreDownloader {
         return builder;
     }
 
-    public static buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
+    public buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
         const foundDependencies = new Array<ThunderstoreCombo>();
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
@@ -81,7 +88,7 @@ export default class BetterThunderstoreDownloader {
         return builder;
     }
 
-    public static downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public async downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
@@ -116,7 +123,7 @@ export default class BetterThunderstoreDownloader {
         });
     }
 
-    public static download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public async download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
@@ -176,7 +183,7 @@ export default class BetterThunderstoreDownloader {
         })
     }
 
-    public static downloadImportedMods(modList: ExportMod[],
+    public async downloadImportedMods(modList: ExportMod[],
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
         const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
@@ -215,12 +222,12 @@ export default class BetterThunderstoreDownloader {
         });
     }
 
-    private static generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
+    public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
         const completedProgress = (currentIndex / total) * 100;
         return completedProgress + (progress * 1/total);
     }
 
-    private static queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    public queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
         const entry = entries.next();
         if (!entry.done) {
             this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, (progress: number, status: number, err: R2Error | null) => {
@@ -236,11 +243,11 @@ export default class BetterThunderstoreDownloader {
         }
     }
 
-    private static calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
+    public calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
         return list.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.ignoreCache).length;
     }
 
-    private static downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
+    public downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
         if (this.isVersionAlreadyDownloaded(combo) && !settings.ignoreCache) {
             callback(100, StatusEnum.SUCCESS, null);
             return;
@@ -263,36 +270,34 @@ export default class BetterThunderstoreDownloader {
         })
     }
 
-    private static saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void): R2Error | null {
+    public saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
         try {
-            fs.ensureDirSync(path.join(cacheDirectory, combo.getMod().getFullName()));
-            fs.writeFileSync(
-                path.join(
-                    cacheDirectory,
-                    combo.getMod().getFullName(),
-                    combo.getVersion().getVersionNumber().toString() + '.zip'
-                ),
-                response
-            );
-            const extractError: R2Error | null = ZipExtract.extractAndDelete(
+            if (!fs.existsSync(path.join(cacheDirectory, combo.getMod().getFullName()))) {
+                fs.mkdirSync(path.join(cacheDirectory, combo.getMod().getFullName()), {
+                    recursive: true
+                });
+            }
+            fs.writeFileSync(path.join(
+                cacheDirectory,
+                combo.getMod().getFullName(),
+                combo.getVersion().getVersionNumber().toString() + '.zip'
+            ), response);
+            ZipExtract.extractAndDelete(
                 path.join(cacheDirectory, combo.getMod().getFullName()),
                 combo.getVersion().getVersionNumber().toString() + '.zip',
                 combo.getVersion().getVersionNumber().toString(),
                 callback
             );
-            return extractError;
         } catch(e) {
-            const err: Error = e;
-            return new FileWriteError(
+            callback(false, new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${err.message}`,
+                `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${e.message}`,
                 'Try running r2modman as an administrator'
-            );
+            ));
         }
-        return null;
     }
 
-    private static isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean  {
+    public isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean  {
         try {
             fs.readdirSync(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
             return true;
