@@ -21,6 +21,8 @@ import * as fs from 'fs-extra';
 import ThemeManager from './r2mm/manager/ThemeManager';
 import { Logger, LogSeverity } from './r2mm/logging/Logger';
 import ManagerInformation from './_managerinf/ManagerInformation';
+import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';
+import LocalModInstaller from './r2mm/installing/LocalModInstaller';
 
 @Component
 export default class App extends Vue {
@@ -60,6 +62,8 @@ export default class App extends Vue {
 
         const betterThunderstoreDownloader = new BetterThunderstoreDownloader();
         ThunderstoreDownloaderProvider.provide(() => betterThunderstoreDownloader);
+
+        LocalModInstallerProvider.provide(() => new LocalModInstaller());
     }
 
 }

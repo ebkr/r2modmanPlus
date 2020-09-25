@@ -1,17 +1,17 @@
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import InvalidManifestError from '../../model/errors/Manifest/InvalidManifestError';
 import ProfileInstaller from './ProfileInstaller';
 import ZipExtract from './ZipExtract';
 import * as path from "path";
 import * as fs from "fs";
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
+import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 
-export default class LocalModInstaller {
+export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public static extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void {
+    public extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void {
         const zipFileBuffer = fs.readFileSync(zipFile);
         const zip = new AdmZip(zipFileBuffer);
         const result: Buffer | null = zip.readFile('manifest.json');

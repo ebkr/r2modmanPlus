@@ -506,7 +506,7 @@
 	import { isNull, isUndefined } from 'util';
     import { clipboard, ipcRenderer, IpcRendererEvent } from 'electron';
 	import { spawn } from 'child_process';
-    import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
+    import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';
     import SettingsView from '../components/settings-components/SettingsView.vue';
@@ -998,7 +998,7 @@
         }
 
         installLocalModAfterFileSelection(file: string) {
-		    const convertError = LocalModInstaller.extractToCache(file, ((success, error) => {
+		    const convertError = LocalModInstallerProvider.instance.extractToCache(file, ((success, error) => {
 		        if (!success && error !== null) {
 		            this.showError(error);
 		            return;

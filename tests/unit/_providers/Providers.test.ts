@@ -6,6 +6,8 @@ import LogOutputProvider from '../../../src/providers/ror2/data/LogOutputProvide
 import LogOutput from '../../../src/r2mm/data/LogOutput';
 import ThunderstoreDownloaderProvider from '../../../src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import BetterThunderstoreDownloader from '../../../src/r2mm/downloading/BetterThunderstoreDownloader';
+import LocalModInstaller from '../../../src/r2mm/installing/LocalModInstaller';
+import LocalModInstallerProvider from '../../../src/providers/ror2/installing/LocalModInstallerProvider';
 
 describe('Providers', () => {
 
@@ -55,6 +57,23 @@ describe('Providers', () => {
             ThunderstoreDownloaderProvider.provide(() => new BetterThunderstoreDownloader());
             assert.doesNotThrow(() => {
                 ThunderstoreDownloaderProvider.instance;
+            });
+        });
+
+    });
+
+    context("LocalModInstallerProvider", async () => {
+
+        it("Not provided", () => {
+            assert.throws(() => {
+                LocalModInstallerProvider.instance;
+            })
+        });
+
+        it("Provided", () => {
+            LocalModInstallerProvider.provide(() => new LocalModInstaller());
+            assert.doesNotThrow(() => {
+                LocalModInstallerProvider.instance;
             });
         });
 
