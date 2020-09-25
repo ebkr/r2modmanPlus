@@ -2,8 +2,7 @@ import ProviderUtils from '../ProviderUtils';
 
 export default abstract class ProfileProvider {
 
-    static provider: () => ProfileProvider;
-
+    private static provider: () => ProfileProvider;
     static provide(provided: () => ProfileProvider): void {
         this.provider = provided;
     }
@@ -15,6 +14,11 @@ export default abstract class ProfileProvider {
         return ProfileProvider.provider();
     }
 
+    /**
+     * Create the profile directory if it doesn't already exist.
+     * @param directory
+     * @param profile
+     */
     public abstract ensureProfileDirectory(directory: string, profile: string): void;
 
 }

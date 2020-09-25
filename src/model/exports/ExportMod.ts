@@ -2,9 +2,9 @@ import VersionNumber from '../VersionNumber';
 import ManifestV2 from '../ManifestV2';
 
 export default class ExportMod {
-    private name: string = '';
-    private version: VersionNumber = new VersionNumber('0.0.0');
-    private enabled: boolean = false;
+    private readonly name: string = '';
+    private readonly version: VersionNumber = new VersionNumber('0.0.0');
+    private readonly enabled: boolean = false;
 
     public constructor(name: string, versionNumber: VersionNumber, enabled: boolean) {
         this.name = name;
