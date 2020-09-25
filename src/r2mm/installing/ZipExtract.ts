@@ -1,4 +1,4 @@
-import ZipExtrationError from '../../model/errors/ZipExtractionError';
+import ZipExtractionError from '../../model/errors/ZipExtractionError';
 import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as fs from 'fs-extra';
@@ -8,7 +8,7 @@ import R2Error from '../../model/errors/R2Error';
 
 export default class ZipExtract {
 
-    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): ZipExtrationError | null {
+    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): ZipExtractionError | null {
         return this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), result => {
             if (result) {
                 try {
@@ -25,6 +25,7 @@ export default class ZipExtract {
             } else {
                 try {
                     // Clear from cache as failed.
+                    fs.emptyDirSync(path.join(zipFolder, outputFolderName));
                     fs.rmdirSync(path.join(zipFolder, outputFolderName));
                     fs.rmdirSync(path.join(zipFolder, filename));
                 } catch (e) {
@@ -40,7 +41,7 @@ export default class ZipExtract {
         });
     }
 
-    public static extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): ZipExtrationError | null {
+    public static extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): ZipExtractionError | null {
         try {
             const adm = new AdmZip(zip);
             adm.extractAllTo(outputFolder, true);
