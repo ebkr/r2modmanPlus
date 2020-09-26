@@ -126,8 +126,8 @@
                                     :funkyMode="settings.funkyModeEnabled"
                                     @update:enabled="toggleMod(key, $event)"
                                     @update-mod="updateMod(key)"
-                                    @uninstall-mod="uninstallModRequireConfirmation(key)">
-                                        <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+                                    @uninstall-mod="uninstallModRequireConfirmation(key)"
+                                    @view-associated-mods="viewDependencyList(key)">
                     </local-mod-card>
         </draggable>
     </div>

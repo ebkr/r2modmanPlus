@@ -45,6 +45,12 @@
 				</span>
 				<span class='card-header-icon-label requires-card-hover'>Update</span>
 			</a>
+			<a class='card-header-icon button is-info requires-card-hover' @click='$emit("view-associated-mods")'>
+				<span class='icon'>
+					<i class='fas fa-project-diagram' aria-hidden='true'></i>
+				</span>
+				<span class='card-header-icon-label'>Associated mods</span>
+			</a>
 			<a class='card-header-icon button is-danger is-colored-button-only requires-card-hover' @click='$emit("uninstall-mod")'>
 				<span class='icon'>
 					<i class='fas fa-trash' aria-hidden='true'></i>
