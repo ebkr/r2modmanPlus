@@ -48,7 +48,7 @@ export default class ProfileModList {
         }
     }
 
-    private static saveModList(profile: Profile, modList: ManifestV2[]): R2Error | null {
+    public static saveModList(profile: Profile, modList: ManifestV2[]): R2Error | null {
         try {
             const yamlModList: string = yaml.stringify(modList);
             try {

@@ -315,6 +315,8 @@
 							<LocalModList
 								ref="localModList"
                                 @error="showError($event)"
+								@sort-start="sorting=true"
+								@sort-end="sorting=false"
                             />
 						</template>
 					</template>
@@ -562,7 +564,8 @@
 		dragAndDropText: string = 'Drag and drop file here to install mod';
 		showDragAndDropModal: boolean = false;
 		showUpdateAllModal: boolean = false;
-        showDependencyStrings: boolean = false;
+		showDependencyStrings: boolean = false;
+		sorting: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -1170,12 +1173,20 @@
             const defaultDragText = 'Drag and drop file here to install mod';
 
             document.ondragover = (ev) => {
+				if (this.sorting) {
+					return;
+				}
+				
                 this.dragAndDropText = defaultDragText;
                 this.showDragAndDropModal = true;
                 ev.preventDefault();
             }
 
             document.ondragleave = (ev) => {
+				if (this.sorting) {
+					return;
+				}
+				
                 if (ev.relatedTarget === null) {
                     this.showDragAndDropModal = false;
                 }
@@ -1183,6 +1194,10 @@
             }
 
             document.body.ondrop = (ev) => {
+				if (this.sorting) {
+					return;
+				}
+				
                 if (FileDragDrop.areMultipleFilesDragged(ev)) {
                     this.dragAndDropText = 'Only a single mod can be installed at a time';
                     return;

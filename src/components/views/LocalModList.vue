@@ -116,24 +116,27 @@
             </template>
         </Modal>
 
-        <div>
-            <local-mod-card v-for='(key, index) in searchableModList' :key="'local-' + key.getName()"
-                            :id="index"
-                            :manifest="key"
-                            :missingDependencies="getMissingDependencies(key)"
-                            :funkyMode="settings.funkyModeEnabled"
-                            @update:enabled="toggleMod(key, $event)"
-                            @update-mod="updateMod(key)"
-                            @uninstall-mod="uninstallModRequireConfirmation(key)">
-                                <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
-            </local-mod-card>
-        </div>
+        <draggable v-model='sortableModList' group="mods" 
+                   @start="drag=canSort(); $emit('sort-start')" 
+                   @end="drag=false; $emit('sort-end')">
+                    <local-mod-card v-for='(key, index) in sortableModList' :key="'local-' + key.getName()"
+                                    :id="index"
+                                    :manifest="key"
+                                    :missingDependencies="getMissingDependencies(key)"
+                                    :funkyMode="settings.funkyModeEnabled"
+                                    @update:enabled="toggleMod(key, $event)"
+                                    @update-mod="updateMod(key)"
+                                    @uninstall-mod="uninstallModRequireConfirmation(key)">
+                                        <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+                    </local-mod-card>
+        </draggable>
     </div>
 </template>
 
 <script lang="ts">
 
     import { Component, Vue, Watch } from 'vue-property-decorator';
+    import Draggable from 'vuedraggable';
     import ManifestV2 from '../../model/ManifestV2';
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import R2Error from '../../model/errors/R2Error';
@@ -161,7 +164,8 @@
             ExternalLink,
             ExpandableCard,
             LocalModCard,
-            Modal
+            Modal,
+            Draggable,
         }
     })
     export default class LocalModList extends Vue {
@@ -169,6 +173,21 @@
         get modifiableModList(): ManifestV2[] {
             return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
                 this.sortDisabledPosition, this.sortOrder);
+        }
+        
+        get sortableModList() {
+            return [...this.searchableModList];
+        }
+        
+        set sortableModList(value: ManifestV2[]) {
+            const profile = Profile.getActiveProfile();
+            const updatedList = ProfileModList.saveModList(profile, value) ?? ProfileModList.getModList(profile);
+            if (updatedList instanceof R2Error) {
+                this.$emit('error', updatedList);
+                return;
+            }
+            this.$store.dispatch("updateModList", updatedList);
+            this.filterModList();
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
@@ -201,28 +220,6 @@
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
                 return x.getName().toLowerCase().search(this.searchQuery.toLowerCase()) >= 0;
             });
-        }
-
-        moveUp(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = ProfileModList.shiftModEntryUp(mod);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            this.$store.dispatch("updateModList",updatedList);
-            this.filterModList();
-        }
-
-        moveDown(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = ProfileModList.shiftModEntryDown(mod);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            this.$store.dispatch("updateModList",updatedList);
-            this.filterModList();
         }
 
         isLatest(vueMod: any): boolean {
@@ -468,7 +465,7 @@
             return Object.values(SortDirection);
         }
 
-        canShowSortIcons() {
+        canSort() {
             return this.sortDirection === SortDirection.STANDARD
                 && this.sortOrder === SortNaming.CUSTOM
                 && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM;
