@@ -1,26 +1,20 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
+import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 
 export class Logger {
 
     private static logList: string[] = [];
 
-    public static Log(severity: LogSeverity, error: string) {
-        this.logList.push(`${new Date().toLocaleTimeString()} [${severity}]: ${error}`);
+    public Log(severity: LogSeverity, error: string) {
+        Logger.logList.push(`${new Date().toLocaleTimeString()} [${severity}]: ${error}`);
         this.Write();
     }
 
-    private static Write() {
-        fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), this.logList.join('\n'));
+    Write() {
+        fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
     }
 
 
-}
-
-export enum LogSeverity {
-    ACTION_STOPPED = 'ACTION_STOPPED',
-    BREAKING = 'BREAKING',
-    INFO = 'INFO',
-    ERROR = 'ERROR'
 }

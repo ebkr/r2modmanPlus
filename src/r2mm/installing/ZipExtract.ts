@@ -1,7 +1,7 @@
 import ZipExtractionError from '../../model/errors/ZipExtractionError';
 import FileWriteError from '../../model/errors/FileWriteError';
 
-import * as fs from 'fs-extra';
+import fs from 'fs';
 import * as path from 'path';
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
@@ -12,7 +12,7 @@ export default class ZipExtract {
         return this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), result => {
             if (result) {
                 try {
-                    fs.removeSync(path.join(zipFolder, filename));
+                    fs.unlinkSync(path.join(zipFolder, filename));
                     callback(result);
                 } catch (e) {
                     const err: Error = e;
@@ -25,9 +25,9 @@ export default class ZipExtract {
             } else {
                 try {
                     // Clear from cache as failed.
-                    fs.emptyDirSync(path.join(zipFolder, outputFolderName));
+                    this.emptyDirectory(path.join(zipFolder, outputFolderName));
                     fs.rmdirSync(path.join(zipFolder, outputFolderName));
-                    fs.rmdirSync(path.join(zipFolder, filename));
+                    fs.unlinkSync(path.join(zipFolder, filename));
                 } catch (e) {
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
@@ -51,5 +51,18 @@ export default class ZipExtract {
         }
         return null;
     }
+
+    static emptyDirectory(dir: string) {
+        const files = fs.readdirSync(dir);
+        files.forEach(file => {
+            if (fs.lstatSync(file).isDirectory()) {
+                this.emptyDirectory(file);
+            } else {
+                fs.unlinkSync(file);
+            }
+        })
+    }
+
+
 
 }

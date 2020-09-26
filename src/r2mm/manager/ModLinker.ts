@@ -5,7 +5,7 @@ import FileWriteError from '../../model/errors/FileWriteError';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import ManagerSettings from './ManagerSettings';
-import { Logger, LogSeverity } from '../logging/Logger';
+import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolver from './GameDirectoryResolver';
 
 export default class ModLinker {
@@ -35,9 +35,9 @@ export default class ModLinker {
             )
         }
         try {
-            Logger.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
             previouslyLinkedFiles.forEach((file: string) => {
-                Logger.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
+                LoggerProvider.instance.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
                 fs.removeSync(file);
             });
             try {

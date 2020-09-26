@@ -484,7 +484,7 @@
 	import PathResolver from '../r2mm/manager/PathResolver';
 	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
-	import { Logger, LogSeverity } from '../r2mm/logging/Logger';
+	import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 	import Profile from '../model/Profile';
 	import VersionNumber from '../model/VersionNumber';
@@ -493,7 +493,6 @@
 	import SortingDirection from '../model/enums/SortingDirection';
 	import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 	import R2Error from '../model/errors/R2Error';
-	import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 	import ManifestV2 from '../model/ManifestV2';
 	import ManagerSettings from '../r2mm/manager/ManagerSettings';
 	import ThemeManager from '../r2mm/manager/ThemeManager';
@@ -503,8 +502,8 @@
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
-	import { isNull, isUndefined } from 'util';
-    import { clipboard, ipcRenderer, IpcRendererEvent } from 'electron';
+	import { isNull } from 'util';
+    import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
 
@@ -512,7 +511,6 @@
     import SettingsView from '../components/settings-components/SettingsView.vue';
     import LocalModList from '../components/views/LocalModList.vue';
     import OnlineModList from '../components/views/OnlineModList.vue';
-    import ModBridge from '../r2mm/mods/ModBridge';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
 
 	@Component({
@@ -1143,14 +1141,14 @@
 				this.$store.dispatch("updateModList", newModList);
 				// this.localModList = newModList;
 			} else {
-				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
 			this.sortThunderstoreModList();
 			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
 				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
 				if (combo instanceof R2Error) {
 					this.showError(combo);
-					Logger.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
+                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
 					return;
 				}
 				this.downloadHandler(combo.getMod(), combo.getVersion());

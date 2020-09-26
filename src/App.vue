@@ -19,12 +19,13 @@ import PathResolver from './r2mm/manager/PathResolver';
 import path from "path";
 import * as fs from 'fs-extra';
 import ThemeManager from './r2mm/manager/ThemeManager';
-import { Logger, LogSeverity } from './r2mm/logging/Logger';
+import LoggerProvider, {LogSeverity} from './providers/ror2/logging/LoggerProvider';
 import ManagerInformation from './_managerinf/ManagerInformation';
 import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';
 import LocalModInstaller from './r2mm/installing/LocalModInstaller';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 import ProfileInstaller from './r2mm/installing/ProfileInstaller';
+import { Logger } from './r2mm/logging/Logger';
 
 @Component
 export default class App extends Vue {
@@ -37,7 +38,6 @@ export default class App extends Vue {
             PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
             fs.ensureDirSync(PathResolver.APPDATA_DIR);
             ThemeManager.apply();
-            Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
                 // TODO: Re-enable folder migration
@@ -47,6 +47,7 @@ export default class App extends Vue {
                 //         .then(this.checkForUpdates);
                 // }, 100);
                 this.bindProviders();
+                LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
                 this.visible = true;
             });
             ipcRenderer.send('get-is-portable');
@@ -67,6 +68,7 @@ export default class App extends Vue {
 
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
         ProfileInstallerProvider.provide(() => new ProfileInstaller());
+        LoggerProvider.provide(() => new Logger());
     }
 
 }

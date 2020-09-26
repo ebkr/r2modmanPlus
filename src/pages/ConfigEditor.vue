@@ -119,7 +119,7 @@
     import ConfigFile from '../model/file/ConfigFile';
     import ConfigLine from '../model/file/ConfigLine';
 
-    import { Logger, LogSeverity } from '../r2mm/logging/Logger';
+    import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
@@ -261,7 +261,7 @@
                         }
                     });
                 } else {
-                    Logger.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
+                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${tree.name}\n-> ${tree.message}`);
                 }
             }
             this.textChanged();

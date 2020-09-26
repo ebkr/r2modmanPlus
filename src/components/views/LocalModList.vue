@@ -198,7 +198,7 @@
     import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
     import Dependants from '../../r2mm/mods/Dependants';
     import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-    import { Logger, LogSeverity } from '../../r2mm/logging/Logger';
+    import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
     import Profile from '../../model/Profile';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import DownloadModModal from './DownloadModModal.vue';
@@ -332,7 +332,7 @@
             } catch (e) {
                 // Failed to disable mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
         }
@@ -374,7 +374,7 @@
             } catch (e) {
                 // Failed to uninstall mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
             const result: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
@@ -433,7 +433,7 @@
             } catch (e) {
                 // Failed to disable mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
         }
 

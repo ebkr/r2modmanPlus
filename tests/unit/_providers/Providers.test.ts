@@ -10,6 +10,8 @@ import LocalModInstaller from '../../../src/r2mm/installing/LocalModInstaller';
 import LocalModInstallerProvider from '../../../src/providers/ror2/installing/LocalModInstallerProvider';
 import ProfileInstallerProvider from '../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import ProfileInstaller from '../../../src/r2mm/installing/ProfileInstaller';
+import LoggerProvider from '../../../src/providers/ror2/logging/LoggerProvider';
+import { Logger } from '../../../src/r2mm/logging/Logger';
 
 describe('Providers', () => {
 
@@ -93,6 +95,23 @@ describe('Providers', () => {
             ProfileInstallerProvider.provide(() => new ProfileInstaller());
             assert.doesNotThrow(() => {
                 ProfileInstallerProvider.instance;
+            });
+        });
+
+    });
+
+    context("LoggerProvider", async () => {
+
+        it("Not provided", () => {
+            assert.throws(() => {
+                LoggerProvider.instance;
+            })
+        });
+
+        it("Provided", () => {
+            LoggerProvider.provide(() => new Logger());
+            assert.doesNotThrow(() => {
+                LoggerProvider.instance;
             });
         });
 

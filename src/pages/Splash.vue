@@ -135,19 +135,10 @@ import { Hero, Progress, Link } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
-import ThunderstoreMod from '../model/ThunderstoreMod';
 import Profile from '../model/Profile';
 
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
-import PathResolver from '../r2mm/manager/PathResolver';
-import ManagerInformation from '../_managerinf/ManagerInformation';
-
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import ThemeManager from '../r2mm/manager/ThemeManager';
-import { Logger, LogSeverity } from '../r2mm/logging/Logger';
-import FolderMigration from '../migrations/FolderMigration';
 
 @Component({
     components: {
