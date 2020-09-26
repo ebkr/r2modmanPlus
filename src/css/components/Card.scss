@@ -71,7 +71,7 @@
 		--display: none;
 		--label-display: none;
 		.requires-card-hover {
-			display: var(--display);
+			display: var(--display, var(--default-display));
 		}
 		
 		.manager.show-all-icons & {
@@ -87,6 +87,7 @@
 			--card-is-hovered: 1;
 			--display: unset;
 			--label-display: unset;
+			z-index: 2;
 		
 			.card-header-title {
 				color: #{$scheme-text-strong};
@@ -152,16 +153,17 @@
 	letter-spacing: 0.2px;
 }
 
-.card-image {
-	grid-column: 1;
-	grid-row: 1/5;
+.card-header-icons {
+	display: flex;
+	justify-content: flex-end;
 }
 
-.card-content--is-compressed {
-	padding: 0.25rem 1.5rem;
+.card-header, .card-header-icons {
+	grid-row: 1;
 }
 	
 .button.card-header-icon {
+	--default-display: flex;
 	background: none;
 	border: none;
 	height: auto;
@@ -194,6 +196,73 @@
 .card-header .tag {
 	margin-left: 1.1rem;
 	top: 1px;
+}
+
+.card-image {
+	grid-column: 1;
+	grid-row: 1/5;
+}
+
+@media (max-width: 1919px) {
+	.card--is-cozy {
+		&:hover, &:active, &:focus, &:focus-within {
+			.card-header-icons {
+				position: absolute;
+				top: 2rem;
+				right: 1.25rem;
+				display: flex;
+				flex-direction: column;
+				z-index: 1;
+				padding: 0.25rem;
+				min-width: 120px;
+				
+				&::before, &::after {
+					position: absolute;
+					bottom: calc(100% - 3px);
+					right: 0;
+					text-align: right;
+					padding: 4px 12px;
+				}
+				&::after { content: "Options"; }
+				&::before { 
+					content: "☰ \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0"; 
+					font-size: 1.1em;
+					margin-bottom: -1px;
+					border-radius: 4px;
+				}
+				
+				&:hover, &:focus-within {
+					background: $scheme-popup-background;
+					border-radius: 4px;
+					&::before {
+						background: $scheme-popup-background;
+					}
+				}
+				
+				&:not(:hover):not(:focus-within) {
+					.button.card-header-icon {
+						display: none;
+					}
+					
+					&::before, &::after {
+						color: $scheme-link;
+					}
+				}
+			}
+			
+			.button.card-header-icon {
+				margin-top: 0;
+			}
+		}
+		
+		& ~ &:last-child {
+			margin-bottom: 5rem;
+		}
+	}
+}
+
+.card-content--is-compressed {
+	padding: 0.25rem 1.5rem;
 }
 
 .card-footer-borderless, .card-footer-borderless .card-footer-item {

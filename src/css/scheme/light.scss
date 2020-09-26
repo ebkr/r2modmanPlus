@@ -13,6 +13,7 @@ $scheme-border: var(--border, #dbdbdb);
 $scheme-border-secondary: var(--border-secondary, #efefef);
 $scheme-border-hover: var(--border-hover, #b5b5b5);
 $scheme-border-active: var(--border-active, #4a4a4a);
+$scheme-popup-background: var(--popup, #f5f5f5);
 
 // custom text colors (these will be merged with bulma's defaults and used specifically for text)
 $scheme-text-colors: ();

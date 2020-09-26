@@ -15,30 +15,24 @@
 							   @click.prevent="toggle">
 						<label :for="`toggle${id}`"></label>
 				</div>
-				<span class='card-title card-title--is-large'>
-					{{manifest.getDisplayName()}}
-					<span v-if='manifest.getAuthorName()' class='card-byline'>by {{manifest.getAuthorName()}}</span>
-					&nbsp;<span class="is-secondary">·</span>&nbsp;
-					<ExternalLink :url="`${manifest.getWebsiteUrl()}${manifest.getVersionNumber().toString()}`"
-								  :target="'external'"
-								  class="card-version text-smaller">
-									<i class='fas fa-code-branch'></i>
-									{{manifest.getVersionNumber().toString()}}
-					</ExternalLink>
-				</span>
+				<span class='card-title card-title--is-large'>{{manifest.getDisplayName()}}</span>
 				<span v-if="manifest.isDeprecated()" class="tag is-danger has-tooltip-top"
 					  data-tooltip='This mod has been marked as deprecated, suggesting that an alternative be used instead.'>
 						Deprecated
 				</span>
 			</span>
-			<a v-if="missingDependencies.length > 0"
-				  class='card-header-icon button is-warning has-tooltip-top'
-				  :data-tooltip="`Missing ${missingDependencies.length} dependencies`">
-					<span class='icon'>
-						<i class='fas fa-exclamation-circle'></i>
-					</span>
-					<span class='card-header-icon-label requires-card-hover'>Install Missing Dependency</span>
-			</a>
+		</header>
+		<div class='card-header-icons'>
+			<div>
+				<a v-if="missingDependencies.length > 0"
+					class='card-header-icon button is-warning has-tooltip-top'
+					:data-tooltip="`Missing ${missingDependencies.length} dependencies`">
+						<span class='icon'>
+							<i class='fas fa-exclamation-circle'></i>
+						</span>
+						<span class='card-header-icon-label requires-card-hover'>Install missing dependency</span>
+				</a>
+			</div>
 			<a v-if="!isLatest()" class='card-header-icon button is-info' @click='$emit("update-mod")'>
 				<span class='icon'>
 					<i class='fas fa-cloud-download-alt' aria-hidden='true'></i>
@@ -57,7 +51,23 @@
 				</span>
 				<span class='card-header-icon-label'>Uninstall</span>
 			</a>
-		</header>
+		</div>
+		<footer class='card-footer card-footer-borderless'>
+			<span class='card-footer-item non-selectable'>
+				<external-link v-if='manifest.getAuthorName()' target="link" 
+							   :url="`https://thunderstore.io/package/${manifest.getAuthorName()}`">
+							   	{{manifest.getAuthorName()}}
+				</external-link>
+			</span>
+			<span class='card-footer-item non-selectable'>
+				<external-link :url="`${manifest.getWebsiteUrl()}${manifest.getVersionNumber().toString()}`"
+							   :target="'external'"
+							   class="card-version">
+								<i class='fas fa-code-branch'></i>
+								{{manifest.getVersionNumber().toString()}}
+				</external-link>
+			</span>
+		</footer>
 		<div class='card-content card-content--is-compressed'>
 			<div class='content'>
 				<template v-if="manifest.description !== ''">

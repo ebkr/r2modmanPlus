@@ -2,13 +2,15 @@
 	<a class='card is-shadowless card--is-clickable' @click='$emit("click")'>
 		<header class='card-header is-shadowless' :id='id'>
 			<span class='card-header-title'>{{title}}</span>
+		</header>
+		<div class='card-header-icons'>
 			<a class='card-header-icon button is-danger is-colored-button-only requires-card-hover' @click='$emit("delete")'>
 				<span class='icon'>
 					<i class='fas fa-trash' aria-hidden='true'></i>
 				</span>
 				<span class='card-header-icon-label'>Delete</span>
 			</a>
-		</header>
+		</div>
 	</a>
 </template>
 

@@ -1,5 +1,6 @@
 :root.html--dark {
     // dark theme palette
+    $night-0: #16212c;
     $night-1: #1f2d3b;
     $night-2: #283850;
     $night-3: #3a4958;
@@ -29,6 +30,7 @@
     --border-secondary: #{$night-2};
     --border-hover: #{$night-5};
     --border-active: #{$night-9};
+    --popup: #{$night-0};
 
     --text-color-warning: #ffdd57;
     

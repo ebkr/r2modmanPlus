@@ -12,7 +12,6 @@
 				</span>
 				<span class='card-title card-title--is-large'>
 					{{mod.getName()}}
-					<span v-if='mod.getOwner()' class='card-byline'>by {{mod.getOwner()}}</span>
 				</span>
 				<span v-if="mod.isPinned()" class="tag is-info has-tooltip-top"
 					  data-tooltip='This mod is pinned on Thunderstore.'>Pinned</span>&nbsp;
@@ -21,6 +20,8 @@
 						Deprecated
 				</span>
 			</span>
+		</header>
+		<div class='card-header-icons'>
 			<ExternalLink :url="mod.getPackageUrl()" :target="'external'" class='card-header-icon button is-info requires-card-hover'>
 				<span class='icon'>
 					<i class='fas fa-eye' aria-hidden='true'></i>
@@ -39,15 +40,14 @@
 				</span>
 				<span class='card-header-icon-label'>Uninstall</span>
 			</a>
-		</header>
-		<div class='card-content card-content--is-compressed'>
-			<div class='content'>
-				<p v-if="description !== ''" class="card-description">
-					{{description}}
-				</p>
-			</div>
 		</div>
 		<footer class='card-footer card-footer-borderless'>
+			<span class='card-footer-item non-selectable'>
+				<external-link v-if='mod.getOwner()' target="link" 
+							   :url="`https://thunderstore.io/package/${mod.getOwner()}`">
+								{{mod.getOwner()}}
+				</external-link>
+			</span>
 			<span class='card-footer-item non-selectable'>
 				<label class='card-footer-item-label'>Last updated:</label>
 				<span class='card-footer-item-value'>{{getReadableDate(mod.getDateUpdated())}}</span>
@@ -59,6 +59,13 @@
 				<span class='has-tooltip-top' data-tooltip='Likes'><i class='fas fa-thumbs-up'/> {{mod.getRating()}}</span>
 			</span>
 		</footer>
+		<div class='card-content card-content--is-compressed'>
+			<div class='content'>
+				<p v-if="description !== ''" class="card-description">
+					{{description}}
+				</p>
+			</div>
+		</div>
 	</div>
 </template>
 
