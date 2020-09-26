@@ -197,6 +197,7 @@
                 } else if (status === StatusEnum.PENDING) {
                     if (this.downloadObject.assignId === assignId) {
                         this.downloadObject = Object.assign({}, {
+                            assignId: assignId,
                             progress: progress,
                             modName: modName
                         });
