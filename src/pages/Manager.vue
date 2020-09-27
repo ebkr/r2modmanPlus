@@ -514,6 +514,7 @@
     import OnlineModList from '../components/views/OnlineModList.vue';
     import ModBridge from '../r2mm/mods/ModBridge';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
+    import CacheUtil from '../r2mm/mods/CacheUtil';
 
 	@Component({
 		components: {
@@ -1132,6 +1133,9 @@
                     break;
                 case "ChangeDataFolder":
                     this.changeDataFolder();
+                    break;
+                case "CleanCache":
+                    CacheUtil.clean();
                     break;
             }
         }
