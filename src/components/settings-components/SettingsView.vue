@@ -187,6 +187,14 @@
                 () => this.emitInvoke('SetLaunchParameters')
             ),
             new SettingsRow(
+                'Debugging',
+                'Clean mod cache',
+                'Free space caused by mods not currently in a profile.',
+                () => 'Check all profiles for unused mods and clear cache',
+                'fa-trash',
+                () => this.emitInvoke('CleanCache')
+            ),
+            new SettingsRow(
                 'Profile',
                 'Change profile',
                 'Change the mod profile.',
