@@ -256,7 +256,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             onDownloadProgress: progress => {
                 callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
             },
-            responseType: 'arraybuffer'
+            responseType: 'arraybuffer',
+            headers: {
+                'Content-Type': 'application/zip'
+            }
         }).then(response => {
             const buf: Buffer = Buffer.from(response.data)
             callback(100, StatusEnum.PENDING, null);
