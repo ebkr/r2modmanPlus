@@ -1,4 +1,40 @@
-@mixin button-hover-effect ($margin: 1rem, $is-border: false) {
+@function str-replace($string, $search, $replace: '') {
+	$index: str-index($string, $search);
+
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+	}
+
+	@return $string;
+}
+
+@mixin button-hover-effect ($margin, $is-border) {
+	&:hover, &:active, &:focus, &:focus-within {
+		&::before {
+			border-radius: 4px;
+			
+			@if $is-border {
+				top: $margin;
+				left: $margin;
+				width: calc(100% - #{$margin * 2});
+				border: 1px solid $scheme-border-hover;
+				
+			} @else {
+				background-color: $scheme-primary;
+				border: 0;
+			}
+		}
+		@content;
+	}
+	
+	&:hover + *, &:active + *, &:focus + *, &:focus-within + * {
+		&::before {
+			border: none;
+		}
+	}
+}
+
+@mixin button-hover-effect-host ($margin: 1rem, $is-border: false, $hover-selector: null) {
     // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
     position: relative;
 	z-index: 1;
@@ -25,28 +61,13 @@
 		border-top: none;
 	}
 
-    &:hover, &:active, &:focus, &:focus-within {
-        &::before {
-			border-radius: 4px;
-			
-			@if $is-border {
-				top: $margin;
-				left: $margin;
-				width: calc(100% - #{$margin * 2});
-				border: 1px solid $scheme-border-hover;
-				
-			} @else {
-				background-color: $scheme-primary;
-				border: 0;
-			}
+	@if $hover-selector != null {
+		// a more correct version of this would only use @at-root when the & character is detected
+		@at-root #{str-replace($hover-selector, "&", &)} {
+			@include button-hover-effect ($margin, $is-border) { @content; };
 		}
-		@content;
-	}
-	
-	&:hover + &, &:active + &, &:focus + &, &:focus-within + & {
-		&::before {
-			border: none;
-		}
+	} @else {
+		@include button-hover-effect ($margin, $is-border) { @content; };
 	}
 }
 
@@ -82,23 +103,23 @@
 		}
 		
 		--card-is-hovered: 0;
-	}
-}
-
-:not(.sorting) > .card--is-clickable {
-	@include button-hover-effect($margin: 4px, $is-border: true) {
-		--card-is-hovered: 1;
-		--display: unset;
-		--label-display: unset;
-		z-index: 2;
-	
-		.card-header-title {
-			color: #{$scheme-text-strong};
+		
+		@include button-hover-effect-host(
+			$margin: 4px, 
+			$is-border: true, 
+			$hover-selector: ":not(.sorting) > &" // adds :not(.sorting) > & to the start of the hover selector
+		) {
+			--card-is-hovered: 1;
+			--display: unset;
+			--label-display: unset;
+			z-index: 2;
+		
+			.card-header-title {
+				color: #{$scheme-text-strong};
+			}
 		}
 	}
-}
-
-.card {
+	
 	--card-is-cozy: 0;
 	--card-is-not-cozy: 1;
 	&--is-cozy {
@@ -139,6 +160,11 @@
 	
 	&.sortable-ghost {
 		--card-background-color: #{$scheme-background-dark};
+		
+		&::before {
+			border-top: none;
+		}
+		
 		> * {
 			opacity: 0.2;
 		}
@@ -281,7 +307,7 @@
 }
 
 .card-footer-item:not(.non-selectable) {
-	@include button-hover-effect;
+	@include button-hover-effect-host;
 }
 
 .card-byline, .card-timestamp {
