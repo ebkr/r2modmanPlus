@@ -3,10 +3,11 @@ import Profile from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import fs from 'fs';
 import ManagerSettings from './ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolver from './GameDirectoryResolver';
+import FileUtils from '../utils/FileUtils';
 
 export default class ModLinker {
 
@@ -25,7 +26,7 @@ export default class ModLinker {
     private static performSymlink(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
         const newLinkedFiles: string[] = [];
         try {
-            fs.emptyDirSync(path.join(installDirectory, 'r2modman'))
+            FileUtils.ensureDirectory(path.join(installDirectory, 'r2modman'))
         } catch(e) {
             const err: Error = e;
             return new R2Error(
@@ -38,7 +39,9 @@ export default class ModLinker {
             LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
             previouslyLinkedFiles.forEach((file: string) => {
                 LoggerProvider.instance.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
-                fs.removeSync(file);
+                if (fs.existsSync(file)) {
+                    fs.unlinkSync(file);
+                }
             });
             try {
                 const profileFiles = fs.readdirSync(Profile.getActiveProfile().getPathOfProfile());
@@ -48,7 +51,9 @@ export default class ModLinker {
                             if (file.toLowerCase() !== 'mods.yml') {
                                 // Symlink Files in Install Root
                                 try {
-                                    fs.removeSync(path.join(installDirectory, file));
+                                    if (fs.existsSync(path.join(installDirectory, file))) {
+                                        fs.unlinkSync(path.join(installDirectory, file));
+                                    }
                                     // Existing -> Linked
                                     // Junction is used so users don't need Windows Developer Mode enabled.
                                     // https://stackoverflow.com/questions/57725093
@@ -101,9 +106,9 @@ export default class ModLinker {
         const newLinkedFiles: string[] = [];
         const dir: string = path.join(installDirectory, 'r2modman');
         try {
-            fs.emptyDirSync(dir);
+            FileUtils.emptyDirectory(dir);
             previouslyLinkedFiles.forEach((file: string) => {
-                fs.removeSync(file);
+                fs.unlinkSync(file);
             });
             const profileFiles = fs.readdirSync(Profile.getActiveProfile().getPathOfProfile());
             profileFiles.forEach((file: string) => {
@@ -111,7 +116,7 @@ export default class ModLinker {
                     if (file.toLowerCase() !== 'mods.yml') {
                         // Symlink Files in Install Root
                         try {
-                            fs.removeSync(path.join(installDirectory, file));
+                            fs.unlinkSync(path.join(installDirectory, file));
                             fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
                             newLinkedFiles.push(path.join(installDirectory, file));
                         } catch(e) {
@@ -124,7 +129,7 @@ export default class ModLinker {
                         }
                     }
                 } else {
-                    fs.copySync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(dir, file));
+                    fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(dir, file));
                     newLinkedFiles.push(path.join(dir, file));
                 }
             })

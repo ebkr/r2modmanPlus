@@ -5,8 +5,7 @@ import VdfParseError from '../../model/errors/Vdf/VdfParseError';
 import child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
-import * as fs from 'fs-extra';
-import { isUndefined } from 'util';
+import fs from 'fs';
 import ManagerSettings from './ManagerSettings';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
@@ -22,7 +21,7 @@ export default class GameDirectoryResolver {
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
             const installKeyValue = queryResult.split('\n');
-            let installValue: string | undefined;
+            let installValue: string = '';
             installKeyValue.forEach((val: string) => {
                 if (val.trim().startsWith('InstallPath')) {
                     installValue = val.substr(('InstallPath').length)
@@ -31,8 +30,8 @@ export default class GameDirectoryResolver {
                         .substr(1)
                         .trim();
                 }
-            })
-            if (isUndefined(installValue)) {
+            });
+            if (installValue.trim().length === 0) {
                 const err = new Error();
                 err.message = queryResult;
                 throw err;
@@ -148,7 +147,7 @@ export default class GameDirectoryResolver {
             const parsedVdf: any = vdf.parse(manifestVdf);
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
-            if (fs.pathExistsSync(riskOfRain2Path)) {
+            if (fs.existsSync(riskOfRain2Path)) {
                 return riskOfRain2Path;
             } else {
                 return new FileNotFoundError(

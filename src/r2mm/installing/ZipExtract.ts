@@ -5,6 +5,7 @@ import fs from 'fs';
 import * as path from 'path';
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
+import FileUtils from '../utils/FileUtils';
 
 export default class ZipExtract {
 
@@ -25,7 +26,7 @@ export default class ZipExtract {
             } else {
                 try {
                     // Clear from cache as failed.
-                    this.emptyDirectory(path.join(zipFolder, outputFolderName));
+                    FileUtils.emptyDirectory(path.join(zipFolder, outputFolderName));
                     fs.rmdirSync(path.join(zipFolder, outputFolderName));
                     fs.unlinkSync(path.join(zipFolder, filename));
                 } catch (e) {
@@ -50,17 +51,6 @@ export default class ZipExtract {
             callback(false);
         }
         return null;
-    }
-
-    static emptyDirectory(dir: string) {
-        const files = fs.readdirSync(dir);
-        files.forEach(file => {
-            if (fs.lstatSync(file).isDirectory()) {
-                this.emptyDirectory(file);
-            } else {
-                fs.unlinkSync(file);
-            }
-        })
     }
 
 

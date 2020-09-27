@@ -1,6 +1,6 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import ManagerSettings from './ManagerSettings';
+import FileUtils from '../utils/FileUtils';
 
 export default class PathResolver {
 
@@ -12,7 +12,7 @@ export default class PathResolver {
         PathResolver._APPDATA_DIR = appDataDir;
         ManagerSettings.getSingleton().load();
         PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory;
-        fs.ensureDirSync(PathResolver._ROOT);
+        FileUtils.ensureDirectory(PathResolver.ROOT)
         PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
     }
 
