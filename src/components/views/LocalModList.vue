@@ -116,9 +116,10 @@
             </template>
         </Modal>
 
-        <draggable v-model='sortableModList' group="mods" 
-                   @start="drag=canSort(); $emit('sort-start')" 
-                   @end="drag=false; $emit('sort-end')">
+        <draggable ref="draggable" v-model='sortableModList' group="mods"
+                   animation="200"
+                   @start="startSort()" 
+                   @end="endSort()">
                     <local-mod-card v-for='(key, index) in sortableModList' :key="'local-' + key.getName()"
                                     :id="index"
                                     :manifest="key"
@@ -463,6 +464,20 @@
 
         getSortDirectionOptions() {
             return Object.values(SortDirection);
+        }
+        
+        startSort() {
+            if (!this.canSort()) {
+                return false;
+            }
+            
+            (this.$refs.draggable as Vue).$el.classList.add('sorting');
+            this.$emit('sort-start');
+        }
+        
+        endSort() {
+            (this.$refs.draggable as Vue).$el.classList.remove('sorting');
+            this.$emit('sort-end')
         }
 
         canSort() {

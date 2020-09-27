@@ -18,6 +18,7 @@
     // overriding variables with dark theme colors
     
     --background: #{$night-1};
+    --background-dark: #{$night-0};
     --text: #{$night-c};
     --text-strong: #{$night-e};
     --text-secondary: #{$night-9};
@@ -30,7 +31,6 @@
     --border-secondary: #{$night-2};
     --border-hover: #{$night-5};
     --border-active: #{$night-9};
-    --popup: #{$night-0};
 
     --text-color-warning: #ffdd57;
     

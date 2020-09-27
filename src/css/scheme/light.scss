@@ -1,5 +1,6 @@
 // custom vars
 $scheme-background: var(--background, #ffffff);
+$scheme-background-dark: var(--background-dark, #f5f5f5);
 $scheme-text: var(--text, #4a4a4a);
 $scheme-text-secondary: var(--text-secondary, #6b6464);
 $scheme-text-strong: var(--text-strong, #363636);
@@ -13,7 +14,7 @@ $scheme-border: var(--border, #dbdbdb);
 $scheme-border-secondary: var(--border-secondary, #efefef);
 $scheme-border-hover: var(--border-hover, #b5b5b5);
 $scheme-border-active: var(--border-active, #4a4a4a);
-$scheme-popup-background: var(--popup, #f5f5f5);
+$scheme-popup-background: var(--popup, $scheme-background-dark);
 
 // custom text colors (these will be merged with bulma's defaults and used specifically for text)
 $scheme-text-colors: ();
@@ -48,11 +49,11 @@ $button-disabled-color: var(--button-disabled-color, $button-color);
 $button-disabled-background-color: var(--button-disabled-background-color, $button-background-color);
 $button-disabled-border-color: var(--button-disabled-border-color, $button-border-color);
 
-$code-background: var(--code-background, #f5f5f5);
+$code-background: var(--code-background, $scheme-background-dark);
 
 $content-heading-color: var(--content-heading-color, $title-color);
 
-$notification-background-color: var(--notification-background-color, #f5f5f5);
+$notification-background-color: var(--notification-background-color, $scheme-background-dark);
 
 $card-background-color: var(--card-background-color, $scheme-background);
 $card-header-color: var(--card-header-color, $scheme-text-strong);
@@ -60,7 +61,7 @@ $card-color: var(--card-color, $scheme-text);
 $card-footer-border-top: 1px solid var(--card-footer-border-top, $scheme-border);
 
 $menu-item-color: var(--menu-item-color, $scheme-text);
-$menu-item-hover-background-color: var(--menu-item-hover-background-color, #f5f5f5);
+$menu-item-hover-background-color: var(--menu-item-hover-background-color, $scheme-background-dark);
 $menu-item-hover-color: var(--menu-item-hover-color, $scheme-text-strong);
 $menu-label-color: var(--menu-label-color, #9e9e9e);
 $menu-list-border-left: 1px solid var(--menu-list-border-left, $scheme-border);
@@ -79,7 +80,7 @@ $input-border-color: var(--input-border-color, $scheme-border);
 $input-hover-border-color: var(--input-hover-border-color, $scheme-border-hover);
 $input-focus-border-color: var(--input-focus-border-color, #3273dc);
 $input-disabled-color: var(--input-disabled-color, #7a7a7a);
-$input-disabled-background-color: var(--input-disabled-background-color, #f5f5f5);
+$input-disabled-background-color: var(--input-disabled-background-color, $scheme-background-dark);
 $input-disabled-border-color: var(--input-disabled-border-color, $scheme-border-secondary);
 $input-disabled-placeholder-color: var(--input-disabled-placeholder-color, #7a7a7a4a);
 
@@ -92,7 +93,7 @@ $pagination-focus-border-color: var(--pagination-focus-border-color, $scheme-bor
 
 $panel-block-color: var(--panel-block-color, $scheme-text-strong);
 $panel-item-border: 1px solid var(--panel-item-border, $scheme-border);
-$panel-block-hover-background-color: var(--panel-block-hover-background-color, #f5f5f5);
+$panel-block-hover-background-color: var(--panel-block-hover-background-color, $scheme-background-dark);
 
 $list-item-color: var(--list-item-color, $scheme-text);
 $list-background-color: var(--list-background-color, $scheme-background);

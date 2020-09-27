@@ -82,19 +82,23 @@
 		}
 		
 		--card-is-hovered: 0;
-		
-		@include button-hover-effect($margin: 4px, $is-border: true) {
-			--card-is-hovered: 1;
-			--display: unset;
-			--label-display: unset;
-			z-index: 2;
-		
-			.card-header-title {
-				color: #{$scheme-text-strong};
-			}
+	}
+}
+
+:not(.sorting) > .card--is-clickable {
+	@include button-hover-effect($margin: 4px, $is-border: true) {
+		--card-is-hovered: 1;
+		--display: unset;
+		--label-display: unset;
+		z-index: 2;
+	
+		.card-header-title {
+			color: #{$scheme-text-strong};
 		}
 	}
-	
+}
+
+.card {
 	--card-is-cozy: 0;
 	--card-is-not-cozy: 1;
 	&--is-cozy {
@@ -131,6 +135,13 @@
 	
 	&--is-deprecated .card-title {
 		text-decoration: line-through;
+	}
+	
+	&.sortable-ghost {
+		--card-background-color: #{$scheme-background-dark};
+		> * {
+			opacity: 0.2;
+		}
 	}
 }
 
