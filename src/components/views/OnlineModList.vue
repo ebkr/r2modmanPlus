@@ -7,13 +7,15 @@
             @closed-modal="modToDownload = null;"
             @error="emitError($event)"
         />
-        <online-mod-card v-for='(key, index) in pagedModList' :key="'online-' + key.getFullName()"
-                         :id="index"
-                         :mod="key"
-                         :funkyMode="settings.funkyModeEnabled"
-                         @install-mod="showDownloadModal(key)"
-                         @uninstall-mod="$emit('uninstall-mod', key)">
-        </online-mod-card>
+        <div>
+            <online-mod-card v-for='(key, index) in pagedModList' :key="'online-' + key.getFullName()"
+                             :id="index"
+                             :mod="key"
+                             :funkyMode="settings.funkyModeEnabled"
+                             @install-mod="showDownloadModal(key)"
+                             @uninstall-mod="$emit('uninstall-mod', key)">
+            </online-mod-card>
+        </div>
     </div>
 </template>
 
