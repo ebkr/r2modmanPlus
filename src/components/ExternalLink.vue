@@ -5,8 +5,8 @@
     <a v-else-if="target !== null" @click="openLink()" class='target-link'>
         <slot></slot>
     </a>
-    <router-link v-else-if="target === null" tag="div" :to="url" class='target-link'>
-        <a>
+    <router-link v-else-if="target === null" tag="div" :to="url">
+        <a class='target-link'>
             <slot></slot>
         </a>
     </router-link>
