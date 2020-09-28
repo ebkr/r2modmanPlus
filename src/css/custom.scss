@@ -202,6 +202,7 @@ select {
 }
 
 .input-group {
+    font-weight: normal;
 
     &--flex {
         flex: 1;
@@ -210,11 +211,20 @@ select {
     display: block;
     white-space: nowrap;
 
-    & label {
+    label {
         display: block;
-        font-size: 0.9em;
         opacity: 0.8;
-        margin-bottom: 0.2em;
+        padding-bottom: 0.2em;
+        color: $menu-label-color;
+        font-size: 0.7em;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    
+    &--is-small {
+        &.card-header-title {
+            padding: 0.5rem;
+        }
     }
 }
 

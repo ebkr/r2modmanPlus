@@ -1,26 +1,26 @@
 <template>
     <div>
-        <div class='sticky-top sticky-top--search border-at-bottom'>
-            <div class='card is-shadowless is-square'>
-                <div class='card-header-title'>
-                    <span class="non-selectable">Search:&nbsp;&nbsp;</span>
-                    <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
-                </div>
-            </div>
-        </div>
         <Hero title='Settings'
               :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
               heroType='is-info'/>
-        <div class="margin-right">
-            <div class="tabs">
-                <ul>
-                    <li v-for="(key, index) in tabs" :key="`tab-${key}`"
-                        :class="[{'is-active': activeTab === key}]"
-                        @click="changeTab(key)">
-                        <a>{{key}}</a>
-                    </li>
-                </ul>
+        <div class='sticky-top sticky-top--search'>
+            <div class='card is-shadowless is-square card--is-compressed'>
+                <div class='card-header-title input-group input-group--is-small'>
+                    <label class="non-selectable" for="settings-search">Search&nbsp;&nbsp;</label>
+                    <input v-model='search' id="settings-search" class="input" type="text" placeholder="Search for a setting"/>
+                </div>
+                <div class="tabs">
+                    <ul>
+                        <li v-for="(key, index) in tabs" :key="`tab-${key}`"
+                            :class="[{'is-active': activeTab === key}]"
+                            @click="changeTab(key)">
+                            <a>{{key}}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </div>
+        <div class="margin-right">
             <template v-if="activeTab === 'All'">
                 <SettingsItem v-for="(key, index) in searchableSettings" :key="`setting-${key.action}`"
                               :action="key.action"
