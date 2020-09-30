@@ -5,6 +5,8 @@
 // Do not use dollar signs in this file, as it causes Quasar to import its variables, which infects bulma's defaults.
 // If you need to use dollar signs, consider creating a new file that contains them and importing that file from here instead.
 
+@import "utils/string";
+
 @import "scheme/light";
 @import "scheme/dark";
 

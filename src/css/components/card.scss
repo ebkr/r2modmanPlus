@@ -1,13 +1,3 @@
-@function str-replace($string, $search, $replace: '') {
-    $index: str-index($string, $search);
-
-    @if $index {
-        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
-    }
-
-    @return $string;
-}
-
 @mixin button-hover-effect ($margin, $is-border) {
     &:hover, &:active, &:focus, &:focus-within {
         &::before {
@@ -63,7 +53,7 @@
 
     @if $hover-selector != null {
         // a more correct version of this would only use @at-root when the & character is detected
-        @at-root #{str-replace($hover-selector, "&", &)} {
+        @at-root #{str-replace-all($hover-selector, "&", &)} {
             @include button-hover-effect ($margin, $is-border) { @content; };
         }
     } @else {
