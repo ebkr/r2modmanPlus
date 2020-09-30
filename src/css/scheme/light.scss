@@ -20,7 +20,7 @@ $scheme-popup-background: var(--popup, $scheme-background-dark);
 $scheme-text-colors: ();
 
 @mixin defineColor($name, $color) {
-	$scheme-text-colors: map-merge($scheme-text-colors, ($name: (var(--text-color-#{$name}, $color)))) !global;
+    $scheme-text-colors: map-merge($scheme-text-colors, ($name: (var(--text-color-#{$name}, $color)))) !global;
 }
 
 @include defineColor("danger", #f84d4d);

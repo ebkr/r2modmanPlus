@@ -1,22 +1,22 @@
 <template>
-	<div>
-		<hero title='Config editor' subtitle='Make changes to your configuration files' heroType='is-info'/>
-		<div class='notification is-warning'>
-			<p class='container'>Configuration files are generated after launching the game, with the mod installed, at
-				least once.
-			</p>
-		</div>
-		<div class='columns'>
-			<div class='column is-full'>
-				<article class='media'>
-					<div class='media-content'>
-						<div class='content'>
-							<div class='container' v-if="editing === false">
-								<div>
-									<i class='fas fa-long-arrow-alt-left margin-right'/>
-									<strong><a @click="backToManager()">Go back</a></strong>
-									<br/><br/>
-								</div>
+    <div>
+        <hero title='Config editor' subtitle='Make changes to your configuration files' heroType='is-info'/>
+        <div class='notification is-warning'>
+            <p class='container'>Configuration files are generated after launching the game, with the mod installed, at
+                least once.
+            </p>
+        </div>
+        <div class='columns'>
+            <div class='column is-full'>
+                <article class='media'>
+                    <div class='media-content'>
+                        <div class='content'>
+                            <div class='container' v-if="editing === false">
+                                <div>
+                                    <i class='fas fa-long-arrow-alt-left margin-right'/>
+                                    <strong><a @click="backToManager()">Go back</a></strong>
+                                    <br/><br/>
+                                </div>
                                 <div class='card is-shadowless'>
                                     <div class='card-header-title'>
 
@@ -42,55 +42,55 @@
 
                                     </div>
                                 </div>
-								<div>
-									<config-card v-for='(file, index) in sortedConfigFiles' 
-										:key="`config-file-${file.name}`"
-										:id="index"
-										:title="file.name"
-										@click="editFile(file)"
-										@delete="deleteConfig(file.getPath())">
-									</config-card>
-								</div>
-							</div>
-							<div class='container' v-else-if="editing && loadedFile.getPath().toLowerCase().endsWith('.cfg')">
-								<div>
-									<div class='sticky-top sticky-top--buttons'>
-										<button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
-										<button class='button is-danger' @click="editing = false; updateConfigList();">Cancel</button>
-									</div>
-									<br/>
-									<h4 class='title is-4'>{{loadedFile.getName()}}</h4>
-									<div>
-										<h5 class='subtitle is-5'>Sections</h5>
-										<ul>
-											<li v-for='(_, key) in variables' :key="`section-link-${key}`">
-												<a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
-												<a :href="`#section-${key}`" v-else>[UNTITLED]</a>
-											</li>
-										</ul>
-										<hr/>
-										<div v-for='(vars, key) in variables' :key="`section-${key}`">
-											<br/>
-											<h5 :id="`section-${key}`" class='subtitle subtitle--is-background is-5 sticky-top'>[{{key}}]</h5>
-											<div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
-												<div class='field has-addons has-tooltip-top has-tooltip-multiline'
-												     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
-													<div class='control is-expanded'>
-														<input class='input' type='text' :value="varName" width="250"
-														       disabled readonly/>
-													</div>
-													<div class='control is-expanded'>
-														<input :id="`${key}-${varName}`" class='input' type='text'
-														       :value="varValue.value"
-														       @change="updateVariableText(key, varName, this)"/>
-													</div>
-													<hr class='hr'/>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+                                <div>
+                                    <config-card v-for='(file, index) in sortedConfigFiles' 
+                                        :key="`config-file-${file.name}`"
+                                        :id="index"
+                                        :title="file.name"
+                                        @click="editFile(file)"
+                                        @delete="deleteConfig(file.getPath())">
+                                    </config-card>
+                                </div>
+                            </div>
+                            <div class='container' v-else-if="editing && loadedFile.getPath().toLowerCase().endsWith('.cfg')">
+                                <div>
+                                    <div class='sticky-top sticky-top--buttons'>
+                                        <button class='button is-info' @click="saveChanges()">Save changes</button>&nbsp;
+                                        <button class='button is-danger' @click="editing = false; updateConfigList();">Cancel</button>
+                                    </div>
+                                    <br/>
+                                    <h4 class='title is-4'>{{loadedFile.getName()}}</h4>
+                                    <div>
+                                        <h5 class='subtitle is-5'>Sections</h5>
+                                        <ul>
+                                            <li v-for='(_, key) in variables' :key="`section-link-${key}`">
+                                                <a :href="`#section-${key}`" v-if="key.length > 0">{{key}}</a>
+                                                <a :href="`#section-${key}`" v-else>[UNTITLED]</a>
+                                            </li>
+                                        </ul>
+                                        <hr/>
+                                        <div v-for='(vars, key) in variables' :key="`section-${key}`">
+                                            <br/>
+                                            <h5 :id="`section-${key}`" class='subtitle subtitle--is-background is-5 sticky-top'>[{{key}}]</h5>
+                                            <div v-for='(varValue, varName) in vars' :key="`vars-${varName}`">
+                                                <div class='field has-addons has-tooltip-top has-tooltip-multiline'
+                                                     :data-tooltip="getCommentDisplay(varValue.comments).length > 0 ? getCommentDisplay(varValue.comments) : undefined">
+                                                    <div class='control is-expanded'>
+                                                        <input class='input' type='text' :value="varName" width="250"
+                                                               disabled readonly/>
+                                                    </div>
+                                                    <div class='control is-expanded'>
+                                                        <input :id="`${key}-${varName}`" class='input' type='text'
+                                                               :value="varValue.value"
+                                                               @change="updateVariableText(key, varName, this)"/>
+                                                    </div>
+                                                    <hr class='hr'/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class='container' v-else-if="editing">
                                 <div class='sticky-top sticky-top--buttons'>
                                     <button class='button is-info' @click="saveFreeText">Save changes</button>&nbsp;
@@ -100,12 +100,12 @@
                                 <h4 class='title is-4'>{{loadedFile.getName()}}</h4>
                                 <QuillEditor v-model="fileText" @input="updateFreeText"/>
                             </div>
-						</div>
-					</div>
-				</article>
-			</div>
-		</div>
-	</div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang='ts'>
@@ -130,42 +130,42 @@
     import QuillEditor from '../components/QuillEditor.vue';
 
     @Component({
-		components: {
-			'hero': Hero,
-			'expandable-card': ExpandableCard,
-			'config-card': ConfigCard,
+        components: {
+            'hero': Hero,
+            'expandable-card': ExpandableCard,
+            'config-card': ConfigCard,
             QuillEditor
-		}
-	})
-	export default class ConfigEditor extends Vue {
+        }
+    })
+    export default class ConfigEditor extends Vue {
 
-		private shownConfigFiles: ConfigFile[] = [];
-		private configFiles: ConfigFile[] = [];
-		private loadedFile: ConfigFile | null = null;
-		private fileText: string = '';
+        private shownConfigFiles: ConfigFile[] = [];
+        private configFiles: ConfigFile[] = [];
+        private loadedFile: ConfigFile | null = null;
+        private fileText: string = '';
 
-		private editing: boolean = false;
-		private variables: { [section: string]: { [variable: string]: ConfigLine } } = {};
+        private editing: boolean = false;
+        private variables: { [section: string]: { [variable: string]: ConfigLine } } = {};
 
-		private filterText: string = '';
-		private sortOrder: SortConfigFile = SortConfigFile.NAME;
-		private sortDirection: SortDirection = SortDirection.STANDARD;
+        private filterText: string = '';
+        private sortOrder: SortConfigFile = SortConfigFile.NAME;
+        private sortDirection: SortDirection = SortDirection.STANDARD;
 
-		@Watch('filterText')
-		textChanged() {
-			this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
-		}
-
-		get sortedConfigFiles(): ConfigFile[] {
-		    return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
+        @Watch('filterText')
+        textChanged() {
+            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
         }
 
-		editFile(file: ConfigFile) {
-			const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
-			this.loadedFile = file;
-			this.fileText = fs.readFileSync(file.getPath()).toString();
+        get sortedConfigFiles(): ConfigFile[] {
+            return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
+        }
 
-			if (file.getPath().toLowerCase().endsWith(".cfg")) {
+        editFile(file: ConfigFile) {
+            const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
+            this.loadedFile = file;
+            this.fileText = fs.readFileSync(file.getPath()).toString();
+
+            if (file.getPath().toLowerCase().endsWith(".cfg")) {
                 // Find all variables offered within config script.
                 this.variables = {};
                 let section = 'root';
@@ -185,46 +185,46 @@
                     }
                 });
             }
-			window.scrollTo(0, 0);
-			this.editing = true;
-		}
+            window.scrollTo(0, 0);
+            this.editing = true;
+        }
 
-		saveChanges() {
-			let builtString = '';
-			let section = 'root';
-			this.fileText.split('\n').forEach((line: string) => {
-				if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
-					section = line.trim().substring(1, line.trim().length - 1);
-					builtString += line + '\n';
-				} else if (!line.trim().startsWith('#') && line.search('=') > 0) {
-					const sides = line.split('=');
-					builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()].getValue()}\n`;
-				} else {
-					builtString += line + '\n';
-				}
-			});
-			fs.writeFileSync(this.loadedFile!.getPath(), builtString.trim());
-			window.scrollTo(0, 0);
-			this.editing = false;
+        saveChanges() {
+            let builtString = '';
+            let section = 'root';
+            this.fileText.split('\n').forEach((line: string) => {
+                if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
+                    section = line.trim().substring(1, line.trim().length - 1);
+                    builtString += line + '\n';
+                } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
+                    const sides = line.split('=');
+                    builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()].getValue()}\n`;
+                } else {
+                    builtString += line + '\n';
+                }
+            });
+            fs.writeFileSync(this.loadedFile!.getPath(), builtString.trim());
+            window.scrollTo(0, 0);
+            this.editing = false;
             this.updateConfigList();
-		}
+        }
 
-		backToManager() {
-			this.$router.push('/manager');
-		}
+        backToManager() {
+            this.$router.push('/manager');
+        }
 
-		updateVariableText(section: string, variable: string) {
-			const element: HTMLElement | null = document.getElementById(`${section}-${variable}`);
-			if (element instanceof HTMLElement) {
-				const inputField = element as HTMLInputElement;
-				this.variables[section][variable].setValue(inputField.value);
-			}
-		}
+        updateVariableText(section: string, variable: string) {
+            const element: HTMLElement | null = document.getElementById(`${section}-${variable}`);
+            if (element instanceof HTMLElement) {
+                const inputField = element as HTMLInputElement;
+                this.variables[section][variable].setValue(inputField.value);
+            }
+        }
 
-		deleteConfig(fileName: string) {
-			fs.removeSync(fileName);
+        deleteConfig(fileName: string) {
+            fs.removeSync(fileName);
             this.updateConfigList();
-		}
+        }
 
         getCommentDisplay(comments: string[]): string {
             return comments.join("\n")
@@ -233,19 +233,19 @@
         }
 
         getSortOrderOptions() {
-		    return Object.values(SortConfigFile);
+            return Object.values(SortConfigFile);
         }
 
         getSortDirectionOptions() {
-		    return Object.values(SortDirection);
+            return Object.values(SortDirection);
         }
 
-		created() {
-		    this.updateConfigList();
-		}
+        created() {
+            this.updateConfigList();
+        }
 
-		updateConfigList() {
-		    this.configFiles = [];
+        updateConfigList() {
+            this.configFiles = [];
             const configLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config');
             if (fs.pathExistsSync(configLocation)) {
                 const tree: BepInExTree | R2Error = BepInExTree.buildFromLocation(configLocation);
@@ -267,7 +267,7 @@
         }
 
         updateFreeText(text: string) {
-		    this.fileText = text;
+            this.fileText = text;
         }
 
         saveFreeText() {
@@ -277,5 +277,5 @@
             this.updateConfigList();
         }
 
-	}
+    }
 </script>

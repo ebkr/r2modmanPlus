@@ -1,305 +1,305 @@
 @function str-replace($string, $search, $replace: '') {
-	$index: str-index($string, $search);
+    $index: str-index($string, $search);
 
-	@if $index {
-		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
-	}
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
 
-	@return $string;
+    @return $string;
 }
 
 @mixin button-hover-effect ($margin, $is-border) {
-	&:hover, &:active, &:focus, &:focus-within {
-		&::before {
-			border-radius: 4px;
-			
-			@if $is-border {
-				top: $margin;
-				left: $margin;
-				width: calc(100% - #{$margin * 2});
-				border: 1px solid $scheme-border-hover;
-				
-			} @else {
-				background-color: $scheme-primary;
-				border: 0;
-			}
-		}
-		@content;
-	}
-	
-	&:hover + *, &:active + *, &:focus + *, &:focus-within + * {
-		&::before {
-			border: none;
-		}
-	}
+    &:hover, &:active, &:focus, &:focus-within {
+        &::before {
+            border-radius: 4px;
+            
+            @if $is-border {
+                top: $margin;
+                left: $margin;
+                width: calc(100% - #{$margin * 2});
+                border: 1px solid $scheme-border-hover;
+                
+            } @else {
+                background-color: $scheme-primary;
+                border: 0;
+            }
+        }
+        @content;
+    }
+    
+    &:hover + *, &:active + *, &:focus + *, &:focus-within + * {
+        &::before {
+            border: none;
+        }
+    }
 }
 
 @mixin button-hover-effect-host ($margin: 1rem, $is-border: false, $hover-selector: null) {
     // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
     position: relative;
-	z-index: 1;
-	
+    z-index: 1;
+    
     &::before {
         content: "";
         display: block;
-		position: absolute;
+        position: absolute;
         top: $margin;
         left: $margin;
         width: calc(100% - #{$margin * 2});
         height: calc(100% - #{$margin * 2});
         z-index: -1;
-		background-color: transparent;
-		@if $is-border {
-        	top: 0;
-			left: $margin * 8;
-			width: calc(100% - #{$margin * 16});
-			border-top: 1px solid $scheme-border-secondary;
-		}
-	}
-	
-	&:first-child::before {
-		border-top: none;
-	}
+        background-color: transparent;
+        @if $is-border {
+            top: 0;
+            left: $margin * 8;
+            width: calc(100% - #{$margin * 16});
+            border-top: 1px solid $scheme-border-secondary;
+        }
+    }
+    
+    &:first-child::before {
+        border-top: none;
+    }
 
-	@if $hover-selector != null {
-		// a more correct version of this would only use @at-root when the & character is detected
-		@at-root #{str-replace($hover-selector, "&", &)} {
-			@include button-hover-effect ($margin, $is-border) { @content; };
-		}
-	} @else {
-		@include button-hover-effect ($margin, $is-border) { @content; };
-	}
+    @if $hover-selector != null {
+        // a more correct version of this would only use @at-root when the & character is detected
+        @at-root #{str-replace($hover-selector, "&", &)} {
+            @include button-hover-effect ($margin, $is-border) { @content; };
+        }
+    } @else {
+        @include button-hover-effect ($margin, $is-border) { @content; };
+    }
 }
 
 .card {
-	display: grid;
-	grid-template-columns: auto 1fr;
-	> * {
-		grid-column: 2;
-	}
-	
-	&--is-disabled {
-		.mod-logo, .card-title, .card-content, .card-footer, .card-toggle:not(:hover):not(:focus):not(:active) {
-			opacity: 0.6;
-		}
-		
-		.mod-logo {
-			filter: grayscale(80%) opacity(80%);
-		}
-	}
-	
-	&--is-clickable {
-		--display: none;
-		--label-display: none;
-		.requires-card-hover {
-			display: var(--display, var(--default-display));
-		}
-		
-		.manager.show-all-icons & {
-			--display: unset;
-			.card-header-icon > .card-header-icon-label {
-				display: var(--label-display);
-			}
-		}
-		
-		--card-is-hovered: 0;
-		
-		@include button-hover-effect-host(
-			$margin: 4px, 
-			$is-border: true, 
-			$hover-selector: ":not(.sorting) > &" // adds :not(.sorting) > & to the start of the hover selector
-		) {
-			--card-is-hovered: 1;
-			--display: unset;
-			--label-display: unset;
-			z-index: 2;
-		
-			.card-header-title {
-				color: #{$scheme-text-strong};
-			}
-		}
-	}
-	
-	--card-is-cozy: 0;
-	--card-is-not-cozy: 1;
-	&--is-cozy {
-		--card-is-cozy: 1;
-		--card-is-not-cozy: 0;
-		
-		.card-footer {
-			color: $scheme-text-secondary;
-			display: block;
-		}
-		
-		.card-footer-item {
-			display: inline;
-			// align-items: unset;
-			justify-content: unset;
-			padding: 0 0 0 1.5rem;
-			position: relative;
-			
-			&:not(:last-child)::before {
-				content: "·";
-				position: absolute;
-				left: calc(100% + 0.5rem);
-				opacity: 0.6;
-			}
-		}
-	}
-	
-	--card-is-compressed: 0;
-	--card-is-not-compressed: 1;
-	&--is-compressed {
-		--card-is-compressed: 1;
-		--card-is-not-compressed: 0;
-	}
-	
-	&--is-deprecated .card-title {
-		text-decoration: line-through;
-	}
-	
-	&.sortable-ghost {
-		--card-background-color: #{$scheme-background-dark};
-		
-		&::before {
-			border-top: none;
-		}
-		
-		> * {
-			opacity: 0.2;
-		}
-	}
+    display: grid;
+    grid-template-columns: auto 1fr;
+    > * {
+        grid-column: 2;
+    }
+    
+    &--is-disabled {
+        .mod-logo, .card-title, .card-content, .card-footer, .card-toggle:not(:hover):not(:focus):not(:active) {
+            opacity: 0.6;
+        }
+        
+        .mod-logo {
+            filter: grayscale(80%) opacity(80%);
+        }
+    }
+    
+    &--is-clickable {
+        --display: none;
+        --label-display: none;
+        .requires-card-hover {
+            display: var(--display, var(--default-display));
+        }
+        
+        .manager.show-all-icons & {
+            --display: unset;
+            .card-header-icon > .card-header-icon-label {
+                display: var(--label-display);
+            }
+        }
+        
+        --card-is-hovered: 0;
+        
+        @include button-hover-effect-host(
+            $margin: 4px, 
+            $is-border: true, 
+            $hover-selector: ":not(.sorting) > &" // adds :not(.sorting) > & to the start of the hover selector
+        ) {
+            --card-is-hovered: 1;
+            --display: unset;
+            --label-display: unset;
+            z-index: 2;
+        
+            .card-header-title {
+                color: #{$scheme-text-strong};
+            }
+        }
+    }
+    
+    --card-is-cozy: 0;
+    --card-is-not-cozy: 1;
+    &--is-cozy {
+        --card-is-cozy: 1;
+        --card-is-not-cozy: 0;
+        
+        .card-footer {
+            color: $scheme-text-secondary;
+            display: block;
+        }
+        
+        .card-footer-item {
+            display: inline;
+            // align-items: unset;
+            justify-content: unset;
+            padding: 0 0 0 1.5rem;
+            position: relative;
+            
+            &:not(:last-child)::before {
+                content: "·";
+                position: absolute;
+                left: calc(100% + 0.5rem);
+                opacity: 0.6;
+            }
+        }
+    }
+    
+    --card-is-compressed: 0;
+    --card-is-not-compressed: 1;
+    &--is-compressed {
+        --card-is-compressed: 1;
+        --card-is-not-compressed: 0;
+    }
+    
+    &--is-deprecated .card-title {
+        text-decoration: line-through;
+    }
+    
+    &.sortable-ghost {
+        --card-background-color: #{$scheme-background-dark};
+        
+        &::before {
+            border-top: none;
+        }
+        
+        > * {
+            opacity: 0.2;
+        }
+    }
 }
 
 .card {
-	padding: calc(1rem - 0.5rem * var(--card-is-not-cozy) - 0.5rem * var(--card-is-compressed));
+    padding: calc(1rem - 0.5rem * var(--card-is-not-cozy) - 0.5rem * var(--card-is-compressed));
 }
 
 .card-header-title {
-	padding: calc(0.25rem + 0.5rem * var(--card-is-not-cozy)) 1rem;
-	
-	> .icon {
-		font-size: 1.7rem;
-		margin: 0 0.8rem 0 0.2rem;
-	}
+    padding: calc(0.25rem + 0.5rem * var(--card-is-not-cozy)) 1rem;
+    
+    > .icon {
+        font-size: 1.7rem;
+        margin: 0 0.8rem 0 0.2rem;
+    }
 }
 
 .card-title--is-large {
-	font-size: 21px;
-	font-weight: normal;
-	letter-spacing: 0.2px;
+    font-size: 21px;
+    font-weight: normal;
+    letter-spacing: 0.2px;
 }
 
 .card-header-icons {
-	display: flex;
-	justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .card-header, .card-header-icons {
-	grid-row: 1;
+    grid-row: 1;
 }
-	
+    
 .button.card-header-icon {
-	--default-display: flex;
-	background: none;
-	border: none;
-	height: auto;
-	padding: 
-		0.2rem
-		calc(0.5rem + 0.2rem * var(--card-is-hovered)) 
-		0.3rem
-		calc(0.5rem + 0.5rem * var(--card-is-hovered));
-	margin: 
-		calc(0.25rem + 0.25rem * var(--card-is-not-cozy))
-		calc(0.5rem * var(--card-is-hovered)) 
-		auto;
-	color: $scheme-link;
-	
-	$link-colors: map-merge($colors, $scheme-text-colors);
-	
-	// --link: #{nth(map-get($colors, "warning"), 1)};
-	@each $name, $pair in $link-colors {
-		$color: nth($pair, 1);
-		&.is-#{$name} {
-			--link: #{$color};
-		}
-	}
-	
-	&.is-colored-button-only {
-		--link: #{nth(map-get($link-colors, "info"), 1)};
-	}
+    --default-display: flex;
+    background: none;
+    border: none;
+    height: auto;
+    padding: 
+        0.2rem
+        calc(0.5rem + 0.2rem * var(--card-is-hovered)) 
+        0.3rem
+        calc(0.5rem + 0.5rem * var(--card-is-hovered));
+    margin: 
+        calc(0.25rem + 0.25rem * var(--card-is-not-cozy))
+        calc(0.5rem * var(--card-is-hovered)) 
+        auto;
+    color: $scheme-link;
+    
+    $link-colors: map-merge($colors, $scheme-text-colors);
+    
+    // --link: #{nth(map-get($colors, "warning"), 1)};
+    @each $name, $pair in $link-colors {
+        $color: nth($pair, 1);
+        &.is-#{$name} {
+            --link: #{$color};
+        }
+    }
+    
+    &.is-colored-button-only {
+        --link: #{nth(map-get($link-colors, "info"), 1)};
+    }
 }
 
 .card-header .tag {
-	margin-left: 1.1rem;
-	top: 1px;
+    margin-left: 1.1rem;
+    top: 1px;
 }
 
 .card-image {
-	grid-column: 1;
-	grid-row: 1/5;
+    grid-column: 1;
+    grid-row: 1/5;
 }
 
 @media (max-width: 1919px) {
-	.card--is-cozy {
-		&:hover, &:active, &:focus, &:focus-within {
-			.card-header-icons {
-				position: absolute;
-				top: 2rem;
-				right: 1.25rem;
-				display: flex;
-				flex-direction: column;
-				z-index: 1;
-				padding: 0.25rem;
-				min-width: 120px;
-				
-				&::before, &::after {
-					position: absolute;
-					bottom: calc(100% - 3px);
-					right: 0;
-					text-align: right;
-					padding: 4px 12px;
-				}
-				&::after { content: "Options"; }
-				&::before { 
-					content: "☰ \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0"; 
-					font-size: 1.1em;
-					margin-bottom: -1px;
-					border-radius: 4px;
-				}
-				
-				&:hover, &:focus-within {
-					background: $scheme-popup-background;
-					border-radius: 4px;
-					&::before {
-						background: $scheme-popup-background;
-					}
-				}
-				
-				&:not(:hover):not(:focus-within) {
-					.button.card-header-icon {
-						display: none;
-					}
-					
-					&::before, &::after {
-						color: $scheme-link;
-					}
-				}
-			}
-			
-			.button.card-header-icon {
-				margin-top: 0;
-			}
-		}
-		
-		& ~ &:last-child {
-			margin-bottom: 5rem;
-		}
-	}
+    .card--is-cozy {
+        &:hover, &:active, &:focus, &:focus-within {
+            .card-header-icons {
+                position: absolute;
+                top: 2rem;
+                right: 1.25rem;
+                display: flex;
+                flex-direction: column;
+                z-index: 1;
+                padding: 0.25rem;
+                min-width: 120px;
+                
+                &::before, &::after {
+                    position: absolute;
+                    bottom: calc(100% - 3px);
+                    right: 0;
+                    text-align: right;
+                    padding: 4px 12px;
+                }
+                &::after { content: "Options"; }
+                &::before { 
+                    content: "☰ \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0"; 
+                    font-size: 1.1em;
+                    margin-bottom: -1px;
+                    border-radius: 4px;
+                }
+                
+                &:hover, &:focus-within {
+                    background: $scheme-popup-background;
+                    border-radius: 4px;
+                    &::before {
+                        background: $scheme-popup-background;
+                    }
+                }
+                
+                &:not(:hover):not(:focus-within) {
+                    .button.card-header-icon {
+                        display: none;
+                    }
+                    
+                    &::before, &::after {
+                        color: $scheme-link;
+                    }
+                }
+            }
+            
+            .button.card-header-icon {
+                margin-top: 0;
+            }
+        }
+        
+        & ~ &:last-child {
+            margin-bottom: 5rem;
+        }
+    }
 }
 
 .card-content--is-compressed {
-	padding: 0.25rem 1.5rem;
+    padding: 0.25rem 1.5rem;
 }
 
 .card-footer-borderless, .card-footer-borderless .card-footer-item {
@@ -307,7 +307,7 @@
 }
 
 .card-footer-item:not(.non-selectable) {
-	@include button-hover-effect-host;
+    @include button-hover-effect-host;
 }
 
 .card-byline, .card-timestamp {
@@ -319,29 +319,29 @@
 }
 
 .field.card-toggle {
-	margin-bottom: 0;
-	margin-right: 0.6rem;
-	> label {
-		vertical-align: sub;
-	}
+    margin-bottom: 0;
+    margin-right: 0.6rem;
+    > label {
+        vertical-align: sub;
+    }
 }
 
 .mod-logo {
-	border-radius: 4px;
-	overflow: hidden;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .text-smaller {
-	font-size: 0.7em;
-	position: relative;
-	top: -1px;
+    font-size: 0.7em;
+    position: relative;
+    top: -1px;
 }
 
 .card-footer-item-label {
-	margin-right: 0.5rem;
-	opacity: 0.7;
+    margin-right: 0.5rem;
+    opacity: 0.7;
 }
-	
+    
 .modal .card {
-	padding: 0;
+    padding: 0;
 }
