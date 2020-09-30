@@ -9,11 +9,11 @@
             <span class='card-header-title'>
                 <div class="field card-toggle has-tooltip-top"
                      :data-tooltip='`This mod is ${manifest.isEnabled() ? "enabled" : "disabled"}.`'>
-                        <input :id="`toggle${id}`" type="checkbox" class="switch is-info is-rounded"
+                        <input :id="`toggle-${id}`" type="checkbox" class="switch is-info is-rounded"
                                ref="switch"
                                :checked='manifest.isEnabled()' 
                                @click.prevent="toggle">
-                        <label :for="`toggle${id}`"></label>
+                        <label :for="`toggle-${id}`"></label>
                 </div>
                 <span class='card-title card-title--is-large'>{{manifest.getDisplayName()}}</span>
                 <span v-if="manifest.isDeprecated()" class="tag is-danger has-tooltip-top"
@@ -111,7 +111,7 @@ export default class LocalModCard extends Vue {
     toggle() {
         setTimeout(() => {
             // for some reason this only works if it's delayed until after the event is over
-            this.$emit("update:enabled", !(this.$refs.switch as HTMLInputElement).checked);
+            this.$emit("update-enabled", !(this.$refs.switch as HTMLInputElement).checked);
         }, 1);
     }
     
@@ -119,10 +119,6 @@ export default class LocalModCard extends Vue {
     @Watch("manifest", {deep: true})
     onManifestChange() {
         this.$forceUpdate();
-    }
-    
-    emitMove(direction: string) {
-        this.$emit("move" + direction);
     }
     
     isLatest() {

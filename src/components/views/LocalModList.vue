@@ -125,7 +125,7 @@
                                     :manifest="key"
                                     :missingDependencies="getMissingDependencies(key)"
                                     :funkyMode="settings.funkyModeEnabled"
-                                    @update:enabled="toggleMod(key, $event)"
+                                    @update-enabled="toggleMod(key, $event)"
                                     @update-mod="updateMod(key)"
                                     @uninstall-mod="uninstallModRequireConfirmation(key)"
                                     @view-associated-mods="viewDependencyList(key)">
