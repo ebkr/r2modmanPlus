@@ -5,7 +5,7 @@
  * @param $replace (Optional, defaults to an empty string.) The replacement string to insert in place of all instances of the $search substring
  * @returns The resulting string after all replacements
  */
-@function str-replace-all($string, $search, $replace: '') {
+@function str-replace($string, $search, $replace: '') {
     $index: str-index($string, $search);
 
     @if $index {

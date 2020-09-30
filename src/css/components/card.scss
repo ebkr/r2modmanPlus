@@ -53,7 +53,7 @@
 
     @if $hover-selector != null {
         // a more correct version of this would only use @at-root when the & character is detected
-        @at-root #{str-replace-all($hover-selector, "&", &)} {
+        @at-root #{str-replace($hover-selector, "&", &)} {
             @include button-hover-effect ($margin, $is-border) { @content; };
         }
     } @else {
