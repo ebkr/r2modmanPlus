@@ -240,15 +240,15 @@
                 display: flex;
                 flex-direction: column;
                 z-index: 1;
-                padding: 0.25rem;
+                padding: 0.5rem 0.25rem;
                 min-width: 120px;
                 
                 &::before, &::after {
                     position: absolute;
-                    bottom: calc(100% - 3px);
+                    bottom: calc(100% - 8px);
                     right: 0;
                     text-align: right;
-                    padding: 4px 12px;
+                    padding: 4px 12px 10px;
                 }
                 &::after { content: "Options"; }
                 &::before { 
@@ -260,7 +260,7 @@
                 
                 &:hover, &:focus-within {
                     background: $scheme-popup-background;
-                    border-radius: 4px;
+                    border-radius: 8px;
                     &::before {
                         background: $scheme-popup-background;
                     }
@@ -278,7 +278,7 @@
             }
             
             .button.card-header-icon {
-                margin-top: 0;
+                margin: 0 0.25rem;
             }
         }
         
