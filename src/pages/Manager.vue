@@ -360,7 +360,7 @@
                             <br/>
                             <h5 class='title is-5'>If the BepInEx console appears</h5>
                             <p>It's very likely due to a broken mod.</p>
-                            <p>Remove (or disable) all mods except for BepInEx and R2API. See if the problem still
+                            <p>Disable (or uninstall) all mods except for BepInEx and R2API. See if the problem still
                                 occurs.
                             </p>
                             <br/>
@@ -391,7 +391,7 @@
                                 "Installed" tab.
                             </p>
                             <p>If there is a missing dependency, you'll be able to resolve it by either reinstalling the
-                                mod, or by clicking the "Download dependency" button.
+                                mod, or by clicking the "Install missing dependency" button.
                             </p>
                             <br/>
                             <h5 class='title is-5'>Are all of your mods up-to-date?</h5>
@@ -399,7 +399,7 @@
                             <p>You can update mods by going to the "Installed" tab, clicking on mods with the update
                                 icon, and clicking the update button.
                             </p>
-                            <p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
+                            <p>Mods with updates have the (<i class='fas fa-cloud-download-alt'></i>) icon.</p>
                         </div>
                         <div v-else-if="helpPage === 'likeR2'">
                             <hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger'/>
@@ -410,16 +410,12 @@
                                     <li>Leave a thumbs-up on
                                         <link-component url='https://thunderstore.io/package/ebkr/r2modman/'
                                                         :target="'external'" class='selectable'>
-                                            r2modman's Thunderstore page
-                                        </link-component>
-                                        .
+                                            r2modman's Thunderstore page</link-component>.
                                     </li>
                                     <li>Star the project on
                                         <link-component url='https://github.com/ebkr/r2modmanPlus/'
                                                         :target="'external'" class='selectable'>
-                                            GitHub
-                                        </link-component>
-                                        .
+                                            GitHub</link-component>.
                                     </li>
                                     <li>Don't forget to show your friends!</li>
                                 </ul>
@@ -444,14 +440,12 @@
                             <p>
                                 Once you've done that,
                                 <link-component
-                                        url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts'
-                                        :target="'external'"
-                                        class='selectable'
-                                >follow this guide
-                                </link-component>
-                                ,
-                                replacing "BepInEx\core\BepInEx.Preloader.dll" with
-                                "r2modman\BepInEx\core\BepInEx.Preloader.dll"
+                                    url='https://github.com/risk-of-thunder/R2Wiki/wiki/Running-modded-and-unmodded-game-with-shortcuts'
+                                    :target="'external'"
+                                    class='selectable'>
+                                        follow this guide</link-component>,
+                                replacing <code>BepInEx\core\BepInEx.Preloader.dll</code> with
+                                <code>r2modman\BepInEx\core\BepInEx.Preloader.dll</code>
                             </p>
                             <br/>
                             <h5 class='title is-5'>Something isn't working</h5>
