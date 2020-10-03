@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from "path";
 
 export default class FileUtils {
 
@@ -12,7 +13,8 @@ export default class FileUtils {
 
     public static emptyDirectory(dir: string) {
         const files = fs.readdirSync(dir);
-        files.forEach(file => {
+        files.forEach(filename => {
+            const file = path.join(dir, filename);
             if (fs.lstatSync(file).isDirectory()) {
                 this.emptyDirectory(file);
                 fs.rmdirSync(file);

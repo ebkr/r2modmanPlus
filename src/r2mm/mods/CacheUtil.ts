@@ -4,6 +4,7 @@ import * as path from 'path';
 import ProfileModList from './ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../manager/PathResolver';
+import FileUtils from '../utils/FileUtils';
 
 export default class CacheUtil {
 
@@ -35,7 +36,7 @@ export default class CacheUtil {
             if (fs.lstatSync(path.join(cacheDirectory, folder)).isDirectory()) {
                 if (!activeModSet.has(folder)) {
                     // TODO: 310 - Override this with FileUtil usage.
-                    this.emptyDirectory(path.join(cacheDirectory, folder));
+                    FileUtils.emptyDirectory(path.join(cacheDirectory, folder))
                     fs.rmdirSync(path.join(cacheDirectory, folder));
                 }
             }
@@ -43,19 +44,6 @@ export default class CacheUtil {
 
         // Reset profile
         new Profile(currentProfileName);
-    }
-
-    private static emptyDirectory(dir: string) {
-        const files = fs.readdirSync(dir);
-        files.forEach(filename => {
-            const file = path.join(dir, filename);
-            if (fs.lstatSync(file).isDirectory()) {
-                this.emptyDirectory(file);
-                fs.rmdirSync(file);
-            } else {
-                fs.unlinkSync(file);
-            }
-        })
     }
 
 }
