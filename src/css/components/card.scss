@@ -260,6 +260,7 @@
                 
                 &:hover, &:focus-within {
                     background: $scheme-popup-background;
+                    box-shadow: 0 1px 2px -1px $scheme-border-active;
                     border-radius: 8px;
                     &::before {
                         background: $scheme-popup-background;
