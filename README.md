@@ -54,6 +54,13 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.32
+- Category filtering.
+- Updating all mods now shows exactly which mods will be installed.
+- Download progress should now appear correctly.
+- Setting to clean cache to remove unused mods and versions.
+- Other small fixes.
+
 ### 3.0.31
 - Potential fix for failing extractions.
     - Extractions that do fail are removed from the cache and are now not added to the installed list.
@@ -64,19 +71,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Visual tweaks and consistency fixes courtesy of [ChiriCuddles](https://github.com/ChiriCuddles).
     - Plus a large amount of design refactoring!
 - Config editor tooltip fixes.
-
-### 3.0.29
-- Update all option in settings.
-- Improved dark theme.
-- RainOfStagesShared now installs correctly.
-- Refresh mod list setting now works as expected.
-- Config editor tooltips no longer produce extra lines.
-- Added the ability to change the data folder location.
-- Modpack helper to retrieve dependency strings.
-
-### 3.0.28
-- Bug preventing RainOfStages from being uninstalled has been fixed.
-- Skin mods can now be disabled.
 
 ## Screenshots
 
