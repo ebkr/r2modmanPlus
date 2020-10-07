@@ -148,6 +148,62 @@
 			</template>
 		</modal>
 
+        <modal v-show="showCategoryFilterModal" :show-close="false">
+            <template v-slot:title>
+                <p class='card-header-title'>Filter mod categories</p>
+            </template>
+            <template v-slot:body>
+
+                <div class="input-group">
+                    <label>Categories</label>
+                    <select class="select select--content-spacing" @change="addFilterCategory($event.target)">
+                        <option selected disabled>
+                            Select a category
+                        </option>
+                        <option v-for="(key, index) in availableCategories" :key="`category--${key}-${index}`">
+                            {{ key }}
+                        </option>
+                    </select>
+                </div>
+                <br/>
+                <div class="input-group">
+                    <label>Only showing:</label>
+                    <div class="field has-addons" v-if="filterCategories.length > 0">
+                        <div class="control" v-for="(key, index) in filterCategories" :key="`${key}-${index}`">
+                            <span class="block margin-right">
+                                <a href="#" @click="removeCategory(key)">
+                                    <span class="tags has-addons">
+                                        <span class="tag">{{ key }}</span>
+                                        <span class="tag is-danger">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field has-addons" v-else>
+                        <span class="tags">
+                            <span class="tag">No categories selected</span>
+                        </span>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
+                        <input type="radio" :id="`cat-filter-${key}-${index}`" name="categoryFilterCondition" :value=key :checked="index === 0 ? true : undefined" v-model="categoryFilterMode">
+                        <label :for="`cat-filter-${key}-${index}`">&nbsp;{{ key }}</label>
+                    </div>
+                </div>
+
+            </template>
+            <template v-slot:footer>
+                <button class="button is-info" @click="showCategoryFilterModal = false;">
+                    Apply filters
+                </button>
+            </template>
+        </modal>
+
         <DownloadModModal
             :show-download-modal="showUpdateAllModal"
             :update-all-mods="true"
@@ -253,7 +309,7 @@
                                     <label for="thunderstore-search-filter">Search</label>
                                     <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
                                 </div>
-                                <div class="input-group">
+                                <div class="input-group margin-right">
                                     <label for="thunderstore-sort">Sort</label>
                                     <select id="thunderstore-sort" class='select select--content-spacing' v-model="sortingStyleModel">
                                         <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
@@ -263,6 +319,12 @@
                                             :disabled="sortingStyleModel === 'Default'">
                                         <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
                                     </select>
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group input-group--flex">
+                                        <label for="thunderstore-category-filter">Additional filters</label>
+                                        <button id="thunderstore-category-filter" class="button" @click="showCategoryFilterModal = true;">Filter categories</button>
+                                    </div>
                                 </div>
 							</div>
 						</div>
@@ -515,6 +577,8 @@
     import ModBridge from '../r2mm/mods/ModBridge';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
+    import CategoryFilterMode from '../model/enums/CategoryFilterMode';
+    import ArrayUtils from '../utils/ArrayUtils';
 
 	@Component({
 		components: {
@@ -564,6 +628,10 @@
 		showUpdateAllModal: boolean = false;
         showDependencyStrings: boolean = false;
 
+        showCategoryFilterModal: boolean = false;
+        filterCategories: string[] = [];
+        categoryFilterMode: string = CategoryFilterMode.OR;
+
 		@Watch('pageNumber')
 		changePage() {
 			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
@@ -577,11 +645,12 @@
 			this.filterThunderstoreModList();
 		}
 
-		get thunderstoreModList() {
+		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList;
         }
 
         @Watch("thunderstoreModList")
+        @Watch("showCategoryFilterModal")
         thunderstoreModListUpdate() {
 		    this.sortThunderstoreModList();
         }
@@ -590,6 +659,18 @@
 			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
+			if (this.filterCategories.length > 0) {
+			    this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+			        switch(this.categoryFilterMode) {
+			            case CategoryFilterMode.OR:
+			                return ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+                        case CategoryFilterMode.AND:
+                            return ArrayUtils.includesAll(x.getCategories(), this.filterCategories);
+                        case CategoryFilterMode.EXCLUDE:
+                            return !ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+                    }
+                })
+            }
 			this.changePage();
 		}
 
@@ -1067,6 +1148,31 @@
                 properties: ['openDirectory'],
                 buttonLabel: 'Select Data Folder'
             });
+        }
+
+        get availableCategories(): string[] {
+		    this.filterCategories.includes("");
+		    const flatArray: Array<string> = Array.from(
+		        new Set(this.thunderstoreModList
+                    .map((value) => value.getCategories())
+                    .flat(1))
+            );
+		    return flatArray
+                .filter((category) => !this.filterCategories.includes(category))
+                .sort();
+        }
+
+        addFilterCategory(target: HTMLSelectElement) {
+		    this.filterCategories.push(target.value);
+            target.selectedIndex = 0;
+        }
+
+        removeCategory(key: string) {
+		    this.filterCategories = this.filterCategories.filter(value => value !== key);
+        }
+
+        get categoryFilterValues() {
+		    return Object.values(CategoryFilterMode);
         }
 
         handleSettingsCallbacks(invokedSetting: any) {

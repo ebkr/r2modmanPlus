@@ -136,6 +136,10 @@ select {
     color:$scheme-text-secondary;
 }
 
+.card-timestamp {
+    font-size: 0.9em;
+}
+
 .card-timestamp strong {
     color: inherit;
 }

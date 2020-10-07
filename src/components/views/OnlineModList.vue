@@ -39,6 +39,7 @@
                 </template>
                 <template v-slot:description>
                     <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
+                    <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
                 </template>
                 <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
                 <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
@@ -134,6 +135,11 @@
         getReadableDate(date: Date): string {
             const dateObject: Date = new Date(date);
             return `${dateObject.toDateString()}, ${dateObject.toLocaleTimeString()}`
+        }
+
+        getReadableCategories(tsMod: ThunderstoreMod) {
+            const mod = new ThunderstoreMod().fromReactive(tsMod);
+            return mod.getCategories().join(", ");
         }
 
         emitError(error: R2Error) {
