@@ -2,6 +2,7 @@ import { ipcMain, dialog } from 'electron';
 import { spawnSync } from 'child_process';
 import { autoUpdater } from 'electron-updater';
 import os from 'os';
+import open from 'open';
 
 let browserWindow;
 let app;
@@ -13,8 +14,8 @@ export default class Listeners {
     }
 }
 
-ipcMain.on('open-link', (_sender, link) => {
-    spawnSync('powershell.exe', [`start ${link}`]);
+ipcMain.on('open-link', async (_sender, link) => {
+    await open(link);
 })
 
 ipcMain.on('get-browser-window', ()=>{
