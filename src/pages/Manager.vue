@@ -167,7 +167,7 @@
                 </div>
                 <br/>
                 <div class="input-group">
-                    <label>Only showing:</label>
+                    <label>Selected categories:</label>
                     <div class="field has-addons" v-if="filterCategories.length > 0">
                         <div class="control" v-for="(key, index) in filterCategories" :key="`${key}-${index}`">
                             <span class="block margin-right">
