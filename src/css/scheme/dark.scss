@@ -12,9 +12,9 @@
     $night-e: #e6eff8;
     $primary-1: #3273dc;
     $primary-2: #5596ff;
-    
+
     // overriding variables with dark theme colors
-    
+
     --background: #{$night-1};
     --text: #{$night-c};
     --text-secondary: #{$night-9};
@@ -28,9 +28,9 @@
     --border-active: #{$night-9};
 
     --text-strong: #{$night-e};
-    
+
     --hr-background-color: #{$night-2};
-    
+
     --code-background: #{$night-2};
 
     --notification-background-color: #{$night-2};
@@ -60,4 +60,6 @@
     --pagination-focus-color: #{$night-e};
 
     --panel-block-hover-background-color: #{$night-2};
+
+    --code-font-color: #ffb583;
 }
