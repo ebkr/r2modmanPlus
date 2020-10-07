@@ -2,7 +2,7 @@
     "compilerOptions": {
         "allowJs": true,
         "sourceMap": true,
-        "target": "es2015",
+        "target": "ES2020",
         "strict": true,
         "experimentalDecorators": true,
         "module": "commonjs",
