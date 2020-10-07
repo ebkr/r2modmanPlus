@@ -405,7 +405,13 @@
 
         disableModRequireConfirmation(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            if (this.getDependantList(mod).size === 0) {
+            const enabledDependants: ManifestV2[] = [];
+            this.getDependantList(mod).forEach(value => {
+               if (value.isEnabled()) {
+                   enabledDependants.push(value);
+               }
+            });
+            if (enabledDependants.length === 0) {
                 this.performDisable(mod);
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
