@@ -27,7 +27,7 @@
         target: string | undefined;
 
         openLink() {
-            ipcRenderer.send('open-link', this.url);
+            shell.openItem(this.url!);
         }
 
         selectFile() {
