@@ -2,7 +2,7 @@
 	<div>
         <div class='file-drop'>
             <div :class="['modal', {'is-active':showDragAndDropModal}]">
-                <div class="modal-background" @click="closeGameRunningModal()"></div>
+                <div class="modal-background"></div>
                 <div class='modal-content'>
                     <div class='notification is-info'>
                         <h3 class='title' id='dragText'>{{dragAndDropText}}</h3>
@@ -20,18 +20,6 @@
 					</link-component>
 				</p>
 			</div>
-		</div>
-		<div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
-			<div class="modal-background" @click="closeGameRunningModal()"></div>
-			<div class='modal-content'>
-				<div class='notification is-info'>
-					<h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
-					<h5 class="title is-5">Close this message to continue modding.</h5>
-					<p>If this is taking a while, it's likely due to Steam starting.</p>
-					<p>Please be patient, and have fun!</p>
-				</div>
-			</div>
-			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
 		</div>
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
@@ -214,75 +202,19 @@
 
 		<div class='columns' id='content'>
 			<div class="column is-one-quarter non-selectable">
-				<aside class="menu">
-					<p class="menu-label">Risk of Rain 2</p>
-					<ul class="menu-list">
-						<li><a href="#" @click="launchModded()"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a></li>
-						<li>
-							<a href="#" @click="launchVanilla()"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start vanilla</a>
-						</li>
-					</ul>
-					<p class="menu-label">Mods</p>
-					<ul class="menu-list">
-						<li>
-							<a href="#" @click="() => {view = 'installed';}"
-							   :class="[view === 'installed' ? 'is-active' : '']">
-								<i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="() => {view = 'online'; thunderstoreSearchFilter = ''}"
-							   :class="[view === 'online' ? 'is-active' : '']">
-								<i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})
-							</a>
-						</li>
-					</ul>
-					<p class='menu-label'>Other</p>
-					<ul class='menu-list'>
-						<li>
-							<a href="#" @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
-							   v-if="!settings.legacyInstallMode">
-								<i class="fas fa-edit"/>&nbsp;&nbsp;Config editor
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">
-								<i class="fas fa-cog"/>&nbsp;&nbsp;Settings
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="() => {view = 'help'; helpPage = ''}"
-							   :class="[view === 'help' ? 'is-active' : '']">
-								<i class="fas fa-question-circle"/>&nbsp;&nbsp;Help</a>
-							<ul v-if="view === 'help'">
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'tips&tricks'}]"
-									   @click="helpPage = 'tips&tricks'">
-										<i class="fas fa-lightbulb"/>&nbsp;&nbsp;Tips and tricks
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'gameWontStart'}]"
-									   @click="helpPage = 'gameWontStart'">
-										<i class="fas fa-gamepad"/>&nbsp;&nbsp;Game won't start
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'modsNotWorking'}]"
-									   @click="helpPage = 'modsNotWorking'">
-										<i class="fas fa-ban"/>&nbsp;&nbsp;Mods aren't working
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'likeR2'}]"
-									   @click="helpPage = 'likeR2'">
-										<i class="fas fa-heart"/>&nbsp;&nbsp;Like r2modman?
-									</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</aside>
+                <NavigationMenu :view="view"
+                                :help-page="helpPage"
+                                @clicked-installed="view = 'installed'; helpPage = ''"
+                                @clicked-online="view = 'online'; helpPage = ''"
+                                @clicked-settings="view = 'settings'; helpPage = ''"
+                                @clicked-help="view = 'help'; helpPage = ''"
+                                @clicked-config-editor="openConfigEditor"
+                                @help-clicked-tips-and-tricks="helpPage = 'tips-and-tricks'"
+                                @help-clicked-game-wont-start="helpPage = 'game-wont-start'"
+                                @help-clicked-mods-not-working="helpPage = 'mods-not-working'"
+                                @help-clicked-like-r2="helpPage = 'like-r2'"
+                                @error="this.showError($event)"
+                />
 			</div>
 			<div class='column is-three-quarters'>
 				<div v-show="view === 'online'">
@@ -370,7 +302,7 @@
 						<!-- gameWontStart -->
 						<!-- modsNotWorking -->
 						<!-- likeR2 -->
-						<div v-if="helpPage === 'tips&tricks'">
+						<div v-if="helpPage === 'tips-and-tricks'">
 							<hero title='Tips and tricks' heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>Install with Mod Manager</h5>
@@ -393,7 +325,7 @@
 								do.
 							</p>
 						</div>
-						<div v-else-if="helpPage === 'gameWontStart'">
+						<div v-else-if="helpPage === 'game-wont-start'">
 							<hero :title="'Game won\'t start'" heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>If the BepInEx console appears</h5>
@@ -419,7 +351,7 @@
 								for more information.
 							</p>
 						</div>
-						<div v-else-if="helpPage === 'modsNotWorking'">
+						<div v-else-if="helpPage === 'mods-not-working'">
 							<hero :title="'Mods aren\'t working'" heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>Are all dependencies installed?</h5>
@@ -439,7 +371,7 @@
 							</p>
 							<p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
 						</div>
-						<div v-else-if="helpPage === 'likeR2'">
+						<div v-else-if="helpPage === 'like-r2'">
 							<hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger'/>
 							<br/>
 							<h5 class='title is-5'>You can help support r2modman in multiple ways!</h5>
@@ -534,12 +466,9 @@
 	import SortingDirection from '../model/enums/SortingDirection';
 	import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 	import R2Error from '../model/errors/R2Error';
-	import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 	import ManifestV2 from '../model/ManifestV2';
 	import ManagerSettings from '../r2mm/manager/ManagerSettings';
 	import ThemeManager from '../r2mm/manager/ThemeManager';
-	import GameRunner from '../r2mm/manager/GameRunner';
-	import ModLinker from '../r2mm/manager/ModLinker';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
     import * as path from 'path';
@@ -558,6 +487,7 @@
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
+    import NavigationMenu from '../components/navigation/NavigationMenu.vue';
 
 	@Component({
 		components: {
@@ -565,6 +495,7 @@
             LocalModList,
             SettingsView,
             DownloadModModal,
+            NavigationMenu,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
@@ -579,7 +510,6 @@
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
-		gameRunning: boolean = false;
 		settings = ManagerSettings.getSingleton();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
@@ -705,10 +635,6 @@
 			}
 		}
 
-		closeGameRunningModal() {
-			this.gameRunning = false;
-		}
-
 		showError(error: R2Error) {
 			this.$emit("error", error);
 		}
@@ -788,68 +714,6 @@
 				options.push(sorting[key]);
 			}
 			return options;
-		}
-
-		prepareLaunch() {
-			let dir: string | R2Error;
-			if (this.settings.riskOfRain2Directory === null) {
-				dir = GameDirectoryResolver.getDirectory();
-			} else {
-				dir = this.settings.riskOfRain2Directory;
-			}
-			if (dir instanceof R2Error) {
-				// Show folder selection dialog.
-				this.showError(dir);
-			} else {
-				const setInstallDirError: R2Error | void = this.settings.setRiskOfRain2Directory(dir);
-				if (setInstallDirError instanceof R2Error) {
-					this.showError(setInstallDirError);
-					return;
-				}
-			}
-		}
-
-		launchModded() {
-			this.prepareLaunch();
-			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-				const newLinkedFiles = ModLinker.link();
-				if (newLinkedFiles instanceof R2Error) {
-					this.showError(newLinkedFiles);
-					return;
-				} else {
-					const saveError = this.settings.setLinkedFiles(newLinkedFiles);
-					if (saveError instanceof R2Error) {
-						this.showError(saveError);
-						return;
-					}
-				}
-				this.gameRunning = true;
-				GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-					if (!isNull(err)) {
-						this.showError(err);
-					}
-					this.gameRunning = false;
-				});
-			} else {
-				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings-components screen');
-			}
-		}
-
-		launchVanilla() {
-			this.prepareLaunch();
-			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-				this.gameRunning = true;
-				GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-					if (!isNull(err)) {
-						this.showError(err);
-					}
-					this.gameRunning = false;
-				});
-			} else {
-				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings-components screen');
-			}
 		}
 
 		changeRoR2InstallDirectory() {

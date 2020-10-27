@@ -324,3 +324,7 @@ code {
 .ql-editor > p:not(:last-child) {
     margin-bottom: 0.5em !important;
 }
+
+.modal {
+    z-index: 200;
+}
