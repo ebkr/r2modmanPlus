@@ -1,23 +1,16 @@
+/**
+ * Must be public to allow Vue to correctly recognise rebuild from JSON.parse()
+ */
 export default class ConfigLine {
 
-    private value: string;
-    private comments: string[];
+    public value: string;
+    public comments: string[];
+    public allowedValues: string[];
+    public commentsExpanded: boolean = false;
 
-    public constructor(value: string, comments: string[]) {
+    public constructor(value: string, comments: string[], allowedValues?: string[]) {
         this.value = value;
         this.comments = comments;
+        this.allowedValues = allowedValues || [];
     }
-
-    public getValue(): string {
-        return this.value;
-    }
-
-    public setValue(val: string) {
-        this.value = val;
-    }
-
-    public getComments(): string[] {
-        return this.comments;
-    }
-
 }

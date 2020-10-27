@@ -302,12 +302,14 @@
             const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
+                this.showingDependencyList = false;
                 this.$emit('error', uninstallError);
                 return uninstallError;
             }
             const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
+                this.showingDependencyList = false;
                 this.$emit('error', modList);
                 return modList;
             }
@@ -341,6 +343,7 @@
             const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
+                this.showingDependencyList = false;
                 this.$emit('error', disableErr);
                 return disableErr;
             }
@@ -349,6 +352,7 @@
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
+                this.showingDependencyList = false;
                 this.$emit('error', updatedList);
                 return updatedList;
             }

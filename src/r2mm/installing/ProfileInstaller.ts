@@ -62,7 +62,7 @@ export default class ProfileInstaller {
             } catch (e) {
                 const err: Error = e;
                 return new R2Error(
-                    err.name,
+                    "Failed to remove files",
                     err.message,
                     'Is the game still running? If so, close it and try again.'
                 )
