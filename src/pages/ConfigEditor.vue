@@ -199,7 +199,7 @@
 					builtString += line + '\n';
 				} else if (!line.trim().startsWith('#') && line.search('=') > 0) {
 					const sides = line.split('=');
-					builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()].getValue()}\n`;
+					builtString += `${sides[0].trim()} = ${this.variables[section][sides[0].trim()].value}\n`;
 				} else {
 					builtString += line + '\n';
 				}
@@ -218,7 +218,7 @@
 			const element: HTMLElement | null = document.getElementById(`${section}-${variable}`);
 			if (element instanceof HTMLElement) {
 				const inputField = element as HTMLInputElement;
-				this.variables[section][variable].setValue(inputField.value);
+				this.variables[section][variable].value = inputField.value;
 			}
 		}
 

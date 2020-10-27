@@ -25,7 +25,7 @@ const routes: RouteConfig[] = [
     },
     {
         path: '/config-editor',
-        component: () => import('pages/ConfigEditor.vue'),
+        component: () => import('pages/BetterConfigEditor.vue'),
         meta: {
             title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
         }

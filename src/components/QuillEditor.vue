@@ -1,7 +1,7 @@
 <!-- Referenced from https://pineco.de/wrapping-quill-editor-in-a-vue-component/ -->
 <template>
     <div class="notification">
-        <div ref="editor"></div>
+        <div ref="editor" class="quill"></div>
     </div>
 </template>
 

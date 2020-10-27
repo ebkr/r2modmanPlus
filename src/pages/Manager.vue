@@ -212,22 +212,6 @@
             @error="showError($event)"
         />
 
-		<div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
-			<div class="modal-background" @click="closeErrorModal()"></div>
-			<div class='modal-content'>
-				<div class='notification is-danger'>
-					<h3 class='title'>Error</h3>
-					<h5 class="title is-5">{{errorMessage}}</h5>
-					<p>{{errorStack}}</p>
-					<div v-if="errorSolution !== ''">
-						<br/>
-						<h5 class="title is-5">Suggestion</h5>
-						<p>{{errorSolution}}</p>
-					</div>
-				</div>
-			</div>
-			<button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
-		</div>
 		<div class='columns' id='content'>
 			<div class="column is-one-quarter non-selectable">
 				<aside class="menu">
@@ -344,12 +328,7 @@
 							No mods with that name found
 						</p>
 					</div>
-					<br/>
-					<div class='pagination--invisible smaller-font'>
-						<a v-for='index in getPaginationSize()' :key='"pagination-" + index' class='pagination-link'>
-							{{index}}
-						</a>
-					</div>
+                    <br/>
 					<div class='pagination'>
 						<div class='smaller-font'>
 							<a v-for='index in getPaginationSize()' :key='"pagination-" + index'
@@ -600,9 +579,6 @@
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
-		errorMessage: string = '';
-		errorStack: string = '';
-		errorSolution: string = '';
 		gameRunning: boolean = false;
 		settings = ManagerSettings.getSingleton();
 		// Increment by one each time new modal is shown
@@ -729,19 +705,12 @@
 			}
 		}
 
-		closeErrorModal() {
-			this.errorMessage = '';
-			this.errorStack = '';
-		}
-
 		closeGameRunningModal() {
 			this.gameRunning = false;
 		}
 
 		showError(error: R2Error) {
-			this.errorMessage = error.name;
-			this.errorStack = error.message;
-			this.errorSolution = error.solution;
+			this.$emit("error", error);
 		}
 
 		closePreloaderFixModal() {
@@ -1292,7 +1261,6 @@
                     this.dragAndDropText = 'Mod must be a .zip file';
                     return;
                 } else {
-                    this.errorMessage = '';
                     this.installLocalModAfterFileSelection(FileDragDrop.getFiles(ev)[0].path);
                 }
                 this.showDragAndDropModal = false;
@@ -1303,6 +1271,10 @@
                 this.showDragAndDropModal = false;
             }
 		}
+
+		mounted() {
+		    this.view = (this.$route.query.view as string) || "installed";
+        }
 	}
 
 </script>
