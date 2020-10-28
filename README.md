@@ -54,6 +54,12 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.34
+- You can now launch the game directly from the config editor.
+- True and false config options no longer require manual typing.
+- Added NSFW flag to categories filter. NSFW mods are hidden by default.
+- Sorting options on the installed tab are persistent between launches.
+
 ### 3.0.33
 - Hopefully reduced antivirus aggression.
 
@@ -63,17 +69,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Download progress should now appear correctly.
 - Setting to clean cache to remove unused mods and versions.
 - Other small fixes.
-
-### 3.0.31
-- Potential fix for failing extractions.
-    - Extractions that do fail are removed from the cache and are now not added to the installed list.
-
-### 3.0.30
-- Config editor now supports JSON, XML and TXT files.
-    - Config files other than .cfg will now use a free text editor.
-- Visual tweaks and consistency fixes courtesy of [ChiriCuddles](https://github.com/ChiriCuddles).
-    - Plus a large amount of design refactoring!
-- Config editor tooltip fixes.
 
 ## Screenshots
 
