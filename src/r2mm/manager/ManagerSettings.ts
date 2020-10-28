@@ -6,6 +6,10 @@ import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import FileWriteError from '../../model/errors/FileWriteError';
 import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
+import { SortNaming } from '../../model/real_enums/sort/SortNaming';
+import EnumResolver from '../../model/enums/_EnumResolver';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 
 let configPath = '';
 let configFile = '';
@@ -33,6 +37,9 @@ export default class ManagerSettings {
     public launchParameters: string = '';
     public ignoreCache: boolean = false;
     public dataDirectory: string = PathResolver.APPDATA_DIR;
+    public installedSortBy: string = EnumResolver.from(SortNaming, SortNaming.CUSTOM)!;
+    public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
+    public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
 
     public load(): R2Error | void {
         configPath = path.join(PathResolver.APPDATA_DIR, 'config');
@@ -51,6 +58,9 @@ export default class ManagerSettings {
                 this.launchParameters = parsedYaml.launchParameters || '';
                 this.ignoreCache = parsedYaml.ignoreCache || false;
                 this.dataDirectory = parsedYaml.dataDirectory || PathResolver.APPDATA_DIR;
+                this.installedSortBy = parsedYaml.installedSortBy || this.installedSortBy;
+                this.installedSortDirection = parsedYaml.installedSortDirection || this.installedSortDirection;
+                this.installedDisablePosition = parsedYaml.installedDisablePosition || this.installedDisablePosition;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -144,6 +154,33 @@ export default class ManagerSettings {
 
     public setDataDirectory(dataDirectory: string): R2Error | void {
         this.dataDirectory = dataDirectory;
+        return this.save();
+    }
+
+    public getInstalledSortBy() {
+        return Object.entries(SortNaming).filter(value => value[0] === this.installedSortBy)[0][1];
+    }
+
+    public setInstalledSortBy(sortNaming: string): R2Error | void {
+        this.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
+        return this.save();
+    }
+
+    public getInstalledSortDirection() {
+        return Object.entries(SortDirection).filter(value => value[0] === this.installedSortDirection)[0][1];
+    }
+
+    public setInstalledSortDirection(sortDirection: string): R2Error | void {
+        this.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
+        return this.save();
+    }
+
+    public getInstalledDisablePosition() {
+        return Object.entries(SortLocalDisabledMods).filter(value => value[0] === this.installedDisablePosition)[0][1];
+    }
+
+    public setInstalledDisablePosition(disablePosition: string): R2Error | void {
+        this.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
         return this.save();
     }
 }
