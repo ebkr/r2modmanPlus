@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
         <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
@@ -25,15 +25,23 @@
             <p class="menu-label">Mods</p>
             <ul class="menu-list">
                 <li>
+                    <!-- Strange bug seemingly caused by CSS Grid display. Children @click is not being passed up to parent. -->
+                    <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
                     <a href="#" data-ref="installed" @click="emitClick($event.target)"
-                       :class="[view === 'installed' ? 'is-active' : '']">
-                        <i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
+                       class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
+                        <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)"/>
+                        <span data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;Installed</span>
+                        <span class="tag is-pulled-right" :class="[{'is-info': view !== 'installed'}]"
+                        data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" data-ref="online" @click="emitClick($event.target)"
-                       :class="[view === 'online' ? 'is-active' : '']">
-                        <i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})
+                       class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
+                        <i class="fas fa-globe" data-ref="online" @click="emitClick($event.target)"/>
+                        <span data-ref="online" @click="emitClick($event.target)">&nbsp;&nbsp;Online</span>
+                        <span class="tag" :class="[{'is-info': view !== 'online'}]"
+                              data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                     </a>
                 </li>
             </ul>
