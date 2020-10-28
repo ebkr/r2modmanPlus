@@ -236,10 +236,25 @@
         private dependencyListDisplayType: string = 'view';
 
         // Filtering
-        private sortDisabledPosition: SortLocalDisabledMods = SortLocalDisabledMods.CUSTOM;
-        private sortOrder: SortNaming = SortNaming.CUSTOM;
-        private sortDirection: SortDirection = SortDirection.STANDARD;
+        private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
+        private sortOrder: SortNaming = this.settings.getInstalledSortBy();
+        private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
         private searchQuery: string = '';
+
+        @Watch("sortOrder")
+        sortOrderChanged(newValue: string) {
+            this.settings.setInstalledSortBy(newValue);
+        }
+
+        @Watch("sortDirection")
+        sortDirectionChanged(newValue: string) {
+            this.settings.setInstalledSortDirection(newValue);
+        }
+
+        @Watch("sortDisabledPosition")
+        sortDisabledPositionChanged(newValue: string) {
+            this.settings.setInstalledDisablePosition(newValue);
+        }
 
         @Watch('modifiableModList')
         modListUpdated() {
