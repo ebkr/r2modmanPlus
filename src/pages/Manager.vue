@@ -176,6 +176,11 @@
                         </span>
                     </div>
                 </div>
+                <hr/>
+                <div>
+                    <input class="is-checkradio" id="nsfwCheckbox" type="checkbox" :class="[{'is-dark':!settings.darkTheme}, {'is-white':settings.darkTheme}]" v-model="allowNsfw">
+                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                </div>
                 <br/>
                 <div>
                     <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
@@ -183,7 +188,6 @@
                         <label :for="`cat-filter-${key}-${index}`">&nbsp;{{ key }}</label>
                     </div>
                 </div>
-
             </template>
             <template v-slot:footer>
                 <button class="button is-info" @click="showCategoryFilterModal = false;">
@@ -473,8 +477,7 @@
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
-	import { isNull, isUndefined } from 'util';
-    import { clipboard, ipcRenderer, IpcRendererEvent } from 'electron';
+    import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
     import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
 
@@ -482,12 +485,12 @@
     import SettingsView from '../components/settings-components/SettingsView.vue';
     import LocalModList from '../components/views/LocalModList.vue';
     import OnlineModList from '../components/views/OnlineModList.vue';
-    import ModBridge from '../r2mm/mods/ModBridge';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
+    import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 
 	@Component({
 		components: {
@@ -537,6 +540,7 @@
         showCategoryFilterModal: boolean = false;
         filterCategories: string[] = [];
         categoryFilterMode: string = CategoryFilterMode.OR;
+        allowNsfw: boolean = false;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -565,8 +569,9 @@
 			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
+			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
 			if (this.filterCategories.length > 0) {
-			    this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
 			        switch(this.categoryFilterMode) {
 			            case CategoryFilterMode.OR:
 			                return ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
@@ -680,7 +685,7 @@
 			this.closeModal();
 			BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
-					if (!isNull(err)) {
+					if (err !== null) {
 						this.downloadingMod = false;
 						this.showError(err);
 					}
@@ -771,7 +776,7 @@
 
 		exportProfileAsCode() {
 			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
-				if (!isNull(err)) {
+				if (err !== null) {
 					this.showError(err);
 				} else {
 					this.exportCode = code;
@@ -831,7 +836,7 @@
 				.then(response => response.json())
 				.then((parsed: any) => {
 					parsed.sort((a: any, b: any) => {
-						if (!isNull(b)) {
+						if (b !== null) {
 							const versionA = new VersionNumber(a.name);
 							const versionB = new VersionNumber(b.name);
 							return versionA.isNewerThan(versionB);

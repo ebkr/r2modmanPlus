@@ -50,6 +50,12 @@ select {
     padding: 1em;
     position: sticky;
     top: 0;
+
+    .tagged-link {
+        display: grid;
+        grid-template-columns: min-content auto min-content;
+        align-items: center;
+    }
 }
 
 .sticky-top {
@@ -61,6 +67,14 @@ select {
 
     &--opaque {
         background-color: $scheme-background;
+    }
+
+    &--no-shadow {
+        box-shadow: 0 0;
+    }
+
+    &--no-padding {
+        padding: 0;
     }
 }
 .sticky-top--buttons {
@@ -193,6 +207,7 @@ select {
     padding: 1em;
     border-top: 1px solid $scheme-border;
     text-align: left;
+    z-index: 10;
 }
 
 .pagination--invisible {
