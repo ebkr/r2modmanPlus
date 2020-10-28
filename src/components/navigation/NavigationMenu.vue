@@ -31,7 +31,7 @@
                        class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
                         <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)"/>
                         <span data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;Installed</span>
-                        <span class="tag is-pulled-right" :class="[{'is-info': view !== 'installed'}]"
+                        <span class="tag" :class="[{'is-link': view !== 'installed'}]"
                         data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
                     </a>
                 </li>
@@ -40,7 +40,7 @@
                        class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
                         <i class="fas fa-globe" data-ref="online" @click="emitClick($event.target)"/>
                         <span data-ref="online" @click="emitClick($event.target)">&nbsp;&nbsp;Online</span>
-                        <span class="tag" :class="[{'is-info': view !== 'online'}]"
+                        <span class="tag" :class="[{'is-link': view !== 'online'}]"
                               data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                     </a>
                 </li>
