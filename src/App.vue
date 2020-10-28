@@ -1,5 +1,5 @@
 <template>
-    <div id="q-app">
+    <div id="q-app" :class="[{'html--funky':settings.funkyModeEnabled}]">
 
         <router-view @error="showError"/>
 
@@ -28,6 +28,7 @@
     import Component from 'vue-class-component';
     import 'bulma-steps/dist/js/bulma-steps.min.js';
     import R2Error from './model/errors/R2Error';
+    import ManagerSettings from './r2mm/manager/ManagerSettings';
 
     @Component
     export default class App extends Vue {
@@ -35,6 +36,7 @@
         errorMessage: string = '';
         errorStack: string = '';
         errorSolution: string = '';
+        settings: ManagerSettings = ManagerSettings.getSingleton();
 
         showError(error: R2Error) {
             this.errorMessage = error.name;
