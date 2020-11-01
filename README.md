@@ -54,6 +54,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.0.25
+- Fixed issue where launch errors would not display.
+
 ### 3.0.34
 - You can now launch the game directly from the config editor.
 - True and false config options no longer require manual typing.
@@ -62,13 +65,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 ### 3.0.33
 - Hopefully reduced antivirus aggression.
-
-### 3.0.32
-- Category filtering.
-- Updating all mods now shows exactly which mods will be installed.
-- Download progress should now appear correctly.
-- Setting to clean cache to remove unused mods and versions.
-- Other small fixes.
 
 ## Screenshots
 
