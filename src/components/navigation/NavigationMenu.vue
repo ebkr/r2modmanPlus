@@ -177,8 +177,9 @@
                     this.gameRunning = false;
                 });
             } else {
-                return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-                    'Set the Risk of Rain 2 directory in the settings-components screen');
+                const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
+                    'Set the Risk of Rain 2 directory in the Settings screen');
+                this.$emit("error", err);
             }
         }
 
@@ -193,8 +194,9 @@
                     this.gameRunning = false;
                 });
             } else {
-                return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-                    'Set the Risk of Rain 2 directory in the settings-components screen');
+                const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
+                    'Set the Risk of Rain 2 directory in the Settings screen');
+                this.$emit("error", err);
             }
         }
 
