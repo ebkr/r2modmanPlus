@@ -23,9 +23,13 @@ ipcMain.on('open-dialog', (_sender, dialogOptions) => {
 })
 
 ipcMain.on('update-app', ()=>{
-    autoUpdater.autoDownload = true;
-    autoUpdater.checkForUpdatesAndNotify();
-    browserWindow.webContents.send('update-done');
+    if (!process.execPath.startsWith(os.tmpdir())) {
+        autoUpdater.autoDownload = true;
+        autoUpdater.checkForUpdatesAndNotify();
+        browserWindow.webContents.send('update-done');
+    } else {
+        browserWindow.webContents.send('update-done');
+    }
 })
 
 ipcMain.on('install-via-thunderstore', (installString) => {

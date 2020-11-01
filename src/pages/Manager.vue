@@ -217,7 +217,7 @@
                                 @help-clicked-game-wont-start="helpPage = 'game-wont-start'"
                                 @help-clicked-mods-not-working="helpPage = 'mods-not-working'"
                                 @help-clicked-like-r2="helpPage = 'like-r2'"
-                                @error="this.showError($event)"
+                                @error="showError($event)"
                 />
 			</div>
 			<div class='column is-three-quarters'>
