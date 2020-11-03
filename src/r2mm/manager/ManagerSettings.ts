@@ -36,7 +36,7 @@ export default class ManagerSettings {
     public darkTheme: boolean = false;
     public launchParameters: string = '';
     public ignoreCache: boolean = false;
-    public dataDirectory: string = PathResolver.APPDATA_DIR;
+    public dataDirectory: string = '';
     public installedSortBy: string = EnumResolver.from(SortNaming, SortNaming.CUSTOM)!;
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;

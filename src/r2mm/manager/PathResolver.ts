@@ -11,7 +11,7 @@ export default class PathResolver {
     static set APPDATA_DIR(appDataDir: string) {
         PathResolver._APPDATA_DIR = appDataDir;
         ManagerSettings.getSingleton().load();
-        PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory;
+        PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory || appDataDir;
         fs.ensureDirSync(PathResolver._ROOT);
         PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
     }
