@@ -78,6 +78,14 @@
                     <div class='card-content'>
                         <p>All installed mods will be updated to their latest versions.</p>
                         <p>Any missing dependencies will be installed.</p>
+                        <p>The following mods will be downloaded and installed:</p>
+                        <br/>
+                        <ul class="list">
+                            <li class="list-item" v-for='(key, index) in getListOfModsToUpdate()'
+                                :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
+                                {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
+                            </li>
+                        </ul>
                     </div>
                     <div class='card-footer'>
                         <button class="button is-info" @click="downloadLatest()">Update all</button>
@@ -252,6 +260,14 @@
                     }
                 });
             }, 1);
+        }
+
+        getListOfModsToUpdate(): ThunderstoreCombo[] {
+          const modList = ProfileModList.getModList(Profile.getActiveProfile());
+          if (!(modList instanceof R2Error)) {
+            this.$store.dispatch('updateModList', modList);
+          }
+          return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(modList as ManifestV2[], this.thunderstorePackages);
         }
 
         installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {

@@ -236,10 +236,25 @@
         private dependencyListDisplayType: string = 'view';
 
         // Filtering
-        private sortDisabledPosition: SortLocalDisabledMods = SortLocalDisabledMods.CUSTOM;
-        private sortOrder: SortNaming = SortNaming.CUSTOM;
-        private sortDirection: SortDirection = SortDirection.STANDARD;
+        private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
+        private sortOrder: SortNaming = this.settings.getInstalledSortBy();
+        private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
         private searchQuery: string = '';
+
+        @Watch("sortOrder")
+        sortOrderChanged(newValue: string) {
+            this.settings.setInstalledSortBy(newValue);
+        }
+
+        @Watch("sortDirection")
+        sortDirectionChanged(newValue: string) {
+            this.settings.setInstalledSortDirection(newValue);
+        }
+
+        @Watch("sortDisabledPosition")
+        sortDisabledPositionChanged(newValue: string) {
+            this.settings.setInstalledDisablePosition(newValue);
+        }
 
         @Watch('modifiableModList')
         modListUpdated() {
@@ -302,12 +317,14 @@
             const uninstallError: R2Error | null = ProfileInstallerProvider.instance.uninstallMod(mod);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
+                this.showingDependencyList = false;
                 this.$emit('error', uninstallError);
                 return uninstallError;
             }
             const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
+                this.showingDependencyList = false;
                 this.$emit('error', modList);
                 return modList;
             }
@@ -341,6 +358,7 @@
             const disableErr: R2Error | void = ProfileInstallerProvider.instance.disableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
+                this.showingDependencyList = false;
                 this.$emit('error', disableErr);
                 return disableErr;
             }
@@ -349,6 +367,7 @@
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
+                this.showingDependencyList = false;
                 this.$emit('error', updatedList);
                 return updatedList;
             }
@@ -405,7 +424,13 @@
 
         disableModRequireConfirmation(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            if (this.getDependantList(mod).size === 0) {
+            const enabledDependants: ManifestV2[] = [];
+            this.getDependantList(mod).forEach(value => {
+               if (value.isEnabled()) {
+                   enabledDependants.push(value);
+               }
+            });
+            if (enabledDependants.length === 0) {
                 this.performDisable(mod);
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.DISABLE);

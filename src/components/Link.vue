@@ -15,8 +15,7 @@
 <script lang='ts'>
     import Vue from 'vue';
     import { Component, Prop } from 'vue-property-decorator'
-    import { ipcRenderer } from 'electron';
-    import { spawn } from "child_process";
+    import { ipcRenderer, shell } from 'electron';
 
     @Component
     export default class Link extends Vue {
@@ -28,11 +27,11 @@
         target: string | undefined;
 
         openLink() {
-            ipcRenderer.send('open-link', this.url);
+            shell.openItem(this.url!);
         }
 
         selectFile() {
-            spawn('explorer.exe', [`${this.url}`]);
+            shell.showItemInFolder(this.url!);
         }
     }
 </script>

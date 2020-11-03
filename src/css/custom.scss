@@ -50,10 +50,12 @@ select {
     padding: 1em;
     position: sticky;
     top: 0;
-}
 
-.margin-right {
-    margin-right: 1em;
+    .tagged-link {
+        display: grid;
+        grid-template-columns: min-content auto min-content;
+        align-items: center;
+    }
 }
 
 .sticky-top {
@@ -62,6 +64,18 @@ select {
     z-index: 100;
     padding: 1em;
     box-shadow: 1px 1px 3px 0 $scheme-shadow;
+
+    &--opaque {
+        background-color: $scheme-background;
+    }
+
+    &--no-shadow {
+        box-shadow: 0 0;
+    }
+
+    &--no-padding {
+        padding: 0;
+    }
 }
 .sticky-top--buttons {
     z-index: 101;
@@ -136,6 +150,10 @@ select {
     color:$scheme-text-secondary;
 }
 
+.card-timestamp {
+    font-size: 0.9em;
+}
+
 .card-timestamp strong {
     color: inherit;
 }
@@ -155,6 +173,11 @@ select {
 .select--content-spacing {
     padding-left: 0.2em;
     padding-right: 0.2em;
+}
+
+.select--full {
+    min-width: auto;
+    width: 100%;
 }
 
 .card {
@@ -178,13 +201,13 @@ select {
 }
 
 .pagination {
-    position: fixed;
-    background-color: $scheme-background;
-    width: 75vw;
-    z-index: 10;
-    padding: 1em;
+    position: sticky;
     bottom: 0;
+    background-color: $scheme-background;
+    padding: 1em;
     border-top: 1px solid $scheme-border;
+    text-align: left;
+    z-index: 10;
 }
 
 .pagination--invisible {
@@ -278,7 +301,7 @@ select[disabled] {
     font-size: 1rem;
 
     * {
-        line-height: 0.8em;
+        line-height: 1em;
     }
 }
 
@@ -290,4 +313,33 @@ select[disabled] {
     padding: 0 .5em;
     margin-right: .5em;
     color: $scheme-text;
+}
+
+code {
+    color: $code-font-color;
+}
+
+.margin-right {
+    margin-right: 1em;
+}
+
+.margin-top {
+    margin-top: 1em;
+    &--buttons {
+        margin-top: 0.5em;
+    }
+}
+
+.pre {
+    white-space: pre-wrap;
+    display: block;
+    max-width: 100%;
+}
+
+.ql-editor > p:not(:last-child) {
+    margin-bottom: 0.5em !important;
+}
+
+.modal {
+    z-index: 200;
 }

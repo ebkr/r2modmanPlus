@@ -2,7 +2,7 @@
 	<div>
         <div class='file-drop'>
             <div :class="['modal', {'is-active':showDragAndDropModal}]">
-                <div class="modal-background" @click="closeGameRunningModal()"></div>
+                <div class="modal-background"></div>
                 <div class='modal-content'>
                     <div class='notification is-info'>
                         <h3 class='title' id='dragText'>{{dragAndDropText}}</h3>
@@ -20,18 +20,6 @@
 					</link-component>
 				</p>
 			</div>
-		</div>
-		<div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
-			<div class="modal-background" @click="closeGameRunningModal()"></div>
-			<div class='modal-content'>
-				<div class='notification is-info'>
-					<h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
-					<h5 class="title is-5">Close this message to continue modding.</h5>
-					<p>If this is taking a while, it's likely due to Steam starting.</p>
-					<p>Please be patient, and have fun!</p>
-				</div>
-			</div>
-			<button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
 		</div>
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
@@ -148,6 +136,66 @@
 			</template>
 		</modal>
 
+        <modal v-show="showCategoryFilterModal" :show-close="false">
+            <template v-slot:title>
+                <p class='card-header-title'>Filter mod categories</p>
+            </template>
+            <template v-slot:body>
+
+                <div class="input-group">
+                    <label>Categories</label>
+                    <select class="select select--content-spacing" @change="addFilterCategory($event.target)">
+                        <option selected disabled>
+                            Select a category
+                        </option>
+                        <option v-for="(key, index) in availableCategories" :key="`category--${key}-${index}`">
+                            {{ key }}
+                        </option>
+                    </select>
+                </div>
+                <br/>
+                <div class="input-group">
+                    <label>Selected categories:</label>
+                    <div class="field has-addons" v-if="filterCategories.length > 0">
+                        <div class="control" v-for="(key, index) in filterCategories" :key="`${key}-${index}`">
+                            <span class="block margin-right">
+                                <a href="#" @click="removeCategory(key)">
+                                    <span class="tags has-addons">
+                                        <span class="tag">{{ key }}</span>
+                                        <span class="tag is-danger">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field has-addons" v-else>
+                        <span class="tags">
+                            <span class="tag">No categories selected</span>
+                        </span>
+                    </div>
+                </div>
+                <hr/>
+                <div>
+                    <input class="is-checkradio" id="nsfwCheckbox" type="checkbox" :class="[{'is-dark':!settings.darkTheme}, {'is-white':settings.darkTheme}]" v-model="allowNsfw">
+                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                </div>
+                <br/>
+                <div>
+                    <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
+                        <input type="radio" :id="`cat-filter-${key}-${index}`" name="categoryFilterCondition" :value=key :checked="index === 0 ? true : undefined" v-model="categoryFilterMode">
+                        <label :for="`cat-filter-${key}-${index}`">&nbsp;{{ key }}</label>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <button class="button is-info" @click="showCategoryFilterModal = false;">
+                    Apply filters
+                </button>
+            </template>
+        </modal>
+
         <DownloadModModal
             :show-download-modal="showUpdateAllModal"
             :update-all-mods="true"
@@ -156,93 +204,21 @@
             @error="showError($event)"
         />
 
-		<div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
-			<div class="modal-background" @click="closeErrorModal()"></div>
-			<div class='modal-content'>
-				<div class='notification is-danger'>
-					<h3 class='title'>Error</h3>
-					<h5 class="title is-5">{{errorMessage}}</h5>
-					<p>{{errorStack}}</p>
-					<div v-if="errorSolution !== ''">
-						<br/>
-						<h5 class="title is-5">Suggestion</h5>
-						<p>{{errorSolution}}</p>
-					</div>
-				</div>
-			</div>
-			<button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
-		</div>
 		<div class='columns' id='content'>
 			<div class="column is-one-quarter non-selectable">
-				<aside class="menu">
-					<p class="menu-label">Risk of Rain 2</p>
-					<ul class="menu-list">
-						<li><a href="#" @click="launchModded()"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a></li>
-						<li>
-							<a href="#" @click="launchVanilla()"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start vanilla</a>
-						</li>
-					</ul>
-					<p class="menu-label">Mods</p>
-					<ul class="menu-list">
-						<li>
-							<a href="#" @click="() => {view = 'installed';}"
-							   :class="[view === 'installed' ? 'is-active' : '']">
-								<i class="fas fa-folder"/>&nbsp;&nbsp;Installed ({{localModList.length}})
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="() => {view = 'online'; thunderstoreSearchFilter = ''}"
-							   :class="[view === 'online' ? 'is-active' : '']">
-								<i class="fas fa-globe"/>&nbsp;&nbsp;Online ({{thunderstoreModList.length}})
-							</a>
-						</li>
-					</ul>
-					<p class='menu-label'>Other</p>
-					<ul class='menu-list'>
-						<li>
-							<a href="#" @click="openConfigEditor()" :class="[view === 'config_editor' ? 'is-active' : '']"
-							   v-if="!settings.legacyInstallMode">
-								<i class="fas fa-edit"/>&nbsp;&nbsp;Config editor
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="view = 'settings'" :class="[view === 'settings' ? 'is-active' : '']">
-								<i class="fas fa-cog"/>&nbsp;&nbsp;Settings
-							</a>
-						</li>
-						<li>
-							<a href="#" @click="() => {view = 'help'; helpPage = ''}"
-							   :class="[view === 'help' ? 'is-active' : '']">
-								<i class="fas fa-question-circle"/>&nbsp;&nbsp;Help</a>
-							<ul v-if="view === 'help'">
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'tips&tricks'}]"
-									   @click="helpPage = 'tips&tricks'">
-										<i class="fas fa-lightbulb"/>&nbsp;&nbsp;Tips and tricks
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'gameWontStart'}]"
-									   @click="helpPage = 'gameWontStart'">
-										<i class="fas fa-gamepad"/>&nbsp;&nbsp;Game won't start
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'modsNotWorking'}]"
-									   @click="helpPage = 'modsNotWorking'">
-										<i class="fas fa-ban"/>&nbsp;&nbsp;Mods aren't working
-									</a>
-								</li>
-								<li>
-									<a href='#' :class="[{'is-active': helpPage === 'likeR2'}]"
-									   @click="helpPage = 'likeR2'">
-										<i class="fas fa-heart"/>&nbsp;&nbsp;Like r2modman?
-									</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</aside>
+                <NavigationMenu :view="view"
+                                :help-page="helpPage"
+                                @clicked-installed="view = 'installed'; helpPage = ''"
+                                @clicked-online="view = 'online'; helpPage = ''"
+                                @clicked-settings="view = 'settings'; helpPage = ''"
+                                @clicked-help="view = 'help'; helpPage = ''"
+                                @clicked-config-editor="openConfigEditor"
+                                @help-clicked-tips-and-tricks="helpPage = 'tips-and-tricks'"
+                                @help-clicked-game-wont-start="helpPage = 'game-wont-start'"
+                                @help-clicked-mods-not-working="helpPage = 'mods-not-working'"
+                                @help-clicked-like-r2="helpPage = 'like-r2'"
+                                @error="showError($event)"
+                />
 			</div>
 			<div class='column is-three-quarters'>
 				<div v-show="view === 'online'">
@@ -253,7 +229,7 @@
                                     <label for="thunderstore-search-filter">Search</label>
                                     <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
                                 </div>
-                                <div class="input-group">
+                                <div class="input-group margin-right">
                                     <label for="thunderstore-sort">Sort</label>
                                     <select id="thunderstore-sort" class='select select--content-spacing' v-model="sortingStyleModel">
                                         <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
@@ -263,6 +239,12 @@
                                             :disabled="sortingStyleModel === 'Default'">
                                         <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
                                     </select>
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group input-group--flex">
+                                        <label for="thunderstore-category-filter">Additional filters</label>
+                                        <button id="thunderstore-category-filter" class="button" @click="showCategoryFilterModal = true;">Filter categories</button>
+                                    </div>
                                 </div>
 							</div>
 						</div>
@@ -282,12 +264,7 @@
 							No mods with that name found
 						</p>
 					</div>
-					<br/>
-					<div class='pagination--invisible smaller-font'>
-						<a v-for='index in getPaginationSize()' :key='"pagination-" + index' class='pagination-link'>
-							{{index}}
-						</a>
-					</div>
+                    <br/>
 					<div class='pagination'>
 						<div class='smaller-font'>
 							<a v-for='index in getPaginationSize()' :key='"pagination-" + index'
@@ -329,7 +306,7 @@
 						<!-- gameWontStart -->
 						<!-- modsNotWorking -->
 						<!-- likeR2 -->
-						<div v-if="helpPage === 'tips&tricks'">
+						<div v-if="helpPage === 'tips-and-tricks'">
 							<hero title='Tips and tricks' heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>Install with Mod Manager</h5>
@@ -352,7 +329,7 @@
 								do.
 							</p>
 						</div>
-						<div v-else-if="helpPage === 'gameWontStart'">
+						<div v-else-if="helpPage === 'game-wont-start'">
 							<hero :title="'Game won\'t start'" heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>If the BepInEx console appears</h5>
@@ -378,7 +355,7 @@
 								for more information.
 							</p>
 						</div>
-						<div v-else-if="helpPage === 'modsNotWorking'">
+						<div v-else-if="helpPage === 'mods-not-working'">
 							<hero :title="'Mods aren\'t working'" heroType='is-info'/>
 							<br/>
 							<h5 class='title is-5'>Are all dependencies installed?</h5>
@@ -398,7 +375,7 @@
 							</p>
 							<p>Mods with updates have the (<i class='fas fa-cloud-upload-alt'></i>) icon.</p>
 						</div>
-						<div v-else-if="helpPage === 'likeR2'">
+						<div v-else-if="helpPage === 'like-r2'">
 							<hero :title="'Enjoying the manager?'" :subtitle="'I hope so!'" heroType='is-danger'/>
 							<br/>
 							<h5 class='title is-5'>You can help support r2modman in multiple ways!</h5>
@@ -496,13 +473,10 @@
 	import ManifestV2 from '../model/ManifestV2';
 	import ManagerSettings from '../r2mm/manager/ManagerSettings';
 	import ThemeManager from '../r2mm/manager/ThemeManager';
-	import GameRunner from '../r2mm/manager/GameRunner';
-	import ModLinker from '../r2mm/manager/ModLinker';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
     import * as path from 'path';
     import * as fs from 'fs-extra';
-	import { isNull } from 'util';
     import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
@@ -513,6 +487,10 @@
     import OnlineModList from '../components/views/OnlineModList.vue';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
+    import CategoryFilterMode from '../model/enums/CategoryFilterMode';
+    import ArrayUtils from '../utils/ArrayUtils';
+    import NavigationMenu from '../components/navigation/NavigationMenu.vue';
+    import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 
 	@Component({
 		components: {
@@ -520,6 +498,7 @@
             LocalModList,
             SettingsView,
             DownloadModModal,
+            NavigationMenu,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
@@ -534,10 +513,6 @@
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
-		errorMessage: string = '';
-		errorStack: string = '';
-		errorSolution: string = '';
-		gameRunning: boolean = false;
 		settings = ManagerSettings.getSingleton();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
@@ -562,6 +537,11 @@
 		showUpdateAllModal: boolean = false;
         showDependencyStrings: boolean = false;
 
+        showCategoryFilterModal: boolean = false;
+        filterCategories: string[] = [];
+        categoryFilterMode: string = CategoryFilterMode.OR;
+        allowNsfw: boolean = false;
+
 		@Watch('pageNumber')
 		changePage() {
 			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
@@ -575,11 +555,12 @@
 			this.filterThunderstoreModList();
 		}
 
-		get thunderstoreModList() {
+		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList;
         }
 
         @Watch("thunderstoreModList")
+        @Watch("showCategoryFilterModal")
         thunderstoreModListUpdate() {
 		    this.sortThunderstoreModList();
         }
@@ -588,6 +569,19 @@
 			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
 				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
+			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
+			if (this.filterCategories.length > 0) {
+			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+			        switch(this.categoryFilterMode) {
+			            case CategoryFilterMode.OR:
+			                return ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+                        case CategoryFilterMode.AND:
+                            return ArrayUtils.includesAll(x.getCategories(), this.filterCategories);
+                        case CategoryFilterMode.EXCLUDE:
+                            return !ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+                    }
+                })
+            }
 			this.changePage();
 		}
 
@@ -646,19 +640,8 @@
 			}
 		}
 
-		closeErrorModal() {
-			this.errorMessage = '';
-			this.errorStack = '';
-		}
-
-		closeGameRunningModal() {
-			this.gameRunning = false;
-		}
-
 		showError(error: R2Error) {
-			this.errorMessage = error.name;
-			this.errorStack = error.message;
-			this.errorSolution = error.solution;
+			this.$emit("error", error);
 		}
 
 		closePreloaderFixModal() {
@@ -702,7 +685,7 @@
 			this.closeModal();
 			ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
-					if (!isNull(err)) {
+					if (err !== null) {
 						this.downloadingMod = false;
 						this.showError(err);
 					}
@@ -736,68 +719,6 @@
 				options.push(sorting[key]);
 			}
 			return options;
-		}
-
-		prepareLaunch() {
-			let dir: string | R2Error;
-			if (this.settings.riskOfRain2Directory === null) {
-				dir = GameDirectoryResolver.getDirectory();
-			} else {
-				dir = this.settings.riskOfRain2Directory;
-			}
-			if (dir instanceof R2Error) {
-				// Show folder selection dialog.
-				this.showError(dir);
-			} else {
-				const setInstallDirError: R2Error | void = this.settings.setRiskOfRain2Directory(dir);
-				if (setInstallDirError instanceof R2Error) {
-					this.showError(setInstallDirError);
-					return;
-				}
-			}
-		}
-
-		launchModded() {
-			this.prepareLaunch();
-			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-				const newLinkedFiles = ModLinker.link();
-				if (newLinkedFiles instanceof R2Error) {
-					this.showError(newLinkedFiles);
-					return;
-				} else {
-					const saveError = this.settings.setLinkedFiles(newLinkedFiles);
-					if (saveError instanceof R2Error) {
-						this.showError(saveError);
-						return;
-					}
-				}
-				this.gameRunning = true;
-				GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-					if (!isNull(err)) {
-						this.showError(err);
-					}
-					this.gameRunning = false;
-				});
-			} else {
-				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings-components screen');
-			}
-		}
-
-		launchVanilla() {
-			this.prepareLaunch();
-			if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-				this.gameRunning = true;
-				GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-					if (!isNull(err)) {
-						this.showError(err);
-					}
-					this.gameRunning = false;
-				});
-			} else {
-				return new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-					'Set the Risk of Rain 2 directory in the settings-components screen');
-			}
 		}
 
 		changeRoR2InstallDirectory() {
@@ -855,7 +776,7 @@
 
 		exportProfileAsCode() {
 			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
-				if (!isNull(err)) {
+				if (err !== null) {
 					this.showError(err);
 				} else {
 					this.exportCode = code;
@@ -915,7 +836,7 @@
 				.then(response => response.json())
 				.then((parsed: any) => {
 					parsed.sort((a: any, b: any) => {
-						if (!isNull(b)) {
+						if (b !== null) {
 							const versionA = new VersionNumber(a.name);
 							const versionB = new VersionNumber(b.name);
 							return versionA.isNewerThan(versionB);
@@ -1067,6 +988,31 @@
             });
         }
 
+        get availableCategories(): string[] {
+		    this.filterCategories.includes("");
+		    const flatArray: Array<string> = Array.from(
+		        new Set(this.thunderstoreModList
+                    .map((value) => value.getCategories())
+                    .flat(1))
+            );
+		    return flatArray
+                .filter((category) => !this.filterCategories.includes(category))
+                .sort();
+        }
+
+        addFilterCategory(target: HTMLSelectElement) {
+		    this.filterCategories.push(target.value);
+            target.selectedIndex = 0;
+        }
+
+        removeCategory(key: string) {
+		    this.filterCategories = this.filterCategories.filter(value => value !== key);
+        }
+
+        get categoryFilterValues() {
+		    return Object.values(CategoryFilterMode);
+        }
+
         handleSettingsCallbacks(invokedSetting: any) {
 		    switch(invokedSetting) {
 		        case "BrowseDataFolder":
@@ -1184,7 +1130,6 @@
                     this.dragAndDropText = 'Mod must be a .zip file';
                     return;
                 } else {
-                    this.errorMessage = '';
                     this.installLocalModAfterFileSelection(FileDragDrop.getFiles(ev)[0].path);
                 }
                 this.showDragAndDropModal = false;
@@ -1195,6 +1140,10 @@
                 this.showDragAndDropModal = false;
             }
 		}
+
+		mounted() {
+		    this.view = (this.$route.query.view as string) || "installed";
+        }
 	}
 
 </script>

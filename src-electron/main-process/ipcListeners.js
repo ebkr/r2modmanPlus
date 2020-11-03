@@ -1,5 +1,4 @@
 import { ipcMain, dialog } from 'electron';
-import { spawnSync } from 'child_process';
 import { autoUpdater } from 'electron-updater';
 import os from 'os';
 
@@ -13,10 +12,6 @@ export default class Listeners {
     }
 }
 
-ipcMain.on('open-link', (_sender, link) => {
-    spawnSync('powershell.exe', [`start ${link}`]);
-})
-
 ipcMain.on('get-browser-window', ()=>{
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 })
@@ -28,9 +23,13 @@ ipcMain.on('open-dialog', (_sender, dialogOptions) => {
 })
 
 ipcMain.on('update-app', ()=>{
-    autoUpdater.autoDownload = true;
-    autoUpdater.checkForUpdatesAndNotify();
-    browserWindow.webContents.send('update-done');
+    if (!process.execPath.startsWith(os.tmpdir())) {
+        autoUpdater.autoDownload = true;
+        autoUpdater.checkForUpdatesAndNotify();
+        browserWindow.webContents.send('update-done');
+    } else {
+        browserWindow.webContents.send('update-done');
+    }
 })
 
 ipcMain.on('install-via-thunderstore', (installString) => {
