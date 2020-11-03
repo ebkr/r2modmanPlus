@@ -44,6 +44,14 @@ export default abstract class ThunderstoreDownloaderProvider {
     public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
 
     /**
+     * Allows a list of mods passed in to be converted to the latest version of their equivalent upload.
+     *
+     * @param mods
+     * @param allMods
+     */
+    public abstract getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[];
+
+    /**
      * A top-level method to download the latest version of all mods passed in, including their dependencies.
      *
      * @param mods              An array of ManifestV2 objects to be updated.
