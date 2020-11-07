@@ -1,8 +1,8 @@
 import * as yaml from 'yaml';
 import Profile from '../../model/Profile';
 
-import * as fs from 'fs-extra';
 import * as path from 'path';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
@@ -15,10 +15,12 @@ import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
 import AdmZip from 'adm-zip';
 import Axios from 'axios';
+import FileUtils from '../../utils/FileUtils';
 
 export default class ProfileModList {
 
     public static getModList(profile: Profile): ManifestV2[] | R2Error {
+        const fs = FsProvider.instance;
         if (!fs.existsSync(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
             fs.writeFileSync(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
         }
@@ -49,6 +51,7 @@ export default class ProfileModList {
     }
 
     private static saveModList(profile: Profile, modList: ManifestV2[]): R2Error | null {
+        const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
             try {
@@ -132,7 +135,7 @@ export default class ProfileModList {
     public static exportModListToFile(): R2Error | string {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         try {
-            fs.ensureDirSync(exportDirectory);
+            FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to ensure directory exists', err.message,
@@ -162,6 +165,7 @@ export default class ProfileModList {
     }
 
     public static exportModListAsCode(callback: (code: string, err: R2Error | null) => void): R2Error | void {
+        const fs = FsProvider.instance;
         const exportResult: R2Error | string = this.exportModListToFile();
         if (exportResult instanceof R2Error) {
             return exportResult;

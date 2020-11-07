@@ -214,11 +214,13 @@ import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/Thunde
 
 import * as  yaml from 'yaml';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
+import FileUtils from '../utils/FileUtils';
 
 let settings: ManagerSettings;
+let fs: FsProvider;
 
 @Component({
     components: {
@@ -326,8 +328,8 @@ export default class Profiles extends Vue {
 
     removeProfileAfterConfirmation() {
         try {
-            fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
-            fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+            FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
+            fs.rmdirSync(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
             const err: Error = e;
             this.showError(
@@ -416,7 +418,7 @@ export default class Profiles extends Vue {
             .then(resp => {
                 if (resp.startsWith("#r2modman")) {
                     const buf = Buffer.from(resp.substring(9).trim(), 'base64');
-                    fs.ensureDirSync(path.join(PathResolver.ROOT, '_import_cache'));
+                    FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
                     fs.writeFileSync(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
                     this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
                 } else {
@@ -561,6 +563,7 @@ export default class Profiles extends Vue {
     }
 
     created() {
+        fs = FsProvider.instance;
         settings = ManagerSettings.getSingleton();
 
         this.selectedProfile = settings.lastSelectedProfile;

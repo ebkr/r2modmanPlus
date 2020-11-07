@@ -3,11 +3,11 @@ import Profile from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
-import fs from 'fs';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerSettings from './ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolver from './GameDirectoryResolver';
-import FileUtils from '../utils/FileUtils';
+import FileUtils from '../../utils/FileUtils';
 
 export default class ModLinker {
 
@@ -24,6 +24,7 @@ export default class ModLinker {
     }
 
     private static performSymlink(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
+        const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
             FileUtils.ensureDirectory(path.join(installDirectory, 'r2modman'))
@@ -40,7 +41,12 @@ export default class ModLinker {
             previouslyLinkedFiles.forEach((file: string) => {
                 LoggerProvider.instance.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
                 if (fs.existsSync(file)) {
-                    fs.unlinkSync(file);
+                    if (fs.lstatSync(file).isDirectory()) {
+                        FileUtils.emptyDirectory(file);
+                        fs.rmdirSync(file);
+                    } else {
+                        fs.unlinkSync(file);
+                    }
                 }
             });
             try {
@@ -103,12 +109,22 @@ export default class ModLinker {
     }
 
     private static performLegacyInstall(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
+        const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         const dir: string = path.join(installDirectory, 'r2modman');
         try {
-            FileUtils.emptyDirectory(dir);
+            if (fs.existsSync(dir)) {
+                FileUtils.emptyDirectory(dir);
+            }
             previouslyLinkedFiles.forEach((file: string) => {
-                fs.unlinkSync(file);
+                if (fs.existsSync(file)) {
+                    if (fs.lstatSync(file).isDirectory()) {
+                        FileUtils.emptyDirectory(file);
+                        fs.rmdirSync(file);
+                    } else {
+                        fs.unlinkSync(file);
+                    }
+                }
             });
             const profileFiles = fs.readdirSync(Profile.getActiveProfile().getPathOfProfile());
             profileFiles.forEach((file: string) => {
@@ -116,7 +132,9 @@ export default class ModLinker {
                     if (file.toLowerCase() !== 'mods.yml') {
                         // Symlink Files in Install Root
                         try {
-                            fs.unlinkSync(path.join(installDirectory, file));
+                            if (fs.existsSync(path.join(installDirectory, file))) {
+                                fs.unlinkSync(path.join(installDirectory, file));
+                            }
                             fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
                             newLinkedFiles.push(path.join(installDirectory, file));
                         } catch(e) {
@@ -129,7 +147,7 @@ export default class ModLinker {
                         }
                     }
                 } else {
-                    fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(dir, file));
+                    fs.copyFolderSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(dir, file));
                     newLinkedFiles.push(path.join(dir, file));
                 }
             })
@@ -141,7 +159,7 @@ export default class ModLinker {
                 'If r2modman was installed in the Risk of Rain 2 directory, please reinstall in a different location. \nIf not, try running the manager as an administrator.'
             );
         }
-        return [];
+        return newLinkedFiles;
     }
 
 }

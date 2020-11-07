@@ -1,4 +1,4 @@
-import ProviderUtils from '../ProviderUtils';
+import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import BepInExTree from '../../../model/file/BepInExTree';

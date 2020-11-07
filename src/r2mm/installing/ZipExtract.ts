@@ -5,7 +5,7 @@ import fs from 'fs';
 import * as path from 'path';
 import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
-import FileUtils from '../utils/FileUtils';
+import FileUtils from '../../utils/FileUtils';
 
 export default class ZipExtract {
 

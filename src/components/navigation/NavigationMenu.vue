@@ -99,7 +99,7 @@
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import R2Error from '../../model/errors/R2Error';
     import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
-    import * as fs from 'fs-extra';
+    import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
     import GameRunner from '../../r2mm/manager/GameRunner';
     import { isNull } from "util";
@@ -156,6 +156,7 @@
         }
 
         launchModded() {
+            const fs = FsProvider.instance;
             this.prepareLaunch();
             if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
                 const newLinkedFiles = ModLinker.link();
@@ -184,6 +185,7 @@
         }
 
         launchVanilla() {
+            const fs = FsProvider.instance;
             this.prepareLaunch();
             if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
                 this.gameRunning = true;

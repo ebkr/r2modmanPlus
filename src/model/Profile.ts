@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as fs from 'fs-extra'
 import PathResolver from '../r2mm/manager/PathResolver';
 import ProfileProvider from '../providers/ror2/model_implementation/ProfileProvider';
 

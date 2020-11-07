@@ -63,7 +63,7 @@
 
     import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
     import ConfigLine from '../../model/file/ConfigLine';
-    import * as fs from 'fs-extra';
+    import FsProvider from '../../providers/generic/file/FsProvider';
     import ConfigFile from '../../model/file/ConfigFile';
     import Hero from '../Hero.vue';
     import QuillEditor from '../QuillEditor.vue';
@@ -81,6 +81,7 @@
         private dumpedConfigVariables: { [section: string]: { [variable: string]: ConfigLine } } = {};
 
         created() {
+            const fs = FsProvider.instance;
             this.fileText = fs.readFileSync(this.configFile.getPath()).toString();
             if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
                 // Find all variables offered within config script.
@@ -126,6 +127,7 @@
         }
 
         saveCfg() {
+            const fs = FsProvider.instance;
             let builtString = '';
             let section = 'root';
             this.fileText.split('\n').forEach((line: string) => {
@@ -145,6 +147,7 @@
         }
 
         saveNonCfg() {
+            const fs = FsProvider.instance;
             fs.writeFileSync(this.configFile.getPath(), this.fileText);
             window.scrollTo(0, 0);
             this.$emit("changed");

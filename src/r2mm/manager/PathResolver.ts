@@ -1,15 +1,17 @@
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
-import FileUtils from '../utils/FileUtils';
+import FileUtils from '../../utils/FileUtils';
 
 export default class PathResolver {
 
     private static _APPDATA_DIR: string = '';
+    private static _CONFIG_DIR: string = '';
     private static _ROOT: string = '';
     private static _MOD_ROOT: string = '';
 
     static set APPDATA_DIR(appDataDir: string) {
         PathResolver._APPDATA_DIR = appDataDir;
+        PathResolver._CONFIG_DIR = path.join(appDataDir, 'config');
         ManagerSettings.getSingleton().load();
         PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory;
         FileUtils.ensureDirectory(PathResolver.ROOT)
@@ -26,5 +28,9 @@ export default class PathResolver {
 
     static get APPDATA_DIR(): string {
         return PathResolver._APPDATA_DIR;
+    }
+
+    static get CONFIG_DIR(): string {
+        return PathResolver._CONFIG_DIR;
     }
 }

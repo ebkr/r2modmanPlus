@@ -1,4 +1,4 @@
-import ProviderUtils from '../ProviderUtils';
+import ProviderUtils from '../../generic/ProviderUtils';
 
 export default abstract class ProfileProvider {
 

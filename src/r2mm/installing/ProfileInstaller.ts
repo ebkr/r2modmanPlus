@@ -4,7 +4,7 @@ import ManifestV2 from '../../model/ManifestV2';
 import BepInExTree from '../../model/file/BepInExTree';
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import Profile from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ModMode from '../../model/enums/ModMode';
@@ -12,15 +12,16 @@ import { isNull } from 'util';
 import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+import FileUtils from '../../utils/FileUtils';
+let fs: FsProvider;
 
-let cacheDirectory: string;
 const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
 
     constructor() {
         super();
-        cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        fs = FsProvider.instance;
     }
 
     /**
@@ -29,6 +30,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      * @param mod
      */
     public uninstallMod(mod: ManifestV2): R2Error | null {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             try {
                 fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
@@ -36,7 +38,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                         const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
                         if (fs.lstatSync(filePath).isFile()) {
                             if (file.toLowerCase() !== 'mods.yml') {
-                                fs.removeSync(filePath);
+                                fs.unlinkSync(filePath);
                             }
                         }
                     })
@@ -59,8 +61,8 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                                 .forEach((folder: string) => {
                                     const folderPath: string = path.join(bepInExLocation, file, folder);
                                     if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
-                                        fs.emptyDirSync(folderPath);
-                                        fs.removeSync(folderPath);
+                                        FileUtils.emptyDirectory(folderPath);
+                                        fs.rmdirSync(folderPath);
                                     }
                                 })
                         }
@@ -156,6 +158,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     }
 
     public installMod(mod: ManifestV2): R2Error | null {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             return this.installBepInEx(cachedLocationOfMod);
@@ -183,9 +186,9 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName);
             }
             try {
-                fs.ensureDirSync(profileLocation);
+                FileUtils.ensureDirectory(profileLocation);
                 try {
-                    fs.copySync(
+                    fs.copyFolderSync(
                         location,
                         profileLocation
                     );
@@ -217,9 +220,9 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
             }
             try {
-                fs.ensureDirSync(profileLocation);
+                FileUtils.ensureDirectory(profileLocation);
                 try {
-                    fs.copySync(
+                    fs.copyFileSync(
                         file,
                         path.join(profileLocation, path.basename(file))
                     );
@@ -265,7 +268,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         }
         files.getFiles().forEach((file: string) => {
             try {
-                fs.copySync(file, path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(file)));
+                fs.copyFileSync(file, path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(file)));
             } catch(e) {
                 const err: Error = e;
                 return new FileWriteError(
@@ -277,7 +280,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         })
         files.getDirectories().forEach((directory: BepInExTree) => {
             try {
-                fs.copySync(
+                fs.copyFolderSync(
                     path.join(location, directory.getDirectoryName()),
                     path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(directory.getDirectoryName()))
                 );

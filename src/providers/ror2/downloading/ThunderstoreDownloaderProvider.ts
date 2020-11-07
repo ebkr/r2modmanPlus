@@ -1,4 +1,4 @@
-import ProviderUtils from '../ProviderUtils';
+import ProviderUtils from '../../generic/ProviderUtils';
 import ThunderstoreVersion from '../../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';

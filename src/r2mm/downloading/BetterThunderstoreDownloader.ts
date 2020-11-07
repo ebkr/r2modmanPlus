@@ -19,15 +19,7 @@ import ManifestV2 from '../../model/ManifestV2';
 import ModBridge from '../mods/ModBridge';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
-let cacheDirectory: string;
-
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
-
-
-    constructor() {
-        super();
-        cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-    }
 
     public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
         const foundDependencies = new Array<ThunderstoreCombo>();
@@ -139,6 +131,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
@@ -287,6 +280,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        console.log(cacheDirectory);
         try {
             if (!fs.existsSync(path.join(cacheDirectory, combo.getMod().getFullName()))) {
                 fs.mkdirSync(path.join(cacheDirectory, combo.getMod().getFullName()), {
@@ -314,6 +309,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean  {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         try {
             fs.readdirSync(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
             return true;

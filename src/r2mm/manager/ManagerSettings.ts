@@ -10,10 +10,7 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import FileUtils from '../utils/FileUtils';
-
-let configPath = '';
-let configFile = '';
+import FileUtils from '../../utils/FileUtils';
 
 export default class ManagerSettings {
 
@@ -43,8 +40,8 @@ export default class ManagerSettings {
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
 
     public load(): R2Error | void {
-        configPath = path.join(PathResolver.APPDATA_DIR, 'config');
-        configFile = path.join(configPath, 'conf.yml');
+        const configPath = path.join(PathResolver.CONFIG_DIR);
+        const configFile = path.join(configPath, "conf.yml");
         FileUtils.ensureDirectory(configPath);
         if (fs.existsSync(configFile)) {
             try {
@@ -91,6 +88,7 @@ export default class ManagerSettings {
     }
 
     private save(): R2Error | void {
+        const configFile = path.join(PathResolver.CONFIG_DIR, "conf.yml");
         try {
             const writeableYaml = yaml.stringify(this);
             try {

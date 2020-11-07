@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import LogOutput from '../../../src/r2mm/data/LogOutput';
 import Profile from '../../../src/model/Profile';
 import TestSetup from '../../test-setup.test';
-import * as fs from 'fs-extra';
+import FsProvider from '../../../src/providers/generic/file/FsProvider';
 import * as path from "path";
+import FileUtils from '../../../src/utils/FileUtils';
 
 const timeout = (ms: number) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -31,8 +32,9 @@ describe('LogOutput', () => {
             expect(LogOutput.getSingleton().exists).equals(false);
         });
         it('File exists', async () => {
+            const fs = FsProvider.instance;
             // Ensure directory exists prior to writing file
-            fs.ensureDirSync(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
+            FileUtils.emptyDirectory(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
             fs.writeFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'), "");
             await timeout(1100);
             expect(LogOutput.getSingleton().exists).equals(true);

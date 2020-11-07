@@ -38,7 +38,6 @@
     import { ipcRenderer } from "electron";
     import PathResolver from './r2mm/manager/PathResolver';
     import path from "path";
-    import * as fs from 'fs-extra';
     import ThemeManager from './r2mm/manager/ThemeManager';
     import LoggerProvider, {LogSeverity} from './providers/ror2/logging/LoggerProvider';
     import ManagerInformation from './_managerinf/ManagerInformation';
@@ -47,6 +46,11 @@
     import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
     import ProfileInstaller from './r2mm/installing/ProfileInstaller';
     import { Logger } from './r2mm/logging/Logger';
+    import FileUtils from './utils/FileUtils';
+    import LinkProvider from './providers/components/LinkProvider';
+    import LinkImpl from './r2mm/component_override/LinkImpl';
+    import FsProvider from './providers/generic/file/FsProvider';
+    import NodeFs from './providers/generic/file/NodeFs';
 
     @Component
     export default class App extends Vue {
@@ -73,8 +77,9 @@
         created() {
 
             ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
+
                 PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
-                fs.ensureDirSync(PathResolver.APPDATA_DIR);
+                FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
                 ThemeManager.apply();
                 ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
                     ManagerInformation.IS_PORTABLE = isPortable;
@@ -84,7 +89,6 @@
                     //     FolderMigration.checkAndMigrate()
                     //         .then(this.checkForUpdates);
                     // }, 100);
-                    this.bindProviders();
                     LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
                     this.visible = true;
                 });
@@ -97,7 +101,11 @@
             });
         }
 
-        bindProviders() {
+        beforeCreate() {
+
+            const fs = new NodeFs();
+            FsProvider.provide(() => fs);
+
             ProfileProvider.provide(() => new ProfileImpl());
             LogOutputProvider.provide(() => LogOutput.getSingleton());
 
@@ -107,6 +115,8 @@
             LocalModInstallerProvider.provide(() => new LocalModInstaller());
             ProfileInstallerProvider.provide(() => new ProfileInstaller());
             LoggerProvider.provide(() => new Logger());
+
+            LinkProvider.provide(() => new LinkImpl());
         }
 
     }

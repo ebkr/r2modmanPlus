@@ -4,7 +4,7 @@ import * as path from 'path';
 import ProfileModList from './ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../manager/PathResolver';
-import FileUtils from '../utils/FileUtils';
+import FileUtils from '../../utils/FileUtils';
 import ManifestV2 from '../../model/ManifestV2';
 import VersionNumber from '../../model/VersionNumber';
 
@@ -45,7 +45,7 @@ export default class CacheUtil {
                     fs.readdirSync(path.join(cacheDirectory, folder)).forEach(versionFolder => {
                         const matchingVersion = versions.find(value => value.toString() === versionFolder);
                         if (matchingVersion === undefined) {
-                            this.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
+                            FileUtils.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
                             fs.rmdirSync(path.join(cacheDirectory, folder, versionFolder));
                         }
                     })
@@ -66,17 +66,5 @@ export default class CacheUtil {
             .map(value => value.getVersionNumber());
     }
 
-    private static emptyDirectory(dir: string) {
-        const files = fs.readdirSync(dir);
-        files.forEach(filename => {
-            const file = path.join(dir, filename);
-            if (fs.lstatSync(file).isDirectory()) {
-                this.emptyDirectory(file);
-                fs.rmdirSync(file);
-            } else {
-                fs.unlinkSync(file);
-            }
-        })
-    }
 
 }

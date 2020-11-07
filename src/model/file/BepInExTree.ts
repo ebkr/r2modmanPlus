@@ -1,7 +1,7 @@
 import R2Error from "../errors/R2Error";
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 
 /**
  * The purpose of this class is to create a navigatable tree.
@@ -14,6 +14,7 @@ export default class BepInExTree {
     private directoryName: string = '';
 
     public static buildFromLocation(location: string): BepInExTree | R2Error {
+        const fs = FsProvider.instance;
         const currentTree = new BepInExTree();
         currentTree.setDirectoryName(path.basename(location));
         try {

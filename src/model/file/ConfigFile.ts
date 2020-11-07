@@ -1,5 +1,5 @@
 import R2Error from '../errors/R2Error';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../errors/FileWriteError';
 
 export default class ConfigFile {
@@ -27,6 +27,7 @@ export default class ConfigFile {
     }
 
     public updateFile(text: string): R2Error | void {
+        const fs = FsProvider.instance;
         try {
             fs.writeFileSync(this.path, text);
         } catch(e) {

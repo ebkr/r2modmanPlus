@@ -1,12 +1,13 @@
 import GameDirectoryResolver from './GameDirectoryResolver';
 import R2Error from '../../model/errors/R2Error';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import { spawnSync } from 'child_process';
 
 export default class PreloaderFixer {
 
     public static fix(): R2Error | void {
+        const fs = FsProvider.instance;
         const dirResult = GameDirectoryResolver.getDirectory();
         if (dirResult instanceof R2Error) {
             return dirResult;
@@ -16,7 +17,7 @@ export default class PreloaderFixer {
                 'Set the Risk of Rain 2 directory in the settings section');
         }
         try {
-            fs.removeSync(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
+            fs.unlinkSync(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to remove Managed directory', err.message, 'Try launching r2modman as an administrator');

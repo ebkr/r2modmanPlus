@@ -2,18 +2,19 @@ import VersionNumber from "../../model/VersionNumber";
 
 import * as yaml from 'yaml';
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import Mod from '../../model/Mod';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from "../manager/PathResolver";
+import FsProvider from '../../providers/generic/file/FsProvider';
 
 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
 
 export default class ModFromManifest {
 
     public static get(modName: string, versionNumber: VersionNumber): Mod | R2Error {
+        const fs = FsProvider.instance;
         try {
             const buf: Buffer = fs.readFileSync(
                 path.join(cacheDirectory, modName, versionNumber.toString(), 'manifest.json')

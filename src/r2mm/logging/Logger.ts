@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 
@@ -13,7 +13,8 @@ export class Logger {
     }
 
     Write() {
-        fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
+        const fs = FsProvider.instance;
+        fs.writeFileSync(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
     }
 
 

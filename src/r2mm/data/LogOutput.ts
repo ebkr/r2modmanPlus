@@ -1,7 +1,8 @@
 import Profile from '../../model/Profile';
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import FsProvider from '../../providers/generic/file/FsProvider';
 import Timeout = NodeJS.Timeout;
+let fs: FsProvider;
 
 export default class LogOutput {
 
@@ -18,6 +19,7 @@ export default class LogOutput {
     }
 
     private constructor() {
+        fs = FsProvider.instance;
         const profilePath = Profile.getActiveProfile().getPathOfProfile()
         this._exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
 

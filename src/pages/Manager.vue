@@ -476,7 +476,7 @@
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
     import * as path from 'path';
-    import * as fs from 'fs-extra';
+    import FsProvider from '../providers/generic/file/FsProvider';
     import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
@@ -722,6 +722,7 @@
 		}
 
 		changeRoR2InstallDirectory() {
+            const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
@@ -743,6 +744,7 @@
 		}
 
 		changeSteamDirectory() {
+            const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
@@ -884,6 +886,7 @@
 		}
 
 		copyLogToClipboard() {
+            const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
 			if (this.logFileExists()) {
 				const text = fs.readFileSync(logOutputPath).toString();
@@ -896,6 +899,7 @@
 		}
 
 		logFileExists() {
+            const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
 			return fs.existsSync(logOutputPath);
 		}
@@ -967,6 +971,7 @@
         }
 
         changeDataFolder() {
+            const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
             ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
                 if (files !== null && files.length === 1) {

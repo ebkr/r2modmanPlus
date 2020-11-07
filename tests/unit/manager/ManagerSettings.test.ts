@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import * as fs from 'fs-extra';
+import FsProvider from '../../../src/providers/generic/file/FsProvider';
 import * as path from 'path';
 import * as yaml from 'yaml';
 import ManagerSettings from '../../../src/r2mm/manager/ManagerSettings';
@@ -69,6 +69,7 @@ describe('ManagerSettings', () => {
 });
 
 const assertPropertyAndValueFromConfigFile = (property: string, value: any): Chai.Assertion => {
+    const fs = FsProvider.instance;
     const file = path.join(PathResolver.ROOT, 'config', 'conf.yml');
     if (fs.existsSync(file)) {
         const yamlData = yaml.parse(fs.readFileSync(file).toString());

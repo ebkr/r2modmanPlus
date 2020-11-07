@@ -59,13 +59,13 @@
     import ConfigFile from '../../model/file/ConfigFile';
     import Profile from '../../model/Profile';
     import * as path from 'path';
-    import * as fs from 'fs';
     import BepInExTree from '../../model/file/BepInExTree';
     import R2Error from '../../model/errors/R2Error';
     import { ExpandableCard, Hero } from '../all';
     import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
     import ConfigSort from '../../r2mm/configs/ConfigSort';
+    import FsProvider from '../../providers/generic/file/FsProvider';
 
     @Component({
         components: {
@@ -100,6 +100,7 @@
         }
 
         created() {
+            const fs = FsProvider.instance;
             const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
             const bepInExTree = BepInExTree.buildFromLocation(configLocation);
             if (bepInExTree instanceof R2Error) {
@@ -118,6 +119,7 @@
         }
 
         deleteConfig(file: ConfigFile) {
+            const fs = FsProvider.instance;
             try {
                 fs.unlinkSync(file.getPath());
                 this.configFiles = this.configFiles.filter(value => value.getName() !== file.getName());

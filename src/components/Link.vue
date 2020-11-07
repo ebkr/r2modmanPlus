@@ -5,17 +5,15 @@
     <a v-else-if="target !== null" @click="openLink()" class='target-link'>
         <slot></slot>
     </a>
-    <router-link v-else-if="target === null" tag="div" :to="url">
-        <a class='target-link'>
-            <slot></slot>
-        </a>
-    </router-link>
+    <a class='target-link' v-else-if="target === null">
+        <slot></slot>
+    </a>
 </template>
 
 <script lang='ts'>
     import Vue from 'vue';
     import { Component, Prop } from 'vue-property-decorator'
-    import { ipcRenderer, shell } from 'electron';
+    import LinkProvider from '../providers/components/LinkProvider';
 
     @Component
     export default class Link extends Vue {
@@ -27,11 +25,11 @@
         target: string | undefined;
 
         openLink() {
-            shell.openItem(this.url!);
+            LinkProvider.instance.openLink(this.url!);
         }
 
         selectFile() {
-            shell.showItemInFolder(this.url!);
+            LinkProvider.instance.openLink(this.url!)
         }
     }
 </script>
