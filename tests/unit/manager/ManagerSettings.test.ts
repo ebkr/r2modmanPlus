@@ -48,14 +48,6 @@ describe('ManagerSettings', () => {
             );
         });
 
-        it('Legacy install mode', () => {
-            booleanSettingTestHelper(
-                'legacyInstallMode',
-                () => ManagerSettings.getSingleton().setLegacyInstallMode(true),
-                () => ManagerSettings.getSingleton().setLegacyInstallMode(false)
-            );
-        });
-
         it('Dark theme', () => {
             booleanSettingTestHelper(
                 'darkTheme',

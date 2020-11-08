@@ -150,17 +150,6 @@
             ),
             new SettingsRow(
                 'Debugging',
-                'Switch mod install mode',
-                'Changes the installation method used for compatibility. This option will disable the config editor.',
-                () => {
-                    const settings = ManagerSettings.getSingleton();
-                    return settings.legacyInstallMode ? 'Current: legacy (no config editor)' : 'Current: symlink (preferred)';
-                },
-                'fa-exchange-alt',
-                () => this.emitInvoke('SwitchModInstallMode')
-            ),
-            new SettingsRow(
-                'Debugging',
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 () => {
