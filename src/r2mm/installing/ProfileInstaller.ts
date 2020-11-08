@@ -30,7 +30,6 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      * @param mod
      */
     public uninstallMod(mod: ManifestV2): R2Error | null {
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             try {
                 fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())

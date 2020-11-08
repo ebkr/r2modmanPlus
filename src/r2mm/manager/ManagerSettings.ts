@@ -67,8 +67,6 @@ export default class ManagerSettings {
                     'Did you modify the conf.yml file? If not, delete it, and re-launch the manager'
                 );
             }
-        } else {
-            this.save();
         }
     }
 
