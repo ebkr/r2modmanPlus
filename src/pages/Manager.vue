@@ -811,13 +811,6 @@
 			this.view = 'installed';
 		}
 
-		toggleLegacyInstallMode(expanded: boolean) {
-			const result: R2Error | void = this.settings.setLegacyInstallMode(expanded);
-			if (result instanceof R2Error) {
-				this.showError(result);
-			}
-		}
-
 		toggleDarkTheme() {
 			const result: R2Error | void = this.settings.toggleDarkTheme();
 			if (result instanceof R2Error) {
@@ -1034,9 +1027,6 @@
                     break;
                 case "CopyLogToClipboard":
                     this.copyLogToClipboard();
-                    break;
-                case "SwitchModInstallMode":
-                    this.toggleLegacyInstallMode(!this.settings.legacyInstallMode);
                     break;
                 case "ToggleDownloadCache":
                     this.toggleIgnoreCache();

@@ -29,12 +29,11 @@ export default class ManagerSettings {
     public lastSelectedProfile: string = 'Default';
     public funkyModeEnabled: boolean = false;
     public expandedCards: boolean = false;
-    public legacyInstallMode: boolean = false;
     public linkedFiles: string[] = [];
     public darkTheme: boolean = false;
     public launchParameters: string = '';
     public ignoreCache: boolean = false;
-    public dataDirectory: string = PathResolver.APPDATA_DIR;
+    public dataDirectory: string = '';
     public installedSortBy: string = EnumResolver.from(SortNaming, SortNaming.CUSTOM)!;
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
@@ -51,7 +50,6 @@ export default class ManagerSettings {
                 this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
-                this.legacyInstallMode = parsedYaml.legacyInstallMode;
                 this.darkTheme = parsedYaml.darkTheme;
                 this.launchParameters = parsedYaml.launchParameters || '';
                 this.ignoreCache = parsedYaml.ignoreCache || false;
@@ -126,11 +124,6 @@ export default class ManagerSettings {
 
     public collapseCards(): R2Error | void {
         this.expandedCards = false;
-        return this.save();
-    }
-
-    public setLegacyInstallMode(enabled: boolean): R2Error | void {
-        this.legacyInstallMode = enabled;
         return this.save();
     }
 

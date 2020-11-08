@@ -1,9 +1,12 @@
 import ManagerSettings from './ManagerSettings';
 
+import * as child from 'child_process';
+import * as path from 'path';
 import GameDirectoryResolver from './GameDirectoryResolver';
 import R2Error from '../../model/errors/R2Error';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import { exec } from 'child_process';
+import Profile from '../../model/Profile';
 
 export default class GameRunner {
 
@@ -17,7 +20,7 @@ export default class GameRunner {
         }
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
         LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll`);
-        exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll ${settings.launchParameters}`, (err => {
+        exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable true --doorstop-target ${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                 LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);

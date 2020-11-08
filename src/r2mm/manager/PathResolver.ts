@@ -13,8 +13,8 @@ export default class PathResolver {
         PathResolver._APPDATA_DIR = appDataDir;
         PathResolver._CONFIG_DIR = path.join(appDataDir, 'config');
         ManagerSettings.getSingleton().load();
-        PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory;
-        FileUtils.ensureDirectory(PathResolver.ROOT)
+        PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory || appDataDir;
+        FileUtils.ensureDirectory(PathResolver._ROOT);
         PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
     }
 
