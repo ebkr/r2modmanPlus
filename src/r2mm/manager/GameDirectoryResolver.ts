@@ -6,13 +6,34 @@ import child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { isUndefined } from 'util';
 import ManagerSettings from './ManagerSettings';
+import { homedir } from 'os';
 
-const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
+const win32_installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolver {
+
+    public static win32_getSteamDirectory(): string {
+        const queryResult: string = child.execSync(`powershell.exe "${win32_installDirectoryQuery}"`).toString().trim();
+        const installKeyValue = queryResult.split('\n');
+        let installValue: string | undefined;
+        installKeyValue.forEach((val: string) => {
+            if (val.trim().startsWith('InstallPath')) {
+                installValue = val.substr(('InstallPath').length)
+                    .trim()
+                    // Remove colon
+                    .substr(1)
+                    .trim();
+            }
+        })
+        if (installValue === undefined) {
+            const err = new Error();
+            err.message = queryResult;
+            throw err;
+        }
+        return installValue;
+    }
 
     public static getSteamDirectory(): string | R2Error {
         const settings = ManagerSettings.getSingleton();
@@ -20,24 +41,17 @@ export default class GameDirectoryResolver {
             return settings.steamDirectory;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
-            const installKeyValue = queryResult.split('\n');
-            let installValue: string | undefined;
-            installKeyValue.forEach((val: string) => {
-                if (val.trim().startsWith('InstallPath')) {
-                    installValue = val.substr(('InstallPath').length)
-                        .trim()
-                        // Remove colon
-                        .substr(1)
-                        .trim();
-                }
-            })
-            if (isUndefined(installValue)) {
-                const err = new Error();
-                err.message = queryResult;
-                throw err;
+            switch(process.platform){
+                case 'win32':
+                    return this.win32_getSteamDirectory();
+                case 'linux':
+                    // TODO: Make it so it also detects Snap/Flatpak Steam installs
+                    const dir = path.resolve(homedir(), '.local', 'share', 'Steam');
+                    if(!fs.existsSync(dir)) throw new Error('Steam is not installed');
+                    return dir;
+                default:
+                    throw new Error('Unsupported platform');
             }
-            return installValue;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
@@ -54,20 +68,16 @@ export default class GameDirectoryResolver {
             return settings.riskOfRain2Directory;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
-            const installKeyValue = queryResult.split('\n')[0].trim();
-            // Remove key (InstallPath) from string
-            const installValue = installKeyValue.substr(('InstallPath').length)
-                .trim()
-                // Remove colon
-                .substr(1)
-                .trim();
+            const installValue = this.getSteamDirectory();
+            if(installValue instanceof R2Error)
+                throw installValue;
+
             const dir = this.findAppManifest(installValue);
             return dir;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve steam install directory',
+                'Unable to resolve the Risk of Rain 2 install directory',
                 err.message,
                 'Try manually locating the Risk of Rain 2 install directory through the settings'
             )
