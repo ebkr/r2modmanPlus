@@ -171,7 +171,7 @@
                 'Debugging',
                 'Set launch parameters',
                 'Provide custom arguments used to start the game.',
-                () => 'These commands are used against the Steam.exe on game startup',
+                () => 'These commands are used against the Steam executable on game startup',
                 'fa-wrench',
                 () => this.emitInvoke('SetLaunchParameters')
             ),
