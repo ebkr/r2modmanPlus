@@ -489,6 +489,7 @@
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
+    import ExecUtils from '../utils/ExecUtils';
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 
@@ -793,11 +794,11 @@
 		}
 
 		browseDataFolder() {
-			spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
+			ExecUtils.openPathInFileManager(PathResolver.ROOT);
 		}
 
         browseProfileFolder() {
-			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
+			ExecUtils.openPathInFileManager(Profile.getActiveProfile().getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {

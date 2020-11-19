@@ -11,7 +11,7 @@ import FileWriteError from 'src/model/errors/FileWriteError';
 import ManifestV2 from 'src/model/ManifestV2';
 import ExportFormat from 'src/model/exports/ExportFormat';
 import ExportMod from 'src/model/exports/ExportMod';
-import { spawn } from 'child_process';
+import ExecUtils from 'src/utils/ExecUtils';
 import PathResolver from '../manager/PathResolver';
 import AdmZip from 'adm-zip';
 import Axios from 'axios';
@@ -157,7 +157,7 @@ export default class ProfileModList {
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
-            spawn('powershell.exe', ['explorer', `/select,${exportResult}`]);
+            ExecUtils.openFileManagerToFile(exportResult);
         }
     }
 

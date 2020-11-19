@@ -1,8 +1,8 @@
 import GameDirectoryResolver from './GameDirectoryResolver';
 import R2Error from 'src/model/errors/R2Error';
+import ExecUtils from 'src/utils/ExecUtils';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { spawnSync } from 'child_process';
 
 export default class PreloaderFixer {
 
@@ -22,7 +22,7 @@ export default class PreloaderFixer {
             return new R2Error('Failed to remove Managed directory', err.message, 'Try launching r2modman as an administrator');
         }
         try {
-            spawnSync(`powershell`, ['start', 'steam://validate/632360']);
+            ExecUtils.openURI('steam://validate/632360');
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to start steam://validate', err.message, null);
