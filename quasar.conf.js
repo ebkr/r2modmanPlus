@@ -199,7 +199,7 @@ module.exports = function(ctx) {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['AppImage', 'snap'],
+                    target: ['AppImage', 'tar.gz'],
                     icon: 'src/assets/icon.png',
                     maintainer: 'ebkr'
                 }
