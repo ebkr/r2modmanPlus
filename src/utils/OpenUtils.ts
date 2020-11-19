@@ -10,11 +10,13 @@ export default class OpenUtils {
 				break;
 			case 'linux':
 				args = [uri];
+				break;
 			default:
 				args = [];
 				break;
 		}
 
+		console.log(this.getExecuter(), args);
 		return spawn(this.getExecuter(), args);
 	}
 
