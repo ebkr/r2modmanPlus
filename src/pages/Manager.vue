@@ -475,6 +475,7 @@
 	import ThemeManager from '../r2mm/manager/ThemeManager';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 
+    import { homedir } from 'os';
     import * as path from 'path';
     import * as fs from 'fs-extra';
     import { clipboard, ipcRenderer } from 'electron';
@@ -722,8 +723,19 @@
 			return options;
 		}
 
+		computeDefaultRoR2InstallDirectory() : string {
+			switch(process.platform){
+				case 'win32':
+					return 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
+				case 'linux':
+					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', 'Risk of Rain 2');
+				default:
+					return '';
+			}
+		}
+
 		changeRoR2InstallDirectory() {
-			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
+			const ror2Directory: string = this.settings.riskOfRain2Directory || this.computeDefaultRoR2InstallDirectory();
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
 					const containsSteamExecutable = fs.readdirSync(files[0])
@@ -743,13 +755,35 @@
 			});
 		}
 
+		computeDefaultSteamDirectory() : string {
+			switch(process.platform){
+				case 'win32':
+					return 'C:/Program Files (x86)/Steam';
+				case 'linux':
+					return path.resolve(homedir(), '.local', 'share', 'Steam');
+				default:
+					return '';
+			}
+		}
+
+		checkIfSteamDirectoryIsValid(dir : string) : boolean {
+			switch(process.platform){
+				case 'win32':
+					return fs.readdirSync(dir)
+							.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+				case 'linux':
+					return fs.readdirSync(dir)
+							.find(value => value.toLowerCase() === 'steam.sh') !== undefined;
+				default:
+					return true;
+			}
+		}
+
 		changeSteamDirectory() {
-			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
+			const ror2Directory: string = this.settings.steamDirectory || this.computeDefaultSteamDirectory();
 			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = fs.readdirSync(files[0])
-						.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
-					if (containsSteamExecutable) {
+					if (this.checkIfSteamDirectoryIsValid(files[0])) {
 						this.settings.setSteamDirectory(files[0]);
 					} else {
 						this.showSteamIncorrectDirectoryModal = true;
