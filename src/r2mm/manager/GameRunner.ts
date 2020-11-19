@@ -30,8 +30,8 @@ export default class GameRunner {
             return;
         }
         Logger.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll`);
-        exec(`"${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`, (err => {
+        Logger.Log(LogSeverity.INFO, `Running command: "${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${process.platform !== 'win32' ? 'Z:' : ''}${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`);
+        exec(`"${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${process.platform !== 'win32' ? 'Z:' : ''}${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 Logger.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                 Logger.Log(LogSeverity.ERROR, err.message);
@@ -49,7 +49,7 @@ export default class GameRunner {
             return;
         }
         Logger.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        Logger.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable false`);
+        Logger.Log(LogSeverity.INFO, `Running command: "${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable false`);
         exec(`"${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable false ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 Logger.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
