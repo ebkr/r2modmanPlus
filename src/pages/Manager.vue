@@ -490,7 +490,7 @@
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
-    import ExecUtils from '../utils/ExecUtils';
+    import OpenUtils from '../utils/OpenUtils';
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 
@@ -828,11 +828,11 @@
 		}
 
 		browseDataFolder() {
-			ExecUtils.openPathInFileManager(PathResolver.ROOT);
+			OpenUtils.openPathInFileManager(PathResolver.ROOT);
 		}
 
         browseProfileFolder() {
-			ExecUtils.openPathInFileManager(Profile.getActiveProfile().getPathOfProfile());
+			OpenUtils.openPathInFileManager(Profile.getActiveProfile().getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {

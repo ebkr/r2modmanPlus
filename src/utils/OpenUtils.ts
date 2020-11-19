@@ -1,6 +1,6 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 
-export default class ExecUtils {
+export default class OpenUtils {
 
 	public static openURI(uri: string){
 		let args: Array<string>;
