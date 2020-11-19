@@ -201,7 +201,8 @@ module.exports = function(ctx) {
                 linux: {
                     target: ['AppImage', 'tar.gz'],
                     icon: 'src/assets/icon.png',
-                    maintainer: 'ebkr'
+                    maintainer: 'ebkr',
+                    category: 'Game'
                 }
             }
         }
