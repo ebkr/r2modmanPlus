@@ -457,7 +457,6 @@
 	import ThunderstoreVersion from '../model/ThunderstoreVersion';
 	import ProfileModList from '../r2mm/mods/ProfileModList';
 	import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
-	import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 	import PathResolver from '../r2mm/manager/PathResolver';
 	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
@@ -513,7 +512,7 @@
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
-		settings = ManagerSettings.getSingleton();
+		settings: ManagerSettings = new ManagerSettings();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
@@ -648,8 +647,8 @@
 			this.fixingPreloader = false;
 		}
 
-		fixPreloader() {
-			const res = PreloaderFixer.fix();
+		async fixPreloader() {
+			const res = await PreloaderFixer.fix();
 			if (res instanceof R2Error) {
 				this.showError(res);
 			} else {
@@ -657,16 +656,16 @@
 			}
 		}
 
-		installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
+		async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
 			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                ProfileInstallerProvider.instance.uninstallMod(manifestMod);
+                await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
 			}
-			const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
+			const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
 			if (!(installError instanceof R2Error)) {
-				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+				const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
-					this.$store.dispatch("updateModList", newModList);
+					await this.$store.dispatch("updateModList", newModList);
 					// this.localModList = newModList;
 					this.sortThunderstoreModList();
 				}
@@ -724,12 +723,12 @@
 		changeRoR2InstallDirectory() {
             const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
-			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+			ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = fs.readdirSync(files[0])
+					const containsSteamExecutable = (await fs.readdir(files[0]))
 						.find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
 					if (containsSteamExecutable) {
-						this.settings.setRiskOfRain2Directory(files[0]);
+						await this.settings.setRiskOfRain2Directory(files[0]);
 					} else {
 						this.showRor2IncorrectDirectoryModal = true;
 					}
@@ -746,12 +745,12 @@
 		changeSteamDirectory() {
             const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
-			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+			ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
 				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = fs.readdirSync(files[0])
+					const containsSteamExecutable = (await fs.readdir(files[0]))
 						.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
 					if (containsSteamExecutable) {
-						this.settings.setSteamDirectory(files[0]);
+						await this.settings.setSteamDirectory(files[0]);
 					} else {
 						this.showSteamIncorrectDirectoryModal = true;
 					}
@@ -769,15 +768,15 @@
 			this.settings.setFunkyMode(value);
 		}
 
-		exportProfile() {
-			const exportErr = ProfileModList.exportModList();
+		async exportProfile() {
+			const exportErr = await ProfileModList.exportModList();
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}
 		}
 
-		exportProfileAsCode() {
-			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
+		async exportProfileAsCode() {
+			const exportErr = await ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.showError(err);
 				} else {
@@ -811,8 +810,8 @@
 			this.view = 'installed';
 		}
 
-		toggleDarkTheme() {
-			const result: R2Error | void = this.settings.toggleDarkTheme();
+		async toggleDarkTheme() {
+			const result: R2Error | void = await this.settings.toggleDarkTheme();
 			if (result instanceof R2Error) {
 				this.showError(result);
 			}
@@ -878,11 +877,11 @@
 			this.settings.setIgnoreCache(!this.settings.ignoreCache);
 		}
 
-		copyLogToClipboard() {
+		async copyLogToClipboard() {
             const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
-			if (this.logFileExists()) {
-				const text = fs.readFileSync(logOutputPath).toString();
+			if (await this.logFileExists()) {
+				const text = await fs.readFile(logOutputPath).toString();
 				if (text.length >= 1992) {
 					clipboard.writeText(text, 'clipboard');
 				} else {
@@ -891,10 +890,10 @@
 			}
 		}
 
-		logFileExists() {
+		async logFileExists() {
             const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
-			return fs.existsSync(logOutputPath);
+			return fs.exists(logOutputPath);
 		}
 
 		installLocalMod() {
@@ -914,18 +913,18 @@
             });
         }
 
-        installLocalModAfterFileSelection(file: string) {
-		    const convertError = LocalModInstallerProvider.instance.extractToCache(file, ((success, error) => {
+        async installLocalModAfterFileSelection(file: string) {
+		    const convertError = await LocalModInstallerProvider.instance.extractToCache(file, (async (success, error) => {
 		        if (!success && error !== null) {
 		            this.showError(error);
 		            return;
                 }
-                const updatedModListResult = ProfileModList.getModList(Profile.getActiveProfile());
+                const updatedModListResult = await ProfileModList.getModList(Profile.getActiveProfile());
                 if (updatedModListResult instanceof R2Error) {
                     this.showError(updatedModListResult);
                     return;
                 }
-				this.$store.dispatch("updateModList", updatedModListResult);
+				await this.$store.dispatch("updateModList", updatedModListResult);
                 this.sortThunderstoreModList();
             }));
 		    if (convertError instanceof R2Error) {
@@ -935,19 +934,19 @@
 		    this.view = 'installed';
         }
 
-        setAllModsEnabled(enabled: boolean) {
-            this.localModList.forEach((mod: ManifestV2) => {
+        async setAllModsEnabled(enabled: boolean) {
+            for (const mod of this.localModList) {
                 let profileErr: R2Error | void;
                 if (enabled) {
-                    profileErr = ProfileInstallerProvider.instance.enableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod);
                 } else {
-                    profileErr = ProfileInstallerProvider.instance.disableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod);
                 }
                 if (profileErr instanceof R2Error) {
                     this.showError(profileErr);
-                    return;
+                    continue;
                 }
-                const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
                     if (enabled) {
                         updatingMod.enable();
                     } else {
@@ -956,24 +955,24 @@
                 });
                 if (update instanceof R2Error) {
                     this.showError(update);
-                    return;
+                    continue;
                 }
-                this.$store.dispatch("updateModList", update);
-            });
+                await this.$store.dispatch("updateModList", update);
+            }
             this.view = 'installed';
         }
 
         changeDataFolder() {
             const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
-            ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
+            ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
                 if (files !== null && files.length === 1) {
-                    const filesInDirectory = fs.readdirSync(files[0]);
+                    const filesInDirectory = await fs.readdir(files[0]);
                     if (filesInDirectory.length > 0 && files[0] !== PathResolver.APPDATA_DIR) {
                         this.showError(new R2Error("Selected directory is not empty", `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`, "Select an empty directory or create a new one."));
                         return;
                     } else {
-                        ManagerSettings.getSingleton().setDataDirectory(files[0]);
+                        await this.settings.setDataDirectory(files[0]);
                         ipcRenderer.send('restart');
                     }
                 }
@@ -1079,11 +1078,12 @@
             }
         }
 
-		created() {
+		async created() {
+		    this.settings = await ManagerSettings.getSingleton();
 			this.launchParametersModel = this.settings.launchParameters;
-			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
+			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
-				this.$store.dispatch("updateModList", newModList);
+				await this.$store.dispatch("updateModList", newModList);
 				// this.localModList = newModList;
 			} else {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);

@@ -1,6 +1,8 @@
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
 import FileUtils from '../../utils/FileUtils';
+import { settings } from 'cluster';
+import set = Reflect.set;
 
 export default class PathResolver {
 
@@ -12,10 +14,15 @@ export default class PathResolver {
     static set APPDATA_DIR(appDataDir: string) {
         PathResolver._APPDATA_DIR = appDataDir;
         PathResolver._CONFIG_DIR = path.join(appDataDir, 'config');
-        ManagerSettings.getSingleton().load();
-        PathResolver._ROOT = ManagerSettings.getSingleton().dataDirectory || appDataDir;
-        FileUtils.ensureDirectory(PathResolver._ROOT);
-        PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
+        ManagerSettings.getSingleton()
+            .then(settings => {
+                settings.load()
+                    .then(async () => {
+                        PathResolver._ROOT = settings.dataDirectory || appDataDir;
+                        await FileUtils.ensureDirectory(PathResolver._ROOT);
+                        PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
+                    });
+            });
     }
 
     static get ROOT(): string {

@@ -14,10 +14,10 @@ export default class TestSetup {
         new Profile('Default');
     }
 
-    public static tearDown() {
+    public static async tearDown() {
         const fs = FsProvider.instance;
-        FileUtils.emptyDirectory(PathResolver.APPDATA_DIR);
-        fs.rmdirSync(PathResolver.APPDATA_DIR);
+        await FileUtils.emptyDirectory(PathResolver.APPDATA_DIR);
+        await fs.rmdir(PathResolver.APPDATA_DIR);
     }
 
 }

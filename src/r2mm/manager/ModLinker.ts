@@ -11,45 +11,45 @@ import FileUtils from '../../utils/FileUtils';
 
 export default class ModLinker {
 
-    public static link(): string[] | R2Error {
-        const settings = ManagerSettings.getSingleton();
-        const riskOfRain2Directory: string | R2Error = GameDirectoryResolver.getDirectory();
+    public static async link(): Promise<string[] | R2Error> {
+        const settings = await ManagerSettings.getSingleton();
+        const riskOfRain2Directory: string | R2Error = await GameDirectoryResolver.getDirectory();
         if (riskOfRain2Directory instanceof R2Error) {
             return riskOfRain2Directory;
         }
         return this.performLink(riskOfRain2Directory, settings.linkedFiles);
     }
 
-    private static performLink(installDirectory: string, previouslyLinkedFiles: string[]): string[] | R2Error {
+    private static async performLink(installDirectory: string, previouslyLinkedFiles: string[]): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
             LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
-            previouslyLinkedFiles.forEach((file: string) => {
+            for (const file of previouslyLinkedFiles) {
                 LoggerProvider.instance.Log(LogSeverity.INFO, `Removing previously copied file: ${file}`);
-                if (fs.existsSync(file)) {
-                    if (fs.lstatSync(file).isDirectory()) {
-                        FileUtils.emptyDirectory(file);
-                        fs.rmdirSync(file);
+                if (await fs.exists(file)) {
+                    if ((await fs.lstat(file)).isDirectory()) {
+                        await FileUtils.emptyDirectory(file);
+                        await fs.rmdir(file);
                     } else {
-                        fs.unlinkSync(file);
+                        await fs.unlink(file);
                     }
                 }
-            });
+            }
             try {
-                const profileFiles = fs.readdirSync(Profile.getActiveProfile().getPathOfProfile());
+                const profileFiles = await fs.readdir(Profile.getActiveProfile().getPathOfProfile());
                 try {
-                    profileFiles.forEach((file: string) => {
-                        if (fs.lstatSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file)).isFile()) {
+                    for (const file of profileFiles) {
+                        if ((await fs.lstat(path.join(Profile.getActiveProfile().getPathOfProfile(), file))).isFile()) {
                             if (file.toLowerCase() !== 'mods.yml') {
                                 try {
-                                    if (fs.existsSync(path.join(installDirectory, file))) {
-                                        fs.unlinkSync(path.join(installDirectory, file));
+                                    if (await fs.exists(path.join(installDirectory, file))) {
+                                        await fs.unlink(path.join(installDirectory, file));
                                     }
                                     // Existing -> Linked
                                     // Junction is used so users don't need Windows Developer Mode enabled.
                                     // https://stackoverflow.com/questions/57725093
-                                    fs.copyFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
+                                    await fs.copyFile(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
                                     newLinkedFiles.push(path.join(installDirectory, file));
                                 } catch(e) {
                                     const err: Error = e;
@@ -61,7 +61,7 @@ export default class ModLinker {
                                 }
                             }
                         }
-                    })
+                    }
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(

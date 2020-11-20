@@ -22,6 +22,6 @@ export default abstract class LocalModInstallerProvider {
      * @param zipFile   Path to the zip file.
      * @param callback  Callback to report if the extraction was successful.
      */
-    public abstract extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void;
+    public abstract async extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
 
 }

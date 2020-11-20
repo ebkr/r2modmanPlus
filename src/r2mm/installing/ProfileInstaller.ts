@@ -29,101 +29,100 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      * Any folder inside * locations with the mod name will be deleted.
      * @param mod
      */
-    public uninstallMod(mod: ManifestV2): R2Error | null {
+    public async uninstallMod(mod: ManifestV2): Promise<R2Error | null> {
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
             try {
-                fs.readdirSync(Profile.getActiveProfile().getPathOfProfile())
-                    .forEach((file: string) => {
-                        const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
-                        if (fs.lstatSync(filePath).isFile()) {
-                            if (file.toLowerCase() !== 'mods.yml') {
-                                fs.unlinkSync(filePath);
-                            }
+                for (const file of (await fs.readdir(Profile.getActiveProfile().getPathOfProfile()))) {
+                    const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
+                    if ((await fs.lstat(filePath)).isFile()) {
+                        if (file.toLowerCase() !== 'mods.yml') {
+                            await fs.unlink(filePath);
                         }
-                    })
+                    }
+                }
             } catch(e) {
                 const err: Error = e;
-                return new FileWriteError(
+                const returnErr = new FileWriteError(
                     'Failed to delete BepInEx file from profile root',
                     err.message,
                     'Is the game still running?'
-                )
+                );
+                return Promise.resolve(returnErr);
             }
         }
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
-        if (fs.existsSync(bepInExLocation)) {
+        if (await fs.exists(bepInExLocation)) {
             try {
-                fs.readdirSync(bepInExLocation)
-                    .forEach((file: string) => {
-                        if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
-                            fs.readdirSync(path.join(bepInExLocation, file))
-                                .forEach((folder: string) => {
-                                    const folderPath: string = path.join(bepInExLocation, file, folder);
-                                    if (folder === mod.getName() && fs.lstatSync(folderPath).isDirectory()) {
-                                        FileUtils.emptyDirectory(folderPath);
-                                        fs.rmdirSync(folderPath);
-                                    }
-                                })
+                for (const file of (await fs.readdir(bepInExLocation))) {
+                    if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
+                        for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
+                            const folderPath: string = path.join(bepInExLocation, file, folder);
+                            if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
+                                await FileUtils.emptyDirectory(folderPath);
+                                await fs.rmdir(folderPath);
+                            }
                         }
-                    });
+                    }
+                }
             } catch (e) {
                 const err: Error = e;
-                return new R2Error(
+                const returnErr = new R2Error(
                     "Failed to remove files",
                     err.message,
                     'Is the game still running? If so, close it and try again.'
-                )
+                );
+                return Promise.resolve(returnErr);
             }
         }
-        return null;
+        return Promise.resolve(null);
     }
 
-    public disableMod(mod: ManifestV2): R2Error | void {
+    public async disableMod(mod: ManifestV2): Promise<R2Error | void> {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
-        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
+        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
-            return files;
+            return Promise.resolve(files);
         }
-        const applyError: R2Error | void = this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
+        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
         if (applyError instanceof R2Error) {
-            return applyError;
+            return Promise.resolve(applyError);
         }
     }
 
-    public enableMod(mod: ManifestV2): R2Error | void {
+    public async enableMod(mod: ManifestV2): Promise<R2Error | void> {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
-        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(bepInExLocation);
+        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
-            return files;
+            return Promise.resolve(files);
         }
-        const applyError: R2Error | void = this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
+        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
         if (applyError instanceof R2Error) {
-            return applyError;
+            return Promise.resolve(applyError);
         }
 
     }
 
-    applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): R2Error | void {
+    async applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): Promise<R2Error | void> {
         const files: string[] = [];
-        tree.getDirectories().forEach((directory: BepInExTree) => {
+        for (const directory of tree.getDirectories()) {
             if (directory.getDirectoryName() !== mod.getName()) {
-                this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+                await this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
             } else {
-                files.push(...this.getDescendantFiles(null, path.join(location, directory.getDirectoryName())));
+                files.push(...(await this.getDescendantFiles(null, path.join(location, directory.getDirectoryName()))));
             }
-        })
+        }
         files.forEach((file: string) => {
             try {
                 if (mode === ModMode.DISABLED) {
-                    modModeExtensions.forEach(ext => {
+                    modModeExtensions.forEach(async ext => {
                         if (file.toLowerCase().endsWith(ext)) {
-                            fs.renameSync(file, file + '.old');
+                            await fs.rename(file, file + '.old');
                         }
                     });
                 } else if (mode === ModMode.ENABLED) {
-                    modModeExtensions.forEach(ext => {
+                    modModeExtensions.forEach(async ext => {
                         if (file.toLowerCase().endsWith(ext + ".old")) {
-                            fs.renameSync(file, file.substring(0, file.length - ('.old').length));
+                            await fs.rename(file, file.substring(0, file.length - ('.old').length));
                         }
                     });
                 }
@@ -138,25 +137,25 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         })
     }
 
-    getDescendantFiles(tree: BepInExTree | null, location: string): string[] {
+    async getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]> {
         const files: string[] = [];
         if (isNull(tree)) {
-            const newTree = BepInExTree.buildFromLocation(location);
+            const newTree = await BepInExTree.buildFromLocation(location);
             if (newTree instanceof R2Error) {
                 return files;
             }
             tree = newTree;
         }
-        tree.getDirectories().forEach((directory: BepInExTree) => {
-            files.push(...this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName())));
-        })
+        for (const directory of tree.getDirectories()) {
+            files.push(...(await this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName()))));
+        }
         tree.getFiles().forEach((file: string) => {
             files.push(file);
         })
         return files;
     }
 
-    public installMod(mod: ManifestV2): R2Error | null {
+    public async installMod(mod: ManifestV2): Promise<R2Error | null> {
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
         if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
@@ -165,29 +164,28 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, cachedLocationOfMod);
     }
 
-    installForManifestV2(mod: ManifestV2, location: string): R2Error | null {
-        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
+    async installForManifestV2(mod: ManifestV2, location: string): Promise<R2Error | null> {
+        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
-            console.log("Install failed");
             return files;
         }
         return this.resolveBepInExTree(location, path.basename(location), mod, files);
     }
 
-    resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): R2Error | null {
+    async resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null> {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
         // Check if BepInExTree is end.
         if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
-            let profileLocation = '';
+            let profileLocation: string;
             if (folderName.toLowerCase() !== 'config') {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
             } else {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName);
             }
             try {
-                FileUtils.ensureDirectory(profileLocation);
+                await FileUtils.ensureDirectory(profileLocation);
                 try {
-                    fs.copyFolderSync(
+                    await fs.copyFolder(
                         location,
                         profileLocation
                     );
@@ -211,7 +209,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
             }
         }
         // If no match
-        tree.getFiles().forEach((file: string) => {
+        for (const file of tree.getFiles()) {
             let profileLocation: string;
             if (file.toLowerCase().endsWith('.mm.dll')) {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'monomod', mod.getName());
@@ -219,16 +217,16 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
             }
             try {
-                FileUtils.ensureDirectory(profileLocation);
+                await FileUtils.ensureDirectory(profileLocation);
                 try {
-                    fs.copyFileSync(
+                    await fs.copyFile(
                         file,
                         path.join(profileLocation, path.basename(file))
                     );
                     // Copy is complete;
                 } catch(e) {
                     const err: Error = e;
-                    return new FileWriteError(
+                    new FileWriteError(
                         `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
                         err.message,
                         'Is the game still running? If not, try running r2modman as an administrator'
@@ -236,17 +234,17 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 }
             } catch(e) {
                 const err: Error = e;
-                return new FileWriteError(
+                new FileWriteError(
                     `Failed to create directories for: ${profileLocation}`,
                     err.message,
                     'Try running r2modman as an administrator'
                 );
             }
-        });
+        }
 
         const directories = tree.getDirectories();
         for (const directory of directories) {
-            const resolveError: R2Error | null = this.resolveBepInExTree(
+            const resolveError: R2Error | null = await this.resolveBepInExTree(
                 path.join(location, directory.getDirectoryName()),
                 directory.getDirectoryName(),
                 mod,
@@ -259,39 +257,39 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         return null;
     }
 
-    installBepInEx(bieLocation: string): R2Error | null {
+    async installBepInEx(bieLocation: string): Promise<R2Error | null> {
         const location = path.join(bieLocation, 'BepInExPack');
-        const files: BepInExTree | R2Error = BepInExTree.buildFromLocation(location);
+        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;
         }
-        files.getFiles().forEach((file: string) => {
+        for (const file of files.getFiles()) {
             try {
-                fs.copyFileSync(file, path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(file)));
+                await fs.copyFile(file, path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(file)));
             } catch(e) {
                 const err: Error = e;
-                return new FileWriteError(
+                new FileWriteError(
                     `Failed to copy file for BepInEx installation: ${file}`,
                     err.message,
                     'Is the game still running? If not, try running r2modman as an administrator'
-                )
+                );
             }
-        })
-        files.getDirectories().forEach((directory: BepInExTree) => {
+        }
+        for (const directory of files.getDirectories()) {
             try {
-                fs.copyFolderSync(
+                await fs.copyFolder(
                     path.join(location, directory.getDirectoryName()),
                     path.join(Profile.getActiveProfile().getPathOfProfile(), path.basename(directory.getDirectoryName()))
                 );
             } catch(e) {
                 const err: Error = e;
-                return new FileWriteError(
+                new FileWriteError(
                     `Failed to copy folder for BepInEx installation: ${directory.getDirectoryName()}`,
                     err.message,
                     'Is the game still running? If not, try running r2modman as an administrator'
-                )
+                );
             }
-        })
+        }
         return null;
     }
 

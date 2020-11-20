@@ -139,6 +139,6 @@ export default abstract class ThunderstoreDownloaderProvider {
      *
      * @param combo The mod being downloaded.
      */
-    public abstract isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean;
+    public abstract async isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>;
 
 }

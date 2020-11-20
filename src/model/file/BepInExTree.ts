@@ -1,4 +1,4 @@
-import R2Error from "../errors/R2Error";
+import R2Error from '../errors/R2Error';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -13,39 +13,41 @@ export default class BepInExTree {
     private directories: BepInExTree[] = [];
     private directoryName: string = '';
 
-    public static buildFromLocation(location: string): BepInExTree | R2Error {
+    public static async buildFromLocation(location: string): Promise<BepInExTree | R2Error> {
         const fs = FsProvider.instance;
         const currentTree = new BepInExTree();
         currentTree.setDirectoryName(path.basename(location));
         try {
-            const dir = fs.readdirSync(location);
-            dir.forEach(file => {
-                if (fs.lstatSync(path.join(location, file)).isDirectory()) {
-                    const directoryAddError = currentTree.addDirectory(location, file);
+            const dir = await fs.readdir(location);
+            for (const file of dir) {
+                if ((await fs.lstat(path.join(location, file))).isDirectory()) {
+                    const directoryAddError = await currentTree.addDirectory(location, file);
                     if (directoryAddError instanceof R2Error) {
                         return directoryAddError;
                     }
                 } else {
                     currentTree.addFile(location, file);
                 }
-            });
-        } catch(e) {
+            }
+        } catch (e) {
             const err: Error = e;
-            return new R2Error(
-                `Error reading directory in BepInExTree build for directory: ${location}`,
-                err.message,
-                'Relaunch the manager as admin, directory failed to be read.'
-            )
+            return Promise.resolve(
+                new R2Error(
+                    `Error reading directory in BepInExTree build for directory: ${location}`,
+                    err.message,
+                    'Relaunch the manager as admin, directory failed to be read.'
+                )
+            );
         }
-        return currentTree;
+        return Promise.resolve(currentTree);
     }
 
     private addFile(location: string, file: string) {
         this.files = [...this.files, path.join(location, file)];
     }
 
-    private addDirectory(location: string, directoryName: string): R2Error | null {
-        const directory: BepInExTree | R2Error = BepInExTree.buildFromLocation(path.join(location, directoryName));
+    private async addDirectory(location: string, directoryName: string): Promise<R2Error | null> {
+        const directory: BepInExTree | R2Error = await BepInExTree.buildFromLocation(path.join(location, directoryName));
         if (directory instanceof R2Error) {
             return directory;
         }

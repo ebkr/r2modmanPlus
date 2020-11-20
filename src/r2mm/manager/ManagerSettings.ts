@@ -1,5 +1,5 @@
 import * as path from 'path';
-import fs from 'fs';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import * as yaml from 'yaml';
 import R2Error from '../../model/errors/R2Error';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
@@ -16,10 +16,10 @@ export default class ManagerSettings {
 
     private static LOADED_SETTINGS: ManagerSettings | undefined;
 
-    public static getSingleton(): ManagerSettings {
+    public static async getSingleton(): Promise<ManagerSettings> {
         if (this.LOADED_SETTINGS === undefined) {
             this.LOADED_SETTINGS = new ManagerSettings();
-            this.LOADED_SETTINGS.load();
+            await this.LOADED_SETTINGS.load();
         }
         return this.LOADED_SETTINGS;
     }
@@ -38,16 +38,17 @@ export default class ManagerSettings {
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
 
-    public load(): R2Error | void {
+    public async load(): Promise<R2Error | void> {
+        const fs = FsProvider.instance;
         const configPath = path.join(PathResolver.CONFIG_DIR);
         const configFile = path.join(configPath, "conf.yml");
-        FileUtils.ensureDirectory(configPath);
-        if (fs.existsSync(configFile)) {
+        await FileUtils.ensureDirectory(configPath);
+        if (await fs.exists(configFile)) {
             try {
-                const parsedYaml = yaml.parse(fs.readFileSync(configFile).toString());
+                const parsedYaml = yaml.parse((await fs.readFile(configFile)).toString());
                 this.riskOfRain2Directory = parsedYaml.riskOfRain2Directory;
                 this.linkedFiles = parsedYaml.linkedFiles || [];
-                this.lastSelectedProfile = parsedYaml.lastSelectedProfile;
+                this.lastSelectedProfile = parsedYaml.lastSelectedProfile || 'Default';
                 this.steamDirectory = parsedYaml.steamDirectory;
                 this.expandedCards = parsedYaml.expandedCards || false;
                 this.darkTheme = parsedYaml.darkTheme;
@@ -68,27 +69,28 @@ export default class ManagerSettings {
         }
     }
 
-    public setRiskOfRain2Directory(dir: string): R2Error | void {
+    public async setRiskOfRain2Directory(dir: string): Promise<R2Error | void> {
         this.riskOfRain2Directory = dir;
-        return this.save();
+        return await this.save();
     }
 
-    public setSteamDirectory(dir: string): R2Error | void {
+    public async setSteamDirectory(dir: string): Promise<R2Error | void> {
         this.steamDirectory = dir;
-        return this.save();
+        return await this.save();
     }
 
-    public setLinkedFiles(linkedFiles: string[]): R2Error | void {
+    public async setLinkedFiles(linkedFiles: string[]): Promise<R2Error | void> {
         this.linkedFiles = linkedFiles;
-        return this.save();
+        return await this.save();
     }
 
-    private save(): R2Error | void {
+    private async save(): Promise<R2Error | void> {
+        const fs = FsProvider.instance;
         const configFile = path.join(PathResolver.CONFIG_DIR, "conf.yml");
         try {
             const writeableYaml = yaml.stringify(this);
             try {
-                fs.writeFileSync(configFile, writeableYaml);
+                await fs.writeFile(configFile, writeableYaml);
             } catch(e) {
                 const err: Error = e;
                 return new FileWriteError(
@@ -107,70 +109,70 @@ export default class ManagerSettings {
         }
     }
 
-    public setProfile(profile: string): R2Error | void {
+    public async setProfile(profile: string): Promise<R2Error | void> {
         this.lastSelectedProfile = profile;
-        return this.save();
+        return await this.save();
     }
 
-    public setFunkyMode(enabled: boolean): R2Error | void {
+    public async setFunkyMode(enabled: boolean): Promise<R2Error | void> {
         this.funkyModeEnabled = enabled;
-        return this.save();
+        return await this.save();
     }
 
-    public expandCards(): R2Error | void {
+    public async expandCards(): Promise<R2Error | void> {
         this.expandedCards = true;
-        return this.save();
+        return await this.save();
     }
 
-    public collapseCards(): R2Error | void {
+    public async collapseCards(): Promise<R2Error | void> {
         this.expandedCards = false;
-        return this.save();
+        return await this.save();
     }
 
-    public toggleDarkTheme(): R2Error | void {
+    public async toggleDarkTheme(): Promise<R2Error | void> {
         this.darkTheme = !this.darkTheme;
-        return this.save();
+        return await this.save();
     }
 
-    public setLaunchParameters(launchParams: string): R2Error | void {
+    public async setLaunchParameters(launchParams: string): Promise<R2Error | void> {
         this.launchParameters = launchParams;
-        return this.save();
+        return await this.save();
     }
 
-    public setIgnoreCache(ignore: boolean): R2Error | void {
+    public async setIgnoreCache(ignore: boolean): Promise<R2Error | void> {
         this.ignoreCache = ignore;
-        return this.save();
+        return await this.save();
     }
 
-    public setDataDirectory(dataDirectory: string): R2Error | void {
+    public async setDataDirectory(dataDirectory: string): Promise<R2Error | void> {
         this.dataDirectory = dataDirectory;
-        return this.save();
+        return await this.save();
     }
 
     public getInstalledSortBy() {
         return Object.entries(SortNaming).filter(value => value[0] === this.installedSortBy)[0][1];
     }
 
-    public setInstalledSortBy(sortNaming: string): R2Error | void {
+    public async setInstalledSortBy(sortNaming: string): Promise<R2Error | void> {
         this.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
-        return this.save();
+        return await this.save();
     }
 
     public getInstalledSortDirection() {
         return Object.entries(SortDirection).filter(value => value[0] === this.installedSortDirection)[0][1];
     }
 
-    public setInstalledSortDirection(sortDirection: string): R2Error | void {
+    public async setInstalledSortDirection(sortDirection: string): Promise<R2Error | void> {
         this.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
-        return this.save();
+        return await this.save();
     }
 
     public getInstalledDisablePosition() {
         return Object.entries(SortLocalDisabledMods).filter(value => value[0] === this.installedDisablePosition)[0][1];
     }
 
-    public setInstalledDisablePosition(disablePosition: string): R2Error | void {
+    public async setInstalledDisablePosition(disablePosition: string): Promise<R2Error | void> {
         this.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
-        return this.save();
+        return await this.save();
     }
 }

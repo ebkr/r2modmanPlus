@@ -3,25 +3,25 @@ import path from "path";
 
 export default class FileUtils {
 
-    public static ensureDirectory(dir: string) {
+    public static async ensureDirectory(dir: string) {
         const fs = FsProvider.instance;
-        if (!fs.existsSync(dir)) {
-            fs.mkdirsSync(dir);
+        if (! await fs.exists(dir)) {
+            await fs.mkdirs(dir);
         }
     }
 
-    public static emptyDirectory(dir: string) {
+    public static async emptyDirectory(dir: string) {
         const fs = FsProvider.instance;
-        const files = fs.readdirSync(dir);
-        files.forEach(filename => {
+        const files = await fs.readdir(dir);
+        for (const filename of files) {
             const file = path.join(dir, filename);
-            if (fs.lstatSync(file).isDirectory()) {
-                this.emptyDirectory(file);
-                fs.rmdirSync(file);
+            if ((await fs.lstat(file)).isDirectory()) {
+                await this.emptyDirectory(file);
+                await fs.rmdir(file);
             } else {
-                fs.unlinkSync(file);
+                await fs.unlink(file);
             }
-        })
+        }
     }
 
 }

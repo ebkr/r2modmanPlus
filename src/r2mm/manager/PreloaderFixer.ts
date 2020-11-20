@@ -6,18 +6,18 @@ import { spawnSync } from 'child_process';
 
 export default class PreloaderFixer {
 
-    public static fix(): R2Error | void {
+    public static async fix(): Promise<R2Error | void> {
         const fs = FsProvider.instance;
-        const dirResult = GameDirectoryResolver.getDirectory();
+        const dirResult = await GameDirectoryResolver.getDirectory();
         if (dirResult instanceof R2Error) {
             return dirResult;
         }
-        if (!fs.existsSync(path.join(dirResult, 'Risk of Rain 2.exe'))) {
+        if (!await fs.exists(path.join(dirResult, 'Risk of Rain 2.exe'))) {
             return new R2Error('Risk of Rain 2 directory is invalid', 'could not find "Risk of Rain 2.exe"',
                 'Set the Risk of Rain 2 directory in the settings section');
         }
         try {
-            fs.unlinkSync(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
+            await fs.unlink(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to remove Managed directory', err.message, 'Try launching r2modman as an administrator');

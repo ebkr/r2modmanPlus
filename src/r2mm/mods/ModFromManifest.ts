@@ -13,10 +13,10 @@ const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
 
 export default class ModFromManifest {
 
-    public static get(modName: string, versionNumber: VersionNumber): Mod | R2Error {
+    public static async get(modName: string, versionNumber: VersionNumber): Promise<Mod | R2Error> {
         const fs = FsProvider.instance;
         try {
-            const buf: Buffer = fs.readFileSync(
+            const buf: Buffer = await fs.readFile(
                 path.join(cacheDirectory, modName, versionNumber.toString(), 'manifest.json')
             );
             try {

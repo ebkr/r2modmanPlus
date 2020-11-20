@@ -7,14 +7,14 @@ export class Logger {
 
     private static logList: string[] = [];
 
-    public Log(severity: LogSeverity, error: string) {
+    public async Log(severity: LogSeverity, error: string) {
         Logger.logList.push(`${new Date().toLocaleTimeString()} [${severity}]: ${error}`);
-        this.Write();
+        await this.Write();
     }
 
-    Write() {
+    async Write() {
         const fs = FsProvider.instance;
-        fs.writeFileSync(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
+        await fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
     }
 
 

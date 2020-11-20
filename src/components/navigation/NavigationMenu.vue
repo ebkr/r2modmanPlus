@@ -136,18 +136,19 @@
             this.$emit("help-clicked-" + element.getAttribute("data-ref"));
         }
 
-        prepareLaunch() {
+        async prepareLaunch() {
+            const settings = await this.settings;
             let dir: string | R2Error;
-            if (this.settings.riskOfRain2Directory === null) {
-                dir = GameDirectoryResolver.getDirectory();
+            if (settings.riskOfRain2Directory === null) {
+                dir = await GameDirectoryResolver.getDirectory();
             } else {
-                dir = this.settings.riskOfRain2Directory;
+                dir = settings.riskOfRain2Directory;
             }
             if (dir instanceof R2Error) {
                 // Show folder selection dialog.
                 this.$emit("error", dir);
             } else {
-                const setInstallDirError: R2Error | void = this.settings.setRiskOfRain2Directory(dir);
+                const setInstallDirError: R2Error | void = await settings.setRiskOfRain2Directory(dir);
                 if (setInstallDirError instanceof R2Error) {
                     this.$emit("error", setInstallDirError);
                     return;
@@ -155,23 +156,24 @@
             }
         }
 
-        launchModded() {
+        async launchModded() {
             const fs = FsProvider.instance;
-            this.prepareLaunch();
-            if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-                const newLinkedFiles = ModLinker.link();
+            const settings = await this.settings;
+            await this.prepareLaunch();
+            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
+                const newLinkedFiles = await ModLinker.link();
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
                     return;
                 } else {
-                    const saveError = this.settings.setLinkedFiles(newLinkedFiles);
+                    const saveError = await settings.setLinkedFiles(newLinkedFiles);
                     if (saveError instanceof R2Error) {
                         this.$emit("error", saveError);
                         return;
                     }
                 }
                 this.gameRunning = true;
-                GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
+                GameRunner.playModded(settings.riskOfRain2Directory, (err: R2Error | null) => {
                     if (!isNull(err)) {
                         this.$emit("error", err);
                     }
@@ -184,12 +186,13 @@
             }
         }
 
-        launchVanilla() {
+        async launchVanilla() {
             const fs = FsProvider.instance;
-            this.prepareLaunch();
-            if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
+            const settings = await this.settings;
+            await this.prepareLaunch();
+            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
                 this.gameRunning = true;
-                GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
+                GameRunner.playVanilla(settings.riskOfRain2Directory, (err: R2Error | null) => {
                     if (!isNull(err)) {
                         this.$emit("error", err);
                     }

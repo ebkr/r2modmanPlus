@@ -9,7 +9,7 @@ import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import * as path from 'path';
-import fs from 'fs';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import Profile from '../../model/Profile';
 import ThunderstorePackages from '../data/ThunderstorePackages';
@@ -103,16 +103,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public async downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
 
         let downloadCount = 0;
-        const downloadableDependencySize = this.calculateInitialDownloadSize(ManagerSettings.getSingleton(), dependencies);
+        const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(), dependencies);
 
-        this.queueDownloadDependencies(ManagerSettings.getSingleton(), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -131,6 +131,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
+
+        const fs = FsProvider.instance;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         const combo = new ThunderstoreCombo();
@@ -138,11 +140,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         combo.setVersion(modVersion);
         let downloadCount = 0;
 
-        const settings = ManagerSettings.getSingleton();
+        const settings = await ManagerSettings.getSingleton();
 
         const downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
 
-        this.downloadAndSave(combo, settings, (progress: number, status: number, err: R2Error | null) => {
+        await this.downloadAndSave(combo, settings, async (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -152,7 +154,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 // If modpack, use specified dependencies.
                 // If not, get latest version of dependencies.
                 downloadCount += 1;
-                const files = fs.readdirSync(path.join(cacheDirectory, mod.getFullName(), modVersion.getVersionNumber().toString()));
+                const files = await fs.readdir(path.join(cacheDirectory, mod.getFullName(), modVersion.getVersionNumber().toString()));
                 let isModpack = false;
                 files.forEach(file => {
                     if (file.toLowerCase().endsWith('.modpack')) {
@@ -171,7 +173,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 }
 
                 // If dependencies, queue and download.
-                this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+                await this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
                         callback(0, modName, status, err);
                     } else if (status === StatusEnum.PENDING) {
@@ -209,10 +211,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             });
         });
 
-        const settings = ManagerSettings.getSingleton();
+        const settings = await ManagerSettings.getSingleton();
 
         let downloadCount = 0;
-        this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        await this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -233,17 +235,17 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return completedProgress + (progress * 1/total);
     }
 
-    public queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    public async queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
         const entry = entries.next();
         if (!entry.done) {
-            this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, (progress: number, status: number, err: R2Error | null) => {
+            await this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, async (progress: number, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     callback(0, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.PENDING) {
                     callback(progress, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.SUCCESS) {
                     callback(100, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                    this.queueDownloadDependencies(settings, entries, callback);
+                    await this.queueDownloadDependencies(settings, entries, callback);
                 }
             });
         }
@@ -253,8 +255,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return list.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.ignoreCache).length;
     }
 
-    public downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
-        if (this.isVersionAlreadyDownloaded(combo) && !settings.ignoreCache) {
+    public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
+        if (await this.isVersionAlreadyDownloaded(combo) && !settings.ignoreCache) {
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
@@ -266,10 +268,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             headers: {
                 'Content-Type': 'application/zip'
             }
-        }).then(response => {
+        }).then(async response => {
             const buf: Buffer = Buffer.from(response.data)
             callback(100, StatusEnum.PENDING, null);
-            this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
+            await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
                 if (success) {
                     callback(100, StatusEnum.SUCCESS, error || null);
                 } else {
@@ -279,16 +281,14 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
+    public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
+        const fs = FsProvider.instance;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-        console.log(cacheDirectory);
         try {
-            if (!fs.existsSync(path.join(cacheDirectory, combo.getMod().getFullName()))) {
-                fs.mkdirSync(path.join(cacheDirectory, combo.getMod().getFullName()), {
-                    recursive: true
-                });
+            if (! await fs.exists(path.join(cacheDirectory, combo.getMod().getFullName()))) {
+                await fs.mkdirs(path.join(cacheDirectory, combo.getMod().getFullName()));
             }
-            fs.writeFileSync(path.join(
+            await fs.writeFile(path.join(
                 cacheDirectory,
                 combo.getMod().getFullName(),
                 combo.getVersion().getVersionNumber().toString() + '.zip'
@@ -308,10 +308,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
     }
 
-    public isVersionAlreadyDownloaded(combo: ThunderstoreCombo): boolean  {
+    public async isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>  {
+        const fs = FsProvider.instance;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         try {
-            fs.readdirSync(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
+            await fs.readdir(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
             return true;
         } catch(e) {
             return false;

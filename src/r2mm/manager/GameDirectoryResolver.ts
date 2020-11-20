@@ -13,8 +13,8 @@ const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolver {
 
-    public static getSteamDirectory(): string | R2Error {
-        const settings = ManagerSettings.getSingleton();
+    public static async getSteamDirectory(): Promise<string | R2Error> {
+        const settings = await ManagerSettings.getSingleton();
         if (settings.steamDirectory != null) {
             return settings.steamDirectory;
         }
@@ -47,8 +47,8 @@ export default class GameDirectoryResolver {
         }
     }
 
-    public static getDirectory(): R2Error | string {
-        const settings = ManagerSettings.getSingleton();
+    public static async getDirectory(): Promise<R2Error | string> {
+        const settings = await ManagerSettings.getSingleton();
         if (settings.riskOfRain2Directory != null) {
             return settings.riskOfRain2Directory;
         }

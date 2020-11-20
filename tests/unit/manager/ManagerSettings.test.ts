@@ -9,8 +9,11 @@ import TestSetup from '../../test-setup.test';
 
 describe('ManagerSettings', () => {
 
-    before(() => {
+    let settings!: ManagerSettings;
+
+    before(async () => {
         TestSetup.setUp();
+        settings = await ManagerSettings.getSingleton();
     });
 
     after(() => {
@@ -19,7 +22,7 @@ describe('ManagerSettings', () => {
 
     context('Singleton construction', () => {
         it('Singletons should be the same object', () => {
-            expect(ManagerSettings.getSingleton() === ManagerSettings.getSingleton());
+            expect(settings === settings);
         });
     });
 
@@ -27,32 +30,32 @@ describe('ManagerSettings', () => {
         it('Expand/collapse cards', () => {
             booleanSettingTestHelper(
                 'expandedCards',
-                () => ManagerSettings.getSingleton().expandCards(),
-                () => ManagerSettings.getSingleton().collapseCards()
+                () => settings.expandCards(),
+                () => settings.collapseCards()
             );
         });
 
         it('Funky mode', () => {
             booleanSettingTestHelper(
                 'funkyModeEnabled',
-                () => ManagerSettings.getSingleton().setFunkyMode(true),
-                () => ManagerSettings.getSingleton().setFunkyMode(false)
+                () => settings.setFunkyMode(true),
+                () => settings.setFunkyMode(false)
             );
         });
 
         it('Ignore cache', () => {
             booleanSettingTestHelper(
                 'ignoreCache',
-                () => ManagerSettings.getSingleton().setIgnoreCache(true),
-                () => ManagerSettings.getSingleton().setIgnoreCache(false)
+                () => settings.setIgnoreCache(true),
+                () => settings.setIgnoreCache(false)
             );
         });
 
         it('Dark theme', () => {
             booleanSettingTestHelper(
                 'darkTheme',
-                () => ManagerSettings.getSingleton().toggleDarkTheme(),
-                () => ManagerSettings.getSingleton().toggleDarkTheme()
+                () => settings.toggleDarkTheme(),
+                () => settings.toggleDarkTheme()
             );
         });
 
@@ -60,28 +63,29 @@ describe('ManagerSettings', () => {
 
 });
 
-const assertPropertyAndValueFromConfigFile = (property: string, value: any): Chai.Assertion => {
+const assertPropertyAndValueFromConfigFile = async (property: string, value: any): Promise<Chai.Assertion> => {
     const fs = FsProvider.instance;
     const file = path.join(PathResolver.ROOT, 'config', 'conf.yml');
-    if (fs.existsSync(file)) {
-        const yamlData = yaml.parse(fs.readFileSync(file).toString());
+    if (await fs.exists(file)) {
+        const yamlData = yaml.parse(fs.readFile(file).toString());
         return expect(yamlData[property]).equals(value);
     }
     throw new Error('File does not exist');
 };
 
-const booleanSettingTestHelper = (setting: string, enable: Function, disable: Function) => {
-    ManagerSettings.getSingleton().load();
-    expect(_getSettingsData()[setting]).equals(false);
-    assertPropertyAndValueFromConfigFile(setting, false);
+const booleanSettingTestHelper = async (setting: string, enable: Function, disable: Function) => {
+    const settings = await ManagerSettings.getSingleton();
+    await settings.load();
+    expect((await _getSettingsData())[setting]).equals(false);
+    await assertPropertyAndValueFromConfigFile(setting, false);
     enable();
-    expect(_getSettingsData()[setting]).equals(true);
-    assertPropertyAndValueFromConfigFile(setting, true);
+    expect((await _getSettingsData())[setting]).equals(true);
+    await assertPropertyAndValueFromConfigFile(setting, true);
     disable();
-    expect(_getSettingsData()[setting]).equals(false);
-    assertPropertyAndValueFromConfigFile(setting, false);
+    expect((await _getSettingsData())[setting]).equals(false);
+    await assertPropertyAndValueFromConfigFile(setting, false);
 };
 
-const _getSettingsData = (): { [key: string]: any } => {
-    return JSON.parse(JSON.stringify(ManagerSettings.getSingleton()));
+const _getSettingsData = async (): Promise<{ [key: string]: any }> => {
+    return JSON.parse(JSON.stringify(await ManagerSettings.getSingleton()));
 };

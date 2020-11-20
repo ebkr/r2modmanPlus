@@ -21,10 +21,12 @@ export default class LogOutput {
     private constructor() {
         fs = FsProvider.instance;
         const profilePath = Profile.getActiveProfile().getPathOfProfile()
-        this._exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
+        fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
+            .then(value => this._exists = value);
 
         LogOutput.INTERVAL = setInterval(() => {
-            this.exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
+            fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
+                .then(value => this._exists = value);
         }, 1000);
     }
 

@@ -1,5 +1,5 @@
 <template>
-    <div id="q-app" :class="[{'html--funky':settings.funkyModeEnabled}]">
+    <div id="q-app" :class="[{'html--funky':settings !== null && settings.funkyModeEnabled}]">
 
         <router-view @error="showError" v-if="visible"/>
 
@@ -58,7 +58,7 @@
         private errorMessage: string = '';
         private errorStack: string = '';
         private errorSolution: string = '';
-        private settings: ManagerSettings = ManagerSettings.getSingleton();
+        private settings: ManagerSettings | null = null;
 
         private visible: boolean = false;
 
@@ -74,14 +74,17 @@
             this.errorSolution = '';
         }
 
-        created() {
+        async created() {
 
-            ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
+            const settings = await ManagerSettings.getSingleton();
+            this.settings = settings;
+
+            ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
                 PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
-                FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
-                ThemeManager.apply();
-                ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
+                await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
+                await ThemeManager.apply();
+                ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
                     ManagerInformation.IS_PORTABLE = isPortable;
                     // TODO: Re-enable folder migration
                     // this.loadingText = 'Migrating mods (this may take a while)';
@@ -90,6 +93,7 @@
                     //         .then(this.checkForUpdates);
                     // }, 100);
                     LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
+                    await settings.load();
                     this.visible = true;
                 });
                 ipcRenderer.send('get-is-portable');

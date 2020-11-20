@@ -34,8 +34,8 @@ describe('LogOutput', () => {
         it('File exists', async () => {
             const fs = FsProvider.instance;
             // Ensure directory exists prior to writing file
-            FileUtils.emptyDirectory(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
-            fs.writeFileSync(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'), "");
+            await FileUtils.emptyDirectory(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
+            await fs.writeFile(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'), "");
             await timeout(1100);
             expect(LogOutput.getSingleton().exists).equals(true);
         });

@@ -61,7 +61,7 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+    import { Component, Prop, Vue } from 'vue-property-decorator';
     import ConfigLine from '../../model/file/ConfigLine';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ConfigFile from '../../model/file/ConfigFile';
@@ -80,9 +80,9 @@
 
         private dumpedConfigVariables: { [section: string]: { [variable: string]: ConfigLine } } = {};
 
-        created() {
+        async created() {
             const fs = FsProvider.instance;
-            this.fileText = fs.readFileSync(this.configFile.getPath()).toString();
+            this.fileText =  (await fs.readFile(this.configFile.getPath())).toString();
             if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
                 // Find all variables offered within config script.
                 this.dumpedConfigVariables = {};
@@ -126,7 +126,7 @@
             }
         }
 
-        saveCfg() {
+        async saveCfg() {
             const fs = FsProvider.instance;
             let builtString = '';
             let section = 'root';
@@ -141,14 +141,14 @@
                     builtString += line + '\n';
                 }
             });
-            fs.writeFileSync(this.configFile.getPath(), builtString.trim());
+            await fs.writeFile(this.configFile.getPath(), builtString.trim());
             window.scrollTo(0, 0);
             this.$emit("changed");
         }
 
-        saveNonCfg() {
+        async saveNonCfg() {
             const fs = FsProvider.instance;
-            fs.writeFileSync(this.configFile.getPath(), this.fileText);
+            await fs.writeFile(this.configFile.getPath(), this.fileText);
             window.scrollTo(0, 0);
             this.$emit("changed");
         }

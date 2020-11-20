@@ -5,63 +5,64 @@ import * as path from 'path';
 
 export default class NodeFs extends FsProvider {
 
-    existsSync(path: string): boolean {
-        return fs.existsSync(path);
+    async exists(path: string): Promise<boolean> {
+        return fs.promises.access(path, fs.constants.F_OK)
+            .then(() => true)
+            .catch(() => false);
     }
 
-    lstatSync(path: string): LstatInterface {
-        return fs.lstatSync(path);
+    async lstat(path: string): Promise<LstatInterface> {
+        return fs.promises.lstat(path);
     }
 
-    mkdirsSync(path: string): void {
-        fs.mkdirSync(path, {
-            recursive: true
-        });
+    async mkdirs(path: string): Promise<void> {
+        return fs.promises.mkdir(path, { recursive: true });
     }
 
-    readFileSync(path: string): Buffer {
-        return fs.readFileSync(path);
+    async readFile(path: string): Promise<Buffer> {
+        return fs.promises.readFile(path);
     }
 
-    readdirSync(path: string): string[] {
-        return fs.readdirSync(path);
+    async readdir(path: string): Promise<string[]> {
+        return fs.promises.readdir(path);
     }
 
-    rmdirSync(path: string) {
-        fs.rmdirSync(path);
+    async rmdir(path: string): Promise<void> {
+        return fs.promises.rmdir(path);
     }
 
-    unlinkSync(path: string): void {
-        fs.unlinkSync(path);
+    async unlink(path: string): Promise<void> {
+        return fs.promises.unlink(path);
     }
 
-    writeFileSync(path: string, content: string | Buffer): void {
-        fs.writeFileSync(path, content);
+    async writeFile(path: string, content: string | Buffer): Promise<void> {
+        return fs.promises.writeFile(path, content);
     }
 
-    renameSync(path: string, newPath: string) {
-        fs.renameSync(path, newPath);
+    async rename(path: string, newPath: string): Promise<void> {
+        return fs.promises.rename(path, newPath);
     }
 
-    copyFileSync(from: string, to: string) {
-        fs.copyFileSync(from, to);
+    async copyFile(from: string, to: string): Promise<void> {
+        return fs.promises.copyFile(from, to);
     }
 
-    copyFolderSync(from: string, to: string) {
-        this.mkdirsSync(to);
-        fs.readdirSync(from).forEach(item => {
-            if (fs.lstatSync(path.join(from, item)).isDirectory()) {
-                if (!fs.existsSync(path.join(to, item))) {
-                    fs.mkdirSync(path.join(to, item));
-                }
-                this.copyFolderSync(path.join(from, item), path.join(to, item));
-            } else {
-                this.copyFileSync(path.join(from, item), path.join(to, item));
-            }
-        });
-    }
-
-    symlinkSync(from: string, to: string, type?: 'junction' | 'dir' | 'file' | null | undefined) {
-        fs.symlinkSync(from, to, type);
+    async copyFolder(from: string, to: string): Promise<void> {
+        return this.mkdirs(to).then(() => {
+            return fs.promises.readdir(from)
+                .then(result => {
+                    result.forEach(item => {
+                        if (fs.lstatSync(path.join(from, item)).isDirectory()) {
+                            if (!fs.existsSync(path.join(to, item))) {
+                                fs.mkdirSync(path.join(to, item));
+                            }
+                            this.copyFolder(path.join(from, item), path.join(to, item));
+                        } else {
+                            this.copyFile(path.join(from, item), path.join(to, item));
+                        }
+                        return;
+                })
+            });
+        })
     }
 }

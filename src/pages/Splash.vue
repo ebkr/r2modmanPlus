@@ -105,13 +105,13 @@
                   </p>
                   <ul>
                       <li>
-                          <strong><p>How do I get started?</p></strong>
+                          <p><strong>How do I get started?</strong></p>
                           <p>
                               Head on over to the online tab, and download BepInEx and R2API.
                           </p>
                       </li>
                     <li>
-                      <strong><p>Starting the game with mods</p></strong>
+                      <p><strong>Starting the game with mods</strong></p>
                       <p>
                         You have to start the game from within the manager. Starting through Steam will not work
                         without taking manual steps.

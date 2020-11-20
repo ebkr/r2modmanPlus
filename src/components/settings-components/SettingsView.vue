@@ -22,18 +22,18 @@
                 </ul>
             </div>
             <template v-if="activeTab === 'All'">
-                <SettingsItem v-for="(key, index) in searchableSettings" :key="`setting-${key.action}`"
+                <SettingsItem v-for="(key, _) in searchableSettings" :key="`setting-${key.action}`"
                               :action="key.action"
                               :description="key.description"
-                              :value="key.value()"
+                              :value="key.value"
                               :icon="key.icon"
                               @click="key.clickAction()"/>
             </template>
             <template v-else>
-                <SettingsItem v-for="(key, index) in getFilteredSettings()" :key="`setting-${key.action}`"
+                <SettingsItem v-for="(key, _) in getFilteredSettings()" :key="`setting-${key.action}`"
                               :action="key.action"
                               :description="key.description"
-                              :value="key.value()"
+                              :value="key.value"
                               :icon="key.icon"
                               @click="key.clickAction()"/>
             </template>
@@ -86,7 +86,7 @@
                 'Locations',
                 'Browse data folder',
                 'Open the directory where mods and profiles are stored.',
-                () => PathResolver.ROOT,
+                async () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
                     this.emitInvoke('BrowseDataFolder');
@@ -96,8 +96,8 @@
                 'Locations',
                 'Change Risk of Rain 2 directory',
                 'Change the location of the Risk of Rain 2 directory that r2modman uses.',
-                () => {
-                    const directory = GameDirectoryResolver.getDirectory();
+                async () => {
+                    const directory = await GameDirectoryResolver.getDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -110,8 +110,8 @@
                 'Locations',
                 'Change Steam directory',
                 'Change the location of the Steam directory that r2modman uses.',
-                () => {
-                    const directory = GameDirectoryResolver.getSteamDirectory();
+                async () => {
+                    const directory = await GameDirectoryResolver.getSteamDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -124,7 +124,7 @@
                 'Locations',
                 'Browse profile folder',
                 'Change the directory where mods and profiles are stored.',
-                () => {
+                async () => {
                     return Profile.getActiveProfile().getPathOfProfile();
                 },
                 'fa-door-open',
@@ -134,7 +134,7 @@
                 'Locations',
                 'Change data folder directory',
                 'Open the directory where mods are stored for the current profile. The folder will not be deleted, and existing profiles will not carry across.',
-                () => {
+                async () => {
                     return PathResolver.ROOT;
                 },
                 'fa-folder-open',
@@ -144,7 +144,7 @@
                 'Debugging',
                 'Copy LogOutput contents to clipboard',
                 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-                this.doesLogOutputExist,
+                async () => this.doesLogOutputExist(),
                 'fa-clipboard',
                 () => this.emitInvoke('CopyLogToClipboard')
             ),
@@ -152,8 +152,8 @@
                 'Debugging',
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
-                () => {
-                    const settings = ManagerSettings.getSingleton();
+                async () => {
+                    const settings = await ManagerSettings.getSingleton();
                     return settings.ignoreCache ? 'Current: cache is disabled' : 'Current: cache is enabled (recommended)';
                 },
                 'fa-exchange-alt',
@@ -163,7 +163,7 @@
                 'Debugging',
                 'Run preloader fix',
                 'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
-                () => 'This will delete the Risk of Rain 2/Managed folder, and verify the files through Steam',
+                async () => 'This will delete the Risk of Rain 2/Managed folder, and verify the files through Steam',
                 'fa-wrench',
                 () => this.emitInvoke('RunPreloaderFix')
             ),
@@ -171,7 +171,7 @@
                 'Debugging',
                 'Set launch parameters',
                 'Provide custom arguments used to start the game.',
-                () => 'These commands are used against the Steam.exe on game startup',
+                async () => 'These commands are used against the Steam.exe on game startup',
                 'fa-wrench',
                 () => this.emitInvoke('SetLaunchParameters')
             ),
@@ -179,7 +179,7 @@
                 'Debugging',
                 'Clean mod cache',
                 'Free space caused by mods not currently in a profile.',
-                () => 'Check all profiles for unused mods and clear cache',
+                async () => 'Check all profiles for unused mods and clear cache',
                 'fa-trash',
                 () => this.emitInvoke('CleanCache')
             ),
@@ -187,7 +187,7 @@
                 'Profile',
                 'Change profile',
                 'Change the mod profile.',
-                () => `Current profile: ${Profile.getActiveProfile().getProfileName()}`,
+                async () => `Current profile: ${Profile.getActiveProfile().getProfileName()}`,
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')
             ),
@@ -195,7 +195,7 @@
                 'Profile',
                 'Enable all mods',
                 'Enable all mods for the current profile',
-                () => `${this.localModList.length - ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} enabled`,
+                async () => `${this.localModList.length - ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} enabled`,
                 'fa-file-import',
                 () => this.emitInvoke('EnableAll')
             ),
@@ -203,7 +203,7 @@
                 'Profile',
                 'Disable all mods',
                 'Disable all mods for the current profile',
-                () => `${ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} disabled`,
+                async () => `${ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} disabled`,
                 'fa-file-import',
                 () => this.emitInvoke('DisableAll')
             ),
@@ -211,7 +211,7 @@
                 'Profile',
                 'Import local mod',
                 'Install a mod offline from your files.',
-                () => 'Not all mods can be installed locally',
+                async () => 'Not all mods can be installed locally',
                 'fa-file-import',
                 () => this.emitInvoke('ImportLocalMod')
             ),
@@ -219,7 +219,7 @@
                 'Profile',
                 'Export profile as a file',
                 'Export your mod list and configs as a file.',
-                () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
+                async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
                 () => this.emitInvoke('ExportFile')
             ),
@@ -227,7 +227,7 @@
                 'Profile',
                 'Export profile as a code',
                 'Export your mod list and configs as a code.',
-                () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
+                async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
                 () => this.emitInvoke('ExportCode')
             ),
@@ -235,7 +235,7 @@
                 'Profile',
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
-                () => {
+                async () => {
                     const outdatedMods = this.localModList.filter(mod => !ModBridge.isLatestVersion(mod));
                     if (outdatedMods.length === 1) {
                         return "1 mod has an update available";
@@ -249,8 +249,8 @@
                 'Other',
                 'Toggle funky mode',
                 'Enable/disable funky mode.',
-                () => {
-                    const settings = ManagerSettings.getSingleton();
+                async () => {
+                    const settings = await ManagerSettings.getSingleton();
                     return settings.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
                 },
                 'fa-exchange-alt',
@@ -260,8 +260,8 @@
                 'Other',
                 'Switch theme',
                 'Switch between light and dark themes.',
-                () => {
-                    const settings = ManagerSettings.getSingleton();
+                async () => {
+                    const settings = await ManagerSettings.getSingleton();
                     return settings.darkTheme ? 'Current: dark theme' : 'Current: light theme (default)';
                 },
                 'fa-exchange-alt',
@@ -271,8 +271,8 @@
                 'Other',
                 'Switch card display type',
                 'Switch between expanded or collapsed cards.',
-                () => {
-                    const settings = ManagerSettings.getSingleton();
+                async () => {
+                    const settings = await ManagerSettings.getSingleton();
                     return settings.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
                 },
                 'fa-exchange-alt',
@@ -282,7 +282,7 @@
                 'Other',
                 'Refresh online mod list',
                 'Check for any new mod releases.',
-                () => this.downloadingThunderstoreModList ? "Checking for new releases" : "",
+                async () => this.downloadingThunderstoreModList ? "Checking for new releases" : "",
                 'fa-exchange-alt',
                 () => {
                     if (!this.downloadingThunderstoreModList) {
@@ -299,7 +299,7 @@
                 'Modpacks',
                 'Show dependency strings',
                 'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
-                () => `Show dependency strings for ${this.localModList.length} mod(s)`,
+                async () => `Show dependency strings for ${this.localModList.length} mod(s)`,
                 'fa-file-alt',
                 () => this.emitInvoke('ShowDependencyStrings')
             ),

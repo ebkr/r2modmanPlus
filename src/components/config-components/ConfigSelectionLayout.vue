@@ -99,29 +99,29 @@
             return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
         }
 
-        created() {
+        async created() {
             const fs = FsProvider.instance;
             const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
-            const bepInExTree = BepInExTree.buildFromLocation(configLocation);
+            const bepInExTree = await BepInExTree.buildFromLocation(configLocation);
             if (bepInExTree instanceof R2Error) {
                 return;
             }
-            bepInExTree.getRecursiveFiles().forEach(file => {
+            for (const file of bepInExTree.getRecursiveFiles()) {
                 if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt' || path.extname(file).toLowerCase() === '.xml') {
-                    const fileStat = fs.lstatSync(file);
+                    const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
                 } else if (path.extname(file).toLowerCase() === '.json') {
-                    const fileStat = fs.lstatSync(file);
+                    const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 5), file, fileStat.mtime));
                 }
-            });
+            }
             this.shownConfigFiles = [...this.configFiles];
         }
 
-        deleteConfig(file: ConfigFile) {
+        async deleteConfig(file: ConfigFile) {
             const fs = FsProvider.instance;
             try {
-                fs.unlinkSync(file.getPath());
+                await fs.unlink(file.getPath());
                 this.configFiles = this.configFiles.filter(value => value.getName() !== file.getName());
                 this.textChanged();
             } catch (e) {

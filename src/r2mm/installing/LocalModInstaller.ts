@@ -11,9 +11,9 @@ import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModI
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void {
+    public async extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
-        const zipFileBuffer = fs.readFileSync(zipFile);
+        const zipFileBuffer = await fs.readFile(zipFile);
         const zip = new AdmZip(zipFileBuffer);
         const result: Buffer | null = zip.readFile('manifest.json');
         if (result !== null) {
@@ -33,13 +33,15 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                             const profileInstallResult = ProfileInstallerProvider.instance.installMod(mod);
                             if (profileInstallResult instanceof R2Error) {
                                 callback(false, profileInstallResult);
-                                return;
+                                return Promise.resolve();
                             }
                             const modListInstallResult = ProfileModList.addMod(mod);
                             if (modListInstallResult instanceof R2Error) {
                                 callback(false, modListInstallResult);
+                                return Promise.resolve();
                             }
                             callback(true, null);
+                            return Promise.resolve();
                         }
                     }
                 );
@@ -50,6 +52,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         } else {
             return new R2Error('No manifest provided', 'No file found in zip with name "manifest.json". Contact the mod author, or create your own.', null);
         }
+        return Promise.resolve();
     }
 
 }

@@ -5,10 +5,10 @@ import FileUtils from '../../utils/FileUtils';
 
 export default class ProfileImpl extends ProfileProvider {
 
-    public ensureProfileDirectory(directory: string, profileName: string) {
+    public async ensureProfileDirectory(directory: string, profileName: string) {
         const fs = FsProvider.instance;
-        if (!fs.existsSync(path.join(directory, profileName))) {
-            FileUtils.ensureDirectory(path.join(directory, profileName));
+        if (!await fs.exists(path.join(directory, profileName))) {
+            await FileUtils.ensureDirectory(path.join(directory, profileName));
         }
     }
 

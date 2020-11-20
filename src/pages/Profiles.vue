@@ -281,13 +281,13 @@ export default class Profiles extends Vue {
         this.renamingProfile = true;
     }
 
-    performRename(newName: string) {
-        fs.renameSync(
+    async performRename(newName: string) {
+        await fs.rename(
             path.join(Profile.getDirectory(), this.selectedProfile),
             path.join(Profile.getDirectory(), newName)
         );
         this.closeNewProfileModal();
-        this.updateProfileList();
+        await this.updateProfileList();
     }
 
     selectProfile(profile: string) {
@@ -326,10 +326,10 @@ export default class Profiles extends Vue {
         this.removingProfile = true;
     }
 
-    removeProfileAfterConfirmation() {
+    async removeProfileAfterConfirmation() {
         try {
-            FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
-            fs.rmdirSync(Profile.getActiveProfile().getPathOfProfile());
+            await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
+            await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
             const err: Error = e;
             this.showError(
@@ -351,8 +351,8 @@ export default class Profiles extends Vue {
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
 
-        const settings = ManagerSettings.getSingleton();
-        settings.setProfile(Profile.getActiveProfile().getProfileName());
+        const settings = await ManagerSettings.getSingleton();
+        await settings.setProfile(Profile.getActiveProfile().getProfileName());
 
         this.closeRemoveProfileModal();
     }
@@ -388,11 +388,11 @@ export default class Profiles extends Vue {
             }
         }, (comboList: ThunderstoreCombo[]) => {
             let keepIterating = true;
-            comboList.forEach(comboMod => {
+            comboList.forEach(async comboMod => {
                 if (!keepIterating) {
                     return;
                 }
-                const installResult: R2Error | ManifestV2 = this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
+                const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
                 if (installResult instanceof R2Error) {
                     this.showError(installResult);
                     keepIterating = false;
@@ -415,12 +415,12 @@ export default class Profiles extends Vue {
     importProfileUsingCode() {
         Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
             .then(resp => resp.data)
-            .then(resp => {
+            .then(async resp => {
                 if (resp.startsWith("#r2modman")) {
                     const buf = Buffer.from(resp.substring(9).trim(), 'base64');
-                    FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
-                    fs.writeFileSync(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
-                    this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
+                    await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
+                    await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
+                    await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
                 } else {
                         throw new Error('Code invalid, no profile is associated with this code');
                 }
@@ -430,14 +430,14 @@ export default class Profiles extends Vue {
             })
     }
 
-    importProfileHandler(files: string[] | null) {
+    async importProfileHandler(files: string[] | null) {
         if (isNull(files) || files.length === 0) {
             this.importingProfile = false;
             return;
         }
         let read = '';
         if (files[0].endsWith('.r2x')) {
-            read = fs.readFileSync(files[0]).toString();
+            read = await fs.readFile(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
             const zip = new AdmZip(files[0]);
             const result: Buffer | null = zip.readFile('export.r2x');
@@ -493,9 +493,9 @@ export default class Profiles extends Vue {
         });
     }
 
-    importAlternativeManagerProfile(file: string) {
+    async importAlternativeManagerProfile(file: string) {
         try {
-            const fileString = fs.readFileSync(file).toString();
+            const fileString = await fs.readFile(file).toString();
             const jsonContent = JSON.parse(fileString.trim());
             const ror2Itf = jsonContent as Itf_RoR2MM;
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
@@ -533,11 +533,11 @@ export default class Profiles extends Vue {
         });
     }
 
-    installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | ManifestV2 {
+    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
         if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
             if (newModList instanceof R2Error) {
                 return newModList;
             }
@@ -548,43 +548,42 @@ export default class Profiles extends Vue {
         }
     }
 
-    updateProfileList() {
-        try {
-            this.profileList = ["Default"];
-            const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
-            fs.readdirSync(profilesDirectory).forEach((file: string) => {
-                if (fs.lstatSync(path.join(profilesDirectory, file)).isDirectory() && file.toLowerCase() !== 'default') {
+    async updateProfileList() {
+        this.profileList = ["Default"];
+        const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
+        await fs.readdir(profilesDirectory).then(dirContents => {
+            dirContents.forEach(async (file: string) => {
+                if ((await fs.lstat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default') {
                     this.profileList.push(file);
                 }
             });
-        } catch (e) {
-            return;
-        }
+        }).catch(() => { /* Do nothing */ });
     }
 
-    created() {
+    async created() {
         fs = FsProvider.instance;
-        settings = ManagerSettings.getSingleton();
+        settings = await ManagerSettings.getSingleton();
+        await settings.load();
 
         this.selectedProfile = settings.lastSelectedProfile;
         new Profile(this.selectedProfile);
 
         // Set default paths
         if (settings.riskOfRain2Directory === null) {
-            const result = GameDirectoryResolver.getDirectory();
+            const result = await GameDirectoryResolver.getDirectory();
             if (!(result instanceof R2Error)) {
-                settings.setRiskOfRain2Directory(result);
+                await settings.setRiskOfRain2Directory(result);
             }
         }
 
         if (settings.steamDirectory === null) {
-            const result = GameDirectoryResolver.getSteamDirectory();
+            const result = await GameDirectoryResolver.getSteamDirectory();
             if (!(result instanceof R2Error)) {
-                settings.setSteamDirectory(result);
+                await settings.setSteamDirectory(result);
             }
         }
 
-        this.updateProfileList();
+        await this.updateProfileList();
     }
 }
 </script>

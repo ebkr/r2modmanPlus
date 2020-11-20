@@ -143,14 +143,14 @@
         }
 
         @Watch('thunderstoreMod')
-        getModVersions() {
+        async getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
                 this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
 
-                const modListResult = ProfileModList.getModList(Profile.getActiveProfile());
+                const modListResult = await ProfileModList.getModList(Profile.getActiveProfile());
                 if (!(modListResult instanceof R2Error)) {
                     const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
                     if (manifestMod !== undefined) {
@@ -179,7 +179,7 @@
             this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 
-        downloadLatest() {
+        async downloadLatest() {
             this.closeModal();
             assignId += 1;
             this.downloadObject = {
@@ -188,7 +188,7 @@
                 assignId: assignId
             };
             this.downloadingMod = true;
-            const localMods = ProfileModList.getModList(Profile.getActiveProfile());
+            const localMods = await ProfileModList.getModList(Profile.getActiveProfile());
             if (localMods instanceof R2Error) {
                 this.downloadingMod = false;
                 this.$emit('error', localMods);
@@ -211,15 +211,15 @@
                         });
                     }
                 }
-            }, (downloadedMods: ThunderstoreCombo[]) => {
+            }, async (downloadedMods: ThunderstoreCombo[]) => {
                 downloadedMods.forEach(combo => {
                     this.installModAfterDownload(combo.getMod(), combo.getVersion());
                 });
                 this.downloadingMod = false;
-                const modList = ProfileModList.getModList(Profile.getActiveProfile());
+                const modList = await ProfileModList.getModList(Profile.getActiveProfile());
                 if (!(modList instanceof R2Error)) {
                     // ipcRenderer.emit('update-local-mod-list', null, modList);
-                    this.$store.dispatch('updateModList', modList);
+                    await this.$store.dispatch('updateModList', modList);
                 }
             });
         }
@@ -245,34 +245,35 @@
                         if (this.downloadObject.assignId === assignId) {
                             this.downloadObject = Object.assign({}, {
                                 progress: progress,
-                                modName: modName
+                                modName: modName,
+                                assignId: assignId
                             });
                         }
                     }
-                }, (downloadedMods: ThunderstoreCombo[]) => {
-                    downloadedMods.forEach(combo => {
-                        this.installModAfterDownload(combo.getMod(), combo.getVersion());
-                    });
+                }, async (downloadedMods: ThunderstoreCombo[]) => {
+                    for (const combo of downloadedMods) {
+                        await this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                    }
                     this.downloadingMod = false;
-                    const modList = ProfileModList.getModList(Profile.getActiveProfile());
+                    const modList = await ProfileModList.getModList(Profile.getActiveProfile());
                     if (!(modList instanceof R2Error)) {
-                        this.$store.dispatch('updateModList', modList);
+                        await this.$store.dispatch('updateModList', modList);
                     }
                 });
             }, 1);
         }
 
-        getListOfModsToUpdate(): ThunderstoreCombo[] {
-          const modList = ProfileModList.getModList(Profile.getActiveProfile());
+        async getListOfModsToUpdate(): Promise<ThunderstoreCombo[]> {
+          const modList = await ProfileModList.getModList(Profile.getActiveProfile());
           if (!(modList instanceof R2Error)) {
-            this.$store.dispatch('updateModList', modList);
+            await this.$store.dispatch('updateModList', modList);
           }
           return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(modList as ManifestV2[], this.thunderstorePackages);
         }
 
-        installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
+        async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-            const profileModList = ProfileModList.getModList(Profile.getActiveProfile());
+            const profileModList = await ProfileModList.getModList(Profile.getActiveProfile());
             if (profileModList instanceof R2Error) {
                 return profileModList;
             }
@@ -282,15 +283,15 @@
             );
             if (!modAlreadyInstalled) {
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                    const result = ProfileInstallerProvider.instance.uninstallMod(manifestMod);
+                    const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return result;
                     }
                 }
-                const installError: R2Error | null = ProfileInstallerProvider.instance.installMod(manifestMod);
+                const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
                 if (!(installError instanceof R2Error)) {
-                    const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+                    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
                     if (newModList instanceof R2Error) {
                         this.$emit('error', newModList);
                         return newModList;

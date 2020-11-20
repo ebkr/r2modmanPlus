@@ -26,10 +26,10 @@ export default class ConfigFile {
         return this.lastUpdated;
     }
 
-    public updateFile(text: string): R2Error | void {
+    public async updateFile(text: string): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         try {
-            fs.writeFileSync(this.path, text);
+            await fs.writeFile(this.path, text);
         } catch(e) {
             const err: Error = e;
             return new FileWriteError('Failed to update config file', err.message, 'Try running r2modman as an administator');

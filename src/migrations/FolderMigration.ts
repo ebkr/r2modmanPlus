@@ -7,7 +7,7 @@ export default class FolderMigration {
 
     public static async checkAndMigrate(): Promise<void> {
         const fs = FsProvider.instance;
-        if (fs.existsSync(path.join(PathResolver.ROOT, "mods"))) {
+        if (await fs.exists(path.join(PathResolver.ROOT, "mods"))) {
             return this.runMigration();
         }
         return Promise.resolve();
@@ -15,13 +15,13 @@ export default class FolderMigration {
 
     private static async runMigration(): Promise<void> {
         const fs = FsProvider.instance;
-        FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
-        return new Promise(resolve => {
-            fs.copyFolderSync(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
+        await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
+        return new Promise(async resolve => {
+            await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
             resolve()
-        }).then(() => {
-            FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "mods"));
-            fs.rmdirSync(path.join(PathResolver.ROOT, "mods"));
+        }).then(async () => {
+            await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "mods"));
+            await fs.rmdir(path.join(PathResolver.ROOT, "mods"));
             return Promise.resolve();
         });
     }

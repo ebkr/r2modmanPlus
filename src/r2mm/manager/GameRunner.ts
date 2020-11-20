@@ -10,10 +10,10 @@ import Profile from '../../model/Profile';
 
 export default class GameRunner {
 
-    public static playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
+    public static async playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        const settings = ManagerSettings.getSingleton();
-        const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
+        const settings = await ManagerSettings.getSingleton();
+        const steamDir: string | R2Error = await GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);
             return;
@@ -29,10 +29,10 @@ export default class GameRunner {
         }));
     }
 
-    public static playVanilla(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
+    public static async playVanilla(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        const settings = ManagerSettings.getSingleton();
-        const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
+        const settings = await ManagerSettings.getSingleton();
+        const steamDir: string | R2Error = await GameDirectoryResolver.getSteamDirectory();
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);
             return;
