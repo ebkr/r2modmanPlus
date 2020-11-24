@@ -473,10 +473,10 @@
 	import ManagerSettings from '../r2mm/manager/ManagerSettings';
 	import ThemeManager from '../r2mm/manager/ThemeManager';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
+	import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
     import * as path from 'path';
     import FsProvider from '../providers/generic/file/FsProvider';
-    import { clipboard, ipcRenderer } from 'electron';
 	import { spawn } from 'child_process';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
 
@@ -723,45 +723,41 @@
 		changeRoR2InstallDirectory() {
             const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
-			ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
-				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = (await fs.readdir(files[0]))
-						.find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
-					if (containsSteamExecutable) {
-						await this.settings.setRiskOfRain2Directory(files[0]);
-					} else {
-						this.showRor2IncorrectDirectoryModal = true;
-					}
-				}
-			});
-			ipcRenderer.send('open-dialog', {
-				title: 'Locate Risk of Rain 2 Directory',
-				defaultPath: ror2Directory,
-				properties: ['openDirectory'],
-				buttonLabel: 'Select Directory'
-			});
+			InteractionProvider.instance.selectFolder({
+                title: 'Locate Risk of Rain 2 Directory',
+                defaultPath: ror2Directory,
+                buttonLabel: 'Select Directory'
+            }).then(async files => {
+                if (files.length === 1) {
+                    const containsSteamExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
+                    if (containsSteamExecutable) {
+                        await this.settings.setRiskOfRain2Directory(files[0]);
+                    } else {
+                        this.showRor2IncorrectDirectoryModal = true;
+                    }
+                }
+            });
 		}
 
 		changeSteamDirectory() {
             const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
-			ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
-				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = (await fs.readdir(files[0]))
-						.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
-					if (containsSteamExecutable) {
-						await this.settings.setSteamDirectory(files[0]);
-					} else {
-						this.showSteamIncorrectDirectoryModal = true;
-					}
-				}
-			});
-			ipcRenderer.send('open-dialog', {
-				title: 'Locate Steam Directory',
-				defaultPath: ror2Directory,
-				properties: ['openDirectory'],
-				buttonLabel: 'Select Directory'
-			});
+			InteractionProvider.instance.selectFolder({
+                title: 'Locate Steam Directory',
+                defaultPath: ror2Directory,
+                buttonLabel: 'Select Directory'
+            }).then(async files => {
+                if (files.length === 1) {
+                    const containsSteamExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+                    if (containsSteamExecutable) {
+                        await this.settings.setSteamDirectory(files[0]);
+                    } else {
+                        this.showSteamIncorrectDirectoryModal = true;
+                    }
+                }
+            });
 		}
 
 		setFunkyMode(value: boolean) {
@@ -781,7 +777,7 @@
 					this.showError(err);
 				} else {
 					this.exportCode = code;
-					clipboard.writeText(code, 'clipboard');
+					InteractionProvider.instance.copyToClipboard(code);
 				}
 			});
 			if (exportErr instanceof R2Error) {
@@ -883,9 +879,9 @@
 			if (await this.logFileExists()) {
 				const text = await fs.readFile(logOutputPath).toString();
 				if (text.length >= 1992) {
-					clipboard.writeText(text, 'clipboard');
+				    InteractionProvider.instance.copyToClipboard(text);
 				} else {
-					clipboard.writeText("```\n" + text + "\n```", 'clipboard');
+                    InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
 				}
 			}
 		}
@@ -897,20 +893,15 @@
 		}
 
 		installLocalMod() {
-            ipcRenderer.once(
-                'receive-selection',
-                (_sender: any, files: string[] | null) => {
-                    if (files !== null && files.length > 0) {
-                        this.installLocalModAfterFileSelection(files[0]);
-                    }
-                }
-            );
-            ipcRenderer.send('open-dialog', {
+            InteractionProvider.instance.selectFile({
                 title: 'Import mod',
-                properties: ['openFile'],
                 filters: ['.zip'],
                 buttonLabel: 'Import'
-            });
+            }).then(async files => {
+                if (files.length > 0) {
+                    await this.installLocalModAfterFileSelection(files[0]);
+                }
+            })
         }
 
         async installLocalModAfterFileSelection(file: string) {
@@ -965,23 +956,21 @@
         changeDataFolder() {
             const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
-            ipcRenderer.once('receive-selection', async (_sender: any, files: string[] | null) => {
-                if (files !== null && files.length === 1) {
+            InteractionProvider.instance.selectFolder({
+                title: 'Select a new folder to store r2modman data',
+                defaultPath: dir,
+                buttonLabel: 'Select Data Folder'
+            }).then(async files => {
+                if (files.length === 1) {
                     const filesInDirectory = await fs.readdir(files[0]);
                     if (filesInDirectory.length > 0 && files[0] !== PathResolver.APPDATA_DIR) {
                         this.showError(new R2Error("Selected directory is not empty", `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`, "Select an empty directory or create a new one."));
                         return;
                     } else {
                         await this.settings.setDataDirectory(files[0]);
-                        ipcRenderer.send('restart');
+                        InteractionProvider.instance.restartApp();
                     }
                 }
-            });
-            ipcRenderer.send('open-dialog', {
-                title: 'Select a new folder to store r2modman data',
-                defaultPath: dir,
-                properties: ['openDirectory'],
-                buttonLabel: 'Select Data Folder'
             });
         }
 
@@ -1089,16 +1078,17 @@
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
 			this.sortThunderstoreModList();
-			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
-				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
-				if (combo instanceof R2Error) {
-					this.showError(combo);
-                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
-					return;
-				}
-				this.downloadHandler(combo.getMod(), combo.getVersion());
 
-			});
+			InteractionProvider.instance.hookModInstallProtocol(data => {
+                const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
+                if (combo instanceof R2Error) {
+                    this.showError(combo);
+                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
+                    return;
+                }
+                this.downloadHandler(combo.getMod(), combo.getVersion());
+            });
+
 			this.isManagerUpdateAvailable();
 
 			// Bind drag and drop listeners

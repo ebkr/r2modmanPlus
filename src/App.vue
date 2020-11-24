@@ -51,6 +51,8 @@
     import LinkImpl from './r2mm/component_override/LinkImpl';
     import FsProvider from './providers/generic/file/FsProvider';
     import NodeFs from './providers/generic/file/NodeFs';
+    import InteractionProvider from './providers/ror2/system/InteractionProvider';
+    import InteractionProviderImpl from './r2mm/system/InteractionProviderImpl';
 
     @Component
     export default class App extends Vue {
@@ -119,8 +121,8 @@
             LocalModInstallerProvider.provide(() => new LocalModInstaller());
             ProfileInstallerProvider.provide(() => new ProfileInstaller());
             LoggerProvider.provide(() => new Logger());
-
             LinkProvider.provide(() => new LinkImpl());
+            InteractionProvider.provide(() => new InteractionProviderImpl());
         }
 
     }
