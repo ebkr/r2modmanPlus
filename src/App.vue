@@ -53,6 +53,8 @@
     import NodeFs from './providers/generic/file/NodeFs';
     import InteractionProvider from './providers/ror2/system/InteractionProvider';
     import InteractionProviderImpl from './r2mm/system/InteractionProviderImpl';
+    import ZipProvider from './providers/generic/zip/ZipProvider';
+    import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
 
     @Component
     export default class App extends Vue {
@@ -118,6 +120,7 @@
             const betterThunderstoreDownloader = new BetterThunderstoreDownloader();
             ThunderstoreDownloaderProvider.provide(() => betterThunderstoreDownloader);
 
+            ZipProvider.provide(() => new AdmZipProvider());
             LocalModInstallerProvider.provide(() => new LocalModInstaller());
             ProfileInstallerProvider.provide(() => new ProfileInstaller());
             LoggerProvider.provide(() => new Logger());

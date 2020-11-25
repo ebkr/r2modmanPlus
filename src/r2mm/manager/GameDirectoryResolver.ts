@@ -5,8 +5,8 @@ import VdfParseError from '../../model/errors/Vdf/VdfParseError';
 import child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
-import fs from 'fs';
 import ManagerSettings from './ManagerSettings';
+import FsProvider from "../../providers/generic/file/FsProvider";
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
@@ -61,7 +61,7 @@ export default class GameDirectoryResolver {
                 // Remove colon
                 .substr(1)
                 .trim();
-            const dir = this.findAppManifest(installValue);
+            const dir = await this.findAppManifest(installValue);
             return dir;
         } catch(e) {
             const err: Error = e;
@@ -73,16 +73,17 @@ export default class GameDirectoryResolver {
         }
     }
 
-    private static findAppManifest(steamPath: string): R2Error | string {
+    private static async findAppManifest(steamPath: string): Promise<R2Error | string> {
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
+        const fs = FsProvider.instance;
         // Find all locations where games can be installed.
         try {
-            const files = fs.readdirSync(steamapps);
-            files.forEach((file: string) => {
+            const files = await fs.readdir(steamapps);
+            for (const file of files) {
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
                     try {
-                        const parsedVdf: any = vdf.parse(fs.readFileSync(path.join(steamapps, file)).toString());
+                        const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
                         for (const key in parsedVdf.LibraryFolders) {
                             if (!isNaN(Number(key))) {
                                 locations.push(
@@ -100,7 +101,7 @@ export default class GameDirectoryResolver {
                         )
                     }
                 }
-            })
+            }
         } catch(e) {
             if (e instanceof R2Error) {
                 return e;
@@ -115,14 +116,14 @@ export default class GameDirectoryResolver {
         // Look through given directories for ${appManifest}
         let manifestLocation: string | null = null;
         try {
-            locations.forEach((location: string) => {
-                fs.readdirSync(location)
+            for (const location of locations) {
+                (await fs.readdir(location))
                     .forEach((file: string) => {
                         if (file.toLowerCase() === appManifest) {
                             manifestLocation = location;
                         }
                     });
-            });
+            }
         } catch(e) {
             if (e instanceof R2Error) {
                 return e;
@@ -143,11 +144,11 @@ export default class GameDirectoryResolver {
         }
         // Game manifest found at ${manifestLocation}
         try {
-            const manifestVdf: string = fs.readFileSync(path.join(manifestLocation, appManifest)).toString();
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, appManifest))).toString();
             const parsedVdf: any = vdf.parse(manifestVdf);
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
-            if (fs.existsSync(riskOfRain2Path)) {
+            if (await fs.exists(riskOfRain2Path)) {
                 return riskOfRain2Path;
             } else {
                 return new FileNotFoundError(

@@ -13,7 +13,7 @@ import ExportFormat from '../../model/exports/ExportFormat';
 import ExportMod from '../../model/exports/ExportMod';
 import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
-import AdmZip from 'adm-zip';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 import FileUtils from '../../utils/FileUtils';
 
@@ -147,10 +147,10 @@ export default class ProfileModList {
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(Profile.getActiveProfile().getProfileName(), exportModList);
         const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2z`);
-        const zip = new AdmZip();
-        zip.addFile('export.r2x', Buffer.from(yaml.stringify(exportFormat)));
-        zip.addLocalFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'), 'config');
-        zip.writeZip(exportPath);
+        const builder = ZipProvider.instance.zipBuilder();
+        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
+        await builder.addFolder("config", path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'));
+        await builder.createZip(exportPath);
         return exportPath;
     }
 

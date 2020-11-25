@@ -1,17 +1,15 @@
-import ZipExtractionError from '../../model/errors/ZipExtractionError';
 import FileWriteError from '../../model/errors/FileWriteError';
-
 import FsProvider from '../../providers/generic/file/FsProvider';
 import * as path from 'path';
-import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
 import FileUtils from '../../utils/FileUtils';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 
 export default class ZipExtract {
 
-    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): ZipExtractionError | null {
+    public static async extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): Promise<void> {
         const fs = FsProvider.instance;
-        return this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async result => {
+        return await this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async result => {
             if (result) {
                 try {
                     await fs.unlink(path.join(zipFolder, filename));
@@ -43,15 +41,13 @@ export default class ZipExtract {
         });
     }
 
-    public static extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): ZipExtractionError | null {
+    public static async extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): Promise<void> {
         try {
-            const adm = new AdmZip(zip);
-            adm.extractAllTo(outputFolder, true);
+            await ZipProvider.instance.extractAllTo(zip, outputFolder);
             callback(true);
         } catch (e) {
             callback(false);
         }
-        return null;
     }
 
 

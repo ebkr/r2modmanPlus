@@ -193,7 +193,7 @@ import { Hero, Progress } from '../components/all';
 import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
 import { ipcRenderer } from 'electron';
-import AdmZip from 'adm-zip';
+import ZipProvider from '../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 
 import Profile from '../model/Profile';
@@ -439,8 +439,7 @@ export default class Profiles extends Vue {
         if (files[0].endsWith('.r2x')) {
             read = await fs.readFile(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
-            const zip = new AdmZip(files[0]);
-            const result: Buffer | null = zip.readFile('export.r2x');
+            const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
             if (isNull(result)) {
                 return;
             }
@@ -463,25 +462,23 @@ export default class Profiles extends Vue {
             })
         );
         this.newProfile('Import', parsed.getProfileName());
-        ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
+        ipcRenderer.prependOnceListener('created-profile', async (profileName: string) => {
             if (profileName !== '') {
                 if (files[0].endsWith('.r2z')) {
-                    const zip = new AdmZip(files[0]);
-                    zip.getEntries().forEach(entry => {
+                    const entries = await ZipProvider.instance.getEntries(files[0]);
+                    entries.forEach(entry => {
                         if (entry.entryName.startsWith('config/')) {
-                            zip.extractEntryTo(
+                            ZipProvider.instance.extractEntryTo(
+                                files[0],
                                 entry.entryName,
                                 path.join(
                                     Profile.getDirectory(),
                                     profileName,
                                     'BepInEx'
-                                ),
-                                true,
-                                true
+                                )
                             );
                         }
                     });
-                    // Extract config folder
                 }
                 if (parsed.getMods().length > 0) {
                     this.importingProfile = true;

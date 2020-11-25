@@ -1,4 +1,3 @@
-import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
@@ -8,14 +7,14 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
     public async extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const zipFileBuffer = await fs.readFile(zipFile);
-        const zip = new AdmZip(zipFileBuffer);
-        const result: Buffer | null = zip.readFile('manifest.json');
+        const result: Buffer | null = await ZipProvider.instance.readFile(zipFileBuffer,'manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
             try {
@@ -25,17 +24,17 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                     return mod;
                 }
                 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-                ZipExtract.extractOnly(
+                await ZipExtract.extractOnly(
                     zipFile,
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
-                    success => {
+                    async success => {
                         if (success) {
-                            const profileInstallResult = ProfileInstallerProvider.instance.installMod(mod);
+                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod);
                             if (profileInstallResult instanceof R2Error) {
                                 callback(false, profileInstallResult);
                                 return Promise.resolve();
                             }
-                            const modListInstallResult = ProfileModList.addMod(mod);
+                            const modListInstallResult = await ProfileModList.addMod(mod);
                             if (modListInstallResult instanceof R2Error) {
                                 callback(false, modListInstallResult);
                                 return Promise.resolve();
