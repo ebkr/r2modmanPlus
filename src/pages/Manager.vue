@@ -477,7 +477,6 @@
 
     import * as path from 'path';
     import FsProvider from '../providers/generic/file/FsProvider';
-	import { spawn } from 'child_process';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';
@@ -490,6 +489,7 @@
     import ArrayUtils from '../utils/ArrayUtils';
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
+    import LinkProvider from '../providers/components/LinkProvider';
 
 	@Component({
 		components: {
@@ -790,11 +790,11 @@
 		}
 
 		browseDataFolder() {
-			spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
+            LinkProvider.instance.openLink(PathResolver.ROOT);
 		}
 
         browseProfileFolder() {
-			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
+            LinkProvider.instance.openLink(PathResolver.ROOT);
 		}
 
 		toggleCardExpanded(expanded: boolean) {
