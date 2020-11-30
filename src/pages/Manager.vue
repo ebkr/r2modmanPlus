@@ -555,7 +555,7 @@
 		}
 
 		get thunderstoreModList(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
         @Watch("thunderstoreModList")
@@ -620,7 +620,7 @@
 
 
 		get localModList() : ManifestV2[] {
-			return this.$store.state.localModList;
+			return this.$store.state.localModList || [];
 		}
 
 		updatePageNumber(page: number) {

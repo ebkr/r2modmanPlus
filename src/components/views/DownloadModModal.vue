@@ -139,7 +139,7 @@
         updateAllMods: boolean | undefined;
 
         get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
         @Watch('thunderstoreMod')
@@ -264,9 +264,12 @@
         }
 
         async getListOfModsToUpdate(): Promise<ThunderstoreCombo[]> {
-          const modList = await ProfileModList.getModList(Profile.getActiveProfile());
+          let modList = await ProfileModList.getModList(Profile.getActiveProfile());
           if (!(modList instanceof R2Error)) {
             await this.$store.dispatch('updateModList', modList);
+          }
+          if (modList instanceof R2Error) {
+              modList = [];
           }
           return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(modList as ManifestV2[], this.thunderstorePackages);
         }

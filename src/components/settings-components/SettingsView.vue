@@ -78,7 +78,7 @@
         private downloadingThunderstoreModList: boolean = false;
 
         get localModList(): ManifestV2[] {
-            return this.$store.state.localModList;
+            return this.$store.state.localModList || [];
         }
 
         private settingsList = [

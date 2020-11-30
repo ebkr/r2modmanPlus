@@ -1,6 +1,5 @@
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { isUndefined } from 'util';
 import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
 import axios from 'axios';
@@ -26,11 +25,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
             const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (!isUndefined(matchingProvider)) {
+            if (matchingProvider !== undefined) {
                 const version = new VersionNumber(dependency.substring(matchingProvider.getFullName().length + 1));
                 // Find ThunderstoreVersion with VersionNumber matching ${version}
                 const matchingVersion = matchingProvider.getVersions().find(v => v.getVersionNumber().isEqualTo(version));
-                if (!isUndefined(matchingVersion)) {
+                if (matchingVersion !== undefined) {
                     let otherVersionAlreadyAdded = false;
                     builder.forEach(v => {
                         // If otherVersionAlreadyAdded, or full names are equal
@@ -55,7 +54,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         mod.getDependencies().forEach(dependency => {
             // Find matching ThunderstoreMod.
             const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (!isUndefined(matchingProvider)) {
+            if (matchingProvider !== undefined) {
                 // Get latest version of dependency
                 const matchingVersion = matchingProvider.getVersions().reduce((one: ThunderstoreVersion, two: ThunderstoreVersion) => {
                     if (one.getVersionNumber().isNewerThan(two.getVersionNumber())) {

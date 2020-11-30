@@ -224,7 +224,7 @@
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
         private searchableModList: ManifestV2[] = [];

@@ -8,8 +8,6 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import Profile from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ModMode from '../../model/enums/ModMode';
-import { isNull } from 'util';
-import { lstatSync } from 'fs-extra';
 import PathResolver from '../manager/PathResolver';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import FileUtils from '../../utils/FileUtils';
@@ -54,7 +52,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         if (await fs.exists(bepInExLocation)) {
             try {
                 for (const file of (await fs.readdir(bepInExLocation))) {
-                    if (lstatSync(path.join(bepInExLocation, file)).isDirectory()) {
+                    if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
                         for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
                             const folderPath: string = path.join(bepInExLocation, file, folder);
                             if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
@@ -139,7 +137,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
 
     async getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]> {
         const files: string[] = [];
-        if (isNull(tree)) {
+        if (tree === null) {
             const newTree = await BepInExTree.buildFromLocation(location);
             if (newTree instanceof R2Error) {
                 return files;

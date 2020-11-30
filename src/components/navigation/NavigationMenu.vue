@@ -102,8 +102,8 @@
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
     import GameRunner from '../../r2mm/manager/GameRunner';
-    import { isNull } from "util";
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+    import ManifestV2 from "../../model/ManifestV2";
 
     @Component
     export default class NavigationMenu extends Vue {
@@ -121,11 +121,11 @@
         }
 
         get thunderstoreModList() {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
-        get localModList() {
-            return this.$store.state.localModList;
+        get localModList(): ManifestV2[] {
+            return this.$store.state.localModList || [];
         }
 
         emitClick(element: any) {
@@ -174,7 +174,7 @@
                 }
                 this.gameRunning = true;
                 GameRunner.playModded(settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (!isNull(err)) {
+                    if (err instanceof R2Error) {
                         this.$emit("error", err);
                     }
                     this.gameRunning = false;
@@ -193,7 +193,7 @@
             if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
                 this.gameRunning = true;
                 GameRunner.playVanilla(settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (!isNull(err)) {
+                    if (err instanceof R2Error) {
                         this.$emit("error", err);
                     }
                     this.gameRunning = false;
