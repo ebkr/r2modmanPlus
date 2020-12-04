@@ -131,6 +131,17 @@
       </div>
       <button class="modal-close is-large" aria-label="close" v-on:click="errorMessage = ''"></button>
     </div>
+
+    <!-- Importing file modal -->
+    <div :class="['modal', {'is-active': showFileSelectionHang}]">
+         <div class="modal-background"></div>
+         <div class="modal-content">
+             <div class="notification is-info">
+                <h3 class="title">Loading file</h3>
+                 <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+             </div>
+         </div>
+    </div>
     <!-- Content -->
     <hero
       title="Profile selection"
@@ -190,9 +201,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
-import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
-import { ipcRenderer } from 'electron';
 import ZipProvider from '../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 
@@ -218,6 +227,7 @@ import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 import FileUtils from '../utils/FileUtils';
+import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -244,6 +254,7 @@ export default class Profiles extends Vue {
     private showImportModal: boolean = false;
     private showCodeModal: boolean = false;
     private profileImportCode: string = '';
+    private showFileSelectionHang: boolean = false;
 
     private renamingProfile: boolean = false;
 
@@ -256,23 +267,16 @@ export default class Profiles extends Vue {
     }
 
     doesProfileExist(nameToCheck: string): boolean {
-        if (
-            isNull(
-                nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))
-            )
-        ) {
+        if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
             return true;
         }
         const safe: string | undefined = sanitize(nameToCheck);
-        if (isUndefined(safe)) {
+        if (safe === undefined) {
             return true;
         }
-        return !isUndefined(
-            this.profileList.find(
+        return (this.profileList.find(
                 (profile: string) =>
-                    profile.toLowerCase() === safe.toLowerCase()
-            )
-        );
+                    profile.toLowerCase() === safe.toLowerCase())) !== undefined;
     }
 
     renameProfile() {
@@ -311,14 +315,14 @@ export default class Profiles extends Vue {
         this.profileList.push(safeName);
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
         this.addingProfile = false;
-        ipcRenderer.emit('created-profile', safeName);
+        document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
         if (this.addingProfile) {
-            ipcRenderer.emit('created-profile', '');
+            document.dispatchEvent(new CustomEvent("created-profile", {detail: ''}));
         }
     }
 
@@ -363,7 +367,7 @@ export default class Profiles extends Vue {
 
     makeProfileNameSafe(nameToSanitize: string): string {
         const safe: string | undefined = sanitize(nameToSanitize);
-        if (isUndefined(safe)) {
+        if (safe === undefined) {
             return '';
         }
         return safe;
@@ -431,7 +435,7 @@ export default class Profiles extends Vue {
     }
 
     async importProfileHandler(files: string[] | null) {
-        if (isNull(files) || files.length === 0) {
+        if (files === null || files.length === 0) {
             this.importingProfile = false;
             return;
         }
@@ -440,7 +444,7 @@ export default class Profiles extends Vue {
             read = await fs.readFile(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
             const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
-            if (isNull(result)) {
+            if (result === null) {
                 return;
             }
             read = result.toString();
@@ -451,7 +455,7 @@ export default class Profiles extends Vue {
         const parsed: ExportFormat = new ExportFormat(
             parsedYaml.profileName,
             parsedYaml.mods.map((mod: any) => {
-                const enabled = isUndefined(mod.enabled) || mod.enabled;
+                const enabled = mod.enabled === undefined || mod.enabled;
                 return new ExportMod(
                     mod.name,
                     new VersionNumber(
@@ -461,33 +465,36 @@ export default class Profiles extends Vue {
                 );
             })
         );
-        this.newProfile('Import', parsed.getProfileName());
-        ipcRenderer.prependOnceListener('created-profile', async (profileName: string) => {
-            if (profileName !== '') {
-                if (files[0].endsWith('.r2z')) {
-                    const entries = await ZipProvider.instance.getEntries(files[0]);
-                    entries.forEach(entry => {
-                        if (entry.entryName.startsWith('config/')) {
-                            ZipProvider.instance.extractEntryTo(
-                                files[0],
-                                entry.entryName,
-                                path.join(
-                                    Profile.getDirectory(),
-                                    profileName,
-                                    'BepInEx'
-                                )
-                            );
+        document.addEventListener('created-profile', ((event: CustomEvent) => {
+            (async () => {
+                const profileName: string = event.detail;
+                if (profileName !== '') {
+                    if (files[0].endsWith('.r2z')) {
+                        const entries = await ZipProvider.instance.getEntries(files[0]);
+                        for (const entry of entries) {
+                            if (entry.entryName.startsWith('config/')) {
+                                await ZipProvider.instance.extractEntryTo(
+                                    files[0],
+                                    entry.entryName,
+                                    path.join(
+                                        Profile.getDirectory(),
+                                        profileName,
+                                        'BepInEx'
+                                    )
+                                );
+                            }
                         }
-                    });
+                    }
+                    if (parsed.getMods().length > 0) {
+                        this.importingProfile = true;
+                        setTimeout(() => {
+                            this.downloadImportedProfileMods(parsed.getMods());
+                        }, 100);
+                    }
                 }
-                if (parsed.getMods().length > 0) {
-                    this.importingProfile = true;
-                    setTimeout(() => {
-                        this.downloadImportedProfileMods(parsed.getMods());
-                    }, 100);
-                }
-            }
-        });
+            })();
+        }) as EventListener, {once: true});
+        this.newProfile('Import', parsed.getProfileName());
     }
 
     async importAlternativeManagerProfile(file: string) {
@@ -498,15 +505,12 @@ export default class Profiles extends Vue {
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
                 this.newProfile('Import', ror2Itf.name);
                 const itfPackages = ror2Itf.packages;
-                ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
-                    const packages = itfPackages.map(value => {
-                        return ExportMod.fromFullString(value);
-                    });
-                    this.importingProfile = true;
+                document.addEventListener("created-profile", ((() => {
+                    const packages = itfPackages.map(value => ExportMod.fromFullString(value));
                     setTimeout(() => {
                         this.downloadImportedProfileMods(packages);
                     }, 100);
-                });
+                }) as EventListener), {once: true});
             }
         } catch (e) {
             const err = new R2Error("Failed to import profile", e.message, null);
@@ -516,18 +520,15 @@ export default class Profiles extends Vue {
     }
 
     importProfile() {
-        ipcRenderer.once(
-            'receive-selection',
-            (_sender: any, files: string[] | null) => {
-                this.importProfileHandler(files);
-            }
-        );
-        ipcRenderer.send('open-dialog', {
+        this.showFileSelectionHang = true;
+        InteractionProvider.instance.selectFile({
             title: 'Import Profile',
-            properties: ['openFile'],
             filters: ['.r2x', '.r2z', '.json'],
             buttonLabel: 'Import'
-        });
+        }).then(value => {
+            this.showFileSelectionHang = false;
+            this.importProfileHandler(value);
+        })
     }
 
     async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {

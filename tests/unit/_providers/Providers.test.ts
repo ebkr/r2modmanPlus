@@ -83,23 +83,6 @@ describe('Providers', () => {
 
     });
 
-    context("ProfileInstaller", async () => {
-
-        it("Not provided", () => {
-            assert.throws(() => {
-                ProfileInstallerProvider.instance;
-            })
-        });
-
-        it("Provided", () => {
-            ProfileInstallerProvider.provide(() => new ProfileInstaller());
-            assert.doesNotThrow(() => {
-                ProfileInstallerProvider.instance;
-            });
-        });
-
-    });
-
     context("LoggerProvider", async () => {
 
         it("Not provided", () => {

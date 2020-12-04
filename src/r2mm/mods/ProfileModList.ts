@@ -25,12 +25,13 @@ export default class ProfileModList {
             await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
         }
         try {
-            const buf: Buffer = await fs.readFile(
-                path.join(profile.getPathOfProfile(), 'mods.yml')
-            );
             try {
-                return yaml.parse(buf.toString())
-                    .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
+                return await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))
+                    .then(value => value.toString())
+                    .then(value => {
+                        return yaml.parse(value)
+                            .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
+                    });
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(

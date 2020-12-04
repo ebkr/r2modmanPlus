@@ -6,49 +6,61 @@ import * as path from 'path';
 export default class NodeFs extends FsProvider {
 
     async exists(path: string): Promise<boolean> {
-        return fs.promises.access(path, fs.constants.F_OK)
+        return await fs.promises.access(path, fs.constants.F_OK)
             .then(() => true)
             .catch(() => false);
     }
 
     async lstat(path: string): Promise<LstatInterface> {
-        return fs.promises.lstat(path);
+        return await fs.promises.lstat(path);
     }
 
     async mkdirs(path: string): Promise<void> {
-        return fs.promises.mkdir(path, { recursive: true });
+        return await fs.promises.mkdir(path, { recursive: true });
     }
 
     async readFile(path: string): Promise<Buffer> {
-        return fs.promises.readFile(path);
+        return new Promise(resolve => {
+            let content = fs.readFileSync(path);
+            // Odd bug that occasionally happens where readFile and readFileSync both return an empty string.
+            if (content.length === 0) {
+                setTimeout(() => {
+                    resolve(fs.readFileSync(path));
+                }, 20);
+            } else {
+                resolve(content);
+            }
+        });
     }
 
     async readdir(path: string): Promise<string[]> {
-        return fs.promises.readdir(path);
+        return await fs.promises.readdir(path);
     }
 
     async rmdir(path: string): Promise<void> {
-        return fs.promises.rmdir(path);
+        return await fs.promises.rmdir(path);
     }
 
     async unlink(path: string): Promise<void> {
-        return fs.promises.unlink(path);
+        return await fs.promises.unlink(path);
     }
 
     async writeFile(path: string, content: string | Buffer): Promise<void> {
-        return fs.promises.writeFile(path, content);
+        return new Promise(resolve => {
+            resolve(fs.writeFileSync(path, content));
+        })
     }
 
     async rename(path: string, newPath: string): Promise<void> {
-        return fs.promises.rename(path, newPath);
+        return await fs.promises.rename(path, newPath);
     }
 
     async copyFile(from: string, to: string): Promise<void> {
-        return fs.promises.copyFile(from, to);
+        return await fs.promises.copyFile(from, to);
     }
 
     async copyFolder(from: string, to: string): Promise<void> {
-        return this.mkdirs(to).then(() => {
+        return await this.mkdirs(to).then(() => {
             return fs.promises.readdir(from)
                 .then(result => {
                     result.forEach(item => {

@@ -6,6 +6,7 @@ import TestSetup from '../../test-setup.test';
 import FsProvider from '../../../src/providers/generic/file/FsProvider';
 import * as path from "path";
 import FileUtils from '../../../src/utils/FileUtils';
+import PathResolver from '../../../src/r2mm/manager/PathResolver';
 
 const timeout = (ms: number) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -28,12 +29,10 @@ describe('LogOutput', () => {
     });
 
     context('LogOutput exists', () => {
-        it('File does not exist', () => {
-            expect(LogOutput.getSingleton().exists).equals(false);
-        });
         it('File exists', async () => {
             const fs = FsProvider.instance;
             // Ensure directory exists prior to writing file
+            await FileUtils.ensureDirectory(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
             await FileUtils.emptyDirectory(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx'));
             await fs.writeFile(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'), "");
             await timeout(1100);
