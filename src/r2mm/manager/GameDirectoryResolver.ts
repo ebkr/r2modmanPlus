@@ -45,10 +45,15 @@ export default class GameDirectoryResolver {
                 case 'win32':
                     return this.win32_getSteamDirectory();
                 case 'linux':
-                    // TODO: Make it so it also detects Snap/Flatpak Steam installs
-                    const dir = path.resolve(homedir(), '.local', 'share', 'Steam');
-                    if(!fs.existsSync(dir)) throw new Error('Steam is not installed');
-                    return dir;
+                    const dirs = [
+                        path.resolve(homedir(), '.local', 'share', 'Steam'),
+                        path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam')
+                    ];
+                    dirs.forEach(dir => {
+                        if(fs.existsSync(dir))
+                            return dir;
+                    });
+                    throw new Error('Steam is not installed');
                 default:
                     throw new Error('Unsupported platform');
             }
