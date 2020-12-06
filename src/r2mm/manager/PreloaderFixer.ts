@@ -2,8 +2,8 @@ import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver'
 import R2Error from '../../model/errors/R2Error';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import { spawnSync } from 'child_process';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
+import LinkProvider from 'src/providers/components/LinkProvider';
 
 export default class PreloaderFixer {
 
@@ -24,7 +24,7 @@ export default class PreloaderFixer {
             return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
-            spawnSync(`powershell`, ['start', 'steam://validate/632360']);
+            LinkProvider.instance.openLink('steam://validate/632360');
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to start steam://validate', err.message, null);
