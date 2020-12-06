@@ -11,11 +11,11 @@ import FileWriteError from '../../model/errors/FileWriteError';
 import ManifestV2 from '../../model/ManifestV2';
 import ExportFormat from '../../model/exports/ExportFormat';
 import ExportMod from '../../model/exports/ExportMod';
-import { spawn } from 'child_process';
 import PathResolver from '../manager/PathResolver';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 import FileUtils from '../../utils/FileUtils';
+import LinkProvider from '../../providers/components/LinkProvider';
 
 export default class ProfileModList {
 
@@ -160,7 +160,7 @@ export default class ProfileModList {
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
-            spawn('powershell.exe', ['explorer', `/select,${exportResult}`]);
+            LinkProvider.instance.selectFile(exportResult);
         }
     }
 
