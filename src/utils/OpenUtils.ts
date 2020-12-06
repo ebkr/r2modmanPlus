@@ -16,7 +16,6 @@ export default class OpenUtils {
 				break;
 		}
 
-		console.log(this.getExecuter(), args);
 		return spawn(this.getExecuter(), args);
 	}
 
@@ -42,7 +41,6 @@ export default class OpenUtils {
 			case 'win32':
 				return spawn(this.getExecuter(), ['explorer', `/select,${file}`]);
 			case 'linux':
-				console.log(file,`array:string:"${file}"`);
 				return spawn('dbus-send', [
 					'--session',
 					'--dest=org.freedesktop.FileManager1',
