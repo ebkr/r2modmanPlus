@@ -475,6 +475,7 @@
 	import ManagerInformation from '../_managerinf/ManagerInformation';
 	import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
+    import { homedir } from 'os';
     import * as path from 'path';
     import FsProvider from '../providers/generic/file/FsProvider';
     import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
@@ -720,9 +721,23 @@
 			return options;
 		}
 
+		computeDefaultRoR2InstallDirectory() : string {
+			switch(process.platform){
+				case 'win32':
+					return path.resolve(
+						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+						'Steam', 'steamapps', 'common', 'Risk of Rain 2'
+					);
+				case 'linux':
+					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', 'Risk of Rain 2');
+				default:
+					return '';
+			}
+		}
+
 		changeRoR2InstallDirectory() {
             const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
+			const ror2Directory: string = this.settings.riskOfRain2Directory || this.computeDefaultRoR2InstallDirectory();
 			InteractionProvider.instance.selectFolder({
                 title: 'Locate Risk of Rain 2 Directory',
                 defaultPath: ror2Directory,
@@ -740,23 +755,48 @@
             });
 		}
 
+		computeDefaultSteamDirectory() : string {
+			switch(process.platform){
+				case 'win32':
+					return path.resolve(
+						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+						'Steam'
+					);
+				case 'linux':
+					return path.resolve(homedir(), '.local', 'share', 'Steam');
+				default:
+					return '';
+			}
+		}
+
+		async checkIfSteamDirectoryIsValid(dir : string) : Promise<boolean> { // TODO: FIX
+			switch(process.platform){
+				case 'win32':
+					return (await FsProvider.instance.readdir(dir))
+							.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+				case 'linux':
+					return (await FsProvider.instance.readdir(dir))
+							.find(value => value.toLowerCase() === 'steam.sh') !== undefined;
+				default:
+					return true;
+			}
+		}
+
 		changeSteamDirectory() {
             const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
+			const ror2Directory: string = this.settings.steamDirectory || this.computeDefaultSteamDirectory();
 			InteractionProvider.instance.selectFolder({
                 title: 'Locate Steam Directory',
                 defaultPath: ror2Directory,
                 buttonLabel: 'Select Directory'
             }).then(async files => {
-                if (files.length === 1) {
-                    const containsSteamExecutable = (await fs.readdir(files[0]))
-                        .find(value => value.toLowerCase() === 'steam.exe') !== undefined;
-                    if (containsSteamExecutable) {
-                        await this.settings.setSteamDirectory(files[0]);
-                    } else {
-                        this.showSteamIncorrectDirectoryModal = true;
-                    }
-                }
+				if (files.length === 1) {
+					if (await this.checkIfSteamDirectoryIsValid(files[0])) {
+						this.settings.setSteamDirectory(files[0]);
+					} else {
+						this.showSteamIncorrectDirectoryModal = true;
+					}
+				}
             });
 		}
 
