@@ -1,6 +1,5 @@
 import ManagerSettings from './ManagerSettings';
 
-import * as child from 'child_process';
 import * as path from 'path';
 import GameDirectoryResolver from './GameDirectoryResolver';
 import R2Error from '../../model/errors/R2Error';
@@ -10,17 +9,37 @@ import Profile from '../../model/Profile';
 
 export default class GameRunner {
 
+    public static chooseExecutable(): string {
+        switch (process.platform) {
+            case 'win32':
+                return 'Steam.exe';
+            case 'linux':
+                return 'steam.sh';
+            default:
+                return 'steam';
+        }
+    }
+
     public static async playModded(ror2Directory: string, onComplete: (err: R2Error | null) => void) {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         const settings = await ManagerSettings.getSingleton();
         const steamDir: string | R2Error = await GameDirectoryResolver.getSteamDirectory();
+        const preloaderDir: string =
+            // Win32 will likely resolve this to C:\ + the path to the preloader
+            // However, non-Win32 platforms will use Wine/Proton to run the game.
+            // There, C:\ is the "wineprefix", a sandboxed windows-like file system.
+            // The actual filesystem is mounted on Z:\ by default, so we have to
+            // manually prefix the preloader's path for the game to find it and load it
+            (process.platform !== 'win32' ? 'Z:' : '') +
+            path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);
             return;
         }
+
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable true --doorstop-target r2modman\\BepInEx\\core\\BepInEx.Preloader.dll`);
-        exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable true --doorstop-target ${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`, (err => {
+        LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: "${path.join(steamDir, GameRunner.chooseExecutable())}" -applaunch 632360 --doorstop-enable true --doorstop-target ${preloaderDir} ${settings.launchParameters}`);
+        exec(`"${path.join(steamDir, GameRunner.chooseExecutable())}" -applaunch 632360 --doorstop-enable true --doorstop-target ${preloaderDir} ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                 LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
@@ -37,9 +56,10 @@ export default class GameRunner {
             onComplete(steamDir);
             return;
         }
+
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable false`);
-        exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable false ${settings.launchParameters}`, (err => {
+        LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: "${path.join(steamDir, GameRunner.chooseExecutable())}" -applaunch 632360 --doorstop-enable false ${settings.launchParameters}`);
+        exec(`"${path.join(steamDir, GameRunner.chooseExecutable())}" -applaunch 632360 --doorstop-enable false ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                 LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
