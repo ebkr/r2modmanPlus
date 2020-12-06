@@ -5,13 +5,35 @@ import VdfParseError from '../../model/errors/Vdf/VdfParseError';
 import child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
+import { homedir } from 'os';
 import ManagerSettings from './ManagerSettings';
 import FsProvider from "../../providers/generic/file/FsProvider";
 
-const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
+const win32_installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolver {
+
+    public static win32_getSteamDirectory(): string {
+        const queryResult: string = child.execSync(`powershell.exe "${win32_installDirectoryQuery}"`).toString().trim();
+        const installKeyValue = queryResult.split('\n');
+        let installValue: string = '';
+        installKeyValue.forEach((val: string) => {
+            if (val.trim().startsWith('InstallPath')) {
+                installValue = val.substr(('InstallPath').length)
+                    .trim()
+                    // Remove colon
+                    .substr(1)
+                    .trim();
+            }
+        });
+        if (installValue.trim().length === 0) {
+            const err = new Error();
+            err.message = queryResult;
+            throw err;
+        }
+        return installValue;
+    }
 
     public static async getSteamDirectory(): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton();
@@ -19,24 +41,22 @@ export default class GameDirectoryResolver {
             return settings.steamDirectory;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
-            const installKeyValue = queryResult.split('\n');
-            let installValue: string = '';
-            installKeyValue.forEach((val: string) => {
-                if (val.trim().startsWith('InstallPath')) {
-                    installValue = val.substr(('InstallPath').length)
-                        .trim()
-                        // Remove colon
-                        .substr(1)
-                        .trim();
-                }
-            });
-            if (installValue.trim().length === 0) {
-                const err = new Error();
-                err.message = queryResult;
-                throw err;
+            switch(process.platform){
+                case 'win32':
+                    return this.win32_getSteamDirectory();
+                case 'linux':
+                    const dirs = [
+                        path.resolve(homedir(), '.local', 'share', 'Steam'),
+                        path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam')
+                    ];
+                    for(let dir of dirs){
+                        if(await FsProvider.instance.exists(dir))
+                            return dir;
+                    }
+                    throw new Error('Steam is not installed');
+                default:
+                    throw new Error('Unsupported platform');
             }
-            return installValue;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
@@ -53,20 +73,16 @@ export default class GameDirectoryResolver {
             return settings.riskOfRain2Directory;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
-            const installKeyValue = queryResult.split('\n')[0].trim();
-            // Remove key (InstallPath) from string
-            const installValue = installKeyValue.substr(('InstallPath').length)
-                .trim()
-                // Remove colon
-                .substr(1)
-                .trim();
+            const installValue = await this.getSteamDirectory();
+            if(installValue instanceof R2Error)
+                throw installValue;
+
             const dir = await this.findAppManifest(installValue);
             return dir;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve steam install directory',
+                'Unable to resolve the Risk of Rain 2 install directory',
                 err.message,
                 'Try manually locating the Risk of Rain 2 install directory through the settings'
             )
