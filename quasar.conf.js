@@ -198,9 +198,10 @@ module.exports = configure(function(/* ctx */) {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['AppImage', 'snap'],
+                    target: ['AppImage', 'tar.gz'],
                     icon: 'src/assets/icon.png',
-                    maintainer: 'ebkr'
+                    maintainer: 'ebkr',
+                    category: 'Game'
                 }
             },
 
