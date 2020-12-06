@@ -25,13 +25,22 @@ export default class GameRunner {
         Logger.Log(LogSeverity.INFO, 'Launching modded');
         const settings = ManagerSettings.getSingleton();
         const steamDir: string | R2Error = GameDirectoryResolver.getSteamDirectory();
+        const preloaderDir: string =
+            // Win32 will likely resolve this to C:\ + the path to the preloader
+            // However, non-Win32 platforms will use Wine/Proton to run the game.
+            // There, C:\ is the "wineprefix", a sandboxed windows-like file system.
+            // The actual filesystem is mounted on Z:\ by default, so we have to
+            // manually prefix the preloader's path for the game to find it and load it
+            (process.platform !== 'win32' ? 'Z:' : '') + 
+            path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
+        
         if (steamDir instanceof R2Error) {
             onComplete(steamDir);
             return;
         }
         Logger.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-        Logger.Log(LogSeverity.INFO, `Running command: "${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${process.platform !== 'win32' ? 'Z:' : ''}${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`);
-        exec(`"${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${process.platform !== 'win32' ? 'Z:' : ''}${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")} ${settings.launchParameters}`, (err => {
+        Logger.Log(LogSeverity.INFO, `Running command: "${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${preloaderDir} ${settings.launchParameters}`);
+        exec(`"${steamDir}/${GameRunner.chooseExecutable()}" -applaunch 632360 --doorstop-enable true --doorstop-target ${preloaderDir} ${settings.launchParameters}`, (err => {
             if (err !== null) {
                 Logger.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                 Logger.Log(LogSeverity.ERROR, err.message);
