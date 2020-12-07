@@ -2,13 +2,21 @@ import FsProvider from './FsProvider';
 import * as fs from 'fs';
 import LstatInterface from './LstatInterface';
 import * as path from 'path';
+import Lock from 'async-lock';
 
 export default class NodeFs extends FsProvider {
 
+    private static lock = new Lock();
+
     async exists(path: string): Promise<boolean> {
-        return await fs.promises.access(path, fs.constants.F_OK)
-            .then(() => true)
-            .catch(() => false);
+        return new Promise(resolve => {
+            NodeFs.lock.acquire(path, async () => {
+                const result = await fs.promises.access(path, fs.constants.F_OK)
+                    .then(() => true)
+                    .catch(() => false);
+                resolve(result);
+            })
+        });
     }
 
     async lstat(path: string): Promise<LstatInterface> {
@@ -21,15 +29,10 @@ export default class NodeFs extends FsProvider {
 
     async readFile(path: string): Promise<Buffer> {
         return new Promise(resolve => {
-            let content = fs.readFileSync(path);
-            // Odd bug that occasionally happens where readFile and readFileSync both return an empty string.
-            if (content.length === 0) {
-                setTimeout(() => {
-                    resolve(fs.readFileSync(path));
-                }, 20);
-            } else {
+            NodeFs.lock.acquire(path, () => {
+                let content = fs.readFileSync(path);
                 resolve(content);
-            }
+            });
         });
     }
 
@@ -42,21 +45,39 @@ export default class NodeFs extends FsProvider {
     }
 
     async unlink(path: string): Promise<void> {
-        return await fs.promises.unlink(path);
+        return new Promise(resolve => {
+            NodeFs.lock.acquire(path, async () => {
+                await fs.promises.unlink(path);
+                resolve();
+            })
+        })
     }
 
     async writeFile(path: string, content: string | Buffer): Promise<void> {
         return new Promise(resolve => {
-            resolve(fs.writeFileSync(path, content));
+            NodeFs.lock.acquire(path, () => {
+                fs.writeFileSync(path, content);
+                resolve();
+            });
         })
     }
 
     async rename(path: string, newPath: string): Promise<void> {
-        return await fs.promises.rename(path, newPath);
+        return new Promise(resolve => {
+            NodeFs.lock.acquire(path, async () => {
+                await fs.promises.rename(path, newPath);
+                resolve();
+            });
+        });
     }
 
     async copyFile(from: string, to: string): Promise<void> {
-        return await fs.promises.copyFile(from, to);
+        return new Promise(resolve => {
+            NodeFs.lock.acquire(from, async () => {
+                await fs.promises.copyFile(from, to);
+                resolve();
+            });
+        });
     }
 
     async copyFolder(from: string, to: string): Promise<void> {
