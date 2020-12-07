@@ -2,7 +2,7 @@ import InteractionProvider, {
     InteractionProviderFileProperties,
     InteractionProviderFolderProperties
 } from '../../providers/ror2/system/InteractionProvider';
-import { clipboard, ipcRenderer } from 'electron';
+import { clipboard, ipcRenderer, OpenDialogOptions, remote } from 'electron';
 
 export default class InteractionProviderImpl extends InteractionProvider {
 
@@ -12,14 +12,12 @@ export default class InteractionProviderImpl extends InteractionProvider {
 
     async selectFolder(options: InteractionProviderFolderProperties): Promise<string[]> {
         return new Promise(resolve => {
-            ipcRenderer.once('receive-selection', async (_sender: any, files: string[]) => {
-                resolve(files || []);
-            });
-            ipcRenderer.send('open-dialog', {
-                title: options.title,
-                defaultPath: options.defaultPath,
-                properties: ['openDirectory'],
-                buttonLabel: options.buttonLabel
+
+            const fileOpts = options as unknown as OpenDialogOptions;
+            fileOpts.properties = ['openDirectory'];
+
+            remote.dialog.showOpenDialog(remote.getCurrentWindow()!, fileOpts).then(value => {
+                resolve(value.filePaths);
             });
         });
     }
@@ -27,14 +25,12 @@ export default class InteractionProviderImpl extends InteractionProvider {
 
     async selectFile(options: InteractionProviderFileProperties): Promise<string[]> {
         return new Promise(resolve => {
-            ipcRenderer.once('receive-selection', async (_sender: any, files: string[]) => {
-                resolve(files || []);
-            });
-            ipcRenderer.send('open-dialog', {
-                title: options.title,
-                properties: ['openFile'],
-                filters: options.filters,
-                buttonLabel: options.buttonLabel
+
+            const fileOpts = options as unknown as OpenDialogOptions;
+            fileOpts.properties = ['openFile'];
+
+            remote.dialog.showOpenDialog(remote.getCurrentWindow()!, fileOpts).then(value => {
+                resolve(value.filePaths);
             });
         });
     }

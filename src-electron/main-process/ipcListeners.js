@@ -16,12 +16,6 @@ ipcMain.on('get-browser-window', ()=>{
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 })
 
-ipcMain.on('open-dialog', (_sender, dialogOptions) => {
-    dialog.showOpenDialog(dialogOptions).then(result => {
-        browserWindow.webContents.send('receive-selection', result.filePaths);
-    })
-})
-
 ipcMain.on('update-app', ()=>{
     if (!process.execPath.startsWith(os.tmpdir())) {
         autoUpdater.autoDownload = true;
