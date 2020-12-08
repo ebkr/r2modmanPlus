@@ -213,7 +213,7 @@ export default class Splash extends Vue {
             new Profile('Default');
             ThunderstorePackages.handlePackageApiResponse(response);
             this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-            if(process.platform === 'linux' && !(await ManagerSettings.getSingleton()).linuxSetupAcknowledged)
+            if (process.platform === 'linux' && !(await ManagerSettings.getSingleton()).linuxSetupAcknowledged)
                 this.$router.push({path: '/linux-first-time-setup'});
             else
                 this.$router.push({path: '/profiles'});
