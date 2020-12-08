@@ -319,7 +319,7 @@
         }
 
         created() {
-            this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
+            this.settingsList = this.settingsList.filter(x => x.visibleIf()).sort((a, b) => a.action.localeCompare(b.action));
             this.searchableSettings = this.settingsList;
         }
 
