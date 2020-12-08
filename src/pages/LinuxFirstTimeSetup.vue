@@ -37,6 +37,9 @@ export default class LinuxFirstTimeSetup extends Vue {
 		window.getSelection()?.addRange(range);
 		document.execCommand("copy");
 		(this.$refs.copy as Element).innerHTML = "Copied!";
+		setTimeout(() => {
+			(this.$refs.copy as Element).innerHTML = "Copy to clipboard";
+		}, 2000);
 	}
 
 	private async acknowledge(){
