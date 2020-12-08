@@ -1103,7 +1103,10 @@
                     break;
                 case "CleanCache":
                     CacheUtil.clean();
-                    break;
+					break;
+				case "LinuxFirstTimeSetup":
+					this.$router.push({path: "/linux-first-time-setup"});
+					break;
             }
         }
 

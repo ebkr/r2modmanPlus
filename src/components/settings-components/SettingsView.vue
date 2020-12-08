@@ -247,6 +247,15 @@
             ),
             new SettingsRow(
                 'Other',
+                'First time setup',
+                'Show the first time setup page, in case you missed it.',
+                async () => '',
+                'fa-exchange-alt',
+                () => this.emitInvoke('LinuxFirstTimeSetup'),
+                () => process.platform === 'linux'
+            ),
+            new SettingsRow(
+                'Other',
                 'Toggle funky mode',
                 'Enable/disable funky mode.',
                 async () => {

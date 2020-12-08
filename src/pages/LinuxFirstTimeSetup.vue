@@ -41,8 +41,11 @@ export default class LinuxFirstTimeSetup extends Vue {
 
 	private async acknowledge(){
 		const settings = await ManagerSettings.getSingleton();
-		settings.setLinuxSetupAcknowledged(true);
-		this.$router.push({path: "/profiles"});
+		if (!settings.linuxSetupAcknowledged) {
+			settings.setLinuxSetupAcknowledged(true);
+			this.$router.push({path: "/profiles"});
+		} else
+			this.$router.push({path: "/manager"});
 	}
 
 }
