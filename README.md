@@ -26,13 +26,32 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 ## Installing
 
 ### First time installing
+#### Windows
 #### Do not install r2modman inside the Risk of Rain 2 folder.
 1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
-2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
+2. Inside the downloaded **.zip** file, run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
 3. Follow the steps in the installer.
 
+#### Linux
+
+For the game to be able to launch modded, you need to set your launch options on Risk of Rain 2 as follows: `WINEDLLOVERRIDES="winhttp=n,b" %command%`
+<!-- 
+Eventual one-command installs go here:
+Example as follows
+#### Arch Linux
+```bash
+yay -S r2modmanager-bin
+```
+
+#### Manual installation
+-->
+1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+2. Inside the downloaded **.zip** file, trun the "r2modman X.X.X.AppImage". It's a portable installation, keep it somewhere safe!
+
 ### Updating
-r2modman will automatically download any available updates whilst you use it.
+On Windows, r2modman will automatically download any available updates whilst you use it.
+
+On Linux, you might have to update it by hand if your package manager doesn't include a package for it.
 
 If an update has been downloaded, it will be installed once you have closed the application.
 
