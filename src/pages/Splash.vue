@@ -137,7 +137,8 @@ import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
 import Profile from '../model/Profile';
 
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { ipcRenderer } from 'electron';
 
 @Component({
@@ -207,12 +208,15 @@ export default class Splash extends Vue {
                 this.loadingText = 'Getting mod list from Thunderstore'
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
             }
-        }).then(response => {
+        }).then(async response => {
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
             ThunderstorePackages.handlePackageApiResponse(response);
             this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-            this.$router.push({path: '/profiles'});
+            if(process.platform === 'linux' && !(await ManagerSettings.getSingleton()).linuxSetupAcknowledged)
+                this.$router.push({path: '/linux-first-time-setup'});
+            else
+                this.$router.push({path: '/profiles'});
         }).catch((e_)=>{
             this.isOffline = true;
             if (attempt < 5) {
@@ -224,9 +228,9 @@ export default class Splash extends Vue {
         })
     }
 
-  retryConnection() {
-    this.$router.go(0);
-  }
+    retryConnection() {
+        this.$router.go(0);
+    }
 
     continueOffline() {
         ThunderstorePackages.PACKAGES = [];

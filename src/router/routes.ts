@@ -10,6 +10,13 @@ const routes: RouteConfig[] = [
         }
     },
     {
+        path: '/linux-first-time-setup',
+        component: () => import('pages/LinuxFirstTimeSetup.vue'),
+        meta: {
+            title: () => 'r2modman'
+        }
+    },
+    {
         path: '/profiles',
         component: () => import('pages/Profiles.vue'),
         meta: {

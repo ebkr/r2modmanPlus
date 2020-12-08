@@ -37,6 +37,7 @@ export default class ManagerSettings {
     public installedSortBy: string = EnumResolver.from(SortNaming, SortNaming.CUSTOM)!;
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
+    public linuxSetupAcknowledged: boolean = false;
 
     public async load(): Promise<R2Error | void> {
         const fs = FsProvider.instance;
@@ -58,6 +59,9 @@ export default class ManagerSettings {
                 this.installedSortBy = parsedYaml.installedSortBy || this.installedSortBy;
                 this.installedSortDirection = parsedYaml.installedSortDirection || this.installedSortDirection;
                 this.installedDisablePosition = parsedYaml.installedDisablePosition || this.installedDisablePosition;
+
+                if (process.platform == 'linux')
+                    this.linuxSetupAcknowledged = parsedYaml.linuxSetupAcknowledged || this.linuxSetupAcknowledged;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -173,6 +177,11 @@ export default class ManagerSettings {
 
     public async setInstalledDisablePosition(disablePosition: string): Promise<R2Error | void> {
         this.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
+        return await this.save();
+    }
+
+    public async setLinuxSetupAcknowledged(isAcknowledged: boolean){
+        this.linuxSetupAcknowledged = isAcknowledged;
         return await this.save();
     }
 }
