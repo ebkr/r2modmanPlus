@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import Listeners from './ipcListeners'
 import Persist from './window-state-persist';
 import { ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import path from 'path';
 import ipcServer from 'node-ipc';
 
 app.allowRendererProcessReuse = true;
@@ -36,6 +36,7 @@ function createWindow () {
             nodeIntegration: true,
             webSecurity: false
         },
+        icon: path.join(__statics, 'icon.png'),
         autoHideMenuBar: process.env.PROD
     });
 
