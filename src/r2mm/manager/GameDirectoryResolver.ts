@@ -9,13 +9,13 @@ import { homedir } from 'os';
 import ManagerSettings from './ManagerSettings';
 import FsProvider from "../../providers/generic/file/FsProvider";
 
-const win32_installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
+const windowsInstallDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolver {
 
-    public static win32_getSteamDirectory(): string {
-        const queryResult: string = child.execSync(`powershell.exe "${win32_installDirectoryQuery}"`).toString().trim();
+    public static windowsGetSteamDirectory(): string {
+        const queryResult: string = child.execSync(`powershell.exe "${windowsInstallDirectoryQuery}"`).toString().trim();
         const installKeyValue = queryResult.split('\n');
         let installValue: string = '';
         installKeyValue.forEach((val: string) => {
@@ -43,14 +43,14 @@ export default class GameDirectoryResolver {
         try {
             switch(process.platform){
                 case 'win32':
-                    return this.win32_getSteamDirectory();
+                    return this.windowsGetSteamDirectory();
                 case 'linux':
                     const dirs = [
                         path.resolve(homedir(), '.local', 'share', 'Steam'),
                         path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam')
                     ];
-                    for(let dir of dirs){
-                        if(await FsProvider.instance.exists(dir))
+                    for (let dir of dirs) {
+                        if (await FsProvider.instance.exists(dir))
                             return dir;
                     }
                     throw new Error('Steam is not installed');
@@ -74,7 +74,7 @@ export default class GameDirectoryResolver {
         }
         try {
             const installValue = await this.getSteamDirectory();
-            if(installValue instanceof R2Error)
+            if (installValue instanceof R2Error)
                 throw installValue;
 
             const dir = await this.findAppManifest(installValue);
