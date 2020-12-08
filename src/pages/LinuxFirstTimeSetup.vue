@@ -10,7 +10,7 @@
 			<code ref="launchargs">WINEDLLOVERRIDES="winhttp=n,b" %command%</code>
 			<br/>
 			<br/>
-			<a ref="copy" class="button is-info" @click="copy">Copy to clipboard</a>&nbsp;
+			<a ref="copy" class="button" @click="copy">Copy to clipboard</a>&nbsp;
 			<a class="button is-info" @click="acknowledge">Continue</a><br/><br/>
 			<b>Warning: Make sure to do what's written here.<br/>
 			This message won't show again!</b>
