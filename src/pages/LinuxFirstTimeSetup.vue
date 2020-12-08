@@ -30,7 +30,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 })
 export default class LinuxFirstTimeSetup extends Vue {
 
-	copy(){
+	private copy(){
 		let range = document.createRange();
 		range.selectNode(this.$refs.launchargs as Node);
 		window.getSelection()?.removeAllRanges();
@@ -39,7 +39,7 @@ export default class LinuxFirstTimeSetup extends Vue {
 		(this.$refs.copy as Element).innerHTML = "Copied!";
 	}
 
-	async acknowledge(){
+	private async acknowledge(){
 		const settings = await ManagerSettings.getSingleton();
 		settings.setLinuxSetupAcknowledged(true);
 		this.$router.push({path: "/profiles"});
