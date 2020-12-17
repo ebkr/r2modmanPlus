@@ -27,19 +27,19 @@ export default abstract class ProfileInstallerProvider {
      * Disable files to prevent the mod from loading.
      * @param mod
      */
-    public abstract async disableMod(mod: ManifestV2): Promise<R2Error | void>;
+    public abstract disableMod(mod: ManifestV2): Promise<R2Error | void>;
 
     /**
      * Enable files to undo a disable operation.
      * @param mod
      */
-    public abstract async enableMod(mod: ManifestV2): Promise<R2Error | void>;
+    public abstract enableMod(mod: ManifestV2): Promise<R2Error | void>;
 
     /**
      * Installs a mod to the profile.
      * @param mod
      */
-    public abstract async installMod(mod: ManifestV2): Promise<R2Error | null>;
+    public abstract installMod(mod: ManifestV2): Promise<R2Error | null>;
 
     /**
      * Applies either enabling or disabling under a shared method.
@@ -50,7 +50,7 @@ export default abstract class ProfileInstallerProvider {
      * @param location  The location of the mod within a BepInEx sub-folder.
      * @param mode      The ModMode number. {@class model/enums/ModMode}
      */
-    abstract async applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): Promise<R2Error | void>;
+    abstract applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): Promise<R2Error | void>;
 
     /**
      * Get descendant files of a given location.
@@ -59,7 +59,7 @@ export default abstract class ProfileInstallerProvider {
      * @param tree      If tree is not provided, one is created on first call. This method is recursive.
      * @param location
      */
-    abstract async getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]>;
+    abstract getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]>;
 
     /**
      * Install a mod based on a given {@class ManifestV2}. Used for local installs.
@@ -67,7 +67,7 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      * @param location
      */
-    abstract async installForManifestV2(mod: ManifestV2, location: string): Promise<R2Error | null>;
+    abstract installForManifestV2(mod: ManifestV2, location: string): Promise<R2Error | null>;
 
     /**
      * Handles the installation of all mods excluding BepInEx.

@@ -5,7 +5,7 @@ export default class FileUtils {
 
     public static async ensureDirectory(dir: string) {
         const fs = FsProvider.instance;
-        if (! await fs.exists(dir)) {
+        if (!await fs.exists(dir)) {
             await fs.mkdirs(dir);
         }
     }

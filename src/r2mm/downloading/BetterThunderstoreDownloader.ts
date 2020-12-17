@@ -265,7 +265,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             },
             responseType: 'arraybuffer',
             headers: {
-                'Content-Type': 'application/zip'
+                'Content-Type': 'application/zip',
+                'Access-Control-Allow-Origin': '*'
             }
         }).then(async response => {
             const buf: Buffer = Buffer.from(response.data)
@@ -277,6 +278,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     callback(100, StatusEnum.FAILURE, error || null);
                 }
             });
+        }).catch(reason => {
         })
     }
 
@@ -292,7 +294,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 combo.getMod().getFullName(),
                 combo.getVersion().getVersionNumber().toString() + '.zip'
             ), response);
-            ZipExtract.extractAndDelete(
+            await ZipExtract.extractAndDelete(
                 path.join(cacheDirectory, combo.getMod().getFullName()),
                 combo.getVersion().getVersionNumber().toString() + '.zip',
                 combo.getVersion().getVersionNumber().toString(),

@@ -16,13 +16,13 @@ export default abstract class ZipProvider {
         return ZipProvider.provider();
     }
 
-    public abstract async extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void>;
+    public abstract extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void>;
 
-    public abstract async readFile(zip: string | Buffer, file: string): Promise<Buffer | null>;
+    public abstract readFile(zip: string | Buffer, file: string): Promise<Buffer | null>;
 
-    public abstract async getEntries(zip: string | Buffer): Promise<ZipEntryInterface[]>;
+    public abstract getEntries(zip: string | Buffer): Promise<ZipEntryInterface[]>;
 
-    public abstract async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void>;
+    public abstract extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void>;
 
     public abstract zipBuilder(): ZipBuilder;
 

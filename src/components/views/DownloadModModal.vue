@@ -284,7 +284,7 @@
                 value => value.getName() === mod.getFullName()
                     && value.getVersionNumber().isEqualTo(version.getVersionNumber())
             );
-            if (!modAlreadyInstalled) {
+            if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
                     const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
                     if (result instanceof R2Error) {

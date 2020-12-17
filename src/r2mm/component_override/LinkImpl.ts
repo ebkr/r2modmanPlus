@@ -8,7 +8,7 @@ export default class LinkImpl extends LinkProvider {
     }
 
     selectFile(url: string): void {
-        shell.openItem(url);
+        shell.showItemInFolder(url);
     }
 
 }

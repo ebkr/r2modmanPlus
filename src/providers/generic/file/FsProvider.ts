@@ -15,16 +15,16 @@ export default abstract class FsProvider {
         return FsProvider.provider();
     }
 
-    public abstract async writeFile(path: string, content: string | Buffer): Promise<void>;
-    public abstract async readFile(path: string): Promise<Buffer>;
-    public abstract async readdir(path: string): Promise<string[]>;
-    public abstract async rmdir(path: string): Promise<void>;
-    public abstract async mkdirs(path: string): Promise<void>;
-    public abstract async exists(path: string): Promise<boolean>;
-    public abstract async unlink(path: string): Promise<void>;
-    public abstract async lstat(path: string): Promise<LstatInterface>;
-    public abstract async rename(path: string, newPath: string): Promise<void>;
-    public abstract async copyFile(from: string, to: string): Promise<void>;
-    public abstract async copyFolder(from: string, to: string): Promise<void>;
+    public abstract writeFile(path: string, content: string | Buffer): Promise<void>;
+    public abstract readFile(path: string): Promise<Buffer>;
+    public abstract readdir(path: string): Promise<string[]>;
+    public abstract rmdir(path: string): Promise<void>;
+    public abstract mkdirs(path: string): Promise<void>;
+    public abstract exists(path: string): Promise<boolean>;
+    public abstract unlink(path: string): Promise<void>;
+    public abstract lstat(path: string): Promise<LstatInterface>;
+    public abstract rename(path: string, newPath: string): Promise<void>;
+    public abstract copyFile(from: string, to: string): Promise<void>;
+    public abstract copyFolder(from: string, to: string): Promise<void>;
 
 }

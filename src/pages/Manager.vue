@@ -794,7 +794,7 @@
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink(PathResolver.ROOT);
+            LinkProvider.instance.openLink(Profile.getActiveProfile().getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {

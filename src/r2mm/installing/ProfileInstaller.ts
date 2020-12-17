@@ -288,7 +288,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 );
             }
         }
-        return null;
+        return Promise.resolve(null);
     }
 
 }

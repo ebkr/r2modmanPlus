@@ -15,9 +15,9 @@ export default abstract class InteractionProvider {
         return InteractionProvider.provider();
     }
 
-    public abstract async selectFolder(options: InteractionProviderFolderProperties): Promise<string[]>;
+    public abstract selectFolder(options: InteractionProviderFolderProperties): Promise<string[]>;
 
-    public abstract async selectFile(options: InteractionProviderFileProperties): Promise<string[]>;
+    public abstract selectFile(options: InteractionProviderFileProperties): Promise<string[]>;
 
     public abstract restartApp(): void;
 

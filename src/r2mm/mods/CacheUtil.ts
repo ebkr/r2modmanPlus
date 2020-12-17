@@ -33,7 +33,7 @@ export default class CacheUtil {
             });
         }
 
-        const cacheDirectory = path.join(PathResolver.ROOT, "mods", "cache");
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
         for (const folder of fs.readdirSync(cacheDirectory)) {
             if (fs.lstatSync(path.join(cacheDirectory, folder)).isDirectory()) {
                 if (this.hasNoVersions(folder, activeModSet)) {

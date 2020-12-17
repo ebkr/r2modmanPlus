@@ -18,7 +18,7 @@ export default class FolderMigration {
         await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
         return new Promise(async resolve => {
             await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
-            resolve()
+            resolve(Promise.resolve());
         }).then(async () => {
             await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "mods"));
             await fs.rmdir(path.join(PathResolver.ROOT, "mods"));
