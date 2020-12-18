@@ -26,6 +26,7 @@
         "bulma-divider": "^0.2.0",
         "bulma-steps": "^2.2.1",
         "bulma-tooltip": "^3.0.2",
+        "dexie": "^3.0.3",
         "dot-prop": "^5.2.0",
         "electron-updater": "^4.2.0",
         "elliptic": "^6.5.3",

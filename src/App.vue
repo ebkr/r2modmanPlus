@@ -55,6 +55,7 @@
     import InteractionProviderImpl from './r2mm/system/InteractionProviderImpl';
     import ZipProvider from './providers/generic/zip/ZipProvider';
     import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
+    import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
 
     @Component
     export default class App extends Vue {
@@ -85,7 +86,18 @@
 
             ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
+                await settings.load();
                 PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
+                // Legacy path. Needed for migration.
+                PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
+
+                if (ManagerSettings.NEEDS_MIGRATION) {
+                    await ManagerSettingsMigration.migrate();
+                }
+
+                PathResolver.ROOT = settings.dataDirectory || PathResolver.APPDATA_DIR;
+                PathResolver.MOD_ROOT = path.join(settings.dataDirectory, "mods");
+
                 await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
                 await ThemeManager.apply();
                 ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {

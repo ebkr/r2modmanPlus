@@ -5,40 +5,24 @@ import FileUtils from '../../utils/FileUtils';
 export default class PathResolver {
 
     private static _APPDATA_DIR: string = '';
+
+    // Legacy path
     private static _CONFIG_DIR: string = '';
+
     private static _ROOT: string = '';
     private static _MOD_ROOT: string = '';
 
     static set APPDATA_DIR(appDataDir: string) {
         PathResolver._APPDATA_DIR = appDataDir;
-        PathResolver._CONFIG_DIR = path.join(appDataDir, 'config');
-        ManagerSettings.getSingleton()
-            .then(settings => {
-                settings.load()
-                    .then(async () => {
-                        PathResolver._ROOT = settings.dataDirectory || appDataDir;
-                        await FileUtils.ensureDirectory(PathResolver._ROOT);
-                        PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'mods');
-                    });
-            });
-    }
-
-    static set APPDATA_DIR_MIGRATION_V1(appDataDir: string) {
-        PathResolver._APPDATA_DIR = appDataDir;
-        PathResolver._CONFIG_DIR = path.join(appDataDir, 'config');
-        ManagerSettings.getSingleton()
-            .then(settings => {
-                settings.load()
-                    .then(async () => {
-                        PathResolver._ROOT = settings.dataDirectory || appDataDir;
-                        await FileUtils.ensureDirectory(PathResolver._ROOT);
-                        PathResolver._MOD_ROOT = path.join(PathResolver._ROOT, 'games', 'Risk of Rain 2');
-                    });
-            });
     }
 
     static get ROOT(): string {
         return PathResolver._ROOT;
+    }
+
+
+    static set ROOT(value: string) {
+        this._ROOT = value;
     }
 
     static get MOD_ROOT(): string {
@@ -55,5 +39,9 @@ export default class PathResolver {
 
     static get CONFIG_DIR(): string {
         return PathResolver._CONFIG_DIR;
+    }
+
+    static set CONFIG_DIR(path: string) {
+        PathResolver._CONFIG_DIR = path;
     }
 }

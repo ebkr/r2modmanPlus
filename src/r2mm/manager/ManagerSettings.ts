@@ -2,7 +2,6 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import * as yaml from 'yaml';
 import R2Error from '../../model/errors/R2Error';
-import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import FileWriteError from '../../model/errors/FileWriteError';
 import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
@@ -10,11 +9,13 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import FileUtils from '../../utils/FileUtils';
+import SettingsDexieStore, { ManagerSettingsInterface } from './SettingsDexieStore';
 
 export default class ManagerSettings {
 
     private static LOADED_SETTINGS: ManagerSettings | undefined;
+    private static DEXIE_STORE = new SettingsDexieStore();
+    public static NEEDS_MIGRATION = false;
 
     public static async getSingleton(): Promise<ManagerSettings> {
         if (this.LOADED_SETTINGS === undefined) {
@@ -38,35 +39,63 @@ export default class ManagerSettings {
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
 
+    public async mapJsonToClass(itf: ManagerSettingsInterface): Promise<R2Error | void> {
+        this.riskOfRain2Directory = itf.riskOfRain2Directory;
+        this.linkedFiles = itf.linkedFiles || [];
+        this.lastSelectedProfile = itf.lastSelectedProfile || 'Default';
+        this.steamDirectory = itf.steamDirectory;
+        this.expandedCards = itf.expandedCards || false;
+        this.darkTheme = itf.darkTheme;
+        this.launchParameters = itf.launchParameters || '';
+        this.ignoreCache = itf.ignoreCache || false;
+        this.dataDirectory = itf.dataDirectory || PathResolver.APPDATA_DIR;
+        this.installedSortBy = itf.installedSortBy || this.installedSortBy;
+        this.installedSortDirection = itf.installedSortDirection || this.installedSortDirection;
+        this.installedDisablePosition = itf.installedDisablePosition || this.installedDisablePosition;
+    }
+
+    public createDefaultSettingsObject(): ManagerSettingsInterface {
+        return {
+            riskOfRain2Directory: null,
+            steamDirectory: null,
+            lastSelectedProfile: 'Default',
+            funkyModeEnabled: false,
+            expandedCards: false,
+            linkedFiles: [],
+            darkTheme: false,
+            launchParameters: '',
+            ignoreCache: false,
+            dataDirectory: '',
+            installedSortBy: EnumResolver.from(SortNaming, SortNaming.CUSTOM)!,
+            installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
+            installedDisablePosition: EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!
+        };
+    }
+
     public async load(): Promise<R2Error | void> {
-        const fs = FsProvider.instance;
-        const configPath = path.join(PathResolver.CONFIG_DIR);
-        const configFile = path.join(configPath, "conf.yml");
-        await FileUtils.ensureDirectory(configPath);
-        if (await fs.exists(configFile)) {
-            try {
-                const parsedYaml = yaml.parse((await fs.readFile(configFile)).toString());
-                this.riskOfRain2Directory = parsedYaml.riskOfRain2Directory;
-                this.linkedFiles = parsedYaml.linkedFiles || [];
-                this.lastSelectedProfile = parsedYaml.lastSelectedProfile || 'Default';
-                this.steamDirectory = parsedYaml.steamDirectory;
-                this.expandedCards = parsedYaml.expandedCards || false;
-                this.darkTheme = parsedYaml.darkTheme;
-                this.launchParameters = parsedYaml.launchParameters || '';
-                this.ignoreCache = parsedYaml.ignoreCache || false;
-                this.dataDirectory = parsedYaml.dataDirectory || PathResolver.APPDATA_DIR;
-                this.installedSortBy = parsedYaml.installedSortBy || this.installedSortBy;
-                this.installedSortDirection = parsedYaml.installedSortDirection || this.installedSortDirection;
-                this.installedDisablePosition = parsedYaml.installedDisablePosition || this.installedDisablePosition;
-            } catch(e) {
-                const err: Error = e;
-                return new YamlParseError(
-                    'Failed to parse conf.yml',
-                    err.message,
-                    'Did you modify the conf.yml file? If not, delete it, and re-launch the manager'
-                );
+        const db = ManagerSettings.DEXIE_STORE;
+        await db.value.toArray().then(result => {
+            if (result.length > 0) {
+                const value = result[result.length - 1];
+                console.log(value);
+                const parsed = JSON.parse(value.settings) as ManagerSettingsInterface;
+                return this.mapJsonToClass(parsed);
+            } else {
+                ManagerSettings.NEEDS_MIGRATION = true;
+                const obj = this.createDefaultSettingsObject();
+                db.value.put({settings: JSON.stringify(obj)});
+                return this.mapJsonToClass(obj);
             }
-        }
+        });
+    }
+
+    private async save(): Promise<R2Error | void> {
+        const db = ManagerSettings.DEXIE_STORE;
+        await db.value.toArray().then(result => {
+            for (let settingsInterface of result) {
+                db.value.update(settingsInterface.id!, {settings: JSON.stringify(this)});
+            }
+        });
     }
 
     public async setRiskOfRain2Directory(dir: string): Promise<R2Error | void> {
@@ -82,31 +111,6 @@ export default class ManagerSettings {
     public async setLinkedFiles(linkedFiles: string[]): Promise<R2Error | void> {
         this.linkedFiles = linkedFiles;
         return await this.save();
-    }
-
-    private async save(): Promise<R2Error | void> {
-        const fs = FsProvider.instance;
-        const configFile = path.join(PathResolver.CONFIG_DIR, "conf.yml");
-        try {
-            const writeableYaml = yaml.stringify(this);
-            try {
-                await fs.writeFile(configFile, writeableYaml);
-            } catch(e) {
-                const err: Error = e;
-                return new FileWriteError(
-                    'Failed to write conf.yml',
-                    err.message,
-                    'Try running r2modman as an administrator'
-                )
-            }
-        } catch(e) {
-            const err: Error = e;
-            return new YamlConvertError(
-                'Failed to write convert yaml',
-                err.message,
-                null
-            )
-        }
     }
 
     public async setProfile(profile: string): Promise<R2Error | void> {
