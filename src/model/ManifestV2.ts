@@ -254,4 +254,11 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         return tsMod !== undefined ? tsMod.isDeprecated() : false;
     }
 
+    public getIcon(): string {
+        return this.icon;
+    }
+
+    public setIcon(iconUri: string) {
+        this.icon = iconUri;
+    }
 }

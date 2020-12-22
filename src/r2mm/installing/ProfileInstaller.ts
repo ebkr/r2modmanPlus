@@ -45,7 +45,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                     err.message,
                     'Is the game still running?'
                 );
-                return Promise.resolve(returnErr);
+                return Promise.reject(returnErr);
             }
         }
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
@@ -69,7 +69,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                     err.message,
                     'Is the game still running? If so, close it and try again.'
                 );
-                return Promise.resolve(returnErr);
+                return Promise.reject(returnErr);
             }
         }
         return Promise.resolve(null);

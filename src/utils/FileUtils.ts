@@ -22,6 +22,7 @@ export default class FileUtils {
                 await fs.unlink(file);
             }
         }
+        return Promise.resolve();
     }
 
 }
