@@ -1042,6 +1042,7 @@
                     break;
                 case "SwitchTheme":
                     this.toggleDarkTheme();
+                    document.documentElement.classList.toggle('html--dark', this.settings.darkTheme);
                     break;
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.expandedCards);

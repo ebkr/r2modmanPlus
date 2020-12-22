@@ -77,7 +77,6 @@ export default class ManagerSettings {
         await db.value.toArray().then(result => {
             if (result.length > 0) {
                 const value = result[result.length - 1];
-                console.log(value);
                 const parsed = JSON.parse(value.settings) as ManagerSettingsInterface;
                 return this.mapJsonToClass(parsed);
             } else {

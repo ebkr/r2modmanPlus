@@ -101,9 +101,9 @@
     import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
-    import GameRunner from '../../r2mm/manager/GameRunner';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
     import ManifestV2 from "../../model/ManifestV2";
+    import GameRunnerProviderImpl from '../../providers/generic/game/GameRunnerProviderImpl';
 
     @Component
     export default class NavigationMenu extends Vue {
@@ -173,9 +173,9 @@
                     }
                 }
                 this.gameRunning = true;
-                GameRunner.playModded(settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (err instanceof R2Error) {
-                        this.$emit("error", err);
+                GameRunnerProviderImpl.instance.startModded().then(value => {
+                    if (value instanceof R2Error) {
+                        this.$emit("error", value);
                     }
                     this.gameRunning = false;
                 });
@@ -192,9 +192,9 @@
             await this.prepareLaunch();
             if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
                 this.gameRunning = true;
-                GameRunner.playVanilla(settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (err instanceof R2Error) {
-                        this.$emit("error", err);
+                GameRunnerProviderImpl.instance.startVanilla().then(value => {
+                    if (value instanceof R2Error) {
+                        this.$emit("error", value);
                     }
                     this.gameRunning = false;
                 });

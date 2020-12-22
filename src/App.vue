@@ -56,6 +56,8 @@
     import ZipProvider from './providers/generic/zip/ZipProvider';
     import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
     import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
+    import GameRunnerProvider from './providers/generic/game/GameRunnerProvider';
+    import GameRunnerProviderImpl from './providers/generic/game/GameRunnerProviderImpl';
 
     @Component
     export default class App extends Vue {
@@ -138,6 +140,8 @@
             LoggerProvider.provide(() => new Logger());
             LinkProvider.provide(() => new LinkImpl());
             InteractionProvider.provide(() => new InteractionProviderImpl());
+
+            GameRunnerProvider.provide(() => new GameRunnerProviderImpl());
         }
 
     }
