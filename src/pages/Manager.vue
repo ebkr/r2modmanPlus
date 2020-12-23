@@ -964,7 +964,7 @@
             const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
             InteractionProvider.instance.selectFolder({
-                title: 'Select a new folder to store r2modman data',
+                title: `Select a new folder to store ${ManagerInformation.APP_NAME} data`,
                 defaultPath: dir,
                 buttonLabel: 'Select Data Folder'
             }).then(async files => {
