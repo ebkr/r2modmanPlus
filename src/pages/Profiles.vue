@@ -371,11 +371,7 @@ export default class Profiles extends Vue {
     }
 
     makeProfileNameSafe(nameToSanitize: string): string {
-        const safe: string | undefined = sanitize(nameToSanitize);
-        if (safe === undefined) {
-            return '';
-        }
-        return safe;
+        return sanitize(nameToSanitize);
     }
 
     setProfileAndContinue() {
@@ -395,9 +391,9 @@ export default class Profiles extends Vue {
             } else if (status == StatusEnum.PENDING) {
                 this.percentageImported = Math.floor(progress);
             }
-        }, (comboList: ThunderstoreCombo[]) => {
+        }, async (comboList: ThunderstoreCombo[]) => {
             let keepIterating = true;
-            comboList.forEach(async comboMod => {
+            for (const comboMod of comboList) {
                 if (!keepIterating) {
                     return;
                 }
@@ -408,15 +404,15 @@ export default class Profiles extends Vue {
                     this.importingProfile = false;
                     return;
                 }
-                modList.forEach(imported => {
+                for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                        ProfileModList.updateMod(installResult, modToDisable => {
+                        await ProfileModList.updateMod(installResult, async modToDisable => {
                             modToDisable.disable();
-                            ProfileInstallerProvider.instance.disableMod(modToDisable);
+                            await ProfileInstallerProvider.instance.disableMod(modToDisable);
                         });
                     }
-                })
-            })
+                }
+            };
             this.importingProfile = false;
         });
     }
@@ -461,6 +457,7 @@ export default class Profiles extends Vue {
             parsedYaml.profileName,
             parsedYaml.mods.map((mod: any) => {
                 const enabled = mod.enabled === undefined || mod.enabled;
+                console.log("Importing", mod.name);
                 return new ExportMod(
                     mod.name,
                     new VersionNumber(
