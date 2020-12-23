@@ -490,6 +490,7 @@
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
     import LinkProvider from '../providers/components/LinkProvider';
+    import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
 
 	@Component({
 		components: {
@@ -503,7 +504,7 @@
 			'ExpandableCard': ExpandableCard,
 			'link-component': Link,
 			'modal': Modal,
-            'settings-view': SettingsView,
+            'settings-view': SettingsViewProvider.provider,
 		}
 	})
 	export default class Manager extends Vue {

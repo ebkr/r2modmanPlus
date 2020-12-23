@@ -58,6 +58,7 @@
     import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
     import GameRunnerProvider from './providers/generic/game/GameRunnerProvider';
     import GameRunnerProviderImpl from './providers/generic/game/GameRunnerProviderImpl';
+    import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
 
     @Component
     export default class App extends Vue {
@@ -142,6 +143,8 @@
             InteractionProvider.provide(() => new InteractionProviderImpl());
 
             GameRunnerProvider.provide(() => new GameRunnerProviderImpl());
+
+            BindLoaderImpl.bind();
         }
 
     }
