@@ -43,7 +43,7 @@
                 </template>
                 <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
                 <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
-                    View on Thunderstore
+                    View on Website
                 </Link>
                 <div class='card-footer-item non-selectable'>
                     <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
