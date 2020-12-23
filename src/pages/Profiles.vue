@@ -228,6 +228,7 @@ import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -260,6 +261,10 @@ export default class Profiles extends Vue {
 
     errorMessage: string = '';
     errorStack: string = '';
+
+    get appName(): string {
+        return ManagerInformation.APP_NAME;
+    }
 
     showError(error: R2Error) {
         this.errorMessage = error.name;
