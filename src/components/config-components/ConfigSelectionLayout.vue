@@ -66,6 +66,7 @@
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
     import ConfigSort from '../../r2mm/configs/ConfigSort';
     import FsProvider from '../../providers/generic/file/FsProvider';
+    import ManagerInformation from '../../_managerinf/ManagerInformation';
 
     @Component({
         components: {
@@ -128,7 +129,7 @@
                 this.$emit("error", new R2Error(
                     "Failed to delete config file",
                     e.message,
-                    "Try running r2modman as an administrator."
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator.`
                 ));
             }
         }

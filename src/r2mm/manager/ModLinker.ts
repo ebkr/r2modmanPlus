@@ -8,6 +8,7 @@ import ManagerSettings from './ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolver from './GameDirectoryResolver';
 import FileUtils from '../../utils/FileUtils';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export default class ModLinker {
 
@@ -56,7 +57,7 @@ export default class ModLinker {
                                     throw new FileWriteError(
                                         `Couldn't copy file ${file} to RoR2 directory`,
                                         err.message,
-                                        'Try running r2modman as an administrator'
+                                        `Try running ${ManagerInformation.APP_NAME} as an administrator`
                                     )
                                 }
                             }
@@ -67,7 +68,7 @@ export default class ModLinker {
                     return new FileWriteError(
                         'Failed to install required files',
                         err.message,
-                        'The game must not be running. You may need to run r2modman as an administrator.'
+                        `The game must not be running. You may need to run ${ManagerInformation.APP_NAME} as an administrator.`
                     );
                 }
             } catch(e) {
@@ -75,7 +76,7 @@ export default class ModLinker {
                 return new R2Error(
                     `Unable to read directory for profile ${Profile.getActiveProfile().getProfileName()}`,
                     err.message,
-                    'Try running r2modman as an administrator'
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
                 )
             }
         } catch(e) {
@@ -83,7 +84,7 @@ export default class ModLinker {
             return new R2Error(
                 'Unable to delete file',
                 err.message,
-                'Try running r2modman as an administrator'
+                `Try running ${ManagerInformation.APP_NAME} as an administrator`
             )
         }
         return newLinkedFiles;

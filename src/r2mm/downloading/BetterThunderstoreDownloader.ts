@@ -17,6 +17,7 @@ import ManagerSettings from '../manager/ManagerSettings';
 import ManifestV2 from '../../model/ManifestV2';
 import ModBridge from '../mods/ModBridge';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -304,7 +305,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             callback(false, new FileWriteError(
                 'File write error',
                 `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${e.message}`,
-                'Try running r2modman as an administrator'
+                `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
         }
     }

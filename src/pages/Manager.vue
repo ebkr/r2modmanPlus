@@ -96,7 +96,7 @@
 				<p>Modded:
 					<br/>
 					<code>
-						--doorstop-enable true --doorstop-target r2modman\BepInEx\core\BepInEx.Preloader.dll
+						--doorstop-enable true --doorstop-target {{profilePath}}\BepInEx\core\BepInEx.Preloader.dll
 					</code>
 				</p>
 				<br/>
@@ -315,10 +315,6 @@
 							</p>
 							<p>Just go to the Settings tab, and associate r2modman with Thunderstore!</p>
 							<br/>
-							<h5 class='title is-5'>Server? No problem!</h5>
-							<p>You can have multiple installs of r2modman, each one pointing to a different server, and
-								of course, one for your regular modded game.
-							</p>
 							<br/>
 							<h5 class='title is-5'>If only I could create a modpack</h5>
 							<p>If only you could. Oh wait, you can.</p>
@@ -559,6 +555,14 @@
 
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
+        }
+
+        get profilePath(): string {
+		    return Profile.getActiveProfile().getPathOfProfile();
+        }
+
+        get appName(): string {
+		    return ManagerInformation.APP_NAME;
         }
 
         @Watch("thunderstoreModList")

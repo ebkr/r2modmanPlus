@@ -9,7 +9,7 @@
             </div>
         </div>
         <Hero title='Settings'
-              :subtitle='"Advanced options for r2modman: " + managerVersionNumber.toString()'
+              :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='is-info'/>
         <div class="margin-right">
             <div class="tabs">
@@ -81,6 +81,10 @@
             return this.$store.state.localModList || [];
         }
 
+        get appName(): string {
+            return ManagerInformation.APP_NAME;
+        }
+
         private settingsList = [
             new SettingsRow(
                 'Locations',
@@ -95,7 +99,7 @@
             new SettingsRow(
                 'Locations',
                 'Change Risk of Rain 2 directory',
-                'Change the location of the Risk of Rain 2 directory that r2modman uses.',
+                `Change the location of the Risk of Rain 2 directory that ${this.appName} uses.`,
                 async () => {
                     const directory = await GameDirectoryResolver.getDirectory();
                     if (directory instanceof R2Error) {
@@ -109,7 +113,7 @@
             new SettingsRow(
                 'Locations',
                 'Change Steam directory',
-                'Change the location of the Steam directory that r2modman uses.',
+                `Change the location of the Steam directory that ${this.appName} uses.`,
                 async () => {
                     const directory = await GameDirectoryResolver.getSteamDirectory();
                     if (directory instanceof R2Error) {

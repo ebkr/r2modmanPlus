@@ -16,6 +16,7 @@ import PathResolver from '../manager/PathResolver';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 import FileUtils from '../../utils/FileUtils';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export default class ProfileModList {
 
@@ -64,7 +65,7 @@ export default class ProfileModList {
                 return new FileWriteError(
                     `Failed to create mods.yml for profile: ${profile.getProfileName()}`,
                     err.message,
-                    'Try running r2modman as an administrator'
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
                 )
             }
         } catch(e) {
@@ -139,7 +140,7 @@ export default class ProfileModList {
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to ensure directory exists', err.message,
-                'Try running r2modman as an administrator');
+                `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
         const list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {

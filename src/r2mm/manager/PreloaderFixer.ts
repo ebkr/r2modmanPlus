@@ -3,6 +3,7 @@ import R2Error from '../../model/errors/R2Error';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { spawnSync } from 'child_process';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export default class PreloaderFixer {
 
@@ -20,7 +21,7 @@ export default class PreloaderFixer {
             await fs.unlink(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
         } catch(e) {
             const err: Error = e;
-            return new R2Error('Failed to remove Managed directory', err.message, 'Try launching r2modman as an administrator');
+            return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
             spawnSync(`powershell`, ['start', 'steam://validate/632360']);

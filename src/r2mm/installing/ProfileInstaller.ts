@@ -11,6 +11,7 @@ import ModMode from '../../model/enums/ModMode';
 import PathResolver from '../manager/PathResolver';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import FileUtils from '../../utils/FileUtils';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 let fs: FsProvider;
 
 const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
@@ -194,7 +195,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                     return new FileWriteError(
                         `Failed to move mod: ${mod.getName()} with directory of: ${profileLocation}`,
                         err.message,
-                        'Is the game still running? If not, try running r2modman as an administrator'
+                        `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                     );
                 }
             } catch(e) {
@@ -202,7 +203,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 return new FileWriteError(
                     `Failed to create directories for: ${profileLocation}`,
                     err.message,
-                    'Is the game still running? If not, try running r2modman as an administrator'
+                    `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                 );
             }
         }
@@ -227,7 +228,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                     new FileWriteError(
                         `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
                         err.message,
-                        'Is the game still running? If not, try running r2modman as an administrator'
+                        `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                     );
                 }
             } catch(e) {
@@ -235,7 +236,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 new FileWriteError(
                     `Failed to create directories for: ${profileLocation}`,
                     err.message,
-                    'Try running r2modman as an administrator'
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
                 );
             }
         }
@@ -269,7 +270,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 new FileWriteError(
                     `Failed to copy file for BepInEx installation: ${file}`,
                     err.message,
-                    'Is the game still running? If not, try running r2modman as an administrator'
+                    `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                 );
             }
         }
@@ -284,7 +285,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 new FileWriteError(
                     `Failed to copy folder for BepInEx installation: ${directory.getDirectoryName()}`,
                     err.message,
-                    'Is the game still running? If not, try running r2modman as an administrator'
+                    `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                 );
             }
         }

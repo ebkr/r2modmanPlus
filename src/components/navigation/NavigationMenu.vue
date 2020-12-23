@@ -84,7 +84,7 @@
                         <li>
                             <a href='#' :class="[{'is-active': helpPage === 'like-r2'}]"
                                data-ref="like-r2" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-heart"/>&nbsp;&nbsp;Like r2modman?
+                                <i class="fas fa-heart"/>&nbsp;&nbsp;Like {{ appName }}?
                             </a>
                         </li>
                     </ul>
@@ -104,6 +104,7 @@
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
     import ManifestV2 from "../../model/ManifestV2";
     import GameRunnerProviderImpl from '../../providers/generic/game/GameRunnerProviderImpl';
+    import ManagerInformation from '../../_managerinf/ManagerInformation';
 
     @Component
     export default class NavigationMenu extends Vue {
@@ -126,6 +127,10 @@
 
         get localModList(): ManifestV2[] {
             return this.$store.state.localModList || [];
+        }
+
+        get appName(): string {
+            return ManagerInformation.APP_NAME;
         }
 
         emitClick(element: any) {
