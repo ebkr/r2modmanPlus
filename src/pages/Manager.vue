@@ -491,11 +491,13 @@
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
     import LinkProvider from '../providers/components/LinkProvider';
     import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
+    import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
+    import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
 
 	@Component({
 		components: {
-            OnlineModList,
-            LocalModList,
+            OnlineModList: OnlineModListProvider.provider,
+            LocalModList: LocalModListProvider.provider,
             SettingsView,
             DownloadModModal,
             NavigationMenu,
