@@ -528,7 +528,7 @@ export default class Profiles extends Vue {
         this.showFileSelectionHang = true;
         InteractionProvider.instance.selectFile({
             title: 'Import Profile',
-            filters: ['.r2x', '.r2z', '.json'],
+            filters: ['.r2z', '.json'],
             buttonLabel: 'Import'
         }).then(value => {
             this.showFileSelectionHang = false;
