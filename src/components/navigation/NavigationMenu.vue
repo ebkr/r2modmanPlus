@@ -29,7 +29,7 @@
                     <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
                     <a href="#" data-ref="installed" @click="emitClick($event.target)"
                        class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
-                        <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;</i>
+                        <i class="fas fa-folder tagged-link__icon" data-ref="installed" @click="emitClick($event.target)"/>
                         <span data-ref="installed" @click="emitClick($event.target)">Installed</span>
                         <span class="tag" :class="[{'is-link': view !== 'installed'}]"
                         data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
@@ -38,8 +38,8 @@
                 <li>
                     <a href="#" data-ref="online" @click="emitClick($event.target)"
                        class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
-                        <i class="fas fa-globe" data-ref="online" @click="emitClick($event.target)"/>
-                        <span data-ref="online" @click="emitClick($event.target)">&nbsp;&nbsp;Online</span>
+                        <i class="fas fa-globe tagged-link__icon" data-ref="online" @click="emitClick($event.target)"/>
+                        <span data-ref="online" @click="emitClick($event.target)">Online</span>
                         <span class="tag" :class="[{'is-link': view !== 'online'}]"
                               data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                     </a>

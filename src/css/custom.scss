@@ -55,6 +55,10 @@ select {
         display: grid;
         grid-template-columns: min-content auto min-content;
         align-items: center;
+
+        &__icon {
+            margin-right: .5em;
+        }
     }
 }
 
