@@ -477,8 +477,6 @@
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';
     import SettingsView from '../components/settings-components/SettingsView.vue';
-    import LocalModList from '../components/views/LocalModList.vue';
-    import OnlineModList from '../components/views/OnlineModList.vue';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';

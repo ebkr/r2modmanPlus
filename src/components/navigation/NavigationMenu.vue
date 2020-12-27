@@ -29,8 +29,8 @@
                     <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
                     <a href="#" data-ref="installed" @click="emitClick($event.target)"
                        class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
-                        <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)"/>
-                        <span data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;Installed</span>
+                        <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;</i>
+                        <span data-ref="installed" @click="emitClick($event.target)">Installed</span>
                         <span class="tag" :class="[{'is-link': view !== 'installed'}]"
                         data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
                     </a>
