@@ -427,7 +427,7 @@
         }
 
         get profilePath(): string {
-		    return Profile.getActiveProfile().getPathOfProfile();
+		    return Profile.getActiveProfile().getPathOfProfile().replace("/", "\\");
         }
 
         get appName(): string {

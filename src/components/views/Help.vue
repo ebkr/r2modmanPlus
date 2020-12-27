@@ -111,9 +111,8 @@
                 :target="'external'"
                 class='selectable'
             >follow this guide
-            </link-component>
-            ,
-            replacing "BepInEx\core\BepInEx.Preloader.dll" with
+            </link-component>,
+            replacing <span class="code">"BepInEx\core\BepInEx.Preloader.dll" with
             "r2modman\BepInEx\core\BepInEx.Preloader.dll"
         </p>
         <br/>
