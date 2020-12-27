@@ -56,8 +56,10 @@ select {
         grid-template-columns: min-content auto min-content;
         align-items: center;
 
-        &__icon {
-            margin-right: .5em;
+        &__icon::after {
+            content: "\00a0\00a0";
+            width: 1em;
+            height: 1em;
         }
     }
 }
