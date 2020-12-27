@@ -43,7 +43,7 @@
                 </template>
                 <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
                 <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
-                    View on Thunderstore
+                    View on Website
                 </Link>
                 <div class='card-footer-item non-selectable'>
                     <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
@@ -84,7 +84,7 @@
             return this.$store.state.thunderstoreModList;
         }
 
-        private settings: ManagerSettings = ManagerSettings.getSingleton();
+        private settings: ManagerSettings = new ManagerSettings();
         private modToDownload: ThunderstoreMod | null = null;
 
         get localModList(): ManifestV2[] {
@@ -144,6 +144,10 @@
 
         emitError(error: R2Error) {
             this.$emit('error', error);
+        }
+
+        async created() {
+            this.settings = await ManagerSettings.getSingleton();
         }
 
     }

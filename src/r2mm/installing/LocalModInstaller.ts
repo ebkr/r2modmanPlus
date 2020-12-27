@@ -1,20 +1,20 @@
-import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import InvalidManifestError from '../../model/errors/Manifest/InvalidManifestError';
-import ProfileInstaller from './ProfileInstaller';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
 import * as path from "path";
-import * as fs from "fs";
+import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
+import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 
-export default class LocalModInstaller {
+export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public static extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): R2Error | void {
-        const zipFileBuffer = fs.readFileSync(zipFile);
-        const zip = new AdmZip(zipFileBuffer);
-        const result: Buffer | null = zip.readFile('manifest.json');
+    public async extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+        const fs = FsProvider.instance;
+        const zipFileBuffer = await fs.readFile(zipFile);
+        const result: Buffer | null = await ZipProvider.instance.readFile(zipFileBuffer,'manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
             try {
@@ -24,21 +24,23 @@ export default class LocalModInstaller {
                     return mod;
                 }
                 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-                ZipExtract.extractOnly(
+                await ZipExtract.extractOnly(
                     zipFile,
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
-                    success => {
+                    async success => {
                         if (success) {
-                            const profileInstallResult = ProfileInstaller.installMod(mod);
+                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod);
                             if (profileInstallResult instanceof R2Error) {
                                 callback(false, profileInstallResult);
-                                return;
+                                return Promise.resolve();
                             }
-                            const modListInstallResult = ProfileModList.addMod(mod);
+                            const modListInstallResult = await ProfileModList.addMod(mod);
                             if (modListInstallResult instanceof R2Error) {
                                 callback(false, modListInstallResult);
+                                return Promise.resolve();
                             }
                             callback(true, null);
+                            return Promise.resolve();
                         }
                     }
                 );
@@ -49,6 +51,7 @@ export default class LocalModInstaller {
         } else {
             return new R2Error('No manifest provided', 'No file found in zip with name "manifest.json". Contact the mod author, or create your own.', null);
         }
+        return Promise.resolve();
     }
 
 }

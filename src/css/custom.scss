@@ -44,6 +44,10 @@ select {
     color: $pagination-current-color !important;
 }
 
+.icon--margin-right {
+    margin-right: 0.5em;
+}
+
 // custom
 .menu {
     display: block;
@@ -52,9 +56,22 @@ select {
     top: 0;
 
     .tagged-link {
-        display: grid;
-        grid-template-columns: min-content auto min-content;
+
+        display: flex;
+        flex: 1;
         align-items: center;
+
+        &__icon {
+            flex: 0;
+        }
+
+        &__content {
+            flex: 1;
+        }
+
+        &__tag {
+            flex: 0;
+        }
     }
 }
 

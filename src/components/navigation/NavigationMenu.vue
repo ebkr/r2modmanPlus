@@ -15,10 +15,10 @@
         <aside class="menu">
             <p class="menu-label">Risk of Rain 2</p>
             <ul class="menu-list">
-                <li><a href="#" @click="launchModded"><i class="fas fa-play-circle"/>&nbsp;&nbsp;Start modded</a>
+                <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                 </li>
                 <li>
-                    <a href="#" @click="launchVanilla"><i class="far fa-play-circle"/>&nbsp;&nbsp;Start
+                    <a href="#" @click="launchVanilla"><i class="far fa-play-circle icon--margin-right"/>Start
                         vanilla</a>
                 </li>
             </ul>
@@ -29,18 +29,18 @@
                     <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
                     <a href="#" data-ref="installed" @click="emitClick($event.target)"
                        class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
-                        <i class="fas fa-folder" data-ref="installed" @click="emitClick($event.target)"/>
-                        <span data-ref="installed" @click="emitClick($event.target)">&nbsp;&nbsp;Installed</span>
-                        <span class="tag" :class="[{'is-link': view !== 'installed'}]"
+                        <i class="fas fa-folder tagged-link__icon icon--margin-right" data-ref="installed" @click="emitClick($event.target)"/>
+                        <span class="tagged-link__content" data-ref="installed" @click="emitClick($event.target)">Installed</span>
+                        <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'installed'}]"
                         data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" data-ref="online" @click="emitClick($event.target)"
                        class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
-                        <i class="fas fa-globe" data-ref="online" @click="emitClick($event.target)"/>
-                        <span data-ref="online" @click="emitClick($event.target)">&nbsp;&nbsp;Online</span>
-                        <span class="tag" :class="[{'is-link': view !== 'online'}]"
+                        <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click="emitClick($event.target)"/>
+                        <span class="tagged-link__content" data-ref="online" @click="emitClick($event.target)">Online</span>
+                        <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
                               data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                     </a>
                 </li>
@@ -49,42 +49,42 @@
             <ul class='menu-list'>
                 <li>
                     <a href="#" :class="[view === 'config-editor' ? 'is-active' : '']" data-ref="config-editor" @click="emitClick($event.target)">
-                        <i class="fas fa-edit"/>&nbsp;&nbsp;Config editor
+                        <i class="fas fa-edit icon--margin-right"/>Config editor
                     </a>
                 </li>
                 <li>
                     <a href="#" :class="[view === 'settings' ? 'is-active' : '']"
                        data-ref="settings" @click="emitClick($event.target)">
-                        <i class="fas fa-cog"/>&nbsp;&nbsp;Settings
+                        <i class="fas fa-cog icon--margin-right"/>Settings
                     </a>
                 </li>
                 <li>
                     <a href="#" :class="[view === 'help' ? 'is-active' : '']"
                        data-ref="help" @click="emitClick($event.target)">
-                        <i class="fas fa-question-circle"/>&nbsp;&nbsp;Help</a>
+                        <i class="fas fa-question-circle icon--margin-right"/>Help</a>
                     <ul v-if="view === 'help'">
                         <li>
                             <a href='#' :class="[{'is-active': helpPage === 'tips-and-tricks'}]"
                                data-ref="tips-and-tricks" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-lightbulb"/>&nbsp;&nbsp;Tips and tricks
+                                <i class="fas fa-lightbulb icon--margin-right"/>Tips and tricks
                             </a>
                         </li>
                         <li>
                             <a href='#' :class="[{'is-active': helpPage === 'game-wont-start'}]"
                                data-ref="game-wont-start" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-gamepad"/>&nbsp;&nbsp;Game won't start
+                                <i class="fas fa-gamepad icon--margin-right"/>Game won't start
                             </a>
                         </li>
                         <li>
                             <a href='#' :class="[{'is-active': helpPage === 'mods-not-working'}]"
                                data-ref="mods-not-working" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-ban"/>&nbsp;&nbsp;Mods aren't working
+                                <i class="fas fa-ban icon--margin-right"/>Mods aren't working
                             </a>
                         </li>
                         <li>
                             <a href='#' :class="[{'is-active': helpPage === 'like-r2'}]"
                                data-ref="like-r2" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-heart"/>&nbsp;&nbsp;Like r2modman?
+                                <i class="fas fa-heart icon--margin-right"/>Like {{ appName }}?
                             </a>
                         </li>
                     </ul>
@@ -99,11 +99,12 @@
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import R2Error from '../../model/errors/R2Error';
     import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
-    import * as fs from 'fs-extra';
+    import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
-    import GameRunner from '../../r2mm/manager/GameRunner';
-    import { isNull } from "util";
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+    import ManifestV2 from "../../model/ManifestV2";
+    import GameRunnerProviderImpl from '../../providers/generic/game/GameRunnerProviderImpl';
+    import ManagerInformation from '../../_managerinf/ManagerInformation';
 
     @Component
     export default class NavigationMenu extends Vue {
@@ -121,11 +122,15 @@
         }
 
         get thunderstoreModList() {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
-        get localModList() {
-            return this.$store.state.localModList;
+        get localModList(): ManifestV2[] {
+            return this.$store.state.localModList || [];
+        }
+
+        get appName(): string {
+            return ManagerInformation.APP_NAME;
         }
 
         emitClick(element: any) {
@@ -136,18 +141,19 @@
             this.$emit("help-clicked-" + element.getAttribute("data-ref"));
         }
 
-        prepareLaunch() {
+        async prepareLaunch() {
+            const settings = await this.settings;
             let dir: string | R2Error;
-            if (this.settings.riskOfRain2Directory === null) {
-                dir = GameDirectoryResolver.getDirectory();
+            if (settings.riskOfRain2Directory === null) {
+                dir = await GameDirectoryResolver.getDirectory();
             } else {
-                dir = this.settings.riskOfRain2Directory;
+                dir = settings.riskOfRain2Directory;
             }
             if (dir instanceof R2Error) {
                 // Show folder selection dialog.
                 this.$emit("error", dir);
             } else {
-                const setInstallDirError: R2Error | void = this.settings.setRiskOfRain2Directory(dir);
+                const setInstallDirError: R2Error | void = await settings.setRiskOfRain2Directory(dir);
                 if (setInstallDirError instanceof R2Error) {
                     this.$emit("error", setInstallDirError);
                     return;
@@ -155,24 +161,26 @@
             }
         }
 
-        launchModded() {
-            this.prepareLaunch();
-            if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
-                const newLinkedFiles = ModLinker.link();
+        async launchModded() {
+            const fs = FsProvider.instance;
+            const settings = await this.settings;
+            await this.prepareLaunch();
+            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
+                const newLinkedFiles = await ModLinker.link();
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
                     return;
                 } else {
-                    const saveError = this.settings.setLinkedFiles(newLinkedFiles);
+                    const saveError = await settings.setLinkedFiles(newLinkedFiles);
                     if (saveError instanceof R2Error) {
                         this.$emit("error", saveError);
                         return;
                     }
                 }
                 this.gameRunning = true;
-                GameRunner.playModded(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (!isNull(err)) {
-                        this.$emit("error", err);
+                GameRunnerProviderImpl.instance.startModded().then(value => {
+                    if (value instanceof R2Error) {
+                        this.$emit("error", value);
                     }
                     this.gameRunning = false;
                 });
@@ -183,13 +191,15 @@
             }
         }
 
-        launchVanilla() {
-            this.prepareLaunch();
-            if (this.settings.riskOfRain2Directory !== null && fs.existsSync(this.settings.riskOfRain2Directory)) {
+        async launchVanilla() {
+            const fs = FsProvider.instance;
+            const settings = await this.settings;
+            await this.prepareLaunch();
+            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
                 this.gameRunning = true;
-                GameRunner.playVanilla(this.settings.riskOfRain2Directory, (err: R2Error | null) => {
-                    if (!isNull(err)) {
-                        this.$emit("error", err);
+                GameRunnerProviderImpl.instance.startVanilla().then(value => {
+                    if (value instanceof R2Error) {
+                        this.$emit("error", value);
                     }
                     this.gameRunning = false;
                 });

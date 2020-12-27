@@ -117,7 +117,7 @@
         </Modal>
 
 
-        <div v-for='(key, index) in searchableModList' :key="'local-' + key.getName()">
+        <div v-for='(key, index) in searchableModList' :key="`local-${key.getName()}-${getProfileName()}`">
             <expandable-card
                 @moveUp="moveUp(key)"
                 @moveDown="moveDown(key)"
@@ -192,13 +192,12 @@
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import R2Error from '../../model/errors/R2Error';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import ThunderstoreVersion from '../../model/ThunderstoreVersion';
     import ModBridge from '../../r2mm/mods/ModBridge';
     import Mod from '../../model/Mod';
     import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
     import Dependants from '../../r2mm/mods/Dependants';
-    import ProfileInstaller from '../../r2mm/installing/ProfileInstaller';
-    import { Logger, LogSeverity } from '../../r2mm/logging/Logger';
+    import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+    import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
     import Profile from '../../model/Profile';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import DownloadModModal from './DownloadModModal.vue';
@@ -225,11 +224,11 @@
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
         }
 
         private searchableModList: ManifestV2[] = [];
-        private settings: ManagerSettings = ManagerSettings.getSingleton();
+        private settings: ManagerSettings = new ManagerSettings();
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
         private manifestModAsThunderstoreMod: ThunderstoreMod | null = null;
@@ -271,25 +270,25 @@
             });
         }
 
-        moveUp(vueMod: any) {
+        async moveUp(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = ProfileModList.shiftModEntryUp(mod);
+            const updatedList = await ProfileModList.shiftModEntryUp(mod);
             if (updatedList instanceof R2Error) {
                 this.$emit('error', updatedList);
                 return;
             }
-            this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
-        moveDown(vueMod: any) {
+        async moveDown(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = ProfileModList.shiftModEntryDown(mod);
+            const updatedList = await ProfileModList.shiftModEntryDown(mod);
             if (updatedList instanceof R2Error) {
                 this.$emit('error', updatedList);
                 return;
             }
-            this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -313,35 +312,35 @@
             return Dependants.getDependencyList(mod, this.modifiableModList);
         }
 
-        performUninstallMod(mod: ManifestV2): R2Error | void {
-            const uninstallError: R2Error | null = ProfileInstaller.uninstallMod(mod);
+        async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
+            const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
                 this.showingDependencyList = false;
                 this.$emit('error', uninstallError);
                 return uninstallError;
             }
-            const modList: ManifestV2[] | R2Error = ProfileModList.removeMod(mod);
+            const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
                 this.showingDependencyList = false;
                 this.$emit('error', modList);
                 return modList;
             }
-            this.$store.dispatch("updateModList",modList);
+            await this.$store.dispatch("updateModList",modList);
         }
 
-        disableMod(vueMod: any) {
+        async disableMod(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                Dependants.getDependantList(mod, this.modifiableModList).forEach(dependant => {
-                    const result = this.performDisable(dependant);
+                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
+                    const result = await this.performDisable(dependant);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return;
                     }
-                });
-                const result = this.performDisable(mod);
+                }
+                const result = await this.performDisable(mod);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -349,20 +348,20 @@
             } catch (e) {
                 // Failed to disable mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
         }
 
-        performDisable(mod: ManifestV2): R2Error | void {
-            const disableErr: R2Error | void = ProfileInstaller.disableMod(mod);
+        async performDisable(mod: ManifestV2): Promise<R2Error | void> {
+            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
                 this.showingDependencyList = false;
                 this.$emit('error', disableErr);
                 return disableErr;
             }
-            const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
                 updatingMod.disable();
             });
             if (updatedList instanceof R2Error) {
@@ -371,21 +370,21 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-             this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
-        uninstallMod(vueMod: any) {
+        async uninstallMod(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                Dependants.getDependantList(mod, this.modifiableModList).forEach(dependant => {
-                    const result = this.performUninstallMod(dependant);
+                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
+                    const result = await this.performUninstallMod(dependant);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return;
                     }
-                });
-                const result = this.performUninstallMod(mod);
+                }
+                const result = await this.performUninstallMod(mod);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -393,21 +392,20 @@
             } catch (e) {
                 // Failed to uninstall mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
-            const result: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
+            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
             if (result instanceof R2Error) {
                 this.$emit('error', result);
                 return;
             }
-             this.$store.dispatch("updateModList",result);
+            await this.$store.dispatch("updateModList",result);
             this.filterModList();
         }
 
         showDependencyList(vueMod: any, displayType: string) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.selectedManifestMod = mod;
+            this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
         }
@@ -442,35 +440,35 @@
             this.showDependencyList(mod, DependencyListDisplayType.VIEW);
         }
 
-        enableMod(vueMod: any) {
+        async enableMod(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                Dependants.getDependencyList(mod, this.modifiableModList).forEach(dependant => {
-                    const result = this.performEnable(dependant);
+                for (const dependant of Dependants.getDependencyList(mod, this.modifiableModList)) {
+                    const result = await this.performEnable(dependant);
                     if (result instanceof R2Error) {
                         throw result;
                     }
-                });
-                const result = this.performEnable(mod);
+                }
+                const result = await this.performEnable(mod);
                 if (result instanceof R2Error) {
                     throw result;
                 }
             } catch (e) {
                 // Failed to disable mod.
                 const err: R2Error = e;
-                Logger.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
         }
 
-        performEnable(vueMod: any): R2Error | void {
+        async performEnable(vueMod: any): Promise<R2Error | void> {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const disableErr: R2Error | void = ProfileInstaller.enableMod(mod);
+            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod);
             if (disableErr instanceof R2Error) {
                 // Failed to disable
                 this.$emit('error', disableErr);
                 return disableErr;
             }
-            const updatedList = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
                 updatingMod.enable();
             });
             if (updatedList instanceof R2Error) {
@@ -478,7 +476,7 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-             this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList",updatedList);
             this.filterModList();
         }
 
@@ -534,7 +532,12 @@
                 && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM;
         }
 
-        created() {
+        getProfileName() {
+            return Profile.getActiveProfile().getProfileName();
+        }
+
+        async created() {
+            this.settings = await ManagerSettings.getSingleton();
             this.filterModList();
         }
 

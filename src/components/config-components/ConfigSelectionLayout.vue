@@ -59,13 +59,14 @@
     import ConfigFile from '../../model/file/ConfigFile';
     import Profile from '../../model/Profile';
     import * as path from 'path';
-    import * as fs from 'fs';
     import BepInExTree from '../../model/file/BepInExTree';
     import R2Error from '../../model/errors/R2Error';
     import { ExpandableCard, Hero } from '../all';
     import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
     import ConfigSort from '../../r2mm/configs/ConfigSort';
+    import FsProvider from '../../providers/generic/file/FsProvider';
+    import ManagerInformation from '../../_managerinf/ManagerInformation';
 
     @Component({
         components: {
@@ -99,34 +100,36 @@
             return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
         }
 
-        created() {
+        async created() {
+            const fs = FsProvider.instance;
             const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
-            const bepInExTree = BepInExTree.buildFromLocation(configLocation);
+            const bepInExTree = await BepInExTree.buildFromLocation(configLocation);
             if (bepInExTree instanceof R2Error) {
                 return;
             }
-            bepInExTree.getRecursiveFiles().forEach(file => {
+            for (const file of bepInExTree.getRecursiveFiles()) {
                 if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt' || path.extname(file).toLowerCase() === '.xml') {
-                    const fileStat = fs.lstatSync(file);
+                    const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
                 } else if (path.extname(file).toLowerCase() === '.json') {
-                    const fileStat = fs.lstatSync(file);
+                    const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 5), file, fileStat.mtime));
                 }
-            });
+            }
             this.shownConfigFiles = [...this.configFiles];
         }
 
-        deleteConfig(file: ConfigFile) {
+        async deleteConfig(file: ConfigFile) {
+            const fs = FsProvider.instance;
             try {
-                fs.unlinkSync(file.getPath());
+                await fs.unlink(file.getPath());
                 this.configFiles = this.configFiles.filter(value => value.getName() !== file.getName());
                 this.textChanged();
             } catch (e) {
                 this.$emit("error", new R2Error(
                     "Failed to delete config file",
                     e.message,
-                    "Try running r2modman as an administrator."
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator.`
                 ));
             }
         }

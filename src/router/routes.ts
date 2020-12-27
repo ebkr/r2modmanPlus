@@ -1,5 +1,5 @@
 import { RouteConfig } from 'vue-router'
-import Profile from 'src/model/Profile';
+import Profile from '../model/Profile';
 
 const routes: RouteConfig[] = [
     {

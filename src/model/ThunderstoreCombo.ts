@@ -1,6 +1,5 @@
 import ThunderstoreMod from './ThunderstoreMod';
 import R2Error from './errors/R2Error';
-import { isUndefined } from 'util';
 import ThunderstoreVersion from './ThunderstoreVersion';
 
 export default class ThunderstoreCombo {
@@ -15,17 +14,17 @@ export default class ThunderstoreCombo {
         const packageName = `${information[0]}-${information[1]}`;
         const packageVersion = information[2];
         const foundMod = modList.find((mod: ThunderstoreMod) => mod.getFullName() === packageName);
-        if (isUndefined(foundMod)) {
+        if (foundMod === undefined) {
             return new R2Error(
-                'Mod does not exist', 
+                'Mod does not exist',
                 `Unable to resolve ${packageName} to a suitable Thunderstore mod`,
                 'Relaunch the manager to update the mod list'
             );
         }
         const foundVersion = foundMod?.getVersions().find((version: ThunderstoreVersion) => version.getVersionNumber().toString() === packageVersion);
-        if (isUndefined(foundVersion)) {
+        if (foundVersion === undefined) {
             return new R2Error(
-                'Mod does not exist', 
+                'Mod does not exist',
                 `Unable to find version ${packageVersion} of mod ${packageName}`,
                 'Relaunch the manager to update the mod list'
             );

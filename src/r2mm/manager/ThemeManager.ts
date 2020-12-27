@@ -3,8 +3,9 @@ import ManagerSettings from "./ManagerSettings";
 
 export default class ThemeManager {
 
-    public static apply () {
-        const settings = ManagerSettings.getSingleton();
+    public static async apply () {
+        const settings = await ManagerSettings.getSingleton();
+        await settings.load();
         Dark.set(settings.darkTheme);
     }
 

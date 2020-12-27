@@ -114,7 +114,7 @@
           </header>
           <div class="card-content">
             <p>This may take a while, as mods are being downloaded.</p>
-            <p>Please do not close r2modman.</p>
+            <p>Please do not close {{appName}}.</p>
           </div>
         </div>
       </div>
@@ -130,6 +130,17 @@
         </div>
       </div>
       <button class="modal-close is-large" aria-label="close" v-on:click="errorMessage = ''"></button>
+    </div>
+
+    <!-- Importing file modal -->
+    <div :class="['modal', {'is-active': showFileSelectionHang}]">
+         <div class="modal-background"></div>
+         <div class="modal-content">
+             <div class="notification is-info">
+                <h3 class="title">Loading file</h3>
+                 <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+             </div>
+         </div>
     </div>
     <!-- Content -->
     <hero
@@ -190,10 +201,8 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
-import { isUndefined, isNull } from 'util';
 import sanitize from 'sanitize-filename';
-import { ipcRenderer } from 'electron';
-import AdmZip from 'adm-zip';
+import ZipProvider from '../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
 
 import Profile from '../model/Profile';
@@ -208,17 +217,21 @@ import R2Error from '../model/errors/R2Error';
 import StatusEnum from '../model/enums/StatusEnum';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ProfileModList from '../r2mm/mods/ProfileModList';
-import ProfileInstaller from '../r2mm/installing/ProfileInstaller';
+import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
-import BetterThunderstoreDownloader from '../r2mm/downloading/BetterThunderstoreDownloader';
+import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
 import * as  yaml from 'yaml';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolver from '../r2mm/manager/GameDirectoryResolver';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
+import FileUtils from '../utils/FileUtils';
+import InteractionProvider from '../providers/ror2/system/InteractionProvider';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 let settings: ManagerSettings;
+let fs: FsProvider;
 
 @Component({
     components: {
@@ -242,11 +255,16 @@ export default class Profiles extends Vue {
     private showImportModal: boolean = false;
     private showCodeModal: boolean = false;
     private profileImportCode: string = '';
+    private showFileSelectionHang: boolean = false;
 
     private renamingProfile: boolean = false;
 
     errorMessage: string = '';
     errorStack: string = '';
+
+    get appName(): string {
+        return ManagerInformation.APP_NAME;
+    }
 
     showError(error: R2Error) {
         this.errorMessage = error.name;
@@ -254,23 +272,16 @@ export default class Profiles extends Vue {
     }
 
     doesProfileExist(nameToCheck: string): boolean {
-        if (
-            isNull(
-                nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))
-            )
-        ) {
+        if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
             return true;
         }
         const safe: string | undefined = sanitize(nameToCheck);
-        if (isUndefined(safe)) {
+        if (safe === undefined) {
             return true;
         }
-        return !isUndefined(
-            this.profileList.find(
+        return (this.profileList.find(
                 (profile: string) =>
-                    profile.toLowerCase() === safe.toLowerCase()
-            )
-        );
+                    profile.toLowerCase() === safe.toLowerCase())) !== undefined;
     }
 
     renameProfile() {
@@ -279,13 +290,13 @@ export default class Profiles extends Vue {
         this.renamingProfile = true;
     }
 
-    performRename(newName: string) {
-        fs.renameSync(
+    async performRename(newName: string) {
+        await fs.rename(
             path.join(Profile.getDirectory(), this.selectedProfile),
             path.join(Profile.getDirectory(), newName)
         );
         this.closeNewProfileModal();
-        this.updateProfileList();
+        await this.updateProfileList();
     }
 
     selectProfile(profile: string) {
@@ -309,14 +320,14 @@ export default class Profiles extends Vue {
         this.profileList.push(safeName);
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
         this.addingProfile = false;
-        ipcRenderer.emit('created-profile', safeName);
+        document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
         if (this.addingProfile) {
-            ipcRenderer.emit('created-profile', '');
+            document.dispatchEvent(new CustomEvent("created-profile", {detail: ''}));
         }
     }
 
@@ -324,10 +335,10 @@ export default class Profiles extends Vue {
         this.removingProfile = true;
     }
 
-    removeProfileAfterConfirmation() {
+    async removeProfileAfterConfirmation() {
         try {
-            fs.emptyDirSync(Profile.getActiveProfile().getPathOfProfile());
-            fs.removeSync(Profile.getActiveProfile().getPathOfProfile());
+            await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
+            await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
             const err: Error = e;
             this.showError(
@@ -349,8 +360,8 @@ export default class Profiles extends Vue {
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
 
-        const settings = ManagerSettings.getSingleton();
-        settings.setProfile(Profile.getActiveProfile().getProfileName());
+        const settings = await ManagerSettings.getSingleton();
+        await settings.setProfile(Profile.getActiveProfile().getProfileName());
 
         this.closeRemoveProfileModal();
     }
@@ -360,11 +371,7 @@ export default class Profiles extends Vue {
     }
 
     makeProfileNameSafe(nameToSanitize: string): string {
-        const safe: string | undefined = sanitize(nameToSanitize);
-        if (isUndefined(safe)) {
-            return '';
-        }
-        return safe;
+        return sanitize(nameToSanitize);
     }
 
     setProfileAndContinue() {
@@ -374,7 +381,7 @@ export default class Profiles extends Vue {
 
     downloadImportedProfileMods(modList: ExportMod[]) {
         this.percentageImported = 0;
-        BetterThunderstoreDownloader.downloadImportedMods(modList,
+        ThunderstoreDownloaderProvider.instance.downloadImportedMods(modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;
@@ -384,28 +391,28 @@ export default class Profiles extends Vue {
             } else if (status == StatusEnum.PENDING) {
                 this.percentageImported = Math.floor(progress);
             }
-        }, (comboList: ThunderstoreCombo[]) => {
+        }, async (comboList: ThunderstoreCombo[]) => {
             let keepIterating = true;
-            comboList.forEach(comboMod => {
+            for (const comboMod of comboList) {
                 if (!keepIterating) {
                     return;
                 }
-                const installResult: R2Error | ManifestV2 = this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
+                const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
                 if (installResult instanceof R2Error) {
                     this.showError(installResult);
                     keepIterating = false;
                     this.importingProfile = false;
                     return;
                 }
-                modList.forEach(imported => {
+                for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                        ProfileModList.updateMod(installResult, modToDisable => {
+                        await ProfileModList.updateMod(installResult, async modToDisable => {
                             modToDisable.disable();
-                            ProfileInstaller.disableMod(modToDisable);
+                            await ProfileInstallerProvider.instance.disableMod(modToDisable);
                         });
                     }
-                })
-            })
+                }
+            };
             this.importingProfile = false;
         });
     }
@@ -413,12 +420,12 @@ export default class Profiles extends Vue {
     importProfileUsingCode() {
         Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
             .then(resp => resp.data)
-            .then(resp => {
+            .then(async resp => {
                 if (resp.startsWith("#r2modman")) {
                     const buf = Buffer.from(resp.substring(9).trim(), 'base64');
-                    fs.ensureDirSync(path.join(PathResolver.ROOT, '_import_cache'));
-                    fs.writeFileSync(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
-                    this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
+                    await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
+                    await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
+                    await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
                 } else {
                         throw new Error('Code invalid, no profile is associated with this code');
                 }
@@ -428,18 +435,17 @@ export default class Profiles extends Vue {
             })
     }
 
-    importProfileHandler(files: string[] | null) {
-        if (isNull(files) || files.length === 0) {
+    async importProfileHandler(files: string[] | null) {
+        if (files === null || files.length === 0) {
             this.importingProfile = false;
             return;
         }
         let read = '';
         if (files[0].endsWith('.r2x')) {
-            read = fs.readFileSync(files[0]).toString();
+            read = await fs.readFile(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
-            const zip = new AdmZip(files[0]);
-            const result: Buffer | null = zip.readFile('export.r2x');
-            if (isNull(result)) {
+            const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
+            if (result === null) {
                 return;
             }
             read = result.toString();
@@ -450,7 +456,8 @@ export default class Profiles extends Vue {
         const parsed: ExportFormat = new ExportFormat(
             parsedYaml.profileName,
             parsedYaml.mods.map((mod: any) => {
-                const enabled = isUndefined(mod.enabled) || mod.enabled;
+                const enabled = mod.enabled === undefined || mod.enabled;
+                console.log("Importing", mod.name);
                 return new ExportMod(
                     mod.name,
                     new VersionNumber(
@@ -460,54 +467,52 @@ export default class Profiles extends Vue {
                 );
             })
         );
-        this.newProfile('Import', parsed.getProfileName());
-        ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
-            if (profileName !== '') {
-                if (files[0].endsWith('.r2z')) {
-                    const zip = new AdmZip(files[0]);
-                    zip.getEntries().forEach(entry => {
-                        if (entry.entryName.startsWith('config/')) {
-                            zip.extractEntryTo(
-                                entry.entryName,
-                                path.join(
-                                    Profile.getDirectory(),
-                                    profileName,
-                                    'BepInEx'
-                                ),
-                                true,
-                                true
-                            );
+        document.addEventListener('created-profile', ((event: CustomEvent) => {
+            (async () => {
+                const profileName: string = event.detail;
+                if (profileName !== '') {
+                    if (files[0].endsWith('.r2z')) {
+                        const entries = await ZipProvider.instance.getEntries(files[0]);
+                        for (const entry of entries) {
+                            if (entry.entryName.startsWith('config/')) {
+                                await ZipProvider.instance.extractEntryTo(
+                                    files[0],
+                                    entry.entryName,
+                                    path.join(
+                                        Profile.getDirectory(),
+                                        profileName,
+                                        'BepInEx'
+                                    )
+                                );
+                            }
                         }
-                    });
-                    // Extract config folder
+                    }
+                    if (parsed.getMods().length > 0) {
+                        this.importingProfile = true;
+                        setTimeout(() => {
+                            this.downloadImportedProfileMods(parsed.getMods());
+                        }, 100);
+                    }
                 }
-                if (parsed.getMods().length > 0) {
-                    this.importingProfile = true;
-                    setTimeout(() => {
-                        this.downloadImportedProfileMods(parsed.getMods());
-                    }, 100);
-                }
-            }
-        });
+            })();
+        }) as EventListener, {once: true});
+        this.newProfile('Import', parsed.getProfileName());
     }
 
-    importAlternativeManagerProfile(file: string) {
+    async importAlternativeManagerProfile(file: string) {
         try {
-            const fileString = fs.readFileSync(file).toString();
+            const fileString = await fs.readFile(file).toString();
             const jsonContent = JSON.parse(fileString.trim());
             const ror2Itf = jsonContent as Itf_RoR2MM;
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
                 this.newProfile('Import', ror2Itf.name);
                 const itfPackages = ror2Itf.packages;
-                ipcRenderer.prependOnceListener('created-profile', (profileName: string) => {
-                    const packages = itfPackages.map(value => {
-                        return ExportMod.fromFullString(value);
-                    });
-                    this.importingProfile = true;
+                document.addEventListener("created-profile", ((() => {
+                    const packages = itfPackages.map(value => ExportMod.fromFullString(value));
                     setTimeout(() => {
                         this.downloadImportedProfileMods(packages);
                     }, 100);
-                });
+                }) as EventListener), {once: true});
             }
         } catch (e) {
             const err = new R2Error("Failed to import profile", e.message, null);
@@ -517,25 +522,22 @@ export default class Profiles extends Vue {
     }
 
     importProfile() {
-        ipcRenderer.once(
-            'receive-selection',
-            (_sender: any, files: string[] | null) => {
-                this.importProfileHandler(files);
-            }
-        );
-        ipcRenderer.send('open-dialog', {
+        this.showFileSelectionHang = true;
+        InteractionProvider.instance.selectFile({
             title: 'Import Profile',
-            properties: ['openFile'],
-            filters: ['.r2x', '.r2z', '.json'],
+            filters: ['.r2z', '.json'],
             buttonLabel: 'Import'
-        });
+        }).then(value => {
+            this.showFileSelectionHang = false;
+            this.importProfileHandler(value);
+        })
     }
 
-    installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | ManifestV2 {
+    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
         if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
             if (newModList instanceof R2Error) {
                 return newModList;
             }
@@ -546,42 +548,42 @@ export default class Profiles extends Vue {
         }
     }
 
-    updateProfileList() {
-        try {
-            this.profileList = ["Default"];
-            const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
-            fs.readdirSync(profilesDirectory).forEach((file: string) => {
-                if (fs.lstatSync(path.join(profilesDirectory, file)).isDirectory() && file.toLowerCase() !== 'default') {
+    async updateProfileList() {
+        this.profileList = ["Default"];
+        const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
+        await fs.readdir(profilesDirectory).then(dirContents => {
+            dirContents.forEach(async (file: string) => {
+                if ((await fs.lstat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default') {
                     this.profileList.push(file);
                 }
             });
-        } catch (e) {
-            return;
-        }
+        }).catch(() => { /* Do nothing */ });
     }
 
-    created() {
-        settings = ManagerSettings.getSingleton();
+    async created() {
+        fs = FsProvider.instance;
+        settings = await ManagerSettings.getSingleton();
+        await settings.load();
 
         this.selectedProfile = settings.lastSelectedProfile;
         new Profile(this.selectedProfile);
 
         // Set default paths
         if (settings.riskOfRain2Directory === null) {
-            const result = GameDirectoryResolver.getDirectory();
+            const result = await GameDirectoryResolver.getDirectory();
             if (!(result instanceof R2Error)) {
-                settings.setRiskOfRain2Directory(result);
+                await settings.setRiskOfRain2Directory(result);
             }
         }
 
         if (settings.steamDirectory === null) {
-            const result = GameDirectoryResolver.getSteamDirectory();
+            const result = await GameDirectoryResolver.getSteamDirectory();
             if (!(result instanceof R2Error)) {
-                settings.setSteamDirectory(result);
+                await settings.setSteamDirectory(result);
             }
         }
 
-        this.updateProfileList();
+        await this.updateProfileList();
     }
 }
 </script>

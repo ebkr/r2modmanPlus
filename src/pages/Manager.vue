@@ -96,7 +96,7 @@
 				<p>Modded:
 					<br/>
 					<code>
-						--doorstop-enable true --doorstop-target r2modman\BepInEx\core\BepInEx.Preloader.dll
+						--doorstop-enable true --doorstop-target {{profilePath}}\BepInEx\core\BepInEx.Preloader.dll
 					</code>
 				</p>
 				<br/>
@@ -315,10 +315,6 @@
 							</p>
 							<p>Just go to the Settings tab, and associate r2modman with Thunderstore!</p>
 							<br/>
-							<h5 class='title is-5'>Server? No problem!</h5>
-							<p>You can have multiple installs of r2modman, each one pointing to a different server, and
-								of course, one for your regular modded game.
-							</p>
 							<br/>
 							<h5 class='title is-5'>If only I could create a modpack</h5>
 							<p>If only you could. Oh wait, you can.</p>
@@ -452,16 +448,15 @@
 
 	import ThunderstoreMod from '../model/ThunderstoreMod';
 	import ThunderstoreCombo from '../model/ThunderstoreCombo';
-	import Mod from 'src/model/Mod';
-	import BetterThunderstoreDownloader from 'src/r2mm/downloading/BetterThunderstoreDownloader';
+	import Mod from '../model/Mod';
+	import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 	import ThunderstoreVersion from '../model/ThunderstoreVersion';
-	import ProfileModList from 'src/r2mm/mods/ProfileModList';
-	import ProfileInstaller from 'src/r2mm/installing/ProfileInstaller';
-	import GameDirectoryResolver from 'src/r2mm/manager/GameDirectoryResolver';
-	import PathResolver from 'src/r2mm/manager/PathResolver';
-	import PreloaderFixer from 'src/r2mm/manager/PreloaderFixer';
+	import ProfileModList from '../r2mm/mods/ProfileModList';
+	import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
+	import PathResolver from '../r2mm/manager/PathResolver';
+	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
-	import { Logger, LogSeverity } from 'src/r2mm/logging/Logger';
+	import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 	import Profile from '../model/Profile';
 	import VersionNumber from '../model/VersionNumber';
@@ -474,28 +469,29 @@
 	import ManagerSettings from '../r2mm/manager/ManagerSettings';
 	import ThemeManager from '../r2mm/manager/ThemeManager';
 	import ManagerInformation from '../_managerinf/ManagerInformation';
+	import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
     import * as path from 'path';
-    import * as fs from 'fs-extra';
-    import { clipboard, ipcRenderer } from 'electron';
-	import { spawn } from 'child_process';
-    import LocalModInstaller from '../r2mm/installing/LocalModInstaller';
+    import FsProvider from '../providers/generic/file/FsProvider';
+    import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
 
     import FileDragDrop from '../r2mm/data/FileDragDrop';
     import SettingsView from '../components/settings-components/SettingsView.vue';
-    import LocalModList from '../components/views/LocalModList.vue';
-    import OnlineModList from '../components/views/OnlineModList.vue';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
     import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
+    import LinkProvider from '../providers/components/LinkProvider';
+    import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
+    import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
+    import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
 
 	@Component({
 		components: {
-            OnlineModList,
-            LocalModList,
+            OnlineModList: OnlineModListProvider.provider,
+            LocalModList: LocalModListProvider.provider,
             SettingsView,
             DownloadModModal,
             NavigationMenu,
@@ -504,7 +500,7 @@
 			'ExpandableCard': ExpandableCard,
 			'link-component': Link,
 			'modal': Modal,
-            'settings-view': SettingsView,
+            'settings-view': SettingsViewProvider.provider,
 		}
 	})
 	export default class Manager extends Vue {
@@ -513,7 +509,7 @@
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
-		settings = ManagerSettings.getSingleton();
+		settings: ManagerSettings = new ManagerSettings();
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
@@ -556,7 +552,15 @@
 		}
 
 		get thunderstoreModList(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList;
+            return this.$store.state.thunderstoreModList || [];
+        }
+
+        get profilePath(): string {
+		    return Profile.getActiveProfile().getPathOfProfile();
+        }
+
+        get appName(): string {
+		    return ManagerInformation.APP_NAME;
         }
 
         @Watch("thunderstoreModList")
@@ -621,7 +625,7 @@
 
 
 		get localModList() : ManifestV2[] {
-			return this.$store.state.localModList;
+			return this.$store.state.localModList || [];
 		}
 
 		updatePageNumber(page: number) {
@@ -648,8 +652,8 @@
 			this.fixingPreloader = false;
 		}
 
-		fixPreloader() {
-			const res = PreloaderFixer.fix();
+		async fixPreloader() {
+			const res = await PreloaderFixer.fix();
 			if (res instanceof R2Error) {
 				this.showError(res);
 			} else {
@@ -657,16 +661,16 @@
 			}
 		}
 
-		installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): R2Error | void {
+		async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
 			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-				ProfileInstaller.uninstallMod(manifestMod);
+                await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
 			}
-			const installError: R2Error | null = ProfileInstaller.installMod(manifestMod);
+			const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
 			if (!(installError instanceof R2Error)) {
-				const newModList: ManifestV2[] | R2Error = ProfileModList.addMod(manifestMod);
+				const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
 				if (!(newModList instanceof R2Error)) {
-					this.$store.dispatch("updateModList", newModList);
+					await this.$store.dispatch("updateModList", newModList);
 					// this.localModList = newModList;
 					this.sortThunderstoreModList();
 				}
@@ -683,7 +687,7 @@
 			};
 			this.downloadingMod = true;
 			this.closeModal();
-			BetterThunderstoreDownloader.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
+			ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
 					if (err !== null) {
 						this.downloadingMod = false;
@@ -722,65 +726,63 @@
 		}
 
 		changeRoR2InstallDirectory() {
+            const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.riskOfRain2Directory || 'C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain 2';
-			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
-				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = fs.readdirSync(files[0])
-						.find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
-					if (containsSteamExecutable) {
-						this.settings.setRiskOfRain2Directory(files[0]);
-					} else {
-						this.showRor2IncorrectDirectoryModal = true;
-					}
-				}
-			});
-			ipcRenderer.send('open-dialog', {
-				title: 'Locate Risk of Rain 2 Directory',
-				defaultPath: ror2Directory,
-				properties: ['openDirectory'],
-				buttonLabel: 'Select Directory'
-			});
+			InteractionProvider.instance.selectFolder({
+                title: 'Locate Risk of Rain 2 Directory',
+                defaultPath: ror2Directory,
+                buttonLabel: 'Select Directory'
+            }).then(async files => {
+                if (files.length === 1) {
+                    const containsSteamExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
+                    if (containsSteamExecutable) {
+                        await this.settings.setRiskOfRain2Directory(files[0]);
+                    } else {
+                        this.showRor2IncorrectDirectoryModal = true;
+                    }
+                }
+            });
 		}
 
 		changeSteamDirectory() {
+            const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.steamDirectory || 'C:/Program Files (x86)/Steam';
-			ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
-				if (files !== null && files.length === 1) {
-					const containsSteamExecutable = fs.readdirSync(files[0])
-						.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
-					if (containsSteamExecutable) {
-						this.settings.setSteamDirectory(files[0]);
-					} else {
-						this.showSteamIncorrectDirectoryModal = true;
-					}
-				}
-			});
-			ipcRenderer.send('open-dialog', {
-				title: 'Locate Steam Directory',
-				defaultPath: ror2Directory,
-				properties: ['openDirectory'],
-				buttonLabel: 'Select Directory'
-			});
+			InteractionProvider.instance.selectFolder({
+                title: 'Locate Steam Directory',
+                defaultPath: ror2Directory,
+                buttonLabel: 'Select Directory'
+            }).then(async files => {
+                if (files.length === 1) {
+                    const containsSteamExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+                    if (containsSteamExecutable) {
+                        await this.settings.setSteamDirectory(files[0]);
+                    } else {
+                        this.showSteamIncorrectDirectoryModal = true;
+                    }
+                }
+            });
 		}
 
 		setFunkyMode(value: boolean) {
 			this.settings.setFunkyMode(value);
 		}
 
-		exportProfile() {
-			const exportErr = ProfileModList.exportModList();
+		async exportProfile() {
+			const exportErr = await ProfileModList.exportModList();
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}
 		}
 
-		exportProfileAsCode() {
-			const exportErr = ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
+		async exportProfileAsCode() {
+			const exportErr = await ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.showError(err);
 				} else {
 					this.exportCode = code;
-					clipboard.writeText(code, 'clipboard');
+					InteractionProvider.instance.copyToClipboard(code);
 				}
 			});
 			if (exportErr instanceof R2Error) {
@@ -793,11 +795,11 @@
 		}
 
 		browseDataFolder() {
-			spawn('powershell.exe', ['explorer', `${PathResolver.ROOT}`]);
+            LinkProvider.instance.openLink(PathResolver.ROOT);
 		}
 
         browseProfileFolder() {
-			spawn('powershell.exe', ['explorer', `${Profile.getActiveProfile().getPathOfProfile()}`]);
+            LinkProvider.instance.openLink(Profile.getActiveProfile().getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -809,8 +811,8 @@
 			this.view = 'installed';
 		}
 
-		toggleDarkTheme() {
-			const result: R2Error | void = this.settings.toggleDarkTheme();
+		async toggleDarkTheme() {
+			const result: R2Error | void = await this.settings.toggleDarkTheme();
 			if (result instanceof R2Error) {
 				this.showError(result);
 			}
@@ -876,52 +878,49 @@
 			this.settings.setIgnoreCache(!this.settings.ignoreCache);
 		}
 
-		copyLogToClipboard() {
+		async copyLogToClipboard() {
+            const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
-			if (this.logFileExists()) {
-				const text = fs.readFileSync(logOutputPath).toString();
+			if (await this.logFileExists()) {
+				const text = await fs.readFile(logOutputPath).toString();
 				if (text.length >= 1992) {
-					clipboard.writeText(text, 'clipboard');
+				    InteractionProvider.instance.copyToClipboard(text);
 				} else {
-					clipboard.writeText("```\n" + text + "\n```", 'clipboard');
+                    InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
 				}
 			}
 		}
 
-		logFileExists() {
+		async logFileExists() {
+            const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
-			return fs.existsSync(logOutputPath);
+			return fs.exists(logOutputPath);
 		}
 
 		installLocalMod() {
-            ipcRenderer.once(
-                'receive-selection',
-                (_sender: any, files: string[] | null) => {
-                    if (files !== null && files.length > 0) {
-                        this.installLocalModAfterFileSelection(files[0]);
-                    }
-                }
-            );
-            ipcRenderer.send('open-dialog', {
+            InteractionProvider.instance.selectFile({
                 title: 'Import mod',
-                properties: ['openFile'],
                 filters: ['.zip'],
                 buttonLabel: 'Import'
-            });
+            }).then(async files => {
+                if (files.length > 0) {
+                    await this.installLocalModAfterFileSelection(files[0]);
+                }
+            })
         }
 
-        installLocalModAfterFileSelection(file: string) {
-		    const convertError = LocalModInstaller.extractToCache(file, ((success, error) => {
+        async installLocalModAfterFileSelection(file: string) {
+		    const convertError = await LocalModInstallerProvider.instance.extractToCache(file, (async (success, error) => {
 		        if (!success && error !== null) {
 		            this.showError(error);
 		            return;
                 }
-                const updatedModListResult = ProfileModList.getModList(Profile.getActiveProfile());
+                const updatedModListResult = await ProfileModList.getModList(Profile.getActiveProfile());
                 if (updatedModListResult instanceof R2Error) {
                     this.showError(updatedModListResult);
                     return;
                 }
-				this.$store.dispatch("updateModList", updatedModListResult);
+				await this.$store.dispatch("updateModList", updatedModListResult);
                 this.sortThunderstoreModList();
             }));
 		    if (convertError instanceof R2Error) {
@@ -931,19 +930,19 @@
 		    this.view = 'installed';
         }
 
-        setAllModsEnabled(enabled: boolean) {
-            this.localModList.forEach((mod: ManifestV2) => {
+        async setAllModsEnabled(enabled: boolean) {
+            for (const mod of this.localModList) {
                 let profileErr: R2Error | void;
                 if (enabled) {
-                    profileErr = ProfileInstaller.enableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod);
                 } else {
-                    profileErr = ProfileInstaller.disableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod);
                 }
                 if (profileErr instanceof R2Error) {
                     this.showError(profileErr);
-                    return;
+                    continue;
                 }
-                const update: ManifestV2[] | R2Error = ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
                     if (enabled) {
                         updatingMod.enable();
                     } else {
@@ -952,32 +951,31 @@
                 });
                 if (update instanceof R2Error) {
                     this.showError(update);
-                    return;
+                    continue;
                 }
-                this.$store.dispatch("updateModList", update);
-            });
+                await this.$store.dispatch("updateModList", update);
+            }
             this.view = 'installed';
         }
 
         changeDataFolder() {
+            const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
-            ipcRenderer.once('receive-selection', (_sender: any, files: string[] | null) => {
-                if (files !== null && files.length === 1) {
-                    const filesInDirectory = fs.readdirSync(files[0]);
+            InteractionProvider.instance.selectFolder({
+                title: `Select a new folder to store ${ManagerInformation.APP_NAME} data`,
+                defaultPath: dir,
+                buttonLabel: 'Select Data Folder'
+            }).then(async files => {
+                if (files.length === 1) {
+                    const filesInDirectory = await fs.readdir(files[0]);
                     if (filesInDirectory.length > 0 && files[0] !== PathResolver.APPDATA_DIR) {
                         this.showError(new R2Error("Selected directory is not empty", `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`, "Select an empty directory or create a new one."));
                         return;
                     } else {
-                        ManagerSettings.getSingleton().setDataDirectory(files[0]);
-                        ipcRenderer.send('restart');
+                        await this.settings.setDataDirectory(files[0]);
+                        InteractionProvider.instance.restartApp();
                     }
                 }
-            });
-            ipcRenderer.send('open-dialog', {
-                title: 'Select a new folder to store r2modman data',
-                defaultPath: dir,
-                properties: ['openDirectory'],
-                buttonLabel: 'Select Data Folder'
             });
         }
 
@@ -1049,6 +1047,7 @@
                     break;
                 case "SwitchTheme":
                     this.toggleDarkTheme();
+                    document.documentElement.classList.toggle('html--dark', this.settings.darkTheme);
                     break;
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.expandedCards);
@@ -1074,26 +1073,28 @@
             }
         }
 
-		created() {
+		async created() {
+		    this.settings = await ManagerSettings.getSingleton();
 			this.launchParametersModel = this.settings.launchParameters;
-			const newModList: ManifestV2[] | R2Error = ProfileModList.getModList(Profile.getActiveProfile());
+			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
-				this.$store.dispatch("updateModList", newModList);
+				await this.$store.dispatch("updateModList", newModList);
 				// this.localModList = newModList;
 			} else {
-				Logger.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
 			}
 			this.sortThunderstoreModList();
-			ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
-				const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
-				if (combo instanceof R2Error) {
-					this.showError(combo);
-					Logger.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
-					return;
-				}
-				this.downloadHandler(combo.getMod(), combo.getVersion());
 
-			});
+			InteractionProvider.instance.hookModInstallProtocol(data => {
+                const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
+                if (combo instanceof R2Error) {
+                    this.showError(combo);
+                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
+                    return;
+                }
+                this.downloadHandler(combo.getMod(), combo.getVersion());
+            });
+
 			this.isManagerUpdateAvailable();
 
 			// Bind drag and drop listeners

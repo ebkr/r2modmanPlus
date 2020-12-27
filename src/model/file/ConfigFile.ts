@@ -1,6 +1,7 @@
 import R2Error from '../errors/R2Error';
-import * as fs from 'fs-extra';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../errors/FileWriteError';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 
 export default class ConfigFile {
 
@@ -26,12 +27,13 @@ export default class ConfigFile {
         return this.lastUpdated;
     }
 
-    public updateFile(text: string): R2Error | void {
+    public async updateFile(text: string): Promise<R2Error | void> {
+        const fs = FsProvider.instance;
         try {
-            fs.writeFileSync(this.path, text);
+            await fs.writeFile(this.path, text);
         } catch(e) {
             const err: Error = e;
-            return new FileWriteError('Failed to update config file', err.message, 'Try running r2modman as an administator');
+            return new FileWriteError('Failed to update config file', err.message, `Try running ${ManagerInformation.APP_NAME} as an administator`);
         }
     }
 

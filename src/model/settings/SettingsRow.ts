@@ -7,7 +7,7 @@ export default class SettingsRow {
     private readonly _icon: string;
     private readonly _clickAction: () => void;
 
-    public constructor(group: string, action: string, description: string, value: () => any, icon: string, clickAction: () => void) {
+    public constructor(group: string, action: string, description: string, value: () => Promise<any>, icon: string, clickAction: () => void) {
         this._group = group;
         this._action = action;
         this._description = description;

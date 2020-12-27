@@ -1,7 +1,8 @@
 import Profile from '../../model/Profile';
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import FsProvider from '../../providers/generic/file/FsProvider';
 import Timeout = NodeJS.Timeout;
+let fs: FsProvider;
 
 export default class LogOutput {
 
@@ -17,21 +18,17 @@ export default class LogOutput {
         return this.LOG_OUTPUT;
     }
 
-    public static disconnect() {
-        if (this.INTERVAL !== undefined) {
-            clearInterval(this.INTERVAL);
-        }
-    }
-
     private constructor() {
+        fs = FsProvider.instance;
         const profilePath = Profile.getActiveProfile().getPathOfProfile()
-        this._exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
+        fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
+            .then(value => this._exists = value);
 
         LogOutput.INTERVAL = setInterval(() => {
-            this.exists = fs.existsSync(path.join(profilePath, 'BepInEx', 'LogOutput.log'));
+            fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
+                .then(value => this._exists = value);
         }, 1000);
     }
-
 
     get exists(): boolean {
         return this._exists;
@@ -40,5 +37,12 @@ export default class LogOutput {
 
     set exists(value: boolean) {
         this._exists = value;
+    }
+
+
+    public disconnect() {
+        if (LogOutput.INTERVAL !== undefined) {
+            clearInterval(LogOutput.INTERVAL);
+        }
     }
 }

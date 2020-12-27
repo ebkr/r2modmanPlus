@@ -1,35 +1,38 @@
 import * as yaml from 'yaml';
-import Profile from 'src/model/Profile';
+import Profile from '../../model/Profile';
 
-import * as fs from 'fs-extra';
 import * as path from 'path';
-import FileNotFoundError from 'src/model/errors/FileNotFoundError';
-import R2Error from 'src/model/errors/R2Error';
-import YamlParseError from 'src/model/errors/Yaml/YamlParseError';
-import YamlConvertError from 'src/model/errors/Yaml/YamlConvertError';
-import FileWriteError from 'src/model/errors/FileWriteError';
-import ManifestV2 from 'src/model/ManifestV2';
-import ExportFormat from 'src/model/exports/ExportFormat';
-import ExportMod from 'src/model/exports/ExportMod';
-import { spawn } from 'child_process';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import FileNotFoundError from '../../model/errors/FileNotFoundError';
+import R2Error from '../../model/errors/R2Error';
+import YamlParseError from '../../model/errors/Yaml/YamlParseError';
+import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
+import FileWriteError from '../../model/errors/FileWriteError';
+import ManifestV2 from '../../model/ManifestV2';
+import ExportFormat from '../../model/exports/ExportFormat';
+import ExportMod from '../../model/exports/ExportMod';
 import PathResolver from '../manager/PathResolver';
-import AdmZip from 'adm-zip';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import Axios from 'axios';
+import FileUtils from '../../utils/FileUtils';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import LinkProvider from '../../providers/components/LinkProvider';
 
 export default class ProfileModList {
 
-    public static getModList(profile: Profile): ManifestV2[] | R2Error {
-        if (!fs.existsSync(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
-            fs.writeFileSync(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
+    public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
+        const fs = FsProvider.instance;
+        if (!await fs.exists(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
+            await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
         }
         try {
-            const buf: Buffer = fs.readFileSync(
-                path.join(profile.getPathOfProfile(), 'mods.yml')
-            );
             try {
-                const modList: ManifestV2[] = yaml.parse(buf.toString())
-                    .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
-                return modList;
+                return await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))
+                    .then(value => value.toString())
+                    .then(value => {
+                        return yaml.parse(value)
+                            .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
+                    });
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(
@@ -48,11 +51,12 @@ export default class ProfileModList {
         }
     }
 
-    private static saveModList(profile: Profile, modList: ManifestV2[]): R2Error | null {
+    private static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+        const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
             try {
-                fs.writeFileSync(
+                await fs.writeFile(
                     path.join(profile.getPathOfProfile(), 'mods.yml'),
                     yamlModList
                 );
@@ -61,7 +65,7 @@ export default class ProfileModList {
                 return new FileWriteError(
                     `Failed to create mods.yml for profile: ${profile.getProfileName()}`,
                     err.message,
-                    'Try running r2modman as an administrator'
+                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
                 )
             }
         } catch(e) {
@@ -75,14 +79,14 @@ export default class ProfileModList {
         return null;
     }
 
-    public static addMod(mod: ManifestV2): ManifestV2[] | R2Error {
-        let currentModList: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static async addMod(mod: ManifestV2): Promise<ManifestV2[] | R2Error> {
+        let currentModList: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
         const modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
-        this.removeMod(mod);
-        currentModList = this.getModList(Profile.getActiveProfile());
+        await this.removeMod(mod);
+        currentModList = await this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
@@ -91,7 +95,7 @@ export default class ProfileModList {
         } else {
             currentModList.push(mod);
         }
-        const saveError: R2Error | null = this.saveModList(Profile.getActiveProfile(), currentModList);
+        const saveError: R2Error | null = await this.saveModList(Profile.getActiveProfile(), currentModList);
         if (saveError !== null) {
             return saveError;
         }
@@ -99,13 +103,13 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static removeMod(mod: ManifestV2): ManifestV2[] | R2Error {
-        const currentModList: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static async removeMod(mod: ManifestV2): Promise<ManifestV2[] | R2Error> {
+        const currentModList: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (currentModList instanceof R2Error) {
             return currentModList;
         }
         const newModList = currentModList.filter((m: ManifestV2) => m.getName() !== mod.getName());
-        const saveError: R2Error | null = this.saveModList(Profile.getActiveProfile(), newModList);
+        const saveError: R2Error | null = await this.saveModList(Profile.getActiveProfile(), newModList);
         if (saveError !== null) {
             return saveError;
         }
@@ -113,8 +117,8 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static updateMod(mod: ManifestV2, apply: (mod: ManifestV2) => void): ManifestV2[] | R2Error {
-        const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static async updateMod(mod: ManifestV2, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+        const list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
@@ -122,51 +126,52 @@ export default class ProfileModList {
             .forEach((filteringMod: ManifestV2) => {
                 apply(filteringMod);
             });
-        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        const saveErr = await this.saveModList(Profile.getActiveProfile(), list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static exportModListToFile(): R2Error | string {
+    public static async exportModListToFile(): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         try {
-            fs.ensureDirSync(exportDirectory);
+            await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to ensure directory exists', err.message,
-                'Try running r2modman as an administrator');
+                `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
-        const list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+        const list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(Profile.getActiveProfile().getProfileName(), exportModList);
         const exportPath = path.join(exportDirectory, `${Profile.getActiveProfile().getProfileName()}.r2z`);
-        const zip = new AdmZip();
-        zip.addFile('export.r2x', Buffer.from(yaml.stringify(exportFormat)));
-        zip.addLocalFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'), 'config');
-        zip.writeZip(exportPath);
+        const builder = ZipProvider.instance.zipBuilder();
+        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
+        await builder.addFolder("config", path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'config'));
+        await builder.createZip(exportPath);
         return exportPath;
     }
 
-    public static exportModList(): R2Error | void {
-        const exportResult: R2Error | string = this.exportModListToFile();
+    public static async exportModList(): Promise<R2Error | void> {
+        const exportResult: R2Error | string = await this.exportModListToFile();
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
-            spawn('powershell.exe', ['explorer', `/select,${exportResult}`]);
+            LinkProvider.instance.selectFile(exportResult);
         }
     }
 
-    public static exportModListAsCode(callback: (code: string, err: R2Error | null) => void): R2Error | void {
-        const exportResult: R2Error | string = this.exportModListToFile();
+    public static async exportModListAsCode(callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
+        const fs = FsProvider.instance;
+        const exportResult: R2Error | string = await this.exportModListToFile();
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
-            const profileBuffer = '#r2modman\n' + fs.readFileSync(exportResult).toString('base64');
+            const profileBuffer = '#r2modman\n' + (await fs.readFile(exportResult)).toString('base64');
             Axios.post('https://r2modman-hastebin.herokuapp.com/documents', profileBuffer)
                 .then(resp => callback(resp.data.key, null))
                 .catch(e => {
@@ -176,8 +181,8 @@ export default class ProfileModList {
         }
     }
 
-    public static shiftModEntryUp(mod: ManifestV2): ManifestV2[] | R2Error {
-        let list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static async shiftModEntryUp(mod: ManifestV2): Promise<ManifestV2[] | R2Error> {
+        let list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
@@ -190,15 +195,15 @@ export default class ProfileModList {
             const end = list.slice(index - 1);
             list = [...start, mod, ...end];
         }
-        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        const saveErr = await this.saveModList(Profile.getActiveProfile(), list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
         return this.getModList(Profile.getActiveProfile());
     }
 
-    public static shiftModEntryDown(mod: ManifestV2): ManifestV2[] | R2Error {
-        let list: ManifestV2[] | R2Error = this.getModList(Profile.getActiveProfile());
+    public static async shiftModEntryDown(mod: ManifestV2): Promise<ManifestV2[] | R2Error> {
+        let list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
             return list;
         }
@@ -211,7 +216,7 @@ export default class ProfileModList {
             const end = list.slice(index + 1);
             list = [...start, mod, ...end];
         }
-        const saveErr = this.saveModList(Profile.getActiveProfile(), list);
+        const saveErr = await this.saveModList(Profile.getActiveProfile(), list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }

@@ -1,18 +1,18 @@
-import ZipExtrationError from 'src/model/errors/ZipExtractionError';
-import FileWriteError from 'src/model/errors/FileWriteError';
-
-import * as fs from 'fs-extra';
+import FileWriteError from '../../model/errors/FileWriteError';
+import FsProvider from '../../providers/generic/file/FsProvider';
 import * as path from 'path';
-import AdmZip from 'adm-zip';
 import R2Error from '../../model/errors/R2Error';
+import FileUtils from '../../utils/FileUtils';
+import ZipProvider from '../../providers/generic/zip/ZipProvider';
 
 export default class ZipExtract {
 
-    public static extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): ZipExtrationError | null {
-        return this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), result => {
+    public static async extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): Promise<void> {
+        const fs = FsProvider.instance;
+        return await this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async result => {
             if (result) {
                 try {
-                    fs.removeSync(path.join(zipFolder, filename));
+                    await fs.unlink(path.join(zipFolder, filename));
                     callback(result);
                 } catch (e) {
                     const err: Error = e;
@@ -25,8 +25,9 @@ export default class ZipExtract {
             } else {
                 try {
                     // Clear from cache as failed.
-                    fs.rmdirSync(path.join(zipFolder, outputFolderName));
-                    fs.rmdirSync(path.join(zipFolder, filename));
+                    await FileUtils.emptyDirectory(path.join(zipFolder, outputFolderName));
+                    await fs.rmdir(path.join(zipFolder, outputFolderName));
+                    await fs.unlink(path.join(zipFolder, filename));
                 } catch (e) {
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
@@ -40,15 +41,15 @@ export default class ZipExtract {
         });
     }
 
-    public static extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): ZipExtrationError | null {
+    public static async extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): Promise<void> {
         try {
-            const adm = new AdmZip(zip);
-            adm.extractAllTo(outputFolder, true);
+            await ZipProvider.instance.extractAllTo(zip, outputFolder);
             callback(true);
         } catch (e) {
             callback(false);
         }
-        return null;
     }
+
+
 
 }

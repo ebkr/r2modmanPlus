@@ -4,12 +4,13 @@ import * as path from 'path';
 import ProfileModList from './ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../manager/PathResolver';
+import FileUtils from '../../utils/FileUtils';
 import ManifestV2 from '../../model/ManifestV2';
 import VersionNumber from '../../model/VersionNumber';
 
 export default class CacheUtil {
 
-    public static clean() {
+    public static async clean() {
         const profiles: string[] = [];
 
         // Store profile name to allow returning back to current profile.
@@ -21,36 +22,36 @@ export default class CacheUtil {
         });
 
         const activeModSet = new Set<ManifestV2>();
-        profiles.forEach(value => {
+        for (const value of profiles) {
             const profile = new Profile(value);
-            const modList = ProfileModList.getModList(profile);
+            const modList = await ProfileModList.getModList(profile);
             if (modList instanceof R2Error) {
-                return;
+                continue;
             }
             modList.forEach(value => {
                 activeModSet.add(value);
             });
-        });
+        }
 
-        const cacheDirectory = path.join(PathResolver.ROOT, "mods", "cache");
-        fs.readdirSync(cacheDirectory).forEach(folder => {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
+        for (const folder of fs.readdirSync(cacheDirectory)) {
             if (fs.lstatSync(path.join(cacheDirectory, folder)).isDirectory()) {
                 if (this.hasNoVersions(folder, activeModSet)) {
                     // TODO: 310 - Override this with FileUtil usage.
-                    this.emptyDirectory(path.join(cacheDirectory, folder));
+                    await FileUtils.emptyDirectory(path.join(cacheDirectory, folder))
                     fs.rmdirSync(path.join(cacheDirectory, folder));
                 } else {
                     const versions = this.getVersionsInstalled(folder, activeModSet);
-                    fs.readdirSync(path.join(cacheDirectory, folder)).forEach(versionFolder => {
+                    for (const versionFolder of fs.readdirSync(path.join(cacheDirectory, folder))) {
                         const matchingVersion = versions.find(value => value.toString() === versionFolder);
                         if (matchingVersion === undefined) {
-                            this.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
+                            await FileUtils.emptyDirectory(path.join(cacheDirectory, folder, versionFolder));
                             fs.rmdirSync(path.join(cacheDirectory, folder, versionFolder));
                         }
-                    })
+                    }
                 }
             }
-        })
+        }
 
         // Reset profile
         new Profile(currentProfileName);
@@ -65,17 +66,5 @@ export default class CacheUtil {
             .map(value => value.getVersionNumber());
     }
 
-    private static emptyDirectory(dir: string) {
-        const files = fs.readdirSync(dir);
-        files.forEach(filename => {
-            const file = path.join(dir, filename);
-            if (fs.lstatSync(file).isDirectory()) {
-                this.emptyDirectory(file);
-                fs.rmdirSync(file);
-            } else {
-                fs.unlinkSync(file);
-            }
-        })
-    }
 
 }

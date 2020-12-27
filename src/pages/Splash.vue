@@ -105,13 +105,13 @@
                   </p>
                   <ul>
                       <li>
-                          <strong><p>How do I get started?</p></strong>
+                          <p><strong>How do I get started?</strong></p>
                           <p>
                               Head on over to the online tab, and download BepInEx and R2API.
                           </p>
                       </li>
                     <li>
-                      <strong><p>Starting the game with mods</p></strong>
+                      <p><strong>Starting the game with mods</strong></p>
                       <p>
                         You have to start the game from within the manager. Starting through Steam will not work
                         without taking manual steps.
@@ -135,19 +135,10 @@ import { Hero, Progress, Link } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
-import ThunderstoreMod from '../model/ThunderstoreMod';
 import Profile from '../model/Profile';
 
-import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages'
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
-import PathResolver from '../r2mm/manager/PathResolver';
-import ManagerInformation from '../_managerinf/ManagerInformation';
-
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import ThemeManager from '../r2mm/manager/ThemeManager';
-import { Logger, LogSeverity } from '../r2mm/logging/Logger';
-import FolderMigration from '../migrations/FolderMigration';
 
 @Component({
     components: {
@@ -243,25 +234,8 @@ export default class Splash extends Vue {
     }
 
     async created() {
-        ipcRenderer.once('receive-appData-directory', (_sender: any, appData: string) => {
-            PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
-            fs.ensureDirSync(PathResolver.APPDATA_DIR);
-            ThemeManager.apply();
-            Logger.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
-            ipcRenderer.once('receive-is-portable', (_sender: any, isPortable: boolean) => {
-                ManagerInformation.IS_PORTABLE = isPortable;
-                // TODO: Re-enable folder migration
-                // this.loadingText = 'Migrating mods (this may take a while)';
-                // setTimeout(() => {
-                //     FolderMigration.checkAndMigrate()
-                //         .then(this.checkForUpdates);
-                // }, 100);
-                this.loadingText = 'Checking for updates';
-                setTimeout(this.checkForUpdates, 100);
-            });
-            ipcRenderer.send('get-is-portable');
-        });
-        ipcRenderer.send('get-appData-directory');
+        this.loadingText = 'Checking for updates';
+        setTimeout(this.checkForUpdates, 100);
     }
 }
 </script>

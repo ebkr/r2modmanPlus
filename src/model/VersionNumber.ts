@@ -1,4 +1,3 @@
-import { isNumber } from 'util';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 export default class VersionNumber implements ReactiveObjectConverterInterface {
@@ -21,7 +20,7 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
             // Safetly convert split to numeric split.
             let numberArray: number[] = [];
             splitNumbers.forEach(strNum => {
-                if (isNumber(Number(strNum))) {
+                if (Number.isInteger(Number(strNum))) {
                     numberArray = [...numberArray, Number(strNum)];
                 } else {
                     throw Error(`VersionNumber: Number found was NaN. Received: ${splitNumbers}`);
