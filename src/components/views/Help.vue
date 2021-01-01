@@ -113,7 +113,7 @@
             >follow this guide
             </link-component>,
             replacing <span class="code">"BepInEx\core\BepInEx.Preloader.dll" with
-            "r2modman\BepInEx\core\BepInEx.Preloader.dll"
+            "r2modman\BepInEx\core\BepInEx.Preloader.dll"</span>
         </p>
         <br/>
         <h5 class='title is-5'>Something isn't working</h5>
