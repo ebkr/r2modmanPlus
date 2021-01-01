@@ -1,4 +1,5 @@
 {
+    "extends": "@quasar/app/tsconfig-preset",
     "compilerOptions": {
         "allowJs": true,
         "sourceMap": true,

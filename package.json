@@ -1,23 +1,20 @@
 {
-    "name": "r2modman",
+    "name": "r2modman-plus",
     "version": "3.0.36",
-    "description": "r2modman",
-    "productName": "r2modman",
-    "cordovaId": "org.cordova.quasar.app",
-    "capacitorId": "",
-    "author": "ebkr@github.com",
+    "description": "A simple and easy to use Risk of Rain 2 mod manager",
+    "productName": "r2modmanPlus",
+    "author": "ebkr",
     "private": true,
     "scripts": {
-        "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
         "test": "mocha -r ts-node/register tests/**/*.test.ts --experimental-modules",
-        "run": "quasar dev -m electron",
+        "run": "quasar dev -m electron --modern",
         "build-win": "quasar build --mode electron -T win32",
         "build-linux": "quasar build --mode electron -T linux",
         "publish": "quasar build --mode electron --publish always"
     },
     "dependencies": {
         "@node-steam/vdf": "^2.1.0",
-        "@quasar/extras": "^1.4.2",
+        "@quasar/extras": "^1.0.0",
         "adm-zip": "^0.4.16",
         "async-lock": "^1.2.6",
         "axios": "^0.18.1",
@@ -26,26 +23,28 @@
         "bulma-divider": "^0.2.0",
         "bulma-steps": "^2.2.1",
         "bulma-tooltip": "^3.0.2",
+        "core-js": "^3.6.5",
         "dexie": "^3.0.3",
         "dot-prop": "^5.2.0",
         "electron-updater": "^4.2.0",
         "elliptic": "^6.5.3",
         "fs-extra": "^8.1.0",
         "node-ipc": "^9.1.1",
-        "quasar": "^1.7.4",
+        "quasar": "^1.14.7",
         "quill": "^1.3.7",
         "sanitize-filename": "^1.6.3",
         "serialize-javascript": "^3.1.0",
         "unzipper": "^0.10.5",
-        "vue-class-component": "^7.1.0",
+        "vue-class-component": "^7.2.2",
         "vue-i18n": "^8.0.0",
         "vue-property-decorator": "^8.3.0",
-        "yaml": "^1.7.2"
+        "yaml": "^1.7.2",
+        "highlight.js": "^10.4.1"
     },
     "devDependencies": {
-        "@quasar/app": "^1.5.2",
-        "@quasar/quasar-app-extension-testing": "^1.0.0",
-        "@quasar/quasar-app-extension-typescript": "^1.0.0-beta.2",
+        "@quasar/app": "^2.0.0",
+        "@quasar/quasar-app-extension-testing": "^1.0.3",
+        "@quasar/quasar-app-extension-typescript": "^1.0.2",
         "@types/adm-zip": "^0.4.32",
         "@types/async-lock": "^1.1.2",
         "@types/chai": "^4.2.11",
@@ -61,10 +60,10 @@
         "babel-eslint": "^10.0.1",
         "chai": "^4.2.0",
         "devtron": "^1.4.0",
-        "electron": "^8.5.5",
+        "electron": "^11.1.1",
         "electron-builder": "^22.9.1",
-        "electron-debug": "^3.0.0",
-        "electron-devtools-installer": "^2.2.4",
+        "electron-debug": "^3.0.1",
+        "electron-devtools-installer": "^3.0.0",
         "electron-packager": "^14.1.1",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.0.0",
@@ -73,15 +72,24 @@
         "minimist": "^1.2.2",
         "mocha": "^8.0.1",
         "mock-require": "^3.0.3",
+        "node-sass": "^4.13.1",
         "ts-node": "^8.10.2",
         "typescript": "^3.3.3"
     },
-    "engines": {
-        "node": ">= 8.9.0",
-        "npm": ">= 5.6.0",
-        "yarn": ">= 1.6.0"
-    },
     "browserslist": [
-        "last 1 version, not dead, ie >= 11"
-    ]
+        "last 10 Chrome versions",
+        "last 10 Firefox versions",
+        "last 4 Edge versions",
+        "last 7 Safari versions",
+        "last 8 Android versions",
+        "last 8 ChromeAndroid versions",
+        "last 8 FirefoxAndroid versions",
+        "last 10 iOS versions",
+        "last 5 Opera versions"
+    ],
+    "engines": {
+        "node": ">= 10.18.1",
+        "npm": ">= 6.13.4",
+        "yarn": ">= 1.21.1"
+    }
 }
