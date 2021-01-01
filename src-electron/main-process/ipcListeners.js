@@ -14,7 +14,7 @@ export default class Listeners {
 
 ipcMain.on('get-browser-window', ()=>{
     browserWindow.webContents.send('receive-browser-window', browserWindow);
-})
+});
 
 ipcMain.on('update-app', ()=>{
     if (!process.execPath.startsWith(os.tmpdir())) {
@@ -24,24 +24,24 @@ ipcMain.on('update-app', ()=>{
     } else {
         browserWindow.webContents.send('update-done');
     }
-})
+});
 
 ipcMain.on('install-via-thunderstore', (installString) => {
     browserWindow.webContents.send('install-from-thunderstore-string', installString);
-})
+});
 
 ipcMain.on('get-appData-directory', ()=>{
     browserWindow.webContents.send('receive-appData-directory', app.getPath('appData'));
-})
+});
 
 ipcMain.on('get-is-portable', ()=>{
     browserWindow.webContents.send('receive-is-portable', process.execPath.startsWith(os.tmpdir()));
-})
+});
 
 ipcMain.on('restart', ()=>{
     app.relaunch();
     app.exit();
-})
+});
 
 ipcMain.on('get-assets-path', ()=>{
     if (process.env.PROD) {
@@ -49,6 +49,11 @@ ipcMain.on('get-assets-path', ()=>{
     } else {
         browserWindow.webContents.send('receive-assets-path', 'src/statics/');
     }
-})
+});
 
+ipcMain.on('show-open-dialog', (arg, fileOpts) => {
+  dialog.showOpenDialog(browserWindow, fileOpts).then(r => {
+    browserWindow.webContents.send('receive-open-dialog', r);
+  });
+});
 

@@ -21,7 +21,7 @@ export default class ThunderstoreCombo {
                 'Relaunch the manager to update the mod list'
             );
         }
-        const foundVersion = foundMod?.getVersions().find((version: ThunderstoreVersion) => version.getVersionNumber().toString() === packageVersion);
+        const foundVersion = foundMod.getVersions().find((version: ThunderstoreVersion) => version.getVersionNumber().toString() === packageVersion);
         if (foundVersion === undefined) {
             return new R2Error(
                 'Mod does not exist',
