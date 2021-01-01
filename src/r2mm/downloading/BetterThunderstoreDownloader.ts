@@ -154,13 +154,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 // If modpack, use specified dependencies.
                 // If not, get latest version of dependencies.
                 downloadCount += 1;
-                const files = await fs.readdir(path.join(cacheDirectory, mod.getFullName(), modVersion.getVersionNumber().toString()));
-                let isModpack = false;
-                files.forEach(file => {
-                    if (file.toLowerCase().endsWith('.modpack')) {
-                        isModpack = true;
-                    }
-                });
+                let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
                 if (!isModpack) {
                     // If not modpack, get latest
                     dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
