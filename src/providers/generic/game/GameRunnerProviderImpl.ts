@@ -27,7 +27,6 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                     const r2err = new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings');
                     return reject(r2err);
                 }
-                return resolve();
             }));
         });
     }
@@ -49,7 +48,6 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                     const r2err = new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings');
                     return reject(r2err);
                 }
-                return resolve();
             }));
         });
     }
