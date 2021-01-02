@@ -28,7 +28,7 @@ export default class ModBridge {
         const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, ThunderstorePackages.PACKAGES);
         if (latestVersion instanceof ThunderstoreVersion) {
             return mod.getVersionNumber()
-                .isEqualTo(latestVersion.getVersionNumber());
+                .isEqualTo(latestVersion.getVersionNumber()) || mod.getVersionNumber().isNewerThan(latestVersion.getVersionNumber());
         }
         return true;
     }
