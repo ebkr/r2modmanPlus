@@ -142,6 +142,10 @@
             return this.$store.state.thunderstoreModList || [];
         }
 
+        get localModList(): ManifestV2[] {
+            return this.$store.state.localModList || [];
+        }
+
         @Watch('thunderstoreMod')
         async getModVersions() {
             this.currentVersion = null;
@@ -263,15 +267,8 @@
             }, 1);
         }
 
-        async getListOfModsToUpdate(): Promise<ThunderstoreCombo[]> {
-          let modList = await ProfileModList.getModList(Profile.getActiveProfile());
-          if (!(modList instanceof R2Error)) {
-            await this.$store.dispatch('updateModList', modList);
-          }
-          if (modList instanceof R2Error) {
-              modList = [];
-          }
-          return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(modList as ManifestV2[], this.thunderstorePackages);
+        getListOfModsToUpdate(): ThunderstoreCombo[] {
+            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.localModList, this.thunderstorePackages);
         }
 
         async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
