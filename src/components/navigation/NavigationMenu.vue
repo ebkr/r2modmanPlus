@@ -98,7 +98,7 @@
 
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import R2Error from '../../model/errors/R2Error';
-    import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverImpl from 'src/r2mm/manager/GameDirectoryResolver';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -145,7 +145,7 @@
             const settings = await this.settings;
             let dir: string | R2Error;
             if (settings.riskOfRain2Directory === null) {
-                dir = await GameDirectoryResolver.getDirectory();
+                dir = await GameDirectoryResolverImpl.instance.getDirectory();
             } else {
                 dir = settings.riskOfRain2Directory;
             }

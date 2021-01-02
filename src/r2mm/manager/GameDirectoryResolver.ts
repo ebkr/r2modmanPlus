@@ -7,13 +7,14 @@ import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
 import FsProvider from "../../providers/generic/file/FsProvider";
+import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';
 
-export default class GameDirectoryResolver {
+export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
-    public static async getSteamDirectory(): Promise<string | R2Error> {
+    public async getSteamDirectory(): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton();
         if (settings.steamDirectory != null) {
             return settings.steamDirectory;
@@ -47,7 +48,7 @@ export default class GameDirectoryResolver {
         }
     }
 
-    public static async getDirectory(): Promise<R2Error | string> {
+    public async getDirectory(): Promise<R2Error | string> {
         const settings = await ManagerSettings.getSingleton();
         if (settings.riskOfRain2Directory != null) {
             return settings.riskOfRain2Directory;
@@ -73,7 +74,7 @@ export default class GameDirectoryResolver {
         }
     }
 
-    private static async findAppManifest(steamPath: string): Promise<R2Error | string> {
+    private async findAppManifest(steamPath: string): Promise<R2Error | string> {
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;

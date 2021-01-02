@@ -1,4 +1,4 @@
-import GameDirectoryResolver from './GameDirectoryResolver';
+import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
 import R2Error from '../../model/errors/R2Error';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -9,7 +9,7 @@ export default class PreloaderFixer {
 
     public static async fix(): Promise<R2Error | void> {
         const fs = FsProvider.instance;
-        const dirResult = await GameDirectoryResolver.getDirectory();
+        const dirResult = await GameDirectoryResolverImpl.instance.getDirectory();
         if (dirResult instanceof R2Error) {
             return dirResult;
         }
