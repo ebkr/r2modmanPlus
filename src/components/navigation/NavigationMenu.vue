@@ -182,7 +182,6 @@
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }
-                    this.gameRunning = false;
                 });
             } else {
                 const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
@@ -201,7 +200,6 @@
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }
-                    this.gameRunning = false;
                 });
             } else {
                 const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
