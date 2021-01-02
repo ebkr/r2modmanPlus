@@ -48,7 +48,7 @@
     import SettingsItem from './SettingsItem.vue';
     import SettingsRow from '../../model/settings/SettingsRow';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import GameDirectoryResolver from '../../r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
     import R2Error from '../../model/errors/R2Error';
     import PathResolver from '../../r2mm/manager/PathResolver';
     import Profile from '../../model/Profile';
@@ -101,7 +101,7 @@
                 'Change Risk of Rain 2 directory',
                 `Change the location of the Risk of Rain 2 directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolver.getDirectory();
+                    const directory = await GameDirectoryResolverImpl.instance.getDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -115,7 +115,7 @@
                 'Change Steam directory',
                 `Change the location of the Steam directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolver.getSteamDirectory();
+                    const directory = await GameDirectoryResolverImpl.instance.getSteamDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }

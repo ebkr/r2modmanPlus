@@ -6,7 +6,7 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerSettings from './ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
-import GameDirectoryResolver from './GameDirectoryResolver';
+import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 
@@ -14,7 +14,7 @@ export default class ModLinker {
 
     public static async link(): Promise<string[] | R2Error> {
         const settings = await ManagerSettings.getSingleton();
-        const riskOfRain2Directory: string | R2Error = await GameDirectoryResolver.getDirectory();
+        const riskOfRain2Directory: string | R2Error = await GameDirectoryResolverImpl.instance.getDirectory();
         if (riskOfRain2Directory instanceof R2Error) {
             return riskOfRain2Directory;
         }
