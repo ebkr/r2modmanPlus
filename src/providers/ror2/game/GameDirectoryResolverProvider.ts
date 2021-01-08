@@ -1,5 +1,5 @@
 import ProviderUtils from '../../generic/ProviderUtils';
-import R2Error from 'src/model/errors/R2Error';
+import R2Error from '../../../model/errors/R2Error';
 
 export default abstract class GameDirectoryResolverProvider {
 

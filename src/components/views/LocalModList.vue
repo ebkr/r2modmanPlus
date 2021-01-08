@@ -116,6 +116,7 @@
             </template>
         </Modal>
 
+        <slot name="above-list"></slot>
 
         <div v-for='(key, index) in searchableModList' :key="`local-${key.getName()}-${getProfileName()}`">
             <expandable-card
@@ -182,6 +183,9 @@
                 </a>
             </expandable-card>
         </div>
+
+        <slot name="below-list"></slot>
+
     </div>
 </template>
 

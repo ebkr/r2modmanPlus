@@ -59,8 +59,8 @@
     import GameRunnerProvider from './providers/generic/game/GameRunnerProvider';
     import GameRunnerProviderImpl from './providers/generic/game/GameRunnerProviderImpl';
     import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
-    import GameDirectoryResolverImpl from 'src/r2mm/manager/GameDirectoryResolver';
-    import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+    import GameDirectoryResolverImpl from './r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
 
     @Component
     export default class App extends Vue {
