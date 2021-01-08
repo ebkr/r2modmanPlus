@@ -337,14 +337,7 @@
         async disableMod(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
-                    const result = await this.performDisable(dependant);
-                    if (result instanceof R2Error) {
-                        this.$emit('error', result);
-                        return;
-                    }
-                }
-                const result = await this.performDisable(mod);
+                const result = await this.performDisable([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -357,15 +350,17 @@
             this.selectedManifestMod = null;
         }
 
-        async performDisable(mod: ManifestV2): Promise<R2Error | void> {
-            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod);
-            if (disableErr instanceof R2Error) {
-                // Failed to disable
-                this.showingDependencyList = false;
-                this.$emit('error', disableErr);
-                return disableErr;
+        async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
+            for (let mod of mods) {
+                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod);
+                if (disableErr instanceof R2Error) {
+                    // Failed to disable
+                    this.showingDependencyList = false;
+                    this.$emit('error', disableErr);
+                    return disableErr;
+                }
             }
-            const updatedList = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMods(mods, (updatingMod: ManifestV2) => {
                 updatingMod.disable();
             });
             if (updatedList instanceof R2Error) {
@@ -433,7 +428,7 @@
                }
             });
             if (enabledDependants.length === 0) {
-                this.performDisable(mod);
+                this.performDisable([mod]);
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
             }
@@ -447,13 +442,7 @@
         async enableMod(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                for (const dependant of Dependants.getDependencyList(mod, this.modifiableModList)) {
-                    const result = await this.performEnable(dependant);
-                    if (result instanceof R2Error) {
-                        throw result;
-                    }
-                }
-                const result = await this.performEnable(mod);
+                const result = await this.performEnable([...Dependants.getDependencyList(mod, this.modifiableModList), mod]);
                 if (result instanceof R2Error) {
                     throw result;
                 }
@@ -464,19 +453,22 @@
             }
         }
 
-        async performEnable(vueMod: any): Promise<R2Error | void> {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod);
-            if (disableErr instanceof R2Error) {
-                // Failed to disable
-                this.$emit('error', disableErr);
-                return disableErr;
+        async performEnable(mods: ManifestV2[]): Promise<R2Error | void> {
+            for (let mod of mods) {
+                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod);
+                if (disableErr instanceof R2Error) {
+                    // Failed to disable
+                    this.showingDependencyList = false;
+                    this.$emit('error', disableErr);
+                    return disableErr;
+                }
             }
-            const updatedList = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMods(mods, (updatingMod: ManifestV2) => {
                 updatingMod.enable();
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
+                this.showingDependencyList = false;
                 this.$emit('error', updatedList);
                 return updatedList;
             }
