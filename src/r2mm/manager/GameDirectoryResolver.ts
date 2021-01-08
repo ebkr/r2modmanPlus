@@ -7,7 +7,7 @@ import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
 import ManagerSettings from './ManagerSettings';
 import FsProvider from "../../providers/generic/file/FsProvider";
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 const appManifest = 'appmanifest_632360.acf';

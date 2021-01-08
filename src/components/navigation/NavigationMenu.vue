@@ -98,7 +98,7 @@
 
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import R2Error from '../../model/errors/R2Error';
-    import GameDirectoryResolverImpl from 'src/r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
