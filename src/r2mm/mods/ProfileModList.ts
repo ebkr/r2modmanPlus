@@ -117,6 +117,24 @@ export default class ProfileModList {
         return this.getModList(Profile.getActiveProfile());
     }
 
+    public static async updateMods(mods: ManifestV2[], apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+        const list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
+        if (list instanceof R2Error) {
+            return list;
+        }
+        for (let mod of mods) {
+            list.filter((filteringMod: ManifestV2) => filteringMod.getName() === mod.getName())
+                .forEach((filteringMod: ManifestV2) => {
+                    apply(filteringMod);
+                });
+        }
+        const saveErr = await this.saveModList(Profile.getActiveProfile(), list);
+        if (saveErr instanceof R2Error) {
+            return saveErr;
+        }
+        return this.getModList(Profile.getActiveProfile());
+    }
+
     public static async updateMod(mod: ManifestV2, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(Profile.getActiveProfile());
         if (list instanceof R2Error) {
