@@ -33,7 +33,10 @@ export default class AdmZipProvider extends ZipProvider {
     private async sanitizedExtraction(entry: IZipEntry, outputPath: string): Promise<void> {
         const sanitizedTargetName = entry.entryName.split('\\').join('/');
         await FileUtils.ensureDirectory(path.dirname(path.join(outputPath, sanitizedTargetName)));
-        await FsProvider.instance.writeFile(path.join(outputPath, sanitizedTargetName), entry.getData());
+        if (entry.isDirectory)
+            await FileUtils.ensureDirectory(path.join(outputPath, sanitizedTargetName));
+        else
+            await FsProvider.instance.writeFile(path.join(outputPath, sanitizedTargetName), entry.getData());
     }
 
     zipBuilder(): ZipBuilder {
