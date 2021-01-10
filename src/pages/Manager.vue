@@ -706,11 +706,11 @@
 		}
 
 		browseDataFolder() {
-            LinkProvider.instance.openLink(PathResolver.ROOT);
+            LinkProvider.instance.openLink('file://' + PathResolver.ROOT);
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink(Profile.getActiveProfile().getPathOfProfile());
+            LinkProvider.instance.openLink('file://' + Profile.getActiveProfile().getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -793,7 +793,7 @@
             const fs = FsProvider.instance;
 			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
 			if (await this.logFileExists()) {
-				const text = await fs.readFile(logOutputPath).toString();
+				const text = (await fs.readFile(logOutputPath)).toString();
 				if (text.length >= 1992) {
 				    InteractionProvider.instance.copyToClipboard(text);
 				} else {
