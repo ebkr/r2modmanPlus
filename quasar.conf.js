@@ -203,7 +203,10 @@ module.exports = configure(function(/* ctx */) {
                     maintainer: 'ebkr',
                     vendor: 'ebkr',
                     synopsis: 'Risk of Rain 2 Mod Manager',
-                    category: 'Game'
+                    category: 'Game',
+                    mimeTypes: [
+                        "x-scheme-handler/ror2mm"
+                    ]
                 }
             },
 
