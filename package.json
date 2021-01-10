@@ -5,6 +5,7 @@
     "productName": "r2modman",
     "author": "ebkr",
     "private": true,
+    "license": "MIT",
     "scripts": {
         "test": "mocha -r ts-node/register tests/**/*.test.ts --experimental-modules",
         "run": "quasar dev -m electron --modern",

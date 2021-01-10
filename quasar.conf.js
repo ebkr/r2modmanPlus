@@ -198,9 +198,11 @@ module.exports = configure(function(/* ctx */) {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['AppImage', 'tar.gz'],
+                    target: ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman'],
                     icon: 'src/assets/icon.png',
                     maintainer: 'ebkr',
+                    vendor: 'ebkr',
+                    synopsis: 'Risk of Rain 2 Mod Manager',
                     category: 'Game'
                 }
             },
