@@ -98,12 +98,12 @@
 
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import R2Error from '../../model/errors/R2Error';
-    import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ModLinker from '../../r2mm/manager/ModLinker';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
     import ManifestV2 from "../../model/ManifestV2";
-    import GameRunnerProviderImpl from '../../providers/generic/game/GameRunnerProviderImpl';
+    import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
 
     @Component
@@ -145,7 +145,7 @@
             const settings = await this.settings;
             let dir: string | R2Error;
             if (settings.riskOfRain2Directory === null) {
-                dir = await GameDirectoryResolverImpl.instance.getDirectory();
+                dir = await GameDirectoryResolverProvider.instance.getDirectory();
             } else {
                 dir = settings.riskOfRain2Directory;
             }
@@ -178,7 +178,7 @@
                     }
                 }
                 this.gameRunning = true;
-                GameRunnerProviderImpl.instance.startModded().then(value => {
+                GameRunnerProvider.instance.startModded().then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }
@@ -196,7 +196,7 @@
             await this.prepareLaunch();
             if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
                 this.gameRunning = true;
-                GameRunnerProviderImpl.instance.startVanilla().then(value => {
+                GameRunnerProvider.instance.startVanilla().then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }

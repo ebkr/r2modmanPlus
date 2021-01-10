@@ -18,5 +18,4 @@ export default abstract class GameDirectoryResolverProvider {
 
     public abstract getSteamDirectory(): Promise<string | R2Error>;
     public abstract getDirectory(): Promise<string | R2Error>;
-
 }

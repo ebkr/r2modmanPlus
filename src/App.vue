@@ -57,9 +57,11 @@
     import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
     import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
     import GameRunnerProvider from './providers/generic/game/GameRunnerProvider';
-    import GameRunnerProviderImpl from './providers/generic/game/GameRunnerProviderImpl';
+    import WindowsGameRunnerProvider from './providers/generic/game/win32/GameRunnerProviderImpl';
+    import LinuxGameRunnerProvider from './providers/generic/game/linux/GameRunnerProviderImpl';
     import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
-    import GameDirectoryResolverImpl from './r2mm/manager/GameDirectoryResolver';
+    import WindowsGameDirectoryResolver from './r2mm/manager/win32/GameDirectoryResolver';
+    import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
 
     @Component
@@ -144,10 +146,16 @@
             LinkProvider.provide(() => new LinkImpl());
             InteractionProvider.provide(() => new InteractionProviderImpl());
 
-            GameRunnerProvider.provide(() => new GameRunnerProviderImpl());
-
-            const gameDirectoryResolver = new GameDirectoryResolverImpl();
-            GameDirectoryResolverProvider.provide(() => gameDirectoryResolver);
+            switch(process.platform){
+                case "win32":
+                    GameRunnerProvider.provide(() => new WindowsGameRunnerProvider());
+                    GameDirectoryResolverProvider.provide(() => new WindowsGameDirectoryResolver());
+                    break;
+                case "linux":
+                    GameRunnerProvider.provide(() => new LinuxGameRunnerProvider());
+                    GameDirectoryResolverProvider.provide(() => new LinuxGameDirectoryResolver());
+                    break;
+            }
 
             BindLoaderImpl.bind();
         }

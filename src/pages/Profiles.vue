@@ -228,7 +228,7 @@ import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
-import GameDirectoryResolverImpl from '../r2mm/manager/GameDirectoryResolver';
+import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -570,14 +570,14 @@ export default class Profiles extends Vue {
 
         // Set default paths
         if (settings.riskOfRain2Directory === null) {
-            const result = await GameDirectoryResolverImpl.instance.getDirectory();
+            const result = await GameDirectoryResolverProvider.instance.getDirectory();
             if (!(result instanceof R2Error)) {
                 await settings.setRiskOfRain2Directory(result);
             }
         }
 
         if (settings.steamDirectory === null) {
-            const result = await GameDirectoryResolverImpl.instance.getSteamDirectory();
+            const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
             if (!(result instanceof R2Error)) {
                 await settings.setSteamDirectory(result);
             }
