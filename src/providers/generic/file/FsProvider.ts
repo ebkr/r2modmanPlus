@@ -1,5 +1,5 @@
 import ProviderUtils from '../ProviderUtils';
-import LstatInterface from './LstatInterface';
+import StatInterface from './StatInterface';
 
 export default abstract class FsProvider {
 
@@ -22,7 +22,9 @@ export default abstract class FsProvider {
     public abstract mkdirs(path: string): Promise<void>;
     public abstract exists(path: string): Promise<boolean>;
     public abstract unlink(path: string): Promise<void>;
-    public abstract lstat(path: string): Promise<LstatInterface>;
+    public abstract stat(path: string): Promise<StatInterface>;
+    public abstract lstat(path: string): Promise<StatInterface>;
+    public abstract realpath(path: string): Promise<string>;
     public abstract rename(path: string, newPath: string): Promise<void>;
     public abstract copyFile(from: string, to: string): Promise<void>;
     public abstract copyFolder(from: string, to: string): Promise<void>;

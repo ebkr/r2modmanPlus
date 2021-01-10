@@ -553,7 +553,7 @@ export default class Profiles extends Vue {
         const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
         await fs.readdir(profilesDirectory).then(dirContents => {
             dirContents.forEach(async (file: string) => {
-                if ((await fs.lstat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default') {
+                if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default') {
                     this.profileList.push(file);
                 }
             });

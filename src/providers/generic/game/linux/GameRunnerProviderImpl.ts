@@ -17,7 +17,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
     public async startModded(): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         await this.ensureWineWillLoadBepInEx();
-        return this.start(`--doorstop-enable true --doorstop-target "Z:${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")}"`);
+        return this.start(`--doorstop-enable true --doorstop-target "Z:${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
     }
 
     public startVanilla(): Promise<void | R2Error> {
