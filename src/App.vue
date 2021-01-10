@@ -101,7 +101,7 @@
                 }
 
                 PathResolver.ROOT = settings.dataDirectory || PathResolver.APPDATA_DIR;
-                PathResolver.MOD_ROOT = path.join(settings.dataDirectory, "mods");
+                PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, "mods");
 
                 await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
                 await ThemeManager.apply();
