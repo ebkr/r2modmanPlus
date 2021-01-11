@@ -17,7 +17,7 @@ ipcMain.on('get-browser-window', ()=>{
 });
 
 ipcMain.on('update-app', ()=>{
-    if (!process.execPath.startsWith(os.tmpdir())) {
+    if (typeof process.env.APPIMAGE !== "undefined" || !process.execPath.startsWith(os.tmpdir())) {
         autoUpdater.autoDownload = true;
         autoUpdater.checkForUpdatesAndNotify();
         browserWindow.webContents.send('update-done');
@@ -35,7 +35,19 @@ ipcMain.on('get-appData-directory', ()=>{
 });
 
 ipcMain.on('get-is-portable', ()=>{
-    browserWindow.webContents.send('receive-is-portable', process.execPath.startsWith(os.tmpdir()));
+    let isPortable = false;
+    switch(process.platform){
+        case "win32":
+            isPortable = process.execPath.startsWith(os.tmpdir());
+            break;
+        case "linux":
+            // The correct way to handle this should be
+            // isPortable = typeof process.env.APPIMAGE !== "undefined";
+            // but since Manager.vue needs a refactor, we do the opposite
+            isPortable = typeof process.env.APPIMAGE === "undefined";
+            break;
+    }
+    browserWindow.webContents.send('receive-is-portable', isPortable);
 });
 
 ipcMain.on('restart', ()=>{
