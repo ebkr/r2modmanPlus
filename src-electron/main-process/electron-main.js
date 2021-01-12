@@ -2,13 +2,14 @@ import { app, BrowserWindow, nativeTheme, protocol } from 'electron';
 import Listeners from './ipcListeners';
 import Persist from './window-state-persist';
 import { ipcMain } from 'electron';
+import path from 'path';
 import ipcServer from 'node-ipc';
 
 app.allowRendererProcessReuse = true;
 
 try {
   if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
-    require('fs').unlinkSync(require('path').join(app.getPath('userData'), 'DevTools Extensions'));
+    require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'));
   }
 } catch (_) {
 }
@@ -19,8 +20,8 @@ try {
  */
 if (process.env.PROD) {
   global.__statics = __dirname;
-  global.__statics = require('path').join(__dirname, 'statics').replace(/\\/g, '\\\\');
-  global.__assets = require('path').join(__dirname, 'assets').replace(/\\/g, '\\\\');
+  global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\');
+  global.__assets = path.join(__dirname, 'assets').replace(/\\/g, '\\\\');
 }
 
 let mainWindow;
@@ -44,6 +45,7 @@ function createWindow() {
       nodeIntegrationInWorker: true,
       webSecurity: false
     },
+    icon: path.join(__dirname, 'icon.png'),
     autoHideMenuBar: process.env.PROD
   });
 

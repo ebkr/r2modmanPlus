@@ -1,6 +1,6 @@
 import FsProvider from './FsProvider';
 import * as fs from 'fs';
-import LstatInterface from './LstatInterface';
+import StatInterface from './StatInterface';
 import * as path from 'path';
 import Lock from 'async-lock';
 
@@ -19,8 +19,16 @@ export default class NodeFs extends FsProvider {
         });
     }
 
-    async lstat(path: string): Promise<LstatInterface> {
+    async stat(path: string): Promise<StatInterface> {
+        return await fs.promises.stat(path);
+    }
+
+    async lstat(path: string): Promise<StatInterface> {
         return await fs.promises.lstat(path);
+    }
+
+    async realpath(path: string): Promise<string> {
+        return await fs.promises.realpath(path);
     }
 
     async mkdirs(path: string): Promise<void> {

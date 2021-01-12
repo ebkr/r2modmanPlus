@@ -48,7 +48,7 @@
     import SettingsItem from './SettingsItem.vue';
     import SettingsRow from '../../model/settings/SettingsRow';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import GameDirectoryResolverImpl from '../../r2mm/manager/GameDirectoryResolver';
+    import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
     import R2Error from '../../model/errors/R2Error';
     import PathResolver from '../../r2mm/manager/PathResolver';
     import Profile from '../../model/Profile';
@@ -101,7 +101,7 @@
                 'Change Risk of Rain 2 directory',
                 `Change the location of the Risk of Rain 2 directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolverImpl.instance.getDirectory();
+                    const directory = await GameDirectoryResolverProvider.instance.getDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -115,7 +115,7 @@
                 'Change Steam directory',
                 `Change the location of the Steam directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolverImpl.instance.getSteamDirectory();
+                    const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -175,7 +175,7 @@
                 'Debugging',
                 'Set launch parameters',
                 'Provide custom arguments used to start the game.',
-                async () => 'These commands are used against the Steam.exe on game startup',
+                async () => 'These commands are used against the Steam executable on game startup',
                 'fa-wrench',
                 () => this.emitInvoke('SetLaunchParameters')
             ),

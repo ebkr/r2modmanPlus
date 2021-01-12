@@ -1,4 +1,4 @@
-export default interface LstatInterface {
+export default interface StatInterface {
 
     isDirectory: () => boolean;
     isFile: () => boolean;

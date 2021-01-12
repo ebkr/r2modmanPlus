@@ -1,11 +1,11 @@
-import GameRunnerProvider from './GameRunnerProvider';
-import LoggerProvider, { LogSeverity } from '../../ror2/logging/LoggerProvider';
-import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
-import R2Error from '../../../model/errors/R2Error';
+import GameRunnerProvider from '../GameRunnerProvider';
+import LoggerProvider, { LogSeverity } from '../../../ror2/logging/LoggerProvider';
+import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
+import R2Error from '../../../../model/errors/R2Error';
 import { exec } from "child_process";
 import path from "path";
-import Profile from '../../../model/Profile';
-import GameDirectoryResolverImpl from '../../../r2mm/manager/GameDirectoryResolver';
+import Profile from '../../../../model/Profile';
+import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
@@ -13,7 +13,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         return new Promise(async (resolve, reject) => {
             LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
             const settings = await ManagerSettings.getSingleton();
-            const steamDir: string | R2Error = await GameDirectoryResolverImpl.instance.getSteamDirectory();
+            const steamDir: string | R2Error = await GameDirectoryResolverProvider.instance.getSteamDirectory();
             if (steamDir instanceof R2Error) {
                 return reject(steamDir);
             }
@@ -36,7 +36,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         return new Promise(async (resolve, reject) => {
             LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
             const settings = await ManagerSettings.getSingleton();
-            const steamDir: string | R2Error = await GameDirectoryResolverImpl.instance.getSteamDirectory();
+            const steamDir: string | R2Error = await GameDirectoryResolverProvider.instance.getSteamDirectory();
             if (steamDir instanceof R2Error) {
                 return reject(steamDir);
             }

@@ -188,7 +188,7 @@ module.exports = configure(function(/* ctx */) {
                 appId: 'ebkr-r2modman',
                 win: {
                     target: ['nsis', 'portable'],
-                    icon: 'src/assets/icon.png'
+                    icon: 'src/assets/icon.ico'
                 },
                 nsis: {
                     oneClick: false,
@@ -198,9 +198,15 @@ module.exports = configure(function(/* ctx */) {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['AppImage', 'snap'],
-                    icon: 'src/assets/icon.png',
-                    maintainer: 'ebkr'
+                    target: ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman'],
+                    icon: 'src/assets/icon',
+                    maintainer: 'ebkr',
+                    vendor: 'ebkr',
+                    synopsis: 'Risk of Rain 2 Mod Manager',
+                    category: 'Game',
+                    mimeTypes: [
+                        "x-scheme-handler/ror2mm"
+                    ]
                 }
             },
 
