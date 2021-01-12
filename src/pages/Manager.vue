@@ -645,7 +645,7 @@
 			}
 		}
 
-		async checkIfSteamDirectoryIsValid(dir : string) : Promise<boolean> { // TODO: FIX
+		async checkIfSteamDirectoryIsValid(dir : string) : Promise<boolean> {
 			switch(process.platform){
 				case 'win32':
 					return (await FsProvider.instance.readdir(dir))
