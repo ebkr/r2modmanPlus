@@ -26,7 +26,7 @@
 			<div class='modal-content'>
 				<div class='notification is-danger'>
 					<h3 class='title'>Failed to set the Steam directory</h3>
-					<p>The directory must contain "Steam.exe".</p>
+					<p>The directory must contain the Steam executable file.</p>
 					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
 				</div>
 			</div>

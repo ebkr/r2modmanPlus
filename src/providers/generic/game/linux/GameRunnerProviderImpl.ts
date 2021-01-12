@@ -65,13 +65,21 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
     }
 
     private regAddInSection(reg: string, section: string, key: string, value: string): string {
+        /*
+            Example section
+            [header]                // our section variable
+            #time=...               // timestamp
+            "key"="value"
+
+            It's ended with two newlines (/n/n)
+        */
         let split = reg.split("\n");
 
         let begin = 0;
         // Get section begin
         for (let index = 0; index < split.length; index++) {
             if (split[index].startsWith(section)) {
-                begin = index + 2;
+                begin = index + 2; // We need to skip the timestamp line
                 break;
             }
         }
