@@ -3,7 +3,7 @@ import AdmZip, { IZipEntry } from 'adm-zip';
 import * as path from 'path';
 import ZipBuilder from './ZipBuilder';
 import ZipEntryInterface from './ZipEntryInterface';
-import FileUtils from 'src/utils/FileUtils';
+import FileUtils from '../../../utils/FileUtils';
 import FsProvider from '../file/FsProvider';
 
 export default class AdmZipProvider extends ZipProvider {

@@ -3,8 +3,8 @@ import R2Error from '../../model/errors/R2Error';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
-import LinkProvider from 'src/providers/components/LinkProvider';
-import FileUtils from 'src/utils/FileUtils';
+import LinkProvider from '../../providers/components/LinkProvider';
+import FileUtils from '../../utils/FileUtils';
 
 export default class PreloaderFixer {
 
