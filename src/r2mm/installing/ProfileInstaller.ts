@@ -80,11 +80,11 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         const bepInExLocation: string = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx');
         const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
-            return Promise.resolve(files);
+            return files;
         }
         const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
         if (applyError instanceof R2Error) {
-            return Promise.resolve(applyError);
+            return applyError;
         }
     }
 
@@ -105,35 +105,38 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         const files: string[] = [];
         for (const directory of tree.getDirectories()) {
             if (directory.getDirectoryName() !== mod.getName()) {
-                await this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+                const applyError = await this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+                if (applyError instanceof R2Error) {
+                    return applyError;
+                }
             } else {
                 files.push(...(await this.getDescendantFiles(null, path.join(location, directory.getDirectoryName()))));
             }
         }
-        files.forEach((file: string) => {
+        for (const file of files) {
             try {
                 if (mode === ModMode.DISABLED) {
-                    modModeExtensions.forEach(async ext => {
+                    for (const ext of modModeExtensions) {
                         if (file.toLowerCase().endsWith(ext)) {
                             await fs.rename(file, file + '.old');
                         }
-                    });
+                    }
                 } else if (mode === ModMode.ENABLED) {
-                    modModeExtensions.forEach(async ext => {
+                    for (const ext of modModeExtensions) {
                         if (file.toLowerCase().endsWith(ext + ".old")) {
                             await fs.rename(file, file.substring(0, file.length - ('.old').length));
                         }
-                    });
+                    }
                 }
             } catch(e) {
                 const err: Error = e;
                 return new R2Error(
                     `Failed to rename file ${file} with ModMode of ${mode}`,
                     err.message,
-                    'Try going to settings, and re-select the profile from the profile selection screen'
-                )
+                    'Ensure that the game is closed.'
+                );
             }
-        })
+        }
     }
 
     async getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]> {

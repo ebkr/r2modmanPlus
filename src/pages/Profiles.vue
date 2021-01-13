@@ -457,7 +457,6 @@ export default class Profiles extends Vue {
             parsedYaml.profileName,
             parsedYaml.mods.map((mod: any) => {
                 const enabled = mod.enabled === undefined || mod.enabled;
-                console.log("Importing", mod.name);
                 return new ExportMod(
                     mod.name,
                     new VersionNumber(

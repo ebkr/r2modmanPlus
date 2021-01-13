@@ -345,6 +345,7 @@
             } catch (e) {
                 // Failed to disable mod.
                 const err: R2Error = e;
+                this.$emit("error", err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
