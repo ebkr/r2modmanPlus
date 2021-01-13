@@ -9,13 +9,13 @@ export default class NodeFs extends FsProvider {
     private static lock = new Lock();
 
     async exists(path: string): Promise<boolean> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
                 const result = await fs.promises.access(path, fs.constants.F_OK)
                     .then(() => true)
                     .catch(() => false);
                 resolve(result);
-            })
+            }).catch(reject);
         });
     }
 
@@ -36,11 +36,11 @@ export default class NodeFs extends FsProvider {
     }
 
     async readFile(path: string): Promise<Buffer> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, () => {
                 let content = fs.readFileSync(path);
                 resolve(content);
-            });
+            }).catch(reject);
         });
     }
 
@@ -53,38 +53,41 @@ export default class NodeFs extends FsProvider {
     }
 
     async unlink(path: string): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
-                await fs.promises.unlink(path);
-                resolve();
-            })
+                fs.promises.unlink(path)
+                    .then(resolve)
+                    .catch(reject);
+            }).catch(reject);
         })
     }
 
     async writeFile(path: string, content: string | Buffer): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, () => {
                 fs.writeFileSync(path, content);
                 resolve();
-            });
+            }).catch(reject);
         })
     }
 
     async rename(path: string, newPath: string): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
-                await fs.promises.rename(path, newPath);
-                resolve();
-            });
+                fs.promises.rename(path, newPath)
+                    .then(resolve)
+                    .catch(reject);
+            }).catch(reject);
         });
     }
 
     async copyFile(from: string, to: string): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(from, async () => {
-                await fs.promises.copyFile(from, to);
-                resolve();
-            });
+                fs.promises.copyFile(from, to)
+                    .then(resolve)
+                    .catch(reject);
+            }).catch(reject);
         });
     }
 
