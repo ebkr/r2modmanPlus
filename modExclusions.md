@@ -21,3 +21,9 @@ ethanbrews-Forecast_Mod_Manager
 Dasvcx-Enforcer
 
 SgtPopNFresh-BepInExPack
+
+TheLamiaLover-MobileTurretFungus
+
+Squidy-RogueWisp
+
+TheLamiaLover-ItemStatsMod
