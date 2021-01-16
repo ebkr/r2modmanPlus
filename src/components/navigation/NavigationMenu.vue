@@ -90,6 +90,7 @@
                     </ul>
                 </li>
             </ul>
+            <slot></slot>
         </aside>
     </div>
 </template>
