@@ -2,7 +2,7 @@ import SettingsViewProvider from '../SettingsViewProvider';
 import LocalModListProvider from '../LocalModListProvider';
 import OnlineModListProvider from '../OnlineModListProvider';
 import HelpPageProvider from '../HelpPageProvider';
-import NavigationMenuProvider from 'src/providers/components/loaders/NavigationMenuProvider';
+import NavigationMenuProvider from '../NavigationMenuProvider';
 
 export default class BindLoaderImpl {
 
