@@ -205,7 +205,7 @@
         />
 
 		<div class='columns' id='content'>
-			<div class="column is-one-quarter non-selectable">
+			<div class="column non-selectable" :class="navbarClass">
                 <NavigationMenu :view="view"
                                 :help-page="helpPage"
                                 @clicked-installed="view = 'installed'; helpPage = ''"
@@ -220,7 +220,7 @@
                                 @error="showError($event)"
                 />
 			</div>
-			<div class='column is-three-quarters'>
+			<div class="column" :class="contentClass">
 				<div v-show="view === 'online'">
 					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
 						<div class='card is-shadowless is-square'>
@@ -311,7 +311,7 @@
 <script lang='ts'>
 	import Vue from 'vue';
 	import Component from 'vue-class-component';
-	import { Watch } from 'vue-property-decorator';
+    import { Prop, Watch } from 'vue-property-decorator';
 	import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 	import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -350,23 +350,22 @@
     import CacheUtil from '../r2mm/mods/CacheUtil';
     import CategoryFilterMode from '../model/enums/CategoryFilterMode';
     import ArrayUtils from '../utils/ArrayUtils';
-    import NavigationMenu from '../components/navigation/NavigationMenu.vue';
     import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
     import LinkProvider from '../providers/components/LinkProvider';
     import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
     import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
     import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
-    import Help from '../components/views/Help.vue';
     import HelpPageProvider from '../providers/components/loaders/HelpPageProvider';
+    import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 
 	@Component({
 		components: {
             Help: HelpPageProvider.provider,
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
+            NavigationMenu: NavigationMenuProvider.provider,
             SettingsView,
             DownloadModModal,
-            NavigationMenu,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
@@ -376,6 +375,14 @@
 		}
 	})
 	export default class Manager extends Vue {
+
+	    @Prop({default: "is-one-quarter"})
+        private navbarClass!: string;
+
+        @Prop({default: "is-three-quarters"})
+        private contentClass!: string;
+
+
 		view: string = 'installed';
 		sortedThunderstoreModList: ThunderstoreMod[] = [];
 		searchableThunderstoreModList: ThunderstoreMod[] = [];
