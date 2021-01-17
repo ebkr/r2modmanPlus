@@ -63,3 +63,9 @@
 
     --code-font-color: #ffb583;
 }
+
+html.html--dark {
+    body {
+        color: var(--text);
+    }
+}
