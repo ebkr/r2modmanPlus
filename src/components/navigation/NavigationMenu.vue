@@ -62,32 +62,6 @@
                     <a href="#" :class="[view === 'help' ? 'is-active' : '']"
                        data-ref="help" @click="emitClick($event.target)">
                         <i class="fas fa-question-circle icon--margin-right"/>Help</a>
-                    <ul v-if="view === 'help'">
-                        <li>
-                            <a href='#' :class="[{'is-active': helpPage === 'tips-and-tricks'}]"
-                               data-ref="tips-and-tricks" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-lightbulb icon--margin-right"/>Tips and tricks
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#' :class="[{'is-active': helpPage === 'game-wont-start'}]"
-                               data-ref="game-wont-start" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-gamepad icon--margin-right"/>Game won't start
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#' :class="[{'is-active': helpPage === 'mods-not-working'}]"
-                               data-ref="mods-not-working" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-ban icon--margin-right"/>Mods aren't working
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#' :class="[{'is-active': helpPage === 'like-r2'}]"
-                               data-ref="like-r2" @click="emitHelpSectionClick($event.target)">
-                                <i class="fas fa-heart icon--margin-right"/>Like {{ appName }}?
-                            </a>
-                        </li>
-                    </ul>
                 </li>
             </ul>
             <slot></slot>
@@ -113,9 +87,6 @@
         @Prop({default: ""})
         private view!: string;
 
-        @Prop({default: ""})
-        private helpPage!: string;
-
         private gameRunning: boolean = false;
 
         get settings() {
@@ -136,10 +107,6 @@
 
         emitClick(element: any) {
             this.$emit("clicked-" + element.getAttribute("data-ref"));
-        }
-
-        emitHelpSectionClick(element: HTMLElement) {
-            this.$emit("help-clicked-" + element.getAttribute("data-ref"));
         }
 
         async prepareLaunch() {

@@ -207,16 +207,11 @@
 		<div class='columns' id='content'>
 			<div class="column non-selectable" :class="navbarClass">
                 <NavigationMenu :view="view"
-                                :help-page="helpPage"
-                                @clicked-installed="view = 'installed'; helpPage = ''"
-                                @clicked-online="view = 'online'; helpPage = ''"
-                                @clicked-settings="view = 'settings'; helpPage = ''"
-                                @clicked-help="view = 'help'; helpPage = ''"
-                                @clicked-config-editor="openConfigEditor"
-                                @help-clicked-tips-and-tricks="helpPage = 'tips-and-tricks'"
-                                @help-clicked-game-wont-start="helpPage = 'game-wont-start'"
-                                @help-clicked-mods-not-working="helpPage = 'mods-not-working'"
-                                @help-clicked-like-r2="helpPage = 'like-r2'"
+                                @clicked-installed="view = 'installed'"
+                                @clicked-online="view = 'online'"
+                                @clicked-settings="view = 'settings'"
+                                @clicked-help="openRoute('/help')"
+                                @clicked-config-editor="openRoute('/config-editor')"
                                 @error="showError($event)"
                 />
 			</div>
@@ -300,9 +295,6 @@
                         <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
 					</template>
 				</div>
-				<div v-show="view === 'help'">
-					<Help :help-page="helpPage"/>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -355,12 +347,10 @@
     import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
     import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
     import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
-    import HelpPageProvider from '../providers/components/loaders/HelpPageProvider';
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 
 	@Component({
 		components: {
-            Help: HelpPageProvider.provider,
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
@@ -392,7 +382,6 @@
 		// Increment by one each time new modal is shown
 		downloadObject: any | null = null;
 		downloadingMod: boolean = false;
-		helpPage: string = '';
 		sortingStyleModel: string = SortingStyle.DEFAULT;
 		sortingStyle: string = SortingStyle.DEFAULT;
 		sortingDirectionModel: string = SortingDirection.STANDARD;
@@ -737,8 +726,8 @@
 			ThemeManager.apply();
 		}
 
-		openConfigEditor() {
-			this.$router.push('/config-editor');
+		openRoute(route: string) {
+			this.$router.push(route);
 		}
 
 		isManagerUpdateAvailable() {

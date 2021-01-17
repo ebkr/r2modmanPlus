@@ -5,7 +5,7 @@
                 @clicked-installed="route('installed')"
                 @clicked-online="route('online')"
                 @clicked-settings="route('settings')"
-                @clicked-help="route('help')"
+                @clicked-help="goto('/help')"
             />
         </div>
         <div class="column" :class="contentClass">
@@ -49,6 +49,10 @@
 
         route(ref: string) {
             this.$router.replace(`/manager?view=${ref}`);
+        }
+
+        goto(ref: string) {
+            this.$router.replace(ref);
         }
 
     }
