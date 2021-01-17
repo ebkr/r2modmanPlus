@@ -100,10 +100,9 @@
 <script lang="ts">
 
     import { Component, Prop, Vue } from 'vue-property-decorator';
-    import Hero from '../components/Hero';
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
     import Profile from '../model/Profile';
-    import Link from '../components/Link.vue';
+    import {Hero, Link} from '../components/all';
 
     @Component({
         components: {
