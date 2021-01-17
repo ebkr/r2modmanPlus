@@ -29,6 +29,13 @@ const routes: RouteConfig[] = [
         meta: {
             title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
         }
+    },
+    {
+        path: '/help',
+        component: () => import('src/pages/Help.vue'),
+        meta: {
+            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+        }
     }
 ];
 
