@@ -54,18 +54,23 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.0
+- Linux support (thanks to AryToNeX).
+- Updates will no longer prompt if a newer version is installed.
+- New help screen.
+- Upgraded Electron from 8 to 11.
+- .modpack file is no longer required.
+- Legacy/symlink install modes are no longer options. Replaced with direct launch parameters.
+- Download progress will no longer stay at 0%.
+- Backend is now async meaning fewer app hangs when installing mods.
+- General fixes
+
 ### 3.0.36
 - Fixed issue where data directory is incorrect on first launch.
 - Upgraded Electron version.
 
 ### 3.0.35
 - Fixed issue where launch errors would not display.
-
-### 3.0.34
-- You can now launch the game directly from the config editor.
-- True and false config options no longer require manual typing.
-- Added NSFW flag to categories filter. NSFW mods are hidden by default.
-- Sorting options on the installed tab are persistent between launches.
 
 ## Screenshots
 
