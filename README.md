@@ -26,10 +26,24 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 ## Installing
 
 ### First time installing
-#### Do not install r2modman inside the Risk of Rain 2 folder.
+#### Windows
 1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
 2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
 3. Follow the steps in the installer.
+
+#### Linux
+1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+2. Inside the download **.zip** file there is an AppImage release.
+
+**If you'd prefer to install platform specific builds then you can find them under the latest GitHub release on the ebkr/r2modmanPlus repository**
+
+**Platform builds:**
+ - deb
+ - rpm
+ - pacman
+ - tar.gz
+
+ _Problems with Linux builds should be reported in the [r2modman discord](https://discord.gg/jE2zWHY)._
 
 ### Updating
 r2modman will automatically download any available updates whilst you use it.
@@ -54,6 +68,11 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.1
+- Installing mods using the "Install with Mod Manager" button on Thunderstore will no longer produce duplicates.
+- Updating mods should now reflect on the installed screen.
+- Online section now shows 60 more mods per page.
+
 ### 3.1.0
 - Linux support (thanks to AryToNeX).
 - Updates will no longer prompt if a newer version is installed.
@@ -68,9 +87,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 ### 3.0.36
 - Fixed issue where data directory is incorrect on first launch.
 - Upgraded Electron version.
-
-### 3.0.35
-- Fixed issue where launch errors would not display.
 
 ## Screenshots
 
