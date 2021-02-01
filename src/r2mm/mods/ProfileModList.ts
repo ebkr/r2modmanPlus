@@ -17,8 +17,15 @@ import Axios from 'axios';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
+import AsyncLock from 'async-lock';
 
 export default class ProfileModList {
+
+    private static lock = new AsyncLock();
+
+    public static async requestLock(fn: () => any) {
+        return this.lock.acquire("acquire", fn);
+    }
 
     public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;

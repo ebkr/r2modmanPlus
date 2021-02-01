@@ -267,10 +267,10 @@
         @Watch('searchQuery')
         filterModList() {
             if (this.searchQuery.trim() === '') {
-                this.searchableModList = {...this.modifiableModList};
+                this.searchableModList = [...(this.modifiableModList || [])];
             }
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return x.getName().toLowerCase().search(this.searchQuery.toLowerCase()) >= 0;
+                return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
             });
         }
 
@@ -292,7 +292,7 @@
                 this.$emit('error', updatedList);
                 return;
             }
-            await this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList", updatedList);
             this.filterModList();
         }
 
