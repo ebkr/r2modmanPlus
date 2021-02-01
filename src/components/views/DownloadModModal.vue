@@ -209,22 +209,23 @@
                 } else if (status === StatusEnum.PENDING) {
                     if (this.downloadObject.assignId === assignId) {
                         this.downloadObject = Object.assign({}, {
-                            assignId: assignId,
                             progress: progress,
-                            modName: modName
+                            modName: modName,
+                            assignId: assignId
                         });
                     }
                 }
             }, async (downloadedMods: ThunderstoreCombo[]) => {
-                downloadedMods.forEach(combo => {
-                    this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                ProfileModList.requestLock(async () => {
+                    for (const combo of downloadedMods) {
+                        await this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                    }
+                    this.downloadingMod = false;
+                    const modList = await ProfileModList.getModList(Profile.getActiveProfile());
+                    if (!(modList instanceof R2Error)) {
+                        await this.$store.dispatch('updateModList', modList);
+                    }
                 });
-                this.downloadingMod = false;
-                const modList = await ProfileModList.getModList(Profile.getActiveProfile());
-                if (!(modList instanceof R2Error)) {
-                    // ipcRenderer.emit('update-local-mod-list', null, modList);
-                    await this.$store.dispatch('updateModList', modList);
-                }
             });
         }
 
@@ -255,14 +256,16 @@
                         }
                     }
                 }, async (downloadedMods: ThunderstoreCombo[]) => {
-                    for (const combo of downloadedMods) {
-                        await this.installModAfterDownload(combo.getMod(), combo.getVersion());
-                    }
-                    this.downloadingMod = false;
-                    const modList = await ProfileModList.getModList(Profile.getActiveProfile());
-                    if (!(modList instanceof R2Error)) {
-                        await this.$store.dispatch('updateModList', modList);
-                    }
+                    ProfileModList.requestLock(async () => {
+                        for (const combo of downloadedMods) {
+                            await this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                        }
+                        this.downloadingMod = false;
+                        const modList = await ProfileModList.getModList(Profile.getActiveProfile());
+                        if (!(modList instanceof R2Error)) {
+                            await this.$store.dispatch('updateModList', modList);
+                        }
+                    });
                 });
             }, 1);
         }

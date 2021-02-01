@@ -142,7 +142,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         const settings = await ManagerSettings.getSingleton();
 
-        const downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+        let downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
 
         await this.downloadAndSave(combo, settings, async (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
@@ -158,6 +158,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 if (!isModpack) {
                     // If not modpack, get latest
                     dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+                    downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
                 }
                 // If no dependencies, end here.
                 if (dependencies.length === 0) {
@@ -190,8 +191,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
         const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
         const comboList: ThunderstoreCombo[] = [];
-        modList.forEach(importMod => {
-            tsMods.forEach(mod => {
+        for (const importMod of modList) {
+            for (const mod of tsMods) {
                 if (mod.getFullName() == importMod.getName()) {
                     mod.getVersions().forEach(version => {
                         if (version.getVersionNumber().isEqualTo(importMod.getVersionNumber())) {
@@ -202,8 +203,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                         }
                     });
                 }
-            });
-        });
+            }
+        }
 
         const settings = await ManagerSettings.getSingleton();
 
@@ -246,7 +247,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
-        return list.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.ignoreCache).length;
+        return list.length;
     }
 
     public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
@@ -273,7 +274,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     callback(100, StatusEnum.FAILURE, error || null);
                 }
             });
-        }).catch(reason => {
+        }).catch((reason: Error) => {
+            callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
         })
     }
 

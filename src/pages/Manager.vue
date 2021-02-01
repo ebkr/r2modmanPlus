@@ -439,7 +439,7 @@
 
 		filterThunderstoreModList() {
 			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
-				return x.getFullName().toLowerCase().search(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
+				return x.getFullName().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
 			});
 			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
 			if (this.filterCategories.length > 0) {
@@ -568,10 +568,12 @@
 					});
 				}
 			}, (downloadedMods: ThunderstoreCombo[]) => {
-				downloadedMods.forEach(combo => {
-					this.installModAfterDownload(combo.getMod(), combo.getVersion());
-				});
-				this.downloadingMod = false;
+                ProfileModList.requestLock(async () => {
+                    for (const combo of downloadedMods) {
+                        await this.installModAfterDownload(combo.getMod(), combo.getVersion());
+                    }
+                    this.downloadingMod = false;
+                });
 			});
 		}
 
@@ -768,7 +770,7 @@
 		}
 
 		getPageResultSize() {
-			return 80;
+			return 140;
 		}
 
 		showLaunchParameters() {

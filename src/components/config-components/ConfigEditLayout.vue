@@ -94,7 +94,7 @@
                         section = line.trim().substring(1, line.trim().length - 1);
                         this.dumpedConfigVariables[section] = {};
                         comments = [];
-                    } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
+                    } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
                         const sides = line.split('=');
                         const rightSide = sides.splice(1).join("=");
                         if (comments.find(value => value.trim().startsWith("# Setting type: Boolean"))) {
@@ -134,7 +134,7 @@
                 if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
                     section = line.trim().substring(1, line.trim().length - 1);
                     builtString += line + '\n';
-                } else if (!line.trim().startsWith('#') && line.search('=') > 0) {
+                } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
                     const sides = line.split('=');
                     builtString += `${sides[0].trim()} = ${this.dumpedConfigVariables[section][sides[0].trim()].value}\n`;
                 } else {

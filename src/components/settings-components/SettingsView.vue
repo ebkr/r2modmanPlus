@@ -60,6 +60,7 @@
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ModBridge from '../../r2mm/mods/ModBridge';
+    import ThunderstoreDownloaderProvider from 'src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
     @Component({
         components: {
@@ -240,7 +241,7 @@
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
                 async () => {
-                    const outdatedMods = this.localModList.filter(mod => !ModBridge.isLatestVersion(mod));
+                    const outdatedMods = ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.localModList, this.$store.state.thunderstoreModList);
                     if (outdatedMods.length === 1) {
                         return "1 mod has an update available";
                     }
@@ -313,8 +314,8 @@
         onSearchChange() {
             this.searchableSettings = this.settingsList
                 .filter(value =>
-                    value.action.toLowerCase().search(this.search.toLowerCase()) >= 0
-                    || value.description.toLowerCase().search(this.search.toLowerCase()) >= 0);
+                    value.action.toLowerCase().indexOf(this.search.toLowerCase()) >= 0
+                    || value.description.toLowerCase().indexOf(this.search.toLowerCase()) >= 0);
         }
 
         getFilteredSettings(): Array<SettingsRow> {
