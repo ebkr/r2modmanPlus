@@ -9,7 +9,7 @@ import ManagerSettings from '../ManagerSettings';
 import FsProvider from "../../../providers/generic/file/FsProvider";
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 
-const appManifest = 'appmanifest_632360.acf';
+const appManifest = 'appmanifest_1366540.acf';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
