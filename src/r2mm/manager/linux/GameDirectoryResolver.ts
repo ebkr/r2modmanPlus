@@ -42,8 +42,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const fs = FsProvider.instance;
 
         const settings = await ManagerSettings.getSingleton();
-        if (settings.riskOfRain2Directory != null) {
-            return settings.riskOfRain2Directory;
+        if (settings.dysonSphereProgramDirectory != null) {
+            return settings.dysonSphereProgramDirectory;
         }
         try {
             const steamPath = await this.getSteamDirectory();
@@ -53,7 +53,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const manifestLocation = await this.findAppManifestLocation(steamPath);
             if (manifestLocation instanceof R2Error)
                 return manifestLocation;
-            
+
             const parsedVdf = await this.parseAppManifest(manifestLocation);
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
@@ -61,7 +61,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return riskOfRain2Path;
             } else {
                 return new FileNotFoundError(
-                    'Risk of Rain 2 does not exist in Steam\'s specified location',
+                    'Dyson Sphere Program does not exist in Steam\'s specified location',
                     `Failed to find directory: ${riskOfRain2Path}`,
                     null
                 )
@@ -69,9 +69,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve the Risk of Rain 2 install directory',
+                'Unable to resolve the Dyson Sphere Program install directory',
                 err.message,
-                'Try manually locating the Risk of Rain 2 install directory through the settings'
+                'Try manually locating the Dyson Sphere Program install directory through the settings'
             )
         }
     }
@@ -92,7 +92,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return compatDataPath;
             } else {
                 return new FileNotFoundError(
-                    'Risk of Rain 2 compatibility data do not exist in Steam\'s specified location',
+                    'Dyson Sphere Program compatibility data do not exist in Steam\'s specified location',
                     `Failed to find directory: ${compatDataPath}`,
                     null
                 )
@@ -100,9 +100,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch (e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve the Risk of Rain 2 compatibility data directory',
+                'Unable to resolve the Dyson Sphere Program compatibility data directory',
                 err.message,
-                'Try manually locating the Risk of Rain 2 compatibility data directory through the settings'
+                'Try manually locating the Dyson Sphere Program compatibility data directory through the settings'
             )
         }
     }
@@ -171,7 +171,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
-                'Unable to locate Risk of Rain 2 Installation Directory',
+                'Unable to locate Dyson Sphere Program Installation Directory',
                 `Searched locations: ${locations}`,
                 null
             )
@@ -188,7 +188,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch (e) {
             const err: Error = e;
             return new R2Error(
-                `An error occured whilst locating the Risk Of Rain 2 install directory from manifest in ${manifestLocation}`,
+                `An error occured whilst locating the Dyson Sphere Program install directory from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

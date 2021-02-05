@@ -1,8 +1,8 @@
 {
-    "name": "r2modman",
+    "name": "r2modman-dsp",
     "version": "3.1.1",
-    "description": "A simple and easy to use Risk of Rain 2 mod manager",
-    "productName": "r2modman",
+    "description": "A simple and easy to use Dyson Sphere Program mod manager",
+    "productName": "r2modman-dsp",
     "author": "ebkr",
     "private": true,
     "license": "MIT",

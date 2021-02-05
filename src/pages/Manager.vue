@@ -37,8 +37,8 @@
 			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the Risk of Rain 2 directory</h3>
-					<p>The directory must contain "Risk of Rain 2.exe".</p>
+					<h3 class='title'>Failed to set the Dyson Sphere Program directory</h3>
+					<p>The directory must contain "DSPGAME.exe".</p>
 					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
 				</div>
 			</div>
@@ -55,7 +55,7 @@
 						game.
 					</p>
 				</div>
-				<p>Steam will be started, and will attempt to verify the integrity of Risk of Rain 2.</p>
+				<p>Steam will be started, and will attempt to verify the integrity of Dyson Sphere Program.</p>
 				<br/>
 				<p>Please check the Steam window for validation progress. If the window has not yet appeared, please be
 					patient.
@@ -600,10 +600,10 @@
 				case 'win32':
 					return path.resolve(
 						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
-						'Steam', 'steamapps', 'common', 'Risk of Rain 2'
+						'Steam', 'steamapps', 'common', 'Dyson Sphere Program'
 					);
 				case 'linux':
-					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', 'Risk of Rain 2');
+					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', 'Dyson Sphere Program');
 				default:
 					return '';
 			}
@@ -611,17 +611,17 @@
 
 		changeRoR2InstallDirectory() {
             const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.riskOfRain2Directory || this.computeDefaultRoR2InstallDirectory();
+			const ror2Directory: string = this.settings.dysonSphereProgramDirectory || this.computeDefaultRoR2InstallDirectory();
 			InteractionProvider.instance.selectFolder({
-                title: 'Locate Risk of Rain 2 Directory',
+                title: 'Locate Dyson Sphere Program Directory',
                 defaultPath: ror2Directory,
                 buttonLabel: 'Select Directory'
             }).then(async files => {
                 if (files.length === 1) {
-                    const containsSteamExecutable = (await fs.readdir(files[0]))
-                        .find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
-                    if (containsSteamExecutable) {
-                        await this.settings.setRiskOfRain2Directory(files[0]);
+                    const containsGameExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === 'dspgame.exe') !== undefined;
+                    if (containsGameExecutable) {
+                        await this.settings.setDysonSphereProgramDirectory(files[0]);
                     } else {
                         this.showRor2IncorrectDirectoryModal = true;
                     }
@@ -733,6 +733,7 @@
 		}
 
 		isManagerUpdateAvailable() {
+		    return false;
 			if (!ManagerInformation.IS_PORTABLE) {
 				return;
 			}

@@ -15,9 +15,9 @@ export default class FolderMigration {
 
     private static async runMigration(): Promise<void> {
         const fs = FsProvider.instance;
-        await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
+        await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "games", "Dyson Sphere Program"));
         return new Promise(async resolve => {
-            await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "games", "Risk of Rain 2"));
+            await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "games", "Dyson Sphere Program"));
             resolve(Promise.resolve());
         }).then(async () => {
             await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "mods"));

@@ -118,9 +118,9 @@ module.exports = configure(function(/* ctx */) {
             workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
             workboxOptions: {}, // only for GenerateSW
             manifest: {
-                name: `r2modmanPlus`,
-                short_name: `r2modmanPlus`,
-                description: `A simple and easy to use Risk of Rain 2 mod manager`,
+                name: `r2modmanPlus-dsp`,
+                short_name: `r2modmanPlus-dsp`,
+                description: `A simple and easy to use Dyson Sphere Program mod manager`,
                 display: 'standalone',
                 orientation: 'portrait',
                 background_color: '#ffffff',
@@ -185,7 +185,7 @@ module.exports = configure(function(/* ctx */) {
             builder: {
                 // https://www.electron.build/configuration/configuration
 
-                appId: 'ebkr-r2modman',
+                appId: 'ebkr-r2modman-dsp',
                 win: {
                     target: ['nsis', 'portable'],
                     icon: 'src/assets/icon.ico'
@@ -202,7 +202,7 @@ module.exports = configure(function(/* ctx */) {
                     icon: 'src/assets/icon',
                     maintainer: 'ebkr',
                     vendor: 'ebkr',
-                    synopsis: 'Risk of Rain 2 Mod Manager',
+                    synopsis: 'Dyson Sphere Program Mod Manager',
                     category: 'Game',
                     mimeTypes: [
                         "x-scheme-handler/ror2mm"

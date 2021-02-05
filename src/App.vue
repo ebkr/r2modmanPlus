@@ -103,7 +103,7 @@
                 }
 
                 PathResolver.ROOT = settings.dataDirectory || PathResolver.APPDATA_DIR;
-                PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, "mods");
+                PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, "DysonSphereProgram", "mods");
 
                 await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
                 await ThemeManager.apply();

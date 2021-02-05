@@ -59,7 +59,7 @@ If an update has been downloaded, it will be installed once you have closed the 
 1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
 
 ## Feedback and suggestions
-Feedback can help r2modman become the best mod manager for Risk of Rain 2.
+Feedback can help r2modman become the best mod manager for Dyson Sphere Program.
 It's encouraged to provide as much feedback as you'd like, and fully open to criticism.
 
 Suggestions are welcome and there are already some suggestions that have made it in to the manager!

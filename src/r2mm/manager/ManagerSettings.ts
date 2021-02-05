@@ -34,6 +34,8 @@ export default class ManagerSettings {
     public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
     public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
 
+    public dysonSphereProgramDirectory: string | null = null;
+
     public async mapJsonToClass(itf: ManagerSettingsInterface): Promise<R2Error | void> {
         this.riskOfRain2Directory = itf.riskOfRain2Directory;
         this.linkedFiles = itf.linkedFiles || [];
@@ -63,7 +65,8 @@ export default class ManagerSettings {
             dataDirectory: '',
             installedSortBy: EnumResolver.from(SortNaming, SortNaming.CUSTOM)!,
             installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
-            installedDisablePosition: EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!
+            installedDisablePosition: EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!,
+            dysonSphereProgramDirectory: null
         };
     }
 
@@ -94,6 +97,11 @@ export default class ManagerSettings {
 
     public async setRiskOfRain2Directory(dir: string): Promise<R2Error | void> {
         this.riskOfRain2Directory = dir;
+        return await this.save();
+    }
+
+    public async setDysonSphereProgramDirectory(dir: string): Promise<R2Error | void> {
+        this.dysonSphereProgramDirectory = dir;
         return await this.save();
     }
 

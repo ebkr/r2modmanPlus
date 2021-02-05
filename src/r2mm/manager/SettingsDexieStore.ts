@@ -1,15 +1,11 @@
 import Dexie, { DexieOptions } from 'dexie';
-import EnumResolver from '../../model/enums/_EnumResolver';
-import { SortNaming } from '../../model/real_enums/sort/SortNaming';
-import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 
 export default class SettingsDexieStore extends Dexie {
 
     value: Dexie.Table<SettingsInterface, number>;
 
     constructor() {
-        super("settings");
+        super("settings_dsp");
         this.version(1).stores({
             value: `++id,settings`
         });
@@ -36,4 +32,5 @@ export interface ManagerSettingsInterface {
     installedSortBy: string;
     installedSortDirection: string;
     installedDisablePosition: string;
+    dysonSphereProgramDirectory: string | null;
 }

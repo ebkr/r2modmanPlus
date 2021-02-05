@@ -565,10 +565,14 @@ export default class Profiles extends Vue {
         await settings.load();
 
         this.selectedProfile = settings.lastSelectedProfile;
-        new Profile(this.selectedProfile);
+        if (await fs.exists(path.join(Profile.getDirectory(), this.selectedProfile))) {
+            new Profile(this.selectedProfile);
+        } else {
+            new Profile("Default");
+        }
 
         // Set default paths
-        if (settings.riskOfRain2Directory === null) {
+        if (settings.dysonSphereProgramDirectory === null) {
             const result = await GameDirectoryResolverProvider.instance.getDirectory();
             if (!(result instanceof R2Error)) {
                 await settings.setRiskOfRain2Directory(result);

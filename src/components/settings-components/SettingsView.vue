@@ -99,8 +99,8 @@
             ),
             new SettingsRow(
                 'Locations',
-                'Change Risk of Rain 2 directory',
-                `Change the location of the Risk of Rain 2 directory that ${this.appName} uses.`,
+                'Change Dyson Sphere Program directory',
+                `Change the location of the Dyson Sphere Program directory that ${this.appName} uses.`,
                 async () => {
                     const directory = await GameDirectoryResolverProvider.instance.getDirectory();
                     if (directory instanceof R2Error) {
@@ -168,7 +168,7 @@
                 'Debugging',
                 'Run preloader fix',
                 'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
-                async () => 'This will delete the Risk of Rain 2/Managed folder, and verify the files through Steam',
+                async () => 'This will delete the Dyson Sphere Program/Managed folder, and verify the files through Steam',
                 'fa-wrench',
                 () => this.emitInvoke('RunPreloaderFix')
             ),

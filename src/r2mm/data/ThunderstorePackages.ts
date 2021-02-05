@@ -11,7 +11,7 @@ export default class ThunderstorePackages {
      * @return Empty promise
      */
     public static async update(): Promise<any> {
-        return axios.get('https://thunderstore.io/api/v1/package')
+        return axios.get('https://dsp.thunderstore.io/api/v1/package')
             .then(value => ThunderstorePackages.handlePackageApiResponse(value))
             .catch((e_) => {
                 // Do nothing, connection failed.

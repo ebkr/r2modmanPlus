@@ -2,7 +2,7 @@
   <div>
     <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
     <div class='notification is-warning'>
-        <p>Risk of Rain 2 updates may break mods. If a new update has been released, please be patient.</p>
+        <p>Dyson Sphere Program updates may break mods. If a new update has been released, please be patient.</p>
     </div>
     <progress-bar
             :max='requests.length * 100'
@@ -166,14 +166,9 @@ export default class Splash extends Vue {
         return this.requests.reduce((x, y) => x.merge(y));
     }
 
-    // Ensure that r2modman isn't outdated.
+    // Ensure that r2modman isn't outdated. Disabled for DSP.
     private checkForUpdates() {
-        this.loadingText = 'Preparing';
-        ipcRenderer.once('update-done', ()=>{
-            this.getRequestItem('UpdateCheck').setProgress(100);
-            this.getExclusions();
-        });
-        ipcRenderer.send('update-app');
+        this.getExclusions();
     }
 
     private getExclusions() {
@@ -202,7 +197,7 @@ export default class Splash extends Vue {
     // Get the list of Thunderstore mods via /api/v1/package.
     private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
-        axios.get('https://thunderstore.io/api/v1/package', {
+        axios.get('https://dsp.thunderstore.io/api/v1/package', {
             onDownloadProgress: progress => {
                 this.loadingText = 'Getting mod list from Thunderstore'
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);

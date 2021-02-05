@@ -10,7 +10,7 @@ import FsProvider from "../../../providers/generic/file/FsProvider";
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
-const appManifest = 'appmanifest_632360.acf';
+const appManifest = 'appmanifest_1366540.acf';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
@@ -50,8 +50,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
     public async getDirectory(): Promise<R2Error | string> {
         const settings = await ManagerSettings.getSingleton();
-        if (settings.riskOfRain2Directory != null) {
-            return settings.riskOfRain2Directory;
+        if (settings.dysonSphereProgramDirectory != null) {
+            return settings.dysonSphereProgramDirectory;
         }
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
@@ -67,9 +67,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve the Risk of Rain 2 install directory',
+                'Unable to resolve the Dyson Sphere Program install directory',
                 err.message,
-                'Try manually locating the Risk of Rain 2 install directory through the settings'
+                'Try manually locating the Dyson Sphere Program install directory through the settings'
             )
         }
     }
@@ -138,7 +138,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
-                'Unable to locate Risk of Rain 2 Installation Directory',
+                'Unable to locate Dyson Sphere Program Installation Directory',
                 `Searched locations: ${locations}`,
                 null
             )
@@ -153,7 +153,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return riskOfRain2Path;
             } else {
                 return new FileNotFoundError(
-                    'Risk of Rain 2 does not exist in Steam\'s specified location',
+                    'Dyson Sphere Program does not exist in Steam\'s specified location',
                     `Failed to find directory: ${riskOfRain2Path}`,
                     null
                 )
@@ -161,7 +161,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                `An error occured whilst locating the Risk Of Rain 2 install directory from manifest in ${manifestLocation}`,
+                `An error occured whilst locating the Dyson Sphere Program install directory from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

@@ -19,8 +19,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             }
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
             LoggerProvider.instance.Log(LogSeverity.INFO,
-                `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable true --doorstop-target "${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")}" ${settings.launchParameters}`);
-            exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable true --doorstop-target "${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")}" ${settings.launchParameters}`, (err => {
+                `Running command: ${steamDir}.exe -applaunch 1366540 --doorstop-enable true --doorstop-target "${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")}" ${settings.launchParameters}`);
+            console.log("Starting game");
+            exec(`"${steamDir}/Steam.exe" -applaunch 1366540 --doorstop-enable true --doorstop-target "${path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll")}" ${settings.launchParameters}`, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
@@ -42,7 +43,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             }
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable false`);
-            exec(`"${steamDir}/Steam.exe" -applaunch 632360 --doorstop-enable false ${settings.launchParameters}`, (err => {
+            exec(`"${steamDir}/Steam.exe" -applaunch 1366540 --doorstop-enable false ${settings.launchParameters}`, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);

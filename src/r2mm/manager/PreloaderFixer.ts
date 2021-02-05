@@ -14,13 +14,14 @@ export default class PreloaderFixer {
         if (dirResult instanceof R2Error) {
             return dirResult;
         }
-        if (!await fs.exists(path.join(dirResult, 'Risk of Rain 2.exe'))) {
-            return new R2Error('Risk of Rain 2 directory is invalid', 'could not find "Risk of Rain 2.exe"',
-                'Set the Risk of Rain 2 directory in the settings section');
+        if (!await fs.exists(path.join(dirResult, 'DSPGAME.exe'))) {
+            console.log(await fs.readdir(path.join(dirResult, 'DSPGAME.exe')));
+            return new R2Error('Dyson Sphere Program directory is invalid', 'could not find "DSPGAME.exe"',
+                'Set the Dyson Sphere Program directory in the settings section');
         }
         try {
-            await FileUtils.emptyDirectory(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
-            await fs.rmdir(path.join(dirResult, 'Risk of Rain 2_Data', 'Managed'));
+            await FileUtils.emptyDirectory(path.join(dirResult, 'Dyson Sphere Program_Data', 'Managed'));
+            await fs.rmdir(path.join(dirResult, 'Dyson Sphere Program_Data', 'Managed'));
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
