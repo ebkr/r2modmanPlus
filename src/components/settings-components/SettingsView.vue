@@ -59,8 +59,7 @@
     import ProfileModList from '../../r2mm/mods/ProfileModList';
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
-    import ModBridge from '../../r2mm/mods/ModBridge';
-    import ThunderstoreDownloaderProvider from 'src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
+    import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
     @Component({
         components: {
