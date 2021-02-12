@@ -15,7 +15,6 @@
 - Download and install mods directly from the manager.
 - View and update any outdated mods.
 - Edit configs directly from the manager.
-- Manager auto-updates.
 - And more!
 
 ## What is a mod manager?
@@ -46,9 +45,7 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
  _Problems with Linux builds should be reported in the [r2modman discord](https://discord.gg/jE2zWHY)._
 
 ### Updating
-r2modman will automatically download any available updates whilst you use it.
-
-If an update has been downloaded, it will be installed once you have closed the application.
+Auto-updates aren't supported in the current DSP build of r2modman. Please download the latest release from [here]((https://dsp.thunderstore.io/package/ebkr/r2modman_dsp/))
 
 ## Help
 ### Manager errors:
