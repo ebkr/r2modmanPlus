@@ -42,7 +42,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 return reject(steamDir);
             }
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 632360 --doorstop-enable false`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch 1366540 --doorstop-enable false`);
             exec(`"${steamDir}/Steam.exe" -applaunch 1366540 --doorstop-enable false ${settings.launchParameters}`, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');

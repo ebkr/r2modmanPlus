@@ -87,7 +87,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (manifestLocation instanceof R2Error)
                 return manifestLocation;
 
-            const compatDataPath = path.join(manifestLocation, 'compatdata', '632360');
+            const compatDataPath = path.join(manifestLocation, 'compatdata', '1366540');
             if (await fs.exists(compatDataPath)) {
                 return compatDataPath;
             } else {

@@ -1,5 +1,7 @@
 ebkr-r2modman
 
+ebkr-r2modman_dsp
+
 Harb-AttributeFinder
 
 ethanbrews-RiskOfRainModManager

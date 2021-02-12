@@ -20,14 +20,14 @@ export default class PreloaderFixer {
                 'Set the Dyson Sphere Program directory in the settings section');
         }
         try {
-            await FileUtils.emptyDirectory(path.join(dirResult, 'Dyson Sphere Program_Data', 'Managed'));
-            await fs.rmdir(path.join(dirResult, 'Dyson Sphere Program_Data', 'Managed'));
+            await FileUtils.emptyDirectory(path.join(dirResult, 'DSPGAME_Data', 'Managed'));
+            await fs.rmdir(path.join(dirResult, 'DSPGAME_Data', 'Managed'));
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
-            LinkProvider.instance.openLink('steam://validate/632360');
+            LinkProvider.instance.openLink('steam://validate/1366540');
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to start steam://validate', err.message, null);
