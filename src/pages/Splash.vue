@@ -173,7 +173,7 @@ export default class Splash extends Vue {
 
     private getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
-        axios.get('https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md', {
+        axios.get('https://raw.githubusercontent.com/ebkr/r2modmanPlus/dyson-sphere-program/modExclusions.md', {
             onDownloadProgress: progress => {
                 this.loadingText = 'Downloading exclusions'
                 this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
