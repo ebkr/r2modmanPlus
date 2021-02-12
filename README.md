@@ -4,8 +4,8 @@
 
 [![GitHub](https://img.shields.io/github/license/ebkr/r2modmanPlus?color=orange&style=for-the-badge)](https://github.com/ebkr/r2modmanPlus)
 
-| [Features](#features) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Changelog](#changelog) | [Screenshots](#screenshots) |
-|---|---|---|---|---|---|---|
+| [Features](#features) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Changelog](#changelog) |
+|---|---|---|---|---|---|
 
 ## Features
 - A clean user interface designed to make modding as simple as possible.
@@ -27,17 +27,17 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 
 ### First time installing
 #### Windows
-1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+1. Click "Manual Download" on [Thunderstore](https://dsp.thunderstore.io/package/ebkr/r2modman_dsp/).
 2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
 3. Follow the steps in the installer.
 
 #### Linux
-1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+1. Click "Manual Download" on [Thunderstore](https://dsp.thunderstore.io/package/ebkr/r2modman_dsp/).
 2. Inside the download **.zip** file there is an AppImage release.
 
-**If you'd prefer to install platform specific builds then you can find them under the latest GitHub release on the ebkr/r2modmanPlus repository**
+**Alternative Linux builds are available. Please ask if you require them:**
 
-**Platform builds:**
+**Available builds:**
  - deb
  - rpm
  - pacman
@@ -53,10 +53,10 @@ If an update has been downloaded, it will be installed once you have closed the 
 ## Help
 ### Manager errors:
 1. Check the [wiki](https://github.com/ebkr/r2modmanPlus/wiki).
-2. If you can't find the solution, join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
+2. If you can't find the solution, join the [modding discord server](https://discord.gg/rMpGrch5tT) and ask for help in the **#tech-support** channel.
 
 ### Mod errors:
-1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
+1. Join the [modding discord server](https://discord.gg/rMpGrch5tT) and ask for help in the **#tech-support** channel.
 
 ## Feedback and suggestions
 Feedback can help r2modman become the best mod manager for Dyson Sphere Program.
@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.2 (DSP)
+- Updated App IDs and Managed folder path for the preloader fix.
+
 ### 3.1.1
 - Installing mods using the "Install with Mod Manager" button on Thunderstore will no longer produce duplicates.
 - Updating mods should now reflect on the installed screen.
@@ -83,30 +86,4 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Download progress will no longer stay at 0%.
 - Backend is now async meaning fewer app hangs when installing mods.
 - General fixes
-
-### 3.0.36
-- Fixed issue where data directory is incorrect on first launch.
-- Upgraded Electron version.
-
-## Screenshots
-
-Installed mod view
-
-![](https://i.imgur.com/XNVQBuQ.png)
-
-Downloadable mods
-
-![](https://i.imgur.com/Do6Awz0.png)
-
-Dark theme
-
-![](https://i.imgur.com/szsyGWB.png)
-
-Config editor
-
-![](https://i.imgur.com/U9av2H7.png)
-
-Profiles
-
-![](https://i.imgur.com/HtWQIWZ.png)
 
