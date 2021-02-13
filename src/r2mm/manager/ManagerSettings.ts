@@ -49,6 +49,7 @@ export default class ManagerSettings {
         this.installedSortBy = itf.installedSortBy || this.installedSortBy;
         this.installedSortDirection = itf.installedSortDirection || this.installedSortDirection;
         this.installedDisablePosition = itf.installedDisablePosition || this.installedDisablePosition;
+        this.dysonSphereProgramDirectory = itf.dysonSphereProgramDirectory;
     }
 
     public createDefaultSettingsObject(): ManagerSettingsInterface {
