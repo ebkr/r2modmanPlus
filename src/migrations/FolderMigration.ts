@@ -16,6 +16,11 @@ export default class FolderMigration {
         const fs = FsProvider.instance;
         await CacheUtil.clean();
         await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "RiskOfRain2"));
+        try {
+            await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "RiskOfRain2"));
+        } catch (e) {
+            console.log("Unable to clear RiskOfRain2 migration directory:", e);
+        }
         return new Promise(async resolve => {
             await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "RiskOfRain2"));
             resolve(Promise.resolve());
