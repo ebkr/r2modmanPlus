@@ -16,6 +16,7 @@ export default class FileUtils {
         for (const filename of files) {
             const file = path.join(dir, filename);
             if ((await fs.lstat(file)).isDirectory()) {
+                console.log("File:", file);
                 await this.emptyDirectory(file);
                 await fs.rmdir(file);
             } else {

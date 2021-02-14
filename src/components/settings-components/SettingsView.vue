@@ -60,6 +60,7 @@
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+    import GameManager from 'src/model/game/GameManager';
 
     @Component({
         components: {
@@ -291,7 +292,7 @@
                 () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
-                        ThunderstorePackages.update()
+                        ThunderstorePackages.update(GameManager.activeGame)
                             .then(_ => {
                                 this.downloadingThunderstoreModList = false;
                                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);

@@ -1,5 +1,6 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import axios from 'axios';
+import Game from 'src/model/game/Game';
 
 export default class ThunderstorePackages {
 
@@ -10,8 +11,8 @@ export default class ThunderstorePackages {
      * Fetch latest V1 API data and apply to {PACKAGES}
      * @return Empty promise
      */
-    public static async update(): Promise<any> {
-        return axios.get('https://thunderstore.io/api/v1/package')
+    public static async update(game: Game): Promise<any> {
+        return axios.get(game.thunderstoreUrl)
             .then(value => ThunderstorePackages.handlePackageApiResponse(value))
             .catch((e_) => {
                 // Do nothing, connection failed.
