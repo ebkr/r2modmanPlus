@@ -8,6 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
+- Support for Risk of Rain 2, Dyson Sphere Program and Valheim.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installs allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -89,10 +90,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Download progress will no longer stay at 0%.
 - Backend is now async meaning fewer app hangs when installing mods.
 - General fixes
-
-### 3.0.36
-- Fixed issue where data directory is incorrect on first launch.
-- Upgraded Electron version.
 
 ## Screenshots
 
