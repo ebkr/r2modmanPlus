@@ -27,12 +27,12 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 
 ### First time installing
 #### Windows
-1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+1. Click "Manual Download" on Thunderstore.
 2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
 3. Follow the steps in the installer.
 
 #### Linux
-1. Click "Manual Download" on [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/).
+1. Click "Manual Download" on Thunderstore.
 2. Inside the download **.zip** file there is an AppImage release.
 
 **If you'd prefer to install platform specific builds then you can find them under the latest GitHub release on the ebkr/r2modmanPlus repository**
@@ -53,13 +53,12 @@ If an update has been downloaded, it will be installed once you have closed the 
 ## Help
 ### Manager errors:
 1. Check the [wiki](https://github.com/ebkr/r2modmanPlus/wiki).
-2. If you can't find the solution, join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
+2. If you can't find the solution, join the community modding discord and ask for help in the appropriate channels.
 
 ### Mod errors:
-1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the **#tech-support** channel.
+1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the appropriate channels.
 
 ## Feedback and suggestions
-Feedback can help r2modman become the best mod manager for Risk of Rain 2.
 It's encouraged to provide as much feedback as you'd like, and fully open to criticism.
 
 Suggestions are welcome and there are already some suggestions that have made it in to the manager!
@@ -68,6 +67,13 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.3
+- Multi-game support. The following games are supported:
+    - Risk of Rain 2
+    - Dyson Sphere Program
+    - Valheim
+- Fixed an issue with the DSP build causing game directory changes to not save.
+
 ### 3.1.1
 - Installing mods using the "Install with Mod Manager" button on Thunderstore will no longer produce duplicates.
 - Updating mods should now reflect on the installed screen.
