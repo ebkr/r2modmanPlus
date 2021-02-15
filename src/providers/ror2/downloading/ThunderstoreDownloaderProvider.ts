@@ -6,6 +6,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import ExportMod from '../../../model/exports/ExportMod';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
+import Game from '../../../model/game/Game';
 
 export default abstract class ThunderstoreDownloaderProvider {
 
@@ -59,31 +60,33 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public abstract downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
                                callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
     /**
      * A top-level method to download the latest version of a mod including its dependencies.
      *
+     * @param game              Currently selected game
      * @param mod               The mod to be downloaded.
      * @param modVersion        The version of the mod to download.
      * @param allMods           An array of all mods available from the Thunderstore API.
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public abstract download(game: Game, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                     callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                     completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
     /**
      * A top-level method to download exact versions of exported mods.
      *
+     * @param game              Currently selected game
      * @param modList           An array of {@class ExportMod} mods to download.
      * @param callback          See {@method download}.
      * @param completedCallback See {@method download}
      */
-    public abstract downloadImportedMods(modList: ExportMod[],
+    public abstract downloadImportedMods(game: Game, modList: ExportMod[],
                                 callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                 completedCallback: (mods: ThunderstoreCombo[]) => void): void;
 

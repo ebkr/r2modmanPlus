@@ -1,40 +1,48 @@
 import { RouteConfig } from 'vue-router';
 import Profile from '../model/Profile';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const routes: RouteConfig[] = [
     {
         path: '/',
+        component: () => import("pages/GameSelectionScreen.vue"),
+        meta: {
+            title: () => ManagerInformation.APP_NAME
+        }
+    },
+    {
+        path: '/splash',
         component: () => import('pages/Splash.vue'),
         meta: {
-            title: () => 'r2modman'
+            title: () => ManagerInformation.APP_NAME
         }
     },
     {
         path: '/profiles',
         component: () => import('pages/Profiles.vue'),
         meta: {
-            title: () => 'r2modman'
+            title: () => ManagerInformation.APP_NAME
         }
     },
     {
         path: '/manager',
         component: () => import('pages/Manager.vue'),
         meta: {
-            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
         }
     },
     {
         path: '/config-editor',
-        component: () => import('src/pages/ConfigEditor.vue'),
+        component: () => import('pages/ConfigEditor.vue'),
         meta: {
-            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
         }
     },
     {
         path: '/help',
-        component: () => import('src/pages/Help.vue'),
+        component: () => import('pages/Help.vue'),
         meta: {
-            title: () => 'r2modman - ' + Profile.getActiveProfile().getProfileName()
+            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
         }
     }
 ];

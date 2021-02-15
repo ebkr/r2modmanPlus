@@ -63,6 +63,7 @@
     import WindowsGameDirectoryResolver from './r2mm/manager/win32/GameDirectoryResolver';
     import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
+    import GameManager from './model/game/GameManager';
 
     @Component
     export default class App extends Vue {
@@ -88,7 +89,11 @@
 
         async created() {
 
-            const settings = await ManagerSettings.getSingleton();
+            // Use as default game for settings load.
+            const riskOfRain2Game = GameManager.gameList.find(value => value.displayName === "Risk of Rain 2")!;
+            GameManager.activeGame = riskOfRain2Game;
+
+            const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
             this.settings = settings;
 
             ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
@@ -102,8 +107,7 @@
                     await ManagerSettingsMigration.migrate();
                 }
 
-                PathResolver.ROOT = settings.dataDirectory || PathResolver.APPDATA_DIR;
-                PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, "mods");
+                PathResolver.ROOT = settings.getContext().global.dataDirectory || PathResolver.APPDATA_DIR;
 
                 await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
                 await ThemeManager.apply();

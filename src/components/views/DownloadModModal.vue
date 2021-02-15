@@ -112,6 +112,8 @@
     import ModBridge from '../../r2mm/mods/ModBridge';
     import Profile from '../../model/Profile';
     import { Progress } from '../all';
+    import Game from '../../model/game/Game';
+    import GameManager from '../../model/game/GameManager';
 
     let assignId = 0;
 
@@ -127,6 +129,8 @@
         downloadingMod: boolean = false;
         selectedVersion: string | null = null;
         currentVersion: string | null = null;
+
+        private activeGame!: Game;
 
 
         @Prop()
@@ -199,7 +203,7 @@
                 return;
             }
             const outdatedMods = localMods.filter(mod => !ModBridge.isLatestVersion(mod));
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
                         this.downloadingMod = false;
@@ -239,7 +243,7 @@
             };
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ThunderstoreDownloaderProvider.instance.download(this.activeGame, tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
                         if (err !== null) {
                             this.downloadingMod = false;
@@ -304,6 +308,10 @@
                     return installError;
                 }
             }
+        }
+
+        created() {
+            this.activeGame = GameManager.activeGame;
         }
 
     }

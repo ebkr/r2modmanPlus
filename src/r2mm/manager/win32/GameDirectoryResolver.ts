@@ -8,16 +8,17 @@ import * as path from 'path';
 import ManagerSettings from '../ManagerSettings';
 import FsProvider from "../../../providers/generic/file/FsProvider";
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
+import Game from '../../../model/game/Game';
+import GameManager from '../../../model/game/GameManager';
 
 const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
-const appManifest = 'appmanifest_632360.acf';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
     public async getSteamDirectory(): Promise<string | R2Error> {
-        const settings = await ManagerSettings.getSingleton();
-        if (settings.steamDirectory != null) {
-            return settings.steamDirectory;
+        const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
+        if (settings.getContext().global.steamDirectory != null) {
+            return settings.getContext().global.steamDirectory!;
         }
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
@@ -48,10 +49,10 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
-    public async getDirectory(): Promise<R2Error | string> {
-        const settings = await ManagerSettings.getSingleton();
-        if (settings.riskOfRain2Directory != null) {
-            return settings.riskOfRain2Directory;
+    public async getDirectory(game: Game): Promise<R2Error | string> {
+        const settings = await ManagerSettings.getSingleton(game);
+        if (settings.getContext().gameSpecific.gameDirectory != null) {
+            return settings.getContext().gameSpecific.gameDirectory!;
         }
         try {
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
@@ -62,19 +63,19 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 // Remove colon
                 .substr(1)
                 .trim();
-            const dir = await this.findAppManifest(installValue);
+            const dir = await this.findAppManifest(installValue, game);
             return dir;
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                'Unable to resolve the Risk of Rain 2 install directory',
+                `Unable to resolve the ${game.displayName} install directory`,
                 err.message,
-                'Try manually locating the Risk of Rain 2 install directory through the settings'
+                `Try manually locating the ${game.displayName} install directory through the settings`
             )
         }
     }
 
-    private async findAppManifest(steamPath: string): Promise<R2Error | string> {
+    private async findAppManifest(steamPath: string, game: Game): Promise<R2Error | string> {
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
@@ -120,7 +121,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             for (const location of locations) {
                 (await fs.readdir(location))
                     .forEach((file: string) => {
-                        if (file.toLowerCase() === appManifest) {
+                        if (file.toLowerCase() === `appmanifest_${game.appId}.acf`) {
                             manifestLocation = location;
                         }
                     });
@@ -138,14 +139,14 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
-                'Unable to locate Risk of Rain 2 Installation Directory',
+                `Unable to locate ${game.displayName} Installation Directory`,
                 `Searched locations: ${locations}`,
                 null
             )
         }
         // Game manifest found at ${manifestLocation}
         try {
-            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, appManifest))).toString();
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.appId}.acf`))).toString();
             const parsedVdf: any = vdf.parse(manifestVdf);
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
@@ -153,7 +154,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return riskOfRain2Path;
             } else {
                 return new FileNotFoundError(
-                    'Risk of Rain 2 does not exist in Steam\'s specified location',
+                    `${game.displayName} does not exist in Steam\'s specified location`,
                     `Failed to find directory: ${riskOfRain2Path}`,
                     null
                 )
@@ -161,7 +162,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch(e) {
             const err: Error = e;
             return new R2Error(
-                `An error occured whilst locating the Risk Of Rain 2 install directory from manifest in ${manifestLocation}`,
+                `An error occurred whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

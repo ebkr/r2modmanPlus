@@ -60,6 +60,8 @@
     import ManifestV2 from '../../model/ManifestV2';
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+    import GameManager from '../../model/game/GameManager';
+    import Game from '../../model/game/Game';
 
     @Component({
         components: {
@@ -76,6 +78,8 @@
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
         private downloadingThunderstoreModList: boolean = false;
+
+        private activeGame!: Game;
 
         get localModList(): ManifestV2[] {
             return this.$store.state.localModList || [];
@@ -98,10 +102,10 @@
             ),
             new SettingsRow(
                 'Locations',
-                'Change Risk of Rain 2 directory',
-                `Change the location of the Risk of Rain 2 directory that ${this.appName} uses.`,
+                `Change ${this.activeGame.displayName} directory`,
+                `Change the location of the ${this.activeGame.displayName} directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolverProvider.instance.getDirectory();
+                    const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
                     if (directory instanceof R2Error) {
                         return 'Please set manually';
                     }
@@ -157,8 +161,8 @@
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton();
-                    return settings.ignoreCache ? 'Current: cache is disabled' : 'Current: cache is enabled (recommended)';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    return settings.getContext().global.ignoreCache ? 'Current: cache is disabled' : 'Current: cache is enabled (recommended)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleDownloadCache')
@@ -167,7 +171,7 @@
                 'Debugging',
                 'Run preloader fix',
                 'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
-                async () => 'This will delete the Risk of Rain 2/Managed folder, and verify the files through Steam',
+                async () => `This will delete the ${this.activeGame.dataFolderName}/Managed folder, and verify the files through Steam`,
                 'fa-wrench',
                 () => this.emitInvoke('RunPreloaderFix')
             ),
@@ -254,8 +258,8 @@
                 'Toggle funky mode',
                 'Enable/disable funky mode.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton();
-                    return settings.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    return settings.getContext().global.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleFunkyMode')
@@ -265,8 +269,8 @@
                 'Switch theme',
                 'Switch between light and dark themes.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton();
-                    return settings.darkTheme ? 'Current: dark theme' : 'Current: light theme (default)';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    return settings.getContext().global.darkTheme ? 'Current: dark theme' : 'Current: light theme (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchTheme')
@@ -276,8 +280,8 @@
                 'Switch card display type',
                 'Switch between expanded or collapsed cards.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton();
-                    return settings.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    return settings.getContext().global.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchCard')
@@ -291,7 +295,7 @@
                 () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
-                        ThunderstorePackages.update()
+                        ThunderstorePackages.update(GameManager.activeGame)
                             .then(_ => {
                                 this.downloadingThunderstoreModList = false;
                                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
@@ -320,6 +324,10 @@
         getFilteredSettings(): Array<SettingsRow> {
             return this.searchableSettings.filter(value => value.group.toLowerCase() === this.activeTab.toLowerCase())
                 .sort((a, b) => a.action.localeCompare(b.action));
+        }
+
+        beforeCreate() {
+            this.activeGame = GameManager.activeGame;
         }
 
         created() {

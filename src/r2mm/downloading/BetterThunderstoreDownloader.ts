@@ -18,6 +18,7 @@ import ManifestV2 from '../../model/ManifestV2';
 import ModBridge from '../mods/ModBridge';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
+import Game from '../../model/game/Game';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -103,16 +104,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async downloadLatestOfAll(mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
 
         let downloadCount = 0;
-        const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(), dependencies);
+        const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
 
-        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -128,7 +129,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public async download(game: Game, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
@@ -140,7 +141,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         combo.setVersion(modVersion);
         let downloadCount = 0;
 
-        const settings = await ManagerSettings.getSingleton();
+        const settings = await ManagerSettings.getSingleton(game);
 
         let downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
 
@@ -186,7 +187,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadImportedMods(modList: ExportMod[],
+    public async downloadImportedMods(game: Game, modList: ExportMod[],
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
         const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
@@ -206,7 +207,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
         }
 
-        const settings = await ManagerSettings.getSingleton();
+        const settings = await ManagerSettings.getSingleton(game);
 
         let downloadCount = 0;
         await this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
@@ -251,7 +252,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
-        if (await this.isVersionAlreadyDownloaded(combo) && !settings.ignoreCache) {
+        if (await this.isVersionAlreadyDownloaded(combo) && !settings.getContext().global.ignoreCache) {
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }

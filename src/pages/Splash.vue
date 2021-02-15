@@ -2,7 +2,7 @@
   <div>
     <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
     <div class='notification is-warning'>
-        <p>Risk of Rain 2 updates may break mods. If a new update has been released, please be patient.</p>
+        <p>Game updates may break mods. If a new update has been released, please be patient.</p>
     </div>
     <progress-bar
             :max='requests.length * 100'
@@ -139,6 +139,7 @@ import Profile from '../model/Profile';
 
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
+import GameManager from '../model/game/GameManager';
 
 @Component({
     components: {
@@ -152,6 +153,8 @@ export default class Splash extends Vue {
     loadingText: string = 'Initialising';
     heroType: string = 'is-info';
     view: string = 'main';
+    activeGame = GameManager.activeGame;
+
     requests = [
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
@@ -178,7 +181,7 @@ export default class Splash extends Vue {
 
     private getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
-        axios.get('https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md', {
+        axios.get(this.activeGame.exclusionsUrl, {
             onDownloadProgress: progress => {
                 this.loadingText = 'Downloading exclusions'
                 this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
@@ -202,7 +205,7 @@ export default class Splash extends Vue {
     // Get the list of Thunderstore mods via /api/v1/package.
     private getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
-        axios.get('https://thunderstore.io/api/v1/package', {
+        axios.get(this.activeGame.thunderstoreUrl, {
             onDownloadProgress: progress => {
                 this.loadingText = 'Getting mod list from Thunderstore'
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
