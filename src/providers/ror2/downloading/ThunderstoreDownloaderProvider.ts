@@ -6,7 +6,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import ExportMod from '../../../model/exports/ExportMod';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
-import Game from 'src/model/game/Game';
+import Game from '../../../model/game/Game';
 
 export default abstract class ThunderstoreDownloaderProvider {
 

@@ -59,7 +59,7 @@ import FolderMigration from '../migrations/FolderMigration';
 import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
-import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
 
 @Component({
     components: {

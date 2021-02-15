@@ -12,8 +12,8 @@ import PathResolver from '../manager/PathResolver';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
-import BepInExPackageMapping from 'src/model/installing/BepInExPackageMapping';
-import GameManager from 'src/model/game/GameManager';
+import BepInExPackageMapping from '../../model/installing/BepInExPackageMapping';
+import GameManager from '../../model/game/GameManager';
 let fs: FsProvider;
 
 const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];

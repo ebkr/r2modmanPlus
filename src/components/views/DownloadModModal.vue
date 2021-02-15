@@ -112,8 +112,8 @@
     import ModBridge from '../../r2mm/mods/ModBridge';
     import Profile from '../../model/Profile';
     import { Progress } from '../all';
-    import Game from 'src/model/game/Game';
-    import GameManager from 'src/model/game/GameManager';
+    import Game from '../../model/game/Game';
+    import GameManager from '../../model/game/GameManager';
 
     let assignId = 0;
 

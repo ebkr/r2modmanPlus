@@ -1,20 +1,12 @@
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import * as yaml from 'yaml';
-import R2Error from '../../model/errors/R2Error';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import FileWriteError from '../../model/errors/FileWriteError';
-import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
 import PathResolver from './PathResolver';
-import { SortNaming } from '../../model/real_enums/sort/SortNaming';
-import EnumResolver from '../../model/enums/_EnumResolver';
-import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import FileUtils from '../../utils/FileUtils';
 import ManagerSettings from './ManagerSettings';
-import set = Reflect.set;
 import { ManagerSettingsInterface_Legacy } from './SettingsDexieStore';
-import GameManager from 'src/model/game/GameManager';
+import GameManager from '../../model/game/GameManager';
 
 export default class ManagerSettingsMigration {
 

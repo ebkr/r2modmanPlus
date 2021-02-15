@@ -58,16 +58,15 @@
 
 <script lang="ts">
 
-    import { Prop, PropSync, Vue } from 'vue-property-decorator';
+    import { Prop, Vue } from 'vue-property-decorator';
     import Component from 'vue-class-component';
     import ThunderstoreMod from '../../model/ThunderstoreMod';
     import ManagerSettings from '../../r2mm/manager/ManagerSettings';
     import { ExpandableCard, Link } from '../all';
     import DownloadModModal from './DownloadModModal.vue';
-    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ManifestV2 from '../../model/ManifestV2';
     import R2Error from '../../model/errors/R2Error';
-    import GameManager from 'src/model/game/GameManager';
+    import GameManager from '../../model/game/GameManager';
 
     @Component({
         components: {

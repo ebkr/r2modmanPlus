@@ -63,7 +63,7 @@
     import WindowsGameDirectoryResolver from './r2mm/manager/win32/GameDirectoryResolver';
     import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
-    import GameManager from 'src/model/game/GameManager';
+    import GameManager from './model/game/GameManager';
 
     @Component
     export default class App extends Vue {

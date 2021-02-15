@@ -230,7 +230,7 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import GameManager from '../model/game/GameManager';
-import Game from 'src/model/game/Game';
+import Game from '../model/game/Game';
 
 let settings: ManagerSettings;
 let fs: FsProvider;

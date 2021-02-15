@@ -1,12 +1,11 @@
 import Dexie from 'dexie';
-import PathResolver from '../../r2mm/manager/PathResolver';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import Game from '../../model/game/Game';
-import EnumResolver from 'src/model/enums/_EnumResolver';
-import { SortNaming } from 'src/model/real_enums/sort/SortNaming';
-import { SortDirection } from 'src/model/real_enums/sort/SortDirection';
-import { SortLocalDisabledMods } from 'src/model/real_enums/sort/SortLocalDisabledMods';
-import GameManager from 'src/model/game/GameManager';
+import EnumResolver from '../../model/enums/_EnumResolver';
+import { SortNaming } from '../../model/real_enums/sort/SortNaming';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
+import GameManager from '../../model/game/GameManager';
 
 export default class SettingsDexieStore extends Dexie {
 

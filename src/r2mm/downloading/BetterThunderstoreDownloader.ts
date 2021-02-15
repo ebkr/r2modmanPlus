@@ -18,7 +18,7 @@ import ManifestV2 from '../../model/ManifestV2';
 import ModBridge from '../mods/ModBridge';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
-import Game from 'src/model/game/Game';
+import Game from '../../model/game/Game';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 

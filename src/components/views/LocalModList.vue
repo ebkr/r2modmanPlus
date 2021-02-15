@@ -211,7 +211,7 @@
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
     import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
     import { SortNaming } from '../../model/real_enums/sort/SortNaming';
-    import GameManager from 'src/model/game/GameManager';
+    import GameManager from '../../model/game/GameManager';
 
     @Component({
         components: {
