@@ -2,6 +2,7 @@ import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import BepInExTree from '../../../model/file/BepInExTree';
+import BepInExPackageMapping from 'src/model/installing/BepInExPackageMapping';
 
 export default abstract class ProfileInstallerProvider {
 
@@ -83,7 +84,8 @@ export default abstract class ProfileInstallerProvider {
     /**
      * Custom install method for handling BepInEx installations.
      * @param bieLocation
+     * @param bepInExVariant
      */
-    abstract installBepInEx(bieLocation: string): Promise<R2Error | null>;
+    abstract installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping): Promise<R2Error | null>;
 
 }

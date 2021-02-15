@@ -12,9 +12,23 @@ import PathResolver from '../manager/PathResolver';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
+import BepInExPackageMapping from 'src/model/installing/BepInExPackageMapping';
+import GameManager from 'src/model/game/GameManager';
 let fs: FsProvider;
 
 const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
+
+/**
+ * Used to record which package to handle based on the current game.
+ *
+ * Mapping is:
+ * game's InternalFolderName: Mapping
+ */
+const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping} = {
+    RiskOfRain2: new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack"),
+    DysonSphereProgram: new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack"),
+    Valheim: new BepInExPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim"),
+}
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
 
@@ -29,13 +43,20 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      * @param mod
      */
     public async uninstallMod(mod: ManifestV2): Promise<R2Error | null> {
-        if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
+        const activeGame = GameManager.activeGame;
+        const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
+        if (bepInExVariant.packageName.toLowerCase() === mod.getName().toLowerCase()) {
             try {
                 for (const file of (await fs.readdir(Profile.getActiveProfile().getPathOfProfile()))) {
                     const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
                     if ((await fs.lstat(filePath)).isFile()) {
                         if (file.toLowerCase() !== 'mods.yml') {
                             await fs.unlink(filePath);
+                        }
+                    } else {
+                        if ((await fs.lstat(filePath)).isDirectory()) {
+                            await FileUtils.emptyDirectory(filePath);
+                            await fs.rmdir(filePath);
                         }
                     }
                 }
@@ -160,9 +181,11 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     public async installMod(mod: ManifestV2): Promise<R2Error | null> {
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        const lowerName = mod.getDisplayName().toLowerCase();
-        if (lowerName === 'bepinex' || lowerName === "bepinexpack") {
-            return this.installBepInEx(cachedLocationOfMod);
+
+        const activeGame = GameManager.activeGame;
+        const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
+        if (bepInExVariant.packageName.toLowerCase() === mod.getName().toLowerCase()) {
+            return this.installBepInEx(cachedLocationOfMod, bepInExVariant);
         }
         return this.installForManifestV2(mod, cachedLocationOfMod);
     }
@@ -260,8 +283,8 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         return null;
     }
 
-    async installBepInEx(bieLocation: string): Promise<R2Error | null> {
-        const location = path.join(bieLocation, 'BepInExPack');
+    async installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping): Promise<R2Error | null> {
+        const location = path.join(bieLocation, bepInExVariant.rootFolder);
         const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;

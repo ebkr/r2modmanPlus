@@ -48,9 +48,6 @@ export default class ModLinker {
                                     if (await fs.exists(path.join(installDirectory, file))) {
                                         await fs.unlink(path.join(installDirectory, file));
                                     }
-                                    // Existing -> Linked
-                                    // Junction is used so users don't need Windows Developer Mode enabled.
-                                    // https://stackoverflow.com/questions/57725093
                                     await fs.copyFile(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
                                     newLinkedFiles.push(path.join(installDirectory, file));
                                 } catch(e) {
@@ -60,6 +57,17 @@ export default class ModLinker {
                                         err.message,
                                         `Try running ${ManagerInformation.APP_NAME} as an administrator`
                                     )
+                                }
+                            }
+                        } else {
+                            if ((await fs.lstat(path.join(Profile.getActiveProfile().getPathOfProfile(), file))).isDirectory()) {
+                                if (file.toLowerCase() != "bepinex") {
+                                    if (await fs.exists(path.join(installDirectory, file))) {
+                                        await FileUtils.emptyDirectory(path.join(installDirectory, file));
+                                        await fs.rmdir(path.join(installDirectory, file));
+                                    }
+                                    await fs.copyFolder(path.join(Profile.getActiveProfile().getPathOfProfile(), file), path.join(installDirectory, file));
+                                    newLinkedFiles.push(path.join(installDirectory, file));
                                 }
                             }
                         }

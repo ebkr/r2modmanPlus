@@ -59,6 +59,7 @@ import FolderMigration from '../migrations/FolderMigration';
 import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
+import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
 
 @Component({
     components: {
@@ -78,12 +79,14 @@ export default class GameSelectionScreen extends Vue {
         this.selectedGame = game;
     }
 
-    private proceed() {
+    private async proceed() {
         if (this.selectedGame !== null && !this.runningMigration) {
             GameManager.activeGame = this.selectedGame;
             PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-            this.$router.replace('/splash');
+            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
+            const settings = await ManagerSettings.getSingleton(this.selectedGame);
+            await settings.setLastSelectedGame(this.selectedGame);
+            await this.$router.replace('/splash');
         }
     }
 
@@ -104,6 +107,15 @@ export default class GameSelectionScreen extends Vue {
                 console.log(e);
                 this.runningMigration = false;
             })
+        ManagerSettings.getSingleton(GameManager.activeGame).then(settings => {
+            const lastSelectedGame = settings.getContext().global.lastSelectedGame;
+            if (lastSelectedGame !== null) {
+                const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
+                if (game !== undefined) {
+                    this.selectedGame = game;
+                }
+            }
+        });
     }
 
 }

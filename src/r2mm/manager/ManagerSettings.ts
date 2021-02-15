@@ -131,4 +131,9 @@ export default class ManagerSettings {
         ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
         return await this.save();
     }
+
+    public async setLastSelectedGame(game: Game) {
+        ManagerSettings.CONTEXT.global.lastSelectedGame = game.internalFolderName;
+        return await this.save();
+    }
 }

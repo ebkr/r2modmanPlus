@@ -100,6 +100,7 @@ export default class SettingsDexieStore extends Dexie {
                 funkyModeEnabled: false,
                 ignoreCache: false,
                 steamDirectory: null,
+                lastSelectedGame: null,
                 version: 2
             },
             gameSpecific: {
@@ -137,6 +138,7 @@ export default class SettingsDexieStore extends Dexie {
                 funkyModeEnabled: itf.funkyModeEnabled,
                 ignoreCache: itf.ignoreCache,
                 steamDirectory: itf.steamDirectory,
+                lastSelectedGame: null,
                 version: 2
             },
             gameSpecific: {
@@ -190,6 +192,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     darkTheme: boolean;
     ignoreCache: boolean;
     dataDirectory: string;
+    lastSelectedGame: string | null;
 }
 
 /**
