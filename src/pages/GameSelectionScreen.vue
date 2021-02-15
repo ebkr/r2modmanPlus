@@ -55,10 +55,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import Hero from 'components/Hero.vue';
-import FolderMigration from 'src/migrations/FolderMigration';
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import FolderMigration from '../migrations/FolderMigration';
+import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
-import FileUtils from 'src/utils/FileUtils';
+import FileUtils from '../utils/FileUtils';
 
 @Component({
     components: {
@@ -81,7 +81,7 @@ export default class GameSelectionScreen extends Vue {
     private proceed() {
         if (this.selectedGame !== null && !this.runningMigration) {
             GameManager.activeGame = this.selectedGame;
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.displayName);
+            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
             FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
             this.$router.replace('/splash');
         }
@@ -91,7 +91,6 @@ export default class GameSelectionScreen extends Vue {
         this.runningMigration = true;
         FolderMigration.needsMigration()
             .then(isMigrationRequired => {
-                console.log("Is migration required:", isMigrationRequired);
                 if (!isMigrationRequired) {
                     this.runningMigration = false;
                 } else {

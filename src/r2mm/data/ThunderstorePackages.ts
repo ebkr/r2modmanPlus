@@ -1,6 +1,6 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import axios from 'axios';
-import Game from 'src/model/game/Game';
+import Game from '../../model/game/Game';
 
 export default class ThunderstorePackages {
 

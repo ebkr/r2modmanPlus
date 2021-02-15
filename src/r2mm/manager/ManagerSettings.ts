@@ -1,176 +1,134 @@
 import R2Error from '../../model/errors/R2Error';
-import PathResolver from './PathResolver';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import SettingsDexieStore, { ManagerSettingsInterface } from './SettingsDexieStore';
+import SettingsDexieStore, {
+    ManagerSettingsInterfaceHolder
+} from './SettingsDexieStore';
+import Game from '../../model/game/Game';
 
 export default class ManagerSettings {
 
     private static LOADED_SETTINGS: ManagerSettings | undefined;
-    private static DEXIE_STORE = new SettingsDexieStore();
+    private static DEXIE_STORE: SettingsDexieStore;
+    private static ACTIVE_GAME: Game;
     public static NEEDS_MIGRATION = false;
 
-    public static async getSingleton(): Promise<ManagerSettings> {
-        if (this.LOADED_SETTINGS === undefined) {
+    private static CONTEXT: ManagerSettingsInterfaceHolder;
+
+    public static async getSingleton(game: Game): Promise<ManagerSettings> {
+        if (this.LOADED_SETTINGS === undefined || this.ACTIVE_GAME === undefined || (this.ACTIVE_GAME.displayName !== game.displayName)) {
+            this.ACTIVE_GAME = game;
             this.LOADED_SETTINGS = new ManagerSettings();
-            await this.LOADED_SETTINGS.load();
+            this.DEXIE_STORE = new SettingsDexieStore(game);
+            await this.LOADED_SETTINGS.load(true);
         }
         return this.LOADED_SETTINGS;
     }
 
-    public riskOfRain2Directory: string | null = null;
-    public steamDirectory: string | null = null;
-    public lastSelectedProfile: string = 'Default';
-    public funkyModeEnabled: boolean = false;
-    public expandedCards: boolean = false;
-    public linkedFiles: string[] = [];
-    public darkTheme: boolean = false;
-    public launchParameters: string = '';
-    public ignoreCache: boolean = false;
-    public dataDirectory: string = '';
-    public installedSortBy: string = EnumResolver.from(SortNaming, SortNaming.CUSTOM)!;
-    public installedSortDirection: string = EnumResolver.from(SortDirection, SortDirection.STANDARD)!;
-    public installedDisablePosition: string = EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!;
-
-    public async mapJsonToClass(itf: ManagerSettingsInterface): Promise<R2Error | void> {
-        this.riskOfRain2Directory = itf.riskOfRain2Directory;
-        this.linkedFiles = itf.linkedFiles || [];
-        this.lastSelectedProfile = itf.lastSelectedProfile || 'Default';
-        this.steamDirectory = itf.steamDirectory;
-        this.expandedCards = itf.expandedCards || false;
-        this.darkTheme = itf.darkTheme;
-        this.launchParameters = itf.launchParameters || '';
-        this.ignoreCache = itf.ignoreCache || false;
-        this.dataDirectory = itf.dataDirectory || PathResolver.APPDATA_DIR;
-        this.installedSortBy = itf.installedSortBy || this.installedSortBy;
-        this.installedSortDirection = itf.installedSortDirection || this.installedSortDirection;
-        this.installedDisablePosition = itf.installedDisablePosition || this.installedDisablePosition;
-    }
-
-    public createDefaultSettingsObject(): ManagerSettingsInterface {
-        return {
-            riskOfRain2Directory: null,
-            steamDirectory: null,
-            lastSelectedProfile: 'Default',
-            funkyModeEnabled: false,
-            expandedCards: false,
-            linkedFiles: [],
-            darkTheme: false,
-            launchParameters: '',
-            ignoreCache: false,
-            dataDirectory: '',
-            installedSortBy: EnumResolver.from(SortNaming, SortNaming.CUSTOM)!,
-            installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
-            installedDisablePosition: EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!
-        };
-    }
-
-    public async load(): Promise<R2Error | void> {
-        const db = ManagerSettings.DEXIE_STORE;
-        await db.value.toArray().then(result => {
-            if (result.length > 0) {
-                const value = result[result.length - 1];
-                const parsed = JSON.parse(value.settings) as ManagerSettingsInterface;
-                return this.mapJsonToClass(parsed);
-            } else {
-                ManagerSettings.NEEDS_MIGRATION = true;
-                const obj = this.createDefaultSettingsObject();
-                db.value.put({settings: JSON.stringify(obj)});
-                return this.mapJsonToClass(obj);
+    public async load(forceRefresh?: boolean): Promise<R2Error | void> {
+        try {
+            if (ManagerSettings.CONTEXT === undefined || forceRefresh === true) {
+                ManagerSettings.CONTEXT = await ManagerSettings.DEXIE_STORE.getLatest();
             }
-        });
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error("Failed to initialise settings storage", err.message, null);
+        }
     }
+
+    /**
+     * Allow access to the context via the singleton directly.
+     */
+    public getContext() {
+        return ManagerSettings.CONTEXT;
+    }
+
 
     private async save(): Promise<R2Error | void> {
-        const db = ManagerSettings.DEXIE_STORE;
-        await db.value.toArray().then(result => {
-            for (let settingsInterface of result) {
-                db.value.update(settingsInterface.id!, {settings: JSON.stringify(this)});
-            }
-        });
+        await ManagerSettings.DEXIE_STORE.save(ManagerSettings.CONTEXT);
     }
 
-    public async setRiskOfRain2Directory(dir: string): Promise<R2Error | void> {
-        this.riskOfRain2Directory = dir;
+    public async setGameDirectory(dir: string): Promise<R2Error | void> {
+        ManagerSettings.CONTEXT.gameSpecific.gameDirectory = dir;
         return await this.save();
     }
 
     public async setSteamDirectory(dir: string): Promise<R2Error | void> {
-        this.steamDirectory = dir;
+        ManagerSettings.CONTEXT.global.steamDirectory = dir;
         return await this.save();
     }
 
     public async setLinkedFiles(linkedFiles: string[]): Promise<R2Error | void> {
-        this.linkedFiles = linkedFiles;
+        ManagerSettings.CONTEXT.gameSpecific.linkedFiles = linkedFiles;
         return await this.save();
     }
 
     public async setProfile(profile: string): Promise<R2Error | void> {
-        this.lastSelectedProfile = profile;
+        ManagerSettings.CONTEXT.gameSpecific.lastSelectedProfile = profile;
         return await this.save();
     }
 
     public async setFunkyMode(enabled: boolean): Promise<R2Error | void> {
-        this.funkyModeEnabled = enabled;
+        ManagerSettings.CONTEXT.global.funkyModeEnabled = enabled;
         return await this.save();
     }
 
     public async expandCards(): Promise<R2Error | void> {
-        this.expandedCards = true;
+        ManagerSettings.CONTEXT.global.expandedCards = true;
         return await this.save();
     }
 
     public async collapseCards(): Promise<R2Error | void> {
-        this.expandedCards = false;
+        ManagerSettings.CONTEXT.global.expandedCards = false;
         return await this.save();
     }
 
     public async toggleDarkTheme(): Promise<R2Error | void> {
-        this.darkTheme = !this.darkTheme;
+        ManagerSettings.CONTEXT.global.darkTheme = !ManagerSettings.CONTEXT.global.darkTheme;
         return await this.save();
     }
 
     public async setLaunchParameters(launchParams: string): Promise<R2Error | void> {
-        this.launchParameters = launchParams;
+        ManagerSettings.CONTEXT.gameSpecific.launchParameters = launchParams;
         return await this.save();
     }
 
     public async setIgnoreCache(ignore: boolean): Promise<R2Error | void> {
-        this.ignoreCache = ignore;
+        ManagerSettings.CONTEXT.global.ignoreCache = ignore;
         return await this.save();
     }
 
     public async setDataDirectory(dataDirectory: string): Promise<R2Error | void> {
-        this.dataDirectory = dataDirectory;
+        ManagerSettings.CONTEXT.global.dataDirectory = dataDirectory;
         return await this.save();
     }
 
     public getInstalledSortBy() {
-        return Object.entries(SortNaming).filter(value => value[0] === this.installedSortBy)[0][1];
+        return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0][1];
     }
 
     public async setInstalledSortBy(sortNaming: string): Promise<R2Error | void> {
-        this.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
         return await this.save();
     }
 
     public getInstalledSortDirection() {
-        return Object.entries(SortDirection).filter(value => value[0] === this.installedSortDirection)[0][1];
+        return Object.entries(SortDirection).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortDirection)[0][1];
     }
 
     public async setInstalledSortDirection(sortDirection: string): Promise<R2Error | void> {
-        this.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
         return await this.save();
     }
 
     public getInstalledDisablePosition() {
-        return Object.entries(SortLocalDisabledMods).filter(value => value[0] === this.installedDisablePosition)[0][1];
+        return Object.entries(SortLocalDisabledMods).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition)[0][1];
     }
 
     public async setInstalledDisablePosition(disablePosition: string): Promise<R2Error | void> {
-        this.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
         return await this.save();
     }
 }

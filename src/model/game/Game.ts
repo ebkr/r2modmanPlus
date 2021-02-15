@@ -2,19 +2,21 @@ export default class Game {
 
     private readonly _displayName: string;
     private readonly _appId: number;
-    private readonly _folderName: string;
+    private readonly _internalFolderName: string;
+    private readonly _steamFolderName: string;
     private readonly _exeName: string;
     private readonly _dataFolderName: string;
     private readonly _thunderstoreUrl: string;
     private readonly _exclusionsUrl: string;
 
     constructor(displayName: string, appid: number, internalFolderName: string,
-                exeName: string, dataFolderName: string, tsUrl: string,
-                exclusionsUrl: string) {
+                steamFolderName: string, exeName: string, dataFolderName: string,
+                tsUrl: string, exclusionsUrl: string) {
 
         this._displayName = displayName;
         this._appId = appid;
-        this._folderName = internalFolderName;
+        this._internalFolderName = internalFolderName;
+        this._steamFolderName = steamFolderName;
         this._exeName = exeName;
         this._dataFolderName = dataFolderName;
         this._thunderstoreUrl = tsUrl;
@@ -29,8 +31,12 @@ export default class Game {
         return this._appId;
     }
 
-    get folderName(): string {
-        return this._folderName;
+    get internalFolderName(): string {
+        return this._internalFolderName;
+    }
+
+    get steamFolderName(): string {
+        return this._steamFolderName;
     }
 
     get exeName(): string {

@@ -9,19 +9,20 @@ import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/Logger
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
+import Game from '../../model/game/Game';
 
 export default class ModLinker {
 
-    public static async link(): Promise<string[] | R2Error> {
-        const settings = await ManagerSettings.getSingleton();
-        const riskOfRain2Directory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory();
-        if (riskOfRain2Directory instanceof R2Error) {
-            return riskOfRain2Directory;
+    public static async link(game: Game): Promise<string[] | R2Error> {
+        const settings = await ManagerSettings.getSingleton(game);
+        const gameDirectory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory(game);
+        if (gameDirectory instanceof R2Error) {
+            return gameDirectory;
         }
-        return this.performLink(riskOfRain2Directory, settings.linkedFiles);
+        return this.performLink(game, gameDirectory, settings.getContext().gameSpecific.linkedFiles);
     }
 
-    private static async performLink(installDirectory: string, previouslyLinkedFiles: string[]): Promise<string[] | R2Error> {
+    private static async performLink(game: Game, installDirectory: string, previouslyLinkedFiles: string[]): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
@@ -55,7 +56,7 @@ export default class ModLinker {
                                 } catch(e) {
                                     const err: Error = e;
                                     throw new FileWriteError(
-                                        `Couldn't copy file ${file} to RoR2 directory`,
+                                        `Couldn't copy file ${file} to ${game.displayName} directory`,
                                         err.message,
                                         `Try running ${ManagerInformation.APP_NAME} as an administrator`
                                     )

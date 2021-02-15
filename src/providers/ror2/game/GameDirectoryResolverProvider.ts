@@ -1,5 +1,6 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import R2Error from '../../../model/errors/R2Error';
+import Game from '../../../model/game/Game';
 
 export default abstract class GameDirectoryResolverProvider {
 
@@ -17,5 +18,5 @@ export default abstract class GameDirectoryResolverProvider {
     }
 
     public abstract getSteamDirectory(): Promise<string | R2Error>;
-    public abstract getDirectory(): Promise<string | R2Error>;
+    public abstract getDirectory(game: Game): Promise<string | R2Error>;
 }

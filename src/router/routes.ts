@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router';
 import Profile from '../model/Profile';
-import ManagerInformation from 'src/_managerinf/ManagerInformation';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const routes: RouteConfig[] = [
     {
@@ -33,14 +33,14 @@ const routes: RouteConfig[] = [
     },
     {
         path: '/config-editor',
-        component: () => import('src/pages/ConfigEditor.vue'),
+        component: () => import('pages/ConfigEditor.vue'),
         meta: {
             title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
         }
     },
     {
         path: '/help',
-        component: () => import('src/pages/Help.vue'),
+        component: () => import('pages/Help.vue'),
         meta: {
             title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
         }

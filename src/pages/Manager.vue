@@ -37,8 +37,8 @@
 			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the Risk of Rain 2 directory</h3>
-					<p>The directory must contain "Risk of Rain 2.exe".</p>
+					<h3 class='title'>Failed to set the {{ activeGame.displayName }} directory</h3>
+					<p>The directory must contain "{{ activeGame.exeName }}".</p>
 					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
 				</div>
 			</div>
@@ -55,7 +55,7 @@
 						game.
 					</p>
 				</div>
-				<p>Steam will be started, and will attempt to verify the integrity of Risk of Rain 2.</p>
+				<p>Steam will be started, and will attempt to verify the integrity of {{ activeGame.displayName }}.</p>
 				<br/>
 				<p>Please check the Steam window for validation progress. If the window has not yet appeared, please be
 					patient.
@@ -348,6 +348,8 @@
     import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
     import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
+    import GameManager from '../model/game/GameManager';
+    import Game from '../model/game/Game';
 
 	@Component({
 		components: {
@@ -405,6 +407,8 @@
         filterCategories: string[] = [];
         categoryFilterMode: string = CategoryFilterMode.OR;
         allowNsfw: boolean = false;
+
+        private activeGame!: Game;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -521,7 +525,7 @@
 		}
 
 		async fixPreloader() {
-			const res = await PreloaderFixer.fix();
+			const res = await PreloaderFixer.fix(this.activeGame);
 			if (res instanceof R2Error) {
 				this.showError(res);
 			} else {
@@ -555,7 +559,7 @@
 			};
 			this.downloadingMod = true;
 			this.closeModal();
-			ThunderstoreDownloaderProvider.instance.download(tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
+			ThunderstoreDownloaderProvider.instance.download(this.activeGame, tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
 					if (err !== null) {
 						this.downloadingMod = false;
@@ -595,33 +599,33 @@
 			return options;
 		}
 
-		computeDefaultRoR2InstallDirectory() : string {
+		computeDefaultInstallDirectory() : string {
 			switch(process.platform){
 				case 'win32':
 					return path.resolve(
 						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
-						'Steam', 'steamapps', 'common', 'Risk of Rain 2'
+						'Steam', 'steamapps', 'common', this.activeGame.steamFolderName
 					);
 				case 'linux':
-					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', 'Risk of Rain 2');
+					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', this.activeGame.steamFolderName);
 				default:
 					return '';
 			}
 		}
 
-		changeRoR2InstallDirectory() {
+		changeGameInstallDirectory() {
             const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.riskOfRain2Directory || this.computeDefaultRoR2InstallDirectory();
+			const ror2Directory: string = this.settings.getContext().gameSpecific.gameDirectory || this.computeDefaultInstallDirectory();
 			InteractionProvider.instance.selectFolder({
-                title: 'Locate Risk of Rain 2 Directory',
+                title: `Locate ${this.activeGame.displayName} Directory`,
                 defaultPath: ror2Directory,
                 buttonLabel: 'Select Directory'
             }).then(async files => {
                 if (files.length === 1) {
-                    const containsSteamExecutable = (await fs.readdir(files[0]))
-                        .find(value => value.toLowerCase() === 'risk of rain 2.exe') !== undefined;
-                    if (containsSteamExecutable) {
-                        await this.settings.setRiskOfRain2Directory(files[0]);
+                    const containsGameExecutable = (await fs.readdir(files[0]))
+                        .find(value => value.toLowerCase() === this.activeGame.exeName.toLowerCase()) !== undefined;
+                    if (containsGameExecutable) {
+                        await this.settings.setGameDirectory(files[0]);
                     } else {
                         this.showRor2IncorrectDirectoryModal = true;
                     }
@@ -658,7 +662,7 @@
 
 		changeSteamDirectory() {
             const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.steamDirectory || this.computeDefaultSteamDirectory();
+			const ror2Directory: string = this.settings.getContext().global.steamDirectory || this.computeDefaultSteamDirectory();
 			InteractionProvider.instance.selectFolder({
                 title: 'Locate Steam Directory',
                 defaultPath: ror2Directory,
@@ -774,7 +778,7 @@
 		}
 
 		showLaunchParameters() {
-			this.launchParametersModel = this.settings.launchParameters;
+			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
 		}
 
@@ -784,7 +788,7 @@
 		}
 
 		toggleIgnoreCache() {
-			this.settings.setIgnoreCache(!this.settings.ignoreCache);
+			this.settings.setIgnoreCache(!this.settings.getContext().global.ignoreCache);
 		}
 
 		async copyLogToClipboard() {
@@ -922,7 +926,7 @@
                     this.browseProfileFolder();
                     break;
                 case "ChangeGameDirectory":
-                    this.changeRoR2InstallDirectory();
+                    this.changeGameInstallDirectory();
                     break;
                 case "ChangeSteamDirectory":
                     this.changeSteamDirectory();
@@ -952,14 +956,14 @@
                     this.exportProfileAsCode();
                     break;
                 case "ToggleFunkyMode":
-                    this.setFunkyMode(!this.settings.funkyModeEnabled);
+                    this.setFunkyMode(!this.settings.getContext().global.funkyModeEnabled);
                     break;
                 case "SwitchTheme":
                     this.toggleDarkTheme();
-                    document.documentElement.classList.toggle('html--dark', this.settings.darkTheme);
+                    document.documentElement.classList.toggle('html--dark', this.settings.getContext().global.darkTheme);
                     break;
                 case "SwitchCard":
-                    this.toggleCardExpanded(!this.settings.expandedCards);
+                    this.toggleCardExpanded(!this.settings.getContext().global.expandedCards);
                     break;
                 case "EnableAll":
                     this.setAllModsEnabled(true);
@@ -982,9 +986,13 @@
             }
         }
 
+        beforeCreate() {
+            this.activeGame = GameManager.activeGame;
+        }
+
 		async created() {
-		    this.settings = await ManagerSettings.getSingleton();
-			this.launchParametersModel = this.settings.launchParameters;
+		    this.settings = await ManagerSettings.getSingleton(this.activeGame);
+			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
 			if (!(newModList instanceof R2Error)) {
 				await this.$store.dispatch("updateModList", newModList);

@@ -1,5 +1,6 @@
 import ProviderUtils from '../ProviderUtils';
 import R2Error from '../../../model/errors/R2Error';
+import Game from '../../../model/game/Game';
 
 export default abstract class GameRunnerProvider {
 
@@ -15,7 +16,7 @@ export default abstract class GameRunnerProvider {
         return GameRunnerProvider.provider();
     }
 
-    public abstract startModded(): Promise<void | R2Error>;
-    public abstract startVanilla(): Promise<void | R2Error>;
+    public abstract startModded(game: Game): Promise<void | R2Error>;
+    public abstract startVanilla(game: Game): Promise<void | R2Error>;
 
 }

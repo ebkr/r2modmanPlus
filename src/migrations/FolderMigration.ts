@@ -2,7 +2,7 @@ import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
-import CacheUtil from 'src/r2mm/mods/CacheUtil';
+import CacheUtil from '../r2mm/mods/CacheUtil';
 
 export default class FolderMigration {
 

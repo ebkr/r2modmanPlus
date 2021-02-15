@@ -160,7 +160,8 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     public async installMod(mod: ManifestV2): Promise<R2Error | null> {
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        if (mod.getName().toLowerCase() === 'bbepis-bepinexpack') {
+        const lowerName = mod.getDisplayName().toLowerCase();
+        if (lowerName === 'bepinex' || lowerName === "bepinexpack") {
             return this.installBepInEx(cachedLocationOfMod);
         }
         return this.installForManifestV2(mod, cachedLocationOfMod);

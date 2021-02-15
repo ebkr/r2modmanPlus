@@ -211,6 +211,7 @@
     import { SortDirection } from '../../model/real_enums/sort/SortDirection';
     import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
     import { SortNaming } from '../../model/real_enums/sort/SortNaming';
+    import GameManager from 'src/model/game/GameManager';
 
     @Component({
         components: {
@@ -534,7 +535,7 @@
         }
 
         async created() {
-            this.settings = await ManagerSettings.getSingleton();
+            this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
             this.filterModList();
         }
 

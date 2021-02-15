@@ -4,7 +4,7 @@
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Risk of Rain 2 is launching via Steam</h3>
+                    <h3 class='title'>{{ activeGame.displayName }} is launching via Steam</h3>
                     <h5 class="title is-5">Close this message to continue modding.</h5>
                     <p>If this is taking a while, it's likely due to Steam starting.</p>
                     <p>Please be patient, and have fun!</p>
@@ -13,7 +13,7 @@
             <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
         </div>
         <aside class="menu">
-            <p class="menu-label">Risk of Rain 2</p>
+            <p class="menu-label">{{ activeGame.displayName }}</p>
             <ul class="menu-list">
                 <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                 </li>
@@ -80,9 +80,13 @@
     import ManifestV2 from "../../model/ManifestV2";
     import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
+    import Game from '../../model/game/Game';
+    import GameManager from '../../model/game/GameManager';
 
     @Component
     export default class NavigationMenu extends Vue {
+
+        private activeGame!: Game;
 
         @Prop({default: ""})
         private view!: string;
@@ -90,7 +94,7 @@
         private gameRunning: boolean = false;
 
         get settings() {
-            return ManagerSettings.getSingleton();
+            return ManagerSettings.getSingleton(this.activeGame);
         }
 
         get thunderstoreModList() {
@@ -112,16 +116,16 @@
         async prepareLaunch() {
             const settings = await this.settings;
             let dir: string | R2Error;
-            if (settings.riskOfRain2Directory === null) {
-                dir = await GameDirectoryResolverProvider.instance.getDirectory();
+            if (settings.getContext().gameSpecific.gameDirectory === null) {
+                dir = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
             } else {
-                dir = settings.riskOfRain2Directory;
+                dir = settings.getContext().gameSpecific.gameDirectory!;
             }
             if (dir instanceof R2Error) {
                 // Show folder selection dialog.
                 this.$emit("error", dir);
             } else {
-                const setInstallDirError: R2Error | void = await settings.setRiskOfRain2Directory(dir);
+                const setInstallDirError: R2Error | void = await settings.setGameDirectory(dir);
                 if (setInstallDirError instanceof R2Error) {
                     this.$emit("error", setInstallDirError);
                     return;
@@ -133,8 +137,8 @@
             const fs = FsProvider.instance;
             const settings = await this.settings;
             await this.prepareLaunch();
-            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
-                const newLinkedFiles = await ModLinker.link();
+            if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
+                const newLinkedFiles = await ModLinker.link(this.activeGame);
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
                     return;
@@ -146,14 +150,14 @@
                     }
                 }
                 this.gameRunning = true;
-                GameRunnerProvider.instance.startModded().then(value => {
+                GameRunnerProvider.instance.startModded(this.activeGame).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }
                 });
             } else {
-                const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-                    'Set the Risk of Rain 2 directory in the Settings screen');
+                const err = new R2Error(`Failed to start ${this.activeGame.displayName}`, `The ${this.activeGame.displayName} directory does not exist`,
+                    `Set the ${this.activeGame.displayName} directory in the Settings screen`);
                 this.$emit("error", err);
             }
         }
@@ -162,22 +166,26 @@
             const fs = FsProvider.instance;
             const settings = await this.settings;
             await this.prepareLaunch();
-            if (settings.riskOfRain2Directory !== null && await fs.exists(settings.riskOfRain2Directory)) {
+            if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
                 this.gameRunning = true;
-                GameRunnerProvider.instance.startVanilla().then(value => {
+                GameRunnerProvider.instance.startVanilla(this.activeGame).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }
                 });
             } else {
-                const err = new R2Error('Failed to start Risk of Rain 2', 'The Risk of Rain 2 directory does not exist',
-                    'Set the Risk of Rain 2 directory in the Settings screen');
+                const err = new R2Error(`Failed to start ${this.activeGame.displayName}`, `The ${this.activeGame.displayName} directory does not exist`,
+                    `Set the ${this.activeGame.displayName} directory in the Settings screen`);
                 this.$emit("error", err);
             }
         }
 
         closeGameRunningModal() {
             this.gameRunning = false;
+        }
+
+        created() {
+            this.activeGame = GameManager.activeGame;
         }
     }
 

@@ -9,32 +9,34 @@ import Profile from '../../../../model/Profile';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../../../../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../../file/FsProvider';
+import Game from '../../../../model/game/Game';
 
 const exec = promisify(execCallback);
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
-    public async startModded(): Promise<void | R2Error> {
+    public async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        await this.ensureWineWillLoadBepInEx();
-        return this.start(`--doorstop-enable true --doorstop-target "Z:${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
+        await this.ensureWineWillLoadBepInEx(game);
+        return this.start(game, `--doorstop-enable true --doorstop-target "Z:${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
     }
 
-    public startVanilla(): Promise<void | R2Error> {
+    public startVanilla(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start('--doorstep-enable false');
+        return this.start(game, '--doorstep-enable false');
     }
 
-    private async start(cmdargs: string): Promise<void | R2Error> {
-        const settings = await ManagerSettings.getSingleton();
+    private async start(game: Game, cmdargs: string): Promise<void | R2Error> {
+        const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-        if(steamDir instanceof R2Error)
+        if(steamDir instanceof R2Error) {
             return steamDir;
+        }
 
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
         try{
-            const cmd = `"${steamDir}/steam.sh" -applaunch 632360 ${cmdargs} ${settings.launchParameters}`;
+            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.appId} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await exec(cmd);
         }catch(err){
@@ -44,9 +46,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         }
     }
 
-    private async ensureWineWillLoadBepInEx(): Promise<void | R2Error>{
+    private async ensureWineWillLoadBepInEx(game: Game): Promise<void | R2Error>{
         const fs = FsProvider.instance;
-        const compatDataDir = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getCompatDataDirectory();
+        const compatDataDir = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getCompatDataDirectory(game);
         if(compatDataDir instanceof R2Error)
             return compatDataDir;
         const userReg = path.join(compatDataDir, 'pfx', 'user.reg');

@@ -229,6 +229,8 @@ import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
+import GameManager from '../model/game/GameManager';
+import Game from 'src/model/game/Game';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -258,6 +260,8 @@ export default class Profiles extends Vue {
     private showFileSelectionHang: boolean = false;
 
     private renamingProfile: boolean = false;
+
+    private activeGame!: Game;
 
     errorMessage: string = '';
     errorStack: string = '';
@@ -360,7 +364,7 @@ export default class Profiles extends Vue {
         new Profile('Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
 
-        const settings = await ManagerSettings.getSingleton();
+        const settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.setProfile(Profile.getActiveProfile().getProfileName());
 
         this.closeRemoveProfileModal();
@@ -381,7 +385,7 @@ export default class Profiles extends Vue {
 
     downloadImportedProfileMods(modList: ExportMod[]) {
         this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(modList,
+        ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.activeGame, modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;
@@ -560,22 +564,26 @@ export default class Profiles extends Vue {
     }
 
     async created() {
+
+        this.activeGame = GameManager.activeGame;
+
         fs = FsProvider.instance;
-        settings = await ManagerSettings.getSingleton();
+        settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.load();
 
-        this.selectedProfile = settings.lastSelectedProfile;
+        this.selectedProfile = settings.getContext().gameSpecific.lastSelectedProfile;
         new Profile(this.selectedProfile);
 
         // Set default paths
-        if (settings.riskOfRain2Directory === null) {
-            const result = await GameDirectoryResolverProvider.instance.getDirectory();
+        if (settings.getContext().gameSpecific.gameDirectory === null) {
+            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
             if (!(result instanceof R2Error)) {
-                await settings.setRiskOfRain2Directory(result);
+                console.log("Setting default game path:", JSON.parse(JSON.stringify(settings.getContext())));
+                await settings.setGameDirectory(result);
             }
         }
 
-        if (settings.steamDirectory === null) {
+        if (settings.getContext().global.steamDirectory === null) {
             const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
             if (!(result instanceof R2Error)) {
                 await settings.setSteamDirectory(result);

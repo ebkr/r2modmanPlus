@@ -67,6 +67,7 @@
     import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
     import ManifestV2 from '../../model/ManifestV2';
     import R2Error from '../../model/errors/R2Error';
+    import GameManager from 'src/model/game/GameManager';
 
     @Component({
         components: {
@@ -147,7 +148,7 @@
         }
 
         async created() {
-            this.settings = await ManagerSettings.getSingleton();
+            this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         }
 
     }

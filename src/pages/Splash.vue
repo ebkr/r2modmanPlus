@@ -2,7 +2,7 @@
   <div>
     <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
     <div class='notification is-warning'>
-        <p>Risk of Rain 2 updates may break mods. If a new update has been released, please be patient.</p>
+        <p>Game updates may break mods. If a new update has been released, please be patient.</p>
     </div>
     <progress-bar
             :max='requests.length * 100'
@@ -139,7 +139,7 @@ import Profile from '../model/Profile';
 
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
-import GameManager from 'src/model/game/GameManager';
+import GameManager from '../model/game/GameManager';
 
 @Component({
     components: {
