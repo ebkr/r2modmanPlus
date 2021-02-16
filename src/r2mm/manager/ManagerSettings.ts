@@ -106,7 +106,12 @@ export default class ManagerSettings {
     }
 
     public getInstalledSortBy() {
-        return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0][1];
+        try {
+            return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0][1];
+        } catch (e) {
+            console.log("Failed to get installedSortBy:", e);
+            return SortNaming.CUSTOM;
+        }
     }
 
     public async setInstalledSortBy(sortNaming: string): Promise<R2Error | void> {
@@ -115,7 +120,12 @@ export default class ManagerSettings {
     }
 
     public getInstalledSortDirection() {
-        return Object.entries(SortDirection).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortDirection)[0][1];
+        try {
+            return Object.entries(SortDirection).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortDirection)[0][1];
+        } catch (e) {
+            console.log("Failed to get installedSortDirection:", e);
+            return SortDirection.STANDARD;
+        }
     }
 
     public async setInstalledSortDirection(sortDirection: string): Promise<R2Error | void> {
@@ -124,7 +134,12 @@ export default class ManagerSettings {
     }
 
     public getInstalledDisablePosition() {
-        return Object.entries(SortLocalDisabledMods).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition)[0][1];
+        try {
+            return Object.entries(SortLocalDisabledMods).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition)[0][1];
+        } catch (e) {
+            console.log("Failed to get installedDisablePosition:", e);
+            return SortLocalDisabledMods.CUSTOM;
+        }
     }
 
     public async setInstalledDisablePosition(disablePosition: string): Promise<R2Error | void> {
