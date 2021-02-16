@@ -39,7 +39,11 @@ export default class ProfileModList {
                     .then(value => value.toString())
                     .then(value => {
                         return yaml.parse(value)
-                            .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod));
+                            .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod))
+                            .map((mod: ManifestV2) => {
+                                mod.setIcon(path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"));
+                                return mod;
+                            });
                     });
             } catch(e) {
                 const err: Error = e;
