@@ -68,6 +68,10 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.5
+- Changed migration strategy to attempt to prevent config deletion
+    - Only affects Risk of Rain 2 profiles coming from < 3.1.3
+
 ### 3.1.4
 - Fixed error when updating that causes the profile to appear empty.
     - Note that icons on old profiles will not load correctly.
@@ -80,23 +84,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
     - Dyson Sphere Program
     - Valheim
 - Fixed an issue with the DSP build causing game directory changes to not save.
-
-### 3.1.1
-- Installing mods using the "Install with Mod Manager" button on Thunderstore will no longer produce duplicates.
-- Updating mods should now reflect on the installed screen.
-- Online section now shows 60 more mods per page.
-
-### 3.1.0
-- Linux support (thanks to AryToNeX).
-- Updates will no longer prompt if a newer version is installed.
-- New help screen.
-- Upgraded Electron from 8 to 11.
-- .modpack file is no longer required.
-- Legacy/symlink install modes are no longer options. Replaced with direct launch parameters.
-- Download progress will no longer stay at 0%.
-- Backend is now async meaning fewer app hangs when installing mods.
-- General fixes
-
 ## Screenshots
 
 Installed mod view

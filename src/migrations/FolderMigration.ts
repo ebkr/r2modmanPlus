@@ -15,21 +15,11 @@ export default class FolderMigration {
         console.log("Started migration");
         const fs = FsProvider.instance;
         await CacheUtil.clean();
-        await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, "RiskOfRain2"));
-        try {
+        if ((await fs.exists(path.join(PathResolver.ROOT, "RiskOfRain2")))) {
             await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "RiskOfRain2"));
-        } catch (e) {
-            console.log("Unable to clear RiskOfRain2 migration directory:", e);
+            await fs.rmdir(path.join(PathResolver.ROOT, "RiskOfRain2"));
         }
-        return new Promise(async resolve => {
-            await fs.copyFolder(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "RiskOfRain2"));
-            resolve(Promise.resolve());
-        }).then(async () => {
-            await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "mods"));
-            await fs.rmdir(path.join(PathResolver.ROOT, "mods"));
-            console.log("Finished migration");
-            return Promise.resolve();
-        });
+        await fs.rename(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "RiskOfRain2"));
     }
 
 }
