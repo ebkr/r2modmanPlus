@@ -53,11 +53,6 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                         if (file.toLowerCase() !== 'mods.yml') {
                             await fs.unlink(filePath);
                         }
-                    } else {
-                        if ((await fs.lstat(filePath)).isDirectory()) {
-                            await FileUtils.emptyDirectory(filePath);
-                            await fs.rmdir(filePath);
-                        }
                     }
                 }
             } catch(e) {
