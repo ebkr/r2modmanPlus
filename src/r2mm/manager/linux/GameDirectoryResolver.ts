@@ -22,8 +22,12 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const dirs = [
                 path.resolve(homedir(), '.local', 'share', 'Steam'),
                 path.resolve(homedir(), '.steam', 'steam'),
+                path.resolve(homedir(), '.steam', 'root'),
+                path.resolve(homedir(), '.steam'),
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam')
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
                 if (await FsProvider.instance.exists(dir))
