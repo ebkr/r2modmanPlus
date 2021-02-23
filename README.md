@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.6
+- Fixed major bug where updating BepInEx would wipe the plugins folder.
+
 ### 3.1.5
 - Changed migration strategy to attempt to prevent config deletion
     - Only affects Risk of Rain 2 profiles coming from < 3.1.3
@@ -78,12 +81,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
     - **Further visual bugs may occur when installing mods on an old profile.**
     - Export old profiles and re-import them to restore icons.
 
-### 3.1.3
-- Multi-game support. The following games are supported:
-    - Risk of Rain 2
-    - Dyson Sphere Program
-    - Valheim
-- Fixed an issue with the DSP build causing game directory changes to not save.
 ## Screenshots
 
 Installed mod view
