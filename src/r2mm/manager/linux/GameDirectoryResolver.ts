@@ -6,7 +6,7 @@ import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
 import { homedir } from 'os';
 import ManagerSettings from '../ManagerSettings';
-import FsProvider from "../../../providers/generic/file/FsProvider";
+import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
@@ -21,11 +21,17 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         try {
             const dirs = [
                 path.resolve(homedir(), '.local', 'share', 'Steam'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam')
+                path.resolve(homedir(), '.steam', 'steam'),
+                path.resolve(homedir(), '.steam', 'root'),
+                path.resolve(homedir(), '.steam'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
+                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
                 if (await FsProvider.instance.exists(dir))
-                    return dir;
+                    return await FsProvider.instance.realpath(dir);
             }
             throw new Error('Steam is not installed');
         } catch(e) {
