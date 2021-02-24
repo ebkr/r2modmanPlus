@@ -3,6 +3,8 @@
 # Linux wrapper script for r2modman
 # Written by Naomi Calabretta (blame her if something does not work)
 
+a="/$0"; a=${a%/*}; a=${a#/}; a=${a:-.}; BASEDIR=$(cd "$a"; pwd -P)
+
 R2PROFILE=""
 args=""
 
