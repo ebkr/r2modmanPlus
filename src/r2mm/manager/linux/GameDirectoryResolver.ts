@@ -102,9 +102,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch (e) {
             const err: Error = e;
             return new R2Error(
-                `Unable to resolve the ${game.displayName} compatibility data directory`,
+                `Unable to check if ${game.displayName} is a Proton game`,
                 err.message,
-                `Try manually locating the ${game.displayName} compatibility data directory through the settings`
+                `If this happened, it is a lot likely that your game folder is not inside steamapps/common.`
             )
         }
     }
@@ -125,9 +125,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return compatDataPath;
             } else {
                 return new FileNotFoundError(
-                    `${game.displayName} compatibility data do not exist in Steam's specified location`,
+                    `${game.displayName} compatibility data does not exist in Steam's specified location`,
                     `Failed to find directory: ${compatDataPath}`,
-                    null
+                    `If this happened, it is a lot likely that you did not start the game at least once. Please do it.`
                 )
             }
         } catch (e) {
@@ -135,7 +135,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return new R2Error(
                 `Unable to resolve the ${game.displayName} compatibility data directory`,
                 err.message,
-                `Try manually locating the ${game.displayName} compatibility data directory through the settings`
+                `If this happened, it is a lot likely that you did not start the game at least once. Please do it.`
             )
         }
     }
