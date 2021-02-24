@@ -135,11 +135,16 @@ import { Hero, Progress, Link } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
+import * as path from 'path';
 import Profile from '../model/Profile';
 
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { ipcRenderer } from 'electron';
 import GameManager from '../model/game/GameManager';
+import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import LinuxGameDirectoryResolver from 'src/r2mm/manager/linux/GameDirectoryResolver';
+import FsProvider from 'src/providers/generic/file/FsProvider';
+import PathResolver from 'src/r2mm/manager/PathResolver';
 
 @Component({
     components: {
@@ -210,13 +215,25 @@ export default class Splash extends Vue {
                 this.loadingText = 'Getting mod list from Thunderstore'
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
             }
-        }).then(response => {
+        }).then(async response => {
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
             ThunderstorePackages.handlePackageApiResponse(response);
             this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+            if(process.platform === 'linux') {
+              if(!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
+                await this.ensureLinuxWrapperInGameFolder();
+                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
+                console.log(`Launch arguments for this game:`, launchArgs);
+                if(typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+                  this.$router.push({path: '/linux-native-game-setup'});
+                  return;
+                }
+              }
+            }
             this.$router.push({path: '/profiles'});
         }).catch((e_)=>{
+            console.log(e_);
             this.isOffline = true;
             if (attempt < 5) {
                 this.getThunderstoreMods(attempt + 1);
@@ -227,13 +244,22 @@ export default class Splash extends Vue {
         })
     }
 
-  retryConnection() {
-    this.$router.go(0);
-  }
+    retryConnection() {
+        this.$router.go(0);
+    }
 
     continueOffline() {
         ThunderstorePackages.PACKAGES = [];
         this.$router.push({path: '/profiles'});
+    }
+
+    private async ensureLinuxWrapperInGameFolder() {
+      console.log(`Ensuring Linux wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')}`)
+      try{
+        await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+      }catch(_){
+        await FsProvider.instance.copyFile(path.join(__statics, 'linux_wrapper.sh'), path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+      }
     }
 
     async created() {

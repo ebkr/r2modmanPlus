@@ -17,12 +17,19 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     public async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        let unixToWineDosDevice = ''; // Start empty because we will assume that the game starts out as native
-        if(await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game)){
+
+        const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        let extraArguments = '';
+
+        if (isProton)
             await this.ensureWineWillLoadBepInEx(game);
-            unixToWineDosDevice = 'Z:'; // Eventually put in Z: that will represent the UNIX root in Wine
-        }
-        return this.start(game, `--doorstop-enable true --doorstop-target "${unixToWineDosDevice}${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
+        else
+            extraArguments = ` --r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+
+        const doorstopTarget = (isProton ? 'Z:' : '') +
+            await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
+        
+        return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}"${extraArguments}`);
     }
 
     public startVanilla(game: Game): Promise<void | R2Error> {
