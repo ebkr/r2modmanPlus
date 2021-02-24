@@ -82,6 +82,33 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
+    public async isProtonGame(game: Game){
+        try {
+            const steamPath = await this.getSteamDirectory();
+            if (steamPath instanceof R2Error)
+                return steamPath;
+
+            const manifestLocation = await this.findAppManifestLocation(steamPath, game);
+            if (manifestLocation instanceof R2Error)
+                return manifestLocation;
+
+            const appManifest = await this.parseAppManifest(manifestLocation, game);
+            if (appManifest instanceof R2Error)
+                return appManifest;
+
+            return (
+                typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
+            );
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error(
+                `Unable to resolve the ${game.displayName} compatibility data directory`,
+                err.message,
+                `Try manually locating the ${game.displayName} compatibility data directory through the settings`
+            )
+        }
+    }
+
     public async getCompatDataDirectory(game: Game){
         const fs = FsProvider.instance;
         try {
@@ -98,7 +125,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return compatDataPath;
             } else {
                 return new FileNotFoundError(
-                    `${game.displayName} compatibility data do not exist in Steam\'s specified location`,
+                    `${game.displayName} compatibility data do not exist in Steam's specified location`,
                     `Failed to find directory: ${compatDataPath}`,
                     null
                 )

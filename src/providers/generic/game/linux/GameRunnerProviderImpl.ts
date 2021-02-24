@@ -17,8 +17,12 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     public async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        await this.ensureWineWillLoadBepInEx(game);
-        return this.start(game, `--doorstop-enable true --doorstop-target "Z:${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
+        let unixToWineDosDevice = ''; // Start empty because we will assume that the game starts out as native
+        if(await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game)){
+            await this.ensureWineWillLoadBepInEx(game);
+            unixToWineDosDevice = 'Z:'; // Eventually put in Z: that will represent the UNIX root in Wine
+        }
+        return this.start(game, `--doorstop-enable true --doorstop-target "${unixToWineDosDevice}${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
     }
 
     public startVanilla(game: Game): Promise<void | R2Error> {

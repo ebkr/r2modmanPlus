@@ -38,7 +38,7 @@
 			<div class='modal-content'>
 				<div class='notification is-danger'>
 					<h3 class='title'>Failed to set the {{ activeGame.displayName }} directory</h3>
-					<p>The directory must contain "{{ activeGame.exeName }}".</p>
+					<p>The directory must contain either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
 					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
 				</div>
 			</div>
@@ -623,7 +623,7 @@
             }).then(async files => {
                 if (files.length === 1) {
                     const containsGameExecutable = (await fs.readdir(files[0]))
-                        .find(value => value.toLowerCase() === this.activeGame.exeName.toLowerCase()) !== undefined;
+                        .find(value => this.activeGame.exeName.find(exeName => value.toLowerCase() === exeName.toLowerCase()) !== undefined);
                     if (containsGameExecutable) {
                         await this.settings.setGameDirectory(files[0]);
                     } else {
