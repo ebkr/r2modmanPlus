@@ -259,6 +259,7 @@ export default class Splash extends Vue {
         await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
       }catch(_){
         await FsProvider.instance.copyFile(path.join(__statics, 'linux_wrapper.sh'), path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+        await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'), 0o755);
       }
     }
 
