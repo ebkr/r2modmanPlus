@@ -2,47 +2,49 @@ import { RouteConfig } from 'vue-router';
 import Profile from '../model/Profile';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 
+const appTitle = `${ManagerInformation.APP_NAME} (${ManagerInformation.VERSION.toString()})`
+
 const routes: RouteConfig[] = [
     {
         path: '/',
         component: () => import("pages/GameSelectionScreen.vue"),
         meta: {
-            title: () => ManagerInformation.APP_NAME
+            title: () => appTitle
         }
     },
     {
         path: '/splash',
         component: () => import('pages/Splash.vue'),
         meta: {
-            title: () => ManagerInformation.APP_NAME
+            title: () => appTitle
         }
     },
     {
         path: '/profiles',
         component: () => import('pages/Profiles.vue'),
         meta: {
-            title: () => ManagerInformation.APP_NAME
+            title: () => appTitle
         }
     },
     {
         path: '/manager',
         component: () => import('pages/Manager.vue'),
         meta: {
-            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
+            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
         }
     },
     {
         path: '/config-editor',
         component: () => import('pages/ConfigEditor.vue'),
         meta: {
-            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
+            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
         }
     },
     {
         path: '/help',
         component: () => import('pages/Help.vue'),
         meta: {
-            title: () => `${ManagerInformation.APP_NAME} - ${Profile.getActiveProfile().getProfileName()}`
+            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
         }
     }
 ];
