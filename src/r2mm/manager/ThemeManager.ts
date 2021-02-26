@@ -1,6 +1,6 @@
 import { Dark } from "quasar";
 import ManagerSettings from "./ManagerSettings";
-import GameManager from 'src/model/game/GameManager';
+import GameManager from '../../model/game/GameManager';
 
 export default class ThemeManager {
 

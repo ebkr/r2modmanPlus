@@ -62,6 +62,7 @@
     import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
     import GameManager from '../../model/game/GameManager';
     import Game from '../../model/game/Game';
+    import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 
     @Component({
         components: {
@@ -302,6 +303,14 @@
                             });
                     }
                 }
+            ),
+            new SettingsRow(
+              'Other',
+              'Change game',
+              'Change the current game (restarts the manager)',
+              async () => "",
+                'fa-gamepad',
+                () => InteractionProvider.instance.restartApp()
             ),
             new SettingsRow(
                 'Modpacks',
