@@ -29,7 +29,6 @@ export default class ProfileModList {
 
     public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
-        console.log("Mod list", profile.getPathOfProfile());
         if (!await fs.exists(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
             await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
         }
