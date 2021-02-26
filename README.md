@@ -68,18 +68,18 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.7
+- Added support for the BepInEx SlimVML patcher.
+  - Mods requiring SlimVML must have their DLL packaged under a "SlimVML" folder.
+- Manager version is now in the window title.
+- You can now change game from the settings screen.
+
 ### 3.1.6
 - Fixed major bug where updating BepInEx would wipe the plugins folder.
 
 ### 3.1.5
 - Changed migration strategy to attempt to prevent config deletion
     - Only affects Risk of Rain 2 profiles coming from < 3.1.3
-
-### 3.1.4
-- Fixed error when updating that causes the profile to appear empty.
-    - Note that icons on old profiles will not load correctly.
-    - **Further visual bugs may occur when installing mods on an old profile.**
-    - Export old profiles and re-import them to restore icons.
 
 ## Screenshots
 
