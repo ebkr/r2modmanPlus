@@ -194,9 +194,9 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     }
 
     async resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null> {
-        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers'];
+        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML'];
         // Check if BepInExTree is end.
-        if (endFolderNames.find((folder: string) => folder === folderName.toLowerCase()) !== undefined) {
+        if (endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase()) !== undefined) {
             let profileLocation: string;
             if (folderName.toLowerCase() !== 'config') {
                 profileLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', folderName, mod.getName());
