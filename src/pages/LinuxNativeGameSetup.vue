@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<hero title="Getting started on Linux" subtitle="Let's configure the game properly" heroType="is-info" />
+		<hero title="Getting started on Linux" subtitle="Let's configure the game properly" heroType="is-warning" />
 		<br/>
 		<div class="container">
 			To be able to launch {{ activeGame }} on Linux, you must first setup your Steam launch options correctly.<br/>
