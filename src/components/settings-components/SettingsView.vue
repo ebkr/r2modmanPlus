@@ -300,6 +300,7 @@
                             .then(_ => {
                                 this.downloadingThunderstoreModList = false;
                                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                                this.emitInvoke('RefreshedThunderstorePackages');
                             });
                     }
                 }
