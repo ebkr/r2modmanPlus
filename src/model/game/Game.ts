@@ -8,10 +8,11 @@ export default class Game {
     private readonly _dataFolderName: string;
     private readonly _thunderstoreUrl: string;
     private readonly _exclusionsUrl: string;
+    private readonly _linuxNative: boolean;
 
     constructor(displayName: string, appid: number, internalFolderName: string,
                 steamFolderName: string, exeName: string, dataFolderName: string,
-                tsUrl: string, exclusionsUrl: string) {
+                tsUrl: string, exclusionsUrl: string, linuxNative: boolean) {
 
         this._displayName = displayName;
         this._appId = appid;
@@ -21,6 +22,7 @@ export default class Game {
         this._dataFolderName = dataFolderName;
         this._thunderstoreUrl = tsUrl;
         this._exclusionsUrl = exclusionsUrl;
+        this._linuxNative = linuxNative;
     }
 
     get displayName(): string {
@@ -53,5 +55,9 @@ export default class Game {
 
     get exclusionsUrl(): string {
         return this._exclusionsUrl;
+    }
+
+    get linuxNative(): boolean {
+        return this._linuxNative;
     }
 }
