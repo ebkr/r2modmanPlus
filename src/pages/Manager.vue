@@ -983,6 +983,13 @@
                 case "CleanCache":
                     CacheUtil.clean();
                     break;
+                case "RefreshedThunderstorePackages":
+                    ProfileModList.getModList(Profile.getActiveProfile()).then(value => {
+                        if (!(value instanceof R2Error)) {
+                            this.$store.dispatch("updateModList", value);
+                        }
+                    });
+                    break;
             }
         }
 
