@@ -28,6 +28,7 @@ const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping} = {
     RiskOfRain2: new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack"),
     DysonSphereProgram: new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack"),
     Valheim: new BepInExPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim"),
+    GTFO: new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
