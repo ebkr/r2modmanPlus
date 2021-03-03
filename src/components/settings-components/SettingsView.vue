@@ -357,7 +357,7 @@
 
                 const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
                 if (!(steamDirectory instanceof R2Error)) {
-                    await settings.setGameDirectory(steamDirectory);
+                    await settings.setSteamDirectory(steamDirectory);
                 }
             });
         }
