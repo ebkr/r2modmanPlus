@@ -24,11 +24,14 @@ const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
  * Mapping is:
  * game's InternalFolderName: Mapping
  */
-const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping} = {
-    RiskOfRain2: new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack"),
-    DysonSphereProgram: new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack"),
-    Valheim: new BepInExPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim"),
-    GTFO: new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")
+const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
+    RiskOfRain2: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
+    DysonSphereProgram: [new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack")],
+    Valheim: [
+        new BepInExPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim"),
+        new BepInExPackageMapping("1F31A-BepInEx_Valheim_Full", "BepInEx_Valheim_Full"),
+    ],
+    GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")]
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
@@ -46,7 +49,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     public async uninstallMod(mod: ManifestV2): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
         const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
-        if (bepInExVariant.packageName.toLowerCase() === mod.getName().toLowerCase()) {
+            if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(Profile.getActiveProfile().getPathOfProfile()))) {
                     const filePath = path.join(Profile.getActiveProfile().getPathOfProfile(), file);
@@ -180,8 +183,9 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
 
         const activeGame = GameManager.activeGame;
         const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
-        if (bepInExVariant.packageName.toLowerCase() === mod.getName().toLowerCase()) {
-            return this.installBepInEx(cachedLocationOfMod, bepInExVariant);
+        const variant = bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase());
+        if (variant !== undefined) {
+            return this.installBepInEx(cachedLocationOfMod, variant);
         }
         return this.installForManifestV2(mod, cachedLocationOfMod);
     }
