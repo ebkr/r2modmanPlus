@@ -19,8 +19,8 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 // BepInEx Standard
                 preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
             } else {
-                // BepInEx Bleeding Edge
-                preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.Core.dll");
+                // BepInEx Bleeding Edge - IL2CPP preloader
+                preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.IL2CPP.dll");
             }
             return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
         });
