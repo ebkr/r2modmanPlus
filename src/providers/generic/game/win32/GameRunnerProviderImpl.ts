@@ -12,28 +12,22 @@ import FsProvider from 'src/providers/generic/file/FsProvider';
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     async startModded(game: Game): Promise<void | R2Error> {
-        return new Promise(async () => {
-            LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-            let preloaderPath: string;
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))) {
-                // BepInEx Standard
-                preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
-            } else {
-                // BepInEx Bleeding Edge - IL2CPP preloader
-                preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.IL2CPP.dll");
-            }
-            return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
-        });
+        LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
+        // BepInEx Standard
+        let preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
+        if (!(await FsProvider.instance.exists(preloaderPath))) {
+            // BepInEx Bleeding Edge - IL2CPP preloader
+            preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.IL2CPP.dll");
+        }
+        return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
     }
 
     async startVanilla(game: Game): Promise<void | R2Error> {
-        return new Promise(async (resolve, reject) => {
             LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
             return this.start(game, `--doorstop-enable false`);
-        });
     }
 
-    async start(game: Game, args: string) {
+    async start(game: Game, args: string): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
             const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
