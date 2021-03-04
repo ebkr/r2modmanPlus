@@ -14,12 +14,16 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
     async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         // BepInEx Standard
-        let preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll");
-        if (!(await FsProvider.instance.exists(preloaderPath))) {
-            // BepInEx Bleeding Edge - IL2CPP preloader
-            preloaderPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.IL2CPP.dll");
+        try {
+            const corePath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core");
+            const preloaderPath = path.join(corePath,
+                (await FsProvider.instance.readdir(corePath))
+                    .filter(x => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+            return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error("Failed to start modded", err.message, "BepInEx may not installed correctly. Further help may be required.");
         }
-        return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
     }
 
     async startVanilla(game: Game): Promise<void | R2Error> {
