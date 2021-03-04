@@ -18,7 +18,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             const corePath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core");
             const preloaderPath = path.join(corePath,
                 (await FsProvider.instance.readdir(corePath))
-                    .filter(x => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+                    .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
             return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
         } catch (e) {
             const err: Error = e;
