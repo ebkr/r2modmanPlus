@@ -106,11 +106,14 @@
                 `Change ${this.activeGame.displayName} directory`,
                 `Change the location of the ${this.activeGame.displayName} directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
-                    if (directory instanceof R2Error) {
-                        return 'Please set manually';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    if (settings.getContext().gameSpecific.gameDirectory !== null) {
+                        const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
+                        if (!(directory instanceof R2Error)) {
+                            return directory;
+                        }
                     }
-                    return directory;
+                    return 'Please set manually';
                 },
                 'fa-folder-open',
                 () => this.emitInvoke('ChangeGameDirectory')
@@ -120,11 +123,14 @@
                 'Change Steam directory',
                 `Change the location of the Steam directory that ${this.appName} uses.`,
                 async () => {
-                    const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-                    if (directory instanceof R2Error) {
-                        return 'Please set manually';
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    if (settings.getContext().global.steamDirectory !== null) {
+                        const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+                        if (!(directory instanceof R2Error)) {
+                            return directory;
+                        }
                     }
-                    return directory;
+                    return 'Please set manually';
                 },
                 'fa-folder-open',
                 () => this.emitInvoke('ChangeSteamDirectory')
@@ -343,6 +349,17 @@
         created() {
             this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
             this.searchableSettings = this.settingsList;
+            ManagerSettings.getSingleton(GameManager.activeGame).then(async settings => {
+                const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
+                if (!(gameDirectory instanceof R2Error)) {
+                    await settings.setGameDirectory(gameDirectory);
+                }
+
+                const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+                if (!(steamDirectory instanceof R2Error)) {
+                    await settings.setSteamDirectory(steamDirectory);
+                }
+            });
         }
 
         changeTab(tab: string) {
