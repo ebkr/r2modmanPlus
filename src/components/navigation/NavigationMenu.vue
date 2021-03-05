@@ -153,6 +153,7 @@
                 GameRunnerProvider.instance.startModded(this.activeGame).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
+                        this.gameRunning = false;
                     }
                 });
             } else {

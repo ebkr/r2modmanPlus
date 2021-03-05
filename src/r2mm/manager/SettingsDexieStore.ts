@@ -29,7 +29,7 @@ export default class SettingsDexieStore extends Dexie {
             });
 
         // Add all games to store. Borked v2-3 locally
-        this.version(4).stores(store);
+        this.version(5).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");

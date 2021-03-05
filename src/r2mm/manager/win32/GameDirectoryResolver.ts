@@ -55,7 +55,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return settings.getContext().gameSpecific.gameDirectory!;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
+            const queryResult: string = (await child.exec(`powershell.exe "${installDirectoryQuery}"`)).toString().trim();
             const installKeyValue = queryResult.split('\n')[0].trim();
             // Remove key (InstallPath) from string
             const installValue = installKeyValue.substr(('InstallPath').length)

@@ -54,7 +54,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
-import Hero from 'components/Hero.vue';
+import Hero from '../components/Hero.vue';
 import FolderMigration from '../migrations/FolderMigration';
 import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';

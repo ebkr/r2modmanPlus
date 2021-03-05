@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.8
+- Added GTFO support
+
 ### 3.1.7
 - Added support for the BepInEx SlimVML patcher.
   - Mods requiring SlimVML must have their DLL packaged under a "SlimVML" folder.

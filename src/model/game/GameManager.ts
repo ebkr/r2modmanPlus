@@ -16,6 +16,9 @@ export default class GameManager {
         new Game('Valheim', 892970, 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
             'https://valheim.thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md')
+        new Game('GTFO', 493520, 'GTFO',
+            'GTFO', ['GTFO.exe'], 'GTFO_Data',
+            'https://gtfo.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md')
     ];
 
     static get activeGame(): Game {
