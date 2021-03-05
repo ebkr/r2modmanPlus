@@ -7,7 +7,7 @@ import path from "path";
 import Profile from '../../../../model/Profile';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../../model/game/Game';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import FsProvider from '../../../../providers/generic/file/FsProvider';
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
