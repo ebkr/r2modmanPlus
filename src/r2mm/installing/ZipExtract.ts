@@ -46,6 +46,7 @@ export default class ZipExtract {
             await ZipProvider.instance.extractAllTo(zip, outputFolder);
             callback(true);
         } catch (e) {
+            console.log("extractOnly failed:", e);
             callback(false);
         }
     }

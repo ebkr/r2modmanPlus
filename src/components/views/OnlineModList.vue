@@ -7,7 +7,7 @@
             @closed-modal="modToDownload = null;"
             @error="emitError($event)"
         />
-        <div v-for='(key, index) in pagedModList' :key="'online-' + key.getFullName()">
+        <div v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}`">
             <ExpandableCard
                 :image="key.getVersions()[0].getIcon()"
                 :id="index"
@@ -147,6 +147,7 @@
         }
 
         async created() {
+            console.log(this.pagedModList.filter(value => value.getName() === "BetterServerConfig"));
             this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         }
 
