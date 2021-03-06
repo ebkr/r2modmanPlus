@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program and Valheim.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim and GTFO.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installs allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.9
+- Fixed an issue where duplicate package listings would break the Online search functionality.
+
 ### 3.1.8
 - Added GTFO support
 
