@@ -1,0 +1,14 @@
+on: [ push ]
+
+jobs:
+    gitavscan:
+        runs-on: ubuntu-latest
+        name: History AV Scan
+        steps:
+            -   uses: actions/checkout@v2
+                with:
+                    fetch-depth: '0'
+            -   name: Git Anti Virus Scan
+                uses: djdefi/gitavscan@2
+                with:
+                    full: '--full'
