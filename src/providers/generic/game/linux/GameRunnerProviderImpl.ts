@@ -17,13 +17,24 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     public async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        await this.ensureWineWillLoadBepInEx(game);
-        return this.start(game, `--doorstop-enable true --doorstop-target "Z:${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}"`);
+
+        const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        let extraArguments = '';
+
+        if (isProton)
+            await this.ensureWineWillLoadBepInEx(game);
+        else
+            extraArguments = ` --r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+
+        const doorstopTarget = (isProton ? 'Z:' : '') +
+            await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
+        
+        return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}"${extraArguments}`);
     }
 
     public startVanilla(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start(game, '--doorstep-enable false');
+        return this.start(game, '--doorstop-enable false');
     }
 
     private async start(game: Game, cmdargs: string): Promise<void | R2Error> {

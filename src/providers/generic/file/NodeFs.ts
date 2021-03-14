@@ -81,6 +81,10 @@ export default class NodeFs extends FsProvider {
         });
     }
 
+    async chmod(path: string, mode: string | number): Promise<void> {
+        return fs.promises.chmod(path, mode);
+    }
+
     async copyFile(from: string, to: string): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(from, async () => {

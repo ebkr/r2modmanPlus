@@ -82,6 +82,33 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
+    public async isProtonGame(game: Game){
+        try {
+            const steamPath = await this.getSteamDirectory();
+            if (steamPath instanceof R2Error)
+                return steamPath;
+
+            const manifestLocation = await this.findAppManifestLocation(steamPath, game);
+            if (manifestLocation instanceof R2Error)
+                return manifestLocation;
+
+            const appManifest = await this.parseAppManifest(manifestLocation, game);
+            if (appManifest instanceof R2Error)
+                return appManifest;
+
+            return (
+                typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
+            );
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error(
+                `Unable to check if ${game.displayName} is a Proton game`,
+                err.message,
+                `If this happened, it is very likely that your game folder is not inside steamapps/common.`
+            )
+        }
+    }
+
     public async getCompatDataDirectory(game: Game){
         const fs = FsProvider.instance;
         try {
@@ -98,9 +125,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 return compatDataPath;
             } else {
                 return new FileNotFoundError(
-                    `${game.displayName} compatibility data do not exist in Steam\'s specified location`,
+                    `${game.displayName} compatibility data does not exist in Steam's specified location`,
                     `Failed to find directory: ${compatDataPath}`,
-                    null
+                    `If this happened, it is very likely that you did not start the game at least once. Please do it.`
                 )
             }
         } catch (e) {
@@ -108,9 +135,36 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return new R2Error(
                 `Unable to resolve the ${game.displayName} compatibility data directory`,
                 err.message,
-                `Try manually locating the ${game.displayName} compatibility data directory through the settings`
+                `If this happened, it is very likely that you did not start the game at least once. Please do it.`
             )
         }
+    }
+
+    // TODO: Move this to Steam Utils when the multiple store refactor is made
+    public async getLaunchArgs(game: Game): Promise<R2Error | string> {
+        const steamDir = await this.getSteamDirectory();
+        if (steamDir instanceof R2Error) return steamDir;
+
+        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'config', 'loginusers.vdf'))).toString());
+        let userSteamID64 = '';
+        for(let _id in loginUsers.users) {
+            if(loginUsers.users[_id].MostRecent == 1) {
+                userSteamID64 = _id;
+                break;
+            }
+        }
+
+        if(userSteamID64.length === 0) return new R2Error(
+            'Unable to get the current Steam User ID',
+            'Please try again',
+            null
+        );
+
+        const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
+
+        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+
+        return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.appId].LaunchOptions || '';
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {

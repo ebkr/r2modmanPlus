@@ -4,13 +4,13 @@ export default class Game {
     private readonly _appId: number;
     private readonly _internalFolderName: string;
     private readonly _steamFolderName: string;
-    private readonly _exeName: string;
+    private readonly _exeName: string[];
     private readonly _dataFolderName: string;
     private readonly _thunderstoreUrl: string;
     private readonly _exclusionsUrl: string;
 
     constructor(displayName: string, appid: number, internalFolderName: string,
-                steamFolderName: string, exeName: string, dataFolderName: string,
+                steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string) {
 
         this._displayName = displayName;
@@ -39,7 +39,7 @@ export default class Game {
         return this._steamFolderName;
     }
 
-    get exeName(): string {
+    get exeName(): string[] {
         return this._exeName;
     }
 

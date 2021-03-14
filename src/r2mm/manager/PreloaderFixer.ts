@@ -12,13 +12,22 @@ export default class PreloaderFixer {
     public static async fix(game: Game): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const dirResult = await GameDirectoryResolverProvider.instance.getDirectory(game);
-        if (dirResult instanceof R2Error) {
+        if (dirResult instanceof R2Error)
             return dirResult;
+
+        let exeFound = false;
+        for(let exeName in game.exeName) {
+            if (await fs.exists(path.join(dirResult, exeName))) {
+                exeFound = true;
+                break;
+            }
         }
-        if (!await fs.exists(path.join(dirResult, game.exeName))) {
-            return new R2Error(`${game.displayName} directory is invalid`, `could not find "${game.exeName}"`,
+
+        if(!exeFound) {
+            return new R2Error(`${game.displayName} directory is invalid`, `could not find either of "${game.exeName.join('", "')}"`,
                 `Set the ${game.displayName} directory in the settings section`);
         }
+
         try {
             await FileUtils.emptyDirectory(path.join(dirResult, game.dataFolderName, 'Managed'));
             await fs.rmdir(path.join(dirResult, game.dataFolderName, 'Managed'));
