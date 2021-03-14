@@ -37,14 +37,14 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
         } else {
-            extraArguments = ` --r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
         }
 
         const doorstopTarget = (isProton ? 'Z:' : '') +
             await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
 
 
-        return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}"${extraArguments}`);
+        return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}" ${extraArguments}`);
     }
 
     public startVanilla(game: Game): Promise<void | R2Error> {
