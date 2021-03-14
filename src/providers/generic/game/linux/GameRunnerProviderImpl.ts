@@ -36,7 +36,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 const err: Error = e;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
-            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}" --doorstop-dll-search-override "${path.join(Profile.getActiveProfile().getProfileName(), "unstripped_corlib")}"`;
         }
 
         const doorstopTarget = (isProton ? 'Z:' : '') +
