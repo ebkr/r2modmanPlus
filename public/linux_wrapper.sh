@@ -16,14 +16,14 @@ while :; do
                 shift
             else
                 echo "No --r2profile value specified, skipping!"
-				exit
+                exit
             fi
             ;;
         *)
             if [ -z "$1" ]; then
                 break
             fi
-            if [ -z $args ]; then
+            if [ -z "$args" ]; then
                 args="$1"
             else
                 args="$args $1"
@@ -33,7 +33,7 @@ while :; do
     shift
 done
 
-if [ -z $R2PROFILE ]; then
+if [ -z "$R2PROFILE" ]; then
     echo "No --r2profile value specified, skipping!"
     exit
 fi
