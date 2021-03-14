@@ -64,6 +64,9 @@
     import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
     import GameManager from './model/game/GameManager';
+    import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
+    import ProfileModList from 'src/r2mm/mods/ProfileModList';
+    import Profile from 'src/model/Profile';
 
     @Component
     export default class App extends Vue {
@@ -92,6 +95,8 @@
             // Use as default game for settings load.
             const riskOfRain2Game = GameManager.gameList.find(value => value.displayName === "Risk of Rain 2")!;
             GameManager.activeGame = riskOfRain2Game;
+
+            this.hookModListRefresh();
 
             const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
             this.settings = settings;
@@ -162,6 +167,23 @@
             }
 
             BindLoaderImpl.bind();
+        }
+
+        private hookModListRefresh() {
+            setInterval(() => {
+                    ThunderstorePackages.update(GameManager.activeGame)
+                        .then(_ => {
+                            this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                            // Ignore the warning. If no profile is selected on game selection then getActiveProfile will return undefined.
+                            if (Profile.getActiveProfile() !== undefined) {
+                                ProfileModList.getModList(Profile.getActiveProfile()).then(value => {
+                                    if (!(value instanceof R2Error)) {
+                                        this.$store.dispatch("updateModList", value);
+                                    }
+                                });
+                            }
+                        });
+                }, 5 * 60 * 1000);
         }
 
     }
