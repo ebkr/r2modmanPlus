@@ -21,14 +21,29 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
         let extraArguments = '';
 
-        if (isProton)
+        if (isProton) {
             await this.ensureWineWillLoadBepInEx(game);
-        else
+
+            // If sh files aren't executable then the wrapper will fail.
+            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile()))))
+                .filter(value => value.endsWith(".sh"));
+
+            try {
+                for (const shFile of shFiles) {
+                    await FsProvider.instance.chmod(shFile, 0o755);
+                }
+            } catch (e) {
+                const err: Error = e;
+                return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
+            }
+        } else {
             extraArguments = ` --r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+        }
 
         const doorstopTarget = (isProton ? 'Z:' : '') +
             await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
-        
+
+
         return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}"${extraArguments}`);
     }
 
