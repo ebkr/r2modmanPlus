@@ -23,7 +23,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
         if (isProton) {
             await this.ensureWineWillLoadBepInEx(game);
-
+        } else {
             // If sh files aren't executable then the wrapper will fail.
             const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile()))))
                 .filter(value => value.endsWith(".sh"));
@@ -36,7 +36,6 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 const err: Error = e;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
-        } else {
             extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
         }
 
