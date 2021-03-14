@@ -220,7 +220,7 @@ export default class Splash extends Vue {
             new Profile('Default');
             ThunderstorePackages.handlePackageApiResponse(response);
             this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-            if(process.platform === 'linux') {
+            if (process.platform === 'linux') {
               if(!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
                 await this.ensureLinuxWrapperInGameFolder();
                 const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
