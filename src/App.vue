@@ -182,9 +182,6 @@
                                     }
                                 });
                             }
-                        })
-                        .then(_ => {
-                            console.log("Updated mod list");
                         });
                 }, 5 * 60 * 1000);
         }

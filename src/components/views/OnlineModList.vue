@@ -147,7 +147,6 @@
         }
 
         async created() {
-            console.log(this.pagedModList.filter(value => value.getName() === "BetterServerConfig"));
             this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         }
 
