@@ -28,5 +28,6 @@ export default abstract class FsProvider {
     public abstract rename(path: string, newPath: string): Promise<void>;
     public abstract copyFile(from: string, to: string): Promise<void>;
     public abstract copyFolder(from: string, to: string): Promise<void>;
+    public abstract base64FromZip(path: string): Promise<string>;
 
 }

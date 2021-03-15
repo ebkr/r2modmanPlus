@@ -200,7 +200,7 @@ export default class ProfileModList {
         if (exportResult instanceof R2Error) {
             return exportResult;
         } else {
-            const profileBuffer = '#r2modman\n' + (await fs.readFile(exportResult)).toString('base64');
+            const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportResult));
             Axios.post('https://r2modman-hastebin.herokuapp.com/documents', profileBuffer)
                 .then(resp => callback(resp.data.key, null))
                 .catch(e => {
