@@ -64,9 +64,10 @@
     import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
     import GameManager from './model/game/GameManager';
-    import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
-    import ProfileModList from 'src/r2mm/mods/ProfileModList';
-    import Profile from 'src/model/Profile';
+    import ThunderstorePackages from './r2mm/data/ThunderstorePackages';
+    import ProfileModList from './r2mm/mods/ProfileModList';
+    import Profile from './model/Profile';
+    import ManifestV2 from './model/ManifestV2';
 
     @Component
     export default class App extends Vue {
@@ -172,11 +173,11 @@
         private hookModListRefresh() {
             setInterval(() => {
                     ThunderstorePackages.update(GameManager.activeGame)
-                        .then(_ => {
+                        .then(() => {
                             this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                             // Ignore the warning. If no profile is selected on game selection then getActiveProfile will return undefined.
                             if (Profile.getActiveProfile() !== undefined) {
-                                ProfileModList.getModList(Profile.getActiveProfile()).then(value => {
+                                ProfileModList.getModList(Profile.getActiveProfile()).then((value: ManifestV2[] | R2Error) => {
                                     if (!(value instanceof R2Error)) {
                                         this.$store.dispatch("updateModList", value);
                                     }
