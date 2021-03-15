@@ -1,24 +1,37 @@
 import Game from '../../model/game/Game';
+import StorePlatformMetadata from 'src/model/game/StorePlatformMetadata';
+import { StorePlatform } from 'src/model/game/StorePlatform';
 
 export default class GameManager {
 
     private static _activeGame: Game;
 
     private static _gameList = [
-        new Game('Risk of Rain 2', 632360, 'RiskOfRain2',
+        new Game('Risk of Rain 2', 'RiskOfRain2',
             'Risk of Rain 2', 'Risk of Rain 2.exe', 'Risk of Rain 2_Data',
-            'https://thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md'),
+            'https://thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "632360")], "RiskOfRain2.jpg"),
 
-        new Game('Dyson Sphere Program', 1366540, 'DysonSphereProgram',
+        new Game('Dyson Sphere Program', 'DysonSphereProgram',
             'Dyson Sphere Program', 'DSPGAME.exe', 'DSPGAME_Data',
-            'https://dsp.thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md'),
+            'https://dsp.thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1366540")], "DysonSphereProgram.jpg"),
 
-        new Game('Valheim', 892970, 'Valheim',
+        new Game('Valheim', 'Valheim',
             'Valheim', 'valheim.exe', 'valheim_Data',
-            'https://valheim.thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md'),
-        new Game('GTFO', 493520, 'GTFO',
+            'https://valheim.thunderstore.io/api/v1/package', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "892970")], "Valheim.jpg"),
+        new Game('GTFO', 'GTFO',
             'GTFO', 'GTFO.exe', 'GTFO_Data',
-            'https://gtfo.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md')
+            'https://gtfo.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "493520")], "GTFO.jpg"),
+        new Game('Outward', 'Outward',
+            'Outward', 'Outward.exe', 'Outward_Data',
+            'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "OUTWARD_INTERNAL_APP_NAME")
+            ], "Outward.jpg")
     ];
 
     static get activeGame(): Game {

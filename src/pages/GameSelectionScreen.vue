@@ -13,35 +13,70 @@
         </div>
         <div class="columns">
             <div class="column is-full">
-                <div>
+                <div class="container">
                     <article class="media">
                         <div class="media-content">
                             <div class="content">
-                                <div v-for="(game) of gameList" :key="`${game.displayName}-${selectedGame === game}`">
-                                    <a @click="selectGame(game)">
-                                        <div class="container">
-                                            <div class="border-at-bottom">
-                                                <div class="card is-shadowless">
-                                                    <p
-                                                        :class="['card-header-title', {'has-text-info':selectedGame === game}]"
-                                                    >
-                                                        {{ game.displayName }}
-                                                    </p>
+                                <br/>
+
+                                <div class="sticky-top is-shadowless background-bg z-max">
+                                    <div>
+                                        <div class="card-header-title">
+                                            <div class="input-group input-group--flex margin-right">
+                                                <label for="local-search" class="non-selectable">Search</label>
+                                                <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+
+                                <div class="text-center">
+                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}`" class="inline-block margin-right margin-bottom">
+
+                                        <div class="border-at-bottom inline" @click="selectGame(game)">
+                                            <div class='card is-shadowless'>
+                                                <div class='cursor-pointer'>
+                                                    <header class='card-header is-shadowless is-relative'>
+                                                        <div class="absolute-full z-top flex">
+                                                            <div class="card-action-overlay rounded">
+                                                                <div class="absolute-top" :class="['card-header-title']">
+                                                                    <p class="text-left title is-5">{{ game.displayName }}</p>
+                                                                </div>
+                                                                <div class="absolute-center" v-if="selectedGame === game && flow === 2">
+                                                                    <div v-for="(platformMetadata) of game.storePlatformMetadata"
+                                                                         :key="platformMetadata.storePlatform.toString()"
+                                                                         class="text-left">
+                                                                        <input :id="`${game.internalFolderName}-platform-${platformMetadata.storePlatform.toString()}`"
+                                                                               name="platform" class="radio" type="radio"/>
+                                                                        <label :for="`${game.internalFolderName}-platform-${platformMetadata.storePlatform.toString()}`">
+                                                                            {{ platformMetadata.storePlatform }}
+                                                                        </label>
+                                                                    </div>
+                                                                    <br/>
+                                                                    <button class="button is-info">Continue</button>
+                                                                    <br/><br/>
+                                                                    <button class="button">Go back</button>
+                                                                </div>
+                                                                <div class="absolute-center" v-else>
+                                                                    <button class="button is-info">Select game</button>
+                                                                    <br/><br/>
+                                                                    <button class="button">Set as default</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="image is-fullwidth">
+                                                            <img :src='`/images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded"/>
+                                                        </div>
+                                                    </header>
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>
+
+                                    </div>
                                 </div>
                             </div>
-                            <div class="container">
-                                <nav class="level">
-                                    <div class="level-item">
-                                        <a class="button is-info"
-                                           :disabled="selectedGame === null && !this.runningMigration" @click="proceed">Select
-                                            game</a>
-                                    </div>
-                                </nav>
-                            </div>
+
                         </div>
                     </article>
                 </div>
@@ -70,6 +105,12 @@ export default class GameSelectionScreen extends Vue {
 
     private runningMigration = false;
     private selectedGame: Game | null = null;
+    private filterText: string = "";
+    private flow: int = 1;
+
+    get filteredGameList() {
+        return this.gameList.filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0);
+    }
 
     get gameList(): Game[] {
         return GameManager.gameList;
@@ -77,6 +118,11 @@ export default class GameSelectionScreen extends Vue {
 
     private selectGame(game: Game) {
         this.selectedGame = game;
+        if (game.storePlatformMetadata.length > 1) {
+            this.flow = 2;
+        } else {
+            this.flow = 1;
+        }
     }
 
     private async proceed() {

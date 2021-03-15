@@ -36,7 +36,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
         try{
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.appId} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
+            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await exec(cmd);
         }catch(err){

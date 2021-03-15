@@ -64,9 +64,9 @@
     import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
     import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
     import GameManager from './model/game/GameManager';
-    import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
-    import ProfileModList from 'src/r2mm/mods/ProfileModList';
-    import Profile from 'src/model/Profile';
+    import ThunderstorePackages from './r2mm/data/ThunderstorePackages';
+    import ProfileModList from './r2mm/mods/ProfileModList';
+    import Profile from './model/Profile';
 
     @Component
     export default class App extends Vue {

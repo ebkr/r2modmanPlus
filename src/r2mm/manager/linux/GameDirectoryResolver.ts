@@ -93,7 +93,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (manifestLocation instanceof R2Error)
                 return manifestLocation;
 
-            const compatDataPath = path.join(manifestLocation, 'compatdata', `${game.appId}`);
+            const compatDataPath = path.join(manifestLocation, 'compatdata', `${game.activePlatform.storeIdentifier}`);
             if (await fs.exists(compatDataPath)) {
                 return compatDataPath;
             } else {
@@ -159,7 +159,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             for (const location of locations) {
                 (await fs.readdir(location))
                     .forEach((file: string) => {
-                        if (file.toLowerCase() === `appmanifest_${game.appId}.acf`) {
+                        if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
                             manifestLocation = location;
                         }
                     });
@@ -189,7 +189,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     private async parseAppManifest(manifestLocation: string, game: Game): Promise<any>{
         const fs = FsProvider.instance;
         try {
-            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.appId}.acf`))).toString();
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();
             return vdf.parse(manifestVdf);
         } catch (e) {
             const err: Error = e;

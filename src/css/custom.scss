@@ -108,6 +108,10 @@ select {
     box-shadow: unset;
 }
 
+.background-bg {
+    background-color: $scheme-background;
+}
+
 .border-at-bottom {
     border-bottom: 1px solid $scheme-border;
 }
@@ -218,8 +222,8 @@ select {
 }
 
 .pagination {
-    position: sticky;
-    bottom: 0;
+    position: sticky !important;
+    bottom: 0 !important;
     background-color: $scheme-background;
     padding: 1em;
     border-top: 1px solid $scheme-border;
@@ -340,6 +344,10 @@ code {
     margin-right: 1em;
 }
 
+.margin-bottom {
+    margin-bottom: 1em;
+}
+
 .margin-top {
     margin-top: 1em;
     &--buttons {
@@ -359,4 +367,19 @@ code {
 
 .modal {
     z-index: 200;
+}
+
+.card-action-overlay {
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    &:hover, &:focus, &:focus-within {
+        opacity: 1;
+    }
+    transition: opacity 0.1s linear;
+}
+
+.rounded {
+    border-radius: 4px;
 }

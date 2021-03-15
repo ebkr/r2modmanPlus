@@ -11,7 +11,7 @@ import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDire
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 
-const installDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
+const steamInstallDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
@@ -21,7 +21,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return settings.getContext().global.steamDirectory!;
         }
         try {
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
+            const queryResult: string = child.execSync(`powershell.exe "${steamInstallDirectoryQuery}"`).toString().trim();
             const installKeyValue = queryResult.split('\n');
             let installValue: string = '';
             installKeyValue.forEach((val: string) => {
@@ -55,7 +55,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return settings.getContext().gameSpecific.gameDirectory!;
         }
         try {
-            const queryResult: string = (await child.exec(`powershell.exe "${installDirectoryQuery}"`)).toString().trim();
+            const queryResult: string = (await child.exec(`powershell.exe "${steamInstallDirectoryQuery}"`)).toString().trim();
             const installKeyValue = queryResult.split('\n')[0].trim();
             // Remove key (InstallPath) from string
             const installValue = installKeyValue.substr(('InstallPath').length)
@@ -63,7 +63,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 // Remove colon
                 .substr(1)
                 .trim();
-            const dir = await this.findAppManifest(installValue, game);
+            const dir = await this.findSteamAppManifest(installValue, game);
             return dir;
         } catch(e) {
             const err: Error = e;
@@ -75,7 +75,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
-    private async findAppManifest(steamPath: string, game: Game): Promise<R2Error | string> {
+    private async findSteamAppManifest(steamPath: string, game: Game): Promise<R2Error | string> {
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
@@ -121,7 +121,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             for (const location of locations) {
                 (await fs.readdir(location))
                     .forEach((file: string) => {
-                        if (file.toLowerCase() === `appmanifest_${game.appId}.acf`) {
+                        if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
                             manifestLocation = location;
                         }
                     });
@@ -146,7 +146,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         // Game manifest found at ${manifestLocation}
         try {
-            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.appId}.acf`))).toString();
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();
             const parsedVdf: any = vdf.parse(manifestVdf);
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
