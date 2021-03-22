@@ -11,6 +11,19 @@ import FsProvider from '../../../../providers/generic/file/FsProvider';
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
+    async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+        try {
+            const corePath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core");
+            const preloaderPath = path.join(corePath,
+                (await FsProvider.instance.readdir(corePath))
+                    .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+            return `--doorstop-enable true --doorstop-target "${preloaderPath}"`;
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
+        }
+    }
+
     async startModded(game: Game): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         // BepInEx Standard

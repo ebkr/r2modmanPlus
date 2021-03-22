@@ -95,9 +95,10 @@
 				<br/>
 				<p>Modded:
 					<br/>
-					<code>
-						--doorstop-enable true --doorstop-target {{profilePath}}\BepInEx\core\BepInEx.Preloader.dll
+					<code v-if="doorstopTarget.length > 0">
+						{{ doorstopTarget }}
 					</code>
+                    <code v-else>These parameters will be available after installing BepInEx.</code>
 				</p>
 				<br/>
 				<p>Vanilla:
@@ -350,6 +351,7 @@
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
     import GameManager from '../model/game/GameManager';
     import Game from '../model/game/Game';
+    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 
 	@Component({
 		components: {
@@ -407,6 +409,8 @@
         filterCategories: string[] = [];
         categoryFilterMode: string = CategoryFilterMode.OR;
         allowNsfw: boolean = false;
+
+        doorstopTarget: string = "";
 
         private activeGame!: Game;
 
@@ -497,6 +501,13 @@
 
 
 		get localModList() : ManifestV2[] {
+            GameRunnerProvider.instance.getGameArguments(this.activeGame, Profile.getActiveProfile()).then(target => {
+                if (target instanceof R2Error) {
+                    this.doorstopTarget = "";
+                } else {
+                    this.doorstopTarget = target;
+                }
+            });
 			return this.$store.state.localModList || [];
 		}
 
