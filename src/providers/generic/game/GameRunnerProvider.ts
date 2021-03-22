@@ -1,6 +1,7 @@
 import ProviderUtils from '../ProviderUtils';
 import R2Error from '../../../model/errors/R2Error';
 import Game from '../../../model/game/Game';
+import Profile from '../../../model/Profile';
 
 export default abstract class GameRunnerProvider {
 
@@ -18,5 +19,6 @@ export default abstract class GameRunnerProvider {
 
     public abstract startModded(game: Game): Promise<void | R2Error>;
     public abstract startVanilla(game: Game): Promise<void | R2Error>;
+    public abstract getGameArguments(game: Game, profile: Profile): Promise<string | R2Error>;
 
 }

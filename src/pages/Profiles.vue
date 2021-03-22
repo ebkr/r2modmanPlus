@@ -578,7 +578,6 @@ export default class Profiles extends Vue {
         if (settings.getContext().gameSpecific.gameDirectory === null) {
             const result = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
             if (!(result instanceof R2Error)) {
-                console.log("Setting default game path:", JSON.parse(JSON.stringify(settings.getContext())));
                 await settings.setGameDirectory(result);
             }
         }

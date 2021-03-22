@@ -56,8 +56,9 @@
                         <br/><br/>
                         Replace <code>&lt;PATH&gt;</code> with the path to the profile you'd like to launch.
                         <br/><br/>
-                        Your current argument would be: <code>--doorstop-target "{{
-                        getActiveProfile().getPathOfProfile() }}"</code>
+                        Your current argument would be:
+                        <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
+                        <code v-else>These parameters will be available after installing BepInEx.</code>
                     </p>
                 </div>
                 <div ref="Game won't start" v-if="activeTab === `Game won't start`">
@@ -103,6 +104,10 @@
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
     import Profile from '../model/Profile';
     import {Hero, Link} from '../components/all';
+    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+    import R2Error from '../model/errors/R2Error';
+    import Game from '../model/game/Game';
+    import GameManager from '../model/game/GameManager';
 
     @Component({
         components: {
@@ -120,8 +125,9 @@
         private contentClass!: string;
 
         private activeTab = 'General';
-
         private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
+        private doorstopTarget = "";
+        private activeGame!: Game;
 
         changeTab(key: string) {
             this.activeTab = key;
@@ -137,6 +143,20 @@
 
         goto(ref: string) {
             this.$router.replace(ref);
+        }
+
+        created() {
+            this.activeGame = GameManager.activeGame;
+        }
+
+        mounted() {
+            GameRunnerProvider.instance.getGameArguments(this.activeGame, Profile.getActiveProfile()).then(target => {
+                if (target instanceof R2Error) {
+                    this.doorstopTarget = "";
+                } else {
+                    this.doorstopTarget = target;
+                }
+            });
         }
 
     }
