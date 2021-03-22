@@ -106,6 +106,8 @@
     import {Hero, Link} from '../components/all';
     import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
     import R2Error from '../model/errors/R2Error';
+    import Game from '../model/game/Game';
+    import GameManager from '../model/game/GameManager';
 
     @Component({
         components: {
@@ -125,6 +127,7 @@
         private activeTab = 'General';
         private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
         private doorstopTarget = "";
+        private activeGame!: Game;
 
         changeTab(key: string) {
             this.activeTab = key;
@@ -140,6 +143,10 @@
 
         goto(ref: string) {
             this.$router.replace(ref);
+        }
+
+        created() {
+            this.activeGame = GameManager.activeGame;
         }
 
         mounted() {
