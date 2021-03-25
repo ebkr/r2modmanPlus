@@ -30,7 +30,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
-                if (await FsProvider.instance.exists(dir))
+                if (await FsProvider.instance.exists(dir) && (await FsProvider.instance.readdir(dir))
+							.find(value => value.toLowerCase() === 'steam.sh') !== undefined)
                     return await FsProvider.instance.realpath(dir);
             }
             throw new Error('Steam is not installed');
