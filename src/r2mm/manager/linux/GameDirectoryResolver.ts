@@ -98,6 +98,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
             return (
                 typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
+                && appManifest.AppState.UserConfig.platform_override_source.length > 0
             );
         } catch (e) {
             const err: Error = e;
