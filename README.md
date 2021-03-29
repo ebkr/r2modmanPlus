@@ -27,6 +27,11 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 ## Installing
 
 ### First time installing
+#### Packages
+If you use the [Scoop](https://scoop.sh/) package manager, you can install by running:
+1. `scoop bucket add games`
+2. `scoop install r2modman`
+
 #### Windows
 1. Click "Manual Download" on Thunderstore.
 2. Inside the downloaded **.zip** file. Run the "r2modman Setup X.X.X.exe" (where X.X.X is the current version).
