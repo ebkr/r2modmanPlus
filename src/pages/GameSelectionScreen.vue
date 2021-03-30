@@ -13,50 +13,52 @@
         </div>
         <div class="columns">
             <div class="column is-full">
+                <br/>
+
+                <div class="sticky-top is-shadowless background-bg z-max">
+                    <div class="container">
+                        <div class="card-header-title">
+                            <div class="input-group input-group--flex margin-right">
+                                <label for="local-search" class="non-selectable">Search</label>
+                                <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
                             <div class="content">
                                 <br/>
 
-                                <div class="sticky-top is-shadowless background-bg z-max">
-                                    <div>
-                                        <div class="card-header-title">
-                                            <div class="input-group input-group--flex margin-right">
-                                                <label for="local-search" class="non-selectable">Search</label>
-                                                <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br/>
-
                                 <div>
-                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}`" class="inline-block margin-right margin-bottom">
+                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
                                         <div class="inline">
                                             <div class='card is-shadowless'>
                                                 <div class='cursor-pointer'>
                                                     <header class='card-header is-shadowless is-relative'>
                                                         <div class="absolute-full z-top flex">
-                                                            <a href="#" class="card-action-overlay rounded">
-                                                                <div class="absolute-top-right card-header-title">
-                                                                    <p class="text-left title is-5">
-                                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.internalFolderName)"></i>
-                                                                        <i class="far fa-star" v-else></i>
-                                                                    </p>
-                                                                </div>
+                                                            <div class="card-action-overlay rounded">
                                                                 <div class="absolute-top card-header-title">
                                                                     <p class="text-left title is-5">{{ game.displayName }}</p>
                                                                 </div>
-                                                                <div class="absolute-center">
+                                                                <div class="absolute-top-right card-header-title">
+                                                                    <p class="text-left title is-5">
+                                                                        <a :id="`${game.internalFolderName}-star`" href="#" @click.prevent="toggleFavourite(game)">
+                                                                            <i class="fas fa-star text-warning" v-if="favourites.includes(game.internalFolderName)"></i>
+                                                                            <i class="far fa-star" v-else></i>
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="absolute-center text-center">
                                                                     <button class="button is-info" @click="selectGame(game)">Select game</button>
                                                                     <br/><br/>
                                                                     <button class="button">Set as default</button>
                                                                 </div>
-                                                            </a>
+                                                            </div>
                                                         </div>
-                                                        <div class="image is-fullwidth border border--top border--border-box rounded" :class="[{'border--warning': favourites.includes(game.internalFolderName)}]">
+                                                        <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
                                                             <img :src='`/images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded"/>
                                                         </div>
                                                     </header>
@@ -100,7 +102,8 @@ export default class GameSelectionScreen extends Vue {
     private filterText: string = "";
     private showPlatformModal: boolean = false;
     private selectedPlatform: StorePlatform | undefined;
-    private favourites: string[] = ["RiskOfRain2"];
+    private favourites: string[] = [];
+    private settings: ManagerSettings | undefined;
 
     get filteredGameList() {
         return this.gameList.filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0);
@@ -142,7 +145,25 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
+    private toggleFavourite(game: Game) {
+        if (this.favourites.includes(game.internalFolderName)) {
+            this.favourites = this.favourites.filter(value => value !== game.internalFolderName)
+        } else {
+            this.favourites = [...this.favourites, game.internalFolderName];
+        }
+        if (this.settings !== undefined) {
+            this.settings.setFavouriteGames(this.favourites);
+        }
+    }
+
+    isFavourited(game: Game) {
+        if (this.settings !== undefined) {
+            return this.favourites.includes(game.internalFolderName);
+        }
+    }
+
     created() {
+        const self = this;
         this.runningMigration = true;
         FolderMigration.needsMigration()
             .then(isMigrationRequired => {
@@ -166,6 +187,13 @@ export default class GameSelectionScreen extends Vue {
                 if (game !== undefined) {
                     this.selectedGame = game;
                 }
+            }
+        });
+        ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
+            this.settings = value;
+            this.favourites = value.getContext().global.favouriteGames || [];
+            if (value.getContext().global.defaultGame !== undefined) {
+                self.$router.replace("/splash");
             }
         });
     }

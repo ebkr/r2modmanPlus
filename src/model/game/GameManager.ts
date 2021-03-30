@@ -45,4 +45,9 @@ export default class GameManager {
     static set activeGame(game: Game) {
         this._activeGame = game;
     }
+
+    // Return RiskOfRain2 game as base startup to be used for settings load.
+    public static unsetGame(): Game {
+        return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+    }
 }

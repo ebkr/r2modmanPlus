@@ -151,4 +151,18 @@ export default class ManagerSettings {
         ManagerSettings.CONTEXT.global.lastSelectedGame = game.internalFolderName;
         return await this.save();
     }
+
+    public async setFavouriteGames(favourites: string[]) {
+        ManagerSettings.CONTEXT.global.favouriteGames = favourites;
+        return await this.save();
+    }
+
+    public async setDefaultGame(defaultGame: Game | undefined) {
+        if (defaultGame === undefined) {
+            ManagerSettings.CONTEXT.global.defaultGame = undefined;
+        } else {
+            ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
+        }
+        return await this.save();
+    }
 }

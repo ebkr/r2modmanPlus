@@ -29,6 +29,7 @@ export default class SettingsDexieStore extends Dexie {
             });
 
         // Add all games to store. Borked v2-3 locally
+        // Increment per game or change to settings.
         this.version(5).stores(store);
 
         this.activeGame = game;
@@ -100,7 +101,9 @@ export default class SettingsDexieStore extends Dexie {
                 ignoreCache: false,
                 steamDirectory: null,
                 lastSelectedGame: null,
-                version: 2
+                version: 2,
+                favouriteGames: [],
+                defaultGame: undefined,
             },
             gameSpecific: {
                 version: 2,
@@ -138,7 +141,9 @@ export default class SettingsDexieStore extends Dexie {
                 ignoreCache: itf.ignoreCache,
                 steamDirectory: itf.steamDirectory,
                 lastSelectedGame: null,
-                version: 2
+                version: 2,
+                favouriteGames: [],
+                defaultGame: undefined
             },
             gameSpecific: {
                 version: 2,
@@ -192,6 +197,8 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     ignoreCache: boolean;
     dataDirectory: string;
     lastSelectedGame: string | null;
+    favouriteGames: string[] | undefined;
+    defaultGame: string | undefined;
 }
 
 /**

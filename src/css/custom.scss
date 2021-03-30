@@ -386,12 +386,12 @@ code {
 
 .border {
 
-    &--bottom {
-        border-bottom: 4px solid $scheme-background;
+    &--top {
+        border-top: 6px solid $scheme-background;
     }
 
-    &--top {
-        border-top: 4px solid $scheme-background;
+    &--groove {
+        border-style: groove;
     }
 
     &--border-box {
@@ -401,4 +401,12 @@ code {
     &--warning {
         border-color: $warning;
     }
+}
+
+.warning-shadow {
+    box-shadow: 0px 0px 4px 2px $warning;
+}
+
+*:focus {
+    outline-color: yellow !important;
 }
