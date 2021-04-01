@@ -30,7 +30,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
-                if (await FsProvider.instance.exists(dir))
+                if (await FsProvider.instance.exists(dir) && (await FsProvider.instance.readdir(dir))
+							.find(value => value.toLowerCase() === 'steam.sh') !== undefined)
                     return await FsProvider.instance.realpath(dir);
             }
             throw new Error('Steam is not installed');
@@ -169,7 +170,26 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
-        const steamapps = path.join(steamPath, 'steamapps');
+        const probableSteamAppsLocations = [
+            path.join(steamPath, 'steamapps'), // every proper linux distro ever
+            path.join(steamPath, 'steam', 'steamapps'), // Ubuntu LTS
+            path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
+        ];
+        
+        let steamapps;
+        for(const dir of probableSteamAppsLocations)
+            if(await FsProvider.instance.exists(dir)){
+                steamapps = await FsProvider.instance.realpath(dir);
+                break;
+            }
+
+        if (typeof steamapps === "undefined")
+            return new R2Error(
+                'An error occured whilst searching Steam library locations',
+                'Cannot define the root steamapps location',
+                null
+            );
+        
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
         // Find all locations where games can be installed.
@@ -182,7 +202,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                         for (const key in parsedVdf.LibraryFolders) {
                             if (!isNaN(Number(key))) {
                                 locations.push(
-                                    path.join(parsedVdf.LibraryFolders[key], 'steamapps')
+                                    await FsProvider.instance.realpath(path.join(parsedVdf.LibraryFolders[key], 'steamapps'))
                                 );
                             }
                         }
