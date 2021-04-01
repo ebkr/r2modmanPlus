@@ -222,32 +222,34 @@ export default class GameSelectionScreen extends Vue {
                 console.log(e);
                 this.runningMigration = false;
             })
-        ManagerSettings.getSingleton(GameManager.activeGame).then(settings => {
-            const lastSelectedGame = settings.getContext().global.lastSelectedGame;
-            if (lastSelectedGame !== null) {
-                const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
-                if (game !== undefined) {
-                    this.selectedGame = game;
+        .finally(() => {
+            ManagerSettings.getSingleton(GameManager.activeGame).then(settings => {
+                const lastSelectedGame = settings.getContext().global.lastSelectedGame;
+                if (lastSelectedGame !== null) {
+                    const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
+                    if (game !== undefined) {
+                        this.selectedGame = game;
+                    }
                 }
-            }
-        });
-        ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
-            this.settings = value;
-            this.favourites = value.getContext().global.favouriteGames || [];
-            if (value.getContext().global.defaultGame !== undefined) {
-                if (value.getContext().global.defaultStore !== undefined) {
-                    const game = GameManager.gameList
-                        .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
+            });
+            ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
+                this.settings = value;
+                this.favourites = value.getContext().global.favouriteGames || [];
+                if (value.getContext().global.defaultGame !== undefined) {
+                    if (value.getContext().global.defaultStore !== undefined) {
+                        const game = GameManager.gameList
+                            .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
 
-                    const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
+                        const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
 
-                    GameManager.activeGame = game;
-                    game.setActivePlatformByStore(platform.storePlatform);
+                        this.selectedGame = game;
+                        this.selectedPlatform = platform;
 
-                    self.$router.replace("/splash");
+                        this.proceed();
+                    }
                 }
-            }
-        });
+            });
+        })
     }
 
 }
