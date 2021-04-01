@@ -317,7 +317,15 @@
               'Change the current game (restarts the manager)',
               async () => "",
                 'fa-gamepad',
-                () => InteractionProvider.instance.restartApp()
+                () => {
+                    (async () => {
+                        const settings = await ManagerSettings.getSingleton(this.activeGame);
+                        await settings.load();
+                        await settings.setDefaultGame(undefined);
+                        await settings.setDefaultStorePlatform(undefined);
+                        await InteractionProvider.instance.restartApp();
+                  })();
+                }
             ),
             new SettingsRow(
                 'Modpacks',

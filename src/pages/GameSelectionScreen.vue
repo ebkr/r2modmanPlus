@@ -54,7 +54,7 @@
                                                                 <div class="absolute-center text-center">
                                                                     <button class="button is-info" @click="selectGame(game)">Select game</button>
                                                                     <br/><br/>
-                                                                    <button class="button">Set as default</button>
+                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -89,6 +89,7 @@ import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from 'src/model/game/StorePlatform';
+import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 
 @Component({
     components: {
@@ -104,9 +105,12 @@ export default class GameSelectionScreen extends Vue {
     private selectedPlatform: StorePlatform | undefined;
     private favourites: string[] = [];
     private settings: ManagerSettings | undefined;
+    private isSettingDefaultPlatform: boolean = false;
 
     get filteredGameList() {
-        return this.gameList.filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0);
+        return this.gameList
+            .filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0)
+            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE);
     }
 
     get gameList(): Game[] {
@@ -126,21 +130,59 @@ export default class GameSelectionScreen extends Vue {
 
     private selectGame(game: Game) {
         this.selectedGame = game;
+        this.isSettingDefaultPlatform = false;
         if (game.storePlatformMetadata.length > 1) {
+            this.selectedPlatform = undefined;
             this.showPlatformModal = true;
         } else {
+            this.selectedPlatform = game.storePlatformMetadata[0].storePlatform;
             this.showPlatformModal = false;
             this.proceed();
         }
     }
 
+    private selectDefaultGame(game: Game) {
+        this.selectedGame = game;
+        this.isSettingDefaultPlatform = true;
+        if (game.storePlatformMetadata.length > 1) {
+            this.showPlatformModal = true;
+        } else {
+            this.selectedPlatform = game.storePlatformMetadata[0].storePlatform;
+            this.showPlatformModal = false;
+            this.proceedDefault();
+        }
+    }
+
+    private selectPlatform() {
+        if (this.isSettingDefaultPlatform) {
+            this.proceedDefault()
+        } else {
+            this.proceed();
+        }
+    }
+
     private async proceed() {
-        if (this.selectedGame !== null && !this.runningMigration) {
+        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== undefined) {
             GameManager.activeGame = this.selectedGame;
+            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
             PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
             await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
             const settings = await ManagerSettings.getSingleton(this.selectedGame);
             await settings.setLastSelectedGame(this.selectedGame);
+            await this.$router.replace('/splash');
+        }
+    }
+
+    private async proceedDefault() {
+        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== undefined) {
+            GameManager.activeGame = this.selectedGame;
+            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
+            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
+            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
+            const settings = await ManagerSettings.getSingleton(this.selectedGame);
+            await settings.setLastSelectedGame(this.selectedGame);
+            await settings.setDefaultGame(this.selectedGame);
+            await settings.setDefaultStorePlatform(this.selectedPlatform);
             await this.$router.replace('/splash');
         }
     }
@@ -193,7 +235,17 @@ export default class GameSelectionScreen extends Vue {
             this.settings = value;
             this.favourites = value.getContext().global.favouriteGames || [];
             if (value.getContext().global.defaultGame !== undefined) {
-                self.$router.replace("/splash");
+                if (value.getContext().global.defaultStore !== undefined) {
+                    const game = GameManager.gameList
+                        .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
+
+                    const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
+
+                    GameManager.activeGame = game;
+                    game.setActivePlatformByStore(platform.storePlatform);
+
+                    self.$router.replace("/splash");
+                }
             }
         });
     }

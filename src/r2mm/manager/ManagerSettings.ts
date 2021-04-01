@@ -7,6 +7,7 @@ import SettingsDexieStore, {
     ManagerSettingsInterfaceHolder
 } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
+import { StorePlatform } from 'src/model/game/StorePlatform';
 
 export default class ManagerSettings {
 
@@ -162,6 +163,15 @@ export default class ManagerSettings {
             ManagerSettings.CONTEXT.global.defaultGame = undefined;
         } else {
             ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
+        }
+        return await this.save();
+    }
+
+    public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
+        if (storePlatform === undefined) {
+            ManagerSettings.CONTEXT.global.defaultStore = undefined;
+        } else {
+            ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
         }
         return await this.save();
     }
