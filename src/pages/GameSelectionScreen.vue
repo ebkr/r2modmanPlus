@@ -28,7 +28,7 @@
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
-                            <div class="content">
+                            <div class="content pad--sides">
                                 <br/>
 
                                 <div>

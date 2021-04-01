@@ -410,3 +410,9 @@ code {
 *:focus {
     outline-color: yellow !important;
 }
+
+.pad {
+    &--sides {
+        padding: 1em;
+    }
+}
