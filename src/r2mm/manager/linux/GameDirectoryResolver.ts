@@ -147,7 +147,30 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const steamDir = await this.getSteamDirectory();
         if (steamDir instanceof R2Error) return steamDir;
 
-        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'config', 'loginusers.vdf'))).toString());
+        let steamBaseDir;
+        const probableSteamBaseDirs = [
+            steamDir, // standard way
+            path.join(steamDir, 'steam'), // ubuntu
+            path.join(steamDir, 'root') // i am really mad at this
+        ];
+        
+        for(const dir of probableSteamBaseDirs)
+            if(
+                await FsProvider.instance.exists(dir) &&
+                (await FsProvider.instance.readdir(dir)).filter((x: string) => ['config', 'userdata'].includes(x)).length === 2
+            ){
+                steamBaseDir = await FsProvider.instance.realpath(dir);
+                break;
+            }
+
+        if (typeof steamBaseDir === "undefined")
+            return new R2Error(
+                'An error occured whilst searching Steam user data locations',
+                'Cannot define the steam config location',
+                null
+            );
+
+        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'config', 'loginusers.vdf'))).toString());
         let userSteamID64 = '';
         for(let _id in loginUsers.users) {
             if(loginUsers.users[_id].MostRecent == 1) {
@@ -164,7 +187,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
-        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
 
         return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.appId].LaunchOptions || '';
     }
