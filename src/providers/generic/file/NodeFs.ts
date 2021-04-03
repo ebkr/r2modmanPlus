@@ -44,6 +44,10 @@ export default class NodeFs extends FsProvider {
         });
     }
 
+    async base64FromZip(path: string): Promise<string> {
+        return (await this.readFile(path)).toString("base64");
+    }
+
     async readdir(path: string): Promise<string[]> {
         return await fs.promises.readdir(path);
     }
