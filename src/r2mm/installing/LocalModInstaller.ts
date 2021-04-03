@@ -8,7 +8,7 @@ import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
-import Profile from 'src/model/Profile';
+import Profile from '../../model/Profile';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
