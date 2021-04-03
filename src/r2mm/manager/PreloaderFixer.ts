@@ -6,7 +6,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
-import { StorePlatform } from 'src/model/game/StorePlatform';
+import { StorePlatform } from '../../model/game/StorePlatform';
 
 export default class PreloaderFixer {
 

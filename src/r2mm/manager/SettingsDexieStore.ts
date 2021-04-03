@@ -6,8 +6,8 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import GameManager from '../../model/game/GameManager';
-import { StorePlatform } from 'src/model/game/StorePlatform';
-import { GameSelectionViewMode } from 'src/model/enums/GameSelectionViewMode';
+import { StorePlatform } from '../../model/game/StorePlatform';
+import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
 export default class SettingsDexieStore extends Dexie {
 

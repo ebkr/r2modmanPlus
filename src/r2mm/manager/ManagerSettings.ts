@@ -7,8 +7,8 @@ import SettingsDexieStore, {
     ManagerSettingsInterfaceHolder
 } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
-import { StorePlatform } from 'src/model/game/StorePlatform';
-import { GameSelectionViewMode } from 'src/model/enums/GameSelectionViewMode';
+import { StorePlatform } from '../../model/game/StorePlatform';
+import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
 export default class ManagerSettings {
 

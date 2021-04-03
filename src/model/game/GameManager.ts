@@ -1,7 +1,7 @@
 import Game from '../../model/game/Game';
-import StorePlatformMetadata from 'src/model/game/StorePlatformMetadata';
-import { StorePlatform } from 'src/model/game/StorePlatform';
-import { GameSelectionDisplayMode } from 'src/model/game/GameSelectionDisplayMode';
+import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
+import { StorePlatform } from '../../model/game/StorePlatform';
+import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
 
 export default class GameManager {
 

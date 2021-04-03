@@ -1,4 +1,4 @@
-import { StorePlatform } from 'src/model/game/StorePlatform';
+import { StorePlatform } from '../../model/game/StorePlatform';
 
 export default class StorePlatformMetadata {
 
