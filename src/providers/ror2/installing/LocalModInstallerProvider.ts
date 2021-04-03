@@ -1,5 +1,6 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import R2Error from '../../../model/errors/R2Error';
+import Profile from '../../../model/Profile';
 
 export default abstract class LocalModInstallerProvider {
 
@@ -19,9 +20,10 @@ export default abstract class LocalModInstallerProvider {
      * Extract a zip into the corresponding cache location.
      * Used for installing mods locally with a supporting {@class ManifestV2} manifest.
      *
+     * @param profile
      * @param zipFile   Path to the zip file.
      * @param callback  Callback to report if the extraction was successful.
      */
-    public abstract extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
+    public abstract extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
 
 }

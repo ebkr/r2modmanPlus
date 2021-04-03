@@ -13,7 +13,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            const corePath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core");
+            const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
             const preloaderPath = path.join(corePath,
                 (await FsProvider.instance.readdir(corePath))
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
@@ -24,10 +24,10 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         }
     }
 
-    async startModded(game: Game): Promise<void | R2Error> {
+    async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         // BepInEx Standard
-        const target = await this.getGameArguments(game, Profile.getActiveProfile());
+        const target = await this.getGameArguments(game, profile);
         if (target instanceof R2Error) {
             return target;
         } else {
