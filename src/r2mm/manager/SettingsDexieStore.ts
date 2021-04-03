@@ -7,6 +7,7 @@ import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from 'src/model/game/StorePlatform';
+import { GameSelectionViewMode } from 'src/model/enums/GameSelectionViewMode';
 
 export default class SettingsDexieStore extends Dexie {
 
@@ -31,7 +32,7 @@ export default class SettingsDexieStore extends Dexie {
 
         // Add all games to store. Borked v2-3 locally
         // Increment per game or change to settings.
-        this.version(6).stores(store);
+        this.version(7).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");
@@ -105,7 +106,8 @@ export default class SettingsDexieStore extends Dexie {
                 version: 2,
                 favouriteGames: [],
                 defaultGame: undefined,
-                defaultStore: undefined
+                defaultStore: undefined,
+                gameSelectionViewMode: GameSelectionViewMode.CARD
             },
             gameSpecific: {
                 version: 2,
@@ -146,7 +148,8 @@ export default class SettingsDexieStore extends Dexie {
                 version: 2,
                 favouriteGames: [],
                 defaultGame: undefined,
-                defaultStore: undefined
+                defaultStore: undefined,
+                gameSelectionViewMode: GameSelectionViewMode.CARD
             },
             gameSpecific: {
                 version: 2,
@@ -203,6 +206,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     favouriteGames: string[] | undefined;
     defaultGame: string | undefined;
     defaultStore: StorePlatform | undefined;
+    gameSelectionViewMode: string | undefined;
 }
 
 /**

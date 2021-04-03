@@ -8,6 +8,7 @@ import SettingsDexieStore, {
 } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
 import { StorePlatform } from 'src/model/game/StorePlatform';
+import { GameSelectionViewMode } from 'src/model/enums/GameSelectionViewMode';
 
 export default class ManagerSettings {
 
@@ -173,6 +174,11 @@ export default class ManagerSettings {
         } else {
             ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
         }
+        return await this.save();
+    }
+
+    public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
+        ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
         return await this.save();
     }
 }

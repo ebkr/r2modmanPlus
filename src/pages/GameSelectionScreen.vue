@@ -280,8 +280,9 @@ export default class GameSelectionScreen extends Vue {
                 this.runningMigration = false;
             })
         .finally(() => {
-            ManagerSettings.getSingleton(GameManager.activeGame).then(settings => {
+            ManagerSettings.getSingleton(GameManager.unsetGame()).then(settings => {
                 const lastSelectedGame = settings.getContext().global.lastSelectedGame;
+                this.viewMode = settings.getContext().global.gameSelectionViewMode || GameSelectionViewMode.CARD;
                 if (lastSelectedGame !== null) {
                     const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
                     if (game !== undefined) {
@@ -315,6 +316,9 @@ export default class GameSelectionScreen extends Vue {
             this.viewMode = GameSelectionViewMode.CARD;
         } else {
             this.viewMode = GameSelectionViewMode.LIST;
+        }
+        if (this.settings !== undefined) {
+            this.settings.setGameSelectionViewMode(this.viewMode);
         }
     }
 
