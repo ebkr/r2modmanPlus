@@ -16,19 +16,54 @@
                 <br/>
 
                 <div class="sticky-top is-shadowless background-bg z-max">
-                    <div class="container">
-                        <div class="card-header-title">
-                            <div class="input-group input-group--flex margin-right">
-                                <label for="local-search" class="non-selectable">Search</label>
-                                <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                    <div class="container" v-if="viewMode === 'Card'">
+                        <nav class="level">
+                            <div class="level-item">
+                                <div class="card-header-title">
+                                    <div class="input-group input-group--flex margin-right">
+                                        <label for="local-search" class="non-selectable">Search</label>
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                            <div>
+                                <br/>
+                                <i class="button fas fa-list" @click="toggleViewMode"></i>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="container" v-else-if="viewMode === 'List'">
+                        <nav class="level">
+                            <div class="level-item">
+                                <div class="card-header-title">
+                                    <div class="input-group input-group--flex margin-right">
+                                        <label for="local-search" class="non-selectable">Search</label>
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="margin-right">
+                                <br/>
+                                <a class="button is-info"
+                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
+                                    game</a>
+                            </div>
+                            <div class="margin-right">
+                                <br/>
+                                <a class="button"
+                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
+                            </div>
+                            <div>
+                                <br/>
+                                <i class="button fas fa-th-large" @click="toggleViewMode"></i>
+                            </div>
+                        </nav>
                     </div>
                 </div>
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
-                            <div class="content pad--sides">
+                            <div class="content pad--sides" v-if="viewMode === 'Card'">
                                 <br/>
 
                                 <div>
@@ -52,7 +87,7 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)">Select game</button>
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select game</button>
                                                                     <br/><br/>
                                                                     <button class="button" @click="selectDefaultGame(game)">Set as default</button>
                                                                 </div>
@@ -70,6 +105,26 @@
                                 </div>
                             </div>
 
+                            <div class="content" v-if="viewMode === 'List'">
+                                <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`">
+                                    <a @click="selectedGame = game">
+                                        <div class="border-at-bottom cursor-pointer">
+                                            <div class="card is-shadowless">
+                                                <p
+                                                    :class="['card-header-title', {'has-text-info':selectedGame === game}]"
+                                                >
+                                                    <a :id="`${game.internalFolderName}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
+                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.internalFolderName)"></i>
+                                                        <i class="far fa-star" v-else></i>
+                                                    </a>
+                                                    {{ game.displayName }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br/>
+                            </div>
                         </div>
                     </article>
                 </div>
@@ -88,8 +143,9 @@ import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { StorePlatform } from 'src/model/game/StorePlatform';
+import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
+import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 
 @Component({
     components: {
@@ -106,6 +162,7 @@ export default class GameSelectionScreen extends Vue {
     private favourites: string[] = [];
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
+    private viewMode = GameSelectionViewMode.LIST;
 
     get filteredGameList() {
         return this.gameList
@@ -243,13 +300,22 @@ export default class GameSelectionScreen extends Vue {
                         const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
 
                         this.selectedGame = game;
-                        this.selectedPlatform = platform;
+                        this.selectedPlatform = platform.storePlatform;
 
                         this.proceed();
+                        return;
                     }
                 }
             });
         })
+    }
+
+    toggleViewMode() {
+        if (this.viewMode === "List") {
+            this.viewMode = GameSelectionViewMode.CARD;
+        } else {
+            this.viewMode = GameSelectionViewMode.LIST;
+        }
     }
 
 }
