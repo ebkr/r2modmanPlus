@@ -282,7 +282,14 @@ export default class GameSelectionScreen extends Vue {
         .finally(() => {
             ManagerSettings.getSingleton(GameManager.unsetGame()).then(settings => {
                 const lastSelectedGame = settings.getContext().global.lastSelectedGame;
-                this.viewMode = settings.getContext().global.gameSelectionViewMode || GameSelectionViewMode.CARD;
+                const savedViewMode = settings.getContext().global.gameSelectionViewMode;
+                switch (savedViewMode) {
+                    case "List": this.viewMode = GameSelectionViewMode.LIST; break;
+                    case "Card":
+                    case undefined:
+                        this.viewMode = GameSelectionViewMode.CARD;
+                        break;
+                }
                 if (lastSelectedGame !== null) {
                     const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
                     if (game !== undefined) {
