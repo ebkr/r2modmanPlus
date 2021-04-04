@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="full-height">
         <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
