@@ -262,17 +262,18 @@
                 'fa-cloud-upload-alt',
                 () => this.emitInvoke('UpdateAllMods')
             ),
-            new SettingsRow(
-                'Other',
-                'Toggle funky mode',
-                'Enable/disable funky mode.',
-                async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    return settings.getContext().global.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
-                },
-                'fa-exchange-alt',
-                () => this.emitInvoke('ToggleFunkyMode')
-            ),
+            // TODO #407 - Fix funky mode
+            // new SettingsRow(
+            //     'Other',
+            //     'Toggle funky mode',
+            //     'Enable/disable funky mode.',
+            //     async () => {
+            //         const settings = await ManagerSettings.getSingleton(this.activeGame);
+            //         return settings.getContext().global.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
+            //     },
+            //     'fa-exchange-alt',
+            //     () => this.emitInvoke('ToggleFunkyMode')
+            // ),
             new SettingsRow(
                 'Other',
                 'Switch theme',
