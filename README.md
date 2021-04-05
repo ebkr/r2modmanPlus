@@ -68,24 +68,21 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.10
+- Game selection screen has been overhauled.
+    - You can now skip game selection using the "Set as default" button.
+    - You can go back to the game selection screen by using the "Change game" setting.
+- Mod list now auto-refreshes every 5 minutes.
+- Fixed a bug that caused R2API and HookGenPatcher to break on disable/uninstall.
+- Profiles should behave as expected.
+    - _Please let me know if you get any profile issues._
+- Fixed several other small issues.
+
 ### 3.1.9
 - Fixed an issue where duplicate package listings would break the Online search functionality.
 
 ### 3.1.8
 - Added GTFO support
-
-### 3.1.7
-- Added support for the BepInEx SlimVML patcher.
-  - Mods requiring SlimVML must have their DLL packaged under a "SlimVML" folder.
-- Manager version is now in the window title.
-- You can now change game from the settings screen.
-
-### 3.1.6
-- Fixed major bug where updating BepInEx would wipe the plugins folder.
-
-### 3.1.5
-- Changed migration strategy to attempt to prevent config deletion
-    - Only affects Risk of Rain 2 profiles coming from < 3.1.3
 
 ## Screenshots
 
