@@ -12,7 +12,6 @@ export default class Dependants {
                 // If mod name equals mod trying to get dependants
                 if (dependency.startsWith(manifestMod.getName() + "-")) {
                     if (!dependants.has(mod)) {
-                        console.log(mod.getName());
                         dependants.add(mod);
                         // Get dependants of new mod
                         this.getDependantList(mod, modList, dependants).forEach(recursive => {
