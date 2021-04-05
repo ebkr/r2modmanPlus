@@ -245,6 +245,9 @@
         private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
         private searchQuery: string = '';
 
+        // Context
+        private contextProfile: Profile | null = null;
+
         @Watch("sortOrder")
         sortOrderChanged(newValue: string) {
             this.settings.setInstalledSortBy(newValue);
@@ -277,7 +280,7 @@
 
         async moveUp(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryUp(mod);
+            const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
             if (updatedList instanceof R2Error) {
                 this.$emit('error', updatedList);
                 return;
@@ -288,7 +291,7 @@
 
         async moveDown(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryDown(mod);
+            const updatedList = await ProfileModList.shiftModEntryDown(mod, this.contextProfile!);
             if (updatedList instanceof R2Error) {
                 this.$emit('error', updatedList);
                 return;
@@ -318,14 +321,14 @@
         }
 
         async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
-            const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod);
+            const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
                 this.showingDependencyList = false;
                 this.$emit('error', uninstallError);
                 return uninstallError;
             }
-            const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod);
+            const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
                 this.showingDependencyList = false;
@@ -354,7 +357,7 @@
 
         async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
             for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod);
+                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
                 if (disableErr instanceof R2Error) {
                     // Failed to disable
                     this.showingDependencyList = false;
@@ -362,7 +365,7 @@
                     return disableErr;
                 }
             }
-            const updatedList = await ProfileModList.updateMods(mods, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
                 updatingMod.disable();
             });
             if (updatedList instanceof R2Error) {
@@ -396,7 +399,7 @@
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
-            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
+            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
             if (result instanceof R2Error) {
                 this.$emit('error', result);
                 return;
@@ -457,7 +460,7 @@
 
         async performEnable(mods: ManifestV2[]): Promise<R2Error | void> {
             for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod);
+                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
                 if (disableErr instanceof R2Error) {
                     // Failed to disable
                     this.showingDependencyList = false;
@@ -465,7 +468,7 @@
                     return disableErr;
                 }
             }
-            const updatedList = await ProfileModList.updateMods(mods, (updatingMod: ManifestV2) => {
+            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
                 updatingMod.enable();
             });
             if (updatedList instanceof R2Error) {
@@ -531,10 +534,11 @@
         }
 
         getProfileName() {
-            return Profile.getActiveProfile().getProfileName();
+            return this.contextProfile!.getProfileName();
         }
 
         async created() {
+            this.contextProfile = Profile.getActiveProfile();
             this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
             this.filterModList();
         }

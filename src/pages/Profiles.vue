@@ -410,9 +410,9 @@ export default class Profiles extends Vue {
                 }
                 for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                        await ProfileModList.updateMod(installResult, async modToDisable => {
+                        await ProfileModList.updateMod(installResult, Profile.getActiveProfile(), async modToDisable => {
                             modToDisable.disable();
-                            await ProfileInstallerProvider.instance.disableMod(modToDisable);
+                            await ProfileInstallerProvider.instance.disableMod(modToDisable, Profile.getActiveProfile());
                         });
                     }
                 }
@@ -538,9 +538,9 @@ export default class Profiles extends Vue {
 
     async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, Profile.getActiveProfile());
         if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, Profile.getActiveProfile());
             if (newModList instanceof R2Error) {
                 return newModList;
             }

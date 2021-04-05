@@ -94,7 +94,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <img :src='`/images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded"/>
+                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded"/>
                                                         </div>
                                                     </header>
                                                 </div>
@@ -163,6 +163,8 @@ export default class GameSelectionScreen extends Vue {
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
+
+    private assetsPath: string | null = null;
 
     get filteredGameList() {
         return this.gameList
@@ -327,6 +329,10 @@ export default class GameSelectionScreen extends Vue {
         if (this.settings !== undefined) {
             this.settings.setGameSelectionViewMode(this.viewMode);
         }
+    }
+
+    getImage(image: string) {
+        return require("../assets/images/game_selection/" + image);
     }
 
 }

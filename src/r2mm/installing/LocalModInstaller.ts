@@ -8,10 +8,11 @@ import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
+import Profile from '../../model/Profile';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public async extractToCache(zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+    public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const zipFileBuffer = await fs.readFile(zipFile);
         const result: Buffer | null = await ZipProvider.instance.readFile(zipFileBuffer,'manifest.json');
@@ -29,12 +30,12 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
                     async success => {
                         if (success) {
-                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod);
+                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod, profile);
                             if (profileInstallResult instanceof R2Error) {
                                 callback(false, profileInstallResult);
                                 return Promise.resolve();
                             }
-                            const modListInstallResult = await ProfileModList.addMod(mod);
+                            const modListInstallResult = await ProfileModList.addMod(mod, profile);
                             if (modListInstallResult instanceof R2Error) {
                                 callback(false, modListInstallResult);
                                 return Promise.resolve();

@@ -35,10 +35,10 @@
         private icon: string | undefined;
 
         async mounted() {
-            this.reactiveValue = await this.value();
             if (this.timeout !== null) {
                 clearInterval(this.timeout);
             }
+            this.reactiveValue = await this.value();
             this.timeout = setInterval(async () => {
                 this.reactiveValue = await this.value();
             }, 1000);

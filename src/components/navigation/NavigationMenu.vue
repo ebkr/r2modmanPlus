@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="full-height">
         <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
@@ -84,11 +84,13 @@
     import ManagerInformation from '../../_managerinf/ManagerInformation';
     import Game from '../../model/game/Game';
     import GameManager from '../../model/game/GameManager';
+    import Profile from '../../model/Profile';
 
     @Component
     export default class NavigationMenu extends Vue {
 
         private activeGame!: Game;
+        private contextProfile: Profile | null = null;
 
         @Prop({default: ""})
         private view!: string;
@@ -140,7 +142,7 @@
             const settings = await this.settings;
             await this.prepareLaunch();
             if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
-                const newLinkedFiles = await ModLinker.link(this.activeGame);
+                const newLinkedFiles = await ModLinker.link(this.contextProfile!, this.activeGame);
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
                     return;
@@ -152,7 +154,7 @@
                     }
                 }
                 this.gameRunning = true;
-                GameRunnerProvider.instance.startModded(this.activeGame).then(value => {
+                GameRunnerProvider.instance.startModded(this.activeGame, this.contextProfile!).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                         this.gameRunning = false;
@@ -189,6 +191,7 @@
 
         created() {
             this.activeGame = GameManager.activeGame;
+            this.contextProfile = Profile.getActiveProfile();
         }
     }
 
