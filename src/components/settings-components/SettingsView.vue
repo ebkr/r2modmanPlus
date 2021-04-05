@@ -79,7 +79,6 @@
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
         private downloadingThunderstoreModList: boolean = false;
-        private contextProfile: Profile | null = null;
 
         private activeGame!: Game;
 
@@ -141,7 +140,7 @@
                 'Browse profile folder',
                 'Change the directory where mods and profiles are stored.',
                 async () => {
-                    return this.contextProfile!.getPathOfProfile();
+                    return Profile.getActiveProfile().getPathOfProfile();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')
@@ -203,7 +202,9 @@
                 'Profile',
                 'Change profile',
                 'Change the mod profile.',
-                async () => `Current profile: ${this.contextProfile!.getProfileName()}`,
+                async () => {
+                    return `Current profile: ${Profile.getActiveProfile().getProfileName()}`
+                },
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')
             ),
@@ -358,7 +359,6 @@
         created() {
             this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
             this.searchableSettings = this.settingsList;
-            this.contextProfile = Profile.getActiveProfile();
             ManagerSettings.getSingleton(GameManager.activeGame).then(async settings => {
                 const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
                 if (!(gameDirectory instanceof R2Error)) {

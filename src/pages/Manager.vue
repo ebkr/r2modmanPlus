@@ -433,6 +433,9 @@
         }
 
         get profilePath(): string {
+		    if (this.contextProfile === null) {
+		        return "";
+            }
 		    return this.contextProfile!.getPathOfProfile().replace("/", "\\");
         }
 
