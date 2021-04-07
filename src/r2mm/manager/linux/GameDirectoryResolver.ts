@@ -99,6 +99,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
             return (
                 typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
+                && appManifest.AppState.UserConfig.platform_override_source.length > 0
             );
         } catch (e) {
             const err: Error = e;
@@ -146,7 +147,30 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const steamDir = await this.getSteamDirectory();
         if (steamDir instanceof R2Error) return steamDir;
 
-        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'config', 'loginusers.vdf'))).toString());
+        let steamBaseDir;
+        const probableSteamBaseDirs = [
+            steamDir, // standard way
+            path.join(steamDir, 'steam'), // ubuntu
+            path.join(steamDir, 'root') // i am really mad at this
+        ];
+        
+        for(const dir of probableSteamBaseDirs)
+            if(
+                await FsProvider.instance.exists(dir) &&
+                (await FsProvider.instance.readdir(dir)).filter((x: string) => ['config', 'userdata'].includes(x)).length === 2
+            ){
+                steamBaseDir = await FsProvider.instance.realpath(dir);
+                break;
+            }
+
+        if (typeof steamBaseDir === "undefined")
+            return new R2Error(
+                'An error occured whilst searching Steam user data locations',
+                'Cannot define the steam config location',
+                null
+            );
+
+        const loginUsers = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'config', 'loginusers.vdf'))).toString());
         let userSteamID64 = '';
         for(let _id in loginUsers.users) {
             if(loginUsers.users[_id].MostRecent == 1) {
@@ -163,13 +187,32 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
-        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+        const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
 
         return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.appId].LaunchOptions || '';
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
-        const steamapps = path.join(steamPath, 'steamapps');
+        const probableSteamAppsLocations = [
+            path.join(steamPath, 'steamapps'), // every proper linux distro ever
+            path.join(steamPath, 'steam', 'steamapps'), // Ubuntu LTS
+            path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
+        ];
+        
+        let steamapps;
+        for(const dir of probableSteamAppsLocations)
+            if(await FsProvider.instance.exists(dir)){
+                steamapps = await FsProvider.instance.realpath(dir);
+                break;
+            }
+
+        if (typeof steamapps === "undefined")
+            return new R2Error(
+                'An error occured whilst searching Steam library locations',
+                'Cannot define the root steamapps location',
+                null
+            );
+        
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
         // Find all locations where games can be installed.
@@ -182,7 +225,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                         for (const key in parsedVdf.LibraryFolders) {
                             if (!isNaN(Number(key))) {
                                 locations.push(
-                                    path.join(parsedVdf.LibraryFolders[key], 'steamapps')
+                                    await FsProvider.instance.realpath(path.join(parsedVdf.LibraryFolders[key], 'steamapps'))
                                 );
                             }
                         }
