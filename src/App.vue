@@ -1,5 +1,5 @@
 <template>
-    <div id="q-app" :class="[{'html--funky':settings !== null && settings.funkyModeEnabled}]">
+    <div id="q-app">
 
         <router-view @error="showError" v-if="visible"/>
 
