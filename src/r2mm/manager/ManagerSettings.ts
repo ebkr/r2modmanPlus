@@ -7,6 +7,8 @@ import SettingsDexieStore, {
     ManagerSettingsInterfaceHolder
 } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
+import { StorePlatform } from '../../model/game/StorePlatform';
+import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
 export default class ManagerSettings {
 
@@ -149,6 +151,34 @@ export default class ManagerSettings {
 
     public async setLastSelectedGame(game: Game) {
         ManagerSettings.CONTEXT.global.lastSelectedGame = game.internalFolderName;
+        return await this.save();
+    }
+
+    public async setFavouriteGames(favourites: string[]) {
+        ManagerSettings.CONTEXT.global.favouriteGames = favourites;
+        return await this.save();
+    }
+
+    public async setDefaultGame(defaultGame: Game | undefined) {
+        if (defaultGame === undefined) {
+            ManagerSettings.CONTEXT.global.defaultGame = undefined;
+        } else {
+            ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
+        }
+        return await this.save();
+    }
+
+    public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
+        if (storePlatform === undefined) {
+            ManagerSettings.CONTEXT.global.defaultStore = undefined;
+        } else {
+            ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
+        }
+        return await this.save();
+    }
+
+    public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
+        ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
         return await this.save();
     }
 }

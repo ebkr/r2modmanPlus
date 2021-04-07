@@ -131,6 +131,7 @@
         currentVersion: string | null = null;
 
         private activeGame!: Game;
+        private contextProfile: Profile | null = null;
 
 
         @Prop()
@@ -158,7 +159,7 @@
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
 
-                const modListResult = await ProfileModList.getModList(Profile.getActiveProfile());
+                const modListResult = await ProfileModList.getModList(this.contextProfile!);
                 if (!(modListResult instanceof R2Error)) {
                     const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
                     if (manifestMod !== undefined) {
@@ -196,7 +197,7 @@
                 assignId: assignId
             };
             this.downloadingMod = true;
-            const localMods = await ProfileModList.getModList(Profile.getActiveProfile());
+            const localMods = await ProfileModList.getModList(this.contextProfile!);
             if (localMods instanceof R2Error) {
                 this.downloadingMod = false;
                 this.$emit('error', localMods);
@@ -225,7 +226,7 @@
                         await this.installModAfterDownload(combo.getMod(), combo.getVersion());
                     }
                     this.downloadingMod = false;
-                    const modList = await ProfileModList.getModList(Profile.getActiveProfile());
+                    const modList = await ProfileModList.getModList(this.contextProfile!);
                     if (!(modList instanceof R2Error)) {
                         await this.$store.dispatch('updateModList', modList);
                     }
@@ -265,7 +266,7 @@
                             await this.installModAfterDownload(combo.getMod(), combo.getVersion());
                         }
                         this.downloadingMod = false;
-                        const modList = await ProfileModList.getModList(Profile.getActiveProfile());
+                        const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('updateModList', modList);
                         }
@@ -280,7 +281,7 @@
 
         async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-            const profileModList = await ProfileModList.getModList(Profile.getActiveProfile());
+            const profileModList = await ProfileModList.getModList(this.contextProfile!);
             if (profileModList instanceof R2Error) {
                 return profileModList;
             }
@@ -290,15 +291,15 @@
             );
             if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                    const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
+                    const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, this.contextProfile!);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return result;
                     }
                 }
-                const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
+                const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.contextProfile!);
                 if (!(installError instanceof R2Error)) {
-                    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
+                    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.contextProfile!);
                     if (newModList instanceof R2Error) {
                         this.$emit('error', newModList);
                         return newModList;
@@ -312,6 +313,7 @@
 
         created() {
             this.activeGame = GameManager.activeGame;
+            this.contextProfile = Profile.getActiveProfile();
         }
 
     }

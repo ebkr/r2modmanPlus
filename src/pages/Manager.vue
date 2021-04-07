@@ -95,9 +95,10 @@
 				<br/>
 				<p>Modded:
 					<br/>
-					<code>
-						--doorstop-enable true --doorstop-target {{profilePath}}\BepInEx\core\BepInEx.Preloader.dll
+					<code v-if="doorstopTarget.length > 0">
+						{{ doorstopTarget }}
 					</code>
+                    <code v-else>These parameters will be available after installing BepInEx.</code>
 				</p>
 				<br/>
 				<p>Vanilla:
@@ -350,6 +351,7 @@
     import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
     import GameManager from '../model/game/GameManager';
     import Game from '../model/game/Game';
+    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 
 	@Component({
 		components: {
@@ -408,7 +410,10 @@
         categoryFilterMode: string = CategoryFilterMode.OR;
         allowNsfw: boolean = false;
 
+        doorstopTarget: string = "";
+
         private activeGame!: Game;
+        private contextProfile: Profile | null = null;
 
 		@Watch('pageNumber')
 		changePage() {
@@ -428,7 +433,10 @@
         }
 
         get profilePath(): string {
-		    return Profile.getActiveProfile().getPathOfProfile().replace("/", "\\");
+		    if (this.contextProfile === null) {
+		        return "";
+            }
+		    return this.contextProfile!.getPathOfProfile().replace("/", "\\");
         }
 
         get appName(): string {
@@ -497,6 +505,13 @@
 
 
 		get localModList() : ManifestV2[] {
+            GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
+                if (target instanceof R2Error) {
+                    this.doorstopTarget = "";
+                } else {
+                    this.doorstopTarget = target;
+                }
+            });
 			return this.$store.state.localModList || [];
 		}
 
@@ -536,11 +551,11 @@
 		async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
 			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
 			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                await ProfileInstallerProvider.instance.uninstallMod(manifestMod);
+                await ProfileInstallerProvider.instance.uninstallMod(manifestMod, this.contextProfile!);
 			}
-			const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod);
+			const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.contextProfile!);
 			if (!(installError instanceof R2Error)) {
-				const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod);
+				const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.contextProfile!);
 				if (!(newModList instanceof R2Error)) {
 					await this.$store.dispatch("updateModList", newModList);
 					// this.localModList = newModList;
@@ -683,14 +698,14 @@
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModList();
+			const exportErr = await ProfileModList.exportModList(this.contextProfile!);
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}
 		}
 
 		async exportProfileAsCode() {
-			const exportErr = await ProfileModList.exportModListAsCode((code: string, err: R2Error | null) => {
+			const exportErr = await ProfileModList.exportModListAsCode(this.contextProfile!, (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.showError(err);
 				} else {
@@ -712,7 +727,7 @@
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink('file://' + Profile.getActiveProfile().getPathOfProfile());
+            LinkProvider.instance.openLink('file://' + this.contextProfile!.getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -793,7 +808,7 @@
 
 		async copyLogToClipboard() {
             const fs = FsProvider.instance;
-			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
 			if (await this.logFileExists()) {
 				const text = (await fs.readFile(logOutputPath)).toString();
 				if (text.length >= 1992) {
@@ -806,14 +821,14 @@
 
 		async logFileExists() {
             const fs = FsProvider.instance;
-			const logOutputPath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "LogOutput.log");
+			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
 			return fs.exists(logOutputPath);
 		}
 
 		installLocalMod() {
             InteractionProvider.instance.selectFile({
                 title: 'Import mod',
-                filters: ['.zip'],
+                filters: ['.zip', '.dll'],
                 buttonLabel: 'Import'
             }).then(async files => {
                 if (files.length > 0) {
@@ -823,12 +838,12 @@
         }
 
         async installLocalModAfterFileSelection(file: string) {
-		    const convertError = await LocalModInstallerProvider.instance.extractToCache(file, (async (success, error) => {
+		    const convertError = await LocalModInstallerProvider.instance.extractToCache(this.contextProfile!, file, (async (success, error) => {
 		        if (!success && error !== null) {
 		            this.showError(error);
 		            return;
                 }
-                const updatedModListResult = await ProfileModList.getModList(Profile.getActiveProfile());
+                const updatedModListResult = await ProfileModList.getModList(this.contextProfile!);
                 if (updatedModListResult instanceof R2Error) {
                     this.showError(updatedModListResult);
                     return;
@@ -847,15 +862,15 @@
             for (const mod of this.localModList) {
                 let profileErr: R2Error | void;
                 if (enabled) {
-                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
                 } else {
-                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod);
+                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
                 }
                 if (profileErr instanceof R2Error) {
                     this.showError(profileErr);
                     continue;
                 }
-                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, (updatingMod: ManifestV2) => {
+                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, (updatingMod: ManifestV2) => {
                     if (enabled) {
                         updatingMod.enable();
                     } else {
@@ -984,7 +999,7 @@
                     CacheUtil.clean();
                     break;
                 case "RefreshedThunderstorePackages":
-                    ProfileModList.getModList(Profile.getActiveProfile()).then(value => {
+                    ProfileModList.getModList(this.contextProfile!).then(value => {
                         if (!(value instanceof R2Error)) {
                             this.$store.dispatch("updateModList", value);
                         }
@@ -999,8 +1014,9 @@
 
 		async created() {
 		    this.settings = await ManagerSettings.getSingleton(this.activeGame);
+		    this.contextProfile = Profile.getActiveProfile();
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(Profile.getActiveProfile());
+			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
 			if (!(newModList instanceof R2Error)) {
 				await this.$store.dispatch("updateModList", newModList);
 				// this.localModList = newModList;

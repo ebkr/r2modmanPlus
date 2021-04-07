@@ -12,6 +12,7 @@ export default class CacheUtil {
 
     public static async clean() {
         const profiles: string[] = [];
+        const originalProfile = Profile.getActiveProfile();
 
         const fs = FsProvider.instance;
 
@@ -58,8 +59,8 @@ export default class CacheUtil {
                     }
                 }
             }
-            // Go back to default profile
-            new Profile("Default");
+            // Go back to original profile
+            new Profile(originalProfile.getProfileName());
         });
     }
 

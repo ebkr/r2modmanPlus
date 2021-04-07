@@ -11,18 +11,27 @@ import FsProvider from '../../../../providers/generic/file/FsProvider';
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
-    async startModded(game: Game): Promise<void | R2Error> {
-        LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
-        // BepInEx Standard
+    async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            const corePath = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core");
+            const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
             const preloaderPath = path.join(corePath,
                 (await FsProvider.instance.readdir(corePath))
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
-            return this.start(game, `--doorstop-enable true --doorstop-target "${preloaderPath}"`);
+            return `--doorstop-enable true --doorstop-target "${preloaderPath}"`;
         } catch (e) {
             const err: Error = e;
-            return new R2Error("Failed to start modded", err.message, "BepInEx may not installed correctly. Further help may be required.");
+            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
+        }
+    }
+
+    async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
+        LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
+        // BepInEx Standard
+        const target = await this.getGameArguments(game, profile);
+        if (target instanceof R2Error) {
+            return target;
+        } else {
+            return this.start(game, target);
         }
     }
 
@@ -40,9 +49,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             }
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.appId} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            exec(`"${steamDir}/Steam.exe" -applaunch ${game.appId} ${args} ${settings.getContext().gameSpecific.launchParameters}`, (err => {
+            exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);

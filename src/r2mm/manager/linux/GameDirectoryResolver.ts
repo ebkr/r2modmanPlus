@@ -30,7 +30,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
-                if (await FsProvider.instance.exists(dir))
+                if (await FsProvider.instance.exists(dir) && (await FsProvider.instance.readdir(dir))
+							.find(value => value.toLowerCase() === 'steam.sh') !== undefined)
                     return await FsProvider.instance.realpath(dir);
             }
             throw new Error('Steam is not installed');
@@ -120,7 +121,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (manifestLocation instanceof R2Error)
                 return manifestLocation;
 
-            const compatDataPath = path.join(manifestLocation, 'compatdata', `${game.appId}`);
+            const compatDataPath = path.join(manifestLocation, 'compatdata', `${game.activePlatform.storeIdentifier}`);
             if (await fs.exists(compatDataPath)) {
                 return compatDataPath;
             } else {
@@ -213,7 +214,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             for (const location of locations) {
                 (await fs.readdir(location))
                     .forEach((file: string) => {
-                        if (file.toLowerCase() === `appmanifest_${game.appId}.acf`) {
+                        if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
                             manifestLocation = location;
                         }
                     });
@@ -243,7 +244,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     private async parseAppManifest(manifestLocation: string, game: Game): Promise<any>{
         const fs = FsProvider.instance;
         try {
-            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.appId}.acf`))).toString();
+            const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();
             return vdf.parse(manifestVdf);
         } catch (e) {
             const err: Error = e;

@@ -1,5 +1,5 @@
 <template>
-    <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
+    <div class="full-height">
         <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
             <div class="modal-background" @click="closeGameRunningModal()"></div>
             <div class='modal-content'>
@@ -12,60 +12,62 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
         </div>
-        <aside class="menu">
-            <p class="menu-label">{{ activeGame.displayName }}</p>
-            <ul class="menu-list">
-                <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
-                </li>
-                <li>
-                    <a href="#" @click="launchVanilla"><i class="far fa-play-circle icon--margin-right"/>Start
-                        vanilla</a>
-                </li>
-            </ul>
-            <p class="menu-label">Mods</p>
-            <ul class="menu-list">
-                <li>
-                    <!-- Strange bug seemingly caused by CSS Grid display. Children @click is not being passed up to parent. -->
-                    <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
-                    <a href="#" data-ref="installed" @click="emitClick($event.target)"
-                       class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
-                        <i class="fas fa-folder tagged-link__icon icon--margin-right" data-ref="installed" @click="emitClick($event.target)"/>
-                        <span class="tagged-link__content" data-ref="installed" @click="emitClick($event.target)">Installed</span>
-                        <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'installed'}]"
-                        data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" data-ref="online" @click="emitClick($event.target)"
-                       class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
-                        <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click="emitClick($event.target)"/>
-                        <span class="tagged-link__content" data-ref="online" @click="emitClick($event.target)">Online</span>
-                        <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
-                              data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
-                    </a>
-                </li>
-            </ul>
-            <p class='menu-label'>Other</p>
-            <ul class='menu-list'>
-                <li>
-                    <a href="#" :class="[view === 'config-editor' ? 'is-active' : '']" data-ref="config-editor" @click="emitClick($event.target)">
-                        <i class="fas fa-edit icon--margin-right"/>Config editor
-                    </a>
-                </li>
-                <li>
-                    <a href="#" :class="[view === 'settings' ? 'is-active' : '']"
-                       data-ref="settings" @click="emitClick($event.target)">
-                        <i class="fas fa-cog icon--margin-right"/>Settings
-                    </a>
-                </li>
-                <li>
-                    <a href="#" :class="[view === 'help' ? 'is-active' : '']"
-                       data-ref="help" @click="emitClick($event.target)">
-                        <i class="fas fa-question-circle icon--margin-right"/>Help</a>
-                </li>
-            </ul>
-            <slot></slot>
-        </aside>
+        <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
+            <aside class="menu">
+                <p class="menu-label">{{ activeGame.displayName }}</p>
+                <ul class="menu-list">
+                    <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                    </li>
+                    <li>
+                        <a href="#" @click="launchVanilla"><i class="far fa-play-circle icon--margin-right"/>Start
+                            vanilla</a>
+                    </li>
+                </ul>
+                <p class="menu-label">Mods</p>
+                <ul class="menu-list">
+                    <li>
+                        <!-- Strange bug seemingly caused by CSS Grid display. Children @click is not being passed up to parent. -->
+                        <!-- Due to this, the click event must be applied to all children. Parent container also binds click to account for margins. -->
+                        <a href="#" data-ref="installed" @click="emitClick($event.target)"
+                           class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
+                            <i class="fas fa-folder tagged-link__icon icon--margin-right" data-ref="installed" @click="emitClick($event.target)"/>
+                            <span class="tagged-link__content" data-ref="installed" @click="emitClick($event.target)">Installed</span>
+                            <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'installed'}]"
+                            data-ref="installed" @click="emitClick($event.target)">{{localModList.length}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-ref="online" @click="emitClick($event.target)"
+                           class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
+                            <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click="emitClick($event.target)"/>
+                            <span class="tagged-link__content" data-ref="online" @click="emitClick($event.target)">Online</span>
+                            <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
+                                  data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class='menu-label'>Other</p>
+                <ul class='menu-list'>
+                    <li>
+                        <a href="#" :class="[view === 'config-editor' ? 'is-active' : '']" data-ref="config-editor" @click="emitClick($event.target)">
+                            <i class="fas fa-edit icon--margin-right"/>Config editor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" :class="[view === 'settings' ? 'is-active' : '']"
+                           data-ref="settings" @click="emitClick($event.target)">
+                            <i class="fas fa-cog icon--margin-right"/>Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" :class="[view === 'help' ? 'is-active' : '']"
+                           data-ref="help" @click="emitClick($event.target)">
+                            <i class="fas fa-question-circle icon--margin-right"/>Help</a>
+                    </li>
+                </ul>
+                <slot></slot>
+            </aside>
+        </div>
     </div>
 </template>
 
@@ -82,11 +84,13 @@
     import ManagerInformation from '../../_managerinf/ManagerInformation';
     import Game from '../../model/game/Game';
     import GameManager from '../../model/game/GameManager';
+    import Profile from '../../model/Profile';
 
     @Component
     export default class NavigationMenu extends Vue {
 
         private activeGame!: Game;
+        private contextProfile: Profile | null = null;
 
         @Prop({default: ""})
         private view!: string;
@@ -138,7 +142,7 @@
             const settings = await this.settings;
             await this.prepareLaunch();
             if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
-                const newLinkedFiles = await ModLinker.link(this.activeGame);
+                const newLinkedFiles = await ModLinker.link(this.contextProfile!, this.activeGame);
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
                     return;
@@ -150,7 +154,7 @@
                     }
                 }
                 this.gameRunning = true;
-                GameRunnerProvider.instance.startModded(this.activeGame).then(value => {
+                GameRunnerProvider.instance.startModded(this.activeGame, this.contextProfile!).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                         this.gameRunning = false;
@@ -187,6 +191,7 @@
 
         created() {
             this.activeGame = GameManager.activeGame;
+            this.contextProfile = Profile.getActiveProfile();
         }
     }
 

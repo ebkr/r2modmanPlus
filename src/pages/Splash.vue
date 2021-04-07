@@ -190,7 +190,8 @@ export default class Splash extends Vue {
             onDownloadProgress: progress => {
                 this.loadingText = 'Downloading exclusions'
                 this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
-            }
+            },
+            timeout: 60000
         }).then(response => {
             this.getRequestItem('ExclusionsList').setProgress(100);
             response.data.split('\n').forEach((exclude: string) => {

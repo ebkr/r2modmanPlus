@@ -6,10 +6,18 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
+import { StorePlatform } from '../../model/game/StorePlatform';
 
 export default class PreloaderFixer {
 
     public static async fix(game: Game): Promise<R2Error | void> {
+        if (game.activePlatform.storePlatform !== StorePlatform.STEAM) {
+            return new R2Error(
+                "PreloaderFix is not available on non-Steam platforms.",
+                `The preloader fix deletes the ${path.join(game.dataFolderName, 'Managed')} folder and verifies files. You can do the same manually.`,
+                null
+            );
+        }
         const fs = FsProvider.instance;
         const dirResult = await GameDirectoryResolverProvider.instance.getDirectory(game);
         if (dirResult instanceof R2Error)
@@ -36,7 +44,7 @@ export default class PreloaderFixer {
             return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
-            LinkProvider.instance.openLink(`steam://validate/${game.appId}`);
+            LinkProvider.instance.openLink(`steam://validate/${game.activePlatform.storeIdentifier}`);
         } catch(e) {
             const err: Error = e;
             return new R2Error('Failed to start steam://validate', err.message, null);

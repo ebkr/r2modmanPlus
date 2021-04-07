@@ -15,7 +15,11 @@ const exec = promisify(execCallback);
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
-    public async startModded(game: Game): Promise<void | R2Error> {
+    async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+        return `Z:${await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"))}`;
+    }
+
+    public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
 
         const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
@@ -40,7 +44,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         }
 
         const doorstopTarget = (isProton ? 'Z:' : '') +
-            await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
+            await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core", "BepInEx.Preloader.dll"));
 
 
         return this.start(game, `--doorstop-enable true --doorstop-target "${doorstopTarget}" ${extraArguments}`);
@@ -61,7 +65,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
         try{
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.appId} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
+            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await exec(cmd);
         }catch(err){

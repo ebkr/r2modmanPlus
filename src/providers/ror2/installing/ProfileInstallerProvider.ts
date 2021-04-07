@@ -3,6 +3,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import BepInExTree from '../../../model/file/BepInExTree';
 import BepInExPackageMapping from '../../../model/installing/BepInExPackageMapping';
+import Profile from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {
 
@@ -22,25 +23,25 @@ export default abstract class ProfileInstallerProvider {
      * Removes a mod from the profile. Does not affect the mod list display.
      * @param mod
      */
-    public abstract uninstallMod(mod: ManifestV2): Promise<R2Error | null>;
+    public abstract uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null>;
 
     /**
      * Disable files to prevent the mod from loading.
      * @param mod
      */
-    public abstract disableMod(mod: ManifestV2): Promise<R2Error | void>;
+    public abstract disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void>;
 
     /**
      * Enable files to undo a disable operation.
      * @param mod
      */
-    public abstract enableMod(mod: ManifestV2): Promise<R2Error | void>;
+    public abstract enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void>;
 
     /**
      * Installs a mod to the profile.
      * @param mod
      */
-    public abstract installMod(mod: ManifestV2): Promise<R2Error | null>;
+    public abstract installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null>;
 
     /**
      * Applies either enabling or disabling under a shared method.
@@ -68,7 +69,7 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      * @param location
      */
-    abstract installForManifestV2(mod: ManifestV2, location: string): Promise<R2Error | null>;
+    abstract installForManifestV2(mod: ManifestV2, profile: Profile, location: string): Promise<R2Error | null>;
 
     /**
      * Handles the installation of all mods excluding BepInEx.
@@ -79,13 +80,14 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      * @param tree
      */
-    abstract resolveBepInExTree(location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null>;
+    abstract resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null>;
 
     /**
      * Custom install method for handling BepInEx installations.
      * @param bieLocation
      * @param bepInExVariant
+     * @param profile
      */
-    abstract installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping): Promise<R2Error | null>;
+    abstract installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping, profile: Profile): Promise<R2Error | null>;
 
 }
