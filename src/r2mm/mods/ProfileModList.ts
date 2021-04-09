@@ -40,7 +40,10 @@ export default class ProfileModList {
                         return yaml.parse(value)
                             .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod))
                             .map((mod: ManifestV2) => {
-                                mod.setIcon(path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"));
+                                if (mod.getName().includes("BepInEx")) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
+                                    mod.setIcon(path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"));
+                                else
+                                    mod.setIcon(path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png"));
                                 return mod;
                             });
                     });
