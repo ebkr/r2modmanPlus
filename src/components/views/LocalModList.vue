@@ -211,7 +211,7 @@
     import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
     import { SortNaming } from '../../model/real_enums/sort/SortNaming';
     import GameManager from '../../model/game/GameManager';
-    import Game from 'src/model/game/Game';
+    import Game from '../../model/game/Game';
     import Timeout = NodeJS.Timeout;
 
     @Component({
