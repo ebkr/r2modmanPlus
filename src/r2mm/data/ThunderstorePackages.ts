@@ -12,7 +12,9 @@ export default class ThunderstorePackages {
      * @return Empty promise
      */
     public static async update(game: Game): Promise<any> {
-        return axios.get(game.thunderstoreUrl)
+        return axios.get(game.thunderstoreUrl, {
+            timeout: 10000
+        })
             .then(value => ThunderstorePackages.handlePackageApiResponse(value))
             .catch((e_) => {
                 // Do nothing, connection failed.
