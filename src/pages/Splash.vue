@@ -186,7 +186,7 @@ export default class Splash extends Vue {
                 this.loadingText = 'Downloading exclusions'
                 this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
             },
-            timeout: 60000
+            timeout: 20000
         }).then(response => {
             this.getRequestItem('ExclusionsList').setProgress(100);
             response.data.split('\n').forEach((exclude: string) => {
@@ -210,7 +210,8 @@ export default class Splash extends Vue {
             onDownloadProgress: progress => {
                 this.loadingText = 'Getting mod list from Thunderstore'
                 this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
-            }
+            },
+            timeout: 10000
         }).then(response => {
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
