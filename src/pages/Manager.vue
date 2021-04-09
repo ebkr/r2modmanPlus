@@ -246,6 +246,7 @@
 						</div>
 					</div>
 					<OnlineModList
+                        :settings="settings"
                         :local-mod-list="localModList"
                         :paged-mod-list="pagedThunderstoreModList"
                         @error="showError($event)"
@@ -286,6 +287,7 @@
 						</div>
 						<template v-if="localModList.length > 0">
 							<LocalModList
+                                :settings="settings"
                                 @error="showError($event)"
                             />
 						</template>
@@ -737,6 +739,7 @@
 				this.settings.collapseCards();
 			}
 			this.view = 'installed';
+			this.$forceUpdate();
 		}
 
 		async toggleDarkTheme() {
@@ -979,6 +982,7 @@
                     break;
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.getContext().global.expandedCards);
+                    this.settings = (() => this.settings)();
                     break;
                 case "EnableAll":
                     this.setAllModsEnabled(true);
