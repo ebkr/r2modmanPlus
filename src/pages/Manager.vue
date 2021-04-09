@@ -286,7 +286,8 @@
 							</h4>
 						</div>
 						<template v-if="localModList.length > 0">
-							<LocalModList:settings="settings"
+							<LocalModList
+                                :settings="settings"
                                 @error="showError($event)">
                                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
                                     <br/>
