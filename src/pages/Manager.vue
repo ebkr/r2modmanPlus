@@ -285,9 +285,17 @@
 							</h4>
 						</div>
 						<template v-if="localModList.length > 0">
-							<LocalModList
-                                @error="showError($event)"
-                            />
+							<LocalModList @error="showError($event)">
+                                <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
+                                    <br/>
+                                    <div class="margin-bottom">
+                                        <div class="notification is-warning margin-right">
+                                            <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="showUpdateAllModal = true">update all</a>?</span>
+                                            <a class="float-right cursor-pointer" @click="$store.dispatch('dismissUpdateAll')"><i class="fas fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                </template>
+                            </LocalModList>
 						</template>
 					</template>
 				</div>
@@ -441,6 +449,14 @@
 
         get appName(): string {
 		    return ManagerInformation.APP_NAME;
+        }
+
+        get numberOfModsWithUpdates(): number {
+		    return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.$store.state.localModList, this.$store.state.thunderstoreModList).length;
+        }
+
+        get dismissedUpdateAll() {
+		    return this.$store.state.dismissedUpdateAll;
         }
 
         @Watch("thunderstoreModList")
