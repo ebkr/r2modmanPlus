@@ -125,7 +125,7 @@
             :image="key.icon"
             :id="index"
             :description="key.description"
-            :funkyMode="settings.getContext().global.funkyModeEnabled"
+            :funkyMode="funkyMode"
             :showSort="canShowSortIcons()"
             :manualSortUp="index > 0"
             :manualSortDown="index < searchableModList.length - 1"
@@ -154,13 +154,13 @@
                 <!-- Show update and missing dependency icons -->
                 <span class='card-header-icon has-tooltip-left'
                       data-tooltip='An update is available' v-if="!isLatest(key)">
-                                        <i class='fas fa-cloud-upload-alt'></i>
-                                    </span>
+                    <i class='fas fa-cloud-upload-alt'></i>
+                </span>
                 <span class='card-header-icon has-tooltip-left'
                       :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`"
                       v-if="getMissingDependencies(key).length > 0">
-                                        <i class='fas fa-exclamation-circle'></i>
-                                    </span>
+                    <i class='fas fa-exclamation-circle'></i>
+                </span>
             </template>
             <a class='card-footer-item'
                @click="uninstallModRequireConfirmation(key)">Uninstall</a>
@@ -229,11 +229,12 @@
 
         private cardExpanded: boolean = false;
         private darkTheme: boolean = false;
+        private funkyMode: boolean = false;
 
-        @Watch("settings")
         private updatedSettings() {
             this.cardExpanded = this.settings.getContext().global.expandedCards;
             this.darkTheme = this.settings.getContext().global.darkTheme;
+            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
 
         get modifiableModList(): ManifestV2[] {
@@ -257,10 +258,10 @@
         private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
         private searchQuery: string = '';
         private activeGame: Game | null = null;
-        private settingsUpdateTimer: Timeout | null = null;
 
         // Context
         private contextProfile: Profile | null = null;
+        private settingsUpdateTimer: Timeout | null = null;
 
         @Watch("sortOrder")
         sortOrderChanged(newValue: string) {

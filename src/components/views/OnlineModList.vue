@@ -13,23 +13,23 @@
             :image="key.getVersions()[0].getIcon()"
             :id="index"
             :description="key.getVersions()[0].getDescription()"
-            :funkyMode="settings.getContext().global.funkyModeEnabled"
-            :darkTheme="settings.getContext().global.darkTheme"
-            :expandedByDefault="settings.getContext().global.expandedCards">
+            :funkyMode="funkyMode"
+            :darkTheme="darkTheme"
+            :expandedByDefault="cardExpanded">
             <template v-slot:title>
-                                <span v-if="key.isPinned()" class='has-tooltip-left'
-                                      data-tooltip='Pinned on Thunderstore'>
-                                    <span class="tag is-info">Pinned</span>&nbsp;
-                                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
-                                </span>
+                <span v-if="key.isPinned()" class='has-tooltip-left'
+                      data-tooltip='Pinned on Thunderstore'>
+                    <span class="tag is-info">Pinned</span>&nbsp;
+                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
+                </span>
                 <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
                       data-tooltip='This mod is potentially broken'>
-                                    <span class="tag is-danger">Deprecated</span>&nbsp;
-                                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
-                                </span>
+                    <span class="tag is-danger">Deprecated</span>&nbsp;
+                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
+                </span>
                 <span v-else class='selectable'>
-                                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
-                                </span>
+                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
+                </span>
             </template>
             <template v-slot:other-icons>
                                 <span class='card-header-icon has-tooltip-left'
@@ -68,6 +68,7 @@
     import ManifestV2 from '../../model/ManifestV2';
     import R2Error from '../../model/errors/R2Error';
     import GameManager from '../../model/game/GameManager';
+    import Timeout = NodeJS.Timeout;
 
     @Component({
         components: {
@@ -83,6 +84,18 @@
 
         @Prop({required: true})
         private settings!: ManagerSettings;
+
+        private cardExpanded: boolean = false;
+        private darkTheme: boolean = false;
+        private funkyMode: boolean = false;
+
+        private settingsUpdateTimer: Timeout | null = null;
+
+        private updatedSettings() {
+            this.cardExpanded = this.settings.getContext().global.expandedCards;
+            this.darkTheme = this.settings.getContext().global.darkTheme;
+            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
+        }
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList;
@@ -131,8 +144,7 @@
         }
 
         showDownloadModal(mod: any) {
-            const tsMod = new ThunderstoreMod().fromReactive(mod);
-            this.modToDownload = tsMod;
+            this.modToDownload = new ThunderstoreMod().fromReactive(mod);
         }
 
         getReadableDate(date: Date): string {
@@ -147,6 +159,22 @@
 
         emitError(error: R2Error) {
             this.$emit('error', error);
+        }
+
+        created() {
+            if (this.settingsUpdateTimer !== null) {
+                clearInterval(this.settingsUpdateTimer);
+            }
+            this.settingsUpdateTimer = setInterval(async () => {
+                this.updatedSettings();
+            }, 100);
+        }
+
+        destroyed() {
+            if (this.settingsUpdateTimer !== null) {
+                clearInterval(this.settingsUpdateTimer);
+                this.settingsUpdateTimer = null;
+            }
         }
 
     }
