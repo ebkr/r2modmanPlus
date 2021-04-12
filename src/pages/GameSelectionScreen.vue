@@ -167,8 +167,6 @@ export default class GameSelectionScreen extends Vue {
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
 
-    private assetsPath: string | null = null;
-
     get filteredGameList() {
         return this.gameList
             .filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0)

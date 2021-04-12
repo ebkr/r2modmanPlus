@@ -13,9 +13,7 @@ import Profile from '../../model/Profile';
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
     public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
-        const fs = FsProvider.instance;
-        const zipFileBuffer = await fs.readFile(zipFile);
-        const result: Buffer | null = await ZipProvider.instance.readFile(zipFileBuffer,'manifest.json');
+        const result: Buffer | null = await ZipProvider.instance.readFile(zipFile,'manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
             try {
