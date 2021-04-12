@@ -146,6 +146,9 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
+import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 
 @Component({
     components: {
@@ -228,6 +231,13 @@ export default class GameSelectionScreen extends Vue {
             await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
             const settings = await ManagerSettings.getSingleton(this.selectedGame);
             await settings.setLastSelectedGame(this.selectedGame);
+
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            GameRunnerProvider.provide(() => gameRunner);
+
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+            GameDirectoryResolverProvider.provide(() => directoryResolver);
+
             await this.$router.replace('/splash');
         }
     }

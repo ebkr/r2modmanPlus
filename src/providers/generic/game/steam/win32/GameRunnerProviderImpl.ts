@@ -1,13 +1,13 @@
-import GameRunnerProvider from '../GameRunnerProvider';
-import LoggerProvider, { LogSeverity } from '../../../ror2/logging/LoggerProvider';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
-import R2Error from '../../../../model/errors/R2Error';
+import GameRunnerProvider from '../../GameRunnerProvider';
+import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
+import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
+import R2Error from '../../../../../model/errors/R2Error';
 import { exec } from "child_process";
 import path from "path";
-import Profile from '../../../../model/Profile';
-import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
-import Game from '../../../../model/game/Game';
-import FsProvider from '../../../../providers/generic/file/FsProvider';
+import Profile from '../../../../../model/Profile';
+import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
+import Game from '../../../../../model/game/Game';
+import FsProvider from '../../../file/FsProvider';
 
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
