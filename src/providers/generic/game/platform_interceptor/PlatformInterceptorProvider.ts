@@ -1,7 +1,7 @@
 import ProviderUtils from '../../../../providers/generic/ProviderUtils';
-import { StorePlatform } from 'src/model/game/StorePlatform';
-import GameRunnerProvider from 'src/providers/generic/game/GameRunnerProvider';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import { StorePlatform } from '../../../../model/game/StorePlatform';
+import GameRunnerProvider from '../../../generic/game/GameRunnerProvider';
+import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 
 export default abstract class PlatformInterceptorProvider {
 

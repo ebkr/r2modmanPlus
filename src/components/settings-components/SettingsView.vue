@@ -63,7 +63,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
-import { StorePlatform } from 'src/model/game/StorePlatform';
+import { StorePlatform } from '../../model/game/StorePlatform';
 
 @Component({
         components: {

@@ -168,7 +168,7 @@ import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import R2Error from 'src/model/errors/R2Error';
+import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 
 @Component({
