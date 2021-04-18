@@ -132,9 +132,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async download(game: Game, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
-
-        const fs = FsProvider.instance;
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);

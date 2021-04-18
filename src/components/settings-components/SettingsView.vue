@@ -43,28 +43,29 @@
 
 <script lang="ts">
 
-    import { Vue, Watch } from 'vue-property-decorator';
-    import Component from 'vue-class-component';
-    import SettingsItem from './SettingsItem.vue';
-    import SettingsRow from '../../model/settings/SettingsRow';
-    import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
-    import R2Error from '../../model/errors/R2Error';
-    import PathResolver from '../../r2mm/manager/PathResolver';
-    import Profile from '../../model/Profile';
-    import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
-    import VersionNumber from '../../model/VersionNumber';
-    import ManagerInformation from '../../_managerinf/ManagerInformation';
-    import { Hero } from '../all';
-    import ProfileModList from '../../r2mm/mods/ProfileModList';
-    import ManifestV2 from '../../model/ManifestV2';
-    import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
-    import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-    import GameManager from '../../model/game/GameManager';
-    import Game from '../../model/game/Game';
-    import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
+import { Vue, Watch } from 'vue-property-decorator';
+import Component from 'vue-class-component';
+import SettingsItem from './SettingsItem.vue';
+import SettingsRow from '../../model/settings/SettingsRow';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
+import R2Error from '../../model/errors/R2Error';
+import PathResolver from '../../r2mm/manager/PathResolver';
+import Profile from '../../model/Profile';
+import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
+import VersionNumber from '../../model/VersionNumber';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import { Hero } from '../all';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import ManifestV2 from '../../model/ManifestV2';
+import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import GameManager from '../../model/game/GameManager';
+import Game from '../../model/game/Game';
+import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
+import { StorePlatform } from 'src/model/game/StorePlatform';
 
-    @Component({
+@Component({
         components: {
             SettingsItem,
             Hero
@@ -117,23 +118,6 @@
                 },
                 'fa-folder-open',
                 () => this.emitInvoke('ChangeGameDirectory')
-            ),
-            new SettingsRow(
-                'Locations',
-                'Change Steam directory',
-                `Change the location of the Steam directory that ${this.appName} uses.`,
-                async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    if (settings.getContext().global.steamDirectory !== null) {
-                        const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-                        if (!(directory instanceof R2Error)) {
-                            return directory;
-                        }
-                    }
-                    return 'Please set manually';
-                },
-                'fa-folder-open',
-                () => this.emitInvoke('ChangeSteamDirectory')
             ),
             new SettingsRow(
                 'Locations',
@@ -357,6 +341,27 @@
         }
 
         created() {
+            if (this.activeGame.activePlatform.storePlatform === StorePlatform.STEAM) {
+                this.settingsList.push(
+                    new SettingsRow(
+                        'Locations',
+                        'Change Steam directory',
+                        `Change the location of the Steam directory that ${this.appName} uses.`,
+                        async () => {
+                            const settings = await ManagerSettings.getSingleton(this.activeGame);
+                            if (settings.getContext().global.steamDirectory !== null) {
+                                const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+                                if (!(directory instanceof R2Error)) {
+                                    return directory;
+                                }
+                            }
+                            return 'Please set manually';
+                        },
+                        'fa-folder-open',
+                        () => this.emitInvoke('ChangeSteamDirectory')
+                    )
+                )
+            }
             this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
             this.searchableSettings = this.settingsList;
             ManagerSettings.getSingleton(GameManager.activeGame).then(async settings => {
