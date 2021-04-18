@@ -1,5 +1,24 @@
 <template>
     <div>
+        <modal v-show="showPlatformModal === true" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
+            <template v-slot:title>
+                <p class='card-header-title'>Which store manages your game?</p>
+            </template>
+            <template v-slot:body>
+                <p>Select a platform:</p>
+                <div v-if="selectedGame !== null">
+                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
+                        <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
+                        <label :for="`${index}-${platform.storePlatform.toString()}`">&nbsp;{{ platform.storePlatform }}</label>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <button class='button is-info' @click='selectPlatform'>
+                    Select platform
+                </button>
+            </template>
+        </modal>
         <hero
             title="Game selection"
             subtitle="Which game are you managing your mods for?"
@@ -15,7 +34,7 @@
             <div class="column is-full">
                 <br/>
 
-                <div class="sticky-top is-shadowless background-bg z-max">
+                <div class="sticky-top is-shadowless background-bg z-top">
                     <div class="container" v-if="viewMode === 'Card'">
                         <nav class="level">
                             <div class="level-item">
@@ -73,7 +92,7 @@
                                             <div class='card is-shadowless'>
                                                 <div class='cursor-pointer'>
                                                     <header class='card-header is-shadowless is-relative'>
-                                                        <div class="absolute-full z-top flex">
+                                                        <div class="absolute-full z-fab flex">
                                                             <div class="card-action-overlay rounded">
                                                                 <div class="absolute-top card-header-title">
                                                                     <p class="text-left title is-5">{{ game.displayName }}</p>
@@ -149,10 +168,13 @@ import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
+import R2Error from 'src/model/errors/R2Error';
+import Modal from '../components/Modal.vue';
 
 @Component({
     components: {
-        Hero
+        Hero,
+        Modal
     }
 })
 export default class GameSelectionScreen extends Vue {
@@ -161,7 +183,7 @@ export default class GameSelectionScreen extends Vue {
     private selectedGame: Game | null = null;
     private filterText: string = "";
     private showPlatformModal: boolean = false;
-    private selectedPlatform: StorePlatform | undefined;
+    private selectedPlatform: StorePlatform | null = null;
     private favourites: string[] = [];
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
@@ -192,7 +214,7 @@ export default class GameSelectionScreen extends Vue {
         this.selectedGame = game;
         this.isSettingDefaultPlatform = false;
         if (game.storePlatformMetadata.length > 1) {
-            this.selectedPlatform = undefined;
+            this.selectedPlatform = null;
             this.showPlatformModal = true;
         } else {
             this.selectedPlatform = game.storePlatformMetadata[0].storePlatform;
@@ -222,18 +244,27 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private async proceed() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== undefined) {
+        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
             GameManager.activeGame = this.selectedGame;
             GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
             PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
             await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
+
             const settings = await ManagerSettings.getSingleton(this.selectedGame);
             await settings.setLastSelectedGame(this.selectedGame);
 
             const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            if (gameRunner === undefined) {
+                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
+                return;
+            }
             GameRunnerProvider.provide(() => gameRunner);
 
             const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+            if (directoryResolver === undefined) {
+                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
+                return;
+            }
             GameDirectoryResolverProvider.provide(() => directoryResolver);
 
             await this.$router.replace('/splash');
@@ -241,7 +272,7 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private async proceedDefault() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== undefined) {
+        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
             GameManager.activeGame = this.selectedGame;
             GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
             PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
@@ -250,6 +281,21 @@ export default class GameSelectionScreen extends Vue {
             await settings.setLastSelectedGame(this.selectedGame);
             await settings.setDefaultGame(this.selectedGame);
             await settings.setDefaultStorePlatform(this.selectedPlatform);
+
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            if (gameRunner === undefined) {
+                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
+                return;
+            }
+            GameRunnerProvider.provide(() => gameRunner);
+
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+            if (directoryResolver === undefined) {
+                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
+                return;
+            }
+            GameDirectoryResolverProvider.provide(() => directoryResolver);
+
             await this.$router.replace('/splash');
         }
     }
