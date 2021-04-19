@@ -10,6 +10,8 @@ import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
+import { StorePlatform } from 'src/model/game/StorePlatform';
+import StorePlatformMetadata from 'src/model/game/StorePlatformMetadata';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
@@ -189,7 +191,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
 
-        return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.appId].LaunchOptions || '';
+        return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
