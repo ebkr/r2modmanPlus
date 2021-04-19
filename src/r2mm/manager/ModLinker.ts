@@ -10,7 +10,7 @@ import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirecto
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
-import LinuxGameDirectoryResolver from 'src/r2mm/manager/linux/GameDirectoryResolver';
+import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 
 export default class ModLinker {
 

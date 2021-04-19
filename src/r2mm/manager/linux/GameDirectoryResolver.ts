@@ -155,7 +155,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             path.join(steamDir, 'steam'), // ubuntu
             path.join(steamDir, 'root') // i am really mad at this
         ];
-        
+
         for(const dir of probableSteamBaseDirs)
             if(
                 await FsProvider.instance.exists(dir) &&
@@ -200,7 +200,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             path.join(steamPath, 'steam', 'steamapps'), // Ubuntu LTS
             path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
         ];
-        
+
         let steamapps;
         for(const dir of probableSteamAppsLocations)
             if(await FsProvider.instance.exists(dir)){
@@ -214,7 +214,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 'Cannot define the root steamapps location',
                 null
             );
-        
+
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
         // Find all locations where games can be installed.

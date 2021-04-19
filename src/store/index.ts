@@ -15,6 +15,7 @@ export default function(/* { ssrContext } */) {
         state: {
             localModList: [],
             thunderstoreModList: [],
+            dismissedUpdateAll: false
         },
         actions: {
             updateModList({ commit }, modList) {
@@ -22,6 +23,9 @@ export default function(/* { ssrContext } */) {
             },
             updateThunderstoreModList({ commit }, modList) {
                 commit('setThunderstoreModList', modList);
+            },
+            dismissUpdateAll({commit}) {
+                commit('dismissUpdateAll');
             }
         },
         mutations: {
@@ -30,6 +34,9 @@ export default function(/* { ssrContext } */) {
             },
             setThunderstoreModList(state, list) {
                 state.thunderstoreModList = list;
+            },
+            dismissUpdateAll(state) {
+                state.dismissedUpdateAll = true;
             }
         },
         modules: {

@@ -1,5 +1,5 @@
 <template>
-    <div id="q-app" :class="[{'html--funky':settings !== null && settings.funkyModeEnabled}]">
+    <div id="q-app">
 
         <router-view @error="showError" v-if="visible"/>
 
@@ -56,18 +56,14 @@
     import ZipProvider from './providers/generic/zip/ZipProvider';
     import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
     import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
-    import GameRunnerProvider from './providers/generic/game/GameRunnerProvider';
-    import WindowsGameRunnerProvider from './providers/generic/game/win32/GameRunnerProviderImpl';
-    import LinuxGameRunnerProvider from './providers/generic/game/linux/GameRunnerProviderImpl';
     import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
-    import WindowsGameDirectoryResolver from './r2mm/manager/win32/GameDirectoryResolver';
-    import LinuxGameDirectoryResolver from './r2mm/manager/linux/GameDirectoryResolver';
-    import GameDirectoryResolverProvider from './providers/ror2/game/GameDirectoryResolverProvider';
     import GameManager from './model/game/GameManager';
     import ThunderstorePackages from './r2mm/data/ThunderstorePackages';
     import ProfileModList from './r2mm/mods/ProfileModList';
     import Profile from './model/Profile';
     import ManifestV2 from './model/ManifestV2';
+    import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
+    import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
 
     @Component
     export default class App extends Vue {
@@ -119,12 +115,6 @@
                 await ThemeManager.apply();
                 ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
                     ManagerInformation.IS_PORTABLE = isPortable;
-                    // TODO: Re-enable folder migration
-                    // this.loadingText = 'Migrating mods (this may take a while)';
-                    // setTimeout(() => {
-                    //     FolderMigration.checkAndMigrate()
-                    //         .then(this.checkForUpdates);
-                    // }, 100);
                     LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
                     await settings.load();
                     this.visible = true;
@@ -156,16 +146,7 @@
             LinkProvider.provide(() => new LinkImpl());
             InteractionProvider.provide(() => new InteractionProviderImpl());
 
-            switch(process.platform){
-                case "win32":
-                    GameRunnerProvider.provide(() => new WindowsGameRunnerProvider());
-                    GameDirectoryResolverProvider.provide(() => new WindowsGameDirectoryResolver());
-                    break;
-                case "linux":
-                    GameRunnerProvider.provide(() => new LinuxGameRunnerProvider());
-                    GameDirectoryResolverProvider.provide(() => new LinuxGameDirectoryResolver());
-                    break;
-            }
+            PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 
             BindLoaderImpl.bind();
         }

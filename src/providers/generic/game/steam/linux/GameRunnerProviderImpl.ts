@@ -1,15 +1,15 @@
-import GameRunnerProvider from '../GameRunnerProvider';
-import LoggerProvider, { LogSeverity } from '../../../ror2/logging/LoggerProvider';
-import ManagerSettings from '../../../../r2mm/manager/ManagerSettings';
-import R2Error from '../../../../model/errors/R2Error';
+import GameRunnerProvider from '../../GameRunnerProvider';
+import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
+import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
+import R2Error from '../../../../../model/errors/R2Error';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
-import Profile from '../../../../model/Profile';
-import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../../../../r2mm/manager/linux/GameDirectoryResolver';
-import FsProvider from '../../file/FsProvider';
-import Game from '../../../../model/game/Game';
+import Profile from '../../../../../model/Profile';
+import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
+import LinuxGameDirectoryResolver from '../../../../../r2mm/manager/linux/GameDirectoryResolver';
+import FsProvider from '../../../file/FsProvider';
+import Game from '../../../../../model/game/Game';
 
 const exec = promisify(execCallback);
 
