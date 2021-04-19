@@ -17,10 +17,12 @@ const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvid
         "linux": new GameRunnerProviderImpl_Steam_Linux()
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new DirectExecutableGameRunnerProvider()
+        "win32": new DirectExecutableGameRunnerProvider(),
+        "linux": new DirectExecutableGameRunnerProvider(),
     },
     [StorePlatform.OTHER]: {
-        "win32": new DirectExecutableGameRunnerProvider()
+        "win32": new DirectExecutableGameRunnerProvider(),
+        "linux": new DirectExecutableGameRunnerProvider(),
     }
 };
 
@@ -30,10 +32,12 @@ const RESOLVERS: {[platKey in StorePlatform]: {[procKey: string]: GameDirectoryR
         "linux": new GameDirectoryResolverImpl_Steam_Linux()
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new EGSDirectoryResolver()
+        "win32": new EGSDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
     },
     [StorePlatform.OTHER]: {
-        "win32": new DRMFreeDirectoryResolver()
+        "win32": new DRMFreeDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
     }
 };
 
