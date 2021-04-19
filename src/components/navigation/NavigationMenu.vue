@@ -141,7 +141,7 @@
             const fs = FsProvider.instance;
             const settings = await this.settings;
             await this.prepareLaunch();
-            if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
+            if (!((await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame)) instanceof R2Error) && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
                 const newLinkedFiles = await ModLinker.link(this.contextProfile!, this.activeGame);
                 if (newLinkedFiles instanceof R2Error) {
                     this.$emit("error", newLinkedFiles);
@@ -171,7 +171,7 @@
             const fs = FsProvider.instance;
             const settings = await this.settings;
             await this.prepareLaunch();
-            if (settings.getContext().gameSpecific.gameDirectory !== null && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
+            if (!((await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame)) instanceof R2Error) && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
                 this.gameRunning = true;
                 GameRunnerProvider.instance.startVanilla(this.activeGame).then(value => {
                     if (value instanceof R2Error) {
