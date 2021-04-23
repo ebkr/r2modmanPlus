@@ -10,13 +10,13 @@
     import 'quill/dist/quill.core.css';
     import 'quill/dist/quill.bubble.css';
 
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Model, Vue, Watch } from 'vue-property-decorator';
 
     @Component
     export default class Editor extends Vue {
 
-        @Prop({default: ''})
-        private value: string | undefined;
+        @Model("input", {type: String, required: true})
+        private textValue!: string;
 
         private editor: Quill | null = null;
 
@@ -28,8 +28,15 @@
                 theme: 'bubble',
                 formats: []
             });
-            this.editor.setText(this.value!);
+            this.editor.setText(this.value || "");
             this.editor.on('text-change', () => this.update());
+        }
+
+        @Watch("textValue")
+        private updatedModel(newValue: string) {
+            if (this.editor !== null) {
+                this.editor.setText(newValue);
+            }
         }
 
         update() {
