@@ -30,6 +30,8 @@
         "electron-updater": "^4.2.0",
         "elliptic": "^6.5.3",
         "fs-extra": "^8.1.0",
+        "highlight.js": "^10.4.1",
+        "moment": "^2.29.1",
         "node-ipc": "^9.1.1",
         "quasar": "^1.14.7",
         "quill": "^1.3.7",
@@ -39,8 +41,7 @@
         "vue-class-component": "^7.2.2",
         "vue-i18n": "^8.0.0",
         "vue-property-decorator": "^8.3.0",
-        "yaml": "^1.7.2",
-        "highlight.js": "^10.4.1"
+        "yaml": "^1.7.2"
     },
     "devDependencies": {
         "@quasar/app": "^2.0.0",

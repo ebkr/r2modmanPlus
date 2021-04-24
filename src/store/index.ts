@@ -15,7 +15,8 @@ export default function(/* { ssrContext } */) {
         state: {
             localModList: [],
             thunderstoreModList: [],
-            dismissedUpdateAll: false
+            dismissedUpdateAll: false,
+            apiConnectionError: ""
         },
         actions: {
             updateModList({ commit }, modList) {
@@ -26,6 +27,9 @@ export default function(/* { ssrContext } */) {
             },
             dismissUpdateAll({commit}) {
                 commit('dismissUpdateAll');
+            },
+            updateApiConnectionError({commit}, err) {
+                commit('setApiConnectionError', err);
             }
         },
         mutations: {
@@ -37,6 +41,9 @@ export default function(/* { ssrContext } */) {
             },
             dismissUpdateAll(state) {
                 state.dismissedUpdateAll = true;
+            },
+            setApiConnectionError(state, err) {
+                state.apiConnectionError = err;
             }
         },
         modules: {

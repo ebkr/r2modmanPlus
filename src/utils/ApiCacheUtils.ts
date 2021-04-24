@@ -6,11 +6,23 @@ import FileUtils from './FileUtils';
 
 export default class ApiCacheUtils {
 
+    private static CACHED_REQUEST: ApiData | undefined = undefined;
+
+    public static async getLastRequestCached() {
+        if (this.CACHED_REQUEST !== undefined) {
+            return this.CACHED_REQUEST;
+        } else {
+            return await this.getLastRequest();
+        }
+    }
+
     public static async getLastRequest(): Promise<ApiData | undefined> {
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, "last_api_request.json"))) {
             try {
                 const lastCacheContent = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"))).toString();
-                return JSON.parse(lastCacheContent) as ApiData;
+                const apiData = JSON.parse(lastCacheContent) as ApiData;
+                this.CACHED_REQUEST = apiData;
+                return apiData;
             } catch (e) {
                 return undefined;
             }
@@ -24,6 +36,7 @@ export default class ApiCacheUtils {
             time: new Date(),
             payload: data
         }
+        this.CACHED_REQUEST = apiData;
         await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"), JSON.stringify(apiData));
     }
 
