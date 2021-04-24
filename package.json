@@ -28,7 +28,7 @@
         "dexie": "^3.0.3",
         "dot-prop": "^5.2.0",
         "electron-updater": "^4.2.0",
-        "elliptic": "^6.5.3",
+        "elliptic": "^6.5.4",
         "fs-extra": "^8.1.0",
         "highlight.js": "^10.4.1",
         "moment": "^2.29.1",
