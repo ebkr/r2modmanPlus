@@ -28,7 +28,7 @@
                 theme: 'bubble',
                 formats: []
             });
-            this.editor.setText(this.value || "");
+            this.editor.setText(this.textValue || "");
             this.editor.on('text-change', () => this.update());
         }
 
