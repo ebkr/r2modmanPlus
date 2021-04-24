@@ -3,7 +3,7 @@ import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import ApiData from '../model/api/ApiData';
 import FileUtils from './FileUtils';
-import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 export default class ApiCacheUtils {
 

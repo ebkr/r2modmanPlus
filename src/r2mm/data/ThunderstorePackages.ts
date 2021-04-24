@@ -1,8 +1,8 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import Game from '../../model/game/Game';
-import ApiCacheUtils from 'src/utils/ApiCacheUtils';
-import ApiResponse from 'src/model/api/ApiResponse';
+import ApiCacheUtils from '../../utils/ApiCacheUtils';
+import ApiResponse from '../../model/api/ApiResponse';
 
 export default class ThunderstorePackages {
 
