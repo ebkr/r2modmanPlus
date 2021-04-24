@@ -230,19 +230,7 @@ export default class Splash extends Vue {
                     new Profile('Default');
                     ThunderstorePackages.handlePackageApiResponse(response);
                     this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-                    if (process.platform === 'linux') {
-                        if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
-                            console.log('Not proton game');
-                            await this.ensureLinuxWrapperInGameFolder();
-                            const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
-                            console.log(`Launch arguments for this game:`, launchArgs);
-                            if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                                this.$router.push({ path: '/linux-native-game-setup' });
-                                return;
-                            }
-                        }
-                    }
-                    this.$router.push({ path: '/profiles' });
+                    await this.moveToNextScreen();
                 }).catch((e_) => {
                     console.log(e_);
                     this.isOffline = true;
@@ -266,21 +254,25 @@ export default class Splash extends Vue {
                 }
                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                 ThunderstorePackages.update(this.activeGame);
-                if (process.platform === 'linux') {
-                    if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
-                        console.log('Not proton game');
-                        await this.ensureLinuxWrapperInGameFolder();
-                        const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
-                        console.log(`Launch arguments for this game:`, launchArgs);
-                        if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                            this.$router.push({ path: '/linux-native-game-setup' });
-                            return;
-                        }
-                    }
-                }
-                this.$router.push({ path: '/profiles' });
+                await this.moveToNextScreen();
             }
         });
+    }
+
+    async moveToNextScreen() {
+        if (process.platform === 'linux') {
+            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
+                console.log('Not proton game');
+                await this.ensureLinuxWrapperInGameFolder();
+                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
+                console.log(`Launch arguments for this game:`, launchArgs);
+                if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+                    this.$router.push({ path: '/linux-native-game-setup' });
+                    return;
+                }
+            }
+        }
+        this.$router.push({ path: '/profiles' });
     }
 
     retryConnection() {
@@ -289,7 +281,7 @@ export default class Splash extends Vue {
 
     continueOffline() {
         ThunderstorePackages.PACKAGES = [];
-        this.$router.push({ path: '/profiles' });
+        this.moveToNextScreen();
     }
 
     private async ensureLinuxWrapperInGameFolder() {
