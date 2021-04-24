@@ -64,6 +64,9 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { StorePlatform } from '../../model/game/StorePlatform';
+import ApiData from '../../model/api/ApiData';
+import ApiCacheUtils from '../../utils/ApiCacheUtils';
+import moment from 'moment';
 
 @Component({
         components: {
@@ -283,16 +286,36 @@ import { StorePlatform } from '../../model/game/StorePlatform';
                 'Other',
                 'Refresh online mod list',
                 'Check for any new mod releases.',
-                async () => this.downloadingThunderstoreModList ? "Checking for new releases" : "",
+                async () => {
+                        if (this.downloadingThunderstoreModList) {
+                            return "Checking for new releases";
+                        } else {
+                            if (this.$store.state.apiConnectionError.length > 0) {
+                                return "Error getting new mods: " + this.$store.state.apiConnectionError;
+                            } else {
+                                const lastRequest = await ApiCacheUtils.getLastRequestCached();
+                                if (lastRequest !== undefined) {
+                                    return "Cache date: " + moment(new Date(lastRequest.time)).format("MMMM Do YYYY, h:mm:ss a");
+                                }
+                            }
+                        }
+                        return "No API information available";
+                    },
                 'fa-exchange-alt',
                 () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
                         ThunderstorePackages.update(GameManager.activeGame)
                             .then(_ => {
-                                this.downloadingThunderstoreModList = false;
                                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                                 this.emitInvoke('RefreshedThunderstorePackages');
+                            })
+                            .catch(e => {
+                                const err: Error = e;
+                                this.$store.dispatch("updateApiConnectionError", err.message);
+                            })
+                            .finally(() => {
+                               this.downloadingThunderstoreModList = false;
                             });
                     }
                 }

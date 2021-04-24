@@ -115,7 +115,6 @@
                     }
                 });
             }
-            console.log(this.fileText);
             window.scrollTo(0, 0);
         }
 

@@ -140,6 +140,7 @@ import Profile from '../model/Profile';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages'
 import { ipcRenderer } from 'electron';
 import GameManager from '../model/game/GameManager';
+import ApiCacheUtils from '../utils/ApiCacheUtils';
 
 @Component({
     components: {
@@ -179,7 +180,7 @@ export default class Splash extends Vue {
         ipcRenderer.send('update-app');
     }
 
-    private getExclusions() {
+    private async getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
         axios.get(this.activeGame.exclusionsUrl, {
             onDownloadProgress: progress => {
@@ -204,27 +205,45 @@ export default class Splash extends Vue {
     }
 
     // Get the list of Thunderstore mods via /api/v1/package.
-    private getThunderstoreMods(attempt: number) {
+    private async getThunderstoreMods(attempt: number) {
         this.loadingText = 'Connecting to Thunderstore';
-        axios.get(this.activeGame.thunderstoreUrl, {
-            onDownloadProgress: progress => {
-                this.loadingText = 'Getting mod list from Thunderstore'
-                this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
-            },
-            timeout: 10000
-        }).then(response => {
-            // Temporary. Creates a new standard profile until Profiles section is completed
-            new Profile('Default');
-            ThunderstorePackages.handlePackageApiResponse(response);
-            this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-            this.$router.push({path: '/profiles'});
-        }).catch((e_)=>{
-            this.isOffline = true;
-            if (attempt < 5) {
-                this.getThunderstoreMods(attempt + 1);
+        ApiCacheUtils.getLastRequest().then(resp => {
+            if (resp === undefined) {
+                axios.get(this.activeGame.thunderstoreUrl, {
+                    onDownloadProgress: progress => {
+                        this.loadingText = 'Getting mod list from Thunderstore'
+                        this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
+                    },
+                    timeout: 10000
+                }).then(response => {
+                    // Temporary. Creates a new standard profile until Profiles section is completed
+                    new Profile('Default');
+                    ThunderstorePackages.handlePackageApiResponse(response);
+                    this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                    this.$router.push({path: '/profiles'});
+                }).catch((e_)=>{
+                    this.isOffline = true;
+                    if (attempt < 3) {
+                        this.getThunderstoreMods(attempt + 1);
+                    } else {
+                        this.heroTitle = 'Failed to get mods from Thunderstore';
+                        this.loadingText = 'You may be offline, however you may still use R2MM offline.';
+                    }
+                });
             } else {
-                this.heroTitle = 'Failed to get mods from Thunderstore';
-                this.loadingText = 'You may be offline, however you may still use R2MM offline.';
+                ThunderstorePackages.handlePackageApiResponse({data: resp.payload});
+                if (ThunderstorePackages.EXCLUSIONS.size === 0) {
+                    const exclusions = new Map<string, boolean>();
+                    if (resp.exclusions) {
+                        resp.exclusions.forEach(exclusion => {
+                            exclusions.set(exclusion, true);
+                        });
+                    }
+                    ThunderstorePackages.EXCLUSIONS = exclusions;
+                }
+                this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                ThunderstorePackages.update(this.activeGame);
+                this.$router.push({path: '/profiles'});
             }
         })
     }
