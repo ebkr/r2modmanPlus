@@ -1,6 +1,7 @@
 export default interface ApiData {
 
     time: Date,
-    payload: any
+    payload: any,
+    exclusions: string[]
 
 }

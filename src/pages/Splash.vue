@@ -232,6 +232,15 @@ export default class Splash extends Vue {
                 });
             } else {
                 ThunderstorePackages.handlePackageApiResponse({data: resp.payload});
+                if (ThunderstorePackages.EXCLUSIONS.size === 0) {
+                    const exclusions = new Map<string, boolean>();
+                    if (resp.exclusions) {
+                        resp.exclusions.forEach(exclusion => {
+                            exclusions.set(exclusion, true);
+                        });
+                    }
+                    ThunderstorePackages.EXCLUSIONS = exclusions;
+                }
                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                 ThunderstorePackages.update(this.activeGame);
                 this.$router.push({path: '/profiles'});

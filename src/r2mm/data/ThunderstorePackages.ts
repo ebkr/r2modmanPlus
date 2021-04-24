@@ -20,9 +20,6 @@ export default class ThunderstorePackages {
             .then(value => {
                 this.handlePackageApiResponse(value);
                 return value;
-            })
-            .catch((e_) => {
-                // Do nothing, connection failed.
             });
     }
 

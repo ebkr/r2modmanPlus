@@ -307,13 +307,15 @@ import moment from 'moment';
                         this.downloadingThunderstoreModList = true;
                         ThunderstorePackages.update(GameManager.activeGame)
                             .then(_ => {
-                                this.downloadingThunderstoreModList = false;
                                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                                 this.emitInvoke('RefreshedThunderstorePackages');
                             })
                             .catch(e => {
                                 const err: Error = e;
                                 this.$store.dispatch("updateApiConnectionError", err.message);
+                            })
+                            .finally(() => {
+                               this.downloadingThunderstoreModList = false;
                             });
                     }
                 }
