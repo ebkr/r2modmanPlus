@@ -102,10 +102,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const isProton = typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
                 && (appManifest.AppState.UserConfig.platform_override_source.toLowerCase() !== "linux" || appManifest.AppState.UserConfig.platform_override_source.length > 0);
 
-            console.log("isPGUndefined:", typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined");
-            console.log("pos", appManifest.AppState.UserConfig.platform_override_source.toLowerCase());
-            console.log("pol", appManifest.AppState.UserConfig.platform_override_source.length);
-            console.log(isProton);
+            // console.log("appManifest:", appManifest);
+            console.log("isProton:", isProton)
 
             return isProton;
         } catch (e) {
