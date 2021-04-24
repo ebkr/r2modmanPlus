@@ -1,6 +1,8 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Game from '../../model/game/Game';
+import ApiCacheUtils from 'src/utils/ApiCacheUtils';
+import ApiResponse from 'src/model/api/ApiResponse';
 
 export default class ThunderstorePackages {
 
@@ -15,7 +17,10 @@ export default class ThunderstorePackages {
         return axios.get(game.thunderstoreUrl, {
             timeout: 10000
         })
-            .then(value => ThunderstorePackages.handlePackageApiResponse(value))
+            .then(value => {
+                this.handlePackageApiResponse(value);
+                return value;
+            })
             .catch((e_) => {
                 // Do nothing, connection failed.
             });
@@ -25,7 +30,8 @@ export default class ThunderstorePackages {
      * Transform {response.data} to ThunderstoreMod list.
      * @param response api/v1/package data.
      */
-    public static handlePackageApiResponse(response: any) {
+    public static handlePackageApiResponse(response: ApiResponse) {
+        ApiCacheUtils.storeLastRequest(response.data);
         let tsMods: ThunderstoreMod[] = [];
         response.data.forEach((mod: any) => {
             let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
