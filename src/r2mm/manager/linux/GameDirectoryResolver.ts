@@ -10,6 +10,8 @@ import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
+import { StorePlatform } from 'src/model/game/StorePlatform';
+import StorePlatformMetadata from 'src/model/game/StorePlatformMetadata';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
