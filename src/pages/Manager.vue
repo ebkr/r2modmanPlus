@@ -469,8 +469,10 @@
         }
 
 		filterThunderstoreModList() {
-			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: Mod) => {
-				return x.getFullName().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0 || this.thunderstoreSearchFilter.trim() === '';
+			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+				return x.getFullName().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
+                    || x.getVersions()[0].getDescription().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
+                    || this.thunderstoreSearchFilter.trim() === '';
 			});
 			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
 			if (this.filterCategories.length > 0) {

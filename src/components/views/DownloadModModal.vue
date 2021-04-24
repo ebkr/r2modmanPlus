@@ -313,10 +313,10 @@
                 }
                 if (olderInstallOfMod !== undefined) {
                     if (!olderInstallOfMod.isEnabled()) {
-                        await ProfileModList.updateMod(manifestMod, this.contextProfile, mod => {
+                        await ProfileModList.updateMod(manifestMod, this.contextProfile!, mod => {
                             mod.disable();
                         });
-                        await ProfileInstallerProvider.instance.disableMod(manifestMod, this.contextProfile);
+                        await ProfileInstallerProvider.instance.disableMod(manifestMod, this.contextProfile!);
                     }
                 }
             }

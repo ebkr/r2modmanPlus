@@ -289,7 +289,8 @@
                 this.searchableModList = [...(this.modifiableModList || [])];
             }
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
+                return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
+                    || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
             });
         }
 
