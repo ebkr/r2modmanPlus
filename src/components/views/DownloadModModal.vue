@@ -289,7 +289,10 @@
                 value => value.getName() === mod.getFullName()
                     && value.getVersionNumber().isEqualTo(version.getVersionNumber())
             );
+
             if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
+                const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
+                const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
                     const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, this.contextProfile!);
                     if (result instanceof R2Error) {
@@ -307,6 +310,14 @@
                 } else {
                     this.$emit('error', installError);
                     return installError;
+                }
+                if (olderInstallOfMod !== undefined) {
+                    if (!olderInstallOfMod.isEnabled()) {
+                        await ProfileModList.updateMod(manifestMod, this.contextProfile!, mod => {
+                            mod.disable();
+                        });
+                        await ProfileInstallerProvider.instance.disableMod(manifestMod, this.contextProfile!);
+                    }
                 }
             }
         }

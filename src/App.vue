@@ -111,7 +111,15 @@
 
                 PathResolver.ROOT = settings.getContext().global.dataDirectory || PathResolver.APPDATA_DIR;
 
+                // If ROOT directory was set previously but no longer exists (EG: Drive disconnected) then fallback to original.
+                try {
+                    await FileUtils.ensureDirectory(PathResolver.ROOT);
+                } catch (e) {
+                    PathResolver.ROOT = PathResolver.APPDATA_DIR;
+                }
+
                 await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
+
                 await ThemeManager.apply();
                 ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
                     ManagerInformation.IS_PORTABLE = isPortable;
