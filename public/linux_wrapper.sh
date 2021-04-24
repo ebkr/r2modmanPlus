@@ -15,8 +15,7 @@ while :; do
                 R2PROFILE="$2"
                 shift
             else
-                echo "No --r2profile value specified, skipping!"
-                exit
+                echo "[R2MODMAN LINUX WRAPPER] Warning: --r2profile value is empty!"
             fi
             ;;
         *)
@@ -34,8 +33,8 @@ while :; do
 done
 
 if [ -z "$R2PROFILE" ]; then
-    echo "No --r2profile value specified, skipping!"
-    exit
+    echo "[R2MODMAN LINUX WRAPPER] Launching vanilla!"
+    exec $args
 fi
 
 exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" $args
