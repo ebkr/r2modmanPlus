@@ -68,6 +68,16 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.11
+- Added Outward support.
+- Update all can now be accessed without going to the Settings screen.
+- Fixed several settings.
+- Config editor allows editing of JSON/TXT files again.
+- API requests are now cached, allowing usage when the API is inaccessible.
+  - Knowing if the API is down is currently only accessible from the "Refresh online mod list" setting. This will be fixed in a later update.
+- Valheim BepInEx can now use the native version of the game.
+- Other minor fixes.
+
 ### 3.1.10
 - Game selection screen has been overhauled.
     - You can now skip game selection using the "Set as default" button.
