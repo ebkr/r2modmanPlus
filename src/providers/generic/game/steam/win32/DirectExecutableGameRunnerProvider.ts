@@ -43,14 +43,19 @@ export default class DirectExecutableGameRunnerProvider extends GameRunnerProvid
     async start(game: Game, args: string): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
-            const gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
+            let gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
             if (gameDir instanceof R2Error) {
                 return gameDir;
             }
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${game.exeName} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+            gameDir = await FsProvider.instance.realpath(gameDir);
 
-            exec(`"${game.exeName}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
+            const gameExecutable = (await FsProvider.instance.readdir(gameDir))
+                .filter((x: string) => game.exeName.includes(x))[0];
+
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+
+            exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir
             }, (err => {
                 if (err !== null) {

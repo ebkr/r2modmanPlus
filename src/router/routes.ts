@@ -20,6 +20,13 @@ const routes: RouteConfig[] = [
         }
     },
     {
+        path: '/linux-native-game-setup',
+        component: () => import('pages/LinuxNativeGameSetup.vue'),
+        meta: {
+            title: () => ManagerInformation.APP_NAME
+        }
+    },
+    {
         path: '/profiles',
         component: () => import('pages/Profiles.vue'),
         meta: {

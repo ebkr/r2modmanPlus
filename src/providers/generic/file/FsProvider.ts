@@ -26,6 +26,7 @@ export default abstract class FsProvider {
     public abstract lstat(path: string): Promise<StatInterface>;
     public abstract realpath(path: string): Promise<string>;
     public abstract rename(path: string, newPath: string): Promise<void>;
+    public abstract chmod(path: string, mode: string | number): Promise<void>;
     public abstract copyFile(from: string, to: string): Promise<void>;
     public abstract copyFolder(from: string, to: string): Promise<void>;
     public abstract base64FromZip(path: string): Promise<string>;

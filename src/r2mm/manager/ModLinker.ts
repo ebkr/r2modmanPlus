@@ -10,10 +10,18 @@ import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirecto
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
+import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 
 export default class ModLinker {
 
     public static async link(profile: Profile, game: Game): Promise<string[] | R2Error> {
+        if (process.platform === 'linux') {
+            const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+            if (!isProton) {
+                // Game is native, BepInEx doesn't require moving. No linked files.
+                return [];
+            }
+        }
         const settings = await ManagerSettings.getSingleton(game);
         const gameDirectory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory(game);
         if (gameDirectory instanceof R2Error) {

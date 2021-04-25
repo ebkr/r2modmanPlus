@@ -7,7 +7,7 @@ export default class Game {
     private readonly _displayName: string;
     private readonly _internalFolderName: string;
     private readonly _steamFolderName: string;
-    private readonly _exeName: string;
+    private readonly _exeName: string[];
     private readonly _dataFolderName: string;
     private readonly _thunderstoreUrl: string;
     private readonly _exclusionsUrl: string;
@@ -18,7 +18,7 @@ export default class Game {
     private _activePlatform: StorePlatformMetadata;
 
     constructor(displayName: string, internalFolderName: string,
-                steamFolderName: string, exeName: string, dataFolderName: string,
+                steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
                 displayMode: GameSelectionDisplayMode) {
 
@@ -47,7 +47,7 @@ export default class Game {
         return this._steamFolderName;
     }
 
-    get exeName(): string {
+    get exeName(): string[] {
         return this._exeName;
     }
 
