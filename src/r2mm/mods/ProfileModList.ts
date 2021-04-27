@@ -18,6 +18,8 @@ import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
+import { BEPINEX_VARIANTS } from '../installing/ProfileInstaller';
+import GameManager from 'src/model/game/GameManager';
 
 export default class ProfileModList {
 
@@ -40,8 +42,11 @@ export default class ProfileModList {
                         return yaml.parse(value)
                             .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod))
                             .map((mod: ManifestV2) => {
-                                if (mod.getName().includes("BepInEx")) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
-                                    mod.setIcon(path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"));
+                                if (
+                                    BEPINEX_VARIANTS[GameManager.activeGame.internalFolderName]
+                                        .find(x => x.packageName === mod.getName()) !== undefined
+                                ) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
+                                    mod.setIcon(path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png"));
                                 else
                                     mod.setIcon(path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png"));
                                 return mod;
