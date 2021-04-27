@@ -21,9 +21,7 @@
             <br/>
             <div v-for="(value, key) in dumpedConfigVariables" :key="`${key}-${value.toString()}-tab`">
                 <div class="notification is-grey-lighter sticky-top">
-                    <div class="container">
-                        <h4 :id="key" class='subtitle is-4'>{{ key }}</h4>
-                    </div>
+                    <h4 :id="key" class='subtitle is-4'>{{ key }}</h4>
                 </div>
                 <div class="panel-block is-block settings-panel" v-for="(line, variable) in value" :key="`${configFile.getName()}-${key}-${variable}-${line.commentsExpanded}`">
                     <div class="settings-panel__content">
