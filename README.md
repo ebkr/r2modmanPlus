@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim and GTFO.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO and Outward.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installs allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
