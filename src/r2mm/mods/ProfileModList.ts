@@ -19,7 +19,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
 import { BEPINEX_VARIANTS } from '../installing/ProfileInstaller';
-import GameManager from 'src/model/game/GameManager';
+import GameManager from '../../model/game/GameManager';
 
 export default class ProfileModList {
 
