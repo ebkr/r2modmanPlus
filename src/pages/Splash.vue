@@ -253,7 +253,9 @@ export default class Splash extends Vue {
                     ThunderstorePackages.EXCLUSIONS = exclusions;
                 }
                 this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                ThunderstorePackages.update(this.activeGame);
+                ThunderstorePackages.update(this.activeGame).then(() => {
+                    this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                });
                 await this.moveToNextScreen();
             }
         });
