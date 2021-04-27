@@ -290,7 +290,6 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     async installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping, profile: Profile): Promise<R2Error | null> {
         const location = path.join(bieLocation, bepInExVariant.rootFolder);
         const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
-        console.log(bieLocation, bepInExVariant, location, files, profile);
         if (files instanceof R2Error) {
             return files;
         }
