@@ -15,7 +15,7 @@ export default class ThunderstorePackages {
      */
     public static async update(game: Game): Promise<any> {
         return axios.get(game.thunderstoreUrl, {
-            timeout: 10000
+            timeout: 30000
         })
             .then(value => {
                 this.handlePackageApiResponse(value);

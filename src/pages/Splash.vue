@@ -224,7 +224,7 @@ export default class Splash extends Vue {
                         this.loadingText = 'Getting mod list from Thunderstore';
                         this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
                     },
-                    timeout: 10000
+                    timeout: 30000
                 }).then(async response => {
                     // Temporary. Creates a new standard profile until Profiles section is completed
                     new Profile('Default');
