@@ -68,6 +68,12 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.12
+- Fixed issue causing mod list to not use refreshed cache on initial launch.
+- Profiles can now be updated using codes and files without having to export/delete/re-import.
+- Increased timeout to 30s for slower connections.
+- Minor visual tweaks and fixes.
+
 ### 3.1.11
 - Added Outward support.
 - Update all can now be accessed without going to the Settings screen.
@@ -87,12 +93,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Profiles should behave as expected.
     - _Please let me know if you get any profile issues._
 - Fixed several other small issues.
-
-### 3.1.9
-- Fixed an issue where duplicate package listings would break the Online search functionality.
-
-### 3.1.8
-- Added GTFO support
 
 ## Screenshots
 
