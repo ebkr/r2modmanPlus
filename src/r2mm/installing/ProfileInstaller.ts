@@ -46,6 +46,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      * Uninstalls a mod by looking through the top level of profile/BepInEx/*
      * Any folder inside * locations with the mod name will be deleted.
      * @param mod
+     * @param profile
      */
     public async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
@@ -202,12 +203,13 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null> {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML'];
         // Check if BepInExTree is end.
-        if (endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase()) !== undefined) {
+        const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
+        if (matchingEndFolderName !== undefined) {
             let profileLocation: string;
             if (folderName.toLowerCase() !== 'config') {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', folderName, mod.getName());
+                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName, mod.getName());
             } else {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', folderName);
+                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName);
             }
             try {
                 await FileUtils.ensureDirectory(profileLocation);
