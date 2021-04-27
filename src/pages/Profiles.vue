@@ -8,25 +8,43 @@
           <header class="card-header">
             <p class="card-header-title">{{addingProfileType}} a profile</p>
           </header>
-          <div class="card-content">
-            <p>This profile will store its own mods independently from other profiles.</p>
-            <br/>
-            <input class="input" v-model="newProfileName" />
-            <br/><br/>
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
-            </span>
-            <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
-            </span>
-            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
-            </span>
-          </div>
+            <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null) || renamingProfile">
+              <div class="card-content">
+                <p>This profile will store its own mods independently from other profiles.</p>
+                <br/>
+                <input class="input" v-model="newProfileName" />
+                <br/><br/>
+                <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
+                    Profile name required
+                </span>
+                <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
+                    "{{makeProfileNameSafe(newProfileName)}}" is available
+                </span>
+                <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
+                    "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+                </span>
+              </div>
+            </template>
+            <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
+                <div class="card-content">
+                    <div class="notification is-warning">
+                        <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
+                    </div>
+                    <p>Select a profile below:</p>
+                    <br/>
+                    <select class="select" v-model="selectedProfile">
+                        <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
+                    </select>
+                </div>
+            </template>
           <div class="card-footer">
-              <template v-if="addingProfile">
+              <template v-if="addingProfile && (importUpdateSelection === 'IMPORT' || importUpdateSelection === null)">
                   <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
                   <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+              </template>
+              <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
+                  <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button class="button is-info" v-else @click="updateProfile(selectedProfile)">Update profile: {{ selectedProfile }}</button>
               </template>
               <template v-if="renamingProfile">
                   <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
@@ -37,13 +55,32 @@
       </div>
       <button class="modal-close is-large" aria-label="close" @click="closeNewProfileModal()"></button>
     </div>
-    <!-- Import option modal -->
+    <!-- Profile import / update selection modal -->
+    <div :class="['modal', {'is-active':(showImportUpdateSelectionModal !== false)}]">
+        <div class="modal-background" @click="showImportUpdateSelectionModal = false"></div>
+        <div class="modal-content">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Are you going to be updating an existing profile or creating a new one?</p>
+                </header>
+                <div class="card-footer">
+                    <button class="button is-info"
+                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'IMPORT'">Import new profile</button>
+                    <button class="button is-primary"
+                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'UPDATE'">Update existing profile</button>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="showImportUpdateSelectionModal = false"></button>
+    </div>
+    <!-- Import profile modal -->
     <div :class="['modal', {'is-active':(showImportModal !== false)}]">
       <div class="modal-background" @click="showImportModal = false"></div>
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">How are you importing a profile?</p>
+            <p class="card-header-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</p>
+            <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
           </header>
           <div class="card-footer">
             <button class="button is-info"
@@ -178,11 +215,11 @@
                           <a class="button" @click="renameProfile()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
-                      <a class="button" @click="newProfile('Create', undefined)">Create new</a>
+                      <a class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
                     </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                      <a class="button" @click="showImportModal = true">Import</a>
+                      <a class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
                     </div>
                     <div class="level-item">
                       <a class="button is-danger" @click="removeProfile()">Delete</a>
@@ -254,10 +291,14 @@ export default class Profiles extends Vue {
     private importingProfile: boolean = false;
     private percentageImported: number = 0;
 
+    private showImportUpdateSelectionModal: boolean = false;
+    private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
     private showImportModal: boolean = false;
     private showCodeModal: boolean = false;
     private profileImportCode: string = '';
     private showFileSelectionHang: boolean = false;
+
+    private listenerId: number = 0;
 
     private renamingProfile: boolean = false;
 
@@ -327,6 +368,11 @@ export default class Profiles extends Vue {
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
+    updateProfile() {
+        this.addingProfile = false;
+        document.dispatchEvent(new CustomEvent("created-profile", {detail: this.selectedProfile}));
+    }
+
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
@@ -383,7 +429,7 @@ export default class Profiles extends Vue {
         this.$router.push({ path: '/manager' });
     }
 
-    downloadImportedProfileMods(modList: ExportMod[]) {
+    downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
         this.percentageImported = 0;
         ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.activeGame, modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
@@ -417,6 +463,9 @@ export default class Profiles extends Vue {
                     }
                 }
             };
+            if (callback !== undefined) {
+                callback();
+            }
             this.importingProfile = false;
         });
     }
@@ -470,34 +519,57 @@ export default class Profiles extends Vue {
                 );
             })
         );
+        const localListenerId = this.listenerId + 1;
+        this.listenerId = localListenerId;
         document.addEventListener('created-profile', ((event: CustomEvent) => {
-            (async () => {
-                const profileName: string = event.detail;
-                if (profileName !== '') {
-                    if (files[0].endsWith('.r2z')) {
-                        const entries = await ZipProvider.instance.getEntries(files[0]);
-                        for (const entry of entries) {
-                            if (entry.entryName.startsWith('config/')) {
-                                await ZipProvider.instance.extractEntryTo(
-                                    files[0],
-                                    entry.entryName,
-                                    path.join(
-                                        Profile.getDirectory(),
-                                        profileName,
-                                        'BepInEx'
-                                    )
-                                );
+            if (this.listenerId === localListenerId) {
+                (async () => {
+                    let profileName: string = event.detail;
+                    if (profileName !== '') {
+                        if (this.importUpdateSelection === 'UPDATE') {
+                            profileName = "_profile_update";
+                            if (await fs.exists(path.join(Profile.getDirectory(), profileName))) {
+                                await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
+                                await fs.rmdir(path.join(Profile.getDirectory(), profileName));
+                            }
+                            new Profile(profileName);
+                        }
+                        if (files[0].endsWith('.r2z')) {
+                            const entries = await ZipProvider.instance.getEntries(files[0]);
+                            for (const entry of entries) {
+                                if (entry.entryName.startsWith('config/')) {
+                                    await ZipProvider.instance.extractEntryTo(
+                                        files[0],
+                                        entry.entryName,
+                                        path.join(
+                                            Profile.getDirectory(),
+                                            profileName,
+                                            'BepInEx'
+                                        )
+                                    );
+                                }
                             }
                         }
+                        if (parsed.getMods().length > 0) {
+                            this.importingProfile = true;
+                            setTimeout(() => {
+                                this.downloadImportedProfileMods(parsed.getMods(), async () => {
+                                    if (this.importUpdateSelection === 'UPDATE') {
+                                        new Profile(event.detail);
+                                        try {
+                                            await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
+                                        } catch (e) {
+                                            console.log("Failed to empty directory:", e);
+                                        }
+                                        await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
+                                        await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
+                                    }
+                                });
+                            }, 100);
+                        }
                     }
-                    if (parsed.getMods().length > 0) {
-                        this.importingProfile = true;
-                        setTimeout(() => {
-                            this.downloadImportedProfileMods(parsed.getMods());
-                        }, 100);
-                    }
-                }
-            })();
+                })();
+            }
         }) as EventListener, {once: true});
         this.newProfile('Import', parsed.getProfileName());
     }
@@ -556,7 +628,7 @@ export default class Profiles extends Vue {
         const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
         await fs.readdir(profilesDirectory).then(dirContents => {
             dirContents.forEach(async (file: string) => {
-                if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default') {
+                if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
                     this.profileList.push(file);
                 }
             });

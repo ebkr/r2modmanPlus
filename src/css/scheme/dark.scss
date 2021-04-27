@@ -68,4 +68,10 @@ html.html--dark {
     body {
         color: var(--text);
     }
+    .is-primary {
+        background-color: #2b5cb6 !important;
+    }
+    .is-success {
+        background-color: #29a052 !important;
+    }
 }
