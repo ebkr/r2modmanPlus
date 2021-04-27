@@ -147,10 +147,10 @@ import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { ipcRenderer } from 'electron';
 import GameManager from '../model/game/GameManager';
 import ApiCacheUtils from '../utils/ApiCacheUtils';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from 'src/r2mm/manager/linux/GameDirectoryResolver';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
+import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
+import FsProvider from '../providers/generic/file/FsProvider';
+import PathResolver from '../r2mm/manager/PathResolver';
 
 @Component({
     components: {

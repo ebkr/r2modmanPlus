@@ -17,7 +17,7 @@
 </template>
 
 <script lang='ts'>
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import PathResolver from '../r2mm/manager/PathResolver';
 import { Vue, Component } from 'vue-property-decorator';
 import { Hero } from '../components/all';
 import GameManager from '../model/game/GameManager';
