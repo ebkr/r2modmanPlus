@@ -1045,6 +1045,7 @@
 				// this.localModList = newModList;
 			} else {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
+                this.$emit('error', newModList);
 			}
 			this.sortThunderstoreModList();
 

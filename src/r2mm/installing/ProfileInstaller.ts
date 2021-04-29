@@ -63,12 +63,11 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 }
             } catch(e) {
                 const err: Error = e;
-                const returnErr = new FileWriteError(
+                return new FileWriteError(
                     'Failed to delete BepInEx file from profile root',
                     err.message,
                     'Is the game still running?'
                 );
-                return Promise.reject(returnErr);
             }
         }
         const bepInExLocation: string = path.join(profile.getPathOfProfile(), 'BepInEx');
@@ -87,12 +86,11 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 }
             } catch (e) {
                 const err: Error = e;
-                const returnErr = new R2Error(
+                return new R2Error(
                     "Failed to remove files",
                     err.message,
                     'Is the game still running? If so, close it and try again.'
                 );
-                return Promise.reject(returnErr);
             }
         }
         return Promise.resolve(null);
