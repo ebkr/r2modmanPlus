@@ -55,16 +55,11 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             return settings.getContext().gameSpecific.gameDirectory!;
         }
         try {
-            const queryResult: string = (await child.exec(`powershell.exe "${steamInstallDirectoryQuery}"`)).toString().trim();
-            const installKeyValue = queryResult.split('\n')[0].trim();
-            // Remove key (InstallPath) from string
-            const installValue = installKeyValue.substr(('InstallPath').length)
-                .trim()
-                // Remove colon
-                .substr(1)
-                .trim();
-            const dir = await this.findSteamAppManifest(installValue, game);
-            return dir;
+            const steamDir = await this.getSteamDirectory();
+            if (steamDir instanceof R2Error) {
+                return steamDir;
+            }
+            return await this.findSteamAppManifest(steamDir, game);
         } catch(e) {
             const err: Error = e;
             return new R2Error(
@@ -79,21 +74,26 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const steamapps = path.join(steamPath, 'steamapps');
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
+        console.log("Looking for libraryfolders.vdf in", steamapps);
         // Find all locations where games can be installed.
         try {
             const files = await fs.readdir(steamapps);
             for (const file of files) {
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
+                    console.log("Located libraryfolders.vdf");
                     try {
                         const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
+                        console.log("Parsed vdf");
                         for (const key in parsedVdf.LibraryFolders) {
                             if (!isNaN(Number(key))) {
+                                console.log("Adding additional location:", parsedVdf.LibraryFolders[key])
                                 locations.push(
                                     path.join(parsedVdf.LibraryFolders[key], 'steamapps')
                                 );
                             }
                         }
                     } catch(e) {
+                        console.log("Error locating/parsing vdf:", e);
                         const err: Error = e;
                         // Need to throw when inside forEach.
                         throw new VdfParseError(
@@ -105,6 +105,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 }
             }
         } catch(e) {
+            console.log("Error over libraryfolders.vdf", e);
             if (e instanceof R2Error) {
                 return e;
             }
@@ -117,16 +118,19 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         // Look through given directories for ${appManifest}
         let manifestLocation: string | null = null;
+        console.log("Exploring manifest locations");
         try {
             for (const location of locations) {
                 (await fs.readdir(location))
                     .forEach((file: string) => {
                         if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
+                            console.log("Found manifest:", location);
                             manifestLocation = location;
                         }
                     });
             }
         } catch(e) {
+            console.log("Error locating manifests:", e);
             if (e instanceof R2Error) {
                 return e;
             }
@@ -138,6 +142,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             )
         }
         if (manifestLocation === null) {
+            console.log("No matching appmanifest found");
             return new FileNotFoundError(
                 `Unable to locate ${game.displayName} Installation Directory`,
                 `Searched locations: ${locations}`,
@@ -146,13 +151,19 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         // Game manifest found at ${manifestLocation}
         try {
+            console.log("Manifest selected at:", manifestLocation);
             const manifestVdf: string = (await fs.readFile(path.join(manifestLocation, `appmanifest_${game.activePlatform.storeIdentifier}.acf`))).toString();
+            console.log("Read manifest file");
             const parsedVdf: any = vdf.parse(manifestVdf);
+            console.log("Parsed vdf");
             const folderName = parsedVdf.AppState.installdir;
+            console.log("Folder name:", folderName);
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
             if (await fs.exists(riskOfRain2Path)) {
+                console.log("Found game directory:", riskOfRain2Path);
                 return riskOfRain2Path;
             } else {
+                console.log("Path not found:", riskOfRain2Path);
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,
                     `Failed to find directory: ${riskOfRain2Path}`,
@@ -160,6 +171,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 )
             }
         } catch(e) {
+            console.log("Final error:", e);
             const err: Error = e;
             return new R2Error(
                 `An error occurred whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
