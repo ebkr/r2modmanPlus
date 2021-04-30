@@ -18,6 +18,8 @@ import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
+import { BEPINEX_VARIANTS } from '../installing/ProfileInstaller';
+import GameManager from '../../model/game/GameManager';
 
 export default class ProfileModList {
 
@@ -34,16 +36,27 @@ export default class ProfileModList {
         }
         try {
             try {
-                return await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))
-                    .then(value => value.toString())
-                    .then(value => {
-                        return yaml.parse(value)
-                            .map((mod: ManifestV2) => new ManifestV2().fromReactive(mod))
-                            .map((mod: ManifestV2) => {
-                                mod.setIcon(path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"));
-                                return mod;
-                            });
-                    });
+                const value = yaml.parse((await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))).toString());
+                for(let modIndex in value){
+                    const mod = new ManifestV2().fromReactive(value[modIndex]);
+                    const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
+                    let iconPath;
+                    if (
+                        BEPINEX_VARIANTS[GameManager.activeGame.internalFolderName]
+                            .find(x => x.packageName === mod.getName()) !== undefined
+                    ) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
+                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png");
+                    else
+                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png");
+
+                    if (await fs.exists(iconPath))
+                        mod.setIcon(iconPath);
+                    else
+                        mod.setIcon(fallbackPath);
+
+                    value[modIndex] = mod;
+                }
+                return value;
             } catch(e) {
                 const err: Error = e;
                 return new YamlParseError(

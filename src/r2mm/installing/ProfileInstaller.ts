@@ -24,7 +24,7 @@ const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
  * Mapping is:
  * game's InternalFolderName: Mapping
  */
-const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
+export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     RiskOfRain2: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
     DysonSphereProgram: [new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack")],
     Valheim: [
@@ -296,7 +296,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 await fs.copyFile(file, path.join(profile.getPathOfProfile(), path.basename(file)));
             } catch(e) {
                 const err: Error = e;
-                new FileWriteError(
+                return new FileWriteError(
                     `Failed to copy file for BepInEx installation: ${file}`,
                     err.message,
                     `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
@@ -311,12 +311,25 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 );
             } catch(e) {
                 const err: Error = e;
-                new FileWriteError(
+                return new FileWriteError(
                     `Failed to copy folder for BepInEx installation: ${directory.getDirectoryName()}`,
                     err.message,
                     `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
                 );
             }
+        }
+        try {
+            await fs.copyFile(
+                path.join(bieLocation, "icon.png"),
+                path.join(profile.getPathOfProfile(), "BepInEx", "core", "icon.png")
+            );
+        }catch(e) {
+            const err: Error = e;
+            return new FileWriteError(
+                `Failed to copy icon asset for BepInEx installation`,
+                err.message,
+                `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
+            );
         }
         return Promise.resolve(null);
     }
