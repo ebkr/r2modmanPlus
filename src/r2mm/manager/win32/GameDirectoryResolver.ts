@@ -34,9 +34,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 }
             });
             if (installValue.trim().length === 0) {
-                const err = new Error();
-                err.message = queryResult;
-                throw err;
+                throw new Error(queryResult);
             }
             return installValue;
         } catch(e) {
