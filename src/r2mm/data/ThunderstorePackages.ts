@@ -3,7 +3,7 @@ import axios from 'axios';
 import Game from '../../model/game/Game';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import ApiResponse from '../../model/api/ApiResponse';
-import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
+import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 
 export default class ThunderstorePackages {
 
