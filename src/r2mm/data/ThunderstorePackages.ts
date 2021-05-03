@@ -32,10 +32,7 @@ export default class ThunderstorePackages {
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to update exclusions: ${e.message}`);
         }
         return axios.get(game.thunderstoreUrl, {
-            timeout: 30000,
-            headers: {
-                'Cache-Control': 'no-cache'
-            }
+            timeout: 30000
         })
             .then(value => {
                 this.handlePackageApiResponse(value);
