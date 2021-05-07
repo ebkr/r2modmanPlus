@@ -534,26 +534,26 @@ export default class Profiles extends Vue {
                             }
                             new Profile(profileName);
                         }
-                        if (files[0].endsWith('.r2z')) {
-                            const entries = await ZipProvider.instance.getEntries(files[0]);
-                            for (const entry of entries) {
-                                if (entry.entryName.startsWith('config/')) {
-                                    await ZipProvider.instance.extractEntryTo(
-                                        files[0],
-                                        entry.entryName,
-                                        path.join(
-                                            Profile.getDirectory(),
-                                            profileName,
-                                            'BepInEx'
-                                        )
-                                    );
-                                }
-                            }
-                        }
                         if (parsed.getMods().length > 0) {
                             this.importingProfile = true;
                             setTimeout(() => {
                                 this.downloadImportedProfileMods(parsed.getMods(), async () => {
+                                    if (files[0].endsWith('.r2z')) {
+                                        const entries = await ZipProvider.instance.getEntries(files[0]);
+                                        for (const entry of entries) {
+                                            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
+                                                await ZipProvider.instance.extractEntryTo(
+                                                    files[0],
+                                                    entry.entryName,
+                                                    path.join(
+                                                        Profile.getDirectory(),
+                                                        profileName,
+                                                        'BepInEx'
+                                                    )
+                                                );
+                                            }
+                                        }
+                                    }
                                     if (this.importUpdateSelection === 'UPDATE') {
                                         new Profile(event.detail);
                                         try {
