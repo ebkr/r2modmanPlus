@@ -33,7 +33,7 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     ],
     GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")],
     Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")],
-    TaleSpire: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")]
+    TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")]
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
