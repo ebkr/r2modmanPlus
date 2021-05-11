@@ -272,18 +272,20 @@
 						</div>
 					</div>
 				</div>
-				<div v-show="view === 'installed'">
+				<div v-show="view === 'installed'" class="relative-position full-height--minus-em">
 					<template>
-						<div class='fixed-center text-center' v-if="localModList.length === 0">
-							<div>
-								<i class="fas fa-exclamation fa-5x"></i>
-							</div>
-							<br/>
-							<h3 class='title is-4'>Looks like you don't have any mods installed</h3>
-							<h4 class='subtitle is-5'>Click the Online tab on the left, or click <a
-									@click="view = 'online'"
-							>here</a>.
-							</h4>
+						<div class='absolute-center text-center top' v-if="localModList.length === 0">
+                            <div class="margin-right">
+                                <div>
+                                    <i class="fas fa-exclamation fa-5x"></i>
+                                </div>
+                                <br/>
+                                <h3 class='title is-4'>Looks like you don't have any mods installed</h3>
+                                <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a
+                                        @click="view = 'online'"
+                                >here</a>.
+                                </h4>
+                            </div>
 						</div>
 						<template v-if="localModList.length > 0">
 							<LocalModList
