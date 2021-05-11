@@ -70,6 +70,7 @@ The only thing you have to consider when suggesting a feature is the impact it w
 ## Changelog
 ### 3.1.14
 - New modding community TaleSpire has joined the scene.
+- When importing mods that have their own configs, the imported config is now used as expected.
 
 ### 3.1.13
 - Directory resolution should work as intended for more users.
