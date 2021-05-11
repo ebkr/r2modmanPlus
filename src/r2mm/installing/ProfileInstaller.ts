@@ -32,7 +32,8 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
         new BepInExPackageMapping("1F31A-BepInEx_Valheim_Full", "BepInEx_Valheim_Full"),
     ],
     GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")],
-    Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")]
+    Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")],
+    TaleSpire: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")]
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
