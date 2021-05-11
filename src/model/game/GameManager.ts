@@ -34,7 +34,13 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
-            ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE)
+            ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE),
+
+        new Game('TaleSpire', 'TaleSpire',
+            'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
+            'https://talespire.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "720620")], "TaleSpire.jpg", GameSelectionDisplayMode.VISIBLE),
+
     ];
 
     static get activeGame(): Game {
