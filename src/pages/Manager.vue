@@ -272,7 +272,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-show="view === 'installed'" class="relative-position full-height--minus-em">
+				<div v-show="view === 'installed'">
 					<template>
 						<div class='absolute-center text-center top' v-if="localModList.length === 0">
                             <div class="margin-right">
