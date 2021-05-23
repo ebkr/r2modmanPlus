@@ -69,6 +69,12 @@
                     </li>
                 </ul>
                 <slot></slot>
+                <ul class='menu-list'>
+                    <li>
+                        <a href="#" data-ref="back" @click="emitClick($event.target)">
+                            <i class="fas fa-backward icon--margin-right"/>Back</a>
+                    </li>
+                </ul>
             </aside>
         </div>
     </div>

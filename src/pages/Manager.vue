@@ -213,6 +213,7 @@
                                 @clicked-settings="view = 'settings'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
+                                @clicked-back="$router.go(-1)"
                                 @error="showError($event)"
                 />
 			</div>
