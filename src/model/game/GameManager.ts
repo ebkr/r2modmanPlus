@@ -27,6 +27,7 @@ export default class GameManager {
             'GTFO', ['GTFO.exe'], 'GTFO_Data',
             'https://gtfo.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, "493520")], "GTFO.jpg", GameSelectionDisplayMode.VISIBLE),
+
         new Game('Outward', 'Outward',
             'Outward', ['Outward.exe'], 'Outward_Data',
             'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
@@ -40,6 +41,11 @@ export default class GameManager {
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
             'https://talespire.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, "720620")], "TaleSpire.jpg", GameSelectionDisplayMode.VISIBLE),
+
+        new Game("H3VR", "H3VR",
+            "H3VR", ["h3vr.exe"], "h3vr_Data",
+            "https://h3vr.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "450540")], "H3VR.png", GameSelectionDisplayMode.VISIBLE)
 
     ];
 
