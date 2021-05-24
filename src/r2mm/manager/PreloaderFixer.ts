@@ -24,7 +24,7 @@ export default class PreloaderFixer {
             return dirResult;
 
         let exeFound = false;
-        for(let exeName in game.exeName) {
+        for(let exeName of game.exeName) {
             if (await fs.exists(path.join(dirResult, exeName))) {
                 exeFound = true;
                 break;
