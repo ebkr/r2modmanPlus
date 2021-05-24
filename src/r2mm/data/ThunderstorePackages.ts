@@ -17,10 +17,7 @@ export default class ThunderstorePackages {
     public static async update(game: Game): Promise<any> {
         try {
             await axios.get(game.exclusionsUrl, {
-                timeout: 30000,
-                headers: {
-                    'Cache-Control': 'no-cache'
-                }
+                timeout: 30000
             }).then(response => {
                 const exclusionMap = new Map<string, boolean>();
                 response.data.split('\n').forEach((exclude: string) => {
