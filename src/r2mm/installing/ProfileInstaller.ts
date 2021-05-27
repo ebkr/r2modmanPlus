@@ -34,7 +34,8 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")],
     Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")],
     TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")],
-    H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")]
+    H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")],
+    ThunderstoreBeta: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
