@@ -1,7 +1,7 @@
 import { StorePlatform } from '../../model/game/StorePlatform';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
-import { GameInstanceType } from 'src/model/game/GameInstanceType';
+import { GameInstanceType } from '../../model/game/GameInstanceType';
 
 export default class Game {
 
