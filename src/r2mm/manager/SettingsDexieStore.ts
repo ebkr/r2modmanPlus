@@ -27,16 +27,16 @@ export default class SettingsDexieStore extends Dexie {
 
         GameManager.gameList
             .forEach(value => {
-                store[value.internalFolderName] = `++id,settings`;
+                store[value.settingsIdentifier] = `++id,settings`;
             });
 
         // Add all games to store. Borked v2-3 locally
         // Increment per game or change to settings.
-        this.version(9).stores(store);
+        this.version(11).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");
-        this.gameSpecific = this.table(game.internalFolderName);
+        this.gameSpecific = this.table(game.settingsIdentifier);
     }
 
     public async getLatestGlobal(): Promise<ManagerSettingsInterfaceGlobal_V2> {
