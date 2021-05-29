@@ -10,6 +10,7 @@ import EGSDirectoryResolver from '../../../generic/game/directory_resolver/win/E
 import DRMFreeDirectoryResolver from '../../../generic/game/directory_resolver/win/DRMFreeDirectoryResolver';
 import DirectExecutableGameRunnerProvider
     from '../../../generic/game/steam/win32/DirectExecutableGameRunnerProvider';
+import EgsRunnerProvider from 'src/providers/generic/game/steam/win32/EgsRunnerProvider';
 
 const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvider}} = {
     [StorePlatform.STEAM]: {
@@ -17,8 +18,8 @@ const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvid
         "linux": new GameRunnerProviderImpl_Steam_Linux()
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new DirectExecutableGameRunnerProvider(),
-        "linux": new DirectExecutableGameRunnerProvider(),
+        "win32": new EgsRunnerProvider(),
+        "linux": new EgsRunnerProvider(),
     },
     [StorePlatform.OTHER]: {
         "win32": new DirectExecutableGameRunnerProvider(),

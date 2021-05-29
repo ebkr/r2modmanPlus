@@ -35,7 +35,7 @@ export default class DirectExecutableGameRunnerProvider extends GameRunnerProvid
         }
     }
 
-    async startVanilla(game: Game): Promise<void | R2Error> {
+    async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
         return this.start(game, `--doorstop-enable false`);
     }

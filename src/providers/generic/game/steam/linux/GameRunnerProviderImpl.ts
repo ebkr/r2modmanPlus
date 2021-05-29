@@ -62,7 +62,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         return this.start(game, `${target} ${extraArguments}`);
     }
 
-    public startVanilla(game: Game): Promise<void | R2Error> {
+    public startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
         return this.start(game, '--doorstop-enable false');
     }
