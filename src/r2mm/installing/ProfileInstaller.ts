@@ -16,7 +16,7 @@ import BepInExPackageMapping from '../../model/installing/BepInExPackageMapping'
 import GameManager from '../../model/game/GameManager';
 let fs: FsProvider;
 
-const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
+const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod", ".h3mod", ".deli"];
 
 /**
  * Used to record which package to handle based on the current game.
