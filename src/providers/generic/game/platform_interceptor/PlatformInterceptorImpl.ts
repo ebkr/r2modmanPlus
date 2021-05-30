@@ -5,12 +5,11 @@ import GameRunnerProviderImpl_Steam_Linux from '../steam/linux/GameRunnerProvide
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
 import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linux/GameDirectoryResolver';
-import PlatformInterceptorProvider from '../../../generic/game/platform_interceptor/PlatformInterceptorProvider';
-import EGSDirectoryResolver from '../../../generic/game/directory_resolver/win/EGSDirectoryResolver';
-import DRMFreeDirectoryResolver from '../../../generic/game/directory_resolver/win/DRMFreeDirectoryResolver';
-import DirectExecutableGameRunnerProvider
-    from '../../../generic/game/steam/win32/DirectExecutableGameRunnerProvider';
-import EgsRunnerProvider from 'src/providers/generic/game/steam/win32/EgsRunnerProvider';
+import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
+import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
+import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
+import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
+import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 
 const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvider}} = {
     [StorePlatform.STEAM]: {

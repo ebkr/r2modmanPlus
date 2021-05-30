@@ -102,6 +102,7 @@ export default class EgsRunnerProvider extends GameRunnerProvider {
                 return new R2Error("Couldn't copy doorstop_config.ini to game directory", err.message, null);
             }
         }
+        // @ts-ignore
         await shell.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`);
     }
 
