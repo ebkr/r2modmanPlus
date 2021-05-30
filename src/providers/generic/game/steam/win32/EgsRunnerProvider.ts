@@ -1,12 +1,12 @@
-import GameRunnerProvider from '../../../../../providers/generic/game/GameRunnerProvider';
+import GameRunnerProvider from '../../GameRunnerProvider';
 import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
 import R2Error from '../../../../../model/errors/R2Error';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import FsProvider from '../../../../generic/file/FsProvider';
 import * as path from 'path';
-import BepInExConfigUtils from 'src/utils/BepInExConfigUtils';
-import ConfigLine from 'src/model/file/ConfigLine';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import BepInExConfigUtils from '../../../../../utils/BepInExConfigUtils';
+import ConfigLine from '../../../../../model/file/ConfigLine';
+import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
 import { shell } from 'electron';
 
 export default class EgsRunnerProvider extends GameRunnerProvider {
