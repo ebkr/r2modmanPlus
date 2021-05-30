@@ -65,6 +65,7 @@
     import ConfigFile from '../../model/file/ConfigFile';
     import Hero from '../Hero.vue';
     import QuillEditor from '../QuillEditor.vue';
+    import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 
     @Component({
         components: { Hero, QuillEditor }
@@ -80,38 +81,11 @@
 
         async created() {
             const fs = FsProvider.instance;
-            this.fileText =  (await fs.readFile(this.configFile.getPath())).toString();
+            this.fileText = (await fs.readFile(this.configFile.getPath())).toString();
             if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
-                // Find all variables offered within config script.
-                this.dumpedConfigVariables = {};
-                let section = 'root';
-                let comments: string[] = [];
-                const allowedValues: Set<String> = new Set();
-                this.fileText.split('\n').forEach((line: string) => {
-                    if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
-                        section = line.trim().substring(1, line.trim().length - 1);
-                        this.dumpedConfigVariables[section] = {};
-                        comments = [];
-                    } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
-                        const sides = line.split('=');
-                        const rightSide = sides.splice(1).join("=");
-                        if (comments.find(value => value.trim().startsWith("# Setting type: Boolean"))) {
-                            if (allowedValues.size === 0) {
-                                allowedValues.add("true");
-                                allowedValues.add("false");
-                            }
-                        }
-                        const finalAcceptableValues: string[] = [];
-                        allowedValues.forEach(value => {
-                            finalAcceptableValues.push(value.toString());
-                        })
-                        this.dumpedConfigVariables[section][sides[0].trim()] = new ConfigLine(rightSide.trim(), comments, finalAcceptableValues);
-                        comments = [];
-                        allowedValues.clear();
-                    } else if (line.trim().startsWith('#')) {
-                        comments.push(line.trim());
-                    }
-                });
+                const config = await BepInExConfigUtils.getBepInExConfigBreakdown(this.configFile.getPath());
+                console.log(config);
+                this.dumpedConfigVariables = config;
             }
             window.scrollTo(0, 0);
         }
@@ -125,21 +99,7 @@
         }
 
         async saveCfg() {
-            const fs = FsProvider.instance;
-            let builtString = '';
-            let section = 'root';
-            this.fileText.split('\n').forEach((line: string) => {
-                if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
-                    section = line.trim().substring(1, line.trim().length - 1);
-                    builtString += line + '\n';
-                } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
-                    const sides = line.split('=');
-                    builtString += `${sides[0].trim()} = ${this.dumpedConfigVariables[section][sides[0].trim()].value}\n`;
-                } else {
-                    builtString += line + '\n';
-                }
-            });
-            await fs.writeFile(this.configFile.getPath(), builtString.trim());
+            await BepInExConfigUtils.updateBepInExConfigFile(this.configFile.getPath(), this.fileText, this.dumpedConfigVariables);
             window.scrollTo(0, 0);
             this.$emit("changed");
         }
