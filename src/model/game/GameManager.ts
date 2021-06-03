@@ -70,6 +70,12 @@ export default class GameManager {
             "H3VR", ["h3vr.exe"], "h3vr_Data",
             "https://h3vr.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "450540")], "H3VR.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME),
+
+        new Game("ROUNDS", "ROUNDS", "ROUND",
+            "ROUNDS", ["Rounds.exe"], "Rounds_Data",
+            "https://rounds.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1557740")], "ROUNDS.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME)
 
     ];

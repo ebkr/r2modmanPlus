@@ -197,6 +197,8 @@
             </template>
         </modal>
 
+        <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false"/>
+
         <DownloadModModal
             :show-download-modal="showUpdateAllModal"
             :update-all-mods="true"
@@ -365,9 +367,11 @@
     import GameManager from '../model/game/GameManager';
     import Game from '../model/game/Game';
     import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+    import LocalFileImportModal from 'components/importing/LocalFileImportModal.vue';
 
 	@Component({
 		components: {
+            LocalFileImportModal,
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
@@ -422,6 +426,8 @@
         filterCategories: string[] = [];
         categoryFilterMode: string = CategoryFilterMode.OR;
         allowNsfw: boolean = false;
+
+        importingLocalMod: boolean = false;
 
         doorstopTarget: string = "";
 
@@ -986,7 +992,8 @@
                     this.changeProfile();
                     break;
                 case "ImportLocalMod":
-                    this.installLocalMod();
+                    // this.installLocalMod();
+                    this.importingLocalMod = true;
                     break;
                 case "ExportFile":
                     this.exportProfile();
