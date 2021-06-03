@@ -10,7 +10,7 @@ import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryRe
 import LinuxGameDirectoryResolver from '../../../../../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../../../file/FsProvider';
 import Game from '../../../../../model/game/Game';
-import { GameInstanceType } from 'src/model/game/GameInstanceType';
+import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
 
 const exec = promisify(execCallback);
 
