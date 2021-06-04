@@ -10,6 +10,7 @@ import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryRe
 import LinuxGameDirectoryResolver from '../../../../../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../../../file/FsProvider';
 import Game from '../../../../../model/game/Game';
+import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
 
 const exec = promisify(execCallback);
 
@@ -51,7 +52,11 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 const err: Error = e;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
-            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}" --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
+            if (game.instanceType === GameInstanceType.SERVER) {
+                extraArguments += ` --server`;
+            }
+            extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
         }
 
         const target = await this.getGameArguments(game, Profile.getActiveProfile());
@@ -64,7 +69,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     public startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start(game, '--doorstop-enable false');
+        return this.start(game, '--server --doorstop-enable false');
     }
 
     private async start(game: Game, cmdargs: string): Promise<void | R2Error> {
