@@ -72,7 +72,7 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "450540")], "H3VR.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME),
 
-        new Game("ROUNDS", "ROUNDS", "ROUND",
+        new Game("ROUNDS", "ROUNDS", "ROUNDS",
             "ROUNDS", ["Rounds.exe"], "Rounds_Data",
             "https://rounds.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1557740")], "ROUNDS.png",
