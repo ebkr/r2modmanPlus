@@ -290,7 +290,15 @@ export default class Splash extends Vue {
         console.log(`Ensuring Linux wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')}`);
         try {
             await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+            const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')));
+            const newBuf = (await FsProvider.instance.readFile(path.join(__statics, 'linux_wrapper.sh')));
+            if (!oldBuf.equals(newBuf)) {
+                throw new Error("Outdated buffer");
+            }
         } catch (_) {
+            if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+                await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+            }
             await FsProvider.instance.copyFile(path.join(__statics, 'linux_wrapper.sh'), path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
             await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'), 0o755);
         }

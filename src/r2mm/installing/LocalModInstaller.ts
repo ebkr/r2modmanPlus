@@ -9,6 +9,7 @@ import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import Profile from '../../model/Profile';
+import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
@@ -23,6 +24,9 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                     return mod;
                 }
                 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+                if (await FsProvider.instance.exists(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()))) {
+                    await FileUtils.emptyDirectory(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()));
+                }
                 await ZipExtract.extractOnly(
                     zipFile,
                     path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),

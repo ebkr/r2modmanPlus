@@ -50,6 +50,18 @@
                                 <i class="button fas fa-list" @click="toggleViewMode"></i>
                             </div>
                         </nav>
+                        <div class="level">
+                            <div class="level-item">
+                                <div class="tabs">
+                                    <ul class="text-center">
+                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
+                                            :class="[{'is-active': activeTab === key}]">
+                                            <a @click="changeTab(key)">{{key}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="container" v-else-if="viewMode === 'List'">
                         <nav class="level">
@@ -77,14 +89,25 @@
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
                             </div>
                         </nav>
+                        <div class="level">
+                            <div class="level-item">
+                                <div class="tabs">
+                                    <ul class="text-center">
+                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
+                                            :class="[{'is-active': activeTab === key}]">
+                                            <a @click="changeTab(key)">{{key}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
                             <div class="content pad--sides" v-if="viewMode === 'Card'">
-                                <br/>
-
+                                <h1 class="title is-4">{{ activeTab }}s</h1>
                                 <div>
                                     <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
@@ -95,12 +118,12 @@
                                                         <div class="absolute-full z-fab flex">
                                                             <div class="card-action-overlay rounded">
                                                                 <div class="absolute-top card-header-title">
-                                                                    <p class="text-left title is-5">{{ game.displayName }}</p>
+                                                                    <p class="text-left title is-5 has-text-white">{{ game.displayName }}</p>
                                                                 </div>
                                                                 <div class="absolute-top-right card-header-title">
                                                                     <p class="text-left title is-5">
-                                                                        <a :id="`${game.internalFolderName}-star`" href="#" @click.prevent="toggleFavourite(game)">
-                                                                            <i class="fas fa-star text-warning" v-if="favourites.includes(game.internalFolderName)"></i>
+                                                                        <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="toggleFavourite(game)">
+                                                                            <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
                                                                             <i class="far fa-star" v-else></i>
                                                                         </a>
                                                                     </p>
@@ -132,8 +155,8 @@
                                                 <p
                                                     :class="['card-header-title', {'has-text-info':selectedGame === game}]"
                                                 >
-                                                    <a :id="`${game.internalFolderName}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
-                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.internalFolderName)"></i>
+                                                    <a :id="`${game.settingsIdentifier}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
+                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
                                                         <i class="far fa-star" v-else></i>
                                                     </a>
                                                     {{ game.displayName }}
@@ -170,6 +193,7 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
+import { GameInstanceType } from '../model/game/GameInstanceType';
 
 @Component({
     components: {
@@ -188,26 +212,40 @@ export default class GameSelectionScreen extends Vue {
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
+    private activeTab = GameInstanceType.GAME;
+
+    get gameInstanceTypes(): string[] {
+        return Object.values(GameInstanceType);
+    }
 
     get filteredGameList() {
         return this.gameList
             .filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0)
-            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE);
+            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
+            .filter(value => value.instanceType === this.activeTab);
     }
 
     get gameList(): Game[] {
         return GameManager.gameList.sort((a, b) => {
-            if (this.favourites.includes(a.internalFolderName)) {
-                if (this.favourites.includes(b.internalFolderName)) {
+            if (this.favourites.includes(a.settingsIdentifier)) {
+                if (this.favourites.includes(b.settingsIdentifier)) {
                     return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
                 } else {
                     return -1;
                 }
-            } else if (this.favourites.includes(b.internalFolderName)) {
+            } else if (this.favourites.includes(b.settingsIdentifier)) {
                 return 1;
             }
             return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
         });
+    }
+
+    private changeTab(key: string) {
+        for (const objKey of Object.keys(GameInstanceType)) {
+            if ((GameInstanceType as any)[objKey] === key) {
+                this.activeTab = (GameInstanceType as any)[objKey];
+            }
+        }
     }
 
     private selectGame(game: Game) {
@@ -301,10 +339,10 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private toggleFavourite(game: Game) {
-        if (this.favourites.includes(game.internalFolderName)) {
-            this.favourites = this.favourites.filter(value => value !== game.internalFolderName)
+        if (this.favourites.includes(game.settingsIdentifier)) {
+            this.favourites = this.favourites.filter(value => value !== game.settingsIdentifier)
         } else {
-            this.favourites = [...this.favourites, game.internalFolderName];
+            this.favourites = [...this.favourites, game.settingsIdentifier];
         }
         if (this.settings !== undefined) {
             this.settings.setFavouriteGames(this.favourites);
@@ -313,7 +351,7 @@ export default class GameSelectionScreen extends Vue {
 
     isFavourited(game: Game) {
         if (this.settings !== undefined) {
-            return this.favourites.includes(game.internalFolderName);
+            return this.favourites.includes(game.settingsIdentifier);
         }
     }
 

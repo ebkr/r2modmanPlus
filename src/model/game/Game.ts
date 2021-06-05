@@ -1,12 +1,14 @@
 import { StorePlatform } from '../../model/game/StorePlatform';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
+import { GameInstanceType } from '../../model/game/GameInstanceType';
 
 export default class Game {
 
     private readonly _displayName: string;
     private readonly _internalFolderName: string;
     private readonly _steamFolderName: string;
+    private readonly _settingsIdentifier: string;
     private readonly _exeName: string[];
     private readonly _dataFolderName: string;
     private readonly _thunderstoreUrl: string;
@@ -14,16 +16,18 @@ export default class Game {
     private readonly _storePlatformMetadata: StorePlatformMetadata[];
     private readonly _gameImage: string;
     private readonly _displayMode: GameSelectionDisplayMode;
+    private readonly _instanceType: GameInstanceType;
 
     private _activePlatform: StorePlatformMetadata;
 
-    constructor(displayName: string, internalFolderName: string,
+    constructor(displayName: string, internalFolderName: string, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
-                displayMode: GameSelectionDisplayMode) {
+                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType) {
 
         this._displayName = displayName;
         this._internalFolderName = internalFolderName;
+        this._settingsIdentifier = settingsIdentifier;
         this._steamFolderName = steamFolderName;
         this._exeName = exeName;
         this._dataFolderName = dataFolderName;
@@ -33,6 +37,7 @@ export default class Game {
         this._activePlatform = platforms[0];
         this._gameImage = gameImage;
         this._displayMode = displayMode;
+        this._instanceType = instanceType;
     }
 
     get displayName(): string {
@@ -45,6 +50,10 @@ export default class Game {
 
     get steamFolderName(): string {
         return this._steamFolderName;
+    }
+
+    get settingsIdentifier(): string {
+        return this._settingsIdentifier;
     }
 
     get exeName(): string[] {
@@ -81,5 +90,9 @@ export default class Game {
 
     get displayMode(): GameSelectionDisplayMode {
         return this._displayMode;
+    }
+
+    get instanceType(): GameInstanceType {
+        return this._instanceType;
     }
 }

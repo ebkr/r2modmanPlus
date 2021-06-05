@@ -176,7 +176,7 @@
             await this.prepareLaunch();
             if (!((await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame)) instanceof R2Error) && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
                 this.gameRunning = true;
-                GameRunnerProvider.instance.startVanilla(this.activeGame).then(value => {
+                GameRunnerProvider.instance.startVanilla(this.activeGame, this.contextProfile!).then(value => {
                     if (value instanceof R2Error) {
                         this.$emit("error", value);
                     }

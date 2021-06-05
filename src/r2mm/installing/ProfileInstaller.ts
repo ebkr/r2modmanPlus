@@ -16,7 +16,7 @@ import BepInExPackageMapping from '../../model/installing/BepInExPackageMapping'
 import GameManager from '../../model/game/GameManager';
 let fs: FsProvider;
 
-const modModeExtensions: string[] = [".dll", ".language", 'skin.cfg'];
+const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod", ".h3mod", ".deli"];
 
 /**
  * Used to record which package to handle based on the current game.
@@ -33,7 +33,9 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     ],
     GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")],
     Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")],
-    TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")]
+    TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")],
+    H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")],
+    ThunderstoreBeta: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {
@@ -200,7 +202,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
     }
 
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null> {
-        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML'];
+        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
         if (matchingEndFolderName !== undefined) {

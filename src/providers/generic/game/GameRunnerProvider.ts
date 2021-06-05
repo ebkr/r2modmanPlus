@@ -18,7 +18,7 @@ export default abstract class GameRunnerProvider {
     }
 
     public abstract startModded(game: Game, profile: Profile): Promise<void | R2Error>;
-    public abstract startVanilla(game: Game): Promise<void | R2Error>;
+    public abstract startVanilla(game: Game, profile: Profile): Promise<void | R2Error>;
     public abstract getGameArguments(game: Game, profile: Profile): Promise<string | R2Error>;
 
 }

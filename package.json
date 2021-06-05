@@ -1,6 +1,6 @@
 {
     "name": "r2modman",
-    "version": "3.1.14",
+    "version": "3.1.15",
     "description": "A simple and easy to use mod manager for Risk of Rain 2, Dyson Sphere Program and Valheim.",
     "productName": "r2modman",
     "author": "ebkr",
@@ -16,7 +16,7 @@
     "dependencies": {
         "@node-steam/vdf": "^2.1.0",
         "@quasar/extras": "^1.0.0",
-        "adm-zip": "^0.4.16",
+        "adm-zip": "^0.5.5",
         "async-lock": "^1.2.6",
         "axios": "^0.21.1",
         "bulma": "^0.8.0",
