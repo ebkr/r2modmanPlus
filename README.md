@@ -68,6 +68,14 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.15
+- Added support for H3VR.
+- Dedicated servers for Risk of Rain 2 and Valheim are now supported.
+    - Note that on Linux, Valheim Dedicated Server is unable to be launched vanilla and will require parameters to be removed if required (Steam issue).
+- Fixed Outward EGS authentication issue.
+- Preloader fix now works as expected.
+- Navigation no hides when scrolling (Thanks @MSchmoecker).
+
 ### 3.1.14
 - New modding community TaleSpire has joined the scene.
 - When importing mods that have their own configs, the imported config is now used as expected.
@@ -77,22 +85,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - The settings tabs and search now stay visible when scrolling down the page.
 - Mods excluded from the manager are now updated without restarting the manager.
 - Visible errors are now also written to the local log file.
-
-### 3.1.12
-- Fixed issue causing mod list to not use refreshed cache on initial launch.
-- Profiles can now be updated using codes and files without having to export/delete/re-import.
-- Increased timeout to 30s for slower connections.
-- Minor visual tweaks and fixes.
-
-### 3.1.11
-- Added Outward support.
-- Update all can now be accessed without going to the Settings screen.
-- Fixed several settings.
-- Config editor allows editing of JSON/TXT files again.
-- API requests are now cached, allowing usage when the API is inaccessible.
-  - Knowing if the API is down is currently only accessible from the "Refresh online mod list" setting. This will be fixed in a later update.
-- Valheim BepInEx can now use the native version of the game.
-- Other minor fixes.
 
 ## Screenshots
 
