@@ -1,6 +1,6 @@
 <template>
     <div>
-        <modal v-show="showPlatformModal === true" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
+        <modal v-show="showPlatformModal === true" :open="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:title>
                 <p class='card-header-title'>Which store manages your game?</p>
             </template>
