@@ -197,7 +197,7 @@
             </template>
         </modal>
 
-        <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false"/>
+        <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" @error="showError($event)"/>
 
         <DownloadModModal
             :show-download-modal="showUpdateAllModal"

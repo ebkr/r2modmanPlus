@@ -71,8 +71,9 @@ import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
-import LocalModInstaller from '../../r2mm/installing/LocalModInstaller';
 import Profile from '../../model/Profile';
+import ProfileModList from 'src/r2mm/mods/ProfileModList';
+import LocalModInstallerProvider from 'src/providers/ror2/installing/LocalModInstallerProvider';
 
 @Component({
     components: { Modal }
@@ -184,6 +185,10 @@ export default class LocalFileImportModal extends Vue {
         const hyphenSeparated = fileName.split("-");
         const underscoreSeparated = fileName.split("_");
 
+        // Note: For some unknown reason, this speeds up the time it takes for Vue to update on screen ??
+        // Thanks Vue.
+        console.log();
+
         const data: ImportFieldAttributes = {
             modName: "",
             modAuthor: "Unknown",
@@ -246,11 +251,29 @@ export default class LocalFileImportModal extends Vue {
         this.resultingManifest.setDescription(this.modDescription);
         this.resultingManifest.setAuthorName(this.modAuthor);
 
-        if (this.fileToImport.endsWith(".zip")) {
-            LocalModInstaller.instance.extractToCacheWithManifestData(this.contextProfile!, this.fileToImport, this.resultingManifest, ((success, error) => {
+        const installCallback = (async (success: boolean, error: any | null) => {
+            if (!success && error !== null) {
+                this.showError(error);
+                return;
+            }
+            const updatedModListResult = await ProfileModList.getModList(this.contextProfile!);
+            if (updatedModListResult instanceof R2Error) {
+                this.showError(updatedModListResult);
+                return;
+            }
+            await this.$store.dispatch("updateModList", updatedModListResult);
+            this.emitClose();
+        });
 
-            }));
+        if (this.fileToImport.endsWith(".zip")) {
+            LocalModInstallerProvider.instance.extractToCacheWithManifestData(this.contextProfile!, this.fileToImport, this.resultingManifest, installCallback);
+        } else {
+            LocalModInstallerProvider.instance.placeFileInCache(this.contextProfile!, this.fileToImport, this.resultingManifest, installCallback);
         }
+    }
+
+    private showError(err: R2Error) {
+        this.$emit("error", err);
     }
 
     created() {

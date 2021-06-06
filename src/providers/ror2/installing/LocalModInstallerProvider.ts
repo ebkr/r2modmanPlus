@@ -27,5 +27,6 @@ export default abstract class LocalModInstallerProvider {
      */
     public abstract extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
     public abstract extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
+    public abstract placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
 
 }
