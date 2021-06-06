@@ -45,7 +45,7 @@
 			<button class="modal-close is-large" aria-label="close"
 			        @click="showRor2IncorrectDirectoryModal = false"></button>
 		</div>
-		<modal v-show="fixingPreloader" @close-modal="closePreloaderFixModal">
+		<modal v-show="fixingPreloader" :open="fixingPreloader" @close-modal="closePreloaderFixModal">
 			<template v-slot:title>
 				<p class='card-header-title'>Attempting to fix preloader issues</p>
 			</template>
@@ -68,7 +68,7 @@
 				</button>
 			</template>
 		</modal>
-        <modal v-show="showDependencyStrings" @close-modal="showDependencyStrings = false;">
+        <modal v-show="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
             <template v-slot:title>
                 <p class='card-header-title'>Dependency string list</p>
             </template>
@@ -86,7 +86,7 @@
                 </button>
             </template>
         </modal>
-		<modal v-show="showLaunchParameterModal === true" @close-modal="() => {showLaunchParameterModal = false;}">
+		<modal v-show="showLaunchParameterModal === true" :open="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}">
 			<template v-slot:title>
 				<p class='card-header-title'>Set custom launch parameters</p>
 			</template>
@@ -121,7 +121,7 @@
 				</button>
 			</template>
 		</modal>
-		<modal v-show="exportCode !== ''" @close-modal="() => {exportCode = '';}">
+		<modal v-show="exportCode !== ''" :open="exportCode" @close-modal="() => {exportCode = '';}">
 			<template v-slot:title>
 				<p class='card-header-title'>Profile exported</p>
 			</template>
@@ -137,7 +137,7 @@
 			</template>
 		</modal>
 
-        <modal v-show="showCategoryFilterModal" :show-close="false">
+        <modal v-show="showCategoryFilterModal" :open="showCategoryFilterModal" :show-close="false">
             <template v-slot:title>
                 <p class='card-header-title'>Filter mod categories</p>
             </template>

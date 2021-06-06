@@ -23,30 +23,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                 if (mod instanceof R2Error) {
                     return mod;
                 }
-                const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-                if (await FsProvider.instance.exists(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()))) {
-                    await FileUtils.emptyDirectory(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()));
-                }
-                await ZipExtract.extractOnly(
-                    zipFile,
-                    path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
-                    async success => {
-                        if (success) {
-                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod, profile);
-                            if (profileInstallResult instanceof R2Error) {
-                                callback(false, profileInstallResult);
-                                return Promise.resolve();
-                            }
-                            const modListInstallResult = await ProfileModList.addMod(mod, profile);
-                            if (modListInstallResult instanceof R2Error) {
-                                callback(false, modListInstallResult);
-                                return Promise.resolve();
-                            }
-                            callback(true, null);
-                            return Promise.resolve();
-                        }
-                    }
-                );
+                return await this.extractToCacheWithManifestData(profile, zipFile, mod, callback);
             } catch(e) {
                 const err: Error = e;
                 return new R2Error('Failed to convert manifest to JSON', err.message, null);
@@ -55,6 +32,33 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             return new R2Error('No manifest provided', 'No file found in zip with name "manifest.json". Contact the mod author, or create your own.', null);
         }
         return Promise.resolve();
+    }
+
+    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+        if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()))) {
+            await FileUtils.emptyDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+        }
+        await ZipExtract.extractOnly(
+            zipFile,
+            path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()),
+            async success => {
+                if (success) {
+                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
+                    if (profileInstallResult instanceof R2Error) {
+                        callback(false, profileInstallResult);
+                        return Promise.resolve();
+                    }
+                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+                    if (modListInstallResult instanceof R2Error) {
+                        callback(false, modListInstallResult);
+                        return Promise.resolve();
+                    }
+                    callback(true, null);
+                    return Promise.resolve();
+                }
+            }
+        );
     }
 
 }

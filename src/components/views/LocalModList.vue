@@ -47,7 +47,7 @@
         />
 
         <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
-               @close-modal="showingDependencyList = null">
+               @close-modal="showingDependencyList = null" :open="showingDependencyList">
             <template v-slot:title>
                 <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling
                     {{selectedManifestMod.getName()}}
@@ -429,11 +429,13 @@
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
+            console.log(this.dependencyListDisplayType, this.showingDependencyList)
         }
 
         uninstallModRequireConfirmation(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             if (this.getDependantList(mod).size === 0) {
+                console.log("No deps")
                 this.performUninstallMod(mod);
                 this.filterModList();
             } else {

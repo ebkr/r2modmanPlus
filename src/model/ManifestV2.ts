@@ -70,6 +70,25 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         return this.make(data);
     }
 
+    // Intended to be used to import a mod with only minimal fields specified.
+    // Should support manifest V1. Defaults to an "Unknown" author field if not found.
+    public makeSafeFromPartial(data: any): R2Error | ManifestV2 {
+        // Safety net to ensure author and Author field aren't both undefined.
+        // (Partial should include at least one of these).
+        if (data.author !== data.AuthorName) {
+            this.setManifestVersion(2);
+            this.setAuthorName(data.AuthorName || data.author || "Unknown");
+            this.setName(data.Name || `${data.name}-${this.getAuthorName()}`);
+            this.setWebsiteUrl(data.WebsiteURL || data.website_url);
+            this.setDisplayName(data.DisplayName || data.name);
+            this.setDescription(data.Description || data.description || "");
+            this.setVersionNumber(new VersionNumber(data.Version || data.version_number));
+            this.setDependencies(data.Dependencies || data.dependencies);
+            return this;
+        }
+        return new R2Error("Manifest failed to be validated.", "The manifest is missing an author field.", "Add the author field to the manifest.json file manually.");
+    }
+
     private fromUnsupported(data: any): ManifestV2 {
         return this;
     }
