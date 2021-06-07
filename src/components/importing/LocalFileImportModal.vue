@@ -22,6 +22,9 @@
             </template>
 
             <template slot="body" v-if="fileToImport !== null">
+                <div class="notification is-warning" v-if="failedValidation">
+                    <p>Fields can't be empty.</p>
+                </div>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-name" class="non-selectable">Mod name</label>
                     <input id="mod-name" ref="mod-name" class="input margin-right" type="text" v-model="modName" placeholder="Enter the name of the mod"/>
@@ -85,6 +88,7 @@ export default class LocalFileImportModal extends Vue {
 
     private fileToImport: string | null = null;
     private waitingForSelection: boolean = false;
+    private failedValidation: boolean = false;
 
     private modName = "";
     private modAuthor = "Unknown";
@@ -102,6 +106,7 @@ export default class LocalFileImportModal extends Vue {
     private visiblityChanged() {
         this.fileToImport = null;
         this.waitingForSelection = false;
+        this.failedValidation = false;
     }
 
     private async selectFile() {
@@ -240,6 +245,13 @@ export default class LocalFileImportModal extends Vue {
     private importFile() {
         if (this.fileToImport === null) {
             return;
+        }
+
+        switch (0) {
+            case this.modName.trim().length:
+            case this.modAuthor.trim().length:
+                this.failedValidation = true;
+                return;
         }
 
         this.resultingManifest.setName(`${this.modAuthor}-${this.modName}`);
