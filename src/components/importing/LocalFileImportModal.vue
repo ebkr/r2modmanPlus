@@ -22,8 +22,8 @@
             </template>
 
             <template slot="body" v-if="fileToImport !== null">
-                <div class="notification is-warning" v-if="failedValidation">
-                    <p>Fields can't be empty.</p>
+                <div class="notification is-warning" v-if="validationMessage !== null">
+                    <p>{{ validationMessage }}</p>
                 </div>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-name" class="non-selectable">Mod name</label>
@@ -45,17 +45,17 @@
                     <div class="is-flex">
                         <div>
                             <label for="mod-version-major">Major</label>
-                            <input id="mod-version-major" ref="mod-version" class="input margin-right" type="text" v-model="modVersionMajor" placeholder="0"/>
+                            <input id="mod-version-major" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMajor" min="0" step="1" placeholder="0"/>
                         </div>
                         <span>&nbsp;</span>
                         <div>
                             <label for="mod-version-minor">Minor</label>
-                            <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="text" v-model="modVersionMinor" placeholder="0"/>
+                            <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMinor" min="0" step="1" placeholder="0"/>
                         </div>
                         <span>&nbsp;</span>
                         <div>
                             <label for="mod-version-patch">Patch</label>
-                            <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="text" v-model="modVersionPatch" placeholder="0"/>
+                            <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="number" v-model="modVersionPatch" min="0" step="1" placeholder="0"/>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ export default class LocalFileImportModal extends Vue {
 
     private fileToImport: string | null = null;
     private waitingForSelection: boolean = false;
-    private failedValidation: boolean = false;
+    private validationMessage: string | null = null;
 
     private modName = "";
     private modAuthor = "Unknown";
@@ -106,7 +106,7 @@ export default class LocalFileImportModal extends Vue {
     private visiblityChanged() {
         this.fileToImport = null;
         this.waitingForSelection = false;
-        this.failedValidation = false;
+        this.validationMessage = null;
     }
 
     private async selectFile() {
@@ -249,16 +249,39 @@ export default class LocalFileImportModal extends Vue {
 
         switch (0) {
             case this.modName.trim().length:
+                this.validationMessage = "The mod name must not be empty.";
+                return;
             case this.modAuthor.trim().length:
-                this.failedValidation = true;
+                this.validationMessage = "The mod author must not be empty.";
                 return;
         }
 
-        this.resultingManifest.setName(`${this.modAuthor}-${this.modName}`);
-        this.resultingManifest.setDisplayName(this.modName);
+        switch (NaN) {
+            case Number(this.modVersionMajor):
+            case Number(this.modVersionMinor):
+            case Number(this.modVersionPatch):
+                this.validationMessage = "Major, minor, and patch must all be numbers.";
+                return;
+        }
+
+        if (this.modVersionMajor < 0) {
+            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            return;
+        }
+        if (this.modVersionMinor < 0) {
+            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            return;
+        }
+        if (this.modVersionPatch < 0) {
+            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            return;
+        }
+
+        this.resultingManifest.setName(`${this.modAuthor.trim()}-${this.modName.trim()}`);
+        this.resultingManifest.setDisplayName(this.modName.trim());
         this.resultingManifest.setVersionNumber(new VersionNumber(`${this.modVersionMajor}.${this.modVersionMinor}.${this.modVersionPatch}`));
-        this.resultingManifest.setDescription(this.modDescription);
-        this.resultingManifest.setAuthorName(this.modAuthor);
+        this.resultingManifest.setDescription(this.modDescription.trim());
+        this.resultingManifest.setAuthorName(this.modAuthor.trim());
 
         const installCallback = (async (success: boolean, error: any | null) => {
             if (!success && error !== null) {
