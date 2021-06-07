@@ -354,7 +354,7 @@
     import GameManager from '../model/game/GameManager';
     import Game from '../model/game/Game';
     import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-    import LocalFileImportModal from 'components/importing/LocalFileImportModal.vue';
+    import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 
 	@Component({
 		components: {
