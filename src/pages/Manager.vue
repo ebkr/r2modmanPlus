@@ -1,15 +1,5 @@
 <template>
 	<div>
-        <div class='file-drop'>
-            <div :class="['modal', {'is-active':showDragAndDropModal}]">
-                <div class="modal-background"></div>
-                <div class='modal-content'>
-                    <div class='notification is-info'>
-                        <h3 class='title' id='dragText'>{{dragAndDropText}}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -350,9 +340,6 @@
     import { homedir } from 'os';
     import * as path from 'path';
     import FsProvider from '../providers/generic/file/FsProvider';
-    import LocalModInstallerProvider from '../providers/ror2/installing/LocalModInstallerProvider';
-
-    import FileDragDrop from '../r2mm/data/FileDragDrop';
     import SettingsView from '../components/settings-components/SettingsView.vue';
     import DownloadModModal from '../components/views/DownloadModModal.vue';
     import CacheUtil from '../r2mm/mods/CacheUtil';
@@ -417,8 +404,6 @@
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
 		showLaunchParameterModal: boolean = false;
-		dragAndDropText: string = 'Drag and drop file here to install mod';
-		showDragAndDropModal: boolean = false;
 		showUpdateAllModal: boolean = false;
         showDependencyStrings: boolean = false;
 
@@ -855,39 +840,6 @@
 			return fs.exists(logOutputPath);
 		}
 
-		installLocalMod() {
-            InteractionProvider.instance.selectFile({
-                title: 'Import mod',
-                filters: ['.zip', '.dll'],
-                buttonLabel: 'Import'
-            }).then(async files => {
-                if (files.length > 0) {
-                    await this.installLocalModAfterFileSelection(files[0]);
-                }
-            })
-        }
-
-        async installLocalModAfterFileSelection(file: string) {
-		    const convertError = await LocalModInstallerProvider.instance.extractToCache(this.contextProfile!, file, (async (success, error) => {
-		        if (!success && error !== null) {
-		            this.showError(error);
-		            return;
-                }
-                const updatedModListResult = await ProfileModList.getModList(this.contextProfile!);
-                if (updatedModListResult instanceof R2Error) {
-                    this.showError(updatedModListResult);
-                    return;
-                }
-				await this.$store.dispatch("updateModList", updatedModListResult);
-                this.sortThunderstoreModList();
-            }));
-		    if (convertError instanceof R2Error) {
-		        this.showError(convertError);
-		        return;
-            }
-		    this.view = 'installed';
-        }
-
         async setAllModsEnabled(enabled: boolean) {
             for (const mod of this.localModList) {
                 let profileErr: R2Error | void;
@@ -992,7 +944,6 @@
                     this.changeProfile();
                     break;
                 case "ImportLocalMod":
-                    // this.installLocalMod();
                     this.importingLocalMod = true;
                     break;
                 case "ExportFile":
@@ -1069,40 +1020,6 @@
             });
 
 			this.isManagerUpdateAvailable();
-
-			// Bind drag and drop listeners
-            const defaultDragText = 'Drag and drop file here to install mod';
-
-            document.ondragover = (ev) => {
-                this.dragAndDropText = defaultDragText;
-                this.showDragAndDropModal = true;
-                ev.preventDefault();
-            }
-
-            document.ondragleave = (ev) => {
-                if (ev.relatedTarget === null) {
-                    this.showDragAndDropModal = false;
-                }
-                ev.preventDefault();
-            }
-
-            document.body.ondrop = (ev) => {
-                if (FileDragDrop.areMultipleFilesDragged(ev)) {
-                    this.dragAndDropText = 'Only a single mod can be installed at a time';
-                    return;
-                } else if (!FileDragDrop.areAllFileExtensionsIn(ev, [".zip"])) {
-                    this.dragAndDropText = 'Mod must be a .zip file';
-                    return;
-                } else {
-                    this.installLocalModAfterFileSelection(FileDragDrop.getFiles(ev)[0].path);
-                }
-                this.showDragAndDropModal = false;
-                ev.preventDefault()
-            }
-
-            document.onclick = () => {
-                this.showDragAndDropModal = false;
-            }
 		}
 
 		mounted() {

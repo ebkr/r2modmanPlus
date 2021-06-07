@@ -79,11 +79,11 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
             this.setManifestVersion(2);
             this.setAuthorName(data.AuthorName || data.author || "Unknown");
             this.setName(data.Name || `${data.name}-${this.getAuthorName()}`);
-            this.setWebsiteUrl(data.WebsiteURL || data.website_url);
+            this.setWebsiteUrl(data.WebsiteURL || data.website_url || "");
             this.setDisplayName(data.DisplayName || data.name);
             this.setDescription(data.Description || data.description || "");
             this.setVersionNumber(new VersionNumber(data.Version || data.version_number));
-            this.setDependencies(data.Dependencies || data.dependencies);
+            this.setDependencies(data.Dependencies || data.dependencies || []);
             return this;
         }
         return new R2Error("Manifest failed to be validated.", "The manifest is missing an author field.", "Add the author field to the manifest.json file manually.");
