@@ -82,7 +82,8 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
             await this.initialiseCacheDirectory(manifest);
             const modCacheDirectory = path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString());
-            await FsProvider.instance.copyFile(file, path.join(modCacheDirectory, path.basename(file)));
+            const fileSafe = file.split("\\").join("/");
+            await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
             await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
             const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
             if (profileInstallResult instanceof R2Error) {

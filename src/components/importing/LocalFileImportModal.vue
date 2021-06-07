@@ -181,7 +181,8 @@ export default class LocalFileImportModal extends Vue {
     }
 
     private inferFieldValuesFromFile(file: string): ImportFieldAttributes {
-        const fileName = path.basename(file, path.extname(file));
+        const fileSafe = file.split("\\").join("/");
+        const fileName = path.basename(fileSafe, path.extname(fileSafe));
         const hyphenSeparated = fileName.split("-");
         const underscoreSeparated = fileName.split("_");
 
