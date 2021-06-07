@@ -29,3 +29,5 @@ TheLamiaLover-MobileTurretFungus
 Squidy-RogueWisp
 
 TheLamiaLover-ItemStatsMod
+
+Foldex-r2mod_cli
