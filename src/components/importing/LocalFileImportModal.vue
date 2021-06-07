@@ -72,8 +72,8 @@ import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import Profile from '../../model/Profile';
-import ProfileModList from 'src/r2mm/mods/ProfileModList';
-import LocalModInstallerProvider from 'src/providers/ror2/installing/LocalModInstallerProvider';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 
 @Component({
     components: { Modal }
