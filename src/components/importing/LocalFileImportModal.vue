@@ -65,7 +65,7 @@
 
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
-import Modal from 'components/Modal.vue';
+import Modal from '../Modal.vue';
 import * as path from 'path';
 import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
