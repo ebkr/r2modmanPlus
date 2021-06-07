@@ -4,6 +4,7 @@ import Persist from './window-state-persist';
 import { ipcMain } from 'electron';
 import path from 'path';
 import ipcServer from 'node-ipc';
+import * as fs from 'fs';
 
 app.allowRendererProcessReuse = true;
 
@@ -97,7 +98,11 @@ app.on('ready', () => {
 app.whenReady().then(() => {
     protocol.registerFileProtocol('file', (request, callback) => {
         const pathname = request.url.replace('file:///', '');
-        callback(pathname);
+        if (fs.existsSync(pathname)) {
+            callback(pathname);
+        } else {
+            callback(path.join(__statics, "unknown.png"));
+        }
     });
 });
 

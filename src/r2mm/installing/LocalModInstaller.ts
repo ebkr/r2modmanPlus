@@ -23,30 +23,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                 if (mod instanceof R2Error) {
                     return mod;
                 }
-                const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-                if (await FsProvider.instance.exists(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()))) {
-                    await FileUtils.emptyDirectory(path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()));
-                }
-                await ZipExtract.extractOnly(
-                    zipFile,
-                    path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString()),
-                    async success => {
-                        if (success) {
-                            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(mod, profile);
-                            if (profileInstallResult instanceof R2Error) {
-                                callback(false, profileInstallResult);
-                                return Promise.resolve();
-                            }
-                            const modListInstallResult = await ProfileModList.addMod(mod, profile);
-                            if (modListInstallResult instanceof R2Error) {
-                                callback(false, modListInstallResult);
-                                return Promise.resolve();
-                            }
-                            callback(true, null);
-                            return Promise.resolve();
-                        }
-                    }
-                );
+                return await this.extractToCacheWithManifestData(profile, zipFile, mod, callback);
             } catch(e) {
                 const err: Error = e;
                 return new R2Error('Failed to convert manifest to JSON', err.message, null);
@@ -57,4 +34,70 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         return Promise.resolve();
     }
 
+    private async initialiseCacheDirectory(manifest: ManifestV2) {
+        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+        if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()))) {
+            await FileUtils.emptyDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+        } else {
+            await FileUtils.ensureDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+        }
+    }
+
+    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+        await this.initialiseCacheDirectory(manifest);
+        await ZipExtract.extractOnly(
+            zipFile,
+            path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()),
+            async success => {
+                if (success) {
+                    if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"))) {
+                        try {
+                            await FsProvider.instance.unlink(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"));
+                        } catch (e) {
+                            const err: Error = e;
+                            callback(false, new R2Error("Failed to unlink manifest from cache", err.message, null));
+                        }
+                    }
+                    await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
+                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
+                    if (profileInstallResult instanceof R2Error) {
+                        callback(false, profileInstallResult);
+                        return Promise.resolve();
+                    }
+                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+                    if (modListInstallResult instanceof R2Error) {
+                        callback(false, modListInstallResult);
+                        return Promise.resolve();
+                    }
+                    callback(true, null);
+                    return Promise.resolve();
+                }
+            }
+        );
+    }
+
+    public async placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void): Promise<R2Error | void> {
+        try {
+            const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
+            await this.initialiseCacheDirectory(manifest);
+            const modCacheDirectory = path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString());
+            await FsProvider.instance.copyFile(file, path.join(modCacheDirectory, path.basename(file)));
+            await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
+            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
+            if (profileInstallResult instanceof R2Error) {
+                callback(false, profileInstallResult);
+                return Promise.resolve();
+            }
+            const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+            if (modListInstallResult instanceof R2Error) {
+                callback(false, modListInstallResult);
+                return Promise.resolve();
+            }
+            callback(true, null);
+            return Promise.resolve();
+        } catch (e) {
+            callback(false, e);
+        }
+    }
 }
