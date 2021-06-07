@@ -136,7 +136,7 @@ export default class LocalFileImportModal extends Vue {
 
         if (this.fileToImport.endsWith(".zip")) {
             const entries = await ZipProvider.instance.getEntries(this.fileToImport);
-            if (entries.filter(value => value.name === "manifest.json").length === 1) {
+            if (entries.filter(value => value.entryName === "manifest.json").length === 1) {
                 const manifestContents = await ZipProvider.instance.readFile(this.fileToImport, "manifest.json");
                 if (manifestContents !== null) {
                     const manifestJson: any = JSON.parse(manifestContents.toString().trim());
@@ -184,10 +184,6 @@ export default class LocalFileImportModal extends Vue {
         const fileName = path.basename(file, path.extname(file));
         const hyphenSeparated = fileName.split("-");
         const underscoreSeparated = fileName.split("_");
-
-        // Note: For some unknown reason, this speeds up the time it takes for Vue to update on screen ??
-        // Thanks Vue.
-        console.log();
 
         const data: ImportFieldAttributes = {
             modName: "",
