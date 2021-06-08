@@ -234,8 +234,14 @@ export default class LocalFileImportModal extends Vue {
 
     private santizeVersionNumber(vn: string): VersionNumber {
         const modVersionSplit = vn.split(".");
-        const modVersionString = `${modVersionSplit[0]}.${modVersionSplit[1]}.${modVersionSplit[2].split(new RegExp("[^0-9]+"))[0]}`;
+        const modVersionString = `${this.versionPartToNumber(modVersionSplit[0])}.${this.versionPartToNumber(modVersionSplit[1])}.${this.versionPartToNumber(modVersionSplit[2])}`;
         return new VersionNumber(modVersionString);
+    }
+
+    private versionPartToNumber(input: string | undefined) {
+        return (input || "0").split(new RegExp("[^0-9]+"))
+            .filter(value => value.trim().length > 0)
+            .shift() || "0";
     }
 
     private emitClose() {
