@@ -76,6 +76,12 @@ export default class GameManager {
             "ROUNDS", ["Rounds.exe"], "Rounds_Data",
             "https://rounds.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1557740")], "ROUNDS.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME),
+
+        new Game("Mechanica", "Mechanica", "Mechanica",
+            "Mechanica", ["Mechnica.exe"], "Mechanica_Data",
+            "https://mechanica.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1226990")], "Mechanica.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME)
 
     ];
