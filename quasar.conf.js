@@ -8,6 +8,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers');
 
+const envFileVars = require("./.env.json");
+const envVars = {
+
+};
+
+for (const key of Object.keys(envFileVars)) {
+    envVars[key] = envFileVars[key];
+}
+
 module.exports = configure(function(/* ctx */) {
     return {
         // https://quasar.dev/quasar-cli/supporting-ts
@@ -69,6 +78,8 @@ module.exports = configure(function(/* ctx */) {
 
             // Options below are automatically set depending on the env, set them if you want to override
             // extractCSS: false,
+
+            env: envVars,
 
             // https://quasar.dev/quasar-cli/handling-webpack
             extendWebpack(cfg) {

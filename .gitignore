@@ -16,6 +16,7 @@ yarn-debug.log*
 yarn-error.log*
 
 log.txt
+.env.json
 
 # Editor directories and files
 .idea
