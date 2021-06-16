@@ -57,7 +57,7 @@ If an update has been downloaded, it will be installed once you have closed the 
 2. If you can't find the solution, join the community modding discord and ask for help in the appropriate channels.
 
 ### Mod errors:
-1. Join the [modding discord server](https://discord.gg/5MbXZvd) and ask for help in the appropriate channels.
+1. Join the relevant community modding discord and ask for help in the appropriate channels.
 
 ## Feedback and suggestions
 It's encouraged to provide as much feedback as you'd like, and fully open to criticism.
@@ -71,6 +71,8 @@ The only thing you have to consider when suggesting a feature is the impact it w
 ### 3.1.16
 - Added support for ROUNDS and Mechanica.
 - Overhauled local imports. Manifest files are no longer required!
+  - r2modman's Manifest V2 is now considered deprecated and should not be used if possible.
+  - Alternative implementations should rely on file name (Author-ModName-Version or Author_ModName_Version), or a Manifest V1 (with an `author` field if not inferrable from file name).
 - RainOfStages maps can now be disabled correctly.
 
 ### 3.1.15
