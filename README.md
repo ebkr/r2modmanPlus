@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, and H3VR.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, and Mechanica.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installs allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
