@@ -68,6 +68,11 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.16
+- Added support for ROUNDS and Mechanica.
+- Overhauled local imports. Manifest files are no longer required!
+- RainOfStages maps can now be disabled correctly.
+
 ### 3.1.15
 - Added support for H3VR.
 - Dedicated servers for Risk of Rain 2 and Valheim are now supported.
@@ -80,31 +85,25 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - New modding community TaleSpire has joined the scene.
 - When importing mods that have their own configs, the imported config is now used as expected.
 
-### 3.1.13
-- Directory resolution should work as intended for more users.
-- The settings tabs and search now stay visible when scrolling down the page.
-- Mods excluded from the manager are now updated without restarting the manager.
-- Visible errors are now also written to the local log file.
-
 ## Screenshots
+
+Game selection
+
+![](https://i.imgur.com/mmzY9xQ.png)
 
 Installed mod view
 
-![](https://i.imgur.com/XNVQBuQ.png)
+![](https://i.imgur.com/d7w4qEl.png)
 
 Downloadable mods
 
-![](https://i.imgur.com/Do6Awz0.png)
-
-Dark theme
-
-![](https://i.imgur.com/szsyGWB.png)
+![](https://i.imgur.com/eoIAMMP.png)
 
 Config editor
 
-![](https://i.imgur.com/U9av2H7.png)
+![](https://i.imgur.com/RT6HsxF.png)
 
 Profiles
 
-![](https://i.imgur.com/HtWQIWZ.png)
+![](https://i.imgur.com/nLfNaQJ.png)
 
