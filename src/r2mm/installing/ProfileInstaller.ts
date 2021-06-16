@@ -16,7 +16,7 @@ import BepInExPackageMapping from '../../model/installing/BepInExPackageMapping'
 import GameManager from '../../model/game/GameManager';
 let fs: FsProvider;
 
-const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod", ".h3mod", ".deli"];
+const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod", ".h3mod", ".deli", ".ros"];
 
 /**
  * Used to record which package to handle based on the current game.
@@ -36,6 +36,8 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")],
     H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")],
     ThunderstoreBeta: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
+    ROUNDS: [new BepInExPackageMapping("BepInEx-BepInExPack_ROUNDS", "BepInExPack_ROUNDS")],
+    Mechanica: [new BepInExPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA")]
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {

@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class='sticky-top sticky-top--search border-at-bottom'>
+        <div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
             <div class='card is-shadowless is-square'>
                 <div class='card-header-title'>
 
@@ -47,7 +47,7 @@
         />
 
         <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
-               @close-modal="showingDependencyList = null">
+               @close-modal="showingDependencyList = null" :open="showingDependencyList">
             <template v-slot:title>
                 <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling
                     {{selectedManifestMod.getName()}}
@@ -133,16 +133,16 @@
             :expandedByDefault="cardExpanded"
             :enabled="key.isEnabled()">
             <template v-slot:title>
-                <span :class="['selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
+                <span :class="['non-selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
                     <span v-if="key.isDeprecated()" class="tag is-danger">
                         Deprecated
                     </span>&nbsp;
                     <span v-if="!key.isEnabled()" class="tag is-warning">
                         Disabled
                     </span>&nbsp;
-                    <span class="card-title">
+                    <span class="card-title selectable">
                         <template v-if="key.isEnabled()">
-                            {{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span>
+                            {{key.getDisplayName()}} <span class="card-byline selectable">by {{key.getAuthorName()}}</span>
                         </template>
                         <template v-else>
                             <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
@@ -429,6 +429,7 @@
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
+            console.log(this.dependencyListDisplayType, this.showingDependencyList)
         }
 
         uninstallModRequireConfirmation(vueMod: any) {
