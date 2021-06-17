@@ -82,6 +82,12 @@ export default class GameManager {
             "Mechanica", ["Mechnica.exe"], "Mechanica_Data",
             "https://mechanica.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1226990")], "Mechanica.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME),
+
+        new Game("Muck", "Muck", "Muck",
+            "Muck", ["Muck.exe"], "Muck_Data",
+            "https://muck.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1625450")], "Muck.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME)
 
     ];
