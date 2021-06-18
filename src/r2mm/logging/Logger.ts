@@ -2,6 +2,7 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
+import FileUtils from '../../utils/FileUtils';
 
 export class Logger {
 
@@ -14,6 +15,7 @@ export class Logger {
 
     async Write() {
         const fs = FsProvider.instance;
+        await FileUtils.ensureDirectory(PathResolver.ROOT);
         await fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
     }
 
