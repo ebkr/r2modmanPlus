@@ -24,7 +24,7 @@ describe("Link component", () => {
                 target: "file"
             },
             slots: {
-                default: "Click me"
+                default: "Select file prompt"
             }
         }
 
@@ -47,10 +47,93 @@ describe("Link component", () => {
         });
 
         it("Invokes the correct action when clicked", () => {
-            sandbox.mock(LinkProvider.instance).expects("selectFile").exactly(1);
+            sandbox.mock(LinkProvider.instance).expects("selectFile").exactly(1).calledWith(mountOptions.propsData.url);
             const link = mount.find("a");
             link.trigger("click");
             sandbox.verify();
+        })
+
+    });
+
+    describe("External link has the correct display", () => {
+
+        // @ts-ignore
+        // Ignore because `before` runs prior.
+        let mount: Wrapper<Link> = undefined;
+
+        const mountOptions = {
+            propsData: {
+                url: "http://bbb",
+                target: "external"
+            },
+            slots: {
+                default: "Open external prompt"
+            }
+        }
+
+        beforeEach(() => {
+            mount = shallowMount(Link, mountOptions);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        })
+
+        it("Contains the correct text", () => {
+            const link = mount.find("a");
+            expect(link.text()).toBe(mountOptions.slots.default);
+        });
+
+        it("Is semantically correct", () => {
+            const link = mount.find("a");
+            expect(link.attributes()["data-semantic"]).toBe("external-link");
+        });
+
+        it("Invokes the correct action when clicked", () => {
+            sandbox.mock(LinkProvider.instance).expects("openLink").exactly(1).calledWith(mountOptions.propsData.url);
+            const link = mount.find("a");
+            link.trigger("click");
+            sandbox.verify();
+        })
+
+    });
+
+    describe("Visual link has the correct display", () => {
+
+        // @ts-ignore
+        // Ignore because `before` runs prior.
+        let mount: Wrapper<Link> = undefined;
+
+        const mountOptions = {
+            propsData: {
+                url: "http://bbb"
+            },
+            slots: {
+                default: "Just a visual indicator"
+            }
+        }
+
+        beforeEach(() => {
+            mount = shallowMount(Link, mountOptions);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        })
+
+        it("Contains the correct text", () => {
+            const link = mount.find("a");
+            expect(link.text()).toBe(mountOptions.slots.default);
+        });
+
+        it("Is semantically correct", () => {
+            const link = mount.find("a");
+            expect(link.attributes()["data-semantic"]).toBe("visual-indicator");
+        });
+
+        it("Does nothing on click", () => {
+            const link = mount.find("a");
+            link.trigger("click");
         })
 
     });
