@@ -1,13 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
-import LogOutput from '../../../src/r2mm/data/LogOutput';
 import TestSetup from '../../test-setup.test';
 import ManifestV2 from '../../../src/model/ManifestV2';
 import ModListSort from '../../../src/r2mm/mods/ModListSort';
 import { SortDirection } from '../../../src/model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../../src/model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../../src/model/real_enums/sort/SortNaming';
-import InvalidManifestError from '../../../src/model/errors/Manifest/InvalidManifestError';
 
 describe('ModListSort', () => {
 
