@@ -1,4 +1,4 @@
-import TestSetup from '../../test-setup.test';
+import TestSetup from '../../test-setup';
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import Link from 'components/Link.vue';
 import Sinon from 'sinon';
