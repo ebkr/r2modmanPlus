@@ -1,7 +1,6 @@
 import TestSetup from '../../test-setup';
-import { shallowMount, ThisTypedShallowMountOptions } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import ExpandableCard from '../../../../../src/components/ExpandableCard.vue';
-import ObjectTestUtils from 'app/test/jest/__utils__/ObjectTestUtils';
 
 describe("ExpandableCard component", () => {
 
