@@ -34,7 +34,7 @@ describe("Link component", () => {
 
         afterEach(() => {
             sandbox.restore();
-        })
+        });
 
         it("Contains the correct text", () => {
             const link = mount.find("a");
@@ -51,7 +51,7 @@ describe("Link component", () => {
             const link = mount.find("a");
             link.trigger("click");
             sandbox.verify();
-        })
+        });
 
     });
 
@@ -77,7 +77,7 @@ describe("Link component", () => {
 
         afterEach(() => {
             sandbox.restore();
-        })
+        });
 
         it("Contains the correct text", () => {
             const link = mount.find("a");
@@ -94,7 +94,7 @@ describe("Link component", () => {
             const link = mount.find("a");
             link.trigger("click");
             sandbox.verify();
-        })
+        });
 
     });
 
@@ -119,7 +119,7 @@ describe("Link component", () => {
 
         afterEach(() => {
             sandbox.restore();
-        })
+        });
 
         it("Contains the correct text", () => {
             const link = mount.find("a");
@@ -134,7 +134,7 @@ describe("Link component", () => {
         it("Does nothing on click", () => {
             const link = mount.find("a");
             link.trigger("click");
-        })
+        });
 
     });
 

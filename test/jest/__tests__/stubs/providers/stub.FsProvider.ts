@@ -1,74 +1,66 @@
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import StatInterface from 'src/providers/generic/file/StatInterface';
+import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
+import StatInterface from '../../../../../src/providers/generic/file/StatInterface';
 
 export default class StubFsProvider extends FsProvider {
 
     async base64FromZip(path: string): Promise<string> {
-        return Promise.resolve('');
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async chmod(path: string, mode: string | number): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async copyFile(from: string, to: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async copyFolder(from: string, to: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async exists(path: string): Promise<boolean> {
-        return Promise.resolve(false);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async lstat(path: string): Promise<StatInterface> {
-        return Promise.resolve({
-            isDirectory: () => false,
-            isFile: () => false,
-            mtime: new Date(Date.now()),
-        });
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async mkdirs(path: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async readFile(path: string): Promise<Buffer> {
-        return Promise.resolve(Buffer.of());
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async readdir(path: string): Promise<string[]> {
-        return Promise.resolve([]);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async realpath(path: string): Promise<string> {
-        return Promise.resolve('');
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async rename(path: string, newPath: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async rmdir(path: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async stat(path: string): Promise<StatInterface> {
-        return Promise.resolve({
-            isDirectory: () => false,
-            isFile: () => false,
-            mtime: new Date(Date.now()),
-        });
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async unlink(path: string): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
     async writeFile(path: string, content: string | Buffer): Promise<void> {
-        return Promise.resolve(undefined);
+        throw new Error("Stub access must be mocked or spied");
     }
 
 

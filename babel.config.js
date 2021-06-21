@@ -2,5 +2,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 module.exports = {
-  presets: ['@quasar/babel-preset-app', '@babel/preset-typescript']
+  presets: ['@quasar/babel-preset-app']
 };

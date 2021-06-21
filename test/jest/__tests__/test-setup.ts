@@ -9,10 +9,17 @@ import StubInteractionProvider from './stubs/providers/stub.InteractionProvider'
 import InteractionProvider from '../../../src/providers/ror2/system/InteractionProvider';
 import StubLinkProvider from './stubs/providers/stub.LinkProvider';
 import LinkProvider from '../../../src/providers/components/LinkProvider';
+import ThunderstorePackages from '../../../src/r2mm/data/ThunderstorePackages';
 
 export default class TestSetup {
 
+    private static preSetUp() {
+        ThunderstorePackages.PACKAGES = [];
+        ThunderstorePackages.EXCLUSIONS = new Map<string, boolean>();
+    }
+
     public static setUp() {
+        this.preSetUp();
         const fs = new NodeFs();
         FsProvider.provide(() => fs);
         PathResolver.APPDATA_DIR = '__test_data__';
@@ -26,6 +33,8 @@ export default class TestSetup {
     }
 
     public static stubSetUp() {
+        this.preSetUp();
+
         const fs = new StubFsProvider();
         FsProvider.provide(() => fs);
 
