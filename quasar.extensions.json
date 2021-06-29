@@ -4,5 +4,15 @@
     "rename": true,
     "vscode": true,
     "prettier": true
+  },
+  "@quasar/testing-unit-jest": {
+    "babel": "babelrc",
+    "options": [
+      "scripts",
+      "typescript",
+      "SFC",
+      "wallabyjs",
+      "majestic"
+    ]
   }
 }
