@@ -22,12 +22,12 @@ export default class AdmZipProvider extends ZipProvider {
 
     async getEntries(zip: string | Buffer): Promise<ZipEntryInterface[]> {
         const adm = new AdmZip(zip);
-        return adm.getEntries();
+        return (adm.getEntries() as unknown as ZipEntryInterface[]);
     }
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
         const adm = new AdmZip(zip);
-        return this.sanitizedExtraction(adm.getEntry(target), outputPath);
+        return this.sanitizedExtraction(adm.getEntry(target)!, outputPath);
     }
 
     private async sanitizedExtraction(entry: IZipEntry, outputPath: string): Promise<void> {
