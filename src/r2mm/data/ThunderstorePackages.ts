@@ -44,12 +44,16 @@ export default class ThunderstorePackages {
     public static handlePackageApiResponse(response: ApiResponse) {
         ApiCacheUtils.storeLastRequest(response.data);
         let tsMods: ThunderstoreMod[] = [];
-        response.data.forEach((mod: any) => {
-            let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
-            if (!ThunderstorePackages.EXCLUSIONS.has(tsMod.getFullName())) {
-                tsMods.push(tsMod.parseFromThunderstoreData(mod));
-            }
-        });
+        if (response.data !== undefined) {
+            response.data.forEach((mod: any) => {
+                let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
+                if (!ThunderstorePackages.EXCLUSIONS.has(tsMod.getFullName())) {
+                    tsMods.push(tsMod.parseFromThunderstoreData(mod));
+                }
+            });
+        } else {
+            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Response data from API was undefined: ${JSON.stringify(response)}`);
+        }
         ThunderstorePackages.PACKAGES = tsMods;
     }
 

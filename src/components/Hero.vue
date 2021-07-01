@@ -1,11 +1,11 @@
 <template>
-    <section :class="['hero', heroType]">
+    <section :class="['hero', heroType]" ref="section">
         <div class="hero-body non-selectable">
             <div class="container">
-                <h1 class="title">
+                <h1 class="title" ref="title">
                     {{title}}
                 </h1>
-                <h2 class="subtitle">
+                <h2 class="subtitle" ref="subtitle">
                     {{subtitle}}
                 </h2>
             </div>

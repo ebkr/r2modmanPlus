@@ -1,11 +1,11 @@
 <template>
-    <a v-if="target === 'file'" @click="selectFile()" class='target-link'>
+    <a v-if="target === 'file'" @click="selectFile()" class='target-link' data-semantic="file-selection">
         <slot></slot>
     </a>
-    <a v-else-if="target !== null" @click="openLink()" class='target-link'>
+    <a v-else-if="target !== null" @click="openLink()" class='target-link' data-semantic="external-link">
         <slot></slot>
     </a>
-    <a class='target-link' v-else-if="target === null">
+    <a class='target-link' v-else-if="target === null" data-semantic="visual-indicator">
         <slot></slot>
     </a>
 </template>
@@ -29,7 +29,7 @@
         }
 
         selectFile() {
-            LinkProvider.instance.openLink(this.url!)
+            LinkProvider.instance.selectFile(this.url!)
         }
     }
 </script>

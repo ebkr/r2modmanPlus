@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, and Mechanica.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica and Muck.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installs allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.17
+- Added Muck support.
+
 ### 3.1.16
 - Added support for ROUNDS and Mechanica.
 - Overhauled local imports. Manifest files are no longer required!
@@ -82,10 +85,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Fixed Outward EGS authentication issue.
 - Preloader fix now works as expected.
 - Navigation no hides when scrolling (Thanks @MSchmoecker).
-
-### 3.1.14
-- New modding community TaleSpire has joined the scene.
-- When importing mods that have their own configs, the imported config is now used as expected.
 
 ## Screenshots
 

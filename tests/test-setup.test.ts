@@ -4,6 +4,9 @@ import FsProvider from '../src/providers/generic/file/FsProvider';
 import Profile from '../src/model/Profile';
 import FileUtils from '../src/utils/FileUtils';
 import NodeFs from '../src/providers/generic/file/NodeFs';
+import StubFsProvider from '../test/jest/__tests__/stubs/providers/stub.FsProvider';
+import StubInteractionProvider from '../test/jest/__tests__/stubs/providers/stub.InteractionProvider';
+import InteractionProvider from '../src/providers/ror2/system/InteractionProvider';
 
 export default class TestSetup {
 
@@ -18,6 +21,14 @@ export default class TestSetup {
         const fs = FsProvider.instance;
         await FileUtils.emptyDirectory(PathResolver.APPDATA_DIR);
         await fs.rmdir(PathResolver.APPDATA_DIR);
+    }
+
+    public static stubSetUp() {
+        const fs = new StubFsProvider();
+        FsProvider.provide(() => fs);
+
+        const interactionProvider = new StubInteractionProvider();
+        InteractionProvider.provide(() => interactionProvider);
     }
 
 }

@@ -37,7 +37,8 @@ export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
     H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")],
     ThunderstoreBeta: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
     ROUNDS: [new BepInExPackageMapping("BepInEx-BepInExPack_ROUNDS", "BepInExPack_ROUNDS")],
-    Mechanica: [new BepInExPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA")]
+    Mechanica: [new BepInExPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA")],
+    Muck: [new BepInExPackageMapping("BepInEx-BepInExPack_Muck", "BepInExPack_Muck")]
 }
 
 export default class ProfileInstaller extends ProfileInstallerProvider {

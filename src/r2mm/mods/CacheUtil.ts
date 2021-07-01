@@ -37,6 +37,7 @@ export default class CacheUtil {
             }
 
             const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
+            await FileUtils.ensureDirectory(cacheDirectory);
             for (const folder of (await fs.readdir(cacheDirectory))) {
                 if ((await fs.stat(path.join(cacheDirectory, folder))).isDirectory()) {
                     if (this.hasNoVersions(folder, activeModSet)) {
