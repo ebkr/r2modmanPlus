@@ -1,24 +1,25 @@
 {
-  "extends": "@quasar/app/tsconfig-preset",
-  "compilerOptions": {
-    "allowJs": true,
-    "sourceMap": true,
-    "target": "ES2020",
-    "strict": true,
-    "experimentalDecorators": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "types": [
-      "quasar",
-      "node",
-      "mocha",
-      "jest"
-    ],
-    "allowSyntheticDefaultImports": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "extends": "@quasar/app/tsconfig-preset",
+    "compilerOptions": {
+        "allowJs": true,
+        "sourceMap": true,
+        "target": "ES2020",
+        "strict": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "types": [
+            "quasar",
+            "node",
+            "mocha",
+            "jest"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }
