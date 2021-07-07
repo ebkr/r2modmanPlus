@@ -228,9 +228,13 @@ export default class Splash extends Vue {
                 }).then(async response => {
                     // Temporary. Creates a new standard profile until Profiles section is completed
                     new Profile('Default');
-                    ThunderstorePackages.handlePackageApiResponse(response);
-                    this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-                    await this.moveToNextScreen();
+                    if (response.data === undefined) {
+                        throw new Error("Response was undefined, retry for appropriate response.");
+                    } else {
+                        ThunderstorePackages.handlePackageApiResponse(response);
+                        this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
+                        await this.moveToNextScreen();
+                    }
                 }).catch((e_) => {
                     console.log(e_);
                     this.isOffline = true;
