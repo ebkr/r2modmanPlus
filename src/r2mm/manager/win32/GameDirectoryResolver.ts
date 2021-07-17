@@ -17,7 +17,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
     public async getSteamDirectory(): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-        if (settings.getContext().global.steamDirectory != null) {
+        if (settings.getContext().global.steamDirectory != null && settings.getContext().global.steamDirectory!.length > 0) {
             return settings.getContext().global.steamDirectory!;
         }
         try {
