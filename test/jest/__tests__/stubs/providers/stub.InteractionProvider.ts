@@ -25,6 +25,4 @@ export default class StubInteractionProvider extends InteractionProvider {
         throw new Error("Stub access must be mocked or spied");
     }
 
-
-
 }

@@ -31,7 +31,7 @@ export interface InteractionProviderFolderProperties {
 
     title: string,
     defaultPath: string,
-    buttonLabel: string
+    buttonLabel: string,
 
 }
 
@@ -39,6 +39,10 @@ export interface InteractionProviderFileProperties {
 
     title: string,
     buttonLabel: string,
-    filters: string[]
+    filters: {
+        extensions?: string[],
+        name: string
+    }[],
+    defaultPath?: string
 
 }

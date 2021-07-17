@@ -58,7 +58,7 @@
     "@quasar/quasar-app-extension-testing": "^1.0.3",
     "@quasar/quasar-app-extension-testing-unit-jest": "^2.2.2",
     "@quasar/quasar-app-extension-typescript": "^1.0.2",
-    "@types/adm-zip": "^0.4.32",
+    "@types/adm-zip": "^0.4.34",
     "@types/async-lock": "^1.1.2",
     "@types/chai": "^4.2.11",
     "@types/fs-extra": "^8.0.1",

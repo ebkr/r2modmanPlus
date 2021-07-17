@@ -14,7 +14,7 @@ export default class InteractionProviderImpl extends InteractionProvider {
         return new Promise(resolve => {
 
             const fileOpts = options as unknown as OpenDialogOptions;
-            fileOpts.properties = ['openDirectory'];
+            fileOpts.properties = ['openDirectory', 'showHiddenFiles'];
 
 
             ipcRenderer.once('receive-open-dialog', (_, args) => {
@@ -24,12 +24,11 @@ export default class InteractionProviderImpl extends InteractionProvider {
         });
     }
 
-
     async selectFile(options: InteractionProviderFileProperties): Promise<string[]> {
         return new Promise(resolve => {
 
             const fileOpts = options as unknown as OpenDialogOptions;
-            fileOpts.properties = ['openFile'];
+            fileOpts.properties = ['openFile', 'showHiddenFiles'];
 
             ipcRenderer.once('receive-open-dialog', (_, args) => {
                 resolve(args.filePaths);
