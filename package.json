@@ -26,7 +26,7 @@
     "@quasar/extras": "^1.0.0",
     "adm-zip": "^0.5.5",
     "async-lock": "^1.2.6",
-    "axios": "^0.21.1",
+    "axios": "^0.19.2",
     "bulma": "^0.8.0",
     "bulma-checkradio": "^1.1.1",
     "bulma-divider": "^0.2.0",
