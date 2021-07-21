@@ -217,8 +217,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
         }
 
-        this.sortDependencyOrder(comboList);
-
         const settings = await ManagerSettings.getSingleton(game);
 
         let downloadCount = 0;
