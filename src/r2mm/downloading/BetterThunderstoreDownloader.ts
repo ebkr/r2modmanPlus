@@ -81,6 +81,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return builder;
     }
 
+    public sortDependencyOrder(deps: ThunderstoreCombo[]) {
+        deps.sort((a, b) => {
+            if (a.getVersion().getDependencies().find(value => value.startsWith(b.getMod().getFullName() + "-"))) {
+                return 1;
+            } else {
+                return -1;
+            }
+        })
+    }
+
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
         const dependencies: ThunderstoreCombo[] = [];
         mods.forEach(value => {
@@ -109,6 +119,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
+        this.sortDependencyOrder(dependencies);
 
         let downloadCount = 0;
         const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
@@ -133,6 +144,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
+        this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
         combo.setVersion(modVersion);
@@ -156,6 +168,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 if (!isModpack) {
                     // If not modpack, get latest
                     dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+                    this.sortDependencyOrder(dependencies);
                     downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
                 }
                 // If no dependencies, end here.
@@ -203,6 +216,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 }
             }
         }
+
+        this.sortDependencyOrder(comboList);
 
         const settings = await ManagerSettings.getSingleton(game);
 
