@@ -298,7 +298,7 @@ export default class GameSelectionScreen extends Vue {
             }
             GameRunnerProvider.provide(() => gameRunner);
 
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
             if (directoryResolver === undefined) {
                 this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
                 return;
@@ -327,7 +327,7 @@ export default class GameSelectionScreen extends Vue {
             }
             GameRunnerProvider.provide(() => gameRunner);
 
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
             if (directoryResolver === undefined) {
                 this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
                 return;

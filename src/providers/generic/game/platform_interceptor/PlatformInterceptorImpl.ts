@@ -11,6 +11,7 @@ import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectory
 import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import MLSteamGameRunnerProvider_Win from 'src/providers/generic/game/steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -22,9 +23,7 @@ type RunnerType = {
 
 type ResolverType = {
     [platkey in StorePlatform]: {
-        [loader: number]: {
-            [procKey: string]: GameDirectoryResolverProvider
-        }
+        [procKey: string]: GameDirectoryResolverProvider
     }
 };
 
@@ -33,6 +32,9 @@ const RUNNERS: RunnerType = {
         [PackageLoader.BEPINEX]: {
             "win32": new GameRunnerProviderImpl_Steam_Win(),
             "linux": new GameRunnerProviderImpl_Steam_Linux()
+        },
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new MLSteamGameRunnerProvider_Win()
         }
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
@@ -51,22 +53,16 @@ const RUNNERS: RunnerType = {
 
 const RESOLVERS: ResolverType = {
     [StorePlatform.STEAM]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new GameDirectoryResolverImpl_Steam_Win,
-            "linux": new GameDirectoryResolverImpl_Steam_Linux()
-        }
+        "win32": new GameDirectoryResolverImpl_Steam_Win,
+        "linux": new GameDirectoryResolverImpl_Steam_Linux()
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new EGSDirectoryResolver(),
-            "linux": new DRMFreeDirectoryResolver()
-        }
+        "win32": new EGSDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
     },
     [StorePlatform.OTHER]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new DRMFreeDirectoryResolver(),
-            "linux": new DRMFreeDirectoryResolver()
-        }
+        "win32": new DRMFreeDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
     }
 };
 
@@ -79,9 +75,9 @@ export default class PlatformInterceptorImpl extends PlatformInterceptorProvider
         return undefined;
     }
 
-    public getDirectoryResolverForPlatform(platform: StorePlatform, loader: PackageLoader): GameDirectoryResolverProvider | undefined {
-        if (RESOLVERS[platform][loader][process.platform] !== undefined) {
-            return RESOLVERS[platform][loader][process.platform];
+    public getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined {
+        if (RESOLVERS[platform][process.platform] !== undefined) {
+            return RESOLVERS[platform][process.platform];
         }
         return undefined;
     }

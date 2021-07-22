@@ -19,6 +19,6 @@ export default abstract class PlatformInterceptorProvider {
     }
 
     public abstract getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined;
-    public abstract getDirectoryResolverForPlatform(platform: StorePlatform, loader: PackageLoader): GameDirectoryResolverProvider | undefined;
+    public abstract getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined;
 
 }
