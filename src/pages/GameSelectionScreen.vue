@@ -291,14 +291,14 @@ export default class GameSelectionScreen extends Vue {
             const settings = await ManagerSettings.getSingleton(this.selectedGame);
             await settings.setLastSelectedGame(this.selectedGame);
 
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (gameRunner === undefined) {
                 this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
                 return;
             }
             GameRunnerProvider.provide(() => gameRunner);
 
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (directoryResolver === undefined) {
                 this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
                 return;
@@ -320,14 +320,14 @@ export default class GameSelectionScreen extends Vue {
             await settings.setDefaultGame(this.selectedGame);
             await settings.setDefaultStorePlatform(this.selectedPlatform);
 
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (gameRunner === undefined) {
                 this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
                 return;
             }
             GameRunnerProvider.provide(() => gameRunner);
 
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (directoryResolver === undefined) {
                 this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
                 return;

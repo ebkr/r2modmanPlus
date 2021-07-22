@@ -2,6 +2,7 @@ import { StorePlatform } from '../../model/game/StorePlatform';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
 import { GameInstanceType } from '../../model/game/GameInstanceType';
+import { PackageLoader } from '../../model/installing/PackageLoader';
 
 export default class Game {
 
@@ -17,13 +18,14 @@ export default class Game {
     private readonly _gameImage: string;
     private readonly _displayMode: GameSelectionDisplayMode;
     private readonly _instanceType: GameInstanceType;
+    private readonly _packageLoader: PackageLoader;
 
     private _activePlatform: StorePlatformMetadata;
 
     constructor(displayName: string, internalFolderName: string, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
-                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType) {
+                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader) {
 
         this._displayName = displayName;
         this._internalFolderName = internalFolderName;
@@ -38,6 +40,7 @@ export default class Game {
         this._gameImage = gameImage;
         this._displayMode = displayMode;
         this._instanceType = instanceType;
+        this._packageLoader = packageLoader;
     }
 
     get displayName(): string {
@@ -94,5 +97,9 @@ export default class Game {
 
     get instanceType(): GameInstanceType {
         return this._instanceType;
+    }
+
+    get packageLoader(): PackageLoader {
+        return this._packageLoader;
     }
 }

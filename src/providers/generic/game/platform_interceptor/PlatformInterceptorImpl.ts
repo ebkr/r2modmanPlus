@@ -10,49 +10,78 @@ import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
 import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
+import { PackageLoader } from '../../../../model/installing/PackageLoader';
 
-const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvider}} = {
-    [StorePlatform.STEAM]: {
-        "win32": new GameRunnerProviderImpl_Steam_Win(),
-        "linux": new GameRunnerProviderImpl_Steam_Linux()
-    },
-    [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new EgsRunnerProvider(),
-        "linux": new EgsRunnerProvider(),
-    },
-    [StorePlatform.OTHER]: {
-        "win32": new DirectExecutableGameRunnerProvider(),
-        "linux": new DirectExecutableGameRunnerProvider(),
+type RunnerType = {
+    [platkey in StorePlatform]: {
+        [loader: number]: {
+            [procKey: string]: GameRunnerProvider
+        }
     }
 };
 
-const RESOLVERS: {[platKey in StorePlatform]: {[procKey: string]: GameDirectoryResolverProvider}} = {
+type ResolverType = {
+    [platkey in StorePlatform]: {
+        [loader: number]: {
+            [procKey: string]: GameDirectoryResolverProvider
+        }
+    }
+};
+
+const RUNNERS: RunnerType = {
     [StorePlatform.STEAM]: {
-        "win32": new GameDirectoryResolverImpl_Steam_Win,
-        "linux": new GameDirectoryResolverImpl_Steam_Linux()
+        [PackageLoader.BEPINEX]: {
+            "win32": new GameRunnerProviderImpl_Steam_Win(),
+            "linux": new GameRunnerProviderImpl_Steam_Linux()
+        }
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new EGSDirectoryResolver(),
-        "linux": new DRMFreeDirectoryResolver()
+        [PackageLoader.BEPINEX]: {
+            "win32": new EgsRunnerProvider(),
+            "linux": new EgsRunnerProvider(),
+        }
     },
     [StorePlatform.OTHER]: {
-        "win32": new DRMFreeDirectoryResolver(),
-        "linux": new DRMFreeDirectoryResolver()
+        [PackageLoader.BEPINEX]: {
+            "win32": new DirectExecutableGameRunnerProvider(),
+            "linux": new DirectExecutableGameRunnerProvider(),
+        }
+    }
+};
+
+const RESOLVERS: ResolverType = {
+    [StorePlatform.STEAM]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new GameDirectoryResolverImpl_Steam_Win,
+            "linux": new GameDirectoryResolverImpl_Steam_Linux()
+        }
+    },
+    [StorePlatform.EPIC_GAMES_STORE]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new EGSDirectoryResolver(),
+            "linux": new DRMFreeDirectoryResolver()
+        }
+    },
+    [StorePlatform.OTHER]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new DRMFreeDirectoryResolver(),
+            "linux": new DRMFreeDirectoryResolver()
+        }
     }
 };
 
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
-    public getRunnerForPlatform(platform: StorePlatform): GameRunnerProvider | undefined {
-        if (RUNNERS[platform][process.platform] !== undefined) {
-            return RUNNERS[platform][process.platform];
+    public getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined {
+        if (RUNNERS[platform][loader][process.platform] !== undefined) {
+            return RUNNERS[platform][loader][process.platform];
         }
         return undefined;
     }
 
-    public getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined {
-        if (RESOLVERS[platform][process.platform] !== undefined) {
-            return RESOLVERS[platform][process.platform];
+    public getDirectoryResolverForPlatform(platform: StorePlatform, loader: PackageLoader): GameDirectoryResolverProvider | undefined {
+        if (RESOLVERS[platform][loader][process.platform] !== undefined) {
+            return RESOLVERS[platform][loader][process.platform];
         }
         return undefined;
     }
