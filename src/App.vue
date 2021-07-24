@@ -43,8 +43,6 @@ import LoggerProvider, { LogSeverity } from './providers/ror2/logging/LoggerProv
 import ManagerInformation from './_managerinf/ManagerInformation';
 import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';
 import LocalModInstaller from './r2mm/installing/LocalModInstaller';
-import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
-import ProfileInstaller from './r2mm/installing/ProfileInstaller';
 import { Logger } from './r2mm/logging/Logger';
 import FileUtils from './utils/FileUtils';
 import LinkProvider from './providers/components/LinkProvider';
@@ -64,7 +62,10 @@ import Profile from './model/Profile';
 import ManifestV2 from './model/ManifestV2';
 import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
-
+import ProfileInstallerResolverProvider from './providers/generic/installing/ProfileInstallerResolverProvider';
+import ProfileInstallerResolverImpl from './r2mm/installing/profile_installers/ProfileInstallerResolverImpl';
+import ComputedProfileInstaller from './r2mm/installing/profile_installers/ComputedProfileInstaller';
+import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 @Component
 export default class App extends Vue {
 
@@ -139,8 +140,7 @@ export default class App extends Vue {
 
     beforeCreate() {
 
-        const fs = new NodeFs();
-        FsProvider.provide(() => fs);
+        FsProvider.provide(() => new NodeFs());
 
         ProfileProvider.provide(() => new ProfileImpl());
         LogOutputProvider.provide(() => LogOutput.getSingleton());
@@ -150,7 +150,8 @@ export default class App extends Vue {
 
         ZipProvider.provide(() => new AdmZipProvider());
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
-        ProfileInstallerProvider.provide(() => new ProfileInstaller());
+        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller());
+        ProfileInstallerResolverProvider.provide(() => new ProfileInstallerResolverImpl());
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());
         InteractionProvider.provide(() => new InteractionProviderImpl());

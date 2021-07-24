@@ -59,7 +59,7 @@
     import ConfigFile from '../../model/file/ConfigFile';
     import Profile from '../../model/Profile';
     import * as path from 'path';
-    import BepInExTree from '../../model/file/BepInExTree';
+    import FileTree from '../../model/file/FileTree';
     import R2Error from '../../model/errors/R2Error';
     import { ExpandableCard, Hero } from '../all';
     import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
@@ -103,7 +103,7 @@
         async created() {
             const fs = FsProvider.instance;
             const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
-            const bepInExTree = await BepInExTree.buildFromLocation(configLocation);
+            const bepInExTree = await FileTree.buildFromLocation(configLocation);
             if (bepInExTree instanceof R2Error) {
                 return;
             }
