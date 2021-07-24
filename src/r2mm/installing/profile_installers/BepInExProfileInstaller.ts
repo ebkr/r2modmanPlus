@@ -167,10 +167,14 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
         if (files instanceof R2Error) {
             return files;
         }
-        return this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
+        const result = await this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
+        if (result instanceof R2Error) {
+            return result;
+        }
+        return null;
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | null> {
+    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | string[]> {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
@@ -189,7 +193,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                         profileLocation
                     );
                     // Copy is complete, end recursive tree.
-                    return null;
+                    return [];
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(
@@ -243,7 +247,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
         const directories = tree.getDirectories();
         for (const directory of directories) {
-            const resolveError: R2Error | null = await this.resolveBepInExTree(
+            const resolveError: R2Error | string[] = await this.resolveBepInExTree(
                 profile,
                 path.join(location, directory.getDirectoryName()),
                 directory.getDirectoryName(),
@@ -254,7 +258,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                 return resolveError;
             }
         }
-        return null;
+        return [];
     }
 
     async installModLoader(bieLocation: string, bepInExVariant: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
