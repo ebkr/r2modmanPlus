@@ -46,6 +46,10 @@ export default class FileTree {
         this.files = [...this.files, path.join(location, file)];
     }
 
+    public removeFiles(...args: string[]) {
+        this.files = this.files.filter(value => !args.map(arg => arg.toLowerCase()).includes(value.toLowerCase()));
+    }
+
     private async addDirectory(location: string, directoryName: string): Promise<R2Error | null> {
         const directory: FileTree | R2Error = await FileTree.buildFromLocation(path.join(location, directoryName));
         if (directory instanceof R2Error) {

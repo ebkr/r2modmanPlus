@@ -174,7 +174,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
         return null;
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | string[]> {
+    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
@@ -193,7 +193,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                         profileLocation
                     );
                     // Copy is complete, end recursive tree.
-                    return [];
+                    return;
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(
@@ -247,7 +247,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
         const directories = tree.getDirectories();
         for (const directory of directories) {
-            const resolveError: R2Error | string[] = await this.resolveBepInExTree(
+            const resolveError: R2Error | void = await this.resolveBepInExTree(
                 profile,
                 path.join(location, directory.getDirectoryName()),
                 directory.getDirectoryName(),
@@ -258,7 +258,6 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                 return resolveError;
             }
         }
-        return [];
     }
 
     async installModLoader(bieLocation: string, bepInExVariant: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {

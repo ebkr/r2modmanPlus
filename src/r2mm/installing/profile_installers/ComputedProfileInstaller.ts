@@ -58,7 +58,7 @@ export default class ComputedProfileInstaller extends ProfileInstallerProvider {
             .installModLoader(bieLocation, modLoaderMapping, profile);
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | string[]> {
+    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         return (await ProfileInstallerResolverProvider.instance.determineLoader(GameManager.activeGame, mod))
             .resolveBepInExTree(profile, location, folderName, mod, tree);
     }
