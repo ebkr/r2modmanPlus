@@ -213,6 +213,7 @@
     import GameManager from '../../model/game/GameManager';
     import Game from '../../model/game/Game';
     import Timeout = NodeJS.Timeout;
+    import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 
     @Component({
         components: {
@@ -302,6 +303,7 @@
                 return;
             }
             await this.$store.dispatch("updateModList",updatedList);
+            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             this.filterModList();
         }
 
@@ -313,6 +315,7 @@
                 return;
             }
             await this.$store.dispatch("updateModList", updatedList);
+            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             this.filterModList();
         }
 
@@ -352,6 +355,7 @@
                 return modList;
             }
             await this.$store.dispatch("updateModList",modList);
+            await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
         }
 
         async disableMod(vueMod: any) {
@@ -390,7 +394,8 @@
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList", updatedList);
+            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             this.filterModList();
         }
 
@@ -421,7 +426,8 @@
                 this.$emit('error', result);
                 return;
             }
-            await this.$store.dispatch("updateModList",result);
+            await this.$store.dispatch("updateModList", result);
+            await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
             this.filterModList();
         }
 
@@ -497,6 +503,7 @@
                 return updatedList;
             }
             await this.$store.dispatch("updateModList",updatedList);
+            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             this.filterModList();
         }
 

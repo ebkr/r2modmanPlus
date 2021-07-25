@@ -1,12 +1,5 @@
-export default class StateTracker {
+export default interface StateTracker {
 
-    private readonly _currentState: Map<string, string>;
+    currentState: [string, string][];
 
-    get currentState(): Map<string, string> {
-        return this._currentState;
-    }
-
-    constructor(currentState: Map<string, string>) {
-        this._currentState = currentState;
-    }
 }

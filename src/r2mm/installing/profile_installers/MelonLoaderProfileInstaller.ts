@@ -12,6 +12,7 @@ import FileUtils from '../../../utils/FileUtils';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import yaml from "yaml";
 import ModFileTracker from '../../../model/installing/ModFileTracker';
+import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
 
 const INSTALLATION_RULES = {
     Mods: {_files: [".dll"]},
@@ -70,6 +71,26 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             return result;
         }
         // TODO: Install files.
+        await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
+
+        try {
+            const modStateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+            if (await FsProvider.instance.exists(modStateFilePath)) {
+                const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
+                const tracker: ModFileTracker = yaml.parse(fileContents);
+                for (const [key, value] of tracker.files) {
+                    await FileUtils.ensureDirectory(path.dirname(path.join(profile.getPathOfProfile(), value)));
+                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), value))) {
+                        await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), value));
+                    }
+                    await FsProvider.instance.copyFile(key, path.join(profile.getPathOfProfile(), value))
+                }
+            }
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
+        }
+
         return null;
     }
 
@@ -148,8 +169,7 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             }
         })
 
-        this.addToStateFile(mod, fileRelocations)
-        console.log(fileRelocations);
+        await this.addToStateFile(mod, fileRelocations, profile)
 
         return;
     }
@@ -172,24 +192,30 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
         return rebuild;
     }
 
-    private async addToStateFile(mod: ManifestV2, files: Map<string, string>) {
-        await FileUtils.ensureDirectory(path.join(PathResolver.MOD_ROOT, "_state"));
+    private async addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
+        await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), "_state"));
         let existing: Map<string, string> = new Map();
-        if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, "_state", `${mod.getName()}-state.yml`))) {
-            const read = await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, "_state", `${mod.getName()}-state.yml`));
-            existing = (yaml.parse(read.toString()) as ModFileTracker).files;
+        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
+            const read = await FsProvider.instance.readFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
+            const tracker = (yaml.parse(read.toString()) as ModFileTracker);
+            existing = new Map(tracker.files);
         }
         files.forEach((value, key) => {
             existing.set(key, value);
         })
-        const mft = new ModFileTracker(mod.getName(), existing);
-        await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
+        const mft: ModFileTracker = {
+            modName: mod.getName(),
+            files: Array.from(existing.entries())
+        }
+        await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
     }
 
     async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, "_state", `${mod.getName()}-state.yml`))) {
-            await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, "_state", `${mod.getName()}-state.yml`));
+        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
+            // TODO: Read state file to know which mods to remove
+            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
         }
+        // TODO: Apply ConflictManagementProvider to re-populate any loose files from a list of removed ones.
         return Promise.resolve(null);
     }
 

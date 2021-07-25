@@ -114,6 +114,7 @@
     import { Progress } from '../all';
     import Game from '../../model/game/Game';
     import GameManager from '../../model/game/GameManager';
+    import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 
     let assignId = 0;
 
@@ -229,6 +230,7 @@
                     const modList = await ProfileModList.getModList(this.contextProfile!);
                     if (!(modList instanceof R2Error)) {
                         await this.$store.dispatch('updateModList', modList);
+                        await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                     }
                 });
             });
@@ -269,6 +271,7 @@
                         const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('updateModList', modList);
+                            await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                         }
                     });
                 });
