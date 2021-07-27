@@ -13,6 +13,7 @@ import FsProvider from '../../../providers/generic/file/FsProvider';
 import yaml from "yaml";
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
+import ModMode from '../../../model/enums/ModMode';
 
 const INSTALLATION_RULES = {
     Mods: {_files: [".dll"]},
@@ -40,16 +41,38 @@ const INSTALLATION_RULES = {
  */
 export default class MelonLoaderProfileInstaller extends ProfileInstallerProvider {
 
-    async applyModMode(mod: ManifestV2, tree: FileTree, location: string, mode: number): Promise<R2Error | void> {
-        return Promise.resolve(undefined);
+    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+        try {
+            const modStateFilePath = path.join(location, "_state", `${mod.getName()}-state.yml`);
+            if (await FsProvider.instance.exists(modStateFilePath)) {
+                const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
+                const tracker: ModFileTracker = yaml.parse(fileContents);
+                for (const [key, value] of tracker.files) {
+                    if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
+                        if (mode === ModMode.DISABLED) {
+                            if (await FsProvider.instance.exists(path.join(location, value))) {
+                                await FsProvider.instance.rename(path.join(location, value), path.join(location, value + ".old"));
+                            }
+                        } else {
+                            if (await FsProvider.instance.exists(path.join(location, value + ".old"))) {
+                                await FsProvider.instance.rename(path.join(location, value + ".old"), path.join(location, value));
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            const err: Error = e;
+            return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
+        }
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return Promise.resolve(undefined);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return Promise.resolve(undefined);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.ENABLED);
     }
 
     async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
@@ -70,7 +93,7 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
         if (result instanceof R2Error) {
             return result;
         }
-        // TODO: Install files.
+
         await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
 
         try {

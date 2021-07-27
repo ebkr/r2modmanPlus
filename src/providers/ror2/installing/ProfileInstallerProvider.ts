@@ -52,7 +52,7 @@ export default abstract class ProfileInstallerProvider {
      * @param location  The location of the mod within a BepInEx sub-folder.
      * @param mode      The ModMode number. {@class model/enums/ModMode}
      */
-    abstract applyModMode(mod: ManifestV2, tree: FileTree, location: string, mode: number): Promise<R2Error | void>;
+    abstract applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void>;
 
     /**
      * Get descendant files of a given location.

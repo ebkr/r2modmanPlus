@@ -87,10 +87,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
         if (files instanceof R2Error) {
             return files;
         }
-        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
-        if (applyError instanceof R2Error) {
-            return applyError;
-        }
+        return await this.applyModMode(mod, files, profile, bepInExLocation, ModMode.DISABLED);
     }
 
     public async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
@@ -99,18 +96,14 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
         if (files instanceof R2Error) {
             return Promise.resolve(files);
         }
-        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
-        if (applyError instanceof R2Error) {
-            return Promise.resolve(applyError);
-        }
-
+        return await this.applyModMode(mod, files, profile, bepInExLocation, ModMode.ENABLED);
     }
 
-    async applyModMode(mod: ManifestV2, tree: FileTree, location: string, mode: number): Promise<R2Error | void> {
+    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         const files: string[] = [];
         for (const directory of tree.getDirectories()) {
             if (directory.getDirectoryName() !== mod.getName()) {
-                const applyError = await this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+                const applyError = await this.applyModMode(mod, directory, profile, path.join(location, directory.getDirectoryName()), mode);
                 if (applyError instanceof R2Error) {
                     return applyError;
                 }

@@ -10,9 +10,9 @@ import path from 'path';
 
 export default class ComputedProfileInstaller extends ProfileInstallerProvider {
 
-    async applyModMode(mod: ManifestV2, tree: FileTree, location: string, mode: number): Promise<R2Error | void> {
+    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         return (await ProfileInstallerResolverProvider.instance.determineLoader(GameManager.activeGame, mod))
-            .applyModMode(mod, tree, location, mode);
+            .applyModMode(mod, tree, profile, location, mode);
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
