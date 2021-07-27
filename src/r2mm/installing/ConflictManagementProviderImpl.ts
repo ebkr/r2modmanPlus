@@ -58,7 +58,11 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
             }
             const modState: ModFileTracker = yaml.parse(stateFileContents);
             modState.files.forEach(([key, value]) => {
-                overallState.set(value, mod.getName());
+                if (mod.isEnabled()) {
+                    overallState.set(value, mod.getName());
+                } else {
+                    overallState.set(value + ".manager.disabled", mod.getName());
+                }
                 modStates.set(mod.getName(), modState);
                 modNameToManifestV2.set(mod.getName(), mod);
             });
@@ -72,23 +76,19 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
                 copyAcross = true;
             } else if (stateMap.get(file) !== overallState.get(file)) {
                 copyAcross = true;
+            } else if (!(await FsProvider.instance.exists(path.join(path.join(profile.getPathOfProfile(), file))))) {
+                copyAcross = true;
             }
             if (copyAcross) {
                 const modFiles = modStates.get(overallState.get(file)!)!;
                 for (const [key, value] of modFiles.files) {
                     if (value === file) {
                         await FileUtils.ensureDirectory(path.dirname(path.join(profile.getPathOfProfile(), file)));
-                        const mod = modNameToManifestV2.get(overallState.get(file)!)!;
                         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file))) {
                             await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), file));
                         }
-                        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file + ".old"))) {
-                            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), file + ".old"));
-                        }
-                        if (mod.isEnabled()) {
+                        if (!file.toLowerCase().endsWith(".manager.disabled")) {
                             await FsProvider.instance.copyFile(key, path.join(profile.getPathOfProfile(), file));
-                        } else {
-                            await FsProvider.instance.copyFile(key, path.join(profile.getPathOfProfile(), file + ".old"));
                         }
                         break;
                     }

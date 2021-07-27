@@ -51,11 +51,12 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
                         if (mode === ModMode.DISABLED) {
                             if (await FsProvider.instance.exists(path.join(location, value))) {
-                                await FsProvider.instance.rename(path.join(location, value), path.join(location, value + ".old"));
+                                await FsProvider.instance.unlink(path.join(location, value));
                             }
                         } else {
-                            if (await FsProvider.instance.exists(path.join(location, value + ".old"))) {
-                                await FsProvider.instance.rename(path.join(location, value + ".old"), path.join(location, value));
+                            if (await FsProvider.instance.exists(path.join(location, value))) {
+                                await FsProvider.instance.unlink(path.join(location, value));
+                                await FsProvider.instance.copyFile(key, path.join(location, value));
                             }
                         }
                     }
@@ -234,7 +235,15 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
     }
 
     async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
+        const stateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+        if (await FsProvider.instance.exists(stateFilePath)) {
+            const read = await FsProvider.instance.readFile(stateFilePath);
+            const tracker = (yaml.parse(read.toString()) as ModFileTracker);
+            for (const [cacheFile, installFile] of tracker.files) {
+                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), installFile))) {
+                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), installFile));
+                }
+            }
             // TODO: Read state file to know which mods to remove
             await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
         }
