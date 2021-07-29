@@ -12,6 +12,9 @@ import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableG
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import MLSteamGameRunnerProvider_Win from 'src/providers/generic/game/steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
+import MLDirectExecutableGameRunnerProvider
+    from 'src/providers/generic/game/steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
+import MLSteamGameRunnerProvider_Linux from 'src/providers/generic/game/steam/linux/MLSteamGameRunnerProvider_Linux';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -34,13 +37,20 @@ const RUNNERS: RunnerType = {
             "linux": new GameRunnerProviderImpl_Steam_Linux()
         },
         [PackageLoader.MELON_LOADER]: {
-            "win32": new MLSteamGameRunnerProvider_Win()
+            "win32": new MLSteamGameRunnerProvider_Win(),
+            "linux": new MLSteamGameRunnerProvider_Linux(),
         }
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
         [PackageLoader.BEPINEX]: {
             "win32": new EgsRunnerProvider(),
             "linux": new EgsRunnerProvider(),
+        }
+    },
+    [StorePlatform.OCULUS_STORE]: {
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new MLDirectExecutableGameRunnerProvider(),
+            "linux": new MLDirectExecutableGameRunnerProvider(),
         }
     },
     [StorePlatform.OTHER]: {
@@ -58,6 +68,10 @@ const RESOLVERS: ResolverType = {
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
         "win32": new EGSDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
+    },
+    [StorePlatform.OCULUS_STORE]: {
+        "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver()
     },
     [StorePlatform.OTHER]: {
