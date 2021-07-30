@@ -51,7 +51,7 @@
                 </ul>
                 <p class='menu-label'>Other</p>
                 <ul class='menu-list'>
-                    <li>
+                    <li v-if="canShowConfigEditor">
                         <a href="#" :class="[view === 'config-editor' ? 'is-active' : '']" data-ref="config-editor" @click="emitClick($event.target)">
                             <i class="fas fa-edit icon--margin-right"/>Config editor
                         </a>
@@ -76,20 +76,21 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import R2Error from '../../model/errors/R2Error';
-    import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ModLinker from '../../r2mm/manager/ModLinker';
-    import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import ManifestV2 from "../../model/ManifestV2";
-    import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
-    import ManagerInformation from '../../_managerinf/ManagerInformation';
-    import Game from '../../model/game/Game';
-    import GameManager from '../../model/game/GameManager';
-    import Profile from '../../model/Profile';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import R2Error from '../../model/errors/R2Error';
+import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ModLinker from '../../r2mm/manager/ModLinker';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import ManifestV2 from '../../model/ManifestV2';
+import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import Game from '../../model/game/Game';
+import GameManager from '../../model/game/GameManager';
+import Profile from '../../model/Profile';
+import { PackageLoader } from 'src/model/installing/PackageLoader';
 
-    @Component
+@Component
     export default class NavigationMenu extends Vue {
 
         private activeGame!: Game;
@@ -114,6 +115,10 @@
 
         get appName(): string {
             return ManagerInformation.APP_NAME;
+        }
+
+        get canShowConfigEditor() {
+            return this.activeGame.packageLoader === PackageLoader.BEPINEX;
         }
 
         emitClick(element: any) {
