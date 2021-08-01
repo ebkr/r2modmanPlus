@@ -66,8 +66,7 @@ import ProfileInstallerResolverProvider from './providers/generic/installing/Pro
 import ProfileInstallerResolverImpl from './r2mm/installing/profile_installers/ProfileInstallerResolverImpl';
 import ComputedProfileInstaller from './r2mm/installing/profile_installers/ComputedProfileInstaller';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
-import ConflictManagementProviderImpl from './r2mm/installing/ConflictManagementProviderImpl';
-import ConflictManagementProvider from './providers/generic/installing/ConflictManagementProvider';
+
 @Component
 export default class App extends Vue {
 
@@ -154,7 +153,6 @@ export default class App extends Vue {
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
         ProfileInstallerProvider.provide(() => new ComputedProfileInstaller());
         ProfileInstallerResolverProvider.provide(() => new ProfileInstallerResolverImpl());
-        ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());
         InteractionProvider.provide(() => new InteractionProviderImpl());
