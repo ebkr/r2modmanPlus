@@ -56,4 +56,39 @@ describe("State testing", () => {
         expect(JSON.stringify(parsed.files)).toBe(JSON.stringify(files));
     });
 
+    test("Removing state file", async () => {
+        const fakeMod = new ManifestV2();
+        fakeMod.setAuthorName("Author");
+        fakeMod.setDisplayName("Mod");
+        fakeMod.setName("Author-Mod");
+        fakeMod.setVersionNumber(new VersionNumber("1.0.0"));
+        const files: [string, string][] = [["cachedFileA", "fileInstallLocationA"], ["cachedFileB", "fileInstallLocationB"]];
+
+        sandbox.stub(ProfileProvider.instance);
+        const profile = new Profile("stub");
+
+        const fsStub = sandbox.stub(FsProvider.instance);
+        FsProvider.provide(() => fsStub);
+
+        fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(true));
+        files.forEach(([cached, installed]) => {
+            fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), installed)).returns(Promise.resolve(true));
+        });
+
+        fsStub.readFile.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(Buffer.from(yaml.stringify(
+            {
+                modName: fakeMod.getName(),
+                files: files
+            } as ModFileTracker
+        ))));
+
+        await mlProfileInstaller.uninstallMod(fakeMod, profile);
+
+        files.forEach(([cached, installed]) => {
+            expect(fsStub.unlink.withArgs(path.join(profile.getPathOfProfile(), installed)).callCount).toBe(1);
+        });
+        expect(fsStub.unlink.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).callCount).toBe(1);
+
+    })
+
 });
