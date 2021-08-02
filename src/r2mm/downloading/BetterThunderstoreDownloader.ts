@@ -92,6 +92,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
+        const depMap: Map<string, ThunderstoreCombo> = new Map();
         const dependencies: ThunderstoreCombo[] = [];
         mods.forEach(value => {
             const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
@@ -103,7 +104,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 dependencies.push(combo);
             }
         });
-        return dependencies.filter(value => {
+
+        // Keep array unique in case scenario happens where dependency X is picked up before X install listing.
+        dependencies.forEach(value => depMap.set(value.getMod().getFullName(), value));
+
+        return Array.from(depMap.values()).filter(value => {
             const result = mods.find(value1 => {
                 return value1.getName() === value.getMod().getFullName();
             });

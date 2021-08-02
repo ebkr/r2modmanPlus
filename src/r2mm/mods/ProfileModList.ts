@@ -75,7 +75,7 @@ export default class ProfileModList {
         }
     }
 
-    private static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+    public static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
