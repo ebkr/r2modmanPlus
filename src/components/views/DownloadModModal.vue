@@ -191,11 +191,12 @@
 
         async downloadLatest() {
             this.closeModal();
+            const currentAssignId = assignId++;
             assignId += 1;
             this.downloadObject = {
                 progress: 0,
                 modName: '',
-                assignId: assignId
+                assignId: currentAssignId
             };
             this.downloadingMod = true;
             const localMods = await ProfileModList.getModList(this.contextProfile!);
@@ -213,11 +214,11 @@
                         return;
                     }
                 } else if (status === StatusEnum.PENDING) {
-                    if (this.downloadObject.assignId === assignId) {
+                    if (this.downloadObject.assignId === currentAssignId) {
                         this.downloadObject = Object.assign({}, {
                             progress: progress,
                             modName: modName,
-                            assignId: assignId
+                            assignId: currentAssignId
                         });
                     }
                 }
@@ -238,11 +239,11 @@
 
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
-            assignId += 1;
+            const currentAssignId = assignId++;
             this.downloadObject = {
                 progress: 0,
                 modName: tsMod.getName(),
-                assignId: assignId
+                assignId: currentAssignId
             };
             this.downloadingMod = true;
             setTimeout(() => {
@@ -254,11 +255,11 @@
                             return;
                         }
                     } else if (status === StatusEnum.PENDING) {
-                        if (this.downloadObject.assignId === assignId) {
+                        if (this.downloadObject.assignId === currentAssignId) {
                             this.downloadObject = Object.assign({}, {
                                 progress: progress,
                                 modName: modName,
-                                assignId: assignId
+                                assignId: currentAssignId
                             });
                         }
                     }
