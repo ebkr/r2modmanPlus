@@ -244,7 +244,10 @@
                     const modList = await ProfileModList.getModList(this.contextProfile!);
                     if (!(modList instanceof R2Error)) {
                         await this.$store.dispatch('updateModList', modList);
-                        await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                        if (err instanceof R2Error) {
+                            this.$emit('error', err);
+                        }
                     }
                 });
             });
@@ -297,7 +300,10 @@
                         const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('updateModList', modList);
-                            await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                            if (err instanceof R2Error) {
+                                this.$emit('error', err);
+                            }
                         }
                     });
                 });

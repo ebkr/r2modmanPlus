@@ -282,7 +282,10 @@
                     return;
                 }
                 this.$store.dispatch("updateModList", newList);
-                await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
+                const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
+                if (err instanceof R2Error) {
+                    this.$emit('error', err);
+                }
                 this.filterModList();
             })
         }
@@ -326,7 +329,10 @@
                 return;
             }
             await this.$store.dispatch("updateModList",updatedList);
-            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
             this.filterModList();
         }
 
@@ -338,7 +344,10 @@
                 return;
             }
             await this.$store.dispatch("updateModList", updatedList);
-            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
             this.filterModList();
         }
 
@@ -378,7 +387,10 @@
                 return modList;
             }
             await this.$store.dispatch("updateModList",modList);
-            await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
         }
 
         async disableMod(vueMod: any) {
@@ -418,7 +430,10 @@
                 return updatedList;
             }
             await this.$store.dispatch("updateModList", updatedList);
-            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
             this.filterModList();
         }
 
@@ -450,7 +465,10 @@
                 return;
             }
             await this.$store.dispatch("updateModList", result);
-            await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
             this.filterModList();
         }
 
@@ -526,7 +544,10 @@
                 return updatedList;
             }
             await this.$store.dispatch("updateModList",updatedList);
-            await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
             this.filterModList();
         }
 

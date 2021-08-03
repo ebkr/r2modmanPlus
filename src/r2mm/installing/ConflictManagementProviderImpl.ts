@@ -43,7 +43,6 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         const overallState = new Map<string, string>();
         const modStates = new Map<string, ModFileTracker>();
         const modNameToManifestV2 = new Map<string, ManifestV2>();
-        console.log("Resolving conflicts");
         for (const mod of mods) {
             let stateFileContents: string | undefined;
             const modStateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
