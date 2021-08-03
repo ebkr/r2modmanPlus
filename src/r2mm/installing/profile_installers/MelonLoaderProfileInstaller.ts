@@ -131,7 +131,22 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    async installModLoader(bieLocation: string, bepInExVariant: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
+    async installModLoader(cacheLocation: string, bepInExVariant: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
+        const tree = await FileTree.buildFromLocation(cacheLocation);
+        if (tree instanceof R2Error) {
+            return tree;
+        }
+        tree.removeFiles(
+            path.join(cacheLocation, "manifest.json"),
+            path.join(cacheLocation, "README.md"),
+            path.join(cacheLocation, "icon.png")
+        );
+        for (const value of tree.getRecursiveFiles()) {
+            const relativeFile = path.relative(cacheLocation, value);
+            const dir = path.join(profile.getPathOfProfile(), path.dirname(relativeFile));
+            await FileUtils.ensureDirectory(dir);
+            await FsProvider.instance.copyFile(value, path.join(profile.getPathOfProfile(), relativeFile));
+        }
         return Promise.resolve(null);
     }
 

@@ -22,5 +22,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     ROUNDS: [new ModLoaderPackageMapping("BepInEx-BepInExPack_ROUNDS", "BepInExPack_ROUNDS", PackageLoader.BEPINEX)],
     Mechanica: [new ModLoaderPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA", PackageLoader.BEPINEX)],
     Muck: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Muck", "BepInExPack_Muck", PackageLoader.BEPINEX)],
-    BONEWORKS: [new ModLoaderPackageMapping("", "", PackageLoader.MELON_LOADER)]
+    BONEWORKS: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)]
 }
