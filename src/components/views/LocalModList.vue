@@ -118,70 +118,74 @@
 
         <slot name="above-list"></slot>
 
-        <expandable-card
-            v-for='(key, index) in searchableModList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
-            @moveUp="moveUp(key)"
-            @moveDown="moveDown(key)"
-            :image="key.icon"
-            :id="index"
-            :description="key.description"
-            :funkyMode="funkyMode"
-            :showSort="canShowSortIcons()"
-            :manualSortUp="index > 0"
-            :manualSortDown="index < searchableModList.length - 1"
-            :darkTheme="darkTheme"
-            :expandedByDefault="cardExpanded"
-            :enabled="key.isEnabled()">
-            <template v-slot:title>
-                <span :class="['non-selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
-                    <span v-if="key.isDeprecated()" class="tag is-danger">
-                        Deprecated
-                    </span>&nbsp;
-                    <span v-if="!key.isEnabled()" class="tag is-warning">
-                        Disabled
-                    </span>&nbsp;
-                    <span class="card-title selectable">
-                        <template v-if="key.isEnabled()">
-                            {{key.getDisplayName()}} <span class="card-byline selectable">by {{key.getAuthorName()}}</span>
-                        </template>
-                        <template v-else>
-                            <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
-                        </template>
+        <draggable v-model='draggableList' group="local-mods" handle=".handle"
+                   @start="drag=canShowSortIcons(); $emit('sort-start')"
+                   @end="drag=false; $emit('sort-end')">
+            <expandable-card
+                v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
+                @moveUp="moveUp(key)"
+                @moveDown="moveDown(key)"
+                :image="key.icon"
+                :id="index"
+                :description="key.description"
+                :funkyMode="funkyMode"
+                :showSort="canShowSortIcons()"
+                :manualSortUp="index > 0"
+                :manualSortDown="index < searchableModList.length - 1"
+                :darkTheme="darkTheme"
+                :expandedByDefault="cardExpanded"
+                :enabled="key.isEnabled()">
+                <template v-slot:title>
+                    <span :class="['non-selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
+                        <span v-if="key.isDeprecated()" class="tag is-danger">
+                            Deprecated
+                        </span>&nbsp;
+                        <span v-if="!key.isEnabled()" class="tag is-warning">
+                            Disabled
+                        </span>&nbsp;
+                        <span class="card-title selectable">
+                            <template v-if="key.isEnabled()">
+                                {{key.getDisplayName()}} <span class="card-byline selectable">by {{key.getAuthorName()}}</span>
+                            </template>
+                            <template v-else>
+                                <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
+                            </template>
+                        </span>
                     </span>
-                </span>
-            </template>
-            <template v-slot:other-icons>
-                <!-- Show update and missing dependency icons -->
-                <span class='card-header-icon has-tooltip-left'
-                      data-tooltip='An update is available' v-if="!isLatest(key)">
-                    <i class='fas fa-cloud-upload-alt'></i>
-                </span>
-                <span class='card-header-icon has-tooltip-left'
-                      :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`"
-                      v-if="getMissingDependencies(key).length > 0">
-                    <i class='fas fa-exclamation-circle'></i>
-                </span>
-            </template>
-            <a class='card-footer-item'
-               @click="uninstallModRequireConfirmation(key)">Uninstall</a>
-            <template>
-                <a class='card-footer-item' @click="disableModRequireConfirmation(key)"
-                   v-if="key.enabled">Disable</a>
-                <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
-            </template>
-            <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
-            <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
-                  :target="'external'"
-                  class="card-footer-item">
-                    <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
-                    {{key.getVersionNumber().toString()}}
-            </Link>
-            <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-            <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
-               @click="downloadDependency(getMissingDependencies(key)[0])">
-                Download dependency
-            </a>
-        </expandable-card>
+                </template>
+                <template v-slot:other-icons>
+                    <!-- Show update and missing dependency icons -->
+                    <span class='card-header-icon has-tooltip-left'
+                          data-tooltip='An update is available' v-if="!isLatest(key)">
+                        <i class='fas fa-cloud-upload-alt'></i>
+                    </span>
+                    <span class='card-header-icon has-tooltip-left'
+                          :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`"
+                          v-if="getMissingDependencies(key).length > 0">
+                        <i class='fas fa-exclamation-circle'></i>
+                    </span>
+                </template>
+                <a class='card-footer-item'
+                   @click="uninstallModRequireConfirmation(key)">Uninstall</a>
+                <template>
+                    <a class='card-footer-item' @click="disableModRequireConfirmation(key)"
+                       v-if="key.enabled">Disable</a>
+                    <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
+                </template>
+                <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+                <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
+                      :target="'external'"
+                      class="card-footer-item">
+                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
+                        {{key.getVersionNumber().toString()}}
+                </Link>
+                <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
+                <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
+                   @click="downloadDependency(getMissingDependencies(key)[0])">
+                    Download dependency
+                </a>
+            </expandable-card>
+        </draggable>
 
         <slot name="below-list"></slot>
 
@@ -214,13 +218,15 @@
     import Game from '../../model/game/Game';
     import Timeout = NodeJS.Timeout;
     import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+    import Draggable from "vuedraggable";
 
     @Component({
         components: {
             DownloadModModal,
             Link,
             ExpandableCard,
-            Modal
+            Modal,
+            Draggable
         }
     })
     export default class LocalModList extends Vue {
@@ -263,6 +269,23 @@
         // Context
         private contextProfile: Profile | null = null;
         private settingsUpdateTimer: Timeout | null = null;
+
+        get draggableList() {
+            return [...this.searchableModList]
+        }
+
+        set draggableList(newList: ManifestV2[]) {
+            ProfileModList.requestLock(async () => {
+                const result = await ProfileModList.saveModList(this.contextProfile!, newList);
+                if (result instanceof R2Error) {
+                    this.emitError(result);
+                    return;
+                }
+                this.$store.dispatch("updateModList", newList);
+                await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
+                this.filterModList();
+            })
+        }
 
         @Watch("sortOrder")
         sortOrderChanged(newValue: string) {

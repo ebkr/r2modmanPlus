@@ -49,6 +49,7 @@
     "vue-class-component": "^7.2.2",
     "vue-i18n": "^8.0.0",
     "vue-property-decorator": "^8.3.0",
+    "vuedraggable": "^2.24.3",
     "yaml": "^1.7.2"
   },
   "devDependencies": {

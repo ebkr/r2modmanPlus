@@ -205,6 +205,7 @@
                                 @clicked-settings="view = 'settings'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
+                                @clicked-downloads="openRoute('/downloads')"
                                 @error="showError($event)"
                 />
 			</div>
