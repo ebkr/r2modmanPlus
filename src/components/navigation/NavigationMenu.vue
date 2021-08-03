@@ -44,8 +44,10 @@
                            class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
                             <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click="emitClick($event.target)"/>
                             <span class="tagged-link__content" data-ref="online" @click="emitClick($event.target)">Online</span>
+                            <i data-ref="downloads" class="tag tagged-link__tag fas fa-download is-primary" @click="emitClick($event.target)"></i>
+                            <span>&nbsp;</span>
                             <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
-                                  data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
+                            data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                         </a>
                     </li>
                 </ul>
