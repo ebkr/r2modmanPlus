@@ -6,6 +6,7 @@
                             @clicked-online="route('online')"
                             @clicked-settings="route('settings')"
                             @clicked-config-editor="goto('/config-editor')"
+                            @clicked-help="goto('/help')"
             />
         </div>
         <div class="column" :class="contentClass">
