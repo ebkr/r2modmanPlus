@@ -33,3 +33,7 @@ Squidy-RogueWisp
 TheLamiaLover-ItemStatsMod
 
 Foldex-r2mod_cli
+
+gnonme-CustomItemsSDK
+
+gnonme-ModThatIsNotMod_Unity_Tools
