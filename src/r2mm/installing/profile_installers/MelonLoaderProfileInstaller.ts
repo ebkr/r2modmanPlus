@@ -145,6 +145,9 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             const relativeFile = path.relative(cacheLocation, value);
             const dir = path.join(profile.getPathOfProfile(), path.dirname(relativeFile));
             await FileUtils.ensureDirectory(dir);
+            if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), relativeFile))) {
+                await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), relativeFile));
+            }
             await FsProvider.instance.copyFile(value, path.join(profile.getPathOfProfile(), relativeFile));
         }
         return Promise.resolve(null);

@@ -20,6 +20,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
 import GameManager from '../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderVariantRecord';
+import FileTree from 'src/model/file/FileTree';
 
 export default class ProfileModList {
 
@@ -193,7 +194,19 @@ export default class ProfileModList {
         const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
-        await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
+            await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        }
+        const tree = await FileTree.buildFromLocation(profile.getPathOfProfile());
+        if (tree instanceof R2Error) {
+            return tree;
+        }
+        for (const file of tree.getRecursiveFiles()) {
+            const fileLower = file.toLowerCase();
+            if (fileLower.endsWith(".cfg") || fileLower.endsWith(".txt") || fileLower.endsWith(".json")) {
+                await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
+            }
+        }
         await builder.createZip(exportPath);
         return exportPath;
     }

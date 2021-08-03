@@ -111,7 +111,7 @@
 				</button>
 			</template>
 		</modal>
-		<modal v-show="exportCode !== ''" :open="exportCode" @close-modal="() => {exportCode = '';}">
+		<modal v-show="exportCode !== ''" :open="exportCode !== ''" @close-modal="() => {exportCode = '';}">
 			<template v-slot:title>
 				<p class='card-header-title'>Profile exported</p>
 			</template>
