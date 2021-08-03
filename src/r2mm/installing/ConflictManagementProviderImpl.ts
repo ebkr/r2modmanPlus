@@ -43,6 +43,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         const overallState = new Map<string, string>();
         const modStates = new Map<string, ModFileTracker>();
         const modNameToManifestV2 = new Map<string, ManifestV2>();
+        console.log("Resolving conflicts");
         for (const mod of mods) {
             let stateFileContents: string | undefined;
             const modStateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
@@ -50,11 +51,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
                 stateFileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
             }
             if (stateFileContents === undefined) {
-                return new R2Error(
-                    `Unable to find state file for ${mod.getName()}`,
-                    `No state file found for ${mod.getName()} at location: ${modStateFilePath}`,
-                    null
-                );
+                continue;
             }
             const modState: ModFileTracker = yaml.parse(stateFileContents);
             modState.files.forEach(([key, value]) => {
@@ -76,7 +73,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
                 copyAcross = true;
             } else if (stateMap.get(file) !== overallState.get(file)) {
                 copyAcross = true;
-            } else if (!(await FsProvider.instance.exists(path.join(path.join(profile.getPathOfProfile(), file))))) {
+            } else if (!(await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file)))) {
                 copyAcross = true;
             }
             if (copyAcross) {
