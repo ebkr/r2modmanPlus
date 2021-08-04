@@ -23,7 +23,7 @@ const INSTALLATION_RULES = {
     },
     UserData: {
         CustomItems: {_files: [".melon"]},
-        CustomMaps: {_files: [".bcm"]},
+        CustomMaps: {_files: [".bcm", ".cma"]},
         PlayerModels: {_files: [".body"]},
         CustomLoadScreens: {_files: [".load"]},
         Music: {_files: [".wav"]},
