@@ -50,6 +50,38 @@ export default class FileTree {
         this.files = this.files.filter(value => !args.map(arg => arg.toLowerCase()).includes(value.toLowerCase()));
     }
 
+    public removeDirectories(...args: string[]) {
+        this.directories = this.directories.filter(value => !args.map(arg => arg.toLowerCase()).includes(value.getDirectoryName().toLowerCase()));
+    }
+
+    public navigateAndPerform(onFound: (fileTree: FileTree) => void, ...args: string[]) {
+        const dir = this.navigate(...args);
+        if (dir !== undefined) {
+            onFound(dir);
+        }
+    }
+
+    public navigate(...args: string[]): FileTree | undefined {
+        if (args[0] !== undefined) {
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            if (foundDir !== undefined) {
+                return foundDir.subNavigate(...([...args].splice(0, 1)));
+            }
+        }
+    }
+
+    private subNavigate(...args: string[]): FileTree | undefined {
+        if (args[0] !== undefined) {
+            if (args.length === 1 && args[0].toLowerCase() === this.directoryName.toLowerCase()) {
+                return this;
+            }
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            if (foundDir !== undefined) {
+                return foundDir.subNavigate(...([...args].splice(0, 1)));
+            }
+        }
+    }
+
     private async addDirectory(location: string, directoryName: string): Promise<R2Error | null> {
         const directory: FileTree | R2Error = await FileTree.buildFromLocation(path.join(location, directoryName));
         if (directory instanceof R2Error) {

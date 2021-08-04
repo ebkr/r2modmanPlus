@@ -85,7 +85,7 @@
 
         @Watch('filterText')
         textChanged() {
-            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
+            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0);
         }
 
         getSortOrderOptions() {
@@ -102,13 +102,17 @@
 
         async created() {
             const fs = FsProvider.instance;
-            const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
-            const bepInExTree = await FileTree.buildFromLocation(configLocation);
-            if (bepInExTree instanceof R2Error) {
+            const configLocation = Profile.getActiveProfile().getPathOfProfile();
+            const tree = await FileTree.buildFromLocation(configLocation);
+            if (tree instanceof R2Error) {
                 return;
             }
-            for (const file of bepInExTree.getRecursiveFiles()) {
-                if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt' || path.extname(file).toLowerCase() === '.xml') {
+            tree.navigateAndPerform(plugins => {
+                plugins.getDirectories().forEach(value => value.removeFiles(path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
+            }, "BepInEx", "plugins");
+            const files = tree.getDirectories().flatMap(value => value.getRecursiveFiles());
+            for (const file of files) {
+                if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt') {
                     const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
                 } else if (path.extname(file).toLowerCase() === '.json') {

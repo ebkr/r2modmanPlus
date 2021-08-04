@@ -84,7 +84,6 @@
             this.fileText = (await fs.readFile(this.configFile.getPath())).toString();
             if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
                 const config = await BepInExConfigUtils.getBepInExConfigBreakdown(this.configFile.getPath());
-                console.log(config);
                 this.dumpedConfigVariables = config;
             }
             window.scrollTo(0, 0);

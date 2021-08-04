@@ -201,6 +201,12 @@ export default class ProfileModList {
         if (tree instanceof R2Error) {
             return tree;
         }
+        tree.navigateAndPerform(bepInExDir => {
+            bepInExDir.removeDirectories("config");
+            bepInExDir.navigateAndPerform(pluginDir => {
+                pluginDir.getDirectories().forEach(value => value.removeFiles(path.join(profile.getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
+            }, "plugins");
+        }, "BepInEx");
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
             if (fileLower.endsWith(".cfg") || fileLower.endsWith(".txt") || fileLower.endsWith(".json")) {

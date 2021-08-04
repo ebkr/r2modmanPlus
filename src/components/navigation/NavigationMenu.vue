@@ -53,7 +53,7 @@
                 </ul>
                 <p class='menu-label'>Other</p>
                 <ul class='menu-list'>
-                    <li v-if="canShowConfigEditor">
+                    <li>
                         <a href="#" :class="[view === 'config-editor' ? 'is-active' : '']" data-ref="config-editor" @click="emitClick($event.target)">
                             <i class="fas fa-edit icon--margin-right"/>Config editor
                         </a>
