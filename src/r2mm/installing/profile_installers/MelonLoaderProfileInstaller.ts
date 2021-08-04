@@ -29,7 +29,8 @@ const INSTALLATION_RULES = {
         Music: {_files: [".wav"]},
         Food: {_files: [".food"]},
         Scoreworks: {_files: [".sw"]},
-        CustomSkins: {_files: [".png"]}
+        CustomSkins: {_files: [".png"]},
+        Grenades: {_files: [".grenade"]}
     }
 }
 
