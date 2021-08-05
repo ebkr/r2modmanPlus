@@ -81,7 +81,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("Mechanica", "Mechanica", "Mechanica",
-            "Mechanica", ["Mechnica.exe"], "Mechanica_Data",
+            "Mechanica", ["Mechanica.exe"], "Mechanica_Data",
             "https://mechanica.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1226990")], "Mechanica.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
