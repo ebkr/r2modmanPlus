@@ -6,7 +6,7 @@ import ManagerSettings from '../../../../../../r2mm/manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../../ror2/game/GameDirectoryResolverProvider';
 import LoggerProvider, { LogSeverity } from '../../../../../ror2/logging/LoggerProvider';
 import { exec } from 'child_process';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import FsProvider from '../../../../file/FsProvider';
 
 export default class MLDirectExecutableGameRunnerProvider extends GameRunnerProvider {
 

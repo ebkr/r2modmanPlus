@@ -20,7 +20,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
 import GameManager from '../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderVariantRecord';
-import FileTree from 'src/model/file/FileTree';
+import FileTree from '../../model/file/FileTree';
 
 export default class ProfileModList {
 

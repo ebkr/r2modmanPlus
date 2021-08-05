@@ -1,4 +1,4 @@
-import { PackageLoader } from 'src/model/installing/PackageLoader';
+import { PackageLoader } from '../../model/installing/PackageLoader';
 
 export default class ModLoaderPackageMapping {
 

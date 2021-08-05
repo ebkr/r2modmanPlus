@@ -90,7 +90,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
-import { PackageLoader } from 'src/model/installing/PackageLoader';
+import { PackageLoader } from '../../model/installing/PackageLoader';
 
 @Component
     export default class NavigationMenu extends Vue {

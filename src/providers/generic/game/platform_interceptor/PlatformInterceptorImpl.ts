@@ -11,10 +11,10 @@ import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectory
 import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
-import MLSteamGameRunnerProvider_Win from 'src/providers/generic/game/steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
+import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
 import MLDirectExecutableGameRunnerProvider
-    from 'src/providers/generic/game/steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
-import MLSteamGameRunnerProvider_Linux from 'src/providers/generic/game/steam/linux/MLSteamGameRunnerProvider_Linux';
+    from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
+import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
