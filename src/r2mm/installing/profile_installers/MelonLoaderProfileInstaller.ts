@@ -19,7 +19,8 @@ const INSTALLATION_RULES = {
     Mods: {_files: [".dll"]},
     Plugins: {_files: [".plugin.dll"]},
     MelonLoader: {
-        Managed: {_files: [".managed.dll"]}
+        Managed: {_files: [".managed.dll"]},
+        Libs: {_files: [".lib.dll"]}
     },
     UserData: {
         CustomItems: {_files: [".melon"]},
