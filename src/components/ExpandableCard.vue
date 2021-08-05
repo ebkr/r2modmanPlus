@@ -13,11 +13,8 @@
                         <span ref="title" class='card-header-title'><slot name='title'></slot></span>
                         <slot name='other-icons'></slot>
                         <!-- Allow movement of mod order -->
-                        <a v-if='showSort' class='card-header-icon' :class='{ "disabled": !manualSortUp }' v-on:click.stop.prevent="manualSortUp && emitMove('Up')">
-                            <i class="fas fa-angle-double-up"></i>
-                        </a>
-                        <a v-if='showSort' class='card-header-icon' :class='{ "disabled": !manualSortDown }' v-on:click.stop.prevent="manualSortDown && emitMove('Down')">
-                            <i class="fas fa-angle-double-down"></i>
+                        <a v-if='showSort' class='card-header-icon handle'>
+                            <i class="fas fa-grip-vertical"></i>
                         </a>
                         <a class='card-header-icon'>
                             <span class='icon'>

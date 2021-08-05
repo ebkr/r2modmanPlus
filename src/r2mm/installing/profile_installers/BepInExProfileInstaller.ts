@@ -1,47 +1,26 @@
-import R2Error from '../../model/errors/R2Error';
+import R2Error from '../../../model/errors/R2Error';
 
-import ManifestV2 from '../../model/ManifestV2';
-import BepInExTree from '../../model/file/BepInExTree';
+import ManifestV2 from '../../../model/ManifestV2';
+import FileTree from '../../../model/file/FileTree';
 
 import * as path from 'path';
-import FsProvider from '../../providers/generic/file/FsProvider';
-import Profile from '../../model/Profile';
-import FileWriteError from '../../model/errors/FileWriteError';
-import ModMode from '../../model/enums/ModMode';
-import PathResolver from '../manager/PathResolver';
-import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-import FileUtils from '../../utils/FileUtils';
-import ManagerInformation from '../../_managerinf/ManagerInformation';
-import BepInExPackageMapping from '../../model/installing/BepInExPackageMapping';
-import GameManager from '../../model/game/GameManager';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import Profile from '../../../model/Profile';
+import FileWriteError from '../../../model/errors/FileWriteError';
+import ModMode from '../../../model/enums/ModMode';
+import PathResolver from '../../manager/PathResolver';
+import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
+import FileUtils from '../../../utils/FileUtils';
+import ManagerInformation from '../../../_managerinf/ManagerInformation';
+import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
+import GameManager from '../../../model/game/GameManager';
+import { MOD_LOADER_VARIANTS } from './ModLoaderVariantRecord';
+
 let fs: FsProvider;
 
 const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod", ".h3mod", ".deli", ".ros"];
 
-/**
- * Used to record which package to handle based on the current game.
- *
- * Mapping is:
- * game's InternalFolderName: Mapping
- */
-export const BEPINEX_VARIANTS: {[key: string]: BepInExPackageMapping[]} = {
-    RiskOfRain2: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
-    DysonSphereProgram: [new BepInExPackageMapping("xiaoye97-BepInEx", "BepInExPack")],
-    Valheim: [
-        new BepInExPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim"),
-        new BepInExPackageMapping("1F31A-BepInEx_Valheim_Full", "BepInEx_Valheim_Full"),
-    ],
-    GTFO: [new BepInExPackageMapping("BepInEx-BepInExPack_GTFO", "BepInExPack_GTFO")],
-    Outward: [new BepInExPackageMapping("BepInEx-BepInExPack_Outward", "BepInExPack_Outward")],
-    TaleSpire: [new BepInExPackageMapping("bbepisTaleSpire-BepInExPack", "BepInExPack")],
-    H3VR: [new BepInExPackageMapping("BepInEx-BepInExPack_H3VR", "BepInExPack_H3VR")],
-    ThunderstoreBeta: [new BepInExPackageMapping("bbepis-BepInExPack", "BepInExPack")],
-    ROUNDS: [new BepInExPackageMapping("BepInEx-BepInExPack_ROUNDS", "BepInExPack_ROUNDS")],
-    Mechanica: [new BepInExPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA")],
-    Muck: [new BepInExPackageMapping("BepInEx-BepInExPack_Muck", "BepInExPack_Muck")]
-}
-
-export default class ProfileInstaller extends ProfileInstallerProvider {
+export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
     constructor() {
         super();
@@ -56,7 +35,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
      */
     public async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
-        const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
+        const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
             if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
@@ -104,34 +83,27 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
 
     public async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
         const bepInExLocation: string = path.join(profile.getPathOfProfile(), 'BepInEx');
-        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(bepInExLocation);
+        const files: FileTree | R2Error = await FileTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
             return files;
         }
-        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.DISABLED);
-        if (applyError instanceof R2Error) {
-            return applyError;
-        }
+        return await this.applyModMode(mod, files, profile, bepInExLocation, ModMode.DISABLED);
     }
 
     public async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
         const bepInExLocation: string = path.join(profile.getPathOfProfile(), 'BepInEx');
-        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(bepInExLocation);
+        const files: FileTree | R2Error = await FileTree.buildFromLocation(bepInExLocation);
         if (files instanceof R2Error) {
             return Promise.resolve(files);
         }
-        const applyError: R2Error | void = await this.applyModMode(mod, files, bepInExLocation, ModMode.ENABLED);
-        if (applyError instanceof R2Error) {
-            return Promise.resolve(applyError);
-        }
-
+        return await this.applyModMode(mod, files, profile, bepInExLocation, ModMode.ENABLED);
     }
 
-    async applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): Promise<R2Error | void> {
+    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         const files: string[] = [];
         for (const directory of tree.getDirectories()) {
             if (directory.getDirectoryName() !== mod.getName()) {
-                const applyError = await this.applyModMode(mod, directory, path.join(location, directory.getDirectoryName()), mode);
+                const applyError = await this.applyModMode(mod, directory, profile, path.join(location, directory.getDirectoryName()), mode);
                 if (applyError instanceof R2Error) {
                     return applyError;
                 }
@@ -165,22 +137,9 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]> {
-        const files: string[] = [];
-        if (tree === null) {
-            const newTree = await BepInExTree.buildFromLocation(location);
-            if (newTree instanceof R2Error) {
-                return files;
-            }
-            tree = newTree;
-        }
-        for (const directory of tree.getDirectories()) {
-            files.push(...(await this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName()))));
-        }
-        tree.getFiles().forEach((file: string) => {
-            files.push(file);
-        })
-        return files;
+    // No need to implement because ComputedProfileInstaller.ts should handle.
+    async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
+        return [];
     }
 
     public async installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
@@ -188,23 +147,27 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
 
         const activeGame = GameManager.activeGame;
-        const bepInExVariant = BEPINEX_VARIANTS[activeGame.internalFolderName];
+        const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         const variant = bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase());
         if (variant !== undefined) {
-            return this.installBepInEx(cachedLocationOfMod, variant, profile);
+            return this.installModLoader(cachedLocationOfMod, variant, profile);
         }
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
     async installForManifestV2(mod: ManifestV2, profile: Profile, location: string): Promise<R2Error | null> {
-        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
+        const files: FileTree | R2Error = await FileTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;
         }
-        return this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
+        const result = await this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
+        if (result instanceof R2Error) {
+            return result;
+        }
+        return null;
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null> {
+    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
@@ -223,7 +186,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                         profileLocation
                     );
                     // Copy is complete, end recursive tree.
-                    return null;
+                    return;
                 } catch(e) {
                     const err: Error = e;
                     return new FileWriteError(
@@ -277,7 +240,7 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
 
         const directories = tree.getDirectories();
         for (const directory of directories) {
-            const resolveError: R2Error | null = await this.resolveBepInExTree(
+            const resolveError: R2Error | void = await this.resolveBepInExTree(
                 profile,
                 path.join(location, directory.getDirectoryName()),
                 directory.getDirectoryName(),
@@ -288,12 +251,11 @@ export default class ProfileInstaller extends ProfileInstallerProvider {
                 return resolveError;
             }
         }
-        return null;
     }
 
-    async installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping, profile: Profile): Promise<R2Error | null> {
+    async installModLoader(bieLocation: string, bepInExVariant: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         const location = path.join(bieLocation, bepInExVariant.rootFolder);
-        const files: BepInExTree | R2Error = await BepInExTree.buildFromLocation(location);
+        const files: FileTree | R2Error = await FileTree.buildFromLocation(location);
         if (files instanceof R2Error) {
             return files;
         }

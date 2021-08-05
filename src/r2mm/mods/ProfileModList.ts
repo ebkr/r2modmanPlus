@@ -18,8 +18,9 @@ import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
-import { BEPINEX_VARIANTS } from '../installing/ProfileInstaller';
 import GameManager from '../../model/game/GameManager';
+import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderVariantRecord';
+import FileTree from '../../model/file/FileTree';
 
 export default class ProfileModList {
 
@@ -42,7 +43,7 @@ export default class ProfileModList {
                     const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
                     let iconPath;
                     if (
-                        BEPINEX_VARIANTS[GameManager.activeGame.internalFolderName]
+                        MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]
                             .find(x => x.packageName === mod.getName()) !== undefined
                     ) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
                         iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png");
@@ -75,7 +76,7 @@ export default class ProfileModList {
         }
     }
 
-    private static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+    public static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
@@ -193,7 +194,25 @@ export default class ProfileModList {
         const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
-        await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
+            await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        }
+        const tree = await FileTree.buildFromLocation(profile.getPathOfProfile());
+        if (tree instanceof R2Error) {
+            return tree;
+        }
+        tree.navigateAndPerform(bepInExDir => {
+            bepInExDir.removeDirectories("config");
+            bepInExDir.navigateAndPerform(pluginDir => {
+                pluginDir.getDirectories().forEach(value => value.removeFiles(path.join(profile.getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
+            }, "plugins");
+        }, "BepInEx");
+        for (const file of tree.getRecursiveFiles()) {
+            const fileLower = file.toLowerCase();
+            if (fileLower.endsWith(".cfg") || fileLower.endsWith(".txt") || fileLower.endsWith(".json")) {
+                await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
+            }
+        }
         await builder.createZip(exportPath);
         return exportPath;
     }

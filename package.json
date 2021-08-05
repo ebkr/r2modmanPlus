@@ -26,7 +26,7 @@
     "@quasar/extras": "^1.0.0",
     "adm-zip": "^0.5.5",
     "async-lock": "^1.2.6",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bulma": "^0.8.0",
     "bulma-checkradio": "^1.1.1",
     "bulma-divider": "^0.2.0",
@@ -49,6 +49,7 @@
     "vue-class-component": "^7.2.2",
     "vue-i18n": "^8.0.0",
     "vue-property-decorator": "^8.3.0",
+    "vuedraggable": "^2.24.3",
     "yaml": "^1.7.2"
   },
   "devDependencies": {

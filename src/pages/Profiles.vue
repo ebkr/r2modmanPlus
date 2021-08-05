@@ -551,6 +551,15 @@ export default class Profiles extends Vue {
                                                         'BepInEx'
                                                     )
                                                 );
+                                            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
+                                                await ZipProvider.instance.extractEntryTo(
+                                                    files[0],
+                                                    entry.entryName,
+                                                    path.join(
+                                                        Profile.getDirectory(),
+                                                        profileName
+                                                    )
+                                                )
                                             }
                                         }
                                     }

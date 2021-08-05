@@ -10,29 +10,68 @@ import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
 import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
+import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
+import MLDirectExecutableGameRunnerProvider
+    from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
+import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
 
-const RUNNERS: {[platKey in StorePlatform]: {[procKey: string]: GameRunnerProvider}} = {
-    [StorePlatform.STEAM]: {
-        "win32": new GameRunnerProviderImpl_Steam_Win(),
-        "linux": new GameRunnerProviderImpl_Steam_Linux()
-    },
-    [StorePlatform.EPIC_GAMES_STORE]: {
-        "win32": new EgsRunnerProvider(),
-        "linux": new EgsRunnerProvider(),
-    },
-    [StorePlatform.OTHER]: {
-        "win32": new DirectExecutableGameRunnerProvider(),
-        "linux": new DirectExecutableGameRunnerProvider(),
+type RunnerType = {
+    [platkey in StorePlatform]: {
+        [loader: number]: {
+            [procKey: string]: GameRunnerProvider
+        }
     }
 };
 
-const RESOLVERS: {[platKey in StorePlatform]: {[procKey: string]: GameDirectoryResolverProvider}} = {
+type ResolverType = {
+    [platkey in StorePlatform]: {
+        [procKey: string]: GameDirectoryResolverProvider
+    }
+};
+
+const RUNNERS: RunnerType = {
+    [StorePlatform.STEAM]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new GameRunnerProviderImpl_Steam_Win(),
+            "linux": new GameRunnerProviderImpl_Steam_Linux()
+        },
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new MLSteamGameRunnerProvider_Win(),
+            "linux": new MLSteamGameRunnerProvider_Linux(),
+        }
+    },
+    [StorePlatform.EPIC_GAMES_STORE]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new EgsRunnerProvider(),
+            "linux": new EgsRunnerProvider(),
+        }
+    },
+    [StorePlatform.OCULUS_STORE]: {
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new MLDirectExecutableGameRunnerProvider(),
+            "linux": new MLDirectExecutableGameRunnerProvider(),
+        }
+    },
+    [StorePlatform.OTHER]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new DirectExecutableGameRunnerProvider(),
+            "linux": new DirectExecutableGameRunnerProvider(),
+        }
+    }
+};
+
+const RESOLVERS: ResolverType = {
     [StorePlatform.STEAM]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux()
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
         "win32": new EGSDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver()
+    },
+    [StorePlatform.OCULUS_STORE]: {
+        "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver()
     },
     [StorePlatform.OTHER]: {
@@ -43,9 +82,9 @@ const RESOLVERS: {[platKey in StorePlatform]: {[procKey: string]: GameDirectoryR
 
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
-    public getRunnerForPlatform(platform: StorePlatform): GameRunnerProvider | undefined {
-        if (RUNNERS[platform][process.platform] !== undefined) {
-            return RUNNERS[platform][process.platform];
+    public getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined {
+        if (RUNNERS[platform][loader][process.platform] !== undefined) {
+            return RUNNERS[platform][loader][process.platform];
         }
         return undefined;
     }

@@ -194,6 +194,10 @@ import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryR
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
+import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
+import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
+import { PackageLoader } from '../model/installing/PackageLoader';
+import NoResolutionConflictManagement from '../r2mm/installing/NoResolutionConflictManagement';
 
 @Component({
     components: {
@@ -291,7 +295,7 @@ export default class GameSelectionScreen extends Vue {
             const settings = await ManagerSettings.getSingleton(this.selectedGame);
             await settings.setLastSelectedGame(this.selectedGame);
 
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (gameRunner === undefined) {
                 this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
                 return;
@@ -303,7 +307,16 @@ export default class GameSelectionScreen extends Vue {
                 this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
                 return;
             }
+
             GameDirectoryResolverProvider.provide(() => directoryResolver);
+
+            switch (this.selectedGame.packageLoader) {
+                case PackageLoader.BEPINEX:
+                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    break;
+                case PackageLoader.MELON_LOADER:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+            }
 
             await this.$router.replace('/splash');
         }
@@ -320,7 +333,7 @@ export default class GameSelectionScreen extends Vue {
             await settings.setDefaultGame(this.selectedGame);
             await settings.setDefaultStorePlatform(this.selectedPlatform);
 
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform);
+            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
             if (gameRunner === undefined) {
                 this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
                 return;
@@ -333,6 +346,14 @@ export default class GameSelectionScreen extends Vue {
                 return;
             }
             GameDirectoryResolverProvider.provide(() => directoryResolver);
+
+            switch (this.selectedGame.packageLoader) {
+                case PackageLoader.BEPINEX:
+                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    break;
+                case PackageLoader.MELON_LOADER:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+            }
 
             await this.$router.replace('/splash');
         }

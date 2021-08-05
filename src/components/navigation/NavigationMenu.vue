@@ -44,8 +44,10 @@
                            class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
                             <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click="emitClick($event.target)"/>
                             <span class="tagged-link__content" data-ref="online" @click="emitClick($event.target)">Online</span>
+                            <i data-ref="downloads" class="tag tagged-link__tag fas fa-download is-primary" @click="emitClick($event.target)"></i>
+                            <span>&nbsp;</span>
                             <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
-                                  data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
+                            data-ref="online" @click="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                         </a>
                     </li>
                 </ul>
@@ -76,20 +78,21 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import R2Error from '../../model/errors/R2Error';
-    import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ModLinker from '../../r2mm/manager/ModLinker';
-    import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import ManifestV2 from "../../model/ManifestV2";
-    import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
-    import ManagerInformation from '../../_managerinf/ManagerInformation';
-    import Game from '../../model/game/Game';
-    import GameManager from '../../model/game/GameManager';
-    import Profile from '../../model/Profile';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import R2Error from '../../model/errors/R2Error';
+import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ModLinker from '../../r2mm/manager/ModLinker';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import ManifestV2 from '../../model/ManifestV2';
+import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import Game from '../../model/game/Game';
+import GameManager from '../../model/game/GameManager';
+import Profile from '../../model/Profile';
+import { PackageLoader } from '../../model/installing/PackageLoader';
 
-    @Component
+@Component
     export default class NavigationMenu extends Vue {
 
         private activeGame!: Game;
@@ -114,6 +117,10 @@
 
         get appName(): string {
             return ManagerInformation.APP_NAME;
+        }
+
+        get canShowConfigEditor() {
+            return this.activeGame.packageLoader === PackageLoader.BEPINEX;
         }
 
         emitClick(element: any) {

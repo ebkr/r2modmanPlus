@@ -111,7 +111,7 @@
 				</button>
 			</template>
 		</modal>
-		<modal v-show="exportCode !== ''" :open="exportCode" @close-modal="() => {exportCode = '';}">
+		<modal v-show="exportCode !== ''" :open="exportCode !== ''" @close-modal="() => {exportCode = '';}">
 			<template v-slot:title>
 				<p class='card-header-title'>Profile exported</p>
 			</template>
@@ -205,6 +205,7 @@
                                 @clicked-settings="view = 'settings'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
+                                @clicked-downloads="openRoute('/downloads')"
                                 @error="showError($event)"
                 />
 			</div>
