@@ -29,7 +29,7 @@
                                 <div class="card is-shadowless">
                                     <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
                                     <p v-if="downloadObject.progress < 100">Downloading: {{ downloadObject.modName }}</p>
-                                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
+                                    <p>{{Math.min(Math.floor(downloadObject.progress), 100)}}% complete</p>
                                     <Progress v-if="!downloadObject.failed"
                                         :max='100'
                                         :value='downloadObject.progress'
