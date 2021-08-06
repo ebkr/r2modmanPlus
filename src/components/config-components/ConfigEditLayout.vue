@@ -51,7 +51,7 @@
                 <br/>
             </div>
         </div>
-        <div class='container' v-else>
+        <div class='container margin-right' v-else>
             <QuillEditor v-model="fileText" @input="updateFreeText"/>
         </div>
     </div>
