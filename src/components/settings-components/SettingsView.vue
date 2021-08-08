@@ -411,7 +411,7 @@ import moment from 'moment';
         }
 
         doesLogFileExist() {
-            return this.logOutput.exists ? 'LogOutput.log exists' : 'LogOutput.log does not exist';
+            return this.logOutput.exists ? 'Log file exists' : 'Log file does not exist';
         }
 
     }
