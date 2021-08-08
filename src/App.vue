@@ -39,6 +39,7 @@ import { ipcRenderer } from 'electron';
 import PathResolver from './r2mm/manager/PathResolver';
 import path from 'path';
 import ThemeManager from './r2mm/manager/ThemeManager';
+import "bulma-switch/dist/css/bulma-switch.min.css";
 import LoggerProvider, { LogSeverity } from './providers/ror2/logging/LoggerProvider';
 import ManagerInformation from './_managerinf/ManagerInformation';
 import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';

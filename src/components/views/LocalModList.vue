@@ -168,7 +168,10 @@
                     <span class='card-header-icon has-tooltip-left'
                           @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)"
                           :data-tooltip='key.isEnabled() ? "Disable" : "Enable"'>
-                        <i :class='key.isEnabled() ? "fas fa-eye-slash" : "fas fa-eye"'></i>
+                        <div class="field">
+                          <input id="switchExample" type="checkbox" name="switchExample" :class='`switch is-small  ${key.isEnabled() ? "switch is-info" : ""}`' :checked="key.isEnabled()">
+                          <label for="switchExample"></label>
+                        </div>
                     </span>
                 </template>
                 <a class='card-footer-item'
