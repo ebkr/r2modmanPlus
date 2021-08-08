@@ -2,6 +2,8 @@ import Profile from '../../model/Profile';
 import * as path from 'path'
 import FsProvider from '../../providers/generic/file/FsProvider';
 import Timeout = NodeJS.Timeout;
+import GameManager from '../../model/game/GameManager';
+import { PackageLoader } from '../../model/installing/PackageLoader';
 let fs: FsProvider;
 
 export default class LogOutput {
@@ -20,14 +22,26 @@ export default class LogOutput {
 
     private constructor() {
         fs = FsProvider.instance;
-        const profilePath = Profile.getActiveProfile().getPathOfProfile()
-        fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
-            .then(value => this._exists = value);
+
+        this.confirmOutputExists();
 
         LogOutput.INTERVAL = setInterval(() => {
-            fs.exists(path.join(profilePath, 'BepInEx', 'LogOutput.log'))
-                .then(value => this._exists = value);
+            this.confirmOutputExists();
         }, 1000);
+    }
+
+    private confirmOutputExists() {
+        const game = GameManager.activeGame;
+        switch (game.packageLoader) {
+            case PackageLoader.BEPINEX:
+                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'))
+                    .then(value => this._exists = value);
+                break;
+            case PackageLoader.MELON_LOADER:
+                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'MelonLoader', 'Latest.log'))
+                    .then(value => this._exists = value);
+                break;
+        }
     }
 
     get exists(): boolean {

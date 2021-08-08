@@ -310,56 +310,56 @@
 </template>
 
 <script lang='ts'>
-	import Vue from 'vue';
-	import Component from 'vue-class-component';
-    import { Prop, Watch } from 'vue-property-decorator';
-	import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
-	import ThunderstoreMod from '../model/ThunderstoreMod';
-	import ThunderstoreCombo from '../model/ThunderstoreCombo';
-	import Mod from '../model/Mod';
-	import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-	import ThunderstoreVersion from '../model/ThunderstoreVersion';
-	import ProfileModList from '../r2mm/mods/ProfileModList';
-	import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
-	import PathResolver from '../r2mm/manager/PathResolver';
-	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
+import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
+import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreVersion from '../model/ThunderstoreVersion';
+import ProfileModList from '../r2mm/mods/ProfileModList';
+import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
+import PathResolver from '../r2mm/manager/PathResolver';
+import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
-	import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
+import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
-	import Profile from '../model/Profile';
-	import VersionNumber from '../model/VersionNumber';
-	import StatusEnum from '../model/enums/StatusEnum';
-	import SortingStyle from '../model/enums/SortingStyle';
-	import SortingDirection from '../model/enums/SortingDirection';
-	import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
-	import R2Error from '../model/errors/R2Error';
-	import ManifestV2 from '../model/ManifestV2';
-	import ManagerSettings from '../r2mm/manager/ManagerSettings';
-	import ThemeManager from '../r2mm/manager/ThemeManager';
-	import ManagerInformation from '../_managerinf/ManagerInformation';
-    import InteractionProvider, { InteractionProviderFileProperties } from '../providers/ror2/system/InteractionProvider';
+import Profile from '../model/Profile';
+import VersionNumber from '../model/VersionNumber';
+import StatusEnum from '../model/enums/StatusEnum';
+import SortingStyle from '../model/enums/SortingStyle';
+import SortingDirection from '../model/enums/SortingDirection';
+import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
+import R2Error from '../model/errors/R2Error';
+import ManifestV2 from '../model/ManifestV2';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ThemeManager from '../r2mm/manager/ThemeManager';
+import ManagerInformation from '../_managerinf/ManagerInformation';
+import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
-    import { homedir } from 'os';
-    import * as path from 'path';
-    import FsProvider from '../providers/generic/file/FsProvider';
-    import SettingsView from '../components/settings-components/SettingsView.vue';
-    import DownloadModModal from '../components/views/DownloadModModal.vue';
-    import CacheUtil from '../r2mm/mods/CacheUtil';
-    import CategoryFilterMode from '../model/enums/CategoryFilterMode';
-    import ArrayUtils from '../utils/ArrayUtils';
-    import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
-    import LinkProvider from '../providers/components/LinkProvider';
-    import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
-    import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
-    import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
-    import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
-    import GameManager from '../model/game/GameManager';
-    import Game from '../model/game/Game';
-    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-    import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
+import { homedir } from 'os';
+import * as path from 'path';
+import FsProvider from '../providers/generic/file/FsProvider';
+import SettingsView from '../components/settings-components/SettingsView.vue';
+import DownloadModModal from '../components/views/DownloadModModal.vue';
+import CacheUtil from '../r2mm/mods/CacheUtil';
+import CategoryFilterMode from '../model/enums/CategoryFilterMode';
+import ArrayUtils from '../utils/ArrayUtils';
+import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
+import LinkProvider from '../providers/components/LinkProvider';
+import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
+import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
+import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
+import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
+import GameManager from '../model/game/GameManager';
+import Game from '../model/game/Game';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
+import { PackageLoader } from '../model/installing/PackageLoader';
 
-	@Component({
+@Component({
 		components: {
             LocalFileImportModal,
             OnlineModList: OnlineModListProvider.provider,
@@ -834,21 +834,21 @@
 
 		async copyLogToClipboard() {
             const fs = FsProvider.instance;
-			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
-			if (await this.logFileExists()) {
-				const text = (await fs.readFile(logOutputPath)).toString();
-				if (text.length >= 1992) {
-				    InteractionProvider.instance.copyToClipboard(text);
-				} else {
-                    InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
-				}
-			}
-		}
-
-		async logFileExists() {
-            const fs = FsProvider.instance;
-			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
-			return fs.exists(logOutputPath);
+            let logOutputPath = "";
+            switch (this.activeGame.packageLoader) {
+                case PackageLoader.BEPINEX:
+                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
+                    break;
+                case PackageLoader.MELON_LOADER:
+                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "MelonLoader", "Latest.log");
+                    break;
+            }
+            const text = (await fs.readFile(logOutputPath)).toString();
+            if (text.length >= 1992) {
+                InteractionProvider.instance.copyToClipboard(text);
+            } else {
+                InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
+            }
 		}
 
         async setAllModsEnabled(enabled: boolean) {

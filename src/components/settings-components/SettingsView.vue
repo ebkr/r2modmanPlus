@@ -146,9 +146,9 @@ import moment from 'moment';
             ),
             new SettingsRow(
                 'Debugging',
-                'Copy LogOutput contents to clipboard',
+                'Copy log file contents to clipboard',
                 'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-                async () => this.doesLogOutputExist(),
+                async () => this.doesLogFileExist(),
                 'fa-clipboard',
                 () => this.emitInvoke('CopyLogToClipboard')
             ),
@@ -410,7 +410,7 @@ import moment from 'moment';
             this.$emit('setting-invoked', invoked);
         }
 
-        doesLogOutputExist() {
+        doesLogFileExist() {
             return this.logOutput.exists ? 'LogOutput.log exists' : 'LogOutput.log does not exist';
         }
 
