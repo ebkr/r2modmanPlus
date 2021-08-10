@@ -37,3 +37,5 @@ Foldex-r2mod_cli
 gnonme-CustomItemsSDK
 
 gnonme-ModThatIsNotMod_Unity_Tools
+
+L4rs-QuickFSR
