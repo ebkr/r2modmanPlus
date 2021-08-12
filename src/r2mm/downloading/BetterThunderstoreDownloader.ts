@@ -81,7 +81,18 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return builder;
     }
 
+    public sortDependencyOrder(deps: ThunderstoreCombo[]) {
+        deps.sort((a, b) => {
+            if (a.getVersion().getDependencies().find(value => value.startsWith(b.getMod().getFullName() + "-"))) {
+                return 1;
+            } else {
+                return -1;
+            }
+        })
+    }
+
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
+        const depMap: Map<string, ThunderstoreCombo> = new Map();
         const dependencies: ThunderstoreCombo[] = [];
         mods.forEach(value => {
             const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
@@ -93,7 +104,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 dependencies.push(combo);
             }
         });
-        return dependencies.filter(value => {
+
+        // Keep array unique in case scenario happens where dependency X is picked up before X install listing.
+        dependencies.forEach(value => depMap.set(value.getMod().getFullName(), value));
+
+        return Array.from(depMap.values()).filter(value => {
             const result = mods.find(value1 => {
                 return value1.getName() === value.getMod().getFullName();
             });
@@ -109,6 +124,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
+        this.sortDependencyOrder(dependencies);
 
         let downloadCount = 0;
         const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
@@ -133,6 +149,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
+        this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
         combo.setVersion(modVersion);
@@ -156,6 +173,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 if (!isModpack) {
                     // If not modpack, get latest
                     dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+                    this.sortDependencyOrder(dependencies);
                     downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
                 }
                 // If no dependencies, end here.

@@ -2,6 +2,7 @@ import ProviderUtils from '../../../../providers/generic/ProviderUtils';
 import { StorePlatform } from '../../../../model/game/StorePlatform';
 import GameRunnerProvider from '../../../generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
+import { PackageLoader } from '../../../../model/installing/PackageLoader';
 
 export default abstract class PlatformInterceptorProvider {
 
@@ -17,7 +18,7 @@ export default abstract class PlatformInterceptorProvider {
         return PlatformInterceptorProvider.provider();
     }
 
-    public abstract getRunnerForPlatform(platform: StorePlatform): GameRunnerProvider | undefined;
+    public abstract getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined;
     public abstract getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined;
 
 }

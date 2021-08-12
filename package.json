@@ -31,6 +31,7 @@
     "bulma-checkradio": "^1.1.1",
     "bulma-divider": "^0.2.0",
     "bulma-steps": "^2.2.1",
+    "bulma-switch": "^2.0.0",
     "bulma-tooltip": "^3.0.2",
     "core-js": "^3.6.5",
     "dexie": "^3.0.3",
@@ -49,6 +50,7 @@
     "vue-class-component": "^7.2.2",
     "vue-i18n": "^8.0.0",
     "vue-property-decorator": "^8.3.0",
+    "vuedraggable": "^2.24.3",
     "yaml": "^1.7.2"
   },
   "devDependencies": {
@@ -58,7 +60,7 @@
     "@quasar/quasar-app-extension-testing": "^1.0.3",
     "@quasar/quasar-app-extension-testing-unit-jest": "^2.2.2",
     "@quasar/quasar-app-extension-typescript": "^1.0.2",
-    "@types/adm-zip": "^0.4.32",
+    "@types/adm-zip": "^0.4.34",
     "@types/async-lock": "^1.1.2",
     "@types/chai": "^4.2.11",
     "@types/fs-extra": "^8.0.1",

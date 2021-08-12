@@ -7,15 +7,15 @@ import FsProvider from '../../providers/generic/file/FsProvider';
  * The purpose of this class is to create a navigatable tree.
  * This tree ensures mods will go in their correct locations for Manifest V1.
  */
-export default class BepInExTree {
+export default class FileTree {
 
     private files: string[] = [];
-    private directories: BepInExTree[] = [];
+    private directories: FileTree[] = [];
     private directoryName: string = '';
 
-    public static async buildFromLocation(location: string): Promise<BepInExTree | R2Error> {
+    public static async buildFromLocation(location: string): Promise<FileTree | R2Error> {
         const fs = FsProvider.instance;
-        const currentTree = new BepInExTree();
+        const currentTree = new FileTree();
         currentTree.setDirectoryName(path.basename(location));
         try {
             const dir = await fs.readdir(location);
@@ -33,7 +33,7 @@ export default class BepInExTree {
             const err: Error = e;
             return Promise.resolve(
                 new R2Error(
-                    `Error reading directory in BepInExTree build for directory: ${location}`,
+                    `Error reading directory in FileTree build for directory: ${location}`,
                     err.message,
                     'Relaunch the manager as admin, directory failed to be read.'
                 )
@@ -46,8 +46,47 @@ export default class BepInExTree {
         this.files = [...this.files, path.join(location, file)];
     }
 
+    public removeFiles(...args: string[]) {
+        this.files = this.files.filter(value => !args.map(arg => arg.toLowerCase()).includes(value.toLowerCase()));
+    }
+
+    public removeFilesWithBasename(...args: string[]) {
+        this.files = this.files.filter(value => !args.map(arg => arg.toLowerCase()).includes(path.basename(value).toLowerCase()));
+    }
+
+    public removeDirectories(...args: string[]) {
+        this.directories = this.directories.filter(value => !args.map(arg => arg.toLowerCase()).includes(value.getDirectoryName().toLowerCase()));
+    }
+
+    public navigateAndPerform(onFound: (fileTree: FileTree) => void, ...args: string[]) {
+        const dir = this.navigate(...args);
+        if (dir !== undefined) {
+            onFound(dir);
+        }
+    }
+
+    public navigate(...args: string[]): FileTree | undefined {
+        if (args[0] !== undefined) {
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            if (foundDir !== undefined) {
+                return foundDir.subNavigate(...args.splice(1));
+            }
+        }
+    }
+
+    private subNavigate(...args: string[]): FileTree | undefined {
+        if (args[0] !== undefined) {
+            const foundDir = this.directories.find(value => value.directoryName.toLowerCase() === args[0].toLowerCase());
+            if (foundDir !== undefined) {
+                return foundDir.subNavigate(...args.splice(1));
+            }
+        } else {
+            return this;
+        }
+    }
+
     private async addDirectory(location: string, directoryName: string): Promise<R2Error | null> {
-        const directory: BepInExTree | R2Error = await BepInExTree.buildFromLocation(path.join(location, directoryName));
+        const directory: FileTree | R2Error = await FileTree.buildFromLocation(path.join(location, directoryName));
         if (directory instanceof R2Error) {
             return directory;
         }
@@ -60,7 +99,7 @@ export default class BepInExTree {
     }
 
     public getFiles(): string[] {
-        return this.files;
+        return [...this.files];
     }
 
     public getRecursiveFiles(): string[] {
@@ -71,7 +110,7 @@ export default class BepInExTree {
         return files;
     }
 
-    public getDirectories(): BepInExTree[] {
+    public getDirectories(): FileTree[] {
         return this.directories;
     }
 

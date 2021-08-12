@@ -1,8 +1,8 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
-import BepInExTree from '../../../model/file/BepInExTree';
-import BepInExPackageMapping from '../../../model/installing/BepInExPackageMapping';
+import FileTree from '../../../model/file/FileTree';
+import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import Profile from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {
@@ -52,7 +52,7 @@ export default abstract class ProfileInstallerProvider {
      * @param location  The location of the mod within a BepInEx sub-folder.
      * @param mode      The ModMode number. {@class model/enums/ModMode}
      */
-    abstract applyModMode(mod: ManifestV2, tree: BepInExTree, location: string, mode: number): Promise<R2Error | void>;
+    abstract applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void>;
 
     /**
      * Get descendant files of a given location.
@@ -61,7 +61,7 @@ export default abstract class ProfileInstallerProvider {
      * @param tree      If tree is not provided, one is created on first call. This method is recursive.
      * @param location
      */
-    abstract getDescendantFiles(tree: BepInExTree | null, location: string): Promise<string[]>;
+    abstract getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]>;
 
     /**
      * Install a mod based on a given {@class ManifestV2}. Used for local installs.
@@ -80,7 +80,7 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      * @param tree
      */
-    abstract resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: BepInExTree): Promise<R2Error | null>;
+    abstract resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void>;
 
     /**
      * Custom install method for handling BepInEx installations.
@@ -88,6 +88,6 @@ export default abstract class ProfileInstallerProvider {
      * @param bepInExVariant
      * @param profile
      */
-    abstract installBepInEx(bieLocation: string, bepInExVariant: BepInExPackageMapping, profile: Profile): Promise<R2Error | null>;
+    abstract installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null>;
 
 }

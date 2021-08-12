@@ -10,6 +10,8 @@ import InteractionProvider from '../../../src/providers/ror2/system/InteractionP
 import StubLinkProvider from './stubs/providers/stub.LinkProvider';
 import LinkProvider from '../../../src/providers/components/LinkProvider';
 import ThunderstorePackages from '../../../src/r2mm/data/ThunderstorePackages';
+import StubProfileProvider from 'app/test/jest/__tests__/stubs/providers/stub.ProfileProvider';
+import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
 
 export default class TestSetup {
 
@@ -37,6 +39,9 @@ export default class TestSetup {
 
         const fs = new StubFsProvider();
         FsProvider.provide(() => fs);
+
+        const profileProvider = new StubProfileProvider();
+        ProfileProvider.provide(() => profileProvider);
 
         const interactionProvider = new StubInteractionProvider();
         InteractionProvider.provide(() => interactionProvider);

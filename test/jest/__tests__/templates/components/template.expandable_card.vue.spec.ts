@@ -75,7 +75,7 @@ describe("ExpandableCard component", () => {
         expect(found.isVisible()).toBeTruthy();
     });
 
-    it("Changes visiblity on click", () => {
+    it("Changes visibility on click", () => {
         const mount = shallowMount(ExpandableCard, mountOptions);
         expect((mount.vm as any).visible).toBeFalsy();
         const found = mount.findComponent({ ref: "card-expansion"});

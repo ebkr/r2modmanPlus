@@ -16,8 +16,8 @@
 			<div class='modal-content'>
 				<div class='notification is-danger'>
 					<h3 class='title'>Failed to set the Steam directory</h3>
-					<p>The directory must contain the Steam executable file.</p>
-					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
+					<p>The steam executable was not selected.</p>
+					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -28,8 +28,8 @@
 			<div class='modal-content'>
 				<div class='notification is-danger'>
 					<h3 class='title'>Failed to set the {{ activeGame.displayName }} directory</h3>
-					<p>The directory must contain either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
-					<p>If this error has appeared, but the directory is correct, please run as administrator.</p>
+					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
+					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -111,7 +111,7 @@
 				</button>
 			</template>
 		</modal>
-		<modal v-show="exportCode !== ''" :open="exportCode" @close-modal="() => {exportCode = '';}">
+		<modal v-show="exportCode !== ''" :open="exportCode !== ''" @close-modal="() => {exportCode = '';}">
 			<template v-slot:title>
 				<p class='card-header-title'>Profile exported</p>
 			</template>
@@ -205,6 +205,7 @@
                                 @clicked-settings="view = 'settings'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
+                                @clicked-downloads="openRoute('/downloads')"
                                 @error="showError($event)"
                 />
 			</div>
@@ -309,56 +310,56 @@
 </template>
 
 <script lang='ts'>
-	import Vue from 'vue';
-	import Component from 'vue-class-component';
-    import { Prop, Watch } from 'vue-property-decorator';
-	import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
-	import ThunderstoreMod from '../model/ThunderstoreMod';
-	import ThunderstoreCombo from '../model/ThunderstoreCombo';
-	import Mod from '../model/Mod';
-	import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-	import ThunderstoreVersion from '../model/ThunderstoreVersion';
-	import ProfileModList from '../r2mm/mods/ProfileModList';
-	import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
-	import PathResolver from '../r2mm/manager/PathResolver';
-	import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
+import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
+import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreVersion from '../model/ThunderstoreVersion';
+import ProfileModList from '../r2mm/mods/ProfileModList';
+import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
+import PathResolver from '../r2mm/manager/PathResolver';
+import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
-	import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
+import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
-	import Profile from '../model/Profile';
-	import VersionNumber from '../model/VersionNumber';
-	import StatusEnum from '../model/enums/StatusEnum';
-	import SortingStyle from '../model/enums/SortingStyle';
-	import SortingDirection from '../model/enums/SortingDirection';
-	import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
-	import R2Error from '../model/errors/R2Error';
-	import ManifestV2 from '../model/ManifestV2';
-	import ManagerSettings from '../r2mm/manager/ManagerSettings';
-	import ThemeManager from '../r2mm/manager/ThemeManager';
-	import ManagerInformation from '../_managerinf/ManagerInformation';
-	import InteractionProvider from '../providers/ror2/system/InteractionProvider';
+import Profile from '../model/Profile';
+import VersionNumber from '../model/VersionNumber';
+import StatusEnum from '../model/enums/StatusEnum';
+import SortingStyle from '../model/enums/SortingStyle';
+import SortingDirection from '../model/enums/SortingDirection';
+import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
+import R2Error from '../model/errors/R2Error';
+import ManifestV2 from '../model/ManifestV2';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ThemeManager from '../r2mm/manager/ThemeManager';
+import ManagerInformation from '../_managerinf/ManagerInformation';
+import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
-    import { homedir } from 'os';
-    import * as path from 'path';
-    import FsProvider from '../providers/generic/file/FsProvider';
-    import SettingsView from '../components/settings-components/SettingsView.vue';
-    import DownloadModModal from '../components/views/DownloadModModal.vue';
-    import CacheUtil from '../r2mm/mods/CacheUtil';
-    import CategoryFilterMode from '../model/enums/CategoryFilterMode';
-    import ArrayUtils from '../utils/ArrayUtils';
-    import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
-    import LinkProvider from '../providers/components/LinkProvider';
-    import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
-    import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
-    import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
-    import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
-    import GameManager from '../model/game/GameManager';
-    import Game from '../model/game/Game';
-    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-    import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
+import { homedir } from 'os';
+import * as path from 'path';
+import FsProvider from '../providers/generic/file/FsProvider';
+import SettingsView from '../components/settings-components/SettingsView.vue';
+import DownloadModModal from '../components/views/DownloadModModal.vue';
+import CacheUtil from '../r2mm/mods/CacheUtil';
+import CategoryFilterMode from '../model/enums/CategoryFilterMode';
+import ArrayUtils from '../utils/ArrayUtils';
+import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
+import LinkProvider from '../providers/components/LinkProvider';
+import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
+import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
+import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
+import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
+import GameManager from '../model/game/GameManager';
+import Game from '../model/game/Game';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
+import { PackageLoader } from '../model/installing/PackageLoader';
 
-	@Component({
+@Component({
 		components: {
             LocalFileImportModal,
             OnlineModList: OnlineModListProvider.provider,
@@ -645,18 +646,28 @@
 		}
 
 		changeGameInstallDirectory() {
-            const fs = FsProvider.instance;
 			const ror2Directory: string = this.settings.getContext().gameSpecific.gameDirectory || this.computeDefaultInstallDirectory();
-			InteractionProvider.instance.selectFolder({
-                title: `Locate ${this.activeGame.displayName} Directory`,
+			InteractionProvider.instance.selectFile({
+                title: `Locate ${this.activeGame.displayName} Executable`,
+                // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
+                // Should fix if needed, although unlikely.
+                filters: (this.activeGame.exeName.map(value => {
+                    const nameSplit = value.split(".");
+                    return [{
+                        name: nameSplit[0],
+                        extensions: [nameSplit[1]]
+                    }]
+                }).reduce((previousValue, currentValue) => {
+                    previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
+                    return previousValue;
+                })),
                 defaultPath: ror2Directory,
-                buttonLabel: 'Select Directory'
+                buttonLabel: 'Select Executable'
             }).then(async files => {
                 if (files.length === 1) {
-                    const containsGameExecutable = (await fs.readdir(files[0]))
-                        .find(value => this.activeGame.exeName.find(exeName => value.toLowerCase() === exeName.toLowerCase()) !== undefined);
+                    const containsGameExecutable = this.activeGame.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
                     if (containsGameExecutable) {
-                        await this.settings.setGameDirectory(files[0]);
+                        await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
                     } else {
                         this.showRor2IncorrectDirectoryModal = true;
                     }
@@ -678,30 +689,28 @@
 			}
 		}
 
-		async checkIfSteamDirectoryIsValid(dir : string) : Promise<boolean> {
+		async checkIfSteamExecutableIsValid(file: string) : Promise<boolean> {
 			switch(process.platform){
 				case 'win32':
-					return (await FsProvider.instance.readdir(dir))
-							.find(value => value.toLowerCase() === 'steam.exe') !== undefined;
+					return path.basename(file).toLowerCase() === "steam.exe"
 				case 'linux':
-					return (await FsProvider.instance.readdir(dir))
-							.find(value => value.toLowerCase() === 'steam.sh') !== undefined;
+                    return path.basename(file).toLowerCase() === "steam.sh"
 				default:
 					return true;
 			}
 		}
 
 		changeSteamDirectory() {
-            const fs = FsProvider.instance;
-			const ror2Directory: string = this.settings.getContext().global.steamDirectory || this.computeDefaultSteamDirectory();
-			InteractionProvider.instance.selectFolder({
-                title: 'Locate Steam Directory',
-                defaultPath: ror2Directory,
-                buttonLabel: 'Select Directory'
+			const steamDir: string = this.settings.getContext().global.steamDirectory || this.computeDefaultSteamDirectory();
+			InteractionProvider.instance.selectFile({
+                title: 'Locate Steam Executable',
+                defaultPath: steamDir,
+                filters: [{name: "steam", extensions: ["exe", "sh"]}],
+                buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {
-					if (await this.checkIfSteamDirectoryIsValid(files[0])) {
-						this.settings.setSteamDirectory(files[0]);
+					if (await this.checkIfSteamExecutableIsValid(files[0])) {
+						this.settings.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
 					} else {
 						this.showSteamIncorrectDirectoryModal = true;
 					}
@@ -825,21 +834,21 @@
 
 		async copyLogToClipboard() {
             const fs = FsProvider.instance;
-			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
-			if (await this.logFileExists()) {
-				const text = (await fs.readFile(logOutputPath)).toString();
-				if (text.length >= 1992) {
-				    InteractionProvider.instance.copyToClipboard(text);
-				} else {
-                    InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
-				}
-			}
-		}
-
-		async logFileExists() {
-            const fs = FsProvider.instance;
-			const logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
-			return fs.exists(logOutputPath);
+            let logOutputPath = "";
+            switch (this.activeGame.packageLoader) {
+                case PackageLoader.BEPINEX:
+                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
+                    break;
+                case PackageLoader.MELON_LOADER:
+                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "MelonLoader", "Latest.log");
+                    break;
+            }
+            const text = (await fs.readFile(logOutputPath)).toString();
+            if (text.length >= 1992) {
+                InteractionProvider.instance.copyToClipboard(text);
+            } else {
+                InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
+            }
 		}
 
         async setAllModsEnabled(enabled: boolean) {

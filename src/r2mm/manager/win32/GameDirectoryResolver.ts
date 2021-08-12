@@ -17,7 +17,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
     public async getSteamDirectory(): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-        if (settings.getContext().global.steamDirectory != null) {
+        if (settings.getContext().global.steamDirectory != null && settings.getContext().global.steamDirectory!.length > 0) {
             return settings.getContext().global.steamDirectory!;
         }
         try {
@@ -144,7 +144,12 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const folderName = parsedVdf.AppState.installdir;
             const riskOfRain2Path = path.join(manifestLocation, 'common', folderName);
             if (await fs.exists(riskOfRain2Path)) {
-                return riskOfRain2Path;
+                if (riskOfRain2Path.endsWith(path.dirname(GameManager.activeGame.steamFolderName))) {
+                    const dir = path.dirname(riskOfRain2Path);
+                    return path.join(dir, GameManager.activeGame.steamFolderName);
+                } else {
+                    return riskOfRain2Path;
+                }
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,

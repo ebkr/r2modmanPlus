@@ -53,6 +53,13 @@ const routes: RouteConfig[] = [
         meta: {
             title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
         }
+    },
+    {
+        path: '/downloads',
+        component: () => import('pages/DownloadMonitor.vue'),
+        meta: {
+            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+        }
     }
 ];
 

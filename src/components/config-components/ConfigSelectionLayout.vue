@@ -43,7 +43,7 @@
                     :id="index"
                     :visible="false">
                     <template v-slot:title>
-                        <span>{{file.name}}</span>
+                        <span>{{file.getName()}}</span>
                     </template>
                     <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
                     <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
@@ -59,7 +59,7 @@
     import ConfigFile from '../../model/file/ConfigFile';
     import Profile from '../../model/Profile';
     import * as path from 'path';
-    import BepInExTree from '../../model/file/BepInExTree';
+    import FileTree from '../../model/file/FileTree';
     import R2Error from '../../model/errors/R2Error';
     import { ExpandableCard, Hero } from '../all';
     import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
@@ -85,7 +85,7 @@
 
         @Watch('filterText')
         textChanged() {
-            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().match(this.filterText.toLowerCase()));
+            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0);
         }
 
         getSortOrderOptions() {
@@ -102,18 +102,27 @@
 
         async created() {
             const fs = FsProvider.instance;
-            const configLocation = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config");
-            const bepInExTree = await BepInExTree.buildFromLocation(configLocation);
-            if (bepInExTree instanceof R2Error) {
+            const configLocation = Profile.getActiveProfile().getPathOfProfile();
+            const tree = await FileTree.buildFromLocation(configLocation);
+            if (tree instanceof R2Error) {
                 return;
             }
-            for (const file of bepInExTree.getRecursiveFiles()) {
-                if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt' || path.extname(file).toLowerCase() === '.xml') {
+            tree.navigateAndPerform(plugins => {
+                plugins.getDirectories().forEach(value => {
+                    plugins.navigateAndPerform(sub => {
+                        // Remove all manifest.json files from the root of the plugins subdirectory.
+                        sub.removeFilesWithBasename("manifest.json");
+                    }, value.getDirectoryName())
+                });
+            }, "BepInEx", "plugins");
+            const files = tree.getDirectories().flatMap(value => value.getRecursiveFiles());
+            for (const file of files) {
+                if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt') {
                     const fileStat = await fs.lstat(file);
-                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 4), file, fileStat.mtime));
+                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
                 } else if (path.extname(file).toLowerCase() === '.json') {
                     const fileStat = await fs.lstat(file);
-                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1, file.length - 5), file, fileStat.mtime));
+                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
                 }
             }
             this.shownConfigFiles = [...this.configFiles];
