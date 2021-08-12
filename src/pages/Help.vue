@@ -48,14 +48,13 @@
                         copy the contents of your profile folder into your dedicated server folder yourself.
                     </p>
                     <hr/>
-                    <h2 class='title is-5'>Launching from Steam</h2>
+                    <h2 class='title is-5'>Launching the game from outside the mod manager</h2>
                     <p>
                         By design your experience by starting the game through Steam will be vanilla (un-modded).
-                        <br/>
-                        You can change this yourself by passing <code>--doorstop-target "&lt;PATH&gt;"</code> as a game
-                        launch argument. This is however not recommend as it's an extremely manual approach.
                         <br/><br/>
-                        Replace <code>&lt;PATH&gt;</code> with the path to the profile you'd like to launch.
+                        You will need to place the corresponding argument in your platform's relevant launch parameter area.
+                        <br/>
+                        For Steam, this would be located in the game's properties.
                         <br/><br/>
                         Your current argument would be:
                         <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
