@@ -16,18 +16,19 @@ const exec = promisify(execCallback);
 export default class MLSteamGameRunnerProvider_Linux extends GameRunnerProvider {
 
     async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
-        try {
-            const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
-            return `----melonloader.basedir "${isProton ? 'Z:' : ''}${profile.getPathOfProfile()}"`;
-        } catch (e) {
-            const err: Error = e;
-            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
+        const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        if (isProton instanceof R2Error) {
+            return isProton;
         }
+        return `----melonloader.basedir "${isProton ? 'Z:' : ''}${profile.getPathOfProfile()}"`;
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
         const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        if (isProton instanceof R2Error) {
+            return isProton;
+        }
         if (isProton) {
             await this.ensureWineWillLoadBepInEx(game);
         }

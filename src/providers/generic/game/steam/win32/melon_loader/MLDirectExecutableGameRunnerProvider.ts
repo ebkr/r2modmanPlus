@@ -11,11 +11,11 @@ import FsProvider from '../../../../file/FsProvider';
 export default class MLDirectExecutableGameRunnerProvider extends GameRunnerProvider {
 
     async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
-        return "";
+        return `--melonloader.basedir "${profile.getPathOfProfile()}"`;
     }
 
     async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
-        return this.start(game, profile, `--melonloader.basedir "${profile.getPathOfProfile()}"`);
+        return this.start(game, profile, (await this.getGameArguments(game, profile)) as string);
     }
 
     async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {

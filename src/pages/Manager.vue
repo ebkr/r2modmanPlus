@@ -522,13 +522,15 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
 
 		get localModList() : ManifestV2[] {
-            GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
-                if (target instanceof R2Error) {
-                    this.doorstopTarget = "";
-                } else {
-                    this.doorstopTarget = target;
-                }
-            });
+		    if (this.contextProfile !== null) {
+                GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
+                    if (target instanceof R2Error) {
+                        this.doorstopTarget = "";
+                    } else {
+                        this.doorstopTarget = target;
+                    }
+                });
+            }
 			return this.$store.state.localModList || [];
 		}
 
