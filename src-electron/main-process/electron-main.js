@@ -96,13 +96,21 @@ app.on('ready', () => {
 });
 
 app.whenReady().then(() => {
-    protocol.registerFileProtocol('file', (request, callback) => {
+    protocol.interceptFileProtocol('file', (request, callback) => {
         const pathname = request.url.replace('file:///', '');
+        let file;
         if (fs.existsSync(pathname)) {
-            callback(pathname);
+            file = pathname;
         } else {
-            callback(path.join(__statics, "unknown.png"));
+            // Why does this even have to be a thing?
+            // Why does prod not automatically use __statics without issue?
+            if (process.env.PROD) {
+                file = path.join(__dirname, "unknown.png");
+            } else {
+                file = path.join(__statics, "unknown.png");
+            }
         }
+        callback(file);
     });
 });
 
