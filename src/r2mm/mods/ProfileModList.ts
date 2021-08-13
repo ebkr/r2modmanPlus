@@ -32,12 +32,13 @@ export default class ProfileModList {
 
     public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
+        await FileUtils.ensureDirectory(profile.getPathOfProfile());
         if (!await fs.exists(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
             await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
         }
         try {
             try {
-                const value = yaml.parse((await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))).toString());
+                const value = (yaml.parse((await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))).toString()) || []);
                 for(let modIndex in value){
                     const mod = new ManifestV2().fromReactive(value[modIndex]);
                     const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
