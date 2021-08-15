@@ -169,7 +169,7 @@
                 </div>
                 <hr/>
                 <div>
-                    <input class="is-checkradio" id="nsfwCheckbox" type="checkbox" :class="[{'is-dark':!settings.darkTheme}, {'is-white':settings.darkTheme}]" v-model="allowNsfw">
+                    <input class="is-checkradio has-background-color" id="nsfwCheckbox" type="checkbox" :class="[{'is-dark':!settings.darkTheme}, {'is-white':settings.darkTheme}]" v-model="allowNsfw">
                     <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
                 </div>
                 <br/>

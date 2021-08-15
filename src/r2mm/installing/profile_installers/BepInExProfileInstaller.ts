@@ -108,7 +108,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                     return applyError;
                 }
             } else {
-                files.push(...(await this.getDescendantFiles(null, path.join(location, directory.getDirectoryName()))));
+                files.push(...directory.getRecursiveFiles());
             }
         }
         for (const file of files) {
