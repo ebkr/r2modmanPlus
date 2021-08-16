@@ -16,7 +16,11 @@ export class Logger {
     async Write() {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(PathResolver.ROOT);
-        await fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
+        try {
+            await fs.writeFile(path.join(PathResolver.ROOT, 'log.txt'), Logger.logList.join('\n'));
+        } catch (e) {
+            // do nothing
+        }
     }
 
 
