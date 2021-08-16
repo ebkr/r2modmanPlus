@@ -667,11 +667,20 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                 buttonLabel: 'Select Executable'
             }).then(async files => {
                 if (files.length === 1) {
-                    const containsGameExecutable = this.activeGame.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
-                    if (containsGameExecutable) {
-                        await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                    } else {
-                        this.showRor2IncorrectDirectoryModal = true;
+                    try {
+                        const containsGameExecutable = this.activeGame.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
+                        if (containsGameExecutable) {
+                            await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                        } else {
+                            this.showRor2IncorrectDirectoryModal = true;
+                        }
+                    } catch (e) {
+                        const err: Error = e;
+                        this.showError(new R2Error(
+                            "Failed to change the game directory",
+                            err.message,
+                            null
+                        ));
                     }
                 }
             });
@@ -711,11 +720,20 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                 buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {
-					if (await this.checkIfSteamExecutableIsValid(files[0])) {
-						this.settings.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-					} else {
-						this.showSteamIncorrectDirectoryModal = true;
-					}
+				    try {
+                        if (await this.checkIfSteamExecutableIsValid(files[0])) {
+                            await this.settings.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                        } else {
+                            this.showSteamIncorrectDirectoryModal = true;
+                        }
+                    } catch (e) {
+				        const err: Error = e;
+				        this.showError(new R2Error(
+				            "Failed to change the Steam directory",
+                            err.message,
+                            null
+                        ));
+                    }
 				}
             });
 		}
