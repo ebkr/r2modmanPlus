@@ -8,9 +8,9 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica and Muck.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, and BONEWORKS.
 - A clean user interface designed to make modding as simple as possible.
-- Safer mod installs allowing you to play the game through Steam normally.
+- Safer mod installation allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
 - Export profiles to easily share both your mods and configs with friends.
 - Download and install mods directly from the manager.
@@ -68,6 +68,15 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.18
+- BONEWORKS support.
+- Added drag sorting.
+- You can now view progress of multiple dowloads.
+- Mods now have a placeholder icon if no icon was found.
+- Directory settings now require an executable to be selected instead of a directory.
+- You can now disable a mod without needing to expand it.
+- Other small fixes.
+
 ### 3.1.17
 - Added Muck support.
 
@@ -77,14 +86,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
   - r2modman's Manifest V2 is now considered deprecated and should not be used if possible.
   - Alternative implementations should rely on file name (Author-ModName-Version or Author_ModName_Version), or a Manifest V1 (with an `author` field if not inferrable from file name).
 - RainOfStages maps can now be disabled correctly.
-
-### 3.1.15
-- Added support for H3VR.
-- Dedicated servers for Risk of Rain 2 and Valheim are now supported.
-    - Note that on Linux, Valheim Dedicated Server is unable to be launched vanilla and will require parameters to be removed if required (Steam issue).
-- Fixed Outward EGS authentication issue.
-- Preloader fix now works as expected.
-- Navigation no hides when scrolling (Thanks @MSchmoecker).
 
 ## Screenshots
 
