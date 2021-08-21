@@ -68,6 +68,9 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.19
+- Reverted missing icon fix due to unknown issue on some systems.
+
 ### 3.1.18
 - BONEWORKS support.
 - Added drag sorting.
@@ -79,13 +82,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 ### 3.1.17
 - Added Muck support.
-
-### 3.1.16
-- Added support for ROUNDS and Mechanica.
-- Overhauled local imports. Manifest files are no longer required!
-  - r2modman's Manifest V2 is now considered deprecated and should not be used if possible.
-  - Alternative implementations should rely on file name (Author-ModName-Version or Author_ModName_Version), or a Manifest V1 (with an `author` field if not inferrable from file name).
-- RainOfStages maps can now be disabled correctly.
 
 ## Screenshots
 
