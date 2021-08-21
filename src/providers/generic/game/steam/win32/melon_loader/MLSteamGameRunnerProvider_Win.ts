@@ -26,7 +26,7 @@ export default class MLSteamGameRunnerProvider_Win extends GameRunnerProvider {
             const settings = await ManagerSettings.getSingleton(game);
             const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
             if (steamDir instanceof R2Error) {
-                return steamDir;
+                return resolve(steamDir);
             }
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);

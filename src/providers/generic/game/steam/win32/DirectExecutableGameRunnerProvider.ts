@@ -45,7 +45,7 @@ export default class DirectExecutableGameRunnerProvider extends GameRunnerProvid
             const settings = await ManagerSettings.getSingleton(game);
             let gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
             if (gameDir instanceof R2Error) {
-                return gameDir;
+                return resolve(gameDir);
             }
 
             gameDir = await FsProvider.instance.realpath(gameDir);
