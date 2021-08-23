@@ -2,6 +2,8 @@ ebkr-r2modman
 
 ebkr-r2modman_dsp
 
+ebkr-BT2TS
+
 Harb-AttributeFinder
 
 ethanbrews-RiskOfRainModManager
@@ -31,3 +33,11 @@ Squidy-RogueWisp
 TheLamiaLover-ItemStatsMod
 
 Foldex-r2mod_cli
+
+gnonme-CustomItemsSDK
+
+gnonme-ModThatIsNotMod_Unity_Tools
+
+L4rs-QuickFSR
+
+MPModTeam-Boneworks_MP
