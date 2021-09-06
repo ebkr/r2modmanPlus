@@ -9,7 +9,7 @@ export default class ZipExtract {
 
     public static async extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): Promise<void> {
         const fs = FsProvider.instance;
-        return await this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async result => {
+        return await this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async (result, err?) => {
             if (result) {
                 try {
                     await fs.unlink(path.join(zipFolder, filename));
@@ -28,26 +28,35 @@ export default class ZipExtract {
                     await FileUtils.emptyDirectory(path.join(zipFolder, outputFolderName));
                     await fs.rmdir(path.join(zipFolder, outputFolderName));
                     await fs.unlink(path.join(zipFolder, filename));
+                    if (err !== undefined) {
+                        if (err instanceof R2Error) {
+                            callback(result, err);
+                        } else {
+                            throw err;
+                        }
+                    }
                 } catch (e) {
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
                         e.message,
                         'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
                     ));
-                } finally {
-                    callback(result);
                 }
+                // TODO: Is this needed?
+                // finally {
+                //     callback(result);
+                // }
             }
         });
     }
 
-    public static async extractOnly(zip: string, outputFolder: string, callback: (success: boolean) => void): Promise<void> {
+    public static async extractOnly(zip: string, outputFolder: string, callback: (success: boolean, error?: Error) => void): Promise<void> {
         try {
             await ZipProvider.instance.extractAllTo(zip, outputFolder);
             callback(true);
         } catch (e) {
             console.log("extractOnly failed:", e);
-            callback(false);
+            callback(false, e);
         }
     }
 

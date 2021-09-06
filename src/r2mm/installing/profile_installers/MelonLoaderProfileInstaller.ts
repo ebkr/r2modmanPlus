@@ -65,8 +65,12 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
                 }
             }
         } catch (e) {
-            const err: Error = e;
-            return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
+            if (e instanceof R2Error) {
+                return e;
+            } else {
+                const err: Error = e;
+                return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
+            }
         }
     }
 
@@ -113,6 +117,9 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
                 }
             }
         } catch (e) {
+            if (e instanceof R2Error) {
+                return e;
+            }
             const err: Error = e;
             return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
         }
@@ -150,7 +157,16 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), relativeFile))) {
                 await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), relativeFile));
             }
-            await FsProvider.instance.copyFile(value, path.join(profile.getPathOfProfile(), relativeFile));
+            try {
+                await FsProvider.instance.copyFile(value, path.join(profile.getPathOfProfile(), relativeFile));
+            } catch (e) {
+                if (e instanceof R2Error) {
+                    return e;
+                } else {
+                    const err: Error = e;
+                    return new R2Error("Failed to copy file", err.message, null);
+                }
+            }
         }
         return Promise.resolve(null);
     }
@@ -213,7 +229,16 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             }
         })
 
-        await this.addToStateFile(mod, fileRelocations, profile)
+        try {
+            await this.addToStateFile(mod, fileRelocations, profile)
+        } catch (e) {
+            if (e instanceof R2Error) {
+                return e;
+            } else {
+                const err: Error = e;
+                return new R2Error(`Failed to add mod [${mod.getName()}] to state file`, err.message, null);
+            }
+        }
 
         return;
     }
