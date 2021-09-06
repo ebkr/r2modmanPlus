@@ -56,7 +56,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+            if (await FsProvider.instance.exists(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib")))) {
+                extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+            }
         }
 
         const target = await this.getGameArguments(game, Profile.getActiveProfile());
@@ -69,7 +71,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     public startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start(game, '--server --doorstop-enable false');
+        return this.start(game, `--doorstop-enable false${game.instanceType === GameInstanceType.SERVER ? ' --server' : ''}`);
     }
 
     private async start(game: Game, cmdargs: string): Promise<void | R2Error> {
