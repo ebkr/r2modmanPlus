@@ -7,6 +7,7 @@ import R2Error from '../../../model/errors/R2Error';
 import ExportMod from '../../../model/exports/ExportMod';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import Game from '../../../model/game/Game';
+import Profile from '../../../model/Profile';
 
 export default abstract class ThunderstoreDownloaderProvider {
 
@@ -74,7 +75,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract download(game: Game, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public abstract download(game: Game, profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                     callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                     completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
