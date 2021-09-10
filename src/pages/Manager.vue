@@ -593,7 +593,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 			};
 			this.downloadingMod = true;
 			this.closeModal();
-			ThunderstoreDownloaderProvider.instance.download(this.activeGame, tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
+			ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.contextProfile!, tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
 				if (status === StatusEnum.FAILURE) {
 					if (err !== null) {
 						this.downloadingMod = false;
