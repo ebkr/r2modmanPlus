@@ -36,6 +36,9 @@ export default class CacheUtil {
                 });
             }
 
+            // Go back to original profile
+            new Profile(originalProfile.getProfileName());
+
             const cacheDirectory = path.join(PathResolver.MOD_ROOT, "cache");
             await FileUtils.ensureDirectory(cacheDirectory);
             for (const folder of (await fs.readdir(cacheDirectory))) {
@@ -60,8 +63,6 @@ export default class CacheUtil {
                     }
                 }
             }
-            // Go back to original profile
-            new Profile(originalProfile.getProfileName());
         });
     }
 
