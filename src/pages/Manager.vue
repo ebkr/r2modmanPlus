@@ -586,35 +586,6 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 			}
 		}
 
-		downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
-			this.downloadObject = {
-				progress: 0,
-				modName: tsMod.getName()
-			};
-			this.downloadingMod = true;
-			this.closeModal();
-			ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.contextProfile!, tsMod, tsVersion, this.thunderstoreModList, (progress: number, modName: string, status: number, err: R2Error | null) => {
-				if (status === StatusEnum.FAILURE) {
-					if (err !== null) {
-						this.downloadingMod = false;
-						this.showError(err);
-					}
-				} else if (status === StatusEnum.PENDING) {
-					this.downloadObject = Object.assign({}, {
-						progress: progress,
-						modName: modName
-					});
-				}
-			}, (downloadedMods: ThunderstoreCombo[]) => {
-                ProfileModList.requestLock(async () => {
-                    for (const combo of downloadedMods) {
-                        await this.installModAfterDownload(combo.getMod(), combo.getVersion());
-                    }
-                    this.downloadingMod = false;
-                });
-			});
-		}
-
 		getSortOptions() {
 			const options = [];
 			const sorting: { [key: string]: string } = SortingStyle;
@@ -1040,14 +1011,23 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 			}
 			this.sortThunderstoreModList();
 
-			InteractionProvider.instance.hookModInstallProtocol(data => {
+			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
                 if (combo instanceof R2Error) {
                     this.showError(combo);
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
                     return;
                 }
-                this.downloadHandler(combo.getMod(), combo.getVersion());
+                DownloadModModal.downloadSpecific(this.activeGame, this.contextProfile!, combo, this.thunderstoreModList)
+                    .then(async value => {
+                        const modList = await ProfileModList.getModList(this.contextProfile!);
+                        if (!(modList instanceof R2Error)) {
+                            await this.$store.dispatch('updateModList', modList);
+                        } else {
+                            this.showError(modList);
+                        }
+                    })
+                    .catch(this.showError);
             });
 
 			this.isManagerUpdateAvailable();
