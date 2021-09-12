@@ -136,7 +136,7 @@
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
 
-        public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]) {
+        public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]): Promise<void> {
             return new Promise((resolve, reject) => {
                 const tsMod = combo.getMod();
                 const tsVersion = combo.getVersion();
