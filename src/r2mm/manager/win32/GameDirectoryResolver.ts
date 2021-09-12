@@ -10,7 +10,7 @@ import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
-import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
+import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 
 const steamInstallDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 
