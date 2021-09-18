@@ -105,9 +105,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             console.log("Config:", appManifest.AppState.UserConfig);
 
             switch (override_source) {
-                case "": isProton = false; break;
-                case "linux": isProton = false; break;
-                default: isProton = true;
+                case "": isProton = false; console.log("Proton.Empty"); break;
+                case "linux": isProton = false; console.log("Proton.Linux"); break;
+                default: isProton = true; console.log("Proton.DefaultCase", override_source);
             }
 
             console.log("isProton:", isProton)
