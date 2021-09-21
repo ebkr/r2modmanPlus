@@ -4,8 +4,12 @@ import R2Error from '../../../model/errors/R2Error';
 import FileTree from '../../../model/file/FileTree';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import Profile from '../../../model/Profile';
+import { RuleType } from '../../../r2mm/installing/InstallationRules';
 
 export default abstract class ProfileInstallerProvider {
+
+    constructor(rule: RuleType) {
+    }
 
     private static provider: () => ProfileInstallerProvider;
     static provide(provided: () => ProfileInstallerProvider): void {

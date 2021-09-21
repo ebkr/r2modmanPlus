@@ -15,6 +15,7 @@ import ManagerInformation from '../../../_managerinf/ManagerInformation';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from './ModLoaderVariantRecord';
+import { RuleType } from '../../../r2mm/installing/InstallationRules';
 
 let fs: FsProvider;
 
@@ -22,9 +23,12 @@ const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod",
 
 export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
-    constructor() {
-        super();
+    private rule: RuleType;
+
+    constructor(rule: RuleType) {
+        super(rule);
         fs = FsProvider.instance;
+        this.rule = rule;
     }
 
     /**
@@ -168,15 +172,15 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
     }
 
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
-        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
+        const endFolderNames = Object.keys(this.rule.rules);
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
         if (matchingEndFolderName !== undefined) {
             let profileLocation: string;
             if (folderName.toLowerCase() !== 'config') {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName, mod.getName());
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule.rules[matchingEndFolderName], mod.getName());
             } else {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName);
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule.rules[matchingEndFolderName]);
             }
             try {
                 await FileUtils.ensureDirectory(profileLocation);
@@ -210,7 +214,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
             if (file.toLowerCase().endsWith('.mm.dll')) {
                 profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', 'monomod', mod.getName());
             } else {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule._defaultPath, mod.getName());
             }
             try {
                 await FileUtils.ensureDirectory(profileLocation);

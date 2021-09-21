@@ -67,6 +67,8 @@ import ProfileInstallerResolverProvider from './providers/generic/installing/Pro
 import ProfileInstallerResolverImpl from './r2mm/installing/profile_installers/ProfileInstallerResolverImpl';
 import ComputedProfileInstaller from './r2mm/installing/profile_installers/ComputedProfileInstaller';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
+import InstallationRules from './r2mm/installing/InstallationRules';
+import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 
 @Component
 export default class App extends Vue {
@@ -101,6 +103,9 @@ export default class App extends Vue {
 
         const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
         this.settings = settings;
+
+        InstallationRuleApplicator.apply();
+        InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
