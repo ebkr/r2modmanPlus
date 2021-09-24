@@ -12,6 +12,7 @@ import yaml from 'yaml';
 import ModFileTracker from 'src/model/installing/ModFileTracker';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
 import StateTracker from 'src/model/installing/StateTracker';
+import InstallRules_BONEWORKS from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_BONEWORKS';
 
 let sandbox = Sinon.createSandbox();
 let mlProfileInstaller: MelonLoaderProfileInstaller;
@@ -20,7 +21,7 @@ let conflictManagement: ConflictManagementProviderImpl;
 let beforeSetup = () => {
     TestSetup.stubSetUp();
     sandbox = Sinon.createSandbox();
-    mlProfileInstaller = new MelonLoaderProfileInstaller();
+    mlProfileInstaller = new MelonLoaderProfileInstaller(InstallRules_BONEWORKS());
     conflictManagement = new ConflictManagementProviderImpl();
 }
 
