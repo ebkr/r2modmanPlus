@@ -69,6 +69,7 @@ import ComputedProfileInstaller from './r2mm/installing/profile_installers/Compu
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 import InstallationRules from './r2mm/installing/InstallationRules';
 import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
+import InstallRule__Stub from './r2mm/installing/default_installation_rules/game_rules/InstallRule__Stub';
 
 @Component
 export default class App extends Vue {
@@ -157,7 +158,7 @@ export default class App extends Vue {
 
         ZipProvider.provide(() => new AdmZipProvider());
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
-        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller());
+        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller(InstallRule__Stub()));
         ProfileInstallerResolverProvider.provide(() => new ProfileInstallerResolverImpl());
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());
