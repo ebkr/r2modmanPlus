@@ -14,26 +14,7 @@ import yaml from "yaml";
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
 import ModMode from '../../../model/enums/ModMode';
-
-const INSTALLATION_RULES = {
-    Mods: {_files: [".dll"]},
-    Plugins: {_files: [".plugin.dll"]},
-    MelonLoader: {
-        Managed: {_files: [".managed.dll"]},
-        Libs: {_files: [".lib.dll"]}
-    },
-    UserData: {
-        CustomItems: {_files: [".melon"]},
-        CustomMaps: {_files: [".bcm", ".cma"]},
-        PlayerModels: {_files: [".body"]},
-        CustomLoadScreens: {_files: [".load"]},
-        Music: {_files: [".wav"]},
-        Food: {_files: [".food"]},
-        Scoreworks: {_files: [".sw"]},
-        CustomSkins: {_files: [".png"]},
-        Grenades: {_files: [".grenade"]}
-    }
-}
+import { RuleType } from '../../../r2mm/installing/InstallationRules';
 
 /**
  * TODO:
@@ -42,6 +23,13 @@ const INSTALLATION_RULES = {
  * - ConflictManagementProvider should be used on enable/disable/uninstall. Newly installed will have higher priority than already installed mods.
  */
 export default class MelonLoaderProfileInstaller extends ProfileInstallerProvider {
+
+    private rule: RuleType;
+
+    constructor(rule: RuleType) {
+        super(rule);
+        this.rule = rule;
+    }
 
     async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         try {
@@ -175,19 +163,19 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
         const fileRelocations: Map<string, string> = new Map();
         for (const directory of tree.getDirectories()) {
             let dirMatched = false;
-            const matchingDir = Object.keys(INSTALLATION_RULES).find(value => value.toLowerCase() === directory.getDirectoryName().toLowerCase());
+            const matchingDir = Object.keys(this.rule.rules).find(value => value.toLowerCase() === directory.getDirectoryName().toLowerCase());
             if (matchingDir !== undefined) {
                 dirMatched = true;
                 directory.getRecursiveFiles().forEach(file => {
                     fileRelocations.set(file, path.relative(location, file));
                 })
             } else {
-                Object.keys(INSTALLATION_RULES)
+                Object.keys(this.rule.rules)
                     .flatMap(topLevel => {
                         // Need to keep track of parent key for fileRelocationResult path.
                         return {
                             topLevel: topLevel,
-                            values: Object.keys((INSTALLATION_RULES as any)[topLevel])
+                            values: Object.keys((this.rule.rules as any)[topLevel])
                         }
                     })
                     .forEach(entry => {
@@ -211,7 +199,7 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
             }
         }
 
-        const filePaths = this.calculateFilePaths(INSTALLATION_RULES);
+        const filePaths = this.calculateFilePaths(this.rule.rules);
 
         // Sort in descending order.
         // This way ".dll" will be matched after ".plugin.dll" to ensure .plugin.dll takes priority.
@@ -225,7 +213,7 @@ export default class MelonLoaderProfileInstaller extends ProfileInstallerProvide
                 // Is registered extension.
                 fileRelocations.set(value, path.join(filePaths[firstMatchingEnd], path.basename(value)));
             } else {
-                fileRelocations.set(value, path.join("Mods", path.basename(value)));
+                fileRelocations.set(value, path.join(this.rule._defaultPath, path.basename(value)));
             }
         })
 

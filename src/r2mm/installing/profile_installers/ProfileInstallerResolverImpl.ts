@@ -8,16 +8,14 @@ import ProfileInstallerProvider from '../../../providers/ror2/installing/Profile
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import PathResolver from '../../manager/PathResolver';
 import * as path from 'path';
+import InstallationRules from '../../installing/InstallationRules';
+import InstallRules_RiskOfRain2 from '../../installing/default_installation_rules/game_rules/InstallRules_RiskOfRain2';
+import InstallRules_BONEWORKS from '../../installing/default_installation_rules/game_rules/InstallRules_BONEWORKS';
 
 // Class should be used outside of any ProfileInstallerProvider (besides ComputedProfileInstaller) to prevent duplicate logic.
 // EG: BepInEx installer shouldn't have to switch to a MelonLoader installer.
 // This is because ProfileInstallerProvider implementations can be swapped, so installer may not be used.
 export default class ProfileInstallerResolverImpl extends ProfileInstallerResolverProvider {
-
-    private installers = {
-        [PackageLoader.BEPINEX]: new BepInExProfileInstaller(),
-        [PackageLoader.MELON_LOADER]: new MelonLoaderProfileInstaller()
-    };
 
     // TODO: Add support for a game to have multiple loaders.
     async determineLoader(game: Game, mod: ManifestV2): Promise<ProfileInstallerProvider> {
@@ -28,11 +26,21 @@ export default class ProfileInstallerResolverImpl extends ProfileInstallerResolv
         }
 
         // Fallback and return default profile installer for game.
-        return Promise.resolve(this.installers[game.packageLoader]);
+        const installRule = InstallationRules.RULES.find(value => value.gameName === game.internalFolderName);
+        if (installRule === undefined) {
+            throw new Error(`No rules for game: ${game.internalFolderName}`);
+        }
+        switch (installRule.packageLoader) {
+            case PackageLoader.BEPINEX: return Promise.resolve(new BepInExProfileInstaller(installRule));
+            case PackageLoader.MELON_LOADER: return Promise.resolve(new MelonLoaderProfileInstaller(installRule));
+        }
     }
 
     async getLoader(loader: PackageLoader): Promise<ProfileInstallerProvider> {
-        return Promise.resolve(this.installers[loader]);
+        switch (loader) {
+            case PackageLoader.BEPINEX: return Promise.resolve(new BepInExProfileInstaller(InstallRules_RiskOfRain2()));
+            case PackageLoader.MELON_LOADER: return Promise.resolve(new MelonLoaderProfileInstaller(InstallRules_BONEWORKS()));
+        }
     }
 
 }
