@@ -28,15 +28,4 @@ describe("InMemoryFsProvider", () => {
         expect(content.toString()).toBe("test_content");
     });
 
-    test("WriteFile and Exists", async () => {
-        await FsProvider.instance.mkdirs("Test");
-        const existsBefore = await FsProvider.instance.exists(path.join("Test", "TestWriteFile"));
-        await FsProvider.instance.writeFile(path.join("Test", "TestWriteFile"), "test_content");
-        const existsAfter = await FsProvider.instance.exists(path.join("Test", "TestWriteFile"));
-        const content = await FsProvider.instance.readFile(path.join("Test", "TestWriteFile"));
-        expect(existsBefore).toBeFalsy();
-        expect(existsAfter).toBeTruthy();
-        expect(content.toString()).toBe("test_content");
-    });
-
 });
