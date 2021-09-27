@@ -104,8 +104,8 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "553310")], "LethalLeagueBlaze.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
-        new Game("Timerborn", "Timberborn", "Timberborn",
-            "Timberborn", ["Timerborn.exe"], "Timberborn_Data",
+        new Game("Timberborn", "Timberborn", "Timberborn",
+            "Timberborn", ["Timberborn.exe"], "Timberborn_Data",
             "https://timberborn.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1062090"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "972a4ca2631e43b4ba7bc3b7586ad8c4"), new StorePlatformMetadata(StorePlatform.OTHER)], "Timberborn.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
