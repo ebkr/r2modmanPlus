@@ -83,7 +83,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
-    public async isProtonGame(game: Game){
+    public async isProtonGame(game: Game) {
         try {
             const steamPath = await this.getSteamDirectory();
             if (steamPath instanceof R2Error)
@@ -97,10 +97,19 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (appManifest instanceof R2Error)
                 return appManifest;
 
-            const isProton = typeof appManifest.AppState.UserConfig.platform_override_source !== "undefined"
-                && (appManifest.AppState.UserConfig.platform_override_source.toLowerCase() !== "linux" || appManifest.AppState.UserConfig.platform_override_source.length > 0);
 
-            // console.log("appManifest:", appManifest);
+
+            let isProton: boolean;
+            const override_source = (appManifest.AppState.UserConfig.platform_override_source || "").toLowerCase();
+
+            console.log("Config:", appManifest.AppState.UserConfig);
+
+            switch (override_source) {
+                case "": isProton = false; console.log("Proton.Empty"); break;
+                case "linux": isProton = false; console.log("Proton.Linux"); break;
+                default: isProton = true; console.log("Proton.DefaultCase", override_source);
+            }
+
             console.log("isProton:", isProton)
 
             return isProton;

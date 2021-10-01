@@ -208,6 +208,8 @@ export default class ProfileModList {
                 pluginDir.getDirectories().forEach(value => value.removeFiles(path.join(profile.getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
             }, "plugins");
         }, "BepInEx");
+        tree.removeDirectories("MelonLoader");
+        // Add all tree contents to buffer.
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
             if (fileLower.endsWith(".cfg") || fileLower.endsWith(".txt") || fileLower.endsWith(".json")) {

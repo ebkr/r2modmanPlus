@@ -6,10 +6,11 @@ import child from 'child_process';
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
 import ManagerSettings from '../ManagerSettings';
-import FsProvider from "../../../providers/generic/file/FsProvider";
+import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
+import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 
 const steamInstallDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 
@@ -79,11 +80,21 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
                     try {
                         const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
-                        for (const key in parsedVdf.LibraryFolders) {
-                            if (!isNaN(Number(key))) {
-                                locations.push(
-                                    path.join(parsedVdf.LibraryFolders[key], 'steamapps')
-                                );
+                        if (parsedVdf.libraryfolders !== undefined) {
+                            for (const key of Object.keys(parsedVdf.libraryfolders)) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.libraryfolders[key].path, 'steamapps')
+                                    );
+                                }
+                            }
+                        } else {
+                            for (const key in parsedVdf.LibraryFolders) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.LibraryFolders[key], 'steamapps')
+                                    );
+                                }
                             }
                         }
                     } catch(e) {
@@ -98,6 +109,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 }
             }
         } catch(e) {
+            LoggerProvider.instance.Log(LogSeverity.ERROR, e.message);
             if (e instanceof R2Error) {
                 return e;
             }

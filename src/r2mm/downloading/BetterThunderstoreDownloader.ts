@@ -19,6 +19,7 @@ import ModBridge from '../mods/ModBridge';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -92,7 +93,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
-        const depMap: Map<string, ThunderstoreCombo> = new Map();
+        var depMap: Map<string, ThunderstoreCombo> = new Map();
         const dependencies: ThunderstoreCombo[] = [];
         mods.forEach(value => {
             const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
@@ -107,6 +108,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         // Keep array unique in case scenario happens where dependency X is picked up before X install listing.
         dependencies.forEach(value => depMap.set(value.getMod().getFullName(), value));
+
+        dependencies.forEach(value => {
+            depMap.set(value.getMod().getFullName(), value);
+        });
 
         return Array.from(depMap.values()).filter(value => {
             const result = mods.find(value1 => {
@@ -123,7 +128,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
-        const dependencies: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
+        const dependenciesToUpdate: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
+        const dependencies: ThunderstoreCombo[] = [...dependenciesToUpdate];
+        dependenciesToUpdate.forEach(value => {
+            this.buildDependencySetUsingLatest(value.getVersion(), allMods, dependencies);
+        });
+
         this.sortDependencyOrder(dependencies);
 
         let downloadCount = 0;
@@ -145,7 +155,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(game: Game, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public async download(game: Game, profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
@@ -155,9 +165,26 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         combo.setVersion(modVersion);
         let downloadCount = 0;
 
-        const settings = await ManagerSettings.getSingleton(game);
+        const modList = await ProfileModList.getModList(profile);
+        if (modList instanceof R2Error) {
+            return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
+        }
 
+        const settings = await ManagerSettings.getSingleton(game);
         let downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+
+        // Determine if modpack
+        // If modpack, use specified dependencies as retrieved above
+        // If not, get latest version of dependencies.
+        let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
+        if (!isModpack) {
+            // If not modpack, get latest
+            dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+            this.sortDependencyOrder(dependencies);
+            // #270: Remove already-installed dependencies to prevent updating.
+            dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
+            downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+        }
 
         await this.downloadAndSave(combo, settings, async (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
@@ -165,17 +192,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             } else if (status === StatusEnum.PENDING) {
                 callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), mod.getName(), status, err);
             } else if (status === StatusEnum.SUCCESS) {
-                // Determine if modpack
-                // If modpack, use specified dependencies.
-                // If not, get latest version of dependencies.
                 downloadCount += 1;
-                let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
-                if (!isModpack) {
-                    // If not modpack, get latest
-                    dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
-                    this.sortDependencyOrder(dependencies);
-                    downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
-                }
                 // If no dependencies, end here.
                 if (dependencies.length === 0) {
                     callback(100, mod.getName(), StatusEnum.PENDING, err);
@@ -316,7 +333,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         } catch(e) {
             callback(false, new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${combo.getMod().getFullName()} to profile directory of ${Profile.getActiveProfile().getPathOfProfile()}. \nReason: ${e.message}`,
+                `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache directory. \nReason: ${e.message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
         }

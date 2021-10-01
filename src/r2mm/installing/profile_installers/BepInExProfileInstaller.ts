@@ -15,6 +15,7 @@ import ManagerInformation from '../../../_managerinf/ManagerInformation';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from './ModLoaderVariantRecord';
+import { RuleType } from '../../../r2mm/installing/InstallationRules';
 
 let fs: FsProvider;
 
@@ -22,9 +23,12 @@ const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod",
 
 export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
-    constructor() {
-        super();
+    private rule: RuleType;
+
+    constructor(rule: RuleType) {
+        super(rule);
         fs = FsProvider.instance;
+        this.rule = rule;
     }
 
     /**
@@ -36,7 +40,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
     public async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
         const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
-            if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
+        if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
                     const filePath = path.join(profile.getPathOfProfile(), file);
@@ -168,15 +172,15 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
     }
 
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
-        const endFolderNames = ['plugins', 'monomod', 'core', 'config', 'patchers', 'SlimVML', 'Sideloader'];
+        const endFolderNames = Object.keys(this.rule.rules);
         // Check if BepInExTree is end.
         const matchingEndFolderName = endFolderNames.find((folder: string) => folder.toLowerCase() === folderName.toLowerCase());
         if (matchingEndFolderName !== undefined) {
             let profileLocation: string;
             if (folderName.toLowerCase() !== 'config') {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName, mod.getName());
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule.rules[matchingEndFolderName], mod.getName());
             } else {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', matchingEndFolderName);
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule.rules[matchingEndFolderName]);
             }
             try {
                 await FileUtils.ensureDirectory(profileLocation);
@@ -210,7 +214,7 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
             if (file.toLowerCase().endsWith('.mm.dll')) {
                 profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', 'monomod', mod.getName());
             } else {
-                profileLocation = path.join(profile.getPathOfProfile(), 'BepInEx', 'plugins', mod.getName());
+                profileLocation = path.join(profile.getPathOfProfile(), this.rule._defaultPath, mod.getName());
             }
             try {
                 await FileUtils.ensureDirectory(profileLocation);
@@ -221,20 +225,28 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
                     );
                     // Copy is complete;
                 } catch(e) {
-                    const err: Error = e;
-                    new FileWriteError(
-                        `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
-                        err.message,
-                        `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
-                    );
+                    if (e instanceof R2Error) {
+                        return e;
+                    } else {
+                        const err: Error = e;
+                        return new FileWriteError(
+                            `Failed to move mod: ${mod.getName()} with file: ${path.join(location, file)}`,
+                            err.message,
+                            `Is the game still running? If not, try running ${ManagerInformation.APP_NAME} as an administrator`
+                        );
+                    }
                 }
             } catch(e) {
-                const err: Error = e;
-                new FileWriteError(
-                    `Failed to create directories for: ${profileLocation}`,
-                    err.message,
-                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
-                );
+                if (e instanceof R2Error) {
+                    return e;
+                } else {
+                    const err: Error = e;
+                    return new FileWriteError(
+                        `Failed to create directories for: ${profileLocation}`,
+                        err.message,
+                        `Try running ${ManagerInformation.APP_NAME} as an administrator`
+                    );
+                }
             }
         }
 
@@ -263,6 +275,9 @@ export default class BepInExProfileInstaller extends ProfileInstallerProvider {
             try {
                 await fs.copyFile(file, path.join(profile.getPathOfProfile(), path.basename(file)));
             } catch(e) {
+                if (e instanceof R2Error) {
+                    return e;
+                }
                 const err: Error = e;
                 return new FileWriteError(
                     `Failed to copy file for BepInEx installation: ${file}`,

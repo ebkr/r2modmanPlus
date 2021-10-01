@@ -67,6 +67,9 @@ import ProfileInstallerResolverProvider from './providers/generic/installing/Pro
 import ProfileInstallerResolverImpl from './r2mm/installing/profile_installers/ProfileInstallerResolverImpl';
 import ComputedProfileInstaller from './r2mm/installing/profile_installers/ComputedProfileInstaller';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
+import InstallationRules from './r2mm/installing/InstallationRules';
+import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
+import InstallRule__Stub from './r2mm/installing/default_installation_rules/game_rules/InstallRule__Stub';
 
 @Component
 export default class App extends Vue {
@@ -101,6 +104,9 @@ export default class App extends Vue {
 
         const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
         this.settings = settings;
+
+        InstallationRuleApplicator.apply();
+        InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
@@ -152,7 +158,7 @@ export default class App extends Vue {
 
         ZipProvider.provide(() => new AdmZipProvider());
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
-        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller());
+        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller(InstallRule__Stub()));
         ProfileInstallerResolverProvider.provide(() => new ProfileInstallerResolverImpl());
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());

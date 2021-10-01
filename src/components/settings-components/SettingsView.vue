@@ -100,7 +100,7 @@ import moment from 'moment';
             new SettingsRow(
                 'Locations',
                 'Browse data folder',
-                'Open the directory where mods and profiles are stored.',
+                'Open the directory where mods are stored for all games and profiles.',
                 async () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
@@ -127,7 +127,7 @@ import moment from 'moment';
             new SettingsRow(
                 'Locations',
                 'Browse profile folder',
-                'Change the directory where mods and profiles are stored.',
+                'Open the folder where mods are stored for the current profile.',
                 async () => {
                     return Profile.getActiveProfile().getPathOfProfile();
                 },
@@ -137,7 +137,7 @@ import moment from 'moment';
             new SettingsRow(
                 'Locations',
                 'Change data folder directory',
-                'Open the directory where mods are stored for the current profile. The folder will not be deleted, and existing profiles will not carry across.',
+                'Change the directory where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
                 async () => {
                     return PathResolver.ROOT;
                 },
@@ -182,7 +182,7 @@ import moment from 'moment';
             new SettingsRow(
                 'Debugging',
                 'Clean mod cache',
-                'Free space caused by mods not currently in a profile.',
+                'Free extra space caused by cached mods that are not currently in a profile.',
                 async () => 'Check all profiles for unused mods and clear cache',
                 'fa-trash',
                 () => this.emitInvoke('CleanCache')
