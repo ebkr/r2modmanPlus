@@ -34,10 +34,17 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
 
         const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        if (isProton instanceof R2Error) {
+            return isProton;
+        }
+
         let extraArguments = '';
 
         if (isProton) {
-            await this.ensureWineWillLoadBepInEx(game);
+                const promise = await this.ensureWineWillLoadBepInEx(game);
+                if (promise instanceof R2Error) {
+                    return promise;
+                }
         } else {
             // If sh files aren't executable then the wrapper will fail.
             const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile()))))
