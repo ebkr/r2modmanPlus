@@ -28,4 +28,21 @@ describe("InMemoryFsProvider", () => {
         expect(content.toString()).toBe("test_content");
     });
 
+    test("CopyFile", async () => {
+        await FsProvider.instance.mkdirs("Test_Pre");
+        await FsProvider.instance.mkdirs("Test_Post");
+        await FsProvider.instance.writeFile(path.join("Test_Pre", "TestWriteFile"), "test_content");
+        await FsProvider.instance.copyFile(path.join("Test_Pre", "TestWriteFile"), path.join("Test_Post", "TestWriteFileCopied"));
+        const content = await FsProvider.instance.readFile(path.join("Test_Post", "TestWriteFileCopied"));
+        expect(content.toString()).toBe("test_content");
+    });
+
+    test("CopyFolder", async () => {
+        await FsProvider.instance.mkdirs(path.join("Test", "Pre"));
+        await FsProvider.instance.writeFile(path.join("Test", "Pre", "TestWriteFile"), "test_content");
+        await FsProvider.instance.copyFolder(path.join("Test", "Pre"), path.join("Test", "Post"));
+        const content = await FsProvider.instance.readFile(path.join("Test", "Post", "TestWriteFile"));
+        expect(content.toString()).toBe("test_content");
+    });
+
 });

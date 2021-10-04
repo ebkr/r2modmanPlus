@@ -37,13 +37,15 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
     private deepCopyDirFileType(typePath: string): FileType {
-        const found = this.findFileType(typePath, "DIR");
+        const found = this.findFileType(typePath);
         const nodes: FileType[] = [];
-        if (found.nodes !== undefined) {
-            found.nodes.forEach(value => {
+        (found.nodes || []).forEach(value => {
+            try {
                 nodes.push(this.deepCopyDirFileType(path.join(typePath, value.name)));
-            });
-        }
+            } catch (e) {
+                // Do nothing, end of tree.
+            }
+        });
         return {
             type: found.type,
             content: found.content,
@@ -69,17 +71,21 @@ export default class InMemoryFsProvider extends FsProvider {
             type: "FILE",
             content: source.content
         } as FileType);
+        dest.nodes = newNodes;
     }
 
     async copyFolder(from: string, to: string): Promise<void> {
         const dest = this.findFileType(path.dirname(to), "DIR");
         const newNodes = (dest.nodes || []).filter(value => value.name !== path.basename(to));
-        newNodes.push(this.deepCopyDirFileType(from));
+        const clonedFrom = this.deepCopyDirFileType(from);
+        clonedFrom.name = path.basename(to);
+        newNodes.push(clonedFrom);
+        dest.nodes = newNodes;
     }
 
     async exists(path: string): Promise<boolean> {
         try {
-            const received = this.findFileType(path);
+            this.findFileType(path);
             return true;
         } catch (e) {
             return false;
@@ -116,7 +122,12 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
     async readFile(path: string): Promise<Buffer> {
-        return Buffer.from(this.findFileType(path, "FILE").content!);
+        try {
+            return Buffer.from(this.findFileType(path, "FILE").content!);
+        } catch (e) {
+            console.log(JSON.stringify(InMemoryFsProvider.files));
+            throw e;
+        }
     }
 
     async readdir(path: string): Promise<string[]> {
