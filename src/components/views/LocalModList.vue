@@ -609,7 +609,8 @@
         canShowSortIcons() {
             return this.sortDirection === SortDirection.STANDARD
                 && this.sortOrder === SortNaming.CUSTOM
-                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM;
+                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
+                && this.searchQuery.length === 0;
         }
 
         getProfileName() {
