@@ -10,11 +10,11 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import FileUtils from '../../../utils/FileUtils';
 import FsProvider from '../../../providers/generic/file/FsProvider';
-import yaml from "yaml";
+import yaml from 'yaml';
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
 import ModMode from '../../../model/enums/ModMode';
-import { RuleType } from '../../../r2mm/installing/InstallationRules';
+import { CoreRuleType } from '../../../r2mm/installing/InstallationRules';
 
 /**
  * TODO:
@@ -24,9 +24,9 @@ import { RuleType } from '../../../r2mm/installing/InstallationRules';
  */
 export default class MelonLoaderProfileInstaller extends ProfileInstallerProvider {
 
-    private rule: RuleType;
+    private rule: CoreRuleType;
 
-    constructor(rule: RuleType) {
+    constructor(rule: CoreRuleType) {
         super(rule);
         this.rule = rule;
     }

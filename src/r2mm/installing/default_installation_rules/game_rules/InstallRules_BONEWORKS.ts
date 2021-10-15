@@ -1,32 +1,106 @@
-import type { RuleType } from '../../InstallationRules';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
 
-export default function(): RuleType {
+export default function(): CoreRuleType {
 
     return {
-        gameName: "BONEWORKS",
-        packageLoader: PackageLoader.MELON_LOADER,
-        _defaultPath: "Mods",
-        rules: {
-            Mods: {_files: [".dll"]},
-            Plugins: {_files: [".plugin.dll"]},
-            MelonLoader: {
-                Managed: {_files: [".managed.dll"]},
-                Libs: {_files: [".lib.dll"]}
+        gameName: 'BONEWORKS',
+        rules: [
+            {
+                route: path.join('Mods'),
+                isDefaultLocation: true,
+                defaultFileExtensions: ['.dll'],
+                trackingMethod: 'STATE',
+                subRoutes: []
             },
-            UserData: {
-                CustomItems: {_files: [".melon"]},
-                CustomMaps: {_files: [".bcm", ".cma"]},
-                PlayerModels: {_files: [".body"]},
-                CustomLoadScreens: {_files: [".load"]},
-                Music: {_files: [".wav"]},
-                Food: {_files: [".food"]},
-                Scoreworks: {_files: [".sw"]},
-                CustomSkins: {_files: [".png"]},
-                Grenades: {_files: [".grenade"]}
+            {
+                route: path.join('Plugins'),
+                defaultFileExtensions: ['.plugin.dll'],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            },
+            {
+                route: path.join('MelonLoader'),
+                defaultFileExtensions: [],
+                trackingMethod: 'STATE',
+                subRoutes: [
+                    {
+                        route: path.join('Managed'),
+                        defaultFileExtensions: ['.managed.dll'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('Libs'),
+                        defaultFileExtensions: ['.lib.dll'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    }
+                ]
+            },
+            {
+                route: path.join('UserData'),
+                defaultFileExtensions: [],
+                trackingMethod: 'STATE',
+                subRoutes: [
+                    {
+                        route: path.join('CustomItems'),
+                        defaultFileExtensions: ['.melon'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('CustomMaps'),
+                        defaultFileExtensions: ['.bcm', '.cma'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('PlayerModels'),
+                        defaultFileExtensions: ['.body'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('CustomLoadScreens'),
+                        defaultFileExtensions: ['.load'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('Music'),
+                        defaultFileExtensions: ['.wav'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('Food'),
+                        defaultFileExtensions: ['.food'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('Scoreworks'),
+                        defaultFileExtensions: ['.sw'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('CustomSkins'),
+                        defaultFileExtensions: ['.png'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    },
+                    {
+                        route: path.join('Grenades'),
+                        defaultFileExtensions: ['.grenade'],
+                        trackingMethod: 'STATE',
+                        subRoutes: []
+                    }
+                ]
             }
-        }
-    }
+        ]
+    };
 
 }
+

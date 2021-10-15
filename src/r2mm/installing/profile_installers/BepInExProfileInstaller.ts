@@ -15,7 +15,7 @@ import ManagerInformation from '../../../_managerinf/ManagerInformation';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from './ModLoaderVariantRecord';
-import { RuleType } from '../../../r2mm/installing/InstallationRules';
+import { CoreRuleType } from '../../../r2mm/installing/InstallationRules';
 
 let fs: FsProvider;
 
@@ -23,9 +23,9 @@ const modModeExtensions: string[] = [".dll", ".language", "skin.cfg", ".hotmod",
 
 export default class BepInExProfileInstaller extends ProfileInstallerProvider {
 
-    private rule: RuleType;
+    private rule: CoreRuleType;
 
-    constructor(rule: RuleType) {
+    constructor(rule: CoreRuleType) {
         super(rule);
         fs = FsProvider.instance;
         this.rule = rule;
