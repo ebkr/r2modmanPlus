@@ -166,7 +166,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async installMelonLoader(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         for (const item of (await FsProvider.instance.readdir(mlLocation))) {
             if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
-                console.log(item.toLowerCase());
                 if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
                     if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
                         await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
@@ -256,13 +255,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    /**
-     * TODO: Remember to call addToStateFile.
-     * @param profile
-     * @param installSources installSources can contain both file and directory. Need to work out how to install directories.
-     * Probably don't track directories themselves but files within - Delete folder if no files on uninstall?
-     * @private
-     */
     private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const fileRelocations = new Map<string, string>();
         for (const source of installSources) {
@@ -310,7 +302,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const installationIntent = await this.buildInstallForRuleSubtype(location, folderName, mod, tree);
-        console.log(installationIntent);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
             switch (rule.trackingMethod) {
