@@ -3,7 +3,8 @@ import * as path from 'path';
 
 export type CoreRuleType = {
     gameName: string,
-    rules: RuleSubtype[]
+    rules: RuleSubtype[],
+    relativeFileExclusions?: string[],
 }
 
 export type RuleSubtype = {
@@ -16,6 +17,7 @@ export type RuleSubtype = {
 
 export type ManagedRule = {
     route: string,
+    ref: RuleSubtype,
     trackingMethod: string,
     extensions: string[],
     isDefaultLocation: boolean
@@ -54,14 +56,16 @@ export default class InstallationRules {
                     route: value.route,
                     trackingMethod: value.trackingMethod,
                     extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false
+                    isDefaultLocation: value.isDefaultLocation || false,
+                    ref: value
                 });
             } else {
                 paths.push({
                     route: path.join(pathBuilder, value.route),
                     trackingMethod: value.trackingMethod,
                     extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false
+                    isDefaultLocation: value.isDefaultLocation || false,
+                    ref: value
                 });
             }
             let subPath = pathBuilder === undefined ? value.route : path.join(pathBuilder, value.route);
@@ -72,32 +76,37 @@ export default class InstallationRules {
         return paths;
     }
 
-    private static getRuleSubtypeFromManagedRuleInner(managedRule: ManagedRule, subType: RuleSubtype): RuleSubtype | undefined {
-        if (subType.route === managedRule.route) {
-            return subType;
-        } else {
-            for (const subRoute of subType.subRoutes) {
-                const nested = this.getRuleSubtypeFromManagedRuleInner(managedRule, subRoute);
-                if (nested !== undefined) {
-                    return nested;
-                }
-            }
-        }
-        return undefined;
-    }
-
     public static getRuleSubtypeFromManagedRule(managedRule: ManagedRule, rule: CoreRuleType): RuleSubtype {
         for (const value of rule.rules) {
             if (value.route === managedRule.route) {
                 return value;
             } else {
-                const nested = this.getRuleSubtypeFromManagedRuleInner(managedRule, value);
+                const nested = this.getRuleSubtypeFromManagedRuleInner(managedRule, value, value.route);
                 if (nested !== undefined) {
                     return nested;
                 }
             }
         }
+        console.log("ManagedRule:", managedRule);
         throw new Error("RuleSubtype does not exist for ManagedRule.");
+    }
+
+    private static getRuleSubtypeFromManagedRuleInner(managedRule: ManagedRule, subType: RuleSubtype, realRoute: string): RuleSubtype | undefined {
+        if (realRoute === managedRule.route) {
+            return subType;
+        } else {
+            for (const subRoute of subType.subRoutes) {
+                const nested = this.getRuleSubtypeFromManagedRuleInner(managedRule, subRoute, path.join(realRoute, subRoute.route));
+                if (nested !== undefined) {
+                    return nested;
+                }
+            }
+        }
+        return;
+    }
+
+    public static getManagedRuleForSubtype(rule: CoreRuleType, subType: RuleSubtype): ManagedRule {
+        return this.getAllManagedPaths(rule.rules).find(value => this.getRuleSubtypeFromManagedRule(value, rule) === subType)!;
     }
 
 }
