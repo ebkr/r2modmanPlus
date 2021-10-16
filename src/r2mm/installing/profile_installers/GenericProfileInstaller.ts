@@ -1,21 +1,22 @@
-import ProfileInstallerProvider from 'src/providers/ror2/installing/ProfileInstallerProvider';
-import ManifestV2 from 'src/model/ManifestV2';
-import Profile from 'src/model/Profile';
-import FileTree from 'src/model/file/FileTree';
-import R2Error from 'src/model/errors/R2Error';
-import ModLoaderPackageMapping from 'src/model/installing/ModLoaderPackageMapping';
+import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
+import ManifestV2 from '../../../model/ManifestV2';
+import Profile from '../../../model/Profile';
+import FileTree from '../../../model/file/FileTree';
+import R2Error from '../../../model/errors/R2Error';
+import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import path from 'path';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import ModFileTracker from 'src/model/installing/ModFileTracker';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import ModFileTracker from '../../../model/installing/ModFileTracker';
 import yaml from 'yaml';
-import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
-import ModMode from 'src/model/enums/ModMode';
-import InstallationRules, { CoreRuleType, ManagedRule, RuleSubtype } from 'src/r2mm/installing/InstallationRules';
-import PathResolver from 'src/r2mm/manager/PathResolver';
-import GameManager from 'src/model/game/GameManager';
-import { MOD_LOADER_VARIANTS } from 'src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import FileWriteError from 'src/model/errors/FileWriteError';
-import FileUtils from 'src/utils/FileUtils';
+import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
+import ModMode from '../../../model/enums/ModMode';
+import InstallationRules, { CoreRuleType, ManagedRule, RuleSubtype } from '../../installing/InstallationRules';
+import PathResolver from '../../../r2mm/manager/PathResolver';
+import GameManager from '../../../model/game/GameManager';
+import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
+import FileWriteError from '../../../model/errors/FileWriteError';
+import FileUtils from '../../../utils/FileUtils';
+import { PackageLoader } from '../../../model/installing/PackageLoader';
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
@@ -144,7 +145,49 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
+    private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
+            if ((await FsProvider.instance.stat(path.join(bieLocation, item))).isFile()) {
+                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
+                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
+                }
+                await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+            } else {
+                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
+                    await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
+                }
+                await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+            }
+        }
+    }
+
+    private async installMelonLoader(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        for (const item of (await FsProvider.instance.readdir(mlLocation))) {
+            if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
+                console.log(item.toLowerCase());
+                if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
+                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
+                        await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
+                    }
+                    await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
+                } else {
+                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
+                        await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
+                        await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
+                    }
+                    await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
+                }
+            }
+        }
+    }
+
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
+        switch (modLoaderMapping.loaderType) {
+            case PackageLoader.BEPINEX: await this.installBepInEx(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+        }
         return Promise.resolve(null);
     }
 
@@ -197,6 +240,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private async installSubDir(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
+        await FileUtils.ensureDirectory(subDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
                 await FsProvider.instance.copyFile(source, path.join(subDir, path.basename(source)));
@@ -248,6 +292,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     // Functionally identical to the install method of subdir, minus the subdirectory.
     private async installUntracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const ruleDir = path.join(profile.getPathOfProfile(), rule.route);
+        await FileUtils.ensureDirectory(ruleDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
                 await FsProvider.instance.copyFile(source, path.join(ruleDir, path.basename(source)));
@@ -268,7 +313,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         console.log(installationIntent);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-            await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), managedRule.route));
             switch (rule.trackingMethod) {
                 case 'STATE': await this.installState(profile, managedRule, files, mod); break;
                 case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
@@ -335,6 +379,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             for (const [cacheFile, installFile] of tracker.files) {
                 if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), installFile))) {
                     await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), installFile));
+                    if ((await FsProvider.instance.readdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)))).length === 0) {
+                        await FsProvider.instance.rmdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)));
+                    }
                 }
             }
             await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
