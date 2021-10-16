@@ -1,7 +1,5 @@
 import Sinon from 'sinon';
 import TestSetup from 'app/test/jest/__tests__/test-setup';
-import MelonLoaderProfileInstaller
-    from '../../../../../src/r2mm/installing/profile_installers/MelonLoaderProfileInstaller';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
 import Profile from 'src/model/Profile';
