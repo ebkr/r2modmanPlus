@@ -12,17 +12,19 @@ import yaml from 'yaml';
 import ModFileTracker from 'src/model/installing/ModFileTracker';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
 import StateTracker from 'src/model/installing/StateTracker';
-import InstallRules_BONEWORKS from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_BONEWORKS';
+import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
+import GameManager from 'src/model/game/GameManager';
 
 let sandbox = Sinon.createSandbox();
-let mlProfileInstaller: MelonLoaderProfileInstaller;
+let mlProfileInstaller: GenericProfileInstaller;
 let conflictManagement: ConflictManagementProviderImpl;
 
 let beforeSetup = () => {
     TestSetup.stubSetUp();
     sandbox = Sinon.createSandbox();
-    mlProfileInstaller = new MelonLoaderProfileInstaller(InstallRules_BONEWORKS());
+    mlProfileInstaller = new GenericProfileInstaller();
     conflictManagement = new ConflictManagementProviderImpl();
+    GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
 }
 
 describe("State testing", () => {
