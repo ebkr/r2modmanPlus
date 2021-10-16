@@ -9,7 +9,7 @@ export default function(): CoreRuleType {
             {
                 route: path.join("BepInEx", "plugins"),
                 isDefaultLocation: true,
-                defaultFileExtensions: [],
+                defaultFileExtensions: [".dll"],
                 trackingMethod: "SUBDIR",
                 subRoutes: []
             },
@@ -27,7 +27,7 @@ export default function(): CoreRuleType {
             },
             {
                 route: path.join("BepInEx", "monomod"),
-                defaultFileExtensions: [],
+                defaultFileExtensions: [".mm.dll"],
                 trackingMethod: "SUBDIR",
                 subRoutes: []
             },
