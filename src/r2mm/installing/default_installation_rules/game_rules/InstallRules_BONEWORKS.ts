@@ -5,6 +5,7 @@ export default function(): CoreRuleType {
 
     return {
         gameName: 'BONEWORKS',
+        relativeFileExclusions: ["manifest.json", "icon.png", "README.md"],
         rules: [
             {
                 route: path.join('Mods'),

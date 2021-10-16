@@ -177,7 +177,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const file of tree.getDirectories()) {
             // Only expect one (for now).
             // If multiple then will need to implement a way to reverse search folder path.
-            let matchingRule: ManagedRule | undefined = flatRules.find(value => path.basename(value.route).toLowerCase() === file.getDirectoryName());
+            let matchingRule: ManagedRule | undefined = flatRules.find(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
             if (matchingRule === undefined) {
                 const nested = await this.buildInstallForRuleSubtype(path.join(location, file.getDirectoryName()), folderName, mod, file);
                 for (let [rule, files] of nested.entries()) {
@@ -195,9 +195,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return installationIntent;
     }
 
-    private async installSubDir(profile: Profile, rule: RuleSubtype, installSources: string[], mod: ManifestV2) {
+    private async installSubDir(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
-        await FileUtils.ensureDirectory(subDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
                 await FsProvider.instance.copyFile(source, path.join(subDir, path.basename(source)));
@@ -220,14 +219,35 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * Probably don't track directories themselves but files within - Delete folder if no files on uninstall?
      * @private
      */
-    private async installState(profile: Profile, rule: RuleSubtype, installSources: string[], mod: ManifestV2) {
-
+    private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+        const fileRelocations = new Map<string, string>();
+        for (const source of installSources) {
+            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source))) {
+                if ((await FsProvider.instance.lstat(source)).isFile()) {
+                    fileRelocations.set(source, path.join(rule.route, path.basename(source)));
+                } else {
+                    const tree = await FileTree.buildFromLocation(source);
+                    if (tree instanceof R2Error) {
+                        throw tree;
+                    }
+                    for (const subFile of tree.getRecursiveFiles()) {
+                        if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.relative(source, subFile))) {
+                            fileRelocations.set(subFile, path.join(rule.route, path.relative(source, subFile)));
+                        }
+                    }
+                }
+            }
+        }
+        for (let [source, relative] of fileRelocations.entries()) {
+            await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), path.dirname(relative)));
+            await FsProvider.instance.copyFile(source, path.join(profile.getPathOfProfile(), relative));
+        }
+        await this.addToStateFile(mod, fileRelocations, profile);
     }
 
     // Functionally identical to the install method of subdir, minus the subdirectory.
-    private async installUntracked(profile: Profile, rule: RuleSubtype, installSources: string[], mod: ManifestV2) {
+    private async installUntracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const ruleDir = path.join(profile.getPathOfProfile(), rule.route);
-        await FileUtils.ensureDirectory(ruleDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
                 await FsProvider.instance.copyFile(source, path.join(ruleDir, path.basename(source)));
@@ -245,11 +265,14 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const installationIntent = await this.buildInstallForRuleSubtype(location, folderName, mod, tree);
+        console.log(installationIntent);
         for (let [rule, files] of installationIntent.entries()) {
+            const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
+            await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), managedRule.route));
             switch (rule.trackingMethod) {
-                case 'STATE': await this.installState(profile, rule, files, mod); break;
-                case 'SUBDIR': await this.installSubDir(profile, rule, files, mod); break;
-                case 'NONE': await this.installUntracked(profile, rule, files, mod); break;
+                case 'STATE': await this.installState(profile, managedRule, files, mod); break;
+                case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
+                case 'NONE': await this.installUntracked(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);

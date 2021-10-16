@@ -4,7 +4,8 @@ export default function(): CoreRuleType {
 
     return {
         gameName: "",
-        rules: []
+        rules: [],
+        relativeFileExclusions: []
     }
 
 }
