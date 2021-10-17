@@ -66,7 +66,7 @@ import PlatformInterceptorImpl from './providers/generic/game/platform_intercept
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 import InstallationRules from './r2mm/installing/InstallationRules';
 import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
-import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
+import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 
 @Component
 export default class App extends Vue {

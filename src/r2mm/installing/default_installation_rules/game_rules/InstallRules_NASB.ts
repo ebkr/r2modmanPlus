@@ -4,7 +4,7 @@ import * as path from 'path';
 export default function(): CoreRuleType {
 
     return {
-        gameName: "TABS",
+        gameName: "NASB",
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
@@ -35,6 +35,24 @@ export default function(): CoreRuleType {
                 route: path.join("BepInEx", "config"),
                 defaultFileExtensions: [],
                 trackingMethod: "NONE",
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "CustomSongs"),
+                defaultFileExtensions: [],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "Voicepacks"),
+                defaultFileExtensions: [".voicepack"],
+                trackingMethod: 'SUBDIR',
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "Skins"),
+                defaultFileExtensions: [".nasbskin"],
+                trackingMethod: 'SUBDIR',
                 subRoutes: []
             }
         ]
