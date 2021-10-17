@@ -86,6 +86,8 @@ describe("State testing", () => {
                 } as ModFileTracker
             ))));
 
+            fsStub.readdir.returns(Promise.resolve([]));
+
             await mlProfileInstaller.uninstallMod(fakeMod, profile);
 
             files.forEach(([cached, installed]) => {
