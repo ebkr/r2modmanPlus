@@ -148,7 +148,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
-            if ((await FsProvider.instance.stat(path.join(bieLocation, item))).isFile()) {
+            if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
                 if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
                     await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
                 }
