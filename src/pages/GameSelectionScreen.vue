@@ -223,8 +223,14 @@ export default class GameSelectionScreen extends Vue {
     }
 
     get filteredGameList() {
+        const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
+            return game.additionalSearchStrings.find(value => value.toLowerCase().trim().indexOf(filterText.toLowerCase().trim()) >= 0) !== undefined;
+        }
         return this.gameList
-            .filter(value => value.displayName.toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0 || this.filterText.trim().length === 0)
+            .filter(value => value.displayName.toLowerCase().indexOf(
+                this.filterText.toLowerCase()) >= 0
+                || this.filterText.trim().length === 0
+                || displayNameInAdditionalSearch(value, this.filterText))
             .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
             .filter(value => value.instanceType === this.activeTab);
     }
