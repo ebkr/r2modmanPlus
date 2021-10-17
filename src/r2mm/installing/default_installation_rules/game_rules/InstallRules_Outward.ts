@@ -1,20 +1,43 @@
-import type { RuleType } from '../../InstallationRules';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
 
-export default function(): RuleType {
+export default function(): CoreRuleType {
 
     return {
         gameName: "Outward",
-        packageLoader: PackageLoader.BEPINEX,
-        _defaultPath: path.join("BepInEx", "plugins"),
-        rules: {
-            core: path.join("BepInEx", "core"),
-            patchers: path.join("BepInEx", "patchers"),
-            monomod: path.join("BepInEx", "monomod"),
-            plugins: path.join("BepInEx", "plugins"),
-            config: path.join("BepInEx", "config"),
-        }
+        rules: [
+            {
+                route: path.join("BepInEx", "plugins"),
+                isDefaultLocation: true,
+                defaultFileExtensions: [".dll"],
+                trackingMethod: "SUBDIR",
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "core"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "patchers"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "monomod"),
+                defaultFileExtensions: [".mm.dll"],
+                trackingMethod: "SUBDIR",
+                subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "config"),
+                defaultFileExtensions: [],
+                trackingMethod: "NONE",
+                subRoutes: []
+            }
+        ]
     }
 
 }

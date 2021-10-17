@@ -1,13 +1,12 @@
-import type { RuleType } from '../../InstallationRules';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import type { CoreRuleType } from '../../InstallationRules';
 
-export default function(): RuleType {
+export default function(): CoreRuleType {
 
     return {
         gameName: "",
-        packageLoader: PackageLoader.BEPINEX,
-        _defaultPath: "",
-        rules: {}
+        rules: [],
+        relativeFileExclusions: []
     }
 
 }
+
