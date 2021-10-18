@@ -200,8 +200,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
         const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+        const apps = localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps || localConfig.UserLocalConfigStore.Software.Valve.Steam.apps;
 
-        return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
+        return apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
