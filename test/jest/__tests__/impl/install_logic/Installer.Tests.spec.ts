@@ -6,11 +6,10 @@ import VersionNumber from '../../../../../src/model/VersionNumber';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import Profile from '../../../../../src/model/Profile';
 import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
-import BepInExProfileInstaller from '../../../../../src/r2mm/installing/profile_installers/BepInExProfileInstaller';
 import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
-import InstallRules_RiskOfRain2
-    from '../../../../../src/r2mm/installing/default_installation_rules/game_rules/InstallRules_RiskOfRain2';
 import GameManager from 'src/model/game/GameManager';
+import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
+import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -31,6 +30,8 @@ describe('Installer Tests', () => {
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
             inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+            InstallationRuleApplicator.apply();
         });
 
         test('Loose DLL', async () => {
@@ -45,7 +46,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.dll'))).toBeTruthy();
 
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
-            ProfileInstallerProvider.provide(() => new BepInExProfileInstaller(InstallRules_RiskOfRain2()));
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
@@ -67,7 +68,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "plugins", "static_dir", "structured.dll"))).toBeTruthy();
 
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
-            ProfileInstallerProvider.provide(() => new BepInExProfileInstaller(InstallRules_RiskOfRain2()));
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
@@ -89,7 +90,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "static_dir", "structured.dll"))).toBeTruthy();
 
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
-            ProfileInstallerProvider.provide(() => new BepInExProfileInstaller(InstallRules_RiskOfRain2()));
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
