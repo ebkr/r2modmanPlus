@@ -221,7 +221,45 @@ describe('Installer Tests', () => {
 
         });
 
-    })
+    });
+
+    describe("UNTRACKED/NONE", () => {
+
+        beforeEach(() => {
+            const inMemoryFs = new InMemoryFsProvider();
+            FsProvider.provide(() => inMemoryFs);
+            InMemoryFsProvider.clear();
+            PathResolver.MOD_ROOT = 'MODS';
+            inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+            ProfileProvider.provide(() => new ProfileProviderImpl());
+            new Profile('TestProfile');
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+            InstallationRuleApplicator.apply();
+        });
+
+        test('Config folder', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            const cacheParentDir = path.join(cachePkgRoot, "config");
+            await FsProvider.instance.mkdirs(cacheParentDir);
+            await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config", 'loose.file'))).toBeTruthy();
+
+        });
+
+    });
 
 });
 
