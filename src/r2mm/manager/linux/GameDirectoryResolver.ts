@@ -211,19 +211,20 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
         ];
 
-        let steamapps;
+        let steamapps: string | undefined;
         for(const dir of probableSteamAppsLocations)
             if(await FsProvider.instance.exists(dir)){
                 steamapps = await FsProvider.instance.realpath(dir);
                 break;
             }
 
-        if (typeof steamapps === "undefined")
+        if (steamapps === undefined) {
             return new R2Error(
                 'An error occured whilst searching Steam library locations',
                 'Cannot define the root steamapps location',
                 null
             );
+        }
 
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
