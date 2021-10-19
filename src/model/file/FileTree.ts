@@ -12,10 +12,12 @@ export default class FileTree {
     private files: string[] = [];
     private directories: FileTree[] = [];
     private directoryName: string = '';
+    private target: string = '';
 
     public static async buildFromLocation(location: string): Promise<FileTree | R2Error> {
         const fs = FsProvider.instance;
         const currentTree = new FileTree();
+        currentTree.target = location;
         currentTree.setDirectoryName(path.basename(location));
         try {
             const dir = await fs.readdir(location);
@@ -116,6 +118,10 @@ export default class FileTree {
 
     public getDirectoryName(): string {
         return this.directoryName;
+    }
+
+    public getTarget(): string {
+        return this.target;
     }
 
 }

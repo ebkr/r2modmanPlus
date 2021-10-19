@@ -235,11 +235,21 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
                     try {
                         const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
-                        for (const key in parsedVdf.LibraryFolders) {
-                            if (!isNaN(Number(key))) {
-                                locations.push(
-                                    await FsProvider.instance.realpath(path.join(parsedVdf.LibraryFolders[key], 'steamapps'))
-                                );
+                        if (parsedVdf.libraryfolders !== undefined) {
+                            for (const key of Object.keys(parsedVdf.libraryfolders)) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.libraryfolders[key].path, 'steamapps')
+                                    );
+                                }
+                            }
+                        } else {
+                            for (const key in parsedVdf.LibraryFolders) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.LibraryFolders[key], 'steamapps')
+                                    );
+                                }
                             }
                         }
                     } catch(e) {

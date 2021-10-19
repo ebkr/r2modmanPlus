@@ -39,7 +39,7 @@ import { ipcRenderer } from 'electron';
 import PathResolver from './r2mm/manager/PathResolver';
 import path from 'path';
 import ThemeManager from './r2mm/manager/ThemeManager';
-import "bulma-switch/dist/css/bulma-switch.min.css";
+import 'bulma-switch/dist/css/bulma-switch.min.css';
 import LoggerProvider, { LogSeverity } from './providers/ror2/logging/LoggerProvider';
 import ManagerInformation from './_managerinf/ManagerInformation';
 import LocalModInstallerProvider from './providers/ror2/installing/LocalModInstallerProvider';
@@ -63,13 +63,10 @@ import Profile from './model/Profile';
 import ManifestV2 from './model/ManifestV2';
 import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
-import ProfileInstallerResolverProvider from './providers/generic/installing/ProfileInstallerResolverProvider';
-import ProfileInstallerResolverImpl from './r2mm/installing/profile_installers/ProfileInstallerResolverImpl';
-import ComputedProfileInstaller from './r2mm/installing/profile_installers/ComputedProfileInstaller';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 import InstallationRules from './r2mm/installing/InstallationRules';
 import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
-import InstallRule__Stub from './r2mm/installing/default_installation_rules/game_rules/InstallRule__Stub';
+import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 
 @Component
 export default class App extends Vue {
@@ -158,8 +155,7 @@ export default class App extends Vue {
 
         ZipProvider.provide(() => new AdmZipProvider());
         LocalModInstallerProvider.provide(() => new LocalModInstaller());
-        ProfileInstallerProvider.provide(() => new ComputedProfileInstaller(InstallRule__Stub()));
-        ProfileInstallerResolverProvider.provide(() => new ProfileInstallerResolverImpl());
+        ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());
         InteractionProvider.provide(() => new InteractionProviderImpl());

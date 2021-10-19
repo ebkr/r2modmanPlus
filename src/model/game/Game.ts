@@ -19,13 +19,15 @@ export default class Game {
     private readonly _displayMode: GameSelectionDisplayMode;
     private readonly _instanceType: GameInstanceType;
     private readonly _packageLoader: PackageLoader;
+    // Exists for when a game title is too long. Still allows searching using the real game name.
+    private readonly _additionalSearchStrings: string[];
 
     private _activePlatform: StorePlatformMetadata;
 
     constructor(displayName: string, internalFolderName: string, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
-                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader) {
+                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader, additionalSearchStrings?: string[]) {
 
         this._displayName = displayName;
         this._internalFolderName = internalFolderName;
@@ -41,6 +43,7 @@ export default class Game {
         this._displayMode = displayMode;
         this._instanceType = instanceType;
         this._packageLoader = packageLoader;
+        this._additionalSearchStrings = additionalSearchStrings || [];
     }
 
     get displayName(): string {
@@ -101,5 +104,9 @@ export default class Game {
 
     get packageLoader(): PackageLoader {
         return this._packageLoader;
+    }
+
+    get additionalSearchStrings(): string[] {
+        return this._additionalSearchStrings;
     }
 }

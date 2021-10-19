@@ -17,6 +17,9 @@ import InstallRules_ThunderstoreDev
     from '../default_installation_rules/game_rules/InstallRules_ThunderstoreDev';
 import InstallRules_LethalLeagueBlaze
     from '../default_installation_rules/game_rules/InstallRules_LethalLeagueBlaze';
+import InstallRules_TotallyAccurateBattleSimulator
+    from '../default_installation_rules/game_rules/InstallRules_TotallyAccurateBattleSimulator';
+import InstallRules_NASB from '../default_installation_rules/game_rules/InstallRules_NASB';
 
 export default class InstallationRuleApplicator {
 
@@ -35,7 +38,9 @@ export default class InstallationRuleApplicator {
             InstallRules_Muck(),
             InstallRules_BONEWORKS(),
             InstallRules_LethalLeagueBlaze(),
-            InstallRules_Timberborn()
+            InstallRules_Timberborn(),
+            InstallRules_TotallyAccurateBattleSimulator(),
+            InstallRules_NASB()
         ]
     }
 
