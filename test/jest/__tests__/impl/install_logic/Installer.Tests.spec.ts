@@ -10,6 +10,7 @@ import ProfileInstallerProvider from '../../../../../src/providers/ror2/installi
 import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
+import InstallationRules from 'src/r2mm/installing/InstallationRules';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -19,7 +20,7 @@ class ProfileProviderImpl extends ProfileProvider {
 
 describe('Installer Tests', () => {
 
-    describe('BepInEx', () => {
+    describe('SUBDIR', () => {
 
         beforeEach(() => {
             const inMemoryFs = new InMemoryFsProvider();
@@ -45,7 +46,6 @@ describe('Installer Tests', () => {
             // Ensure cachePkgRoot contains DLL
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.dll'))).toBeTruthy();
 
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
@@ -67,7 +67,6 @@ describe('Installer Tests', () => {
             // Ensure cachePkgRoot contains DLL
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "plugins", "static_dir", "structured.dll"))).toBeTruthy();
 
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
@@ -89,7 +88,6 @@ describe('Installer Tests', () => {
             // Ensure cachePkgRoot contains DLL
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "static_dir", "structured.dll"))).toBeTruthy();
 
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
@@ -99,7 +97,131 @@ describe('Installer Tests', () => {
 
         });
 
+        test('Default file extension', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            await FsProvider.instance.mkdirs(cachePkgRoot);
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.mm.dll'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.mm.dll'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "monomod", pkg.getName(), 'loose.mm.dll'))).toBeTruthy();
+
+        });
+
     });
+
+    describe("STATE", () => {
+
+        beforeEach(() => {
+            const inMemoryFs = new InMemoryFsProvider();
+            FsProvider.provide(() => inMemoryFs);
+            InMemoryFsProvider.clear();
+            PathResolver.MOD_ROOT = 'MODS';
+            inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+            ProfileProvider.provide(() => new ProfileProviderImpl());
+            new Profile('TestProfile');
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
+            InstallationRuleApplicator.apply();
+        });
+
+        test('Loose file', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            await FsProvider.instance.mkdirs(cachePkgRoot);
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.file'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.file'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            const coreRule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
+            const defaultRuleSubtype = InstallationRules.getAllManagedPaths(coreRule.rules)
+                .find(value => value.isDefaultLocation)!;
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), defaultRuleSubtype.route, 'loose.file'))).toBeTruthy();
+
+        });
+
+        test('One-level nested', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            const cacheParentDir = path.join(cachePkgRoot, "UserData");
+            await FsProvider.instance.mkdirs(cacheParentDir);
+            await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), "UserData", 'loose.file'))).toBeTruthy();
+
+        });
+
+        test('Two-level nested', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            const cacheParentDir = path.join(cachePkgRoot, "UserData", "CustomFolder");
+            await FsProvider.instance.mkdirs(cacheParentDir);
+            await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), "UserData", "CustomFolder", 'loose.file'))).toBeTruthy();
+
+        });
+
+        // .managed.dll rule points to /MelonLoader/Managed
+        test('Default file extension placement', async () => {
+            // Build dummy cache package
+            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
+
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            await FsProvider.instance.mkdirs(cachePkgRoot);
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.managed.dll'), '');
+
+            // Ensure cachePkgRoot contains DLL
+            expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.managed.dll'))).toBeTruthy();
+
+            ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+
+            // Expect DLL to be installed as intended
+            expect(await FsProvider.instance.exists(path.join(
+                Profile.getActiveProfile().getPathOfProfile(), "MelonLoader", "Managed", 'loose.managed.dll'))).toBeTruthy();
+
+        });
+
+    })
 
 });
 
