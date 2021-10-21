@@ -21,6 +21,9 @@ export default class ModLinker {
                 // Game is native, BepInEx doesn't require moving. No linked files.
                 return [];
             }
+        } else if (process.platform === 'darwin') {
+            // Linux games don't require moving BepInEx files.
+            return [];
         }
         const settings = await ManagerSettings.getSingleton(game);
         const gameDirectory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory(game);

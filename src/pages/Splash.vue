@@ -269,7 +269,7 @@ export default class Splash extends Vue {
         if (process.platform === 'linux') {
             if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
                 console.log('Not proton game');
-                await this.ensureLinuxWrapperInGameFolder();
+                await this.ensureWrapperInGameFolder();
                 const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
                 console.log(`Launch arguments for this game:`, launchArgs);
                 if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
@@ -277,6 +277,10 @@ export default class Splash extends Vue {
                     return;
                 }
             }
+        } else if (process.platform === 'darwin') {
+            await this.ensureWrapperInGameFolder();
+            this.$router.push({ path: '/linux-native-game-setup' });
+            return;
         }
         this.$router.push({ path: '/profiles' });
     }
@@ -290,22 +294,23 @@ export default class Splash extends Vue {
         this.moveToNextScreen();
     }
 
-    private async ensureLinuxWrapperInGameFolder() {
-        console.log(`Ensuring Linux wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')}`);
+    private async ensureWrapperInGameFolder() {
+        const wrapperName = process.platform === 'darwin' ? 'macos_wrapper.sh' : 'linux_wrapper.sh';
+        console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
         try {
-            await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
-            const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')));
-            const newBuf = (await FsProvider.instance.readFile(path.join(__statics, 'linux_wrapper.sh')));
+            await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
+            const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
+            const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
             if (!oldBuf.equals(newBuf)) {
                 throw new Error("Outdated buffer");
             }
         } catch (_) {
-            if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
+            if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
+                await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
             }
-            await FsProvider.instance.copyFile(path.join(__statics, 'linux_wrapper.sh'), path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'));
-            await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'), 0o755);
+            await FsProvider.instance.copyFile(path.join(__statics, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
         }
+        await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
     }
 
     async created() {
