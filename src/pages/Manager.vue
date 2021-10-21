@@ -612,7 +612,10 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 					);
 				case 'linux':
 					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', this.activeGame.steamFolderName);
-				default:
+                case 'darwin':
+                    return path.resolve(homedir(), 'Library', 'Application Support', 'Steam',
+                        'steamapps', 'common', this.activeGame.steamFolderName);
+                default:
 					return '';
 			}
 		}
@@ -665,6 +668,8 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 					);
 				case 'linux':
 					return path.resolve(homedir(), '.local', 'share', 'Steam');
+                case 'darwin':
+                    return path.resolve(homedir(), 'Library', 'Application Support', 'Steam');
 				default:
 					return '';
 			}
@@ -676,7 +681,9 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 					return path.basename(file).toLowerCase() === "steam.exe"
 				case 'linux':
                     return path.basename(file).toLowerCase() === "steam.sh"
-				default:
+                case 'darwin':
+                    return path.basename(file).toLowerCase() === 'steam.app'
+                default:
 					return true;
 			}
 		}
@@ -686,7 +693,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 			InteractionProvider.instance.selectFile({
                 title: 'Locate Steam Executable',
                 defaultPath: steamDir,
-                filters: [{name: "steam", extensions: ["exe", "sh"]}],
+                filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
                 buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {

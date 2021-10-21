@@ -99,7 +99,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BW"]),
 
         new Game("Lethal League Blaze", "LethalLeagueBlaze", "LethalLeagueBlaze",
-            "LLBlaze", ["LLBlaze.exe", "LLBlaze.x86_64", "LLBlaze.x86"], "LLBlaze_Data",
+            "LLBlaze", ["LLBlaze.exe", "LLBlaze.x86_64", "LLBlaze.x86", "LLBlaze.app"], "LLBlaze_Data",
             "https://lethal-league-blaze.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "553310")], "LethalLeagueBlaze.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["LLB"]),

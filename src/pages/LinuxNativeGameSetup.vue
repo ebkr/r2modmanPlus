@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<hero title="Getting started on Linux" subtitle="Let's configure the game properly" heroType="is-warning" />
+		<hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="is-warning" />
 		<br/>
 		<div class="container">
 			To be able to launch {{ activeGame }} on Linux, you must first setup your Steam launch options correctly.<br/>
@@ -33,9 +33,13 @@ export default class LinuxFirstTimeSetup extends Vue {
 	data() {
 		return {
 			activeGame: GameManager.activeGame.displayName,
-			launchArgs: path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')
+			launchArgs: path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_wrapper.sh' : 'linux_wrapper.sh')
 		}
 	}
+
+    get platformName(): string {
+        return process.platform === 'darwin' ? 'macOS' : process.platform
+    }
 
 	private copy(){
 		let range = document.createRange();
