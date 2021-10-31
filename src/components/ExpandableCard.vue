@@ -1,7 +1,7 @@
 <template>
     <keep-alive>
-        <div class="border-at-bottom">
-            <div class='card is-shadowless' :class="{'disabled-card': !enabled}">
+        <div class="">
+            <div class='row-card is-shadowless' :class="[{'disabled-card': !enabled}, {'row-card--expanded': visible}]">
                 <div @click='toggleVisibility()' class='cursor-pointer' ref="card-expansion">
                     <header class='card-header is-shadowless' :id='id'>
                         <div class='card-header-icon mod-logo' v-if="image !== ''">

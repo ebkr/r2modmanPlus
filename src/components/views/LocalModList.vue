@@ -1,9 +1,9 @@
 <template>
     <div>
 
-        <div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
-            <div class='card is-shadowless is-square'>
-                <div class='card-header-title'>
+        <div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
+            <div class='is-shadowless is-square'>
+                <div class='no-padding-left card-header-title'>
 
                     <div class="input-group input-group--flex margin-right">
                         <label for="local-search" class="non-selectable">Search</label>
