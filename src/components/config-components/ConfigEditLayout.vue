@@ -122,7 +122,9 @@
         getCommentDisplay(comments: string[]): string {
             return comments.map(value => value.trim())
                 .join("\n")
+                .trim()
                 .replace(new RegExp("#+", "g"), "")
+                .replace(new RegExp(";+", "g"), "")
                 .replace(new RegExp("\n\\s", "g"), "\n")
                 .trim();
         }
@@ -131,7 +133,9 @@
             return comments.map(value => value.trim())
                 .slice(0, 4)
                 .join("\n")
+                .trim()
                 .replace(new RegExp("#+", "g"), "")
+                .replace(new RegExp(";+", "g"), "")
                 .replace(new RegExp("\n\\s+", "g"), "\n")
                 .trim();
         }
