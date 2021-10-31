@@ -211,9 +211,9 @@
 			</div>
 			<div class="column" :class="contentClass">
 				<div v-show="view === 'online'">
-					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
-						<div class='card is-shadowless is-square'>
-							<div class='card-header-title'>
+					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
+						<div class='is-shadowless is-square'>
+							<div class='no-padding-left card-header-title'>
                                 <div class="input-group input-group--flex margin-right">
                                     <label for="thunderstore-search-filter">Search</label>
                                     <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
@@ -287,7 +287,6 @@
                                 :settings="settings"
                                 @error="showError($event)">
                                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
-                                    <br/>
                                     <div class="margin-bottom">
                                         <div class="notification is-warning margin-right">
                                             <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="showUpdateAllModal = true">update all</a>?</span>
