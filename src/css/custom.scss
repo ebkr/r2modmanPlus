@@ -125,6 +125,18 @@ select {
     left: 0;
 }
 
+.row-card {
+    background-color: rgba(255, 255, 255, 0);
+    margin: 0 1em 4px 0;
+    transition: background-color 0.2s, box-shadow 0.2s linear;
+    border-bottom: 1px solid $scheme-border;
+
+    &--expanded {
+        border-bottom-width: 0;
+        background-color: $card-expand-background-color;
+    }
+}
+
 .card {
     border: 0 !important;
 }
@@ -426,4 +438,12 @@ code {
 
 .full-height--minus-em {
     height: calc(100vh - 1em);
+}
+
+.no-padding-left {
+    padding-left: 0;
+}
+
+.inherit-background-colour {
+    background-color: $scheme-background;
 }

@@ -8,7 +8,7 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS, Lethal League Blaze, and Timberborn.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS, Lethal League Blaze, Timberborn, and Totally Accurate Battle Simulator.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installation allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -68,6 +68,14 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.21
+- Added Totally Accurate Battle Simulator support.
+- Tweaked visual design of expanded mod cards.
+- Semicolon comment support included to allow Valheim+ to display comments correctly in the config editor.
+- Fixes for Linux (Thanks to lonegamedev and Compile-Time).
+- GTFO support for GameData/Assets folders.
+- Several games can now be searched by aliases. (EG: "Risk of Rain 2" is searchable as "RoR2").
+
 ### 3.1.20
 - Added Lethal League Blaze support.
 - Added Timberborn support.
@@ -78,15 +86,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 ### 3.1.19
 - Reverted missing icon fix due to unknown issue on some systems.
-
-### 3.1.18
-- BONEWORKS support.
-- Added drag sorting.
-- You can now view progress of multiple downloads.
-- Mods now have a placeholder icon if no icon was found.
-- Directory settings now require an executable to be selected instead of a directory.
-- You can now disable a mod without needing to expand it.
-- Other small fixes.
 
 ## Screenshots
 

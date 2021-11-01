@@ -78,7 +78,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         if (data.author !== data.AuthorName) {
             this.setManifestVersion(2);
             this.setAuthorName(data.AuthorName || data.author || "Unknown");
-            this.setName(data.Name || `${data.name}-${this.getAuthorName()}`);
+            this.setName(data.Name || `${this.getAuthorName()}-${data.name}`);
             this.setWebsiteUrl(data.WebsiteURL || data.website_url || "");
             this.setDisplayName(data.DisplayName || data.name);
             this.setDescription(data.Description || data.description || "");

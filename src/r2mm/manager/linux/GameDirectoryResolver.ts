@@ -212,19 +212,20 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
         ];
 
-        let steamapps;
+        let steamapps: string | undefined;
         for(const dir of probableSteamAppsLocations)
             if(await FsProvider.instance.exists(dir)){
                 steamapps = await FsProvider.instance.realpath(dir);
                 break;
             }
 
-        if (typeof steamapps === "undefined")
+        if (steamapps === undefined) {
             return new R2Error(
                 'An error occured whilst searching Steam library locations',
                 'Cannot define the root steamapps location',
                 null
             );
+        }
 
         const locations: string[] = [steamapps];
         const fs = FsProvider.instance;
@@ -235,11 +236,21 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 if (file.toLowerCase() === 'libraryfolders.vdf') {
                     try {
                         const parsedVdf: any = vdf.parse((await fs.readFile(path.join(steamapps, file))).toString());
-                        for (const key in parsedVdf.LibraryFolders) {
-                            if (!isNaN(Number(key))) {
-                                locations.push(
-                                    await FsProvider.instance.realpath(path.join(parsedVdf.LibraryFolders[key], 'steamapps'))
-                                );
+                        if (parsedVdf.libraryfolders !== undefined) {
+                            for (const key of Object.keys(parsedVdf.libraryfolders)) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.libraryfolders[key].path, 'steamapps')
+                                    );
+                                }
+                            }
+                        } else {
+                            for (const key in parsedVdf.LibraryFolders) {
+                                if (!isNaN(Number(key))) {
+                                    locations.push(
+                                        path.join(parsedVdf.LibraryFolders[key], 'steamapps')
+                                    );
+                                }
                             }
                         }
                     } catch(e) {

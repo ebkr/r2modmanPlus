@@ -12,8 +12,8 @@
                 </p>
             </div>
         </div>
-        <div class='card is-shadowless'>
-            <div class='card-header-title'>
+        <div class='is-shadowless'>
+            <div class='no-padding-left card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
                     <label for="local-search" class="non-selectable">Search</label>
