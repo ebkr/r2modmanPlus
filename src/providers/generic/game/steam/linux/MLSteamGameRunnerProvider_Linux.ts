@@ -20,7 +20,7 @@ export default class MLSteamGameRunnerProvider_Linux extends GameRunnerProvider 
         if (isProton instanceof R2Error) {
             return isProton;
         }
-        return `----melonloader.basedir "${isProton ? 'Z:' : ''}${profile.getPathOfProfile()}"`;
+        return `--melonloader.basedir "${isProton ? 'Z:' : ''}${profile.getPathOfProfile()}"`;
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
