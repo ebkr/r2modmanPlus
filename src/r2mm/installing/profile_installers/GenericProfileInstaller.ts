@@ -31,19 +31,21 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const subDirPaths = InstallationRules.getAllManagedPaths(this.rule.rules)
             .filter(value => value.trackingMethod === "SUBDIR");
         for (const dir of subDirPaths) {
-            const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
-            for (const namespacedDir of dirContents) {
-                if (namespacedDir === mod.getName()) {
-                    const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
-                    if (tree instanceof R2Error) {
-                        return tree;
-                    }
-                    for (const value of tree.getRecursiveFiles()) {
-                        if (mode === ModMode.DISABLED) {
-                            await FsProvider.instance.rename(value, `${value}.old`);
-                        } else {
-                            if (value.toLowerCase().endsWith(".old")) {
-                                await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
+            if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {
+                const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
+                for (const namespacedDir of dirContents) {
+                    if (namespacedDir === mod.getName()) {
+                        const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
+                        if (tree instanceof R2Error) {
+                            return tree;
+                        }
+                        for (const value of tree.getRecursiveFiles()) {
+                            if (mode === ModMode.DISABLED) {
+                                await FsProvider.instance.rename(value, `${value}.old`);
+                            } else {
+                                if (value.toLowerCase().endsWith(".old")) {
+                                    await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
+                                }
                             }
                         }
                     }
