@@ -20,6 +20,8 @@ import InstallRules_LethalLeagueBlaze
 import InstallRules_TotallyAccurateBattleSimulator
     from '../default_installation_rules/game_rules/InstallRules_TotallyAccurateBattleSimulator';
 import InstallRules_NASB from '../default_installation_rules/game_rules/InstallRules_NASB';
+import InstallRules_Inscryption
+    from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_Inscryption';
 
 export default class InstallationRuleApplicator {
 
@@ -40,7 +42,8 @@ export default class InstallationRuleApplicator {
             InstallRules_LethalLeagueBlaze(),
             InstallRules_Timberborn(),
             InstallRules_TotallyAccurateBattleSimulator(),
-            InstallRules_NASB()
+            InstallRules_NASB(),
+            InstallRules_Inscryption()
         ]
     }
 
