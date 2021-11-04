@@ -151,15 +151,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
             if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
-                }
                 await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
             } else {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                    await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
-                    await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
-                }
                 await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
             }
         }
@@ -169,15 +162,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const item of (await FsProvider.instance.readdir(mlLocation))) {
             if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
-                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                        await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
-                    }
                     await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 } else {
-                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                        await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
-                        await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
-                    }
                     await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 }
             }
@@ -244,13 +230,16 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         await FileUtils.ensureDirectory(subDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
-                await FsProvider.instance.copyFile(source, path.join(subDir, path.basename(source)));
+                const dest = path.join(subDir, path.basename(source));
+                await FsProvider.instance.copyFile(source, dest);
             } else {
                 for (const content of (await FsProvider.instance.readdir(source))) {
-                    if ((await FsProvider.instance.lstat(path.join(source, content))).isFile()) {
-                        await FsProvider.instance.copyFile(path.join(source, content), path.join(subDir, content));
+                    const cacheContentLocation = path.join(source, content);
+                    const contentDest = path.join(subDir, content);
+                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                     } else {
-                        await FsProvider.instance.copyFolder(path.join(source, content), path.join(subDir, content));
+                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
                     }
                 }
             }
