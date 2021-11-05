@@ -68,9 +68,10 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
-### (3.1.22 ... 3.1.23)
+### (3.1.22 ... 3.1.24)
 - Fixed enable/disable issue when no monomod folder is present.
 - Fixed bugged profile installations.
+- Fixed issue with disabling.
 
 ### 3.1.21
 - Added Totally Accurate Battle Simulator support.
