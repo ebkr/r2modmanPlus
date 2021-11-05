@@ -47,8 +47,12 @@ export default class NodeFs extends FsProvider {
     async readFile(path: string): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, () => {
-                let content = fs.readFileSync(path);
-                resolve(content);
+                try {
+                    let content = fs.readFileSync(path);
+                    resolve(content);
+                } catch (e) {
+                    reject(e);
+                }
             }).catch(reject);
         });
     }
@@ -92,10 +96,11 @@ export default class NodeFs extends FsProvider {
             NodeFs.lock.acquire(path, async () => {
                 try {
                     await fs.promises.rename(path, newPath);
+                    resolve();
                 } catch (e) {
                     reject(e);
                 }
-            }).catch(reject);
+            })
         });
     }
 
