@@ -27,5 +27,6 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     Timberborn: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Timberborn", "BepInExPack_Timberborn", PackageLoader.BEPINEX)],
     TABS: [new ModLoaderPackageMapping("BepInEx-BepInExPack_TABS", "BepInExPack_TABS", PackageLoader.BEPINEX)],
     NASB: [new ModLoaderPackageMapping("BepInEx-BepInExPack_NASB", "BepInExPack_NASB", PackageLoader.BEPINEX)],
-    Inscryption: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Inscryption", "BepInExPack_Inscryption", PackageLoader.BEPINEX)]
+    Inscryption: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Inscryption", "BepInExPack_Inscryption", PackageLoader.BEPINEX)],
+    Starsand: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Starsand", "BepInExPack_Starsand", PackageLoader.BEPINEX)],
 }

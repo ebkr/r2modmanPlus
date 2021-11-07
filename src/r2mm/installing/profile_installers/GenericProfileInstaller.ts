@@ -249,7 +249,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const fileRelocations = new Map<string, string>();
         for (const source of installSources) {
-            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source))) {
+            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source.toLowerCase()))) {
                 if ((await FsProvider.instance.lstat(source)).isFile()) {
                     fileRelocations.set(source, path.join(rule.route, path.basename(source)));
                 } else {
