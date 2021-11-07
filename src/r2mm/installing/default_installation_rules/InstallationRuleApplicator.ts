@@ -21,8 +21,8 @@ import InstallRules_TotallyAccurateBattleSimulator
     from '../default_installation_rules/game_rules/InstallRules_TotallyAccurateBattleSimulator';
 import InstallRules_NASB from '../default_installation_rules/game_rules/InstallRules_NASB';
 import InstallRules_Inscryption
-    from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_Inscryption';
-import InstallRules_Starsand from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_Starsand';
+    from '../default_installation_rules/game_rules/InstallRules_Inscryption';
+import InstallRules_Starsand from '../default_installation_rules/game_rules/InstallRules_Starsand';
 
 export default class InstallationRuleApplicator {
 
