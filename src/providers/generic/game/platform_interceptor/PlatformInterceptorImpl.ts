@@ -15,9 +15,9 @@ import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGa
 import MLDirectExecutableGameRunnerProvider
     from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
 import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
-import DarwinGameRunnerProviderImpl from 'src/providers/generic/game/steam/darwin/DarwinGameRunnerProviderImpl';
-import DarwinMLSteamGameRunnerProvider from 'src/providers/generic/game/steam/darwin/DarwinMLSteamGameRunnerProvider';
-import DarwinGameDirectoryResolver from 'src/r2mm/manager/darwin/DarwinGameDirectoryResolver';
+import DarwinGameRunnerProviderImpl from '../steam/darwin/DarwinGameRunnerProviderImpl';
+import DarwinMLSteamGameRunnerProvider from '../steam/darwin/DarwinMLSteamGameRunnerProvider';
+import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
