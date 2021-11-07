@@ -131,7 +131,7 @@ export default class GameManager {
         new Game("Starsand", "Starsand", "Starsand",
             "Starsand", ["Starsand.exe"], "Starsand_Data",
             "https://starsand.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1380220")], "Starsand.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1380220"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "a774278c0813447c96a76b053cbf73ff")], "Starsand.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX)
 
     ];
