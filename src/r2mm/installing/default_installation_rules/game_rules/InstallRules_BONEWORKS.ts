@@ -3,6 +3,8 @@ import * as path from 'path';
 
 export default function(): CoreRuleType {
 
+    new RegExp("([\\\\/])")
+
     return {
         gameName: 'BONEWORKS',
         relativeFileExclusions: ["manifest.json", "icon.png", "README.md"],
