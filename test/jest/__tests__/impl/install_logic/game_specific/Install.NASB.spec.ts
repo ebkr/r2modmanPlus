@@ -49,7 +49,7 @@ let packageBuilder = (name: string, author: string, version: VersionNumber): Man
 let pkg: ManifestV2;
 let cachePkgRoot: string;
 
-describe('GTFO Install Logic', () => {
+describe('NASB Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
@@ -82,7 +82,7 @@ describe('GTFO Install Logic', () => {
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
         }
 
-        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "GTFO")!;
+        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "NASB")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
@@ -106,7 +106,8 @@ describe('GTFO Install Logic', () => {
             path.join("BIE", "Monomod"),
             path.join("BIE", "Patchers"),
             path.join("BIE", "Core"),
-            path.join("BIE", "GameSpecific", "GTFO", "GameData"),
+            path.join("BIE", "GameSpecific", "NASB", "Voicepacks"),
+            path.join("BIE", "GameSpecific", "NASB", "Skins"),
         ]
 
         for (const value of subdirPaths) {
@@ -134,19 +135,18 @@ describe('GTFO Install Logic', () => {
 
     test('STATE', async () => {
 
-        /** Expect files to be installed as intended **/
-            // [package_path, install_dir_relative_to_profile_folder]
+        // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
-            [path.join("BIE", "GameSpecific", "GTFO", "Assets"), "BepInEx"],
-        ]
+            [path.join('BIE', 'GameSpecific', 'NASB', 'CustomSongs'), path.join("BepInEx")]
+        ];
 
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
+        InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');
 
         for (const value of subdirPaths) {
-            const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
+            const convertedName = `${value[0].replace(/[\/\\]/g, '_')}`;
             expect(await FsProvider.instance.exists(path.join(
                 Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "_state", `${pkg.getName()}.yml`)))
+            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), '_state', `${pkg.getName()}.yml`)));
         }
     });
 

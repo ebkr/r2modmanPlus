@@ -49,7 +49,7 @@ let packageBuilder = (name: string, author: string, version: VersionNumber): Man
 let pkg: ManifestV2;
 let cachePkgRoot: string;
 
-describe('GTFO Install Logic', () => {
+describe('BONEWORKS Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
@@ -82,7 +82,7 @@ describe('GTFO Install Logic', () => {
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
         }
 
-        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "GTFO")!;
+        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
@@ -96,48 +96,28 @@ describe('GTFO Install Logic', () => {
     afterAll(() => {
         InMemoryFsProvider.clear();
         InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
-    })
-
-    test('SUBDIR', async () => {
-
-        /** Expect files to be installed as intended **/
-        const subdirPaths = [
-            path.join("BIE", "Plugins"),
-            path.join("BIE", "Monomod"),
-            path.join("BIE", "Patchers"),
-            path.join("BIE", "Core"),
-            path.join("BIE", "GameSpecific", "GTFO", "GameData"),
-        ]
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-        }
-    });
-
-    test('NONE', async () => {
-
-        /** Expect files to be installed as intended **/
-        const subdirPaths = [
-            path.join("BIE", "Config"),
-        ]
-
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-        }
     });
 
     test('STATE', async () => {
 
         /** Expect files to be installed as intended **/
-            // [package_path, install_dir_relative_to_profile_folder]
+        // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
-            [path.join("BIE", "GameSpecific", "GTFO", "Assets"), "BepInEx"],
+            [path.join("ML", "MelonLoader"), "."],
+            [path.join("ML", "Managed"), "MelonLoader"],
+            [path.join("ML", "Libs"), "MelonLoader"],
+            [path.join("ML", "Mods"), "."],
+            [path.join("ML", "Plugins"), "."],
+            [path.join("ML", "UserData"), "."],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomItems"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomMaps"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "PlayerModels"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomLoadScreens"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "Music"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "Food"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "Scoreworks"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomSkins"), "UserData"],
+            [path.join("ML", "GameSpecific", "BONEWORKS", "Grenades"), "UserData"],
         ]
 
         InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");

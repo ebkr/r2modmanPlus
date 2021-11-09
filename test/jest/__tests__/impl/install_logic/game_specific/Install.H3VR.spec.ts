@@ -49,19 +49,19 @@ let packageBuilder = (name: string, author: string, version: VersionNumber): Man
 let pkg: ManifestV2;
 let cachePkgRoot: string;
 
-describe('GTFO Install Logic', () => {
+describe('H3VR Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
-        const baseFolderStructurePath = path.join(__dirname, "../../../../../folder-structure-testing");
+        const baseFolderStructurePath = path.join(__dirname, '../../../../../folder-structure-testing');
         const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
         if (tree instanceof R2Error) {
-            throw new Error("Unable to find folder-structure-testing folder");
+            throw new Error('Unable to find folder-structure-testing folder');
         }
         const allFiles = tree.getRecursiveFiles()
             .map(value => path.relative(baseFolderStructurePath, value))
             // Filter out file generation script.
-            .filter(value => value !== "populator.mjs");
+            .filter(value => value !== 'populator.mjs');
 
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
@@ -79,40 +79,39 @@ describe('GTFO Install Logic', () => {
         // Create cache from "folder-structure-testing" folder.
         for (const value of allFiles) {
             await FsProvider.instance.mkdirs(path.join(cachePkgRoot, path.dirname(value.trim())));
-            await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), 'placeholder');
         }
 
-        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "GTFO")!;
+        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === 'H3VR')!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
         // Correct folder name casing conversion should happen within the ProfileInstaller.
         // Tests would get fairly heavily hard-coded if recorded here.
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
+        InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');
 
     });
 
     afterAll(() => {
         InMemoryFsProvider.clear();
-        InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
-    })
+        InMemoryFsProvider.setMatchMode('CASE_SENSITIVE');
+    });
 
     test('SUBDIR', async () => {
 
         /** Expect files to be installed as intended **/
         const subdirPaths = [
-            path.join("BIE", "Plugins"),
-            path.join("BIE", "Monomod"),
-            path.join("BIE", "Patchers"),
-            path.join("BIE", "Core"),
-            path.join("BIE", "GameSpecific", "GTFO", "GameData"),
-        ]
+            path.join('BIE', 'Plugins'),
+            path.join('BIE', 'Monomod'),
+            path.join('BIE', 'Patchers'),
+            path.join('BIE', 'Core')
+        ];
 
         for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
+            const convertedName = `${value.replace(/[\/\\]/g, '_')}`;
             expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+                Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
         }
     });
 
@@ -120,33 +119,32 @@ describe('GTFO Install Logic', () => {
 
         /** Expect files to be installed as intended **/
         const subdirPaths = [
-            path.join("BIE", "Config"),
-        ]
+            path.join('BIE', 'Config')
+        ];
 
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
+        InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');
 
         for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
+            const convertedName = `${value.replace(/[\/\\]/g, '_')}`;
             expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+                Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
         }
     });
 
     test('STATE', async () => {
 
-        /** Expect files to be installed as intended **/
-            // [package_path, install_dir_relative_to_profile_folder]
+        // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
-            [path.join("BIE", "GameSpecific", "GTFO", "Assets"), "BepInEx"],
-        ]
+            [path.join('BIE', 'GameSpecific', 'H3VR', 'Sideloader'), path.join("BepInEx")]
+        ];
 
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
+        InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');
 
         for (const value of subdirPaths) {
-            const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
+            const convertedName = `${value[0].replace(/[\/\\]/g, '_')}`;
             expect(await FsProvider.instance.exists(path.join(
                 Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "_state", `${pkg.getName()}.yml`)))
+            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), '_state', `${pkg.getName()}.yml`)));
         }
     });
 
