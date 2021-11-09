@@ -97,11 +97,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, "", ModMode.DISABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, "", ModMode.ENABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.ENABLED);
     }
 
     async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
