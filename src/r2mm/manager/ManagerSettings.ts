@@ -3,27 +3,27 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import SettingsDexieStore, {
-    ManagerSettingsInterfaceHolder
-} from './SettingsDexieStore';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import SettingsStore from 'src/r2mm/manager/settings/SettingsStore';
+import ComboSettingsStructure_V3 from 'src/r2mm/manager/settings/structures/v3/ComboSettingsStructure_V3';
 
 export default class ManagerSettings {
 
     private static LOADED_SETTINGS: ManagerSettings | undefined;
-    private static DEXIE_STORE: SettingsDexieStore;
+    private static SETTINGS_STORE: SettingsStore;
     private static ACTIVE_GAME: Game;
     public static NEEDS_MIGRATION = false;
 
-    private static CONTEXT: ManagerSettingsInterfaceHolder;
+    private static CONTEXT: ComboSettingsStructure_V3;
 
     public static async getSingleton(game: Game): Promise<ManagerSettings> {
         if (this.LOADED_SETTINGS === undefined || this.ACTIVE_GAME === undefined || (this.ACTIVE_GAME.displayName !== game.displayName)) {
             this.ACTIVE_GAME = game;
             this.LOADED_SETTINGS = new ManagerSettings();
-            this.DEXIE_STORE = new SettingsDexieStore(game);
+            this.SETTINGS_STORE = new SettingsStore();
+            await this.SETTINGS_STORE.init(game);
             await this.LOADED_SETTINGS.load(true);
         }
         return this.LOADED_SETTINGS;
@@ -32,7 +32,7 @@ export default class ManagerSettings {
     public async load(forceRefresh?: boolean): Promise<R2Error | void> {
         try {
             if (ManagerSettings.CONTEXT === undefined || forceRefresh === true) {
-                ManagerSettings.CONTEXT = await ManagerSettings.DEXIE_STORE.getLatest();
+                ManagerSettings.CONTEXT = await ManagerSettings.SETTINGS_STORE.getContext();
             }
         } catch (e) {
             const err: Error = e;
@@ -49,7 +49,7 @@ export default class ManagerSettings {
 
 
     private async save(): Promise<R2Error | void> {
-        await ManagerSettings.DEXIE_STORE.save(ManagerSettings.CONTEXT);
+        await ManagerSettings.SETTINGS_STORE.saveAll(ManagerSettings.CONTEXT);
     }
 
     public async setGameDirectory(dir: string): Promise<R2Error | void> {

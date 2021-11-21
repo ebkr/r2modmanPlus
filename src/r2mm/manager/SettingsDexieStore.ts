@@ -5,15 +5,29 @@ import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
+/**
+ * This file is deprecated in favour of {@link SettingsStore}.
+ * It's kept in order to load existing data to migrate to the newer SettingsStore.
+ *
+ * Reason for deprecation:
+ * This was made without understanding of Dexie and so is setup in a way that doesn't allow users to downgrade manager versions.
+ * The only solution for downgrading is to completely wipe their settings.
+ *
+ * The new implementation now means that re-versioning only needs to happen when the schema changes.
+ */
 export default class SettingsDexieStore extends Dexie {
 
     global: Dexie.Table<SettingsInterface, number>;
     gameSpecific: Dexie.Table<SettingsInterface, number>;
     activeGame: Game;
+
+    // Added for deprecation to prevent throwing errors for any newly added games.
+    public static SUPPORTED_GAME_LIST = ["RiskOfRain2", "ThunderstoreBeta", "RiskOfRain2Server", "DysonSphereProgram", "Valheim", "ValheimServer",
+        "GTFO", "Outward", "TaleSpire", "H3VR", "ROUNDS", "Mechanica", "Muck_Data", "BONEWORKS",
+        "LethalLeagueBlaze", "Timberborn", "TotallyAccurateBattleSimulator", "NASB", "Inscryption", "Starsand"];
 
     constructor(game: Game) {
         super(`settings`);
@@ -25,13 +39,12 @@ export default class SettingsDexieStore extends Dexie {
             value: `++id,settings`
         } as any;
 
-        GameManager.gameList
-            .forEach(value => {
-                store[value.settingsIdentifier] = `++id,settings`;
-            });
+        // Hard-coded potential games for pre-{SettingsStore.ts}.
+        SettingsDexieStore.SUPPORTED_GAME_LIST.forEach(value => {
+            store[value] = `++id,settings`;
+        });
 
-        // Add all games to store. Borked v2-3 locally
-        // Increment per game or change to settings.
+        // V22 is the final version for this file.
         this.version(22).stores(store);
 
         this.activeGame = game;
