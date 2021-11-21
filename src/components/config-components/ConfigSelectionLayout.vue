@@ -46,6 +46,7 @@
                         <span>{{file.getName()}}</span>
                     </template>
                     <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
+                    <a class='card-footer-item' @click="openConfig(file)">Open File</a>
                     <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
                 </ExpandableCard>
             </div>
@@ -67,6 +68,7 @@
     import ConfigSort from '../../r2mm/configs/ConfigSort';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
+    import LinkProvider from 'src/providers/components/LinkProvider';
 
     @Component({
         components: {
@@ -145,6 +147,10 @@
 
         editConfig(file: ConfigFile) {
             this.$emit("edit", file);
+        }
+
+        openConfig(file: ConfigFile) {
+            LinkProvider.instance.openLink(file.getPath());
         }
 
     }
