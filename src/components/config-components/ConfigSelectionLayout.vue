@@ -68,7 +68,7 @@
     import ConfigSort from '../../r2mm/configs/ConfigSort';
     import FsProvider from '../../providers/generic/file/FsProvider';
     import ManagerInformation from '../../_managerinf/ManagerInformation';
-    import LinkProvider from 'src/providers/components/LinkProvider';
+    import LinkProvider from '../../providers/components/LinkProvider';
 
     @Component({
         components: {
