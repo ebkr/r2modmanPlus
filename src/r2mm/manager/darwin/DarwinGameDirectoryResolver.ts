@@ -1,15 +1,15 @@
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
-import Game from 'src/model/game/Game';
-import R2Error from 'src/model/errors/R2Error';
+import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
+import Game from '../../../model/game/Game';
+import R2Error from '../../../model/errors/R2Error';
 import path from 'path';
 import { homedir } from 'os';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
-import FileNotFoundError from 'src/model/errors/FileNotFoundError';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import ManagerSettings from '../../manager/ManagerSettings';
+import FileNotFoundError from '../../../model/errors/FileNotFoundError';
 import * as vdf from '@node-steam/vdf';
-import VdfParseError from 'src/model/errors/Vdf/VdfParseError';
-import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
-import GameManager from 'src/model/game/GameManager';
+import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
+import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
+import GameManager from '../../../model/game/GameManager';
 
 export default class DarwinGameDirectoryResolver extends GameDirectoryResolverProvider {
 

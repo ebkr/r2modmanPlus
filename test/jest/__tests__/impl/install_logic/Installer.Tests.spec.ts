@@ -33,6 +33,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             InstallationRuleApplicator.apply();
+            InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
         });
 
         test('Loose DLL', async () => {
@@ -61,11 +62,11 @@ describe('Installer Tests', () => {
 
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
-            await FsProvider.instance.mkdirs(path.join(cachePkgRoot, "plugins", "static_dir"));
-            await FsProvider.instance.writeFile(path.join(cachePkgRoot, "plugins", "static_dir", "structured.dll"), '');
+            await FsProvider.instance.mkdirs(path.join(cachePkgRoot, "Plugins", "static_dir"));
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, "Plugins", "static_dir", "structured.dll"), '');
 
             // Ensure cachePkgRoot contains DLL
-            expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "plugins", "static_dir", "structured.dll"))).toBeTruthy();
+            expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "Plugins", "static_dir", "structured.dll"))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
@@ -163,7 +164,7 @@ describe('Installer Tests', () => {
             const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
 
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
-            const cacheParentDir = path.join(cachePkgRoot, "UserData");
+            const cacheParentDir = path.join(cachePkgRoot, "userdata");
             await FsProvider.instance.mkdirs(cacheParentDir);
             await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
 
@@ -184,7 +185,7 @@ describe('Installer Tests', () => {
             const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
 
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
-            const cacheParentDir = path.join(cachePkgRoot, "UserData", "CustomFolder");
+            const cacheParentDir = path.join(cachePkgRoot, "userdata", "CustomFolder");
             await FsProvider.instance.mkdirs(cacheParentDir);
             await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
 
@@ -243,7 +244,7 @@ describe('Installer Tests', () => {
             const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
 
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
-            const cacheParentDir = path.join(cachePkgRoot, "config");
+            const cacheParentDir = path.join(cachePkgRoot, "Config");
             await FsProvider.instance.mkdirs(cacheParentDir);
             await FsProvider.instance.writeFile(path.join(cacheParentDir, 'loose.file'), '');
 
