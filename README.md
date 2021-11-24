@@ -8,7 +8,8 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS, Lethal League Blaze, Timberborn, and Totally Accurate Battle Simulator.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS,
+Lethal League Blaze, Timberborn, Totally Accurate Battle Simulator, Nickelodeon All-Star Brawl, Inscryption and Starsand.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installation allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -68,6 +69,13 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.25
+- Added Nickelodeon All-Star Brawl support.
+- Added Inscryption support.
+- Added Starsand support.
+- Configs can now be opened directly (thanks @MSchmoecker)
+- Mods installed using the state-based format can now be disabled correctly. (Sideloader and BONEWORKS mods).
+
 ### (3.1.22 ... 3.1.24)
 - Fixed enable/disable issue when no monomod folder is present.
 - Fixed bugged profile installations.
@@ -80,14 +88,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Fixes for Linux (Thanks to lonegamedev and Compile-Time).
 - GTFO support for GameData/Assets folders.
 - Several games can now be searched by aliases. (EG: "Risk of Rain 2" is searchable as "RoR2").
-
-### 3.1.20
-- Added Lethal League Blaze support.
-- Added Timberborn support.
-- BONEWORKS profile importing no longer causes failed assembly loading.
-- Mods downloaded using Thunderstore's "Download with Mod Manager" button now appear in the download progress screen.
-- Dependencies added to mods since the version currently installed with be downloaded and installed on updating the mod.
-- Updating a mod won't forcefully update the dependencies anymore.
 
 ## Screenshots
 
