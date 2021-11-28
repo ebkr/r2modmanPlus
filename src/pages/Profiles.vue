@@ -191,6 +191,12 @@
           <article class="media">
             <div class="media-content">
               <div class="content">
+                <div class='notification'>
+                    <div class="container">
+                        <i class='fas fa-long-arrow-alt-left margin-right' />
+                        <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                    </div>
+                </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
                   <a @click="selectProfile(profileName)">
                     <div class="container">
@@ -674,6 +680,14 @@ export default class Profiles extends Vue {
         }
 
         await this.updateProfileList();
+    }
+
+    private async backToGameSelection() {
+        const settings = await ManagerSettings.getSingleton(this.activeGame);
+        await settings.load();
+        await settings.setDefaultGame(undefined);
+        await settings.setDefaultStorePlatform(undefined);
+        await InteractionProvider.instance.restartApp();
     }
 }
 </script>
