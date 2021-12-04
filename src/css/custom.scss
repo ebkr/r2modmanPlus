@@ -354,6 +354,10 @@ code {
 
 .margin-right {
     margin-right: 1em;
+
+    &--half-width {
+        margin-right: 0.5rem;
+    }
 }
 
 .margin-bottom {

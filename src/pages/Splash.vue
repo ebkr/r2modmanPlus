@@ -28,7 +28,7 @@
                     <br />
                     <nav class='level' v-if='isOffline'>
                         <div class='level-item'>
-                            <a class='button is-info' @click='continueOffline()'>Continue offline</a>&nbsp;
+                            <a class='button is-info margin-right margin-right--half-width' @click='continueOffline()'>Continue offline</a>
                             <a class='button' @click='retryConnection()'>Try to reconnect</a>
                         </div>
                         <br /><br />
@@ -45,10 +45,9 @@
                                 </div>
                                 <div class='container' v-if="view === 'main'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-info-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>Did you know?</strong>
                                     </p>
                                     <ul class='margin-right'>
@@ -70,10 +69,9 @@
                                         </li>
                                     </ul>
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>Having trouble?</strong>
                                     </p>
                                     <p>
@@ -84,10 +82,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-address-card' />
                     </span>
-                                        &nbsp;
                                         <strong>About r2modman</strong>
                                     </p>
                                     <p>It's created by Ebkr, using Quasar.</p>
@@ -101,10 +98,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>FAQ</strong>
                                     </p>
                                     <ul>
@@ -136,7 +132,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Progress, Link } from '../components/all';
+import { Hero, Link, Progress } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';

@@ -22,12 +22,11 @@
 
                 <div class="input-group margin-right">
                     <label for="config-sort-order" class="non-selectable">Sort</label>
-                    <select id="config-sort-order" class="select select--content-spacing" v-model="sortOrder">
+                    <select id="config-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
                         <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
                             {{key}}
                         </option>
                     </select>
-                    <span>&nbsp;</span>
                     <select id="config-sort-direction" class="select select--content-spacing" v-model="sortDirection">
                         <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
                             {{key}}
@@ -56,21 +55,21 @@
 
 <script lang="ts">
 
-    import { Component, Vue, Watch } from 'vue-property-decorator';
-    import ConfigFile from '../../model/file/ConfigFile';
-    import Profile from '../../model/Profile';
-    import * as path from 'path';
-    import FileTree from '../../model/file/FileTree';
-    import R2Error from '../../model/errors/R2Error';
-    import { ExpandableCard, Hero } from '../all';
-    import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
-    import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-    import ConfigSort from '../../r2mm/configs/ConfigSort';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ManagerInformation from '../../_managerinf/ManagerInformation';
-    import LinkProvider from '../../providers/components/LinkProvider';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import ConfigFile from '../../model/file/ConfigFile';
+import Profile from '../../model/Profile';
+import * as path from 'path';
+import FileTree from '../../model/file/FileTree';
+import R2Error from '../../model/errors/R2Error';
+import { ExpandableCard, Hero } from '../all';
+import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import ConfigSort from '../../r2mm/configs/ConfigSort';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import LinkProvider from '../../providers/components/LinkProvider';
 
-    @Component({
+@Component({
         components: {
             Hero,
             ExpandableCard,

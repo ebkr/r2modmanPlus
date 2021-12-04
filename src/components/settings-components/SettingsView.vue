@@ -8,7 +8,7 @@
                 <div class='border-at-bottom'>
                     <div class='card is-shadowless is-square'>
                         <div class='card-header-title'>
-                            <span class="non-selectable">Search:&nbsp;&nbsp;</span>
+                            <span class="non-selectable margin-right">Search:</span>
                             <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
                         </div>
                     </div>
@@ -66,7 +66,6 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { StorePlatform } from '../../model/game/StorePlatform';
-import ApiData from '../../model/api/ApiData';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
 
