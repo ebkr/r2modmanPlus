@@ -1,7 +1,7 @@
 <template>
     <a class="panel-block is-block settings-panel" @click="emitClick()">
         <span class="icon is-pulled-right">
-            <i :class="['fas', icon]" aria-hidden="true"></i>&nbsp;&nbsp;
+            <i :class="['fas', icon]" aria-hidden="true"></i>
         </span>
         <div class="settings-panel__content">
             <p class="title is-6 is-marginless">{{action}}</p>
@@ -12,11 +12,11 @@
 </template>
 
 <script lang="ts">
-    import { Prop, Vue } from 'vue-property-decorator';
-    import Component from 'vue-class-component';
-    import Timeout = NodeJS.Timeout;
+import { Prop, Vue } from 'vue-property-decorator';
+import Component from 'vue-class-component';
+import Timeout = NodeJS.Timeout;
 
-    @Component
+@Component
     export default class SettingsItem extends Vue {
 
         private reactiveValue: any | null = null;

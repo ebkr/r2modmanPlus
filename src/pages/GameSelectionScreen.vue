@@ -9,7 +9,7 @@
                 <div v-if="selectedGame !== null">
                     <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
                         <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`">&nbsp;{{ platform.storePlatform }}</label>
+                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
                     </div>
                 </div>
             </template>

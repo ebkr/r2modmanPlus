@@ -10,7 +10,7 @@
 			<code ref="launchargs">{{ launchArgs }} %command%</code>
 			<br/>
 			<br/>
-			<a ref="copy" class="button" @click="copy">Copy to clipboard</a>&nbsp;
+			<a ref="copy" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
 			<a class="button is-info" @click="acknowledge">Continue</a>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
 
 <script lang='ts'>
 import PathResolver from '../r2mm/manager/PathResolver';
-import { Vue, Component } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Hero } from '../components/all';
 import GameManager from '../model/game/GameManager';
 import * as path from 'path';
