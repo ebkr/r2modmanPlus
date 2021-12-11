@@ -23,6 +23,7 @@ import InstallRules_NASB from '../default_installation_rules/game_rules/InstallR
 import InstallRules_Inscryption
     from '../default_installation_rules/game_rules/InstallRules_Inscryption';
 import InstallRules_Starsand from '../default_installation_rules/game_rules/InstallRules_Starsand';
+import InstallRules_CatsAreLiquidABP from '../default_installation_rules/game_rules/InstallRules_CatsAreLiquidABP';
 
 export default class InstallationRuleApplicator {
 
@@ -46,6 +47,7 @@ export default class InstallationRuleApplicator {
             InstallRules_NASB(),
             InstallRules_Inscryption(),
             InstallRules_Starsand(),
+            InstallRules_CatsAreLiquidABP(),
         ]
     }
 
