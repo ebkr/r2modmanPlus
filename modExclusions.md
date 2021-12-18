@@ -42,4 +42,4 @@ L4rs-QuickFSR
 
 MPModTeam-Boneworks_MP
 
-MADH95Mods-JSONCardLoader
+MADH95Mods-JSONRenameUtility
