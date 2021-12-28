@@ -718,7 +718,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModList(this.contextProfile!);
+			const exportErr = await ProfileModList.exportModListToFile(this.contextProfile!);
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}
