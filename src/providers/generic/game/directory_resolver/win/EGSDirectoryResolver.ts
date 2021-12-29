@@ -2,9 +2,10 @@ import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryRe
 import Game from '../../../../../model/game/Game';
 import R2Error from '../../../../../model/errors/R2Error';
 import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import FsProvider from '../../../../../providers/generic/file/FsProvider';
+import EgsInstallationListItem
+    from '../../../../../providers/generic/game/directory_resolver/win/EgsInstallationListItem';
 import * as path from 'path';
-import EgsInstallationListItem from 'src/providers/generic/game/directory_resolver/win/EgsInstallationListItem';
 
 export default class EGSDirectoryResolver extends GameDirectoryResolverProvider {
 
