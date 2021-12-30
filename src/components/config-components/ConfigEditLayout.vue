@@ -38,14 +38,24 @@
                             <span class="pre" v-else>{{getCommentDisplay(line.comments)}}</span>
                         </p>
                         <br/>
-                        <template v-if="line.allowedValues.length > 0">
-                            <select class="select select--full" v-model="line.value">
-                                <option v-for="(opt, index) in line.allowedValues" :key="`opt-${key}-${configFile.getName()}-${variable}-${index}`">
-                                    {{opt}}
-                                </option>
-                            </select>
-                        </template>
-                        <input class="input" v-model="line.value" v-else/>
+                        <div class='settings-input-container'>
+                            <template v-if='line.hasRange()'>
+                                <q-slider
+                                    v-on:input="x => setConfigLineValue(line, x)"
+                                    :value="parseFloat(line.value)"
+                                    :min="line.getMinRange()"
+                                    :max="line.getMaxRange()">
+                                </q-slider>
+                            </template>
+                            <template v-if="line.allowedValues.length > 0">
+                                <select class="select select--full" v-model="line.value">
+                                    <option v-for="(opt, index) in line.allowedValues" :key="`opt-${key}-${configFile.getName()}-${variable}-${index}`">
+                                        {{opt}}
+                                    </option>
+                                </select>
+                            </template>
+                            <input class="input" v-model="line.value" v-else/>
+                        </div>
                     </div>
                 </div>
                 <br/>
@@ -148,6 +158,9 @@
             this.dumpedConfigVariables = JSON.parse(JSON.stringify(this.dumpedConfigVariables));
         }
 
+        setConfigLineValue(line: ConfigLine, value: number) {
+            line.value = value.toString();
+        }
 
     }
 

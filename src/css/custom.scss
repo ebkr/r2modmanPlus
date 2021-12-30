@@ -447,3 +447,13 @@ code {
 .inherit-background-colour {
     background-color: $scheme-background;
 }
+
+// need to override slider thumb because it is off center otherwise
+.q-slider__thumb-container {
+    top: 20px;
+}
+
+.settings-input-container {
+    display: flex;
+    gap: 16px;
+}
