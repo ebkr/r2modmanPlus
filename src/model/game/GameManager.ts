@@ -141,7 +141,15 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "1188080"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "CatsAreLiquidABP.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
-            ['calabp', 'cal', 'abp'])
+            ['calabp', 'cal', 'abp']),
+
+
+        new Game('Potion Craft', 'PotionCraft', 'PotionCraft',
+            'Potion Craft', ['Potion Craft.exe'], 'Potion Craft_Data',
+            'https://potion-craft.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1210320")], 'PotionCraft.jpg',
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
+            ['pc'])
 
     ];
 
