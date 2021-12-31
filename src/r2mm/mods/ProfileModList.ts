@@ -233,7 +233,7 @@ export default class ProfileModList {
         if (builder instanceof R2Error) {
             return builder;
         }
-        const exportPath = path.join(dir[0], `${profile.getProfileName()}.r2z`);
+        const exportPath = path.join(dir[0], `${profile.getProfileName()}_${new Date().getTime()}.r2z`);
         await builder.createZip(exportPath);
         LinkProvider.instance.selectFile(exportPath);
         return exportPath;
