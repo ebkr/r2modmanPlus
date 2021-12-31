@@ -214,7 +214,6 @@ export default class ProfileModList {
 
     public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
-        await FileUtils.ensureDirectory(exportDirectory);
         try {
             await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
