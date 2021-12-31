@@ -214,6 +214,7 @@ export default class ProfileModList {
 
     public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
+        await FileUtils.ensureDirectory(exportDirectory);
         try {
             await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
@@ -242,6 +243,7 @@ export default class ProfileModList {
     public static async exportModListAsCode(profile: Profile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
+        await FileUtils.ensureDirectory(exportDirectory);
         const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
         const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile);
         if (exportBuilder instanceof R2Error) {
