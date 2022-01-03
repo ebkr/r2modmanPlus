@@ -40,12 +40,13 @@
                         <br/>
                         <div class='settings-input-container'>
                             <template v-if='line.hasRange()'>
-                                <q-slider
-                                    v-on:input="x => setConfigLineValue(line, x)"
+                                <input
+                                    type="range"
+                                    class="slider is-fullwidth is-circle is-small"
+                                    v-on:input="e => setConfigLineValue(line, e.target.value)"
                                     :value="parseFloat(line.value)"
                                     :min="line.getMinRange()"
-                                    :max="line.getMaxRange()">
-                                </q-slider>
+                                    :max="line.getMaxRange()" />
                             </template>
                             <template v-if="line.allowedValues.length > 0">
                                 <select class="select select--full" v-model="line.value">
