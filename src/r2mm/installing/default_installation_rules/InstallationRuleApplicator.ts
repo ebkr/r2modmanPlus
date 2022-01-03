@@ -20,6 +20,7 @@ import InstallRules_Inscryption from '../default_installation_rules/game_rules/I
 import InstallRules_Starsand from '../default_installation_rules/game_rules/InstallRules_Starsand';
 import InstallRules_CatsAreLiquidABP from '../default_installation_rules/game_rules/InstallRules_CatsAreLiquidABP';
 import InstallRules_PotionCraft from '../default_installation_rules/game_rules/InstallRules_PotionCraft';
+import InstallRules_NearlyDead from '../default_installation_rules/game_rules/InstallRules_NearlyDead';
 
 export default class InstallationRuleApplicator {
 
@@ -44,7 +45,8 @@ export default class InstallationRuleApplicator {
             InstallRules_Inscryption(),
             InstallRules_Starsand(),
             InstallRules_CatsAreLiquidABP(),
-            InstallRules_PotionCraft()
+            InstallRules_PotionCraft(),
+            InstallRules_NearlyDead(),
         ]
     }
 
