@@ -158,6 +158,12 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
             ['nd']),
 
+        new Game('AGAINST', 'AGAINST', 'AGAINST',
+            'AGAINST_steam', ['AGAINST.exe'], "AGAINST_Data",
+            'https://against.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1584840")], "AGAINST.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
     ];
 
     static get activeGame(): Game {
