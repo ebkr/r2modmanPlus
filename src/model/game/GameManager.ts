@@ -149,7 +149,14 @@ export default class GameManager {
             'https://potion-craft.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, "1210320")], 'PotionCraft.jpg',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
-            ['pc'])
+            ['pc']),
+
+        new Game('Nearly Dead', 'NearlyDead', 'NearlyDead',
+            'Nearly Dead', ['Nearly Dead.exe'], 'Nearly Dead_Data',
+            'https://nearly-dead.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1268900")], 'NearlyDead.png',
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
+            ['nd']),
 
     ];
 
