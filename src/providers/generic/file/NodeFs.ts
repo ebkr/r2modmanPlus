@@ -32,14 +32,27 @@ export default class NodeFs extends FsProvider {
     }
 
     async mkdirs(path: string): Promise<void> {
-        return await fs.promises.mkdir(path, { recursive: true });
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    await fs.promises.mkdir(path, { recursive: true });
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
     }
 
     async readFile(path: string): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, () => {
-                let content = fs.readFileSync(path);
-                resolve(content);
+                try {
+                    let content = fs.readFileSync(path);
+                    resolve(content);
+                } catch (e) {
+                    reject(e);
+                }
             }).catch(reject);
         });
     }
@@ -59,9 +72,12 @@ export default class NodeFs extends FsProvider {
     async unlink(path: string): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
-                fs.promises.unlink(path)
-                    .then(resolve)
-                    .catch(reject);
+                try {
+                    await fs.promises.unlink(path)
+                    resolve();
+                } catch (e) {
+                    reject(e)
+                }
             }).catch(reject);
         })
     }
@@ -78,10 +94,13 @@ export default class NodeFs extends FsProvider {
     async rename(path: string, newPath: string): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
-                fs.promises.rename(path, newPath)
-                    .then(resolve)
-                    .catch(reject);
-            }).catch(reject);
+                try {
+                    await fs.promises.rename(path, newPath);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            })
         });
     }
 
@@ -92,9 +111,12 @@ export default class NodeFs extends FsProvider {
     async copyFile(from: string, to: string): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(from, async () => {
-                fs.promises.copyFile(from, to)
-                    .then(resolve)
-                    .catch(reject);
+                try {
+                    await fs.promises.copyFile(from, to);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
             }).catch(reject);
         });
     }

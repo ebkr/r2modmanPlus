@@ -12,8 +12,8 @@
                 </p>
             </div>
         </div>
-        <div class='card is-shadowless'>
-            <div class='card-header-title'>
+        <div class='is-shadowless'>
+            <div class='no-padding-left card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
                     <label for="local-search" class="non-selectable">Search</label>
@@ -22,12 +22,11 @@
 
                 <div class="input-group margin-right">
                     <label for="config-sort-order" class="non-selectable">Sort</label>
-                    <select id="config-sort-order" class="select select--content-spacing" v-model="sortOrder">
+                    <select id="config-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
                         <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
                             {{key}}
                         </option>
                     </select>
-                    <span>&nbsp;</span>
                     <select id="config-sort-direction" class="select select--content-spacing" v-model="sortDirection">
                         <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
                             {{key}}
@@ -46,6 +45,7 @@
                         <span>{{file.getName()}}</span>
                     </template>
                     <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
+                    <a class='card-footer-item' @click="openConfig(file)">Open File</a>
                     <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
                 </ExpandableCard>
             </div>
@@ -55,20 +55,21 @@
 
 <script lang="ts">
 
-    import { Component, Vue, Watch } from 'vue-property-decorator';
-    import ConfigFile from '../../model/file/ConfigFile';
-    import Profile from '../../model/Profile';
-    import * as path from 'path';
-    import FileTree from '../../model/file/FileTree';
-    import R2Error from '../../model/errors/R2Error';
-    import { ExpandableCard, Hero } from '../all';
-    import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
-    import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-    import ConfigSort from '../../r2mm/configs/ConfigSort';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ManagerInformation from '../../_managerinf/ManagerInformation';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import ConfigFile from '../../model/file/ConfigFile';
+import Profile from '../../model/Profile';
+import * as path from 'path';
+import FileTree from '../../model/file/FileTree';
+import R2Error from '../../model/errors/R2Error';
+import { ExpandableCard, Hero } from '../all';
+import { SortConfigFile } from '../../model/real_enums/sort/SortConfigFile';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import ConfigSort from '../../r2mm/configs/ConfigSort';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
+import LinkProvider from '../../providers/components/LinkProvider';
 
-    @Component({
+@Component({
         components: {
             Hero,
             ExpandableCard,
@@ -145,6 +146,10 @@
 
         editConfig(file: ConfigFile) {
             this.$emit("edit", file);
+        }
+
+        openConfig(file: ConfigFile) {
+            LinkProvider.instance.openLink(file.getPath());
         }
 
     }

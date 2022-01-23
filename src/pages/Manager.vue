@@ -176,7 +176,7 @@
                 <div>
                     <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
                         <input type="radio" :id="`cat-filter-${key}-${index}`" name="categoryFilterCondition" :value=key :checked="index === 0 ? true : undefined" v-model="categoryFilterMode">
-                        <label :for="`cat-filter-${key}-${index}`">&nbsp;{{ key }}</label>
+                        <label :for="`cat-filter-${key}-${index}`"><span class="margin-right margin-right--half-width"/>{{ key }}</label>
                     </div>
                 </div>
             </template>
@@ -211,19 +211,18 @@
 			</div>
 			<div class="column" :class="contentClass">
 				<div v-show="view === 'online'">
-					<div class='sticky-top sticky-top--search border-at-bottom non-selectable'>
-						<div class='card is-shadowless is-square'>
-							<div class='card-header-title'>
+					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
+						<div class='is-shadowless is-square'>
+							<div class='no-padding-left card-header-title'>
                                 <div class="input-group input-group--flex margin-right">
                                     <label for="thunderstore-search-filter">Search</label>
                                     <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
                                 </div>
                                 <div class="input-group margin-right">
                                     <label for="thunderstore-sort">Sort</label>
-                                    <select id="thunderstore-sort" class='select select--content-spacing' v-model="sortingStyleModel">
+                                    <select id="thunderstore-sort" class='select select--content-spacing margin-right margin-right--half-width' v-model="sortingStyleModel">
                                         <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
                                     </select>
-                                    <span>&nbsp;</span>
                                     <select class='select select--content-spacing' v-model="sortingDirectionModel"
                                             :disabled="sortingStyleModel === 'Default'">
                                         <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
@@ -287,7 +286,6 @@
                                 :settings="settings"
                                 @error="showError($event)">
                                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
-                                    <br/>
                                     <div class="margin-bottom">
                                         <div class="notification is-warning margin-right">
                                             <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="showUpdateAllModal = true">update all</a>?</span>
@@ -328,7 +326,6 @@ import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerPro
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import StatusEnum from '../model/enums/StatusEnum';
 import SortingStyle from '../model/enums/SortingStyle';
 import SortingDirection from '../model/enums/SortingDirection';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
@@ -721,7 +718,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModList(this.contextProfile!);
+			const exportErr = await ProfileModList.exportModListToFile(this.contextProfile!);
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}

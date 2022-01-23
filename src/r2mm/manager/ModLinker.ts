@@ -72,7 +72,7 @@ export default class ModLinker {
                             }
                         } else {
                             if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
-                                if (!["bepinex", "mods", "melonloader", "plugins", "userdata", "_state"].includes(file.toLowerCase())) {
+                                if (!["bepinex", "mods", "melonloader", "plugins", "userdata", "_state", "userlibs"].includes(file.toLowerCase())) {
                                     if (await fs.exists(path.join(installDirectory, file))) {
                                         await FileUtils.emptyDirectory(path.join(installDirectory, file));
                                         await fs.rmdir(path.join(installDirectory, file));

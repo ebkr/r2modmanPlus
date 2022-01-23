@@ -54,6 +54,12 @@ export default function(): CoreRuleType {
                 defaultFileExtensions: [".nasbskin"],
                 trackingMethod: 'SUBDIR',
                 subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "Movesets"),
+                defaultFileExtensions: [],
+                trackingMethod: 'STATE',
+                subRoutes: []
             }
         ]
     }

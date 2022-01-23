@@ -7,11 +7,13 @@ $scheme-primary: var(--scheme-primary, #3273dc);
 $scheme-link: var(--link, $scheme-primary);
 $scheme-link-hover: var(--link-hover, $scheme-text-strong);
 $scheme-shadow: var(--shadow, #0000003b);
-$scheme-border: var(--border, #ececec);
-$scheme-border-secondary: var(--border-secondary, #e1e1e1);
+$scheme-border: var(--border, #e1e1e1);
+$scheme-border-secondary: var(--border-secondary, #c9d3ee);
 $scheme-border-hover: var(--border-hover, #b5b5b5);
 $scheme-border-active: var(--border-active, #4a4a4a);
 $code-font-color: var(--code-font-color, #d01e49);
+$card-expand-shadow-color: var(--card-expand-shadow-color, rgba(0, 0, 0, 0.1));
+$card-expand-background-color: var(--card-expand-background-color, #f6f6f8);
 
 
 // overriding bulma variables with CSS vars that can be replaced with other values when on a different scheme

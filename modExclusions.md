@@ -41,3 +41,5 @@ gnonme-ModThatIsNotMod_Unity_Tools
 L4rs-QuickFSR
 
 MPModTeam-Boneworks_MP
+
+MADH95Mods-JSONRenameUtility

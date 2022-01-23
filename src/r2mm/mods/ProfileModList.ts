@@ -21,6 +21,8 @@ import AsyncLock from 'async-lock';
 import GameManager from '../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderVariantRecord';
 import FileTree from '../../model/file/FileTree';
+import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
+import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 
 export default class ProfileModList {
 
@@ -177,22 +179,13 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
-        const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
-        try {
-            await FileUtils.ensureDirectory(exportDirectory);
-        } catch(e) {
-            const err: Error = e;
-            return new R2Error('Failed to ensure directory exists', err.message,
-                `Try running ${ManagerInformation.APP_NAME} as an administrator`);
-        }
+    private static async createExport(profile: Profile): Promise<ZipBuilder | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
         }
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
-        const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
@@ -216,26 +209,47 @@ export default class ProfileModList {
                 await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
             }
         }
-        await builder.createZip(exportPath);
-        return exportPath;
+        return builder;
     }
 
-    public static async exportModList(profile: Profile): Promise<R2Error | void> {
-        const exportResult: R2Error | string = await this.exportModListToFile(profile);
-        if (exportResult instanceof R2Error) {
-            return exportResult;
-        } else {
-            LinkProvider.instance.selectFile(exportResult);
+    public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
+        const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
+        try {
+            await FileUtils.ensureDirectory(exportDirectory);
+        } catch(e) {
+            const err: Error = e;
+            return new R2Error('Failed to ensure directory exists', err.message,
+                `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
+        const dir = await InteractionProvider.instance.selectFolder({
+            title: `Select the location to export your profile to`,
+            defaultPath: exportDirectory,
+            buttonLabel: 'Select export directory'
+        });
+        if (dir.length === 0) {
+            return new R2Error("Failed to export profile", "No export directory was selected", null);
+        }
+        const builder = await this.createExport(profile);
+        if (builder instanceof R2Error) {
+            return builder;
+        }
+        const exportPath = path.join(dir[0], `${profile.getProfileName()}_${new Date().getTime()}.r2z`);
+        await builder.createZip(exportPath);
+        LinkProvider.instance.selectFile(exportPath);
+        return exportPath;
     }
 
     public static async exportModListAsCode(profile: Profile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
-        const exportResult: R2Error | string = await this.exportModListToFile(profile);
-        if (exportResult instanceof R2Error) {
-            return exportResult;
+        const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
+        await FileUtils.ensureDirectory(exportDirectory);
+        const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
+        const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile);
+        if (exportBuilder instanceof R2Error) {
+            return exportBuilder;
         } else {
-            const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportResult));
+            await exportBuilder.createZip(exportPath);
+            const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportPath));
             Axios.post('https://r2modman-hastebin.herokuapp.com/documents', profileBuffer)
                 .then(resp => callback(resp.data.key, null))
                 .catch(e => {

@@ -12,9 +12,19 @@ type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefin
 export default class InMemoryFsProvider extends FsProvider {
 
     private static files: FileType[] = [];
+    private static matchMode: "CASE_SENSITIVE" | "CASE_INSENSITIVE" = "CASE_SENSITIVE";
+
+    public static setMatchMode(matchMode: "CASE_SENSITIVE" | "CASE_INSENSITIVE") {
+        InMemoryFsProvider.matchMode = matchMode;
+    }
 
     public static clear() {
         InMemoryFsProvider.files = [];
+        InMemoryFsProvider.matchMode = "CASE_SENSITIVE";
+    }
+
+    public static jsonFileStructure(): string {
+        return JSON.stringify(this.files);
     }
 
     private findFileType(typePath: string, type?: "FILE" | "DIR"): FileType {
@@ -22,9 +32,21 @@ export default class InMemoryFsProvider extends FsProvider {
         let found: FileType | undefined;
         typePath.split(path.sep).forEach(value => {
             if (found === undefined) {
-                found = root.find(value1 => value1.name === value)!;
+                found = root.find(value1 => {
+                    switch(InMemoryFsProvider.matchMode) {
+                        case 'CASE_SENSITIVE': return value1.name === value;
+                        case 'CASE_INSENSITIVE': return value1.name.toLowerCase() === value.toLowerCase();
+                        default: throw new Error("Unhandled match mode");
+                    }
+                })!;
             } else {
-                found = (found.nodes || []).find(value1 => value1.name === value)!;
+                found = (found.nodes || []).find(value1 => {
+                    switch(InMemoryFsProvider.matchMode) {
+                        case 'CASE_SENSITIVE': return value1.name === value;
+                        case 'CASE_INSENSITIVE': return value1.name.toLowerCase() === value.toLowerCase();
+                        default: throw new Error("Unhandled match mode");
+                    }
+                })!;
             }
         })
         if (type !== undefined && found!.type !== type) {

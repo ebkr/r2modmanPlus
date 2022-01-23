@@ -23,12 +23,12 @@ export default class BepInExConfigUtils {
         let section = 'root';
         let comments: string[] = [];
         const allowedValues: Set<String> = new Set();
-        fileText.split('\n').forEach((line: string) => {
+        fileText.split(new RegExp("\n")).forEach((line: string) => {
             if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
                 section = line.trim().substring(1, line.trim().length - 1);
                 dumpedConfigVariables[section] = {};
                 comments = [];
-            } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
+            } else if (!(line.trim().startsWith('#') || line.trim().startsWith(";")) && line.indexOf('=') > 0) {
                 const sides = line.split('=');
                 const rightSide = sides.splice(1).join("=");
                 if (comments.find(value => value.trim().startsWith("# Setting type: Boolean"))) {
@@ -44,7 +44,7 @@ export default class BepInExConfigUtils {
                 dumpedConfigVariables[section][sides[0].trim()] = new ConfigLine(rightSide.trim(), comments, finalAcceptableValues);
                 comments = [];
                 allowedValues.clear();
-            } else if (line.trim().startsWith('#')) {
+            } else if (line.trim().startsWith('#') || line.trim().startsWith(";")) {
                 comments.push(line.trim());
             }
         });
@@ -59,7 +59,7 @@ export default class BepInExConfigUtils {
             if (line.trim().startsWith('[') && line.trim().endsWith(']')) {
                 section = line.trim().substring(1, line.trim().length - 1);
                 builtString += line + '\n';
-            } else if (!line.trim().startsWith('#') && line.indexOf('=') > 0) {
+            } else if (!(line.trim().startsWith('#') || line.trim().startsWith(";")) && line.indexOf('=') > 0) {
                 const sides = line.split('=');
                 builtString += `${sides[0].trim()} = ${data[section][sides[0].trim()].value}\n`;
             } else {

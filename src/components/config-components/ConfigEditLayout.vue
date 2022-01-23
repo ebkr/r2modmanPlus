@@ -7,8 +7,7 @@
         />
         <br/>
         <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info" @click="save">Save</button>
-            &nbsp;
+            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
         <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="margin-right non-selectable">
@@ -59,15 +58,15 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import ConfigLine from '../../model/file/ConfigLine';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ConfigFile from '../../model/file/ConfigFile';
-    import Hero from '../Hero.vue';
-    import QuillEditor from '../QuillEditor.vue';
-    import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import ConfigLine from '../../model/file/ConfigLine';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ConfigFile from '../../model/file/ConfigFile';
+import Hero from '../Hero.vue';
+import QuillEditor from '../QuillEditor.vue';
+import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 
-    @Component({
+@Component({
         components: { Hero, QuillEditor }
     })
     export default class ConfigEditLayout extends Vue {
@@ -122,7 +121,9 @@
         getCommentDisplay(comments: string[]): string {
             return comments.map(value => value.trim())
                 .join("\n")
+                .trim()
                 .replace(new RegExp("#+", "g"), "")
+                .replace(new RegExp(";+", "g"), "")
                 .replace(new RegExp("\n\\s", "g"), "\n")
                 .trim();
         }
@@ -131,7 +132,9 @@
             return comments.map(value => value.trim())
                 .slice(0, 4)
                 .join("\n")
+                .trim()
                 .replace(new RegExp("#+", "g"), "")
+                .replace(new RegExp(";+", "g"), "")
                 .replace(new RegExp("\n\\s+", "g"), "\n")
                 .trim();
         }

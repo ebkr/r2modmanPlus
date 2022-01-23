@@ -31,19 +31,21 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const subDirPaths = InstallationRules.getAllManagedPaths(this.rule.rules)
             .filter(value => value.trackingMethod === "SUBDIR");
         for (const dir of subDirPaths) {
-            const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
-            for (const namespacedDir of dirContents) {
-                if (namespacedDir === mod.getName()) {
-                    const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
-                    if (tree instanceof R2Error) {
-                        return tree;
-                    }
-                    for (const value of tree.getRecursiveFiles()) {
-                        if (mode === ModMode.DISABLED) {
-                            await FsProvider.instance.rename(value, `${value}.old`);
-                        } else {
-                            if (value.toLowerCase().endsWith(".old")) {
-                                await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
+            if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {
+                const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
+                for (const namespacedDir of dirContents) {
+                    if (namespacedDir === mod.getName()) {
+                        const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
+                        if (tree instanceof R2Error) {
+                            return tree;
+                        }
+                        for (const value of tree.getRecursiveFiles()) {
+                            if (mode === ModMode.DISABLED) {
+                                await FsProvider.instance.rename(value, `${value}.old`);
+                            } else {
+                                if (value.toLowerCase().endsWith(".old")) {
+                                    await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
+                                }
                             }
                         }
                     }
@@ -95,11 +97,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, "", ModMode.DISABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, "", ModMode.ENABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.ENABLED);
     }
 
     async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
@@ -149,15 +151,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
             if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
-                }
                 await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
             } else {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                    await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
-                    await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
-                }
                 await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
             }
         }
@@ -167,15 +162,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const item of (await FsProvider.instance.readdir(mlLocation))) {
             if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
-                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                        await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), item));
-                    }
                     await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 } else {
-                    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), item))) {
-                        await FileUtils.emptyDirectory(path.join(profile.getPathOfProfile(), item));
-                        await FsProvider.instance.rmdir(path.join(profile.getPathOfProfile(), item));
-                    }
                     await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 }
             }
@@ -242,13 +230,16 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         await FileUtils.ensureDirectory(subDir);
         for (const source of installSources) {
             if ((await FsProvider.instance.lstat(source)).isFile()) {
-                await FsProvider.instance.copyFile(source, path.join(subDir, path.basename(source)));
+                const dest = path.join(subDir, path.basename(source));
+                await FsProvider.instance.copyFile(source, dest);
             } else {
                 for (const content of (await FsProvider.instance.readdir(source))) {
-                    if ((await FsProvider.instance.lstat(path.join(source, content))).isFile()) {
-                        await FsProvider.instance.copyFile(path.join(source, content), path.join(subDir, content));
+                    const cacheContentLocation = path.join(source, content);
+                    const contentDest = path.join(subDir, content);
+                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                     } else {
-                        await FsProvider.instance.copyFolder(path.join(source, content), path.join(subDir, content));
+                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
                     }
                 }
             }
@@ -258,7 +249,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const fileRelocations = new Map<string, string>();
         for (const source of installSources) {
-            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source))) {
+            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source.toLowerCase()))) {
                 if ((await FsProvider.instance.lstat(source)).isFile()) {
                     fileRelocations.set(source, path.join(rule.route, path.basename(source)));
                 } else {

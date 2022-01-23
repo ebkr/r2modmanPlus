@@ -200,8 +200,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
         const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
+        const apps = localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps || localConfig.UserLocalConfigStore.Software.Valve.Steam.apps;
 
-        return localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
+        return apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
@@ -213,7 +214,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         let steamapps: string | undefined;
         for(const dir of probableSteamAppsLocations)
-            if(await FsProvider.instance.exists(dir)){
+            if (await FsProvider.instance.exists(dir)){
                 steamapps = await FsProvider.instance.realpath(dir);
                 break;
             }
@@ -278,12 +279,14 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         let manifestLocation: string | null = null;
         try {
             for (const location of locations) {
-                (await fs.readdir(location))
-                    .forEach((file: string) => {
-                        if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
-                            manifestLocation = location;
-                        }
-                    });
+                if (await fs.exists(location)) {
+                    (await fs.readdir(location))
+                        .forEach((file: string) => {
+                            if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
+                                manifestLocation = location;
+                            }
+                        });
+                }
             }
         } catch(e) {
             if (e instanceof R2Error) {
