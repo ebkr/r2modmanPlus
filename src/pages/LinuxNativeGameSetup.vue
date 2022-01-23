@@ -33,7 +33,7 @@ export default class LinuxFirstTimeSetup extends Vue {
 	data() {
 		return {
 			activeGame: GameManager.activeGame.displayName,
-			launchArgs: path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_wrapper.sh' : 'linux_wrapper.sh')
+			launchArgs: `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}"`
 		}
 	}
 
