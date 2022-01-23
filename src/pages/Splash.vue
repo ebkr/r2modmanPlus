@@ -291,7 +291,7 @@ export default class Splash extends Vue {
     }
 
     private async ensureWrapperInGameFolder() {
-        const wrapperName = process.platform === 'darwin' ? 'macos_wrapper.sh' : 'linux_wrapper.sh';
+        const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
         console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
         try {
             await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
