@@ -147,6 +147,7 @@ import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryR
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../providers/generic/file/FsProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
+import ConnectionProvider from '../providers/generic/connection/ConnectionProvider';
 
 @Component({
     components: {
@@ -188,19 +189,12 @@ export default class Splash extends Vue {
 
     private async getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
-        axios.get(this.activeGame.exclusionsUrl, {
-            onDownloadProgress: progress => {
-                this.loadingText = 'Downloading exclusions';
-                this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
-            },
-            timeout: 20000
-        }).then(response => {
-            this.getRequestItem('ExclusionsList').setProgress(100);
-            response.data.split('\n').forEach((exclude: string) => {
-                this.exclusionMap.set(exclude, true);
-            });
+        ConnectionProvider.instance.getExclusions(percentageProgress => {
+            this.loadingText = 'Downloading exclusions';
+            this.getRequestItem('ExclusionsList').setProgress(percentageProgress);
+        }).then(exclusions => {
+            this.exclusionMap = exclusions;
             ThunderstorePackages.EXCLUSIONS = this.exclusionMap;
-        }).finally(() => {
             this.getThunderstoreMods(0);
         });
     }
