@@ -451,3 +451,10 @@ code {
 .inherit-background-colour {
     background-color: $scheme-background;
 }
+
+.settings-input-container {
+    display: flex;
+    gap: 16px;
+    height: 40px;
+    align-items: center;
+}

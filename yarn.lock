@@ -3367,6 +3367,11 @@ bulma-divider@^0.2.0:
   resolved "https://registry.yarnpkg.com/bulma-divider/-/bulma-divider-0.2.0.tgz#a9b4d9fe8b270c7cb7573023c575062bc62616f3"
   integrity sha512-REe3k56GECRfDaqFjC8cwLhV4RxXmV0RubuzDJqwior9wlJcdHlN0qfW0tvUX+qphikaTQegIeRuhjRIAqkjkw==
 
+bulma-slider@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/bulma-slider/-/bulma-slider-2.0.4.tgz#c10359dc9e26c357b6718ca827083b611177e453"
+  integrity sha512-JKuU/vp2si5I2rWiHBKaaYWBRECNY1Ow7yNFjxlHdUnPLowNee02K6QYd/ORGEesFPAHXOt+mKPZTEYFhKmviQ==
+
 bulma-steps@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/bulma-steps/-/bulma-steps-2.2.1.tgz#39cc353ae049701c60aa7c74a27bf56b8463cb1a"
