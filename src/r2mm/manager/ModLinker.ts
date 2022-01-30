@@ -89,7 +89,6 @@ export default class ModLinker {
                                 const gameDirFilePath = path.join(installDirectory, file);
                                 const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
                                 if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
-                                    console.log("Copying file:", path.basename(profileDirFilePath))
                                     await fs.copyFile(profileDirFilePath, gameDirFilePath);
                                     const profileDirFileStat = await fs.stat(profileDirFilePath);
                                     await fs.setModifiedTime(gameDirFilePath, profileDirFileStat.mtime);
@@ -116,17 +115,6 @@ export default class ModLinker {
                                     const fileRelativeToProfileFolder = path.relative(profile.getPathOfProfile(), recursiveFileInFolder);
                                     const gameDirFile = path.join(installDirectory, fileRelativeToProfileFolder);
                                     if (!(await this.isFileIdentical(recursiveFileInFolder, gameDirFile))) {
-                                        if ((await fs.exists(recursiveFileInFolder)) && (await fs.exists(gameDirFile))) {
-                                            const statFileToCheck = await fs.stat(recursiveFileInFolder);
-                                            const statFileInOtherLocation = await fs.stat(gameDirFile);
-                                            console.log(`check: stat: ${statFileToCheck.size}, ${statFileToCheck.mtime}`, recursiveFileInFolder, gameDirFile);
-                                            console.log(`other: stat: ${statFileInOtherLocation.size}, ${statFileInOtherLocation.mtime}`, recursiveFileInFolder, gameDirFile);
-                                            console.log(`comp: ${statFileToCheck.size === statFileInOtherLocation.size}, ${statFileToCheck.mtime === statFileInOtherLocation.mtime}`);
-                                            console.log(`comp 2`, await this.isFileIdentical(recursiveFileInFolder, gameDirFile));
-                                        } else {
-                                            console.log(`failed exists`, recursiveFileInFolder, gameDirFile);
-                                        }
-                                        console.log("Files diff:", fileRelativeToProfileFolder);
                                         await FileUtils.ensureDirectory(path.join(installDirectory, path.dirname(fileRelativeToProfileFolder)));
                                         await fs.copyFile(recursiveFileInFolder, gameDirFile);
                                         const recursiveFileStat = await fs.stat(recursiveFileInFolder);
