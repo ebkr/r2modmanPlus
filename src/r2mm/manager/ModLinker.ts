@@ -4,7 +4,6 @@ import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import ManagerSettings from './ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import FileUtils from '../../utils/FileUtils';
@@ -26,12 +25,11 @@ export default class ModLinker {
             // Linux games don't require moving BepInEx files.
             return [];
         }
-        const settings = await ManagerSettings.getSingleton(game);
         const gameDirectory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory(game);
         if (gameDirectory instanceof R2Error) {
             return gameDirectory;
         }
-        return this.performLink(profile, game, gameDirectory, settings.getContext().gameSpecific.linkedFiles);
+        return this.performLink(profile, game, gameDirectory);
     }
 
     /**
@@ -55,7 +53,7 @@ export default class ModLinker {
     // Is this 100% needed?
     // Could move to a setting at a later date?
     // TBD: Only apply when starting vanilla?
-    private static async cleanupLinkedFiles(profile: Profile, game: Game, installDirectory: string, previouslyLinkedFiles: string[]) {
+    private static async cleanupLinkedFiles(profile: Profile, installDirectory: string, previouslyLinkedFiles: string[]) {
         const fs = FsProvider.instance;
         await LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
         for (const file of previouslyLinkedFiles) {
@@ -76,7 +74,7 @@ export default class ModLinker {
         }
     }
 
-    private static async performLink(profile: Profile, game: Game, installDirectory: string, previouslyLinkedFiles: string[]): Promise<string[] | R2Error> {
+    private static async performLink(profile: Profile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {

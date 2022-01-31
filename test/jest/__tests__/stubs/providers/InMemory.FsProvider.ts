@@ -121,7 +121,7 @@ export default class InMemoryFsProvider extends FsProvider {
         const res: StatInterface = {
             isDirectory: () => found.type === "DIR",
             isFile: () => found.type === "FILE",
-            mtime: new Date(),
+            mtime: found.mtime,
             size: (found.content || "").length
         };
         return Promise.resolve(res);
@@ -207,8 +207,8 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
 
-    async setModifiedTime(path: string, time: Date): Promise<void> {
-        const found = this.findFileType(path);
+    async setModifiedTime(file: string, time: Date): Promise<void> {
+        const found = this.findFileType(file);
         found.mtime = time;
     }
 }
