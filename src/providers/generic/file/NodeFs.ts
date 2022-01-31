@@ -139,4 +139,17 @@ export default class NodeFs extends FsProvider {
             });
         })
     }
+
+    async setModifiedTime(path: string, time: Date): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    await fs.promises.utimes(path, time, time);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            }).catch(reject);
+        });
+    }
 }

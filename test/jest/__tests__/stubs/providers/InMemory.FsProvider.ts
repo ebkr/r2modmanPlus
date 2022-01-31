@@ -2,7 +2,7 @@ import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import StatInterface from '../../../../../src/providers/generic/file/StatInterface';
 import * as path from 'path';
 
-type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | undefined};
+type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefined, content: string | undefined, mtime: Date};
 
 
 /**
@@ -72,7 +72,8 @@ export default class InMemoryFsProvider extends FsProvider {
             type: found.type,
             content: found.content,
             name: found.name,
-            nodes: nodes
+            nodes: nodes,
+            mtime: found.mtime
         } as FileType
     }
 
@@ -91,7 +92,8 @@ export default class InMemoryFsProvider extends FsProvider {
         newNodes.push({
             name: path.basename(to),
             type: "FILE",
-            content: source.content
+            content: source.content,
+            mtime: new Date()
         } as FileType);
         dest.nodes = newNodes;
     }
@@ -119,7 +121,8 @@ export default class InMemoryFsProvider extends FsProvider {
         const res: StatInterface = {
             isDirectory: () => found.type === "DIR",
             isFile: () => found.type === "FILE",
-            mtime: new Date()
+            mtime: found.mtime,
+            size: (found.content || "").length
         };
         return Promise.resolve(res);
     }
@@ -133,7 +136,8 @@ export default class InMemoryFsProvider extends FsProvider {
                     name: step,
                     type: "DIR",
                     nodes: [],
-                    content: undefined
+                    content: undefined,
+                    mtime: new Date()
                 }
                 root.push(dir);
                 root = dir.nodes!;
@@ -194,11 +198,17 @@ export default class InMemoryFsProvider extends FsProvider {
             name: path.basename(file),
             nodes: undefined,
             content: content instanceof Buffer ? content.toString() : content,
-            type: "FILE"
+            type: "FILE",
+            mtime: new Date()
         }
         const parent = this.findFileType(path.dirname(file), "DIR");
         parent.nodes = (parent.nodes || []).filter(value => value.name !== newFile.name);
         parent.nodes.push(newFile);
     }
 
+
+    async setModifiedTime(file: string, time: Date): Promise<void> {
+        const found = this.findFileType(file);
+        found.mtime = time;
+    }
 }

@@ -104,6 +104,9 @@ export default class FileTree {
         return [...this.files];
     }
 
+    /**
+     * Returns an array of files with absolute (full) paths
+     */
     public getRecursiveFiles(): string[] {
         const files = [...this.files];
         this.directories.forEach(tree => {

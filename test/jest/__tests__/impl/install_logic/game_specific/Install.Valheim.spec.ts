@@ -10,7 +10,6 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
-import InstallationRules from 'src/r2mm/installing/InstallationRules';
 import NodeFs from 'src/providers/generic/file/NodeFs';
 import FileTree from 'src/model/file/FileTree';
 import R2Error from 'src/model/errors/R2Error';
@@ -112,8 +111,6 @@ describe('Valheim Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            console.log(convertedName, await FsProvider.instance.readdir(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName())));
             expect(await FsProvider.instance.exists(path.join(
                 Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
         }
