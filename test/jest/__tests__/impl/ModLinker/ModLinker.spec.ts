@@ -65,7 +65,7 @@ describe('ModLinker (win32)', () => {
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).toEqual(oldStat.mtime);
-                resolve();
+                resolve(undefined);
             }, 30);
         });
     });
@@ -81,7 +81,7 @@ describe('ModLinker (win32)', () => {
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).not.toEqual(oldStat.mtime);
-                resolve();
+                resolve(undefined);
             }, 30);
         });
     });

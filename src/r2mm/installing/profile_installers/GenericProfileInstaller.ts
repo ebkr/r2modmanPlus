@@ -18,6 +18,8 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { PackageLoader } from '../../../model/installing/PackageLoader';
 
+const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
+
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private rule: CoreRuleType;
@@ -79,6 +81,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             if (e instanceof R2Error) {
                 return e;
             } else {
+                // @ts-ignore
                 const err: Error = e;
                 return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
             }
@@ -148,19 +151,26 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        let bepInExRoot: string;
+        if (modLoaderMapping.rootFolder.trim().length > 0) {
+            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        } else {
+            bepInExRoot = path.join(bieLocation);
+        }
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
-            if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-            } else {
-                await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+            if (!basePackageFiles.includes(item.toLowerCase())) {
+                if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
+                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                } else {
+                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                }
             }
         }
     }
 
     private async installMelonLoader(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         for (const item of (await FsProvider.instance.readdir(mlLocation))) {
-            if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
+            if (!basePackageFiles.includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
                     await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 } else {
@@ -319,7 +329,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new FileWriteError(
                     'Failed to delete BepInEx file from profile root',
                     err.message,
@@ -342,7 +352,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new R2Error(
                     "Failed to remove files",
                     err.message,

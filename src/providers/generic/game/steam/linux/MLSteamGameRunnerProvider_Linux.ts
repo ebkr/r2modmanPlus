@@ -60,8 +60,8 @@ export default class MLSteamGameRunnerProvider_Linux extends GameRunnerProvider 
             await exec(cmd);
         }catch(err){
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
-            LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-            throw new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings');
+            LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
+            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
         }
     }
 

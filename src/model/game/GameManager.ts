@@ -164,6 +164,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1584840")], "AGAINST.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
+        new Game('Rogue Tower', 'RogueTower', 'RogueTower',
+            'Rogue Tower', ['Rogue Tower.exe'], "Rogue Tower_Data",
+            'https://rogue-tower.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1843760")], "RogueTower.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt']),
+
     ];
 
     static get activeGame(): Game {

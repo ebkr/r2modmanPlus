@@ -646,7 +646,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                             this.showRor2IncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-                        const err: Error = e;
+                        const err: Error = e as Error;
                         this.showError(new R2Error(
                             "Failed to change the game directory",
                             err.message,
@@ -702,7 +702,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                             this.showSteamIncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-				        const err: Error = e;
+				        const err: Error = e as Error;
 				        this.showError(new R2Error(
 				            "Failed to change the Steam directory",
                             err.message,

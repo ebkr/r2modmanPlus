@@ -39,7 +39,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             }
             return installValue;
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error(
                 'Unable to resolve steam install directory',
                 err.message,
@@ -60,7 +60,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             }
             return await this.findSteamAppManifest(steamDir, game);
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error(
                 `Unable to resolve the ${game.displayName} install directory`,
                 err.message,
@@ -98,7 +98,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                             }
                         }
                     } catch(e) {
-                        const err: Error = e;
+                        const err: Error = e as Error;
                         // Need to throw when inside forEach.
                         throw new VdfParseError(
                             'Unable to parse libraryfolders.vdf',
@@ -109,11 +109,11 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 }
             }
         } catch(e) {
-            LoggerProvider.instance.Log(LogSeverity.ERROR, e.message);
+            LoggerProvider.instance.Log(LogSeverity.ERROR, (e as Error).message);
             if (e instanceof R2Error) {
                 return e;
             }
-            const err: Error = e;
+            const err: Error = e as Error;
             return new FileNotFoundError(
                 'Unable to read directory',
                 err.message,
@@ -135,7 +135,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (e instanceof R2Error) {
                 return e;
             }
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error(
                 'An error occured whilst searching Steam library locations',
                 err.message,
@@ -170,7 +170,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 )
             }
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error(
                 `An error occurred whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
                 err.message,

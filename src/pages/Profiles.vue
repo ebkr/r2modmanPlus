@@ -396,7 +396,7 @@ export default class Profiles extends Vue {
             await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
             await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             this.showError(
                 new R2Error('Error whilst deleting profile', err.message, null)
             );
@@ -605,7 +605,7 @@ export default class Profiles extends Vue {
                 }) as EventListener), {once: true});
             }
         } catch (e) {
-            const err = new R2Error("Failed to import profile", e.message, null);
+            const err = new R2Error("Failed to import profile", (e as Error).message, null);
             this.showError(err);
             return;
         }

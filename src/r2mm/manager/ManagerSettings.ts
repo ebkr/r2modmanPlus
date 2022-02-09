@@ -3,9 +3,7 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import SettingsDexieStore, {
-    ManagerSettingsInterfaceHolder
-} from './SettingsDexieStore';
+import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
@@ -35,7 +33,7 @@ export default class ManagerSettings {
                 ManagerSettings.CONTEXT = await ManagerSettings.DEXIE_STORE.getLatest();
             }
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error("Failed to initialise settings storage", err.message, null);
         }
     }

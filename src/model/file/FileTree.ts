@@ -32,7 +32,7 @@ export default class FileTree {
                 }
             }
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return Promise.resolve(
                 new R2Error(
                     `Error reading directory in FileTree build for directory: ${location}`,

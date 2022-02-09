@@ -93,7 +93,7 @@ export default class ModLinker {
                                 }
                                 newLinkedFiles.push(gameDirFilePath);
                             } catch (e) {
-                                const err: Error = e;
+                                const err: Error = e as Error;
                                 throw new FileWriteError(
                                     `Couldn't copy file ${file} to ${game.displayName} directory`,
                                     err.message,
@@ -125,7 +125,7 @@ export default class ModLinker {
                     }
                 }
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new FileWriteError(
                     'Failed to install required files',
                     err.message,
@@ -133,7 +133,7 @@ export default class ModLinker {
                 );
             }
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error(
                 `Unable to read directory for profile ${profile.getProfileName()}`,
                 err.message,

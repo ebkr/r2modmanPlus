@@ -33,7 +33,7 @@ export default class ManagerSettingsMigration {
                 await settings.setInstalledSortDirection(parsedYaml.installedSortDirection || settings.getContext().gameSpecific.installedSortDirection);
                 await settings.setInstalledDisablePosition(parsedYaml.installedDisablePosition || settings.getContext().gameSpecific.installedDisablePosition);
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new YamlParseError(
                     'Failed to parse conf.yml',
                     err.message,
@@ -43,7 +43,7 @@ export default class ManagerSettingsMigration {
             try {
                 await fs.unlink(configFile);
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new FileWriteError("Failed to migrate conf.yml", err.message, "Try running the manager as admin");
             }
         }

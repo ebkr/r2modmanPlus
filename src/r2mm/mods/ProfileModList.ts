@@ -62,7 +62,7 @@ export default class ProfileModList {
                 }
                 return value;
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
                     err.message,
@@ -70,7 +70,7 @@ export default class ProfileModList {
                 );
             }
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new FileNotFoundError(
                 'Unable to locate file',
                 err.message,
@@ -89,7 +89,7 @@ export default class ProfileModList {
                     yamlModList
                 );
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new FileWriteError(
                     `Failed to create mods.yml for profile: ${profile.getProfileName()}`,
                     err.message,
@@ -97,7 +97,7 @@ export default class ProfileModList {
                 )
             }
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new YamlConvertError(
                 'Failed to convert modList to yaml',
                 err.message,
@@ -217,7 +217,7 @@ export default class ProfileModList {
         try {
             await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error('Failed to ensure directory exists', err.message,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }

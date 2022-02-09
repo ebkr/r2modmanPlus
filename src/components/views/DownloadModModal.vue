@@ -175,7 +175,7 @@ let assignId = 0;
                                 try {
                                     await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
                                 } catch (e) {
-                                    const err: Error = e;
+                                    const err: Error = e as Error;
                                     return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                                 }
                             }
@@ -297,7 +297,7 @@ let assignId = 0;
                         try {
                             await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
                         } catch (e) {
-                            const err: Error = e;
+                            const err: Error = e as Error;
                             return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                         }
                     }
@@ -358,7 +358,7 @@ let assignId = 0;
                             try {
                                 await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
                             } catch (e) {
-                                const err: Error = e;
+                                const err: Error = e as Error;
                                 return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                             }
                         }
