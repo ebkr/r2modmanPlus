@@ -138,7 +138,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
             } catch (e) {
                 this.$emit("error", new R2Error(
                     "Failed to delete config file",
-                    e.message,
+                    (e as Error).message,
                     `Try running ${ManagerInformation.APP_NAME} as an administrator.`
                 ));
             }

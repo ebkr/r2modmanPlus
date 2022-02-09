@@ -2,8 +2,8 @@ import GameRunnerProvider from '../../GameRunnerProvider';
 import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
 import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import R2Error from '../../../../../model/errors/R2Error';
-import { exec } from "child_process";
-import path from "path";
+import { exec } from 'child_process';
+import path from 'path';
 import Profile from '../../../../../model/Profile';
 import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../../../model/game/Game';
@@ -19,7 +19,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
             return `--doorstop-enable true --doorstop-target "${preloaderPath}"`;
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
         }
     }

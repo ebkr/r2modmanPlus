@@ -40,13 +40,13 @@ export default class PreloaderFixer {
             await FileUtils.emptyDirectory(path.join(dirResult, game.dataFolderName, 'Managed'));
             await fs.rmdir(path.join(dirResult, game.dataFolderName, 'Managed'));
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
             LinkProvider.instance.openLink(`steam://validate/${game.activePlatform.storeIdentifier}`);
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error('Failed to start steam://validate', err.message, null);
         }
     }

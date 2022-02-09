@@ -411,7 +411,7 @@ import Timeout = NodeJS.Timeout;
                 }
             } catch (e) {
                 // Failed to disable mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit("error", err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
@@ -462,7 +462,7 @@ import Timeout = NodeJS.Timeout;
                 }
             } catch (e) {
                 // Failed to uninstall mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit('error', err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
@@ -526,7 +526,7 @@ import Timeout = NodeJS.Timeout;
                 }
             } catch (e) {
                 // Failed to disable mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit('error', err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
