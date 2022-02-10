@@ -83,6 +83,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
+import SearchUtils from '../../utils/SearchUtils';
 
 @Component({
     components: {
@@ -146,12 +147,11 @@ export default class OnlineModView extends Vue {
         const filterCategories = this.$store.state.modFilters.selectedCategories;
         const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
 
-        const lowercaseSearchFilter = this.thunderstoreSearchFilter.toLowerCase();
         this.searchableThunderstoreModList = this.sortedThunderstoreModList;
-        if (lowercaseSearchFilter.trim().length > 0) {
+        const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
+        if (searchKeys.length > 0) {
             this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-                return x.getFullName().toLowerCase().indexOf(lowercaseSearchFilter) >= 0
-                    || x.getVersions()[0].getDescription().toLowerCase().indexOf(lowercaseSearchFilter) >= 0;
+                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getVersions()[0].getDescription())
             });
         }
         if (!allowNsfw) {
