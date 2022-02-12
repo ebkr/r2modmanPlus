@@ -23,6 +23,7 @@ import InstallRules_PotionCraft from '../default_installation_rules/game_rules/I
 import InstallRules_NearlyDead from '../default_installation_rules/game_rules/InstallRules_NearlyDead';
 import InstallRules_AGAINST from '../default_installation_rules/game_rules/InstallRules_AGAINST';
 import InstallRules_RogueTower from '../default_installation_rules/game_rules/InstallRules_RogueTower';
+import InstallRules_HOTDS from '../default_installation_rules/game_rules/InstallRules_HOTDS';
 
 export default class InstallationRuleApplicator {
 
@@ -51,6 +52,7 @@ export default class InstallationRuleApplicator {
             InstallRules_NearlyDead(),
             InstallRules_AGAINST(),
             InstallRules_RogueTower(),
+            InstallRules_HOTDS(),
         ]
     }
 
