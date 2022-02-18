@@ -63,7 +63,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
+                extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+            }
         }
 
         const target = await this.getGameArguments(game, Profile.getActiveProfile());
