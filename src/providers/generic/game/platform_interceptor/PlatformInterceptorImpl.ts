@@ -12,12 +12,12 @@ import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableG
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
-import MLDirectExecutableGameRunnerProvider
-    from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
+import MLDirectExecutableGameRunnerProvider from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
 import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
 import DarwinGameRunnerProviderImpl from '../steam/darwin/DarwinGameRunnerProviderImpl';
 import DarwinMLSteamGameRunnerProvider from '../steam/darwin/DarwinMLSteamGameRunnerProvider';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
+import OriginGameRunnerProvider from 'src/providers/generic/game/steam/win32/OriginGameRunnerProvider';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -60,6 +60,13 @@ const RUNNERS: RunnerType = {
             "darwin": new MLDirectExecutableGameRunnerProvider(),
         }
     },
+    [StorePlatform.ORIGIN]: {
+      [PackageLoader.NORTHSTAR]: {
+          "win32": new OriginGameRunnerProvider(),
+          "linux": new OriginGameRunnerProvider(),
+          "darwin": new OriginGameRunnerProvider(),
+      }
+    },
     [StorePlatform.OTHER]: {
         [PackageLoader.BEPINEX]: {
             "win32": new DirectExecutableGameRunnerProvider(),
@@ -81,6 +88,11 @@ const RESOLVERS: ResolverType = {
         "darwin": new DRMFreeDirectoryResolver(),
     },
     [StorePlatform.OCULUS_STORE]: {
+        "win32": new DRMFreeDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver(),
+        "darwin": new DRMFreeDirectoryResolver()
+    },
+    [StorePlatform.ORIGIN]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
