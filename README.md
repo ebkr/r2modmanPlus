@@ -9,7 +9,7 @@
 
 ## Features
 - Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS,
-Lethal League Blaze, Timberborn, Totally Accurate Battle Simulator, Nickelodeon All-Star Brawl, Inscryption and Starsand.
+Lethal League Blaze, Timberborn, Totally Accurate Battle Simulator, Nickelodeon All-Star Brawl, Inscryption, Starsand, and more.
 - A clean user interface designed to make modding as simple as possible.
 - Safer mod installation allowing you to play the game through Steam normally.
 - Mod profiles to switch between different sets of mods quickly and easily.
@@ -69,7 +69,7 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
-### 3.1.26
+### (3.1.26 ... 3.1.27)
 - Added several supported games:
   - Cats are Liquid - A Better Place.
   - Potion Craft.
