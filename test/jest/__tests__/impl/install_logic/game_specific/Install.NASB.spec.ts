@@ -137,7 +137,8 @@ describe('NASB Install Logic', () => {
 
         // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
-            [path.join('BIE', 'GameSpecific', 'NASB', 'CustomSongs'), path.join("BepInEx")]
+            [path.join('BIE', 'GameSpecific', 'NASB', 'CustomSongs'), path.join("BepInEx")],
+            [path.join('BIE', 'GameSpecific', 'NASB', 'Movesets'), path.join('BepInEx')]
         ];
 
         InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');

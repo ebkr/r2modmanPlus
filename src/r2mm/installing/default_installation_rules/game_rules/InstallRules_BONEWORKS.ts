@@ -21,6 +21,12 @@ export default function(): CoreRuleType {
                 subRoutes: []
             },
             {
+                route: path.join('UserLibs'),
+                defaultFileExtensions: ['.lib.dll'],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            },
+            {
                 route: path.join('MelonLoader'),
                 defaultFileExtensions: [],
                 trackingMethod: 'STATE',
@@ -32,8 +38,9 @@ export default function(): CoreRuleType {
                         subRoutes: []
                     },
                     {
+                        // Unused but kept so anything installed here isn't kept there.
                         route: path.join('Libs'),
-                        defaultFileExtensions: ['.lib.dll'],
+                        defaultFileExtensions: [],
                         trackingMethod: 'STATE',
                         subRoutes: []
                     }

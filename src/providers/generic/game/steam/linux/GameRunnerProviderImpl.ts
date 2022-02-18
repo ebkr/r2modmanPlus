@@ -25,7 +25,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
             return `--doorstop-enable true --doorstop-target "${isProton ? 'Z:' : ''}${preloaderPath}"`;
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
         }
     }
@@ -56,7 +56,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                     await FsProvider.instance.chmod(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), shFile)), 0o755);
                 }
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
             extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
@@ -94,8 +94,8 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             await exec(cmd);
         }catch(err){
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
-            LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-            throw new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings');
+            LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
+            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
         }
     }
 

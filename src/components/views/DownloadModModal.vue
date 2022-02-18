@@ -38,7 +38,7 @@
                                     </select>
                                 </div>
                                 <div class="column is-narrow">
-                                    <span>&nbsp;&nbsp;<i class='fas fa-long-arrow-alt-right'></i>&nbsp;&nbsp;</span>
+                                    <span class="margin-right margin-right--half-width"><span class="margin-right margin-right--half-width"/> <i class='fas fa-long-arrow-alt-right'></i></span>
                                 </div>
                             </template>
                             <div class="column is-narrow">
@@ -99,24 +99,24 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-    import ThunderstoreMod from '../../model/ThunderstoreMod';
-    import ManifestV2 from '../../model/ManifestV2';
-    import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-    import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-    import R2Error from '../../model/errors/R2Error';
-    import StatusEnum from '../../model/enums/StatusEnum';
-    import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-    import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-    import ProfileModList from '../../r2mm/mods/ProfileModList';
-    import ModBridge from '../../r2mm/mods/ModBridge';
-    import Profile from '../../model/Profile';
-    import { Progress } from '../all';
-    import Game from '../../model/game/Game';
-    import GameManager from '../../model/game/GameManager';
-    import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ManifestV2 from '../../model/ManifestV2';
+import ThunderstoreVersion from '../../model/ThunderstoreVersion';
+import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import R2Error from '../../model/errors/R2Error';
+import StatusEnum from '../../model/enums/StatusEnum';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import ModBridge from '../../r2mm/mods/ModBridge';
+import Profile from '../../model/Profile';
+import { Progress } from '../all';
+import Game from '../../model/game/Game';
+import GameManager from '../../model/game/GameManager';
+import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 
-    let assignId = 0;
+let assignId = 0;
 
     @Component({
         components: {
@@ -175,7 +175,7 @@
                                 try {
                                     await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
                                 } catch (e) {
-                                    const err: Error = e;
+                                    const err: Error = e as Error;
                                     return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                                 }
                             }
@@ -297,7 +297,7 @@
                         try {
                             await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
                         } catch (e) {
-                            const err: Error = e;
+                            const err: Error = e as Error;
                             return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                         }
                     }
@@ -358,7 +358,7 @@
                             try {
                                 await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
                             } catch (e) {
-                                const err: Error = e;
+                                const err: Error = e as Error;
                                 return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                             }
                         }

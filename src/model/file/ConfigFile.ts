@@ -32,7 +32,7 @@ export default class ConfigFile {
         try {
             await fs.writeFile(this.path, text);
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new FileWriteError('Failed to update config file', err.message, `Try running ${ManagerInformation.APP_NAME} as an administator`);
         }
     }

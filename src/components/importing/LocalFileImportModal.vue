@@ -43,16 +43,14 @@
                 <h3 class="title is-6">Version</h3>
                 <div class="input-group input-group--flex margin-right non-selectable">
                     <div class="is-flex">
-                        <div>
+                        <div class="margin-right margin-right--half-width">
                             <label for="mod-version-major">Major</label>
                             <input id="mod-version-major" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMajor" min="0" step="1" placeholder="0"/>
                         </div>
-                        <span>&nbsp;</span>
-                        <div>
+                        <div class="margin-right margin-right--half-width">
                             <label for="mod-version-minor">Minor</label>
                             <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMinor" min="0" step="1" placeholder="0"/>
                         </div>
-                        <span>&nbsp;</span>
                         <div>
                             <label for="mod-version-patch">Patch</label>
                             <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="number" v-model="modVersionPatch" min="0" step="1" placeholder="0"/>

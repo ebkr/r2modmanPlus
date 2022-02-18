@@ -106,6 +106,7 @@ describe('BONEWORKS Install Logic', () => {
             [path.join("ML", "MelonLoader"), "."],
             [path.join("ML", "Managed"), "MelonLoader"],
             [path.join("ML", "Libs"), "MelonLoader"],
+            [path.join("ML", "UserLibs"), ""],
             [path.join("ML", "Mods"), "."],
             [path.join("ML", "Plugins"), "."],
             [path.join("ML", "UserData"), "."],

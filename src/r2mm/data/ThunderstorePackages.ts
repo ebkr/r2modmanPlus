@@ -4,6 +4,7 @@ import Game from '../../model/game/Game';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import ApiResponse from '../../model/api/ApiResponse';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
+import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 export default class ThunderstorePackages {
 
@@ -15,19 +16,7 @@ export default class ThunderstorePackages {
      * @return Empty promise
      */
     public static async update(game: Game): Promise<any> {
-        try {
-            await axios.get(game.exclusionsUrl, {
-                timeout: 30000
-            }).then(response => {
-                const exclusionMap = new Map<string, boolean>();
-                response.data.split('\n').forEach((exclude: string) => {
-                    exclusionMap.set(exclude, true);
-                });
-                ThunderstorePackages.EXCLUSIONS = exclusionMap;
-            })
-        } catch (e) {
-            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to update exclusions: ${e.message}`);
-        }
+        this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
         return axios.get(game.thunderstoreUrl, {
             timeout: 30000
         })

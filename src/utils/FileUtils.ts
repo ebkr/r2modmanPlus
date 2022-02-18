@@ -1,13 +1,11 @@
 import FsProvider from '../providers/generic/file/FsProvider';
-import path from "path";
+import path from 'path';
 
 export default class FileUtils {
 
     public static async ensureDirectory(dir: string) {
         const fs = FsProvider.instance;
-        if (!await fs.exists(dir)) {
-            await fs.mkdirs(dir);
-        }
+        await fs.mkdirs(dir);
     }
 
     public static async emptyDirectory(dir: string) {

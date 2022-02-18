@@ -34,7 +34,7 @@
                         <a href="#" data-ref="installed" @click="emitClick($event.target)"
                            class="tagged-link" :class="[view === 'installed' ? 'is-active' : '']">
                             <i class="fas fa-folder tagged-link__icon icon--margin-right" data-ref="installed" @click.prevent.stop="emitClick($event.target)"/>
-                            <span class="tagged-link__content" data-ref="installed" @click.prevent.stop="emitClick($event.target)">Installed</span>
+                            <span class="tagged-link__content margin-right margin-right--half-width" data-ref="installed" @click.prevent.stop="emitClick($event.target)">Installed</span>
                             <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'installed'}]"
                             data-ref="installed" @click.prevent.stop="emitClick($event.target)">{{localModList.length}}</span>
                         </a>
@@ -43,9 +43,8 @@
                         <a href="#" data-ref="online" @click="emitClick($event.target)"
                            class="tagged-link" :class="[view === 'online' ? 'is-active' : '']">
                             <i class="fas fa-globe tagged-link__icon icon--margin-right" data-ref="online" @click.prevent.stop="emitClick($event.target)"/>
-                            <span class="tagged-link__content" data-ref="online" @click.prevent.stop="emitClick($event.target)">Online</span>
-                            <i data-ref="downloads" class="tag tagged-link__tag fas fa-download is-primary" @click.prevent.stop="emitClick($event.target)"></i>
-                            <span>&nbsp;</span>
+                            <span class="tagged-link__content margin-right margin-right--half-width" data-ref="online" @click.prevent.stop="emitClick($event.target)">Online</span>
+                            <i data-ref="downloads" class="tag tagged-link__tag fas fa-download is-primary margin-right margin-right--half-width" @click.prevent.stop="emitClick($event.target)"></i>
                             <span class="tag tagged-link__tag" :class="[{'is-link': view !== 'online'}]"
                             data-ref="online" @click.prevent.stop="emitClick($event.target)">{{thunderstoreModList.length}}</span>
                         </a>

@@ -207,6 +207,10 @@ module.exports = configure(function(/* ctx */) {
                     mimeTypes: [
                         "x-scheme-handler/ror2mm"
                     ]
+                },
+                mac: {
+                    category: "games",
+                    icon: "src/assets/icon"
                 }
             },
 

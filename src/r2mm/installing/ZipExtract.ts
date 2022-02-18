@@ -15,7 +15,7 @@ export default class ZipExtract {
                     await fs.unlink(path.join(zipFolder, filename));
                     callback(result);
                 } catch (e) {
-                    const err: Error = e;
+                    const err: Error = e as Error;
                     callback(result, new FileWriteError(
                         'Failed to delete file',
                         err.message,
@@ -38,7 +38,7 @@ export default class ZipExtract {
                 } catch (e) {
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
-                        e.message,
+                        (e as Error).message,
                         'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
                     ));
                 }
@@ -56,7 +56,7 @@ export default class ZipExtract {
             callback(true);
         } catch (e) {
             console.log("extractOnly failed:", e);
-            callback(false, e);
+            callback(false, new R2Error("Extraction failed", (e as Error).message, null));
         }
     }
 
