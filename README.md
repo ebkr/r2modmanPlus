@@ -69,6 +69,24 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.26
+- Added several supported games:
+  - Cats are Liquid - A Better Place.
+  - Potion Craft.
+  - Nearly Dead.
+  - AGAINST.
+  - Rogue Tower.
+  - House of the Dying Sun.
+- You can now change game from the profile selection screen.
+- You may specify an export directory for profile file exports.
+- EGS game directories are now auto resolved.
+- Potentially resolved directory scanning issues on Linux.
+- Slider added to the config editor when tweaking numerical range values (credit @MSchmoecker).
+- Significantly reduced disk writes on game launch.
+- Mod exclusion list will fallback should a connection to the list fail.
+- Added support for NASB movesets.
+- Other fixes.
+
 ### 3.1.25
 - Added Nickelodeon All-Star Brawl support.
 - Added Inscryption support.
@@ -80,14 +98,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Fixed enable/disable issue when no monomod folder is present.
 - Fixed bugged profile installations.
 - Fixed issue with disabling.
-
-### 3.1.21
-- Added Totally Accurate Battle Simulator support.
-- Tweaked visual design of expanded mod cards.
-- Semicolon comment support included to allow Valheim+ to display comments correctly in the config editor.
-- Fixes for Linux (Thanks to lonegamedev and Compile-Time).
-- GTFO support for GameData/Assets folders.
-- Several games can now be searched by aliases. (EG: "Risk of Rain 2" is searchable as "RoR2").
 
 ## Screenshots
 
