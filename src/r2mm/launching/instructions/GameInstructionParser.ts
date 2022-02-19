@@ -4,13 +4,17 @@ import Game from 'src/model/game/Game';
 import path from 'path';
 import FsProvider from 'src/providers/generic/file/FsProvider';
 import R2Error from 'src/model/errors/R2Error';
+import * as process from 'process';
+import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import LinuxGameDirectoryResolver from '../../../r2mm/manager/linux/GameDirectoryResolver';
 
 export default class GameInstructionParser {
 
     public static PARSERS: Map<string, (game: Game, profile: Profile) => Promise<string | R2Error>> = new Map([
         [DynamicGameInstruction.BEPINEX_PRELOADER_PATH, GameInstructionParser.bepInExPreloaderPathResolver],
         [DynamicGameInstruction.PROFILE_DIRECTORY, GameInstructionParser.profileDirectoryResolver],
-        [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver]
+        [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver],
+        [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
     ]);
 
     public static async parse(launchString: string, game: Game, profile: Profile): Promise<string | R2Error> {
@@ -34,10 +38,19 @@ export default class GameInstructionParser {
 
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
-            return path.join(corePath,
-                (await FsProvider.instance.readdir(corePath))
-                    .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+            if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
+                const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+                const corePath = await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core"));
+                const preloaderPath = path.join(corePath,
+                    (await FsProvider.instance.readdir(corePath))
+                        .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+                return `${isProton ? 'Z:' : ''}${preloaderPath}`;
+            } else {
+                const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
+                return path.join(corePath,
+                    (await FsProvider.instance.readdir(corePath))
+                        .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+            }
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
@@ -51,6 +64,10 @@ export default class GameInstructionParser {
             const err: Error = e as Error;
             return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${Profile.getActiveProfile().getPathOfProfile()}.\nReason: ${err.message}`, null);
         }
+    }
+
+    private static async profileNameResolver(game: Game, profile: Profile): Promise<string> {
+        return profile.getProfileName();
     }
 
 }

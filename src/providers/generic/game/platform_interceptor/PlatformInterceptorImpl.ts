@@ -1,21 +1,18 @@
 import { StorePlatform } from '../../../../model/game/StorePlatform';
 import GameRunnerProvider from '../GameRunnerProvider';
-import GameRunnerProviderImpl_Steam_Linux from '../steam/linux/GameRunnerProviderImpl';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
 import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linux/GameDirectoryResolver';
 import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
-import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
-import MLDirectExecutableGameRunnerProvider from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
-import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
-import DarwinGameRunnerProviderImpl from '../steam/darwin/DarwinGameRunnerProviderImpl';
-import DarwinMLSteamGameRunnerProvider from '../steam/darwin/DarwinMLSteamGameRunnerProvider';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
 import SteamGameRunner_Windows from 'src/r2mm/launching/runners/windows/SteamGameRunner_Windows';
+import DirectGameRunner from 'src/r2mm/launching/runners/DirectGameRunner';
+import SteamGameRunner_Linux from 'src/r2mm/launching/runners/linux/SteamGameRunner_Linux';
+import SteamGameRunner_Darwin from 'src/r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -35,13 +32,13 @@ const RUNNERS: RunnerType = {
     [StorePlatform.STEAM]: {
         [PackageLoader.BEPINEX]: {
             "win32": new SteamGameRunner_Windows(),
-            "linux": new GameRunnerProviderImpl_Steam_Linux(),
-            "darwin": new DarwinGameRunnerProviderImpl()
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
         },
         [PackageLoader.MELON_LOADER]: {
             "win32": new SteamGameRunner_Windows(),
-            "linux": new MLSteamGameRunnerProvider_Linux(),
-            "darwin": new DarwinMLSteamGameRunnerProvider()
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
         }
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
@@ -53,9 +50,9 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.OCULUS_STORE]: {
         [PackageLoader.MELON_LOADER]: {
-            "win32": new MLDirectExecutableGameRunnerProvider(),
-            "linux": new MLDirectExecutableGameRunnerProvider(),
-            "darwin": new MLDirectExecutableGameRunnerProvider(),
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner(),
         }
     },
     [StorePlatform.ORIGIN]: {
@@ -64,10 +61,10 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.OTHER]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new DirectExecutableGameRunnerProvider(),
-            "linux": new DirectExecutableGameRunnerProvider(),
-            "darwin": new DirectExecutableGameRunnerProvider(),
-        }
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner(),
+        },
     }
 };
 
