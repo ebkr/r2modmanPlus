@@ -1,6 +1,5 @@
 import { StorePlatform } from '../../../../model/game/StorePlatform';
 import GameRunnerProvider from '../GameRunnerProvider';
-import GameRunnerProviderImpl_Steam_Win from '../steam/win32/GameRunnerProviderImpl';
 import GameRunnerProviderImpl_Steam_Linux from '../steam/linux/GameRunnerProviderImpl';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
@@ -11,13 +10,12 @@ import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectory
 import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
 import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
-import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
 import MLDirectExecutableGameRunnerProvider from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
 import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
 import DarwinGameRunnerProviderImpl from '../steam/darwin/DarwinGameRunnerProviderImpl';
 import DarwinMLSteamGameRunnerProvider from '../steam/darwin/DarwinMLSteamGameRunnerProvider';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
-import OriginGameRunnerProvider from 'src/providers/generic/game/steam/win32/OriginGameRunnerProvider';
+import SteamGameRunner_Windows from 'src/r2mm/launching/runners/windows/SteamGameRunner_Windows';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -36,12 +34,12 @@ type ResolverType = {
 const RUNNERS: RunnerType = {
     [StorePlatform.STEAM]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new GameRunnerProviderImpl_Steam_Win(),
+            "win32": new SteamGameRunner_Windows(),
             "linux": new GameRunnerProviderImpl_Steam_Linux(),
             "darwin": new DarwinGameRunnerProviderImpl()
         },
         [PackageLoader.MELON_LOADER]: {
-            "win32": new MLSteamGameRunnerProvider_Win(),
+            "win32": new SteamGameRunner_Windows(),
             "linux": new MLSteamGameRunnerProvider_Linux(),
             "darwin": new DarwinMLSteamGameRunnerProvider()
         }
@@ -62,9 +60,6 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.ORIGIN]: {
       [PackageLoader.NORTHSTAR]: {
-          "win32": new OriginGameRunnerProvider(),
-          "linux": new OriginGameRunnerProvider(),
-          "darwin": new OriginGameRunnerProvider(),
       }
     },
     [StorePlatform.OTHER]: {
