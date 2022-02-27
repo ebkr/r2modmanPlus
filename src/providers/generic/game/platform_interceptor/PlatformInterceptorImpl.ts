@@ -6,13 +6,13 @@ import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linu
 import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
-import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
 import SteamGameRunner_Windows from 'src/r2mm/launching/runners/windows/SteamGameRunner_Windows';
-import DirectGameRunner from 'src/r2mm/launching/runners/DirectGameRunner';
+import DirectGameRunner from 'src/r2mm/launching/runners/multiplatform/DirectGameRunner';
 import SteamGameRunner_Linux from 'src/r2mm/launching/runners/linux/SteamGameRunner_Linux';
 import SteamGameRunner_Darwin from 'src/r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
+import EgsGameRunner from 'src/r2mm/launching/runners/multiplatform/EgsGameRunner';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -43,9 +43,9 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new EgsRunnerProvider(),
-            "linux": new EgsRunnerProvider(),
-            "darwin": new EgsRunnerProvider(),
+            "win32": new EgsGameRunner(),
+            "linux": new EgsGameRunner(),
+            "darwin": new EgsGameRunner(),
         }
     },
     [StorePlatform.OCULUS_STORE]: {
@@ -57,6 +57,9 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.ORIGIN]: {
       [PackageLoader.NORTHSTAR]: {
+          "win32": new DirectGameRunner(),
+          "linux": new DirectGameRunner(),
+          "darwin": new DirectGameRunner(),
       }
     },
     [StorePlatform.OTHER]: {

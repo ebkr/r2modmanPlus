@@ -15,6 +15,7 @@ export default class GameInstructionParser {
         [DynamicGameInstruction.PROFILE_DIRECTORY, GameInstructionParser.profileDirectoryResolver],
         [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver],
         [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
+        [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver]
     ]);
 
     public static async parse(launchString: string, game: Game, profile: Profile): Promise<string | R2Error> {
@@ -26,7 +27,7 @@ export default class GameInstructionParser {
                 if (replacement instanceof R2Error) {
                     return replacement;
                 }
-                resolvedString = resolvedString.replace(new RegExp("@[a-zA-Z0-9]+", "g"), replacement);
+                resolvedString = resolvedString.replace(new RegExp(matchValue, "g"), replacement);
             }
         }
         return resolvedString;
@@ -38,7 +39,7 @@ export default class GameInstructionParser {
 
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
+            if (["linux"].includes(process.platform.toLowerCase())) {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
                 const corePath = await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core"));
                 const preloaderPath = path.join(corePath,
@@ -68,6 +69,10 @@ export default class GameInstructionParser {
 
     private static async profileNameResolver(game: Game, profile: Profile): Promise<string> {
         return profile.getProfileName();
+    }
+
+    private static async northstarDirectoryResolver(game: Game, profile: Profile): Promise<string | R2Error> {
+        return path.join(profile.getPathOfProfile(), "R2Northstar");
     }
 
 }

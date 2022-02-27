@@ -5,6 +5,7 @@ import BepInExGameInstructions from 'src/r2mm/launching/instructions/instruction
 import MelonLoaderGameInstructions
     from 'src/r2mm/launching/instructions/instructions/loader/MelonLoaderGameInstructions';
 import Profile from 'src/model/Profile';
+import NorthstarGameInstructions from 'src/r2mm/launching/instructions/instructions/loader/NorthstarGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -17,6 +18,7 @@ export default class GameInstructions {
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
+        [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()]
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {
