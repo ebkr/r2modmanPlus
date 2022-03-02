@@ -35,5 +35,10 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     AGAINST: [new ModLoaderPackageMapping("BepInEx-BepInExPack_AGAINST", "BepInExPack_AGAINST", PackageLoader.BEPINEX)],
     RogueTower: [new ModLoaderPackageMapping("bbepis-BepInEx_Rogue_Tower", "", PackageLoader.BEPINEX)],
     HOTDS: [new ModLoaderPackageMapping("BepInEx-BepInExPack_HOTDS", "BepInExPack_HOTDS", PackageLoader.BEPINEX)],
-    ForTheKing: [new ModLoaderPackageMapping("BepInEx-BepInExPack_ForTheKing", "BepInExPack_ForTheKing", PackageLoader.BEPINEX)]
+    ForTheKing: [new ModLoaderPackageMapping("BepInEx-BepInExPack_ForTheKing", "BepInExPack_ForTheKing", PackageLoader.BEPINEX)],
+    Subnautica: [
+        new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_Subnautica", "BepInExPack_Subnautica", PackageLoader.BEPINEX),
+        new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_Subnautica_Experimental", "BepInExPack_Subnautica_Experimental", PackageLoader.BEPINEX)
+    ],
+    SubnauticaBZ: [new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_BelowZero", "BepInExPack_BelowZero", PackageLoader.BEPINEX)],
 }
