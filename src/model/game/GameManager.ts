@@ -194,6 +194,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
 
+        new Game("Titanfall 2", "Titanfall2", "Titanfall2",
+            "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
+            'https://northstar.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
+
     ];
 
     static get activeGame(): Game {
