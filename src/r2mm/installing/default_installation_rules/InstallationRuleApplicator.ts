@@ -24,6 +24,9 @@ import InstallRules_NearlyDead from '../default_installation_rules/game_rules/In
 import InstallRules_AGAINST from '../default_installation_rules/game_rules/InstallRules_AGAINST';
 import InstallRules_RogueTower from '../default_installation_rules/game_rules/InstallRules_RogueTower';
 import InstallRules_HOTDS from '../default_installation_rules/game_rules/InstallRules_HOTDS';
+import InstallRules_ForTheKing from '../default_installation_rules/game_rules/InstallRules_ForTheKing';
+import InstallRules_Subnautica from '../default_installation_rules/game_rules/InstallRules_Subnautica';
+import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
 
 export default class InstallationRuleApplicator {
 
@@ -53,6 +56,9 @@ export default class InstallationRuleApplicator {
             InstallRules_AGAINST(),
             InstallRules_RogueTower(),
             InstallRules_HOTDS(),
+            InstallRules_ForTheKing(),
+            InstallRules_Subnautica(),
+            InstallRules_SubnauticaBZ(),
         ]
     }
 

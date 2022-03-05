@@ -32,7 +32,7 @@ export default class SettingsDexieStore extends Dexie {
 
         // Add all games to store. Borked v2-3 locally
         // Increment per game or change to settings.
-        this.version(28).stores(store);
+        this.version(31).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");
