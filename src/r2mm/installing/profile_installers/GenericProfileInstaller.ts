@@ -150,7 +150,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+    private async basicModLoaderInstaller(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         let bepInExRoot: string;
         if (modLoaderMapping.rootFolder.trim().length > 0) {
             bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
@@ -182,8 +182,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await this.installBepInEx(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
     }
