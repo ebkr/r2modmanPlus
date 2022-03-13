@@ -42,9 +42,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                             return tree;
                         }
                         for (const value of tree.getRecursiveFiles()) {
-                            if (mode === ModMode.DISABLED) {
+                            if (mode === ModMode.DISABLED && mod.isEnabled()) {
                                 await FsProvider.instance.rename(value, `${value}.old`);
-                            } else {
+                            } else if (mode === ModMode.ENABLED && !mod.isEnabled()) {
                                 if (value.toLowerCase().endsWith(".old")) {
                                     await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
                                 }
@@ -71,8 +71,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                         } else {
                             if (await FsProvider.instance.exists(path.join(location, value))) {
                                 await FsProvider.instance.unlink(path.join(location, value));
-                                await FsProvider.instance.copyFile(key, path.join(location, value));
                             }
+                            await FsProvider.instance.copyFile(key, path.join(location, value));
                         }
                     }
                 }
