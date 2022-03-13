@@ -1,7 +1,9 @@
 import GameRunnerProvider from '../../GameRunnerProvider';
 import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
+import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import R2Error from '../../../../../model/errors/R2Error';
+import { UnityDoorstopVersion } from '../../../../../model/enums/UnityDoorstopVersion';
 import FsProvider from '../../../../generic/file/FsProvider';
 import * as path from 'path';
 import BepInExConfigUtils from '../../../../../utils/BepInExConfigUtils';
@@ -24,7 +26,11 @@ export default class EgsRunnerProvider extends GameRunnerProvider {
     }
 
     public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
-        return `--doorstop-enable true --doorstop-target \"${await this.getDoorstopTarget(profile)}\"`
+        const settings = await ManagerSettings.getSingleton(game);
+        const { unityDoorstopVersion } = settings.getContext().gameSpecific;
+        return unityDoorstopVersion == UnityDoorstopVersion.V4 ?
+                `--doorstop-enabled true --doorstop-target-assembly \"${await this.getDoorstopTarget(profile)}\"`
+            : `--doorstop-enable true --doorstop-target \"${await this.getDoorstopTarget(profile)}\"`;
     }
 
     private async updateDoorstopConfigVars(profile: Profile, data: {[section: string]: {[key: string]: string}}): Promise<R2Error | undefined> {

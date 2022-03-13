@@ -2,6 +2,7 @@ import GameRunnerProvider from '../../GameRunnerProvider';
 import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
 import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import R2Error from '../../../../../model/errors/R2Error';
+import { UnityDoorstopVersion } from '../../../../../model/enums/UnityDoorstopVersion';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
@@ -17,13 +18,17 @@ const exec = promisify(execCallback);
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+        const settings = await ManagerSettings.getSingleton(game);
+        const { unityDoorstopVersion } = settings.getContext().gameSpecific;
         try {
             const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
             const corePath = await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core"));
             const preloaderPath = path.join(corePath,
                 (await FsProvider.instance.readdir(corePath))
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
-            return `--doorstop-enable true --doorstop-target "${isProton ? 'Z:' : ''}${preloaderPath}"`;
+            return unityDoorstopVersion == UnityDoorstopVersion.V4 ?
+                    `--doorstop-enabled true --doorstop-target-assembly "${isProton ? 'Z:' : ''}${preloaderPath}"`
+                : `--doorstop-enable true --doorstop-target "${isProton ? 'Z:' : ''}${preloaderPath}"`;
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
@@ -64,7 +69,11 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 extraArguments += ` --server`;
             }
             if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
-                extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
+                const settings = await ManagerSettings.getSingleton(game);
+                const { unityDoorstopVersion } = settings.getContext().gameSpecific;
+                const unstrippedCorlibPath = await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"));
+                extraArguments += unityDoorstopVersion == UnityDoorstopVersion.V4 ? ` --doorstop-mono-dll-search-path-override "${unstrippedCorlibPath}"`
+                    : ` --doorstop-dll-search-override "${unstrippedCorlibPath}"`;
             }
         }
 
@@ -76,9 +85,11 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         return this.start(game, `${target} ${extraArguments}`);
     }
 
-    public startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
+    public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start(game, '--server --doorstop-enable false');
+        const settings = await ManagerSettings.getSingleton(game);
+        const { unityDoorstopVersion } = settings.getContext().gameSpecific;
+        return this.start(game, `--server ${unityDoorstopVersion == UnityDoorstopVersion.V4 ? '--doorstop-enabled false' : '--doorstop-enable false'}`);
     }
 
     private async start(game: Game, cmdargs: string): Promise<void | R2Error> {

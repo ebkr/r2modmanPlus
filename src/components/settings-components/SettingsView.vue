@@ -51,6 +51,7 @@ import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
+import { UnityDoorstopVersion } from '../../model/enums/UnityDoorstopVersion';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import Profile from '../../model/Profile';
@@ -177,6 +178,19 @@ import moment from 'moment';
                 async () => 'These commands are used against the Steam executable on game startup',
                 'fa-wrench',
                 () => this.emitInvoke('SetLaunchParameters')
+            ),
+            new SettingsRow(
+                'Debugging',
+                'Set UnityDoorstop version',
+                'Target the proper UnityDoorstop version for the game.',
+                async () => {
+                    const settings = await ManagerSettings.getSingleton(this.activeGame);
+                    const { unityDoorstopVersion } = settings.getContext().gameSpecific;
+                    return unityDoorstopVersion == UnityDoorstopVersion.V4 ? 'Current: UnityDoorstop v4'
+                        : 'Current: UnityDoorstop v3';
+                },
+                'fa-exchange-alt',
+                () => this.emitInvoke('ToggleUnityDoorstopVersion')
             ),
             new SettingsRow(
                 'Debugging',

@@ -7,6 +7,7 @@ import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDe
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import { UnityDoorstopVersion } from '../../model/enums/UnityDoorstopVersion';
 
 export default class ManagerSettings {
 
@@ -177,6 +178,11 @@ export default class ManagerSettings {
 
     public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
         ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
+        return await this.save();
+    }
+
+    public async setUnityDoorstopVersion(version: UnityDoorstopVersion): Promise<R2Error | void> {
+        ManagerSettings.CONTEXT.gameSpecific.unityDoorstopVersion = version;
         return await this.save();
     }
 }

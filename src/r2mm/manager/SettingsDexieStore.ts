@@ -8,6 +8,7 @@ import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisa
 import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import { UnityDoorstopVersion } from '../../model/enums/UnityDoorstopVersion';
 
 export default class SettingsDexieStore extends Dexie {
 
@@ -70,6 +71,9 @@ export default class SettingsDexieStore extends Dexie {
                 const globalEntry = result[result.length - 1];
                 const parsed = JSON.parse(globalEntry.settings);
                 if ((parsed as ManagerSettingsInterfaceGame_V2).version === 2) {
+                    if (parsed.unityDoorstopVersion === undefined) {
+                        parsed.unityDoorstopVersion = UnityDoorstopVersion.V3;
+                    }
                     // Is modern (at least V2).
                     return parsed;
                 } else {
@@ -117,7 +121,8 @@ export default class SettingsDexieStore extends Dexie {
                 installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
                 lastSelectedProfile: "Default",
                 launchParameters: "",
-                linkedFiles: []
+                linkedFiles: [],
+                unityDoorstopVersion: UnityDoorstopVersion.V3,
             }
         }
     }
@@ -149,7 +154,7 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
             },
             gameSpecific: {
                 version: 2,
@@ -159,7 +164,8 @@ export default class SettingsDexieStore extends Dexie {
                 installedSortDirection: itf.installedSortDirection,
                 lastSelectedProfile: itf.lastSelectedProfile,
                 launchParameters: itf.launchParameters,
-                linkedFiles: itf.linkedFiles
+                linkedFiles: itf.linkedFiles,
+                unityDoorstopVersion: UnityDoorstopVersion.V3,
             }
         }
     }
@@ -221,6 +227,7 @@ export interface ManagerSettingsInterfaceGame_V2 {
     installedSortBy: string;
     installedSortDirection: string;
     installedDisablePosition: string;
+    unityDoorstopVersion: UnityDoorstopVersion;
 }
 
 /**

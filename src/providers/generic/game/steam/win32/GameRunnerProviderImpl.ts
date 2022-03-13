@@ -2,6 +2,7 @@ import GameRunnerProvider from '../../GameRunnerProvider';
 import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
 import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import R2Error from '../../../../../model/errors/R2Error';
+import { UnityDoorstopVersion } from '../../../../../model/enums/UnityDoorstopVersion';
 import { exec } from 'child_process';
 import path from 'path';
 import Profile from '../../../../../model/Profile';
@@ -12,12 +13,16 @@ import FsProvider from '../../../file/FsProvider';
 export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+        const settings = await ManagerSettings.getSingleton(game);
+        const { unityDoorstopVersion } = settings.getContext().gameSpecific;
         try {
             const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
             const preloaderPath = path.join(corePath,
                 (await FsProvider.instance.readdir(corePath))
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
-            return `--doorstop-enable true --doorstop-target "${preloaderPath}"`;
+            return unityDoorstopVersion == UnityDoorstopVersion.V4 ?
+                    `--doorstop-enabled true --doorstop-target-assembly "${preloaderPath}"`
+                : `--doorstop-enable true --doorstop-target "${preloaderPath}"`;
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
@@ -37,7 +42,9 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
 
     async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
             LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-            return this.start(game, `--doorstop-enable false`);
+            const settings = await ManagerSettings.getSingleton(game);
+            const { unityDoorstopVersion } = settings.getContext().gameSpecific;
+            return this.start(game, unityDoorstopVersion == UnityDoorstopVersion.V4 ? `--doorstop-enabled false` : `--doorstop-enable false`);
     }
 
     async start(game: Game, args: string): Promise<void | R2Error> {

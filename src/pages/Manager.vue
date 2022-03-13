@@ -93,7 +93,10 @@
 				<br/>
 				<p>Vanilla:
 					<br>
-					<code>
+					<code v-if="settings.getContext().gameSpecific.unityDoorstopVersion == UnityDoorstopVersion.V4">
+						--doorstop-enabled false
+					</code>
+					<code v-else>
 						--doorstop-enable false
 					</code>
 				</p>
@@ -329,6 +332,7 @@ import VersionNumber from '../model/VersionNumber';
 import SortingStyle from '../model/enums/SortingStyle';
 import SortingDirection from '../model/enums/SortingDirection';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
+import { UnityDoorstopVersion } from '../model/enums/UnityDoorstopVersion';
 import R2Error from '../model/errors/R2Error';
 import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
@@ -414,6 +418,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
         importingLocalMod: boolean = false;
 
+	UnityDoorstopVersion = UnityDoorstopVersion;
         doorstopTarget: string = "";
 
         private activeGame!: Game;
@@ -519,15 +524,11 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
 
 		get localModList() : ManifestV2[] {
-		    if (this.contextProfile !== null) {
-                GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
-                    if (target instanceof R2Error) {
-                        this.doorstopTarget = "";
-                    } else {
-                        this.doorstopTarget = target;
-                    }
-                });
-            }
+			if (this.contextProfile !== null) {
+				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
+					this.doorstopTarget = target instanceof R2Error ? "" : target;
+				});
+			}
 			return this.$store.state.localModList || [];
 		}
 
@@ -823,6 +824,19 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 			this.showLaunchParameterModal = false;
 		}
 
+		toggleUnityDoorstopVersion() {
+			const { unityDoorstopVersion } = this.settings.getContext().gameSpecific;
+			this.settings.setUnityDoorstopVersion(
+				unityDoorstopVersion == UnityDoorstopVersion.V4 ? UnityDoorstopVersion.V3
+				: UnityDoorstopVersion.V4
+			);
+			if (this.contextProfile !== null) {
+				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
+					this.doorstopTarget = target instanceof R2Error ? "" : target;
+				});
+			}
+		}
+
 		toggleIgnoreCache() {
 			this.settings.setIgnoreCache(!this.settings.getContext().global.ignoreCache);
 		}
@@ -945,6 +959,9 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                     break;
                 case "SetLaunchParameters":
                     this.showLaunchParameters();
+                    break;
+                case "ToggleUnityDoorstopVersion":
+                    this.toggleUnityDoorstopVersion();
                     break;
                 case "ChangeProfile":
                     this.changeProfile();
