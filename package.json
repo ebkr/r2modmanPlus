@@ -40,6 +40,7 @@
     "dot-prop": "^5.2.0",
     "electron-updater": "^4.2.0",
     "elliptic": "^6.5.4",
+    "filesize": "^8.0.7",
     "fs-extra": "^8.1.0",
     "glob-parent": "^6.0.2",
     "highlight.js": "^10.4.1",
@@ -99,12 +100,12 @@
     "mocha": "^8.0.1",
     "mock-require": "^3.0.3",
     "node-sass": "^4.13.1",
+    "sass-loader": "^10.2.1",
     "sinon": "^11.1.1",
     "ts-node": "^8.10.2",
     "typescript": "^4.5.5",
     "vue-jest": "^3.0.0",
-    "wallaby-vue-compiler": "^1.0.3",
-      "sass-loader": "^10.2.1"
+    "wallaby-vue-compiler": "^1.0.3"
   },
   "browserslist": [
     "last 10 Chrome versions",

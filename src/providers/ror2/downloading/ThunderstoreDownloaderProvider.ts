@@ -8,6 +8,7 @@ import ExportMod from '../../../model/exports/ExportMod';
 import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 import Game from '../../../model/game/Game';
 import Profile from '../../../model/Profile';
+import DownloadProgress from '../../../model/installing/DownloadProgress';
 
 export default abstract class ThunderstoreDownloaderProvider {
 
@@ -62,7 +63,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
     public abstract downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
-                               callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                               callback: (downloadProgress: DownloadProgress) => void,
                                completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
     /**
@@ -76,7 +77,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
     public abstract download(game: Game, profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
-                    callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                    callback: (downloadProgress: DownloadProgress) => void,
                     completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
     /**
@@ -88,17 +89,17 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param completedCallback See {@method download}
      */
     public abstract downloadImportedMods(game: Game, modList: ExportMod[],
-                                callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                                callback: (downloadProgress: DownloadProgress) => void,
                                 completedCallback: (mods: ThunderstoreCombo[]) => void): void;
 
     /**
      * Generate the current progress across all downloads.
      *
-     * @param progress      The current download's progress.
-     * @param currentIndex  The number of mods currently downloaded.
-     * @param total         The final progress value.
+     * @param downloadProgress  The current DownloadProgress object.
+     * @param currentIndex      The number of mods currently downloaded.
+     * @param total             The final progress value.
      */
-    public abstract generateProgressPercentage(progress: number, currentIndex: number, total: number): number;
+    public abstract generateProgressPercentage(downloadProgress: DownloadProgress, currentIndex: number, total: number): number;
 
     /**
      * Iterate the {@class ThunderstoreCombo} array to perform the download for each mod.
@@ -108,7 +109,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param entries   IterableIterator of entries for {@class ThunderstoreCombo} mods to download.
      * @param callback  See {@method download}
      */
-    public abstract queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void): void
+    public abstract queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (downloadProgress: DownloadProgress) => void): void
 
     /**
      * Generate the total count of mods to be downloaded. Cached mods are not included in this count unless download cache is disabled.
@@ -125,7 +126,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param settings  Instance of ManagerSettings.
      * @param callback  See {@method download}
      */
-    public abstract downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void): void;
+    public abstract downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (downloadProgress: DownloadProgress) => void): void;
 
     /**
      * Save the download buffer to a zip file in the cache.
