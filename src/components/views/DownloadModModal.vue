@@ -117,7 +117,7 @@ import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import DownloadProgress from '../../model/installing/DownloadProgress';
-import fileSize from 'filesize';
+import FormatUtils from '../../utils/FormatUtils';
 
 let assignId = 0;
 
@@ -140,12 +140,7 @@ let assignId = 0;
         private contextProfile: Profile | null = null;
 
         private convertSizeToReadable(size: number, withSizeIndicator: boolean) {
-            const result = fileSize(size, {output: "object", standard: "jedec", pad: true});
-            let value = `${result.value}`;
-            if (withSizeIndicator) {
-                value += ` ${result.symbol}`;
-            }
-            return value;
+            return FormatUtils.convertSizeToReadable(size, withSizeIndicator);
         }
 
         public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]): Promise<void> {
