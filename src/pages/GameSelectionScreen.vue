@@ -197,7 +197,6 @@ import { GameInstanceType } from '../model/game/GameInstanceType';
 import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
 import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
 import { PackageLoader } from '../model/installing/PackageLoader';
-import NoResolutionConflictManagement from '../r2mm/installing/NoResolutionConflictManagement';
 
 @Component({
     components: {
@@ -318,7 +317,7 @@ export default class GameSelectionScreen extends Vue {
 
             switch (this.selectedGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
                     break;
                 case PackageLoader.MELON_LOADER:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
@@ -355,7 +354,7 @@ export default class GameSelectionScreen extends Vue {
 
             switch (this.selectedGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
                     break;
                 case PackageLoader.MELON_LOADER:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
