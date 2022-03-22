@@ -8,7 +8,7 @@ export default class NorthstarGameInstructions extends GameInstructionGenerator 
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `-northstar -profile="${DynamicGameInstruction.NORTHSTAR_DIRECTORY}"`,
+            moddedParameters: `-profile="${DynamicGameInstruction.NORTHSTAR_DIRECTORY}"`,
             vanillaParameters: `-vanilla`
         }
     }

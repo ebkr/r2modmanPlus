@@ -41,6 +41,23 @@ const RUNNERS: RunnerType = {
             "darwin": new SteamGameRunner_Darwin()
         }
     },
+    [StorePlatform.STEAM_DIRECT]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
+        },
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
+        },
+        [PackageLoader.NORTHSTAR]: {
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner()
+        },
+    },
     [StorePlatform.EPIC_GAMES_STORE]: {
         [PackageLoader.BEPINEX]: {
             "win32": new EgsGameRunner(),
@@ -73,6 +90,11 @@ const RUNNERS: RunnerType = {
 
 const RESOLVERS: ResolverType = {
     [StorePlatform.STEAM]: {
+        "win32": new GameDirectoryResolverImpl_Steam_Win,
+        "linux": new GameDirectoryResolverImpl_Steam_Linux(),
+        "darwin": new DarwinGameDirectoryResolver()
+    },
+    [StorePlatform.STEAM_DIRECT]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()

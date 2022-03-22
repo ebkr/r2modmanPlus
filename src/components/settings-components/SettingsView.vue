@@ -365,7 +365,7 @@ import moment from 'moment';
         }
 
         created() {
-            if (this.activeGame.activePlatform.storePlatform === StorePlatform.STEAM) {
+            if ([StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(this.activeGame.activePlatform.storePlatform)) {
                 this.settingsList.push(
                     new SettingsRow(
                         'Locations',
