@@ -45,8 +45,9 @@ export default class DirectGameRunner extends GameRunnerProvider {
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
-                cwd: gameDir
+            const childProcess = exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
+                cwd: gameDir,
+                windowsHide: false,
             }, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
