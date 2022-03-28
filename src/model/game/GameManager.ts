@@ -194,6 +194,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
 
+        new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
+            "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
+            'https://core-keeper.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
+
     ];
 
     static get activeGame(): Game {
