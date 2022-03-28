@@ -27,6 +27,7 @@ import InstallRules_HOTDS from '../default_installation_rules/game_rules/Install
 import InstallRules_ForTheKing from '../default_installation_rules/game_rules/InstallRules_ForTheKing';
 import InstallRules_Subnautica from '../default_installation_rules/game_rules/InstallRules_Subnautica';
 import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
+import InstallRules_CoreKeeper from '../default_installation_rules/game_rules/InstallRules_CoreKeeper';
 
 export default class InstallationRuleApplicator {
 
@@ -59,6 +60,7 @@ export default class InstallationRuleApplicator {
             InstallRules_ForTheKing(),
             InstallRules_Subnautica(),
             InstallRules_SubnauticaBZ(),
+            InstallRules_CoreKeeper(),
         ]
     }
 
