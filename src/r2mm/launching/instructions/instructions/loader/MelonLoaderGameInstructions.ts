@@ -1,8 +1,8 @@
-import GameInstructionGenerator from 'src/r2mm/launching/instructions/instructions/GameInstructionGenerator';
-import { GameInstruction } from 'src/r2mm/launching/instructions/GameInstructions';
-import Profile from 'src/model/Profile';
-import Game from 'src/model/game/Game';
-import { DynamicGameInstruction } from 'src/r2mm/launching/instructions/DynamicGameInstruction';
+import GameInstructionGenerator from '../GameInstructionGenerator';
+import { GameInstruction } from '../../GameInstructions';
+import Game from '../../../../../model/game/Game';
+import Profile from '../../../../../model/Profile';
+import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 
 export default class MelonLoaderGameInstructions extends GameInstructionGenerator {
 

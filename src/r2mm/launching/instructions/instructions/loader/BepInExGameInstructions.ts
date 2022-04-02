@@ -1,11 +1,11 @@
-import GameInstructionGenerator from 'src/r2mm/launching/instructions/instructions/GameInstructionGenerator';
-import { GameInstruction } from 'src/r2mm/launching/instructions/GameInstructions';
-import Game from 'src/model/game/Game';
-import Profile from 'src/model/Profile';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import GameInstructionGenerator from '../GameInstructionGenerator';
+import { GameInstruction } from '../../GameInstructions';
+import Game from '../../../../../model/game/Game';
+import Profile from '../../../../../model/Profile';
+import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import path from 'path';
-import { DynamicGameInstruction } from 'src/r2mm/launching/instructions/DynamicGameInstruction';
-import { GameInstanceType } from 'src/model/game/GameInstanceType';
+import { DynamicGameInstruction } from '../../DynamicGameInstruction';
+import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
 
 export default class BepInExGameInstructions extends GameInstructionGenerator {
 

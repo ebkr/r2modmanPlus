@@ -1,16 +1,16 @@
-import GameRunnerProvider from 'src/providers/generic/game/GameRunnerProvider';
-import Game from 'src/model/game/Game';
-import R2Error from 'src/model/errors/R2Error';
-import Profile from 'src/model/Profile';
-import GameInstructions from 'src/r2mm/launching/instructions/GameInstructions';
-import GameInstructionParser from 'src/r2mm/launching/instructions/GameInstructionParser';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import path from 'path';
-import BepInExConfigUtils from 'src/utils/BepInExConfigUtils';
-import ConfigLine from 'src/model/file/ConfigLine';
-import { PackageLoader } from 'src/model/installing/PackageLoader';
-import { DynamicGameInstruction } from 'src/r2mm/launching/instructions/DynamicGameInstruction';
+import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
+import Game from '../../../../model/game/Game';
+import R2Error from '../../../../model/errors/R2Error';
+import Profile from '../../../../model/Profile';
+import GameInstructions from '../../instructions/GameInstructions';
+import GameInstructionParser from '../../instructions/GameInstructionParser';
+import FsProvider from '../../../../providers/generic/file/FsProvider';
 import { shell } from 'electron';
+import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
+import * as path from 'path';
+import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
+import ConfigLine from '../../../../model/file/ConfigLine';
 
 export default class EgsGameRunner extends GameRunnerProvider {
 

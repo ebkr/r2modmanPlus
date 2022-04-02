@@ -8,11 +8,11 @@ import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
-import SteamGameRunner_Windows from 'src/r2mm/launching/runners/windows/SteamGameRunner_Windows';
-import DirectGameRunner from 'src/r2mm/launching/runners/multiplatform/DirectGameRunner';
-import SteamGameRunner_Linux from 'src/r2mm/launching/runners/linux/SteamGameRunner_Linux';
-import SteamGameRunner_Darwin from 'src/r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
-import EgsGameRunner from 'src/r2mm/launching/runners/multiplatform/EgsGameRunner';
+import SteamGameRunner_Windows from '../../../../r2mm/launching/runners/windows/SteamGameRunner_Windows';
+import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/DirectGameRunner';
+import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/SteamGameRunner_Linux';
+import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
+import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
 
 type RunnerType = {
     [platkey in StorePlatform]: {

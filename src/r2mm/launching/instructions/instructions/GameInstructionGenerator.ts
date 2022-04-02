@@ -1,6 +1,6 @@
-import Game from 'src/model/game/Game';
-import type { GameInstruction } from 'src/r2mm/launching/instructions/GameInstructions';
-import Profile from 'src/model/Profile';
+import Game from '../../../../model/game/Game';
+import type { GameInstruction } from '..//GameInstructions';
+import Profile from '../../../../model/Profile';
 
 export default abstract class GameInstructionGenerator {
 
