@@ -1,11 +1,10 @@
-import { PackageLoader } from 'src/model/installing/PackageLoader';
-import Game from 'src/model/game/Game';
-import GameInstructionGenerator from 'src/r2mm/launching/instructions/instructions/GameInstructionGenerator';
-import BepInExGameInstructions from 'src/r2mm/launching/instructions/instructions/loader/BepInExGameInstructions';
-import MelonLoaderGameInstructions
-    from 'src/r2mm/launching/instructions/instructions/loader/MelonLoaderGameInstructions';
-import Profile from 'src/model/Profile';
-import NorthstarGameInstructions from 'src/r2mm/launching/instructions/instructions/loader/NorthstarGameInstructions';
+import { PackageLoader } from '../../../model/installing/PackageLoader';
+import Game from '../../../model/game/Game';
+import GameInstructionGenerator from './instructions/GameInstructionGenerator';
+import BepInExGameInstructions from './instructions/loader/BepInExGameInstructions';
+import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameInstructions';
+import Profile from '../../../model/Profile';
+import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
