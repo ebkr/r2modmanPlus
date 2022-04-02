@@ -1,16 +1,16 @@
-import GameRunnerProvider from 'src/providers/generic/game/GameRunnerProvider';
-import Game from 'src/model/game/Game';
-import R2Error from 'src/model/errors/R2Error';
-import Profile from 'src/model/Profile';
-import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
-import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
-import { exec } from 'child_process';
-import GameInstructions from 'src/r2mm/launching/instructions/GameInstructions';
-import GameInstructionParser from 'src/r2mm/launching/instructions/GameInstructionParser';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import LinuxGameDirectoryResolver from 'src/r2mm/manager/linux/GameDirectoryResolver';
+import FsProvider from '../../../../providers/generic/file/FsProvider';
+import LinuxGameDirectoryResolver from '../../../manager/linux/GameDirectoryResolver';
 import path from 'path';
+import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
+import Game from '../../../../model/game/Game';
+import R2Error from '../../../../model/errors/R2Error';
+import Profile from '../../../../model/Profile';
+import ManagerSettings from '../../../manager/ManagerSettings';
+import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
+import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
+import { exec } from 'child_process';
+import GameInstructions from '../../instructions/GameInstructions';
+import GameInstructionParser from '../../instructions/GameInstructionParser';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -38,7 +38,6 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
             try {
                 for (const shFile of shFiles) {
-                    console.log("SH:", shFile);
                     await FsProvider.instance.chmod(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), shFile)), 0o755);
                 }
             } catch (e) {

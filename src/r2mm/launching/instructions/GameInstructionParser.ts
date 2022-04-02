@@ -1,11 +1,11 @@
-import { DynamicGameInstruction } from 'src/r2mm/launching/instructions/DynamicGameInstruction';
-import Profile from 'src/model/Profile';
-import Game from 'src/model/game/Game';
+import { DynamicGameInstruction } from './DynamicGameInstruction';
+import Profile from '../../../model/Profile';
+import Game from '../../../model/game/Game';
 import path from 'path';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import R2Error from 'src/model/errors/R2Error';
+import FsProvider from '../../../providers/generic/file/FsProvider';
+import R2Error from '../../../model/errors/R2Error';
 import * as process from 'process';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../../../r2mm/manager/linux/GameDirectoryResolver';
 
 export default class GameInstructionParser {

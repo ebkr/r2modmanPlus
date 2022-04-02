@@ -1,13 +1,13 @@
-import GameRunnerProvider from 'src/providers/generic/game/GameRunnerProvider';
-import Game from 'src/model/game/Game';
-import R2Error from 'src/model/errors/R2Error';
-import Profile from 'src/model/Profile';
-import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
-import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
+import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
+import Game from '../../../../model/game/Game';
+import R2Error from '../../../../model/errors/R2Error';
+import Profile from '../../../../model/Profile';
+import ManagerSettings from '../../../manager/ManagerSettings';
+import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
+import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import { exec } from 'child_process';
-import GameInstructions from 'src/r2mm/launching/instructions/GameInstructions';
-import GameInstructionParser from 'src/r2mm/launching/instructions/GameInstructionParser';
+import GameInstructions from '../../instructions/GameInstructions';
+import GameInstructionParser from '../../instructions/GameInstructionParser';
 
 export default class SteamGameRunner_Windows extends GameRunnerProvider {
 
