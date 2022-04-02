@@ -28,6 +28,7 @@ import InstallRules_ForTheKing from '../default_installation_rules/game_rules/In
 import InstallRules_Subnautica from '../default_installation_rules/game_rules/InstallRules_Subnautica';
 import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
 import InstallRules_CoreKeeper from '../default_installation_rules/game_rules/InstallRules_CoreKeeper';
+import InstallRules_Titanfall2 from 'src/r2mm/installing/default_installation_rules/game_rules/InstallRules_Titanfall2';
 
 export default class InstallationRuleApplicator {
 
@@ -61,6 +62,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Subnautica(),
             InstallRules_SubnauticaBZ(),
             InstallRules_CoreKeeper(),
+            InstallRules_Titanfall2(),
         ]
     }
 

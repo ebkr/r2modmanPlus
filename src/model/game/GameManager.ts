@@ -200,6 +200,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
 
+        new Game("Titanfall 2", "Titanfall2", "Titanfall2",
+            "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
+            'https://northstar.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
+
     ];
 
     static get activeGame(): Game {

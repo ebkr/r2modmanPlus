@@ -321,6 +321,8 @@ export default class GameSelectionScreen extends Vue {
                     break;
                 case PackageLoader.MELON_LOADER:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+                case PackageLoader.NORTHSTAR:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
             }
 
             await this.$router.replace('/splash');
@@ -357,6 +359,8 @@ export default class GameSelectionScreen extends Vue {
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
                     break;
                 case PackageLoader.MELON_LOADER:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+                case PackageLoader.NORTHSTAR:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
             }
 

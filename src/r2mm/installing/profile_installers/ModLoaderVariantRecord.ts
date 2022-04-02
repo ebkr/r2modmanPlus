@@ -42,4 +42,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     ],
     SubnauticaBZ: [new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_BelowZero", "BepInExPack_BelowZero", PackageLoader.BEPINEX)],
     CoreKeeper: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Core_Keeper", "BepInExPack_Core-Keeper", PackageLoader.BEPINEX)],
+    Titanfall2: [new ModLoaderPackageMapping("Northstar-Northstar", "Northstar", PackageLoader.NORTHSTAR)],
 }

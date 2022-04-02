@@ -1,50 +1,36 @@
-import GameRunnerProvider from '../../GameRunnerProvider';
-import LoggerProvider, { LogSeverity } from '../../../../ror2/logging/LoggerProvider';
-import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
-import R2Error from '../../../../../model/errors/R2Error';
-import { exec as execCallback } from 'child_process';
-import { promisify } from 'util';
+import GameRunnerProvider from 'src/providers/generic/game/GameRunnerProvider';
+import Game from 'src/model/game/Game';
+import R2Error from 'src/model/errors/R2Error';
+import Profile from 'src/model/Profile';
+import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
+import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
+import LoggerProvider, { LogSeverity } from 'src/providers/ror2/logging/LoggerProvider';
+import { exec } from 'child_process';
+import GameInstructions from 'src/r2mm/launching/instructions/GameInstructions';
+import GameInstructionParser from 'src/r2mm/launching/instructions/GameInstructionParser';
+import FsProvider from 'src/providers/generic/file/FsProvider';
+import LinuxGameDirectoryResolver from 'src/r2mm/manager/linux/GameDirectoryResolver';
 import path from 'path';
-import Profile from '../../../../../model/Profile';
-import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../../../../../r2mm/manager/linux/GameDirectoryResolver';
-import FsProvider from '../../../file/FsProvider';
-import Game from '../../../../../model/game/Game';
-import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
 
-const exec = promisify(execCallback);
+export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
-export default class GameRunnerProviderImpl extends GameRunnerProvider {
-
-    async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
-        try {
-            const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
-            const corePath = await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core"));
-            const preloaderPath = path.join(corePath,
-                (await FsProvider.instance.readdir(corePath))
-                    .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
-            return `--doorstop-enable true --doorstop-target "${isProton ? 'Z:' : ''}${preloaderPath}"`;
-        } catch (e) {
-            const err: Error = e as Error;
-            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
-        }
+    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+        const instructions = await GameInstructions.getInstructionsForGame(game, profile);
+        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
-        LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching modded');
 
         const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
         if (isProton instanceof R2Error) {
             return isProton;
         }
 
-        let extraArguments = '';
-
         if (isProton) {
-                const promise = await this.ensureWineWillLoadBepInEx(game);
-                if (promise instanceof R2Error) {
-                    return promise;
-                }
+            const promise = await this.ensureWineWillLoadBepInEx(game);
+            if (promise instanceof R2Error) {
+                return promise;
+            }
         } else {
             // If sh files aren't executable then the wrapper will fail.
             const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile()))))
@@ -59,29 +45,22 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
                 const err: Error = e as Error;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
             }
-            extraArguments = `--r2profile "${Profile.getActiveProfile().getProfileName()}"`;
-            if (game.instanceType === GameInstanceType.SERVER) {
-                extraArguments += ` --server`;
-            }
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
-                extraArguments += ` --doorstop-dll-search-override "${await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))}"`;
-            }
         }
 
-        const target = await this.getGameArguments(game, Profile.getActiveProfile());
-        if (target instanceof R2Error) {
-            return target;
+        const args = await this.getGameArguments(game, profile);
+        if (args instanceof R2Error) {
+            return args
         }
-
-        return this.start(game, `${target} ${extraArguments}`);
+        return this.start(game, args);
     }
 
-    public startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
-        LoggerProvider.instance.Log(LogSeverity.INFO, 'Launching vanilla');
-        return this.start(game, '--server --doorstop-enable false');
+    public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
+        const instructions = await GameInstructions.getInstructionsForGame(game, profile);
+        return this.start(game, instructions.vanillaParameters);
     }
 
-    private async start(game: Game, cmdargs: string): Promise<void | R2Error> {
+    async start(game: Game, args: string): Promise<void | R2Error> {
+
         const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
         if(steamDir instanceof R2Error) {
@@ -91,7 +70,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
         try {
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${cmdargs} ${settings.getContext().gameSpecific.launchParameters}`;
+            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await exec(cmd);
         } catch(err) {
@@ -99,6 +78,7 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
             LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
             throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
         }
+
     }
 
     private async ensureWineWillLoadBepInEx(game: Game): Promise<void | R2Error>{
@@ -162,5 +142,4 @@ export default class GameRunnerProviderImpl extends GameRunnerProvider {
         split.splice(end, 0, `"${key}"="${value}"`);
         return split.join("\n");
     }
-
 }

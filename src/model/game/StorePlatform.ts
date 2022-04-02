@@ -1,6 +1,8 @@
 export enum StorePlatform {
     STEAM = "Steam",
+    STEAM_DIRECT = "Steam",
     EPIC_GAMES_STORE = "Epic Games Store",
     OCULUS_STORE = "Oculus Store",
-    OTHER = "Other"
+    ORIGIN = "Origin / EA Desktop",
+    OTHER = "Other",
 }

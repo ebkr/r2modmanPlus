@@ -1,4 +1,5 @@
 export enum PackageLoader {
     BEPINEX,
-    MELON_LOADER
+    MELON_LOADER,
+    NORTHSTAR,
 }

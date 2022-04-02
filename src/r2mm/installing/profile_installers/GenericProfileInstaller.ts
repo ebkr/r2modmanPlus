@@ -150,7 +150,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+    private async basicModLoaderInstaller(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         let bepInExRoot: string;
         if (modLoaderMapping.rootFolder.trim().length > 0) {
             bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
@@ -182,8 +182,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await this.installBepInEx(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
     }
@@ -194,7 +195,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const file of tree.getFiles()) {
             // Find matching rule for file based on extension name.
             // If a matching extension name is longer (EG: .plugin.dll vs .dll) then assume the longer one is the correct match.
-            let matchingRule: ManagedRule;
+            let matchingRule: ManagedRule | undefined;
             try {
                 matchingRule = flatRules.filter(value => value.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase())))
                     .reduce((previousValue, currentValue) => {
@@ -208,6 +209,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             } catch (e) {
                 // No matching rule
                 matchingRule = flatRules.find(value => value.isDefaultLocation)!;
+            }
+            if (matchingRule === undefined) {
+                continue;
             }
             const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, this.rule);
             const updatedArray = installationIntent.get(subType) || [];

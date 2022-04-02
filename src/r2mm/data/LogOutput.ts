@@ -1,9 +1,10 @@
 import Profile from '../../model/Profile';
-import * as path from 'path'
+import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import Timeout = NodeJS.Timeout;
 import GameManager from '../../model/game/GameManager';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import Timeout = NodeJS.Timeout;
+
 let fs: FsProvider;
 
 export default class LogOutput {
@@ -38,6 +39,7 @@ export default class LogOutput {
                     .then(value => this._exists = value);
                 break;
             case PackageLoader.MELON_LOADER:
+            case PackageLoader.NORTHSTAR:
                 fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'MelonLoader', 'Latest.log'))
                     .then(value => this._exists = value);
                 break;
