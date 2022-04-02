@@ -61,6 +61,8 @@ export default class EgsGameRunner extends GameRunnerProvider {
 
     async start(game: Game, args: string): Promise<void | R2Error> {
         try {
+            // Ignore errors to allow Thunderstore Mod Manager build without errors
+            // @ts-ignore
             await shell.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`);
         } catch (e) {
             const err: Error = e as Error;
