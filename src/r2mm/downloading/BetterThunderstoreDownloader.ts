@@ -140,6 +140,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let downloadCount = 0;
         const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
 
+        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(dependencies, await ManagerSettings.getSingleton(game));
+
         await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (downloadProgress: DownloadProgress) => {
             if (downloadProgress.status === StatusEnum.FAILURE) {
                 callback(downloadProgress);
@@ -150,7 +152,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     err: downloadProgress.err,
                     currentModDownloadSize: downloadProgress.currentModDownloadSize,
                     currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                    mod: downloadProgress.mod
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
                 });
             } else if (downloadProgress.status === StatusEnum.SUCCESS) {
                 callback({
@@ -159,7 +162,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     err: downloadProgress.err,
                     currentModDownloadSize: downloadProgress.currentModDownloadSize,
                     currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                    mod: downloadProgress.mod
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
                 });
                 downloadCount += 1;
                 if (downloadCount >= dependencies.length) {
@@ -169,7 +173,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                         err: downloadProgress.err,
                         currentModDownloadSize: downloadProgress.currentModDownloadSize,
                         currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                        mod: downloadProgress.mod
+                        mod: downloadProgress.mod,
+                        totalDownloadSize: totalDownloadSizeInBytes,
                     });
                     completedCallback([...dependencies]);
                 }
@@ -195,7 +200,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 err: modList,
                 currentModDownloadSize: mod.getFileSize() || 0,
                 currentModDownloadProgress: mod.getFileSize() || 0,
-                mod: mod
+                mod: mod,
+                totalDownloadSize: combo.getVersion().getFileSize(),
             });
         }
 
@@ -211,9 +217,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
-            dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
+            dependencies = dependencies.filter(dep => (modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined) || settings.getContext().global.ignoreCache);
             downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
         }
+
+        console.log("Size of download", dependencies, this.getTotalDownloadSizeInBytes(dependencies, settings), combo.getVersion().getFileSize())
+        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(dependencies, settings) + combo.getVersion().getFileSize();
 
         await this.downloadAndSave(combo, settings, async (downloadProgress: DownloadProgress) => {
             if (downloadProgress.status === StatusEnum.FAILURE) {
@@ -225,7 +234,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     err: downloadProgress.err,
                     currentModDownloadSize: downloadProgress.currentModDownloadSize,
                     currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                    mod: downloadProgress.mod
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
                 });
             } else if (downloadProgress.status === StatusEnum.SUCCESS) {
                 downloadCount += 1;
@@ -237,7 +247,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                         err: downloadProgress.err,
                         currentModDownloadSize: downloadProgress.currentModDownloadSize,
                         currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                        mod: downloadProgress.mod
+                        mod: downloadProgress.mod,
+                        totalDownloadSize: totalDownloadSizeInBytes,
                     });
                     completedCallback([combo]);
                     return;
@@ -254,7 +265,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                             err: downloadProgress.err,
                             currentModDownloadSize: downloadProgress.currentModDownloadSize,
                             currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                            mod: downloadProgress.mod
+                            mod: downloadProgress.mod,
+                            totalDownloadSize: totalDownloadSizeInBytes,
                         });
                     } else if (downloadProgress.status === StatusEnum.SUCCESS) {
                         callback({
@@ -263,7 +275,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                             err: downloadProgress.err,
                             currentModDownloadSize: downloadProgress.currentModDownloadSize,
                             currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                            mod: downloadProgress.mod
+                            mod: downloadProgress.mod,
+                            totalDownloadSize: totalDownloadSizeInBytes,
                         });
                         downloadCount += 1;
                         if (downloadCount >= dependencies.length + 1) {
@@ -273,7 +286,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                                 err: downloadProgress.err,
                                 currentModDownloadSize: downloadProgress.currentModDownloadSize,
                                 currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                                mod: downloadProgress.mod
+                                mod: downloadProgress.mod,
+                                totalDownloadSize: totalDownloadSizeInBytes,
                             });
                             completedCallback([...dependencies, combo]);
                         }
@@ -305,6 +319,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         const settings = await ManagerSettings.getSingleton(game);
 
+        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(comboList, settings);
+
         let downloadCount = 0;
         await this.queueDownloadDependencies(settings, comboList.entries(), (downloadProgress: DownloadProgress) => {
             if (downloadProgress.status === StatusEnum.FAILURE || downloadProgress.status === StatusEnum.PENDING) {
@@ -319,7 +335,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                         status: downloadProgress.status,
                         err: downloadProgress.err,
                         currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
-                        currentModDownloadSize: downloadProgress.currentModDownloadSize
+                        currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                        totalDownloadSize: totalDownloadSizeInBytes,
                     });
                     completedCallback(comboList);
                 }
@@ -356,7 +373,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 err: null,
                 currentModDownloadSize: combo.getVersion().getFileSize(),
                 currentModDownloadProgress: combo.getVersion().getFileSize(),
-                mod: combo.getMod()
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
             });
             return;
         }
@@ -368,7 +386,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     err: null,
                     currentModDownloadSize: combo.getVersion().getFileSize(),
                     currentModDownloadProgress: progress.loaded,
-                    mod: combo.getMod()
+                    mod: combo.getMod(),
+                    totalDownloadSize: 0, // Assigned on callback
                 });
             },
             responseType: 'arraybuffer',
@@ -384,7 +403,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 err: null,
                 currentModDownloadSize: combo.getVersion().getFileSize(),
                 currentModDownloadProgress: combo.getVersion().getFileSize(),
-                mod: combo.getMod()
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
             });
             await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
                 const status = success ? StatusEnum.SUCCESS : StatusEnum.FAILURE;
@@ -394,7 +414,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     err: error || null,
                     currentModDownloadSize: combo.getVersion().getFileSize(),
                     currentModDownloadProgress: combo.getVersion().getFileSize(),
-                    mod: combo.getMod()
+                    mod: combo.getMod(),
+                    totalDownloadSize: 0, // Assigned on callback
                 });
             });
         }).catch((reason: Error) => {
@@ -404,7 +425,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 err: new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null),
                 currentModDownloadSize: combo.getVersion().getFileSize(),
                 currentModDownloadProgress: combo.getVersion().getFileSize(),
-                mod: combo.getMod()
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
             });
         })
     }

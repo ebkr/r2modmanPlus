@@ -156,6 +156,7 @@ let assignId = 0;
                     failed: false,
                     currentProgress: 0,
                     currentModSize: 0,
+                    totalDownloadSize: 0,
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
                 setTimeout(() => {
@@ -177,6 +178,7 @@ let assignId = 0;
                                 failed: false,
                                 currentProgress: downloadProgress.currentModDownloadProgress,
                                 currentModSize: downloadProgress.currentModDownloadSize,
+                                totalDownloadSize: downloadProgress.totalDownloadSize,
                             }
                             DownloadModModal.allVersions[assignIndex] = [currentAssignId, obj];
                         }
@@ -276,6 +278,7 @@ let assignId = 0;
                 failed: false,
                 currentProgress: 0,
                 currentModSize: 0,
+                totalDownloadSize: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
@@ -300,6 +303,7 @@ let assignId = 0;
                         failed: false,
                         currentProgress: downloadProgress.currentModDownloadProgress,
                         currentModSize: downloadProgress.currentModDownloadSize,
+                        totalDownloadSize: downloadProgress.totalDownloadSize,
                     }
                     if (this.downloadObject.assignId === currentAssignId) {
                         this.downloadObject = Object.assign({}, obj);
@@ -340,6 +344,7 @@ let assignId = 0;
                 failed: false,
                 currentProgress: 0,
                 currentModSize: 0,
+                totalDownloadSize: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
@@ -365,6 +370,7 @@ let assignId = 0;
                             failed: false,
                             currentProgress: downloadProgress.currentModDownloadProgress,
                             currentModSize: downloadProgress.currentModDownloadSize,
+                            totalDownloadSize: downloadProgress.totalDownloadSize,
                         }
                         if (this.downloadObject.assignId === currentAssignId) {
                             this.downloadObject = Object.assign({}, obj);

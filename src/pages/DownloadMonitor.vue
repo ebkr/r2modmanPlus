@@ -29,6 +29,7 @@
                                 <div class="card is-shadowless">
                                     <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
                                     <p>{{convertSizeToReadable(downloadObject.currentProgress, false)}}/{{convertSizeToReadable(downloadObject.currentModSize, true)}}</p>
+                                    <p>Final download size: {{ convertSizeToReadable(downloadObject.totalDownloadSize, true) }}</p>
                                     <p v-if="downloadObject.progress < 100">Downloading: {{ downloadObject.modName }}</p>
                                     <p>{{Math.min(Math.floor(downloadObject.progress), 100)}}% complete</p>
                                     <Progress v-if="!downloadObject.failed"

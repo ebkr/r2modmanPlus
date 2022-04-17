@@ -146,4 +146,14 @@ export default abstract class ThunderstoreDownloaderProvider {
      */
     public abstract isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>;
 
+    public getTotalDownloadSizeInBytes(combos: ThunderstoreCombo[], settings: ManagerSettings): number {
+        const filteredList = combos.filter(value => !this.isVersionAlreadyDownloaded(value) || settings.getContext().global.ignoreCache)
+            .map(value => value.getVersion().getFileSize());
+        if (filteredList.length > 0) {
+            return filteredList.reduce((previousValue, currentValue) => previousValue + currentValue) || 0;
+        } else {
+            return 0;
+        }
+    }
+
 }
