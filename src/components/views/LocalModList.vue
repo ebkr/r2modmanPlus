@@ -119,7 +119,9 @@
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
                    @start="drag=canShowSortIcons(); $emit('sort-start')"
-                   @end="drag=false; $emit('sort-end')">
+                   @end="drag=false; $emit('sort-end')"
+                   :force-fallback="true"
+                   :scroll-sensitivity="100">
             <expandable-card
                 v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
                 @moveUp="moveUp(key)"
