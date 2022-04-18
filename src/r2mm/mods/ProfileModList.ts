@@ -301,6 +301,20 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
+    public static moveEntryAboveWithoutSaving(modToMove: ManifestV2, modRelative: ManifestV2 | undefined, list: ManifestV2[]) {
+        const filteredList = list.filter(value => value.getName() !== modToMove.getName());
+        let newList: ManifestV2[];
+        if (modRelative !== undefined) {
+            const indexOfRelative = filteredList.findIndex(value => value.getName() === modRelative.getName());
+            const startSlice = filteredList.slice(0, indexOfRelative);
+            const endSlice = filteredList.slice(indexOfRelative, filteredList.length);
+            newList = [...startSlice, modToMove, ...endSlice];
+        } else {
+            newList = [...filteredList, modToMove];
+        }
+        return newList;
+    }
+
     public static getDisabledModCount(modList: ManifestV2[]): number {
         return modList.filter(value => !value.isEnabled()).length;
     }

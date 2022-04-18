@@ -286,6 +286,7 @@
                                 :settings="settings"
                                 @error="showError($event)">
                                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
+                                    <br/>
                                     <div class="margin-bottom">
                                         <div class="notification is-warning margin-right">
                                             <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="showUpdateAllModal = true">update all</a>?</span>

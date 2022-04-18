@@ -35,6 +35,13 @@
 
                 </div>
             </div>
+            <div class="tabs">
+                <ul>
+                    <li :class="[{'is-active': activeTab === 0}]" @click="changeTab(0)"><a>All ({{ getTabCountForAll }})</a></li>
+                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)"><a>Installed ({{ getTabCountForInstalled }})</a></li>
+                    <li :class="[{'is-active': activeTab === 2}]" @click="changeTab(2)"><a>Dependencies ({{ getTabCountForDependencies }})</a></li>
+                </ul>
+            </div>
         </div>
 
         <DownloadModModal
@@ -117,9 +124,9 @@
 
         <slot name="above-list"></slot>
 
-        <draggable v-model='draggableList' group="local-mods" handle=".handle"
+        <draggable :list='draggableList' group="local-mods" handle=".handle"
                    @start="drag=canShowSortIcons(); $emit('sort-start')"
-                   @end="drag=false; $emit('sort-end')"
+                   @end="drag=false; $emit('sort-end'); resolveDraggedItem($event.oldIndex, $event.newIndex)"
                    :force-fallback="true"
                    :scroll-sensitivity="100">
             <expandable-card
@@ -228,6 +235,7 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
+import { LocalModTabs } from '../../model/enums/LocalModTabs';
 import Timeout = NodeJS.Timeout;
 
 @Component({
@@ -248,6 +256,8 @@ import Timeout = NodeJS.Timeout;
         private darkTheme: boolean = false;
         private funkyMode: boolean = false;
 
+        private activeTab: LocalModTabs = LocalModTabs.INSTALLED;
+
         private updatedSettings() {
             this.cardExpanded = this.settings.getContext().global.expandedCards;
             this.darkTheme = this.settings.getContext().global.darkTheme;
@@ -261,6 +271,22 @@ import Timeout = NodeJS.Timeout;
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
+        }
+
+        get getTabCountForAll() {
+            return this.$store.state.localModList.length;
+        }
+
+        get getTabCountForInstalled() {
+            return this.$store.state.localModList
+                .filter((value: ManifestV2) => !value.getImplicitlyInstalled())
+                .length;
+        }
+
+        get getTabCountForDependencies() {
+            return this.$store.state.localModList
+                .filter((value: ManifestV2) => value.getImplicitlyInstalled())
+                .length;;
         }
 
         private searchableModList: ManifestV2[] = [];
@@ -282,22 +308,6 @@ import Timeout = NodeJS.Timeout;
 
         get draggableList() {
             return [...this.searchableModList]
-        }
-
-        set draggableList(newList: ManifestV2[]) {
-            ProfileModList.requestLock(async () => {
-                const result = await ProfileModList.saveModList(this.contextProfile!, newList);
-                if (result instanceof R2Error) {
-                    this.emitError(result);
-                    return;
-                }
-                this.$store.dispatch("updateModList", newList);
-                const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
-                if (err instanceof R2Error) {
-                    this.$emit('error', err);
-                }
-                this.filterModList();
-            })
         }
 
         @Watch("sortOrder")
@@ -325,10 +335,28 @@ import Timeout = NodeJS.Timeout;
             if (this.searchQuery.trim() === '') {
                 this.searchableModList = [...(this.modifiableModList || [])];
             }
-            this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
-                    || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
-            });
+            this.searchableModList = this.modifiableModList
+                .filter((mod: ManifestV2) => {
+                    switch (this.activeTab) {
+                        case LocalModTabs.ALL:
+                            return true;
+                        case LocalModTabs.INSTALLED:
+                            return !mod.getImplicitlyInstalled();
+                        case LocalModTabs.DEPENDENCIES:
+                            return mod.getImplicitlyInstalled();
+                        default:
+                            throw new Error(`Local tab [${this.activeTab}] not implemented`);
+                    }
+                })
+                .filter((x: ManifestV2) => {
+                    return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
+                        || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
+                });
+        }
+
+        @Watch('activeTab')
+        activeTabUpdated() {
+            this.filterModList();
         }
 
         async moveUp(vueMod: any) {
@@ -553,7 +581,7 @@ import Timeout = NodeJS.Timeout;
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList",updatedList);
+            await this.$store.dispatch("updateModList", updatedList);
             const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             if (err instanceof R2Error) {
                 this.$emit('error', err);
@@ -639,6 +667,39 @@ import Timeout = NodeJS.Timeout;
 
         emitError(error: R2Error) {
             this.$emit('error', error);
+        }
+
+        changeTab(num: LocalModTabs) {
+            this.activeTab = num;
+        }
+
+        resolveDraggedItem(startIndex: number, newIndex: number) {
+            ProfileModList.requestLock(async () => {
+                // Update the mod list using Vuex store list to prevent flickering due to IO overhead.
+                // Profile locking will prevent issues related to concurrent modifications.
+                const newList = this.resolveDraggedItemAgainstList(startIndex, newIndex, this.$store.state.localModList);
+                await this.$store.dispatch("updateModList", newList);
+
+                const result = await ProfileModList.saveModList(this.contextProfile!, newList);
+                if (result instanceof R2Error) {
+                    this.emitError(result);
+                    return;
+                }
+                const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
+                if (err instanceof R2Error) {
+                    this.emitError(err);
+                    return;
+                }
+                this.filterModList();
+            });
+        }
+
+        resolveDraggedItemAgainstList(startIndex: number, newIndex: number, list: ManifestV2[]): ManifestV2[] {
+            // Workaround to position above/below based on direction moved.
+            let indexAddition = startIndex > newIndex ? 0 : 1;
+            const modMoved = this.searchableModList[startIndex];
+            const modAtIndexAfterNew = this.searchableModList[newIndex + indexAddition];
+            return ProfileModList.moveEntryAboveWithoutSaving(modMoved, modAtIndexAfterNew, [...list]);
         }
 
     }
