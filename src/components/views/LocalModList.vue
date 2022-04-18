@@ -194,6 +194,11 @@
                    @click="downloadDependency(getMissingDependencies(key)[0])">
                     Download dependency
                 </a>
+                <template v-if="getThunderstoreModFromMod(key) !== undefined">
+                    <template v-if="getThunderstoreModFromMod(key).getDonationLink() !== undefined">
+                        <DonateButton :mod="getThunderstoreModFromMod(key)"/>
+                    </template>
+                </template>
             </expandable-card>
         </draggable>
 
@@ -228,10 +233,12 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
+import DonateButton from '../../components/buttons/DonateButton.vue';
 import Timeout = NodeJS.Timeout;
 
 @Component({
         components: {
+            DonateButton,
             DownloadModModal,
             Link,
             ExpandableCard,
@@ -329,6 +336,10 @@ import Timeout = NodeJS.Timeout;
                 return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
                     || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
             });
+        }
+
+        getThunderstoreModFromMod(mod: ManifestV2) {
+            return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
         }
 
         async moveUp(vueMod: any) {
