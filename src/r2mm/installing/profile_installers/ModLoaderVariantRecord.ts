@@ -9,6 +9,7 @@ import { PackageLoader } from '../../../model/installing/PackageLoader';
  */
 export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     RiskOfRain2: [new ModLoaderPackageMapping("bbepis-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    ThunderstoreDev: [new ModLoaderPackageMapping("xiaoxiao921-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     DysonSphereProgram: [new ModLoaderPackageMapping("xiaoye97-BepInEx", "BepInExPack", PackageLoader.BEPINEX)],
     Valheim: [
         new ModLoaderPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim", PackageLoader.BEPINEX),
