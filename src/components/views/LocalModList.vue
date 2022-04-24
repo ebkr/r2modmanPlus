@@ -159,7 +159,7 @@
                     <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
                         <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
                             <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
-                                <i class='fas fa-dollar-sign'></i>
+                                <i class='fas fa-heart'></i>
                             </span>
                         </Link>
                     </span>
