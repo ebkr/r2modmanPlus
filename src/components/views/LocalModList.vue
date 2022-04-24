@@ -156,6 +156,13 @@
                 </template>
                 <template v-slot:other-icons>
                     <!-- Show update and missing dependency icons -->
+                    <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
+                        <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
+                            <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                                <i class='fas fa-dollar-sign'></i>
+                            </span>
+                        </Link>
+                    </span>
                     <span class='card-header-icon has-tooltip-left'
                           @click.prevent.stop="updateMod(key)"
                           data-tooltip='An update is available' v-if="!isLatest(key)">
