@@ -3,7 +3,7 @@
           :target="'external'"
           class="card-footer-item">
         <div class="has-tooltip-left has-tooltip-multiline" data-tooltip="Donate to the mod author">
-            <i class='fas fa-dollar-sign margin-right margin-right--half-width'></i>
+            <i class='fas fa-heart margin-right margin-right--half-width'></i>
             Donate
         </div>
     </Link>
