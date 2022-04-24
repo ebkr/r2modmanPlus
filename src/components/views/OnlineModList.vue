@@ -32,6 +32,13 @@
                 </span>
             </template>
             <template v-slot:other-icons>
+                <span class='card-header-icon' v-if="key.getDonationLink()">
+                    <Link :url="key.getDonationLink()" target="external" tag="span">
+                        <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                            <i class='fas fa-heart'></i>
+                        </span>
+                    </Link>
+                </span>
                 <span class='card-header-icon has-tooltip-left'
                       data-tooltip='Mod already installed'
                       v-if="isThunderstoreModInstalled(key)">
