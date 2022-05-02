@@ -26,8 +26,10 @@ export default class SettingsDexieStore extends Dexie {
 
     // Added for deprecation to prevent throwing errors for any newly added games.
     public static SUPPORTED_GAME_LIST = ["RiskOfRain2", "ThunderstoreBeta", "RiskOfRain2Server", "DysonSphereProgram", "Valheim", "ValheimServer",
-        "GTFO", "Outward", "TaleSpire", "H3VR", "ROUNDS", "Mechanica", "Muck_Data", "BONEWORKS",
-        "LethalLeagueBlaze", "Timberborn", "TotallyAccurateBattleSimulator", "NASB", "Inscryption", "Starsand"];
+        "GTFO", "Outward", "TaleSpire", "H3VR", "ROUNDS", "Mechanica", "Muck", "BONEWORKS",
+        "LethalLeagueBlaze", "Timberborn", "TotallyAccurateBattleSimulator", "NASB", "Inscryption", "Starsand", "TABS", "NASB",
+        "CatsAreLiquidABP", "PotionCraft", "NearlyDead", "AGAINST", "RogueTower", "HOTDS", "ForTheKing", "Subnautica",
+        "SubnauticaBZ", "CoreKeeper", "Titanfall2"];
 
     constructor(game: Game) {
         super(`settings`);
