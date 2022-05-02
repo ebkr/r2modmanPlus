@@ -17,8 +17,8 @@ export const gamesTableName = "games";
  */
 export default class SettingsStore extends Dexie {
 
-    private globalTable: Dexie.Table<GlobalSettingsStructure_V3, number>;
-    private gameTable: Dexie.Table<GameSettingsStructure_V3, number>;
+    private readonly globalTable: Dexie.Table<GlobalSettingsStructure_V3, number>;
+    private readonly gameTable: Dexie.Table<GameSettingsStructure_V3, number>;
 
     private context!: ComboSettingsStructure_V3;
 
@@ -39,6 +39,10 @@ export default class SettingsStore extends Dexie {
 
         if (latestSupportedGlobalVersion !== latestSupportedGameVersion) {
             throw new Error("Setting versions out of sync");
+        }
+
+        if (!SettingsMigrator.areMigrationVersionsValid()) {
+            throw new Error("Migration versions are not unique");
         }
 
         await SettingsMigrator.runMigrations(latestSupportedGlobalVersion);

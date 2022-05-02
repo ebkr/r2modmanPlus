@@ -14,4 +14,9 @@ export default class SettingsMigrator {
         }
     }
 
+    public static areMigrationVersionsValid(): boolean {
+        const migrationVersions = this.MIGRATIONS.map(value => value.version());
+        return [...new Set(migrationVersions)].length === migrationVersions.length;
+    }
+
 }
