@@ -1,23 +1,18 @@
 import { StorePlatform } from '../../../../model/game/StorePlatform';
 import GameRunnerProvider from '../GameRunnerProvider';
-import GameRunnerProviderImpl_Steam_Win from '../steam/win32/GameRunnerProviderImpl';
-import GameRunnerProviderImpl_Steam_Linux from '../steam/linux/GameRunnerProviderImpl';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
 import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linux/GameDirectoryResolver';
 import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
-import DirectExecutableGameRunnerProvider from '../steam/win32/DirectExecutableGameRunnerProvider';
-import EgsRunnerProvider from '../steam/win32/EgsRunnerProvider';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
-import MLSteamGameRunnerProvider_Win from '../steam/win32/melon_loader/MLSteamGameRunnerProvider_Win';
-import MLDirectExecutableGameRunnerProvider
-    from '../steam/win32/melon_loader/MLDirectExecutableGameRunnerProvider';
-import MLSteamGameRunnerProvider_Linux from '../steam/linux/MLSteamGameRunnerProvider_Linux';
-import DarwinGameRunnerProviderImpl from '../steam/darwin/DarwinGameRunnerProviderImpl';
-import DarwinMLSteamGameRunnerProvider from '../steam/darwin/DarwinMLSteamGameRunnerProvider';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
+import SteamGameRunner_Windows from '../../../../r2mm/launching/runners/windows/SteamGameRunner_Windows';
+import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/DirectGameRunner';
+import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/SteamGameRunner_Linux';
+import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
+import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -36,41 +31,70 @@ type ResolverType = {
 const RUNNERS: RunnerType = {
     [StorePlatform.STEAM]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new GameRunnerProviderImpl_Steam_Win(),
-            "linux": new GameRunnerProviderImpl_Steam_Linux(),
-            "darwin": new DarwinGameRunnerProviderImpl()
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
         },
         [PackageLoader.MELON_LOADER]: {
-            "win32": new MLSteamGameRunnerProvider_Win(),
-            "linux": new MLSteamGameRunnerProvider_Linux(),
-            "darwin": new DarwinMLSteamGameRunnerProvider()
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
         }
+    },
+    [StorePlatform.STEAM_DIRECT]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
+        },
+        [PackageLoader.MELON_LOADER]: {
+            "win32": new SteamGameRunner_Windows(),
+            "linux": new SteamGameRunner_Linux(),
+            "darwin": new SteamGameRunner_Darwin()
+        },
+        [PackageLoader.NORTHSTAR]: {
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner()
+        },
     },
     [StorePlatform.EPIC_GAMES_STORE]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new EgsRunnerProvider(),
-            "linux": new EgsRunnerProvider(),
-            "darwin": new EgsRunnerProvider(),
+            "win32": new EgsGameRunner(),
+            "linux": new EgsGameRunner(),
+            "darwin": new EgsGameRunner(),
         }
     },
     [StorePlatform.OCULUS_STORE]: {
         [PackageLoader.MELON_LOADER]: {
-            "win32": new MLDirectExecutableGameRunnerProvider(),
-            "linux": new MLDirectExecutableGameRunnerProvider(),
-            "darwin": new MLDirectExecutableGameRunnerProvider(),
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner(),
         }
+    },
+    [StorePlatform.ORIGIN]: {
+      [PackageLoader.NORTHSTAR]: {
+          "win32": new DirectGameRunner(),
+          "linux": new DirectGameRunner(),
+          "darwin": new DirectGameRunner(),
+      }
     },
     [StorePlatform.OTHER]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new DirectExecutableGameRunnerProvider(),
-            "linux": new DirectExecutableGameRunnerProvider(),
-            "darwin": new DirectExecutableGameRunnerProvider(),
-        }
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner(),
+        },
     }
 };
 
 const RESOLVERS: ResolverType = {
     [StorePlatform.STEAM]: {
+        "win32": new GameDirectoryResolverImpl_Steam_Win,
+        "linux": new GameDirectoryResolverImpl_Steam_Linux(),
+        "darwin": new DarwinGameDirectoryResolver()
+    },
+    [StorePlatform.STEAM_DIRECT]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()
@@ -81,6 +105,11 @@ const RESOLVERS: ResolverType = {
         "darwin": new DRMFreeDirectoryResolver(),
     },
     [StorePlatform.OCULUS_STORE]: {
+        "win32": new DRMFreeDirectoryResolver(),
+        "linux": new DRMFreeDirectoryResolver(),
+        "darwin": new DRMFreeDirectoryResolver()
+    },
+    [StorePlatform.ORIGIN]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()

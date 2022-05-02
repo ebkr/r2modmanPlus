@@ -28,7 +28,7 @@
                     <br />
                     <nav class='level' v-if='isOffline'>
                         <div class='level-item'>
-                            <a class='button is-info' @click='continueOffline()'>Continue offline</a>&nbsp;
+                            <a class='button is-info margin-right margin-right--half-width' @click='continueOffline()'>Continue offline</a>
                             <a class='button' @click='retryConnection()'>Try to reconnect</a>
                         </div>
                         <br /><br />
@@ -45,10 +45,9 @@
                                 </div>
                                 <div class='container' v-if="view === 'main'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-info-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>Did you know?</strong>
                                     </p>
                                     <ul class='margin-right'>
@@ -70,10 +69,9 @@
                                         </li>
                                     </ul>
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>Having trouble?</strong>
                                     </p>
                                     <p>
@@ -84,10 +82,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-address-card' />
                     </span>
-                                        &nbsp;
                                         <strong>About r2modman</strong>
                                     </p>
                                     <p>It's created by Ebkr, using Quasar.</p>
@@ -101,10 +98,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
                                     <p>
-                    <span class='icon'>
+                    <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        &nbsp;
                                         <strong>FAQ</strong>
                                     </p>
                                     <ul>
@@ -136,7 +132,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Progress, Link } from '../components/all';
+import { Hero, Link, Progress } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import axios from 'axios';
@@ -151,6 +147,7 @@ import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryR
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../providers/generic/file/FsProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
+import ConnectionProvider from '../providers/generic/connection/ConnectionProvider';
 
 @Component({
     components: {
@@ -192,19 +189,12 @@ export default class Splash extends Vue {
 
     private async getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
-        axios.get(this.activeGame.exclusionsUrl, {
-            onDownloadProgress: progress => {
-                this.loadingText = 'Downloading exclusions';
-                this.getRequestItem('ExclusionsList').setProgress((progress.loaded / progress.total) * 100);
-            },
-            timeout: 20000
-        }).then(response => {
-            this.getRequestItem('ExclusionsList').setProgress(100);
-            response.data.split('\n').forEach((exclude: string) => {
-                this.exclusionMap.set(exclude, true);
-            });
+        ConnectionProvider.instance.getExclusions(percentageProgress => {
+            this.loadingText = 'Downloading exclusions';
+            this.getRequestItem('ExclusionsList').setProgress(percentageProgress);
+        }).then(exclusions => {
+            this.exclusionMap = exclusions;
             ThunderstorePackages.EXCLUSIONS = this.exclusionMap;
-        }).finally(() => {
             this.getThunderstoreMods(0);
         });
     }
@@ -295,7 +285,7 @@ export default class Splash extends Vue {
     }
 
     private async ensureWrapperInGameFolder() {
-        const wrapperName = process.platform === 'darwin' ? 'macos_wrapper.sh' : 'linux_wrapper.sh';
+        const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
         console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
         try {
             await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));

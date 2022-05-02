@@ -44,8 +44,10 @@ export default class SettingsDexieStore extends Dexie {
             store[value] = `++id,settings`;
         });
 
-        // V22 is the final version for this file.
-        this.version(22).stores(store);
+        // Add all games to store. Borked v2-3 locally
+        // Increment per game or change to settings.
+        // V33 is the final version for this file.
+        this.version(33).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");

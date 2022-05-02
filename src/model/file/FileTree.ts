@@ -32,7 +32,7 @@ export default class FileTree {
                 }
             }
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return Promise.resolve(
                 new R2Error(
                     `Error reading directory in FileTree build for directory: ${location}`,
@@ -104,6 +104,9 @@ export default class FileTree {
         return [...this.files];
     }
 
+    /**
+     * Returns an array of files with absolute (full) paths
+     */
     public getRecursiveFiles(): string[] {
         const files = [...this.files];
         this.directories.forEach(tree => {

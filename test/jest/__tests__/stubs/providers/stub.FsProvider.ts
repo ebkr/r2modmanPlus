@@ -63,6 +63,7 @@ export default class StubFsProvider extends FsProvider {
         throw new Error("Stub access must be mocked or spied");
     }
 
-
-
+    async setModifiedTime(path: string, time: Date): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
 }

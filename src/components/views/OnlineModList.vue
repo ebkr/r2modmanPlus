@@ -19,12 +19,12 @@
             <template v-slot:title>
                 <span v-if="key.isPinned()" class='has-tooltip-left'
                       data-tooltip='Pinned on Thunderstore'>
-                    <span class="tag is-info">Pinned</span>&nbsp;
+                    <span class="tag is-info margin-right margin-right--half-width">Pinned</span>
                     <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
                 </span>
                 <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
                       data-tooltip='This mod is potentially broken'>
-                    <span class="tag is-danger">Deprecated</span>&nbsp;
+                    <span class="tag is-danger margin-right margin-right--half-width">Deprecated</span>
                     <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
                 </span>
                 <span v-else class='selectable'>
@@ -32,11 +32,18 @@
                 </span>
             </template>
             <template v-slot:other-icons>
-                                <span class='card-header-icon has-tooltip-left'
-                                      data-tooltip='Mod already installed'
-                                      v-if="isThunderstoreModInstalled(key)">
-                                    <i class='fas fa-check'></i>
-                                </span>
+                <span class='card-header-icon' v-if="key.getDonationLink()">
+                    <Link :url="key.getDonationLink()" target="external" tag="span">
+                        <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                            <i class='fas fa-heart'></i>
+                        </span>
+                    </Link>
+                </span>
+                <span class='card-header-icon has-tooltip-left'
+                      data-tooltip='Mod already installed'
+                      v-if="isThunderstoreModInstalled(key)">
+                    <i class='fas fa-check'></i>
+                </span>
             </template>
             <template v-slot:description>
                 <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
@@ -46,6 +53,9 @@
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
                 View on Website
             </Link>
+            <template v-if="key.getDonationLink() !== undefined">
+                <DonateButton :mod="key"/>
+            </template>
             <div class='card-footer-item non-selectable'>
                 <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
             </div>
@@ -59,19 +69,20 @@
 
 <script lang="ts">
 
-    import { Prop, Vue } from 'vue-property-decorator';
-    import Component from 'vue-class-component';
-    import ThunderstoreMod from '../../model/ThunderstoreMod';
-    import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import { ExpandableCard, Link } from '../all';
-    import DownloadModModal from './DownloadModModal.vue';
-    import ManifestV2 from '../../model/ManifestV2';
-    import R2Error from '../../model/errors/R2Error';
-    import GameManager from '../../model/game/GameManager';
-    import Timeout = NodeJS.Timeout;
+import { Prop, Vue } from 'vue-property-decorator';
+import Component from 'vue-class-component';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import { ExpandableCard, Link } from '../all';
+import DownloadModModal from './DownloadModModal.vue';
+import ManifestV2 from '../../model/ManifestV2';
+import R2Error from '../../model/errors/R2Error';
+import DonateButton from '../../components/buttons/DonateButton.vue';
+import Timeout = NodeJS.Timeout;
 
-    @Component({
+@Component({
         components: {
+            DonateButton,
             DownloadModModal,
             ExpandableCard,
             Link

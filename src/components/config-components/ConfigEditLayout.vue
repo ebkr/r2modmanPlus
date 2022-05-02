@@ -7,8 +7,7 @@
         />
         <br/>
         <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info" @click="save">Save</button>
-            &nbsp;
+            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
         <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="margin-right non-selectable">
@@ -38,14 +37,25 @@
                             <span class="pre" v-else>{{getCommentDisplay(line.comments)}}</span>
                         </p>
                         <br/>
-                        <template v-if="line.allowedValues.length > 0">
-                            <select class="select select--full" v-model="line.value">
-                                <option v-for="(opt, index) in line.allowedValues" :key="`opt-${key}-${configFile.getName()}-${variable}-${index}`">
-                                    {{opt}}
-                                </option>
-                            </select>
-                        </template>
-                        <input class="input" v-model="line.value" v-else/>
+                        <div class='settings-input-container'>
+                            <template v-if='line.hasRange()'>
+                                <input
+                                    type="range"
+                                    class="slider is-fullwidth is-circle is-small"
+                                    v-on:input="e => setConfigLineValue(line, e.target.value)"
+                                    :value="parseFloat(line.value)"
+                                    :min="line.getMinRange()"
+                                    :max="line.getMaxRange()" />
+                            </template>
+                            <template v-if="line.allowedValues.length > 0">
+                                <select class="select select--full" v-model="line.value">
+                                    <option v-for="(opt, index) in line.allowedValues" :key="`opt-${key}-${configFile.getName()}-${variable}-${index}`">
+                                        {{opt}}
+                                    </option>
+                                </select>
+                            </template>
+                            <input class="input" v-model="line.value" v-else/>
+                        </div>
                     </div>
                 </div>
                 <br/>
@@ -59,15 +69,15 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import ConfigLine from '../../model/file/ConfigLine';
-    import FsProvider from '../../providers/generic/file/FsProvider';
-    import ConfigFile from '../../model/file/ConfigFile';
-    import Hero from '../Hero.vue';
-    import QuillEditor from '../QuillEditor.vue';
-    import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import ConfigLine from '../../model/file/ConfigLine';
+import FsProvider from '../../providers/generic/file/FsProvider';
+import ConfigFile from '../../model/file/ConfigFile';
+import Hero from '../Hero.vue';
+import QuillEditor from '../QuillEditor.vue';
+import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 
-    @Component({
+@Component({
         components: { Hero, QuillEditor }
     })
     export default class ConfigEditLayout extends Vue {
@@ -148,6 +158,9 @@
             this.dumpedConfigVariables = JSON.parse(JSON.stringify(this.dumpedConfigVariables));
         }
 
+        setConfigLineValue(line: ConfigLine, value: number) {
+            line.value = value.toString();
+        }
 
     }
 

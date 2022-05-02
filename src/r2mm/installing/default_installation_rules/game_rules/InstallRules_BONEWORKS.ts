@@ -5,7 +5,7 @@ export default function(): CoreRuleType {
 
     return {
         gameName: 'BONEWORKS',
-        relativeFileExclusions: ["manifest.json", "icon.png", "README.md"],
+        relativeFileExclusions: ["manifest.json", "icon.png", "README.md", "LICENCE"],
         rules: [
             {
                 route: path.join('Mods'),
@@ -21,6 +21,12 @@ export default function(): CoreRuleType {
                 subRoutes: []
             },
             {
+                route: path.join('UserLibs'),
+                defaultFileExtensions: ['.lib.dll'],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            },
+            {
                 route: path.join('MelonLoader'),
                 defaultFileExtensions: [],
                 trackingMethod: 'STATE',
@@ -32,8 +38,9 @@ export default function(): CoreRuleType {
                         subRoutes: []
                     },
                     {
+                        // Unused but kept so anything installed here isn't kept there.
                         route: path.join('Libs'),
-                        defaultFileExtensions: ['.lib.dll'],
+                        defaultFileExtensions: [],
                         trackingMethod: 'STATE',
                         subRoutes: []
                     }

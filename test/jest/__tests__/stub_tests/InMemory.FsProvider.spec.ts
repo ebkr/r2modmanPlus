@@ -45,4 +45,29 @@ describe("InMemoryFsProvider", () => {
         expect(content.toString()).toBe("test_content");
     });
 
+    test("SetModifiedTime", async () => {
+        const testFilePath = path.join("Test", "TestFile");
+        await FsProvider.instance.mkdirs(path.dirname(testFilePath));
+        await FsProvider.instance.writeFile(testFilePath, "test_content");
+        const statOriginal = await FsProvider.instance.stat(testFilePath);
+        const dateWritten = statOriginal.mtime;
+        console.log("Original time:", statOriginal.mtime.getTime());
+        const fakeDate = new Date();
+        fakeDate.setFullYear(2021);
+        console.log("Fake time:", fakeDate.getTime());
+        await FsProvider.instance.setModifiedTime(testFilePath, fakeDate);
+        const statNew = await FsProvider.instance.stat(testFilePath);
+        const modifiedDate = statNew.mtime;
+        console.log("New time:", statNew.mtime.getTime());
+        expect(dateWritten.getTime()).toBeGreaterThan(modifiedDate.getTime());
+    });
+
+    test("File size", async () => {
+        const testFilePath = path.join("Test", "TestFile");
+        await FsProvider.instance.mkdirs(path.dirname(testFilePath));
+        await FsProvider.instance.writeFile(testFilePath, "test_content");
+        const stat = await FsProvider.instance.stat(testFilePath);
+        expect(stat.size).toBe("test_content".length);
+    });
+
 });

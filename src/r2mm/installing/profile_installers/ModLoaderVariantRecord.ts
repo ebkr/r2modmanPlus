@@ -9,6 +9,7 @@ import { PackageLoader } from '../../../model/installing/PackageLoader';
  */
 export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     RiskOfRain2: [new ModLoaderPackageMapping("bbepis-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    ThunderstoreDev: [new ModLoaderPackageMapping("xiaoxiao921-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     DysonSphereProgram: [new ModLoaderPackageMapping("xiaoye97-BepInEx", "BepInExPack", PackageLoader.BEPINEX)],
     Valheim: [
         new ModLoaderPackageMapping("denikson-BepInExPack_Valheim", "BepInExPack_Valheim", PackageLoader.BEPINEX),
@@ -29,4 +30,18 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     NASB: [new ModLoaderPackageMapping("BepInEx-BepInExPack_NASB", "BepInExPack_NASB", PackageLoader.BEPINEX)],
     Inscryption: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Inscryption", "BepInExPack_Inscryption", PackageLoader.BEPINEX)],
     Starsand: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Starsand", "BepInExPack_Starsand", PackageLoader.BEPINEX)],
+    CatsAreLiquidABP: [new ModLoaderPackageMapping("BepInEx-BepInExPack_CaLABP", "BepInExPack_CaLABP", PackageLoader.BEPINEX)],
+    PotionCraft: [new ModLoaderPackageMapping("BepInEx-BepInExPack_PotionCraft", "BepInExPack_PotionCraft", PackageLoader.BEPINEX)],
+    NearlyDead: [new ModLoaderPackageMapping("BepInEx-BepInExPack_NearlyDead", "BepInExPack_NearlyDead", PackageLoader.BEPINEX)],
+    AGAINST: [new ModLoaderPackageMapping("BepInEx-BepInExPack_AGAINST", "BepInExPack_AGAINST", PackageLoader.BEPINEX)],
+    RogueTower: [new ModLoaderPackageMapping("bbepis-BepInEx_Rogue_Tower", "", PackageLoader.BEPINEX)],
+    HOTDS: [new ModLoaderPackageMapping("BepInEx-BepInExPack_HOTDS", "BepInExPack_HOTDS", PackageLoader.BEPINEX)],
+    ForTheKing: [new ModLoaderPackageMapping("BepInEx-BepInExPack_ForTheKing", "BepInExPack_ForTheKing", PackageLoader.BEPINEX)],
+    Subnautica: [
+        new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_Subnautica", "BepInExPack_Subnautica", PackageLoader.BEPINEX),
+        new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_Subnautica_Experimental", "BepInExPack_Subnautica_Experimental", PackageLoader.BEPINEX)
+    ],
+    SubnauticaBZ: [new ModLoaderPackageMapping("Subnautica_Modding-BepInExPack_BelowZero", "BepInExPack_BelowZero", PackageLoader.BEPINEX)],
+    CoreKeeper: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Core_Keeper", "BepInExPack_Core-Keeper", PackageLoader.BEPINEX)],
+    Titanfall2: [new ModLoaderPackageMapping("Northstar-Northstar", "Northstar", PackageLoader.NORTHSTAR)],
 }

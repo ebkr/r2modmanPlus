@@ -18,6 +18,8 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { PackageLoader } from '../../../model/installing/PackageLoader';
 
+const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
+
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private rule: CoreRuleType;
@@ -40,9 +42,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                             return tree;
                         }
                         for (const value of tree.getRecursiveFiles()) {
-                            if (mode === ModMode.DISABLED) {
+                            if (mode === ModMode.DISABLED && mod.isEnabled()) {
                                 await FsProvider.instance.rename(value, `${value}.old`);
-                            } else {
+                            } else if (mode === ModMode.ENABLED && !mod.isEnabled()) {
                                 if (value.toLowerCase().endsWith(".old")) {
                                     await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
                                 }
@@ -69,8 +71,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                         } else {
                             if (await FsProvider.instance.exists(path.join(location, value))) {
                                 await FsProvider.instance.unlink(path.join(location, value));
-                                await FsProvider.instance.copyFile(key, path.join(location, value));
                             }
+                            await FsProvider.instance.copyFile(key, path.join(location, value));
                         }
                     }
                 }
@@ -79,6 +81,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             if (e instanceof R2Error) {
                 return e;
             } else {
+                // @ts-ignore
                 const err: Error = e;
                 return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
             }
@@ -147,20 +150,27 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        const bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+    private async basicModLoaderInstaller(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        let bepInExRoot: string;
+        if (modLoaderMapping.rootFolder.trim().length > 0) {
+            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        } else {
+            bepInExRoot = path.join(bieLocation);
+        }
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
-            if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-            } else {
-                await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+            if (!basePackageFiles.includes(item.toLowerCase())) {
+                if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
+                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                } else {
+                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                }
             }
         }
     }
 
     private async installMelonLoader(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         for (const item of (await FsProvider.instance.readdir(mlLocation))) {
-            if (!["manifest.json", "readme.md", "icon.png"].includes(item.toLowerCase())) {
+            if (!basePackageFiles.includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
                     await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
                 } else {
@@ -172,8 +182,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await this.installBepInEx(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
     }
@@ -184,7 +195,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const file of tree.getFiles()) {
             // Find matching rule for file based on extension name.
             // If a matching extension name is longer (EG: .plugin.dll vs .dll) then assume the longer one is the correct match.
-            let matchingRule: ManagedRule;
+            let matchingRule: ManagedRule | undefined;
             try {
                 matchingRule = flatRules.filter(value => value.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase())))
                     .reduce((previousValue, currentValue) => {
@@ -198,6 +209,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             } catch (e) {
                 // No matching rule
                 matchingRule = flatRules.find(value => value.isDefaultLocation)!;
+            }
+            if (matchingRule === undefined) {
+                continue;
             }
             const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, this.rule);
             const updatedArray = installationIntent.get(subType) || [];
@@ -319,7 +333,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new FileWriteError(
                     'Failed to delete BepInEx file from profile root',
                     err.message,
@@ -342,7 +356,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new R2Error(
                     "Failed to remove files",
                     err.message,

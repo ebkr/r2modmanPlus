@@ -88,13 +88,13 @@
 					<code v-if="doorstopTarget.length > 0">
 						{{ doorstopTarget }}
 					</code>
-                    <code v-else>These parameters will be available after installing BepInEx.</code>
+                    <code v-else>These parameters will be available after installing a mod loader.</code>
 				</p>
 				<br/>
 				<p>Vanilla:
 					<br>
 					<code>
-						--doorstop-enable false
+						{{ vanillaLaunchArgs }}
 					</code>
 				</p>
 				<br/>
@@ -176,7 +176,7 @@
                 <div>
                     <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
                         <input type="radio" :id="`cat-filter-${key}-${index}`" name="categoryFilterCondition" :value=key :checked="index === 0 ? true : undefined" v-model="categoryFilterMode">
-                        <label :for="`cat-filter-${key}-${index}`">&nbsp;{{ key }}</label>
+                        <label :for="`cat-filter-${key}-${index}`"><span class="margin-right margin-right--half-width"/>{{ key }}</label>
                     </div>
                 </div>
             </template>
@@ -220,10 +220,9 @@
                                 </div>
                                 <div class="input-group margin-right">
                                     <label for="thunderstore-sort">Sort</label>
-                                    <select id="thunderstore-sort" class='select select--content-spacing' v-model="sortingStyleModel">
+                                    <select id="thunderstore-sort" class='select select--content-spacing margin-right margin-right--half-width' v-model="sortingStyleModel">
                                         <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
                                     </select>
-                                    <span>&nbsp;</span>
                                     <select class='select select--content-spacing' v-model="sortingDirectionModel"
                                             :disabled="sortingStyleModel === 'Default'">
                                         <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
@@ -327,7 +326,6 @@ import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerPro
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import StatusEnum from '../model/enums/StatusEnum';
 import SortingStyle from '../model/enums/SortingStyle';
 import SortingDirection from '../model/enums/SortingDirection';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
@@ -357,6 +355,7 @@ import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
+import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 
 @Component({
 		components: {
@@ -417,6 +416,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
         importingLocalMod: boolean = false;
 
         doorstopTarget: string = "";
+        vanillaLaunchArgs: string = "";
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
@@ -522,6 +522,10 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
 		get localModList() : ManifestV2[] {
 		    if (this.contextProfile !== null) {
+                GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile!).then(async instructions => {
+                    this.doorstopTarget = instructions.moddedParameters;
+                    this.vanillaLaunchArgs = instructions.vanillaParameters;
+                });
                 GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
                     if (target instanceof R2Error) {
                         this.doorstopTarget = "";
@@ -648,7 +652,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                             this.showRor2IncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-                        const err: Error = e;
+                        const err: Error = e as Error;
                         this.showError(new R2Error(
                             "Failed to change the game directory",
                             err.message,
@@ -704,7 +708,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
                             this.showSteamIncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-				        const err: Error = e;
+				        const err: Error = e as Error;
 				        this.showError(new R2Error(
 				            "Failed to change the Steam directory",
                             err.message,
@@ -720,7 +724,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModList(this.contextProfile!);
+			const exportErr = await ProfileModList.exportModListToFile(this.contextProfile!);
 			if (exportErr instanceof R2Error) {
 				this.showError(exportErr);
 			}

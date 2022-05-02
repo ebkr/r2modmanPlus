@@ -354,6 +354,10 @@ code {
 
 .margin-right {
     margin-right: 1em;
+
+    &--half-width {
+        margin-right: 0.5rem;
+    }
 }
 
 .margin-bottom {
@@ -446,4 +450,11 @@ code {
 
 .inherit-background-colour {
     background-color: $scheme-background;
+}
+
+.settings-input-container {
+    display: flex;
+    gap: 16px;
+    height: 40px;
+    align-items: center;
 }

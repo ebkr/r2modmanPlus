@@ -18,7 +18,7 @@ export default class EgsRunnerProvider extends GameRunnerProvider {
                 (await FsProvider.instance.readdir(corePath))
                     .filter((x: string) => ["BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
         }
     }
@@ -44,7 +44,7 @@ export default class EgsRunnerProvider extends GameRunnerProvider {
                 return new R2Error("doorstop_config.ini not found in profile folder", "BepInEx must be installed.", "https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F#corrupted-bepinex-installation");
             }
         } catch (e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new R2Error("Failed to update doorstop_config.ini", err.message, null);
         }
     }
@@ -91,14 +91,14 @@ export default class EgsRunnerProvider extends GameRunnerProvider {
                 try {
                     await fs.unlink(path.join(realGameDir, "doorstop_config.ini"));
                 } catch (e) {
-                    const err: Error = e;
+                    const err: Error = e as Error;
                     return new R2Error("Couldn't remove doorstop_config.ini from game directory", err.message, null);
                 }
             }
             try {
                 await fs.copyFile(doorstopConfigPath, path.join(realGameDir, "doorstop_config.ini"));
             } catch (e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new R2Error("Couldn't copy doorstop_config.ini to game directory", err.message, null);
             }
         }

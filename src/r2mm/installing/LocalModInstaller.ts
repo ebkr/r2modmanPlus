@@ -2,7 +2,7 @@ import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
-import * as path from "path";
+import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
@@ -25,7 +25,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                 }
                 return await this.extractToCacheWithManifestData(profile, zipFile, mod, callback);
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new R2Error('Failed to convert manifest to JSON', err.message, null);
             }
         } else {
@@ -55,7 +55,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                         try {
                             await FsProvider.instance.unlink(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"));
                         } catch (e) {
-                            const err: Error = e;
+                            const err: Error = e as Error;
                             callback(false, new R2Error("Failed to unlink manifest from cache", err.message, null));
                         }
                     }
@@ -98,7 +98,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             callback(true, null);
             return Promise.resolve();
         } catch (e) {
-            callback(false, e);
+            callback(false, new R2Error("Error moving file to cache", (e as Error).message, null));
         }
     }
 }

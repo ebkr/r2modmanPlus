@@ -7,7 +7,6 @@ import { promisify } from 'util';
 import path from 'path';
 import Profile from '../../../../../model/Profile';
 import GameDirectoryResolverProvider from '../../../../ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../../../../../r2mm/manager/linux/GameDirectoryResolver';
 import FsProvider from '../../../file/FsProvider';
 import Game from '../../../../../model/game/Game';
 import { homedir } from 'os';
@@ -61,8 +60,8 @@ export default class DarwinMLSteamGameRunnerProvider extends GameRunnerProvider 
             await exec(cmd);
         }catch(err){
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
-            LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-            throw new R2Error('Error starting Steam', err.message, 'Ensure that the Steam directory has been set correctly in the settings');
+            LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
+            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
         }
     }
 

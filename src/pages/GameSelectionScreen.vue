@@ -9,7 +9,7 @@
                 <div v-if="selectedGame !== null">
                     <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
                         <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`">&nbsp;{{ platform.storePlatform }}</label>
+                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
                     </div>
                 </div>
             </template>
@@ -197,7 +197,6 @@ import { GameInstanceType } from '../model/game/GameInstanceType';
 import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
 import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
 import { PackageLoader } from '../model/installing/PackageLoader';
-import NoResolutionConflictManagement from '../r2mm/installing/NoResolutionConflictManagement';
 
 @Component({
     components: {
@@ -318,9 +317,11 @@ export default class GameSelectionScreen extends Vue {
 
             switch (this.selectedGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
                     break;
                 case PackageLoader.MELON_LOADER:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+                case PackageLoader.NORTHSTAR:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
             }
 
@@ -355,9 +356,11 @@ export default class GameSelectionScreen extends Vue {
 
             switch (this.selectedGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
                     break;
                 case PackageLoader.MELON_LOADER:
+                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+                case PackageLoader.NORTHSTAR:
                     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
             }
 

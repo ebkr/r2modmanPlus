@@ -12,12 +12,11 @@
 
                     <div class="input-group margin-right">
                         <label for="local-sort-order" class="non-selectable">Sort</label>
-                        <select id="local-sort-order" class="select select--content-spacing" v-model="sortOrder">
+                        <select id="local-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
                             <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
                                 {{key}}
                             </option>
                         </select>
-                        <span>&nbsp;</span>
                         <select id="local-sort-direction" class="select select--content-spacing" v-model="sortDirection">
                             <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
                                 {{key}}
@@ -120,7 +119,9 @@
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
                    @start="drag=canShowSortIcons(); $emit('sort-start')"
-                   @end="drag=false; $emit('sort-end')">
+                   @end="drag=false; $emit('sort-end')"
+                   :force-fallback="true"
+                   :scroll-sensitivity="100">
             <expandable-card
                 v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
                 @moveUp="moveUp(key)"
@@ -137,12 +138,12 @@
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
                     <span :class="['non-selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
-                        <span v-if="key.isDeprecated()" class="tag is-danger">
+                        <span v-if="key.isDeprecated()" class="tag is-danger margin-right margin-right--half-width">
                             Deprecated
-                        </span>&nbsp;
-                        <span v-if="!key.isEnabled()" class="tag is-warning">
+                        </span>
+                        <span v-if="!key.isEnabled()" class="tag is-warning margin-right margin-right--half-width">
                             Disabled
-                        </span>&nbsp;
+                        </span>
                         <span class="card-title selectable">
                             <template v-if="key.isEnabled()">
                                 {{key.getDisplayName()}} <span class="card-byline selectable">by {{key.getAuthorName()}}</span>
@@ -155,6 +156,13 @@
                 </template>
                 <template v-slot:other-icons>
                     <!-- Show update and missing dependency icons -->
+                    <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
+                        <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
+                            <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                                <i class='fas fa-heart'></i>
+                            </span>
+                        </Link>
+                    </span>
                     <span class='card-header-icon has-tooltip-left'
                           @click.prevent.stop="updateMod(key)"
                           data-tooltip='An update is available' v-if="!isLatest(key)">
@@ -185,7 +193,7 @@
                 <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
                       :target="'external'"
                       class="card-footer-item">
-                        <i class='fas fa-code-branch'>&nbsp;&nbsp;</i>
+                        <i class='fas fa-code-branch margin-right margin-right--half-width'></i>
                         {{key.getVersionNumber().toString()}}
                 </Link>
                 <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
@@ -193,6 +201,11 @@
                    @click="downloadDependency(getMissingDependencies(key)[0])">
                     Download dependency
                 </a>
+                <template v-if="getThunderstoreModFromMod(key) !== undefined">
+                    <template v-if="getThunderstoreModFromMod(key).getDonationLink() !== undefined">
+                        <DonateButton :mod="getThunderstoreModFromMod(key)"/>
+                    </template>
+                </template>
             </expandable-card>
         </draggable>
 
@@ -203,34 +216,36 @@
 
 <script lang="ts">
 
-    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-    import ManifestV2 from '../../model/ManifestV2';
-    import ProfileModList from '../../r2mm/mods/ProfileModList';
-    import R2Error from '../../model/errors/R2Error';
-    import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-    import ModBridge from '../../r2mm/mods/ModBridge';
-    import Mod from '../../model/Mod';
-    import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
-    import Dependants from '../../r2mm/mods/Dependants';
-    import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-    import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
-    import Profile from '../../model/Profile';
-    import ThunderstoreMod from '../../model/ThunderstoreMod';
-    import DownloadModModal from './DownloadModModal.vue';
-    import { ExpandableCard, Link, Modal } from '../all';
-    import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
-    import ModListSort from '../../r2mm/mods/ModListSort';
-    import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-    import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-    import { SortNaming } from '../../model/real_enums/sort/SortNaming';
-    import GameManager from '../../model/game/GameManager';
-    import Game from '../../model/game/Game';
-    import Timeout = NodeJS.Timeout;
-    import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-    import Draggable from "vuedraggable";
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import ManifestV2 from '../../model/ManifestV2';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import R2Error from '../../model/errors/R2Error';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import ModBridge from '../../r2mm/mods/ModBridge';
+import Mod from '../../model/Mod';
+import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
+import Dependants from '../../r2mm/mods/Dependants';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
+import Profile from '../../model/Profile';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import DownloadModModal from './DownloadModModal.vue';
+import { ExpandableCard, Link, Modal } from '../all';
+import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
+import ModListSort from '../../r2mm/mods/ModListSort';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
+import { SortNaming } from '../../model/real_enums/sort/SortNaming';
+import GameManager from '../../model/game/GameManager';
+import Game from '../../model/game/Game';
+import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import Draggable from 'vuedraggable';
+import DonateButton from '../../components/buttons/DonateButton.vue';
+import Timeout = NodeJS.Timeout;
 
-    @Component({
+@Component({
         components: {
+            DonateButton,
             DownloadModModal,
             Link,
             ExpandableCard,
@@ -330,6 +345,10 @@
             });
         }
 
+        getThunderstoreModFromMod(mod: ManifestV2) {
+            return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
+        }
+
         async moveUp(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
@@ -412,7 +431,7 @@
                 }
             } catch (e) {
                 // Failed to disable mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit("error", err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
@@ -463,7 +482,7 @@
                 }
             } catch (e) {
                 // Failed to uninstall mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit('error', err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
@@ -527,7 +546,7 @@
                 }
             } catch (e) {
                 // Failed to disable mod.
-                const err: R2Error = e;
+                const err: Error = e as Error;
                 this.$emit('error', err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }

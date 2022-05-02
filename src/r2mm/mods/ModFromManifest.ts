@@ -1,4 +1,4 @@
-import VersionNumber from "../../model/VersionNumber";
+import VersionNumber from '../../model/VersionNumber';
 
 import * as yaml from 'yaml';
 import * as path from 'path';
@@ -6,7 +6,7 @@ import Mod from '../../model/Mod';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
-import PathResolver from "../manager/PathResolver";
+import PathResolver from '../manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 
 const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
@@ -30,7 +30,7 @@ export default class ModFromManifest {
                 try {
                     mod.setIcon(path.join(cacheDirectory, modName, versionNumber.toString(), 'icon.png'));
                 } catch(e) {
-                    const err: Error = e;
+                    const err: Error = e as Error;
                     return new FileNotFoundError(
                         `Unable to locate icon.png for mod: ${modName}`,
                         err.message,
@@ -39,7 +39,7 @@ export default class ModFromManifest {
                 }
                 return mod;
             } catch(e) {
-                const err: Error = e;
+                const err: Error = e as Error;
                 return new YamlParseError(
                     `Failed to parse manifest of mod: ${modName}`,
                     err.message,
@@ -47,7 +47,7 @@ export default class ModFromManifest {
                 );
             }
         } catch(e) {
-            const err: Error = e;
+            const err: Error = e as Error;
             return new FileNotFoundError(
                 `Error reading manifest file of mod: ${modName}`,
                 err.message,
