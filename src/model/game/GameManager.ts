@@ -14,7 +14,10 @@ export default class GameManager {
         new Game('Risk of Rain 2', 'RiskOfRain2', 'RiskOfRain2',
             'Risk of Rain 2', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
             'https://thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "632360")], "RiskOfRain2.jpg",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "632360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "4b3dcc5723454a47a9112d8fe8fd5f5c"),
+            ], "RiskOfRain2.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ROR2"]),
 
         new Game('Thunderstore Dev', 'ThunderstoreDev', 'ThunderstoreBeta',
@@ -174,7 +177,37 @@ export default class GameManager {
             ['dyingsun.exe'], 'dyingsun_Data',
             'https://hotds.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, '283160')], "HOTDS.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds'])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds']),
+
+        new Game('For The King', 'ForTheKing', 'ForTheKing',
+            'For The King', ['FTK.exe'], 'FTK_Data',
+            'https://for-the-king.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "527230"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Discus")], "ForTheKing.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ftk"]),
+
+        new Game('Subnautica', 'Subnautica', 'Subnautica',
+            'Subnautica', ['Subnautica.exe'], 'Subnautica_Data',
+            'https://subnautica.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "264710"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar")], "Subnautica.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
+            'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
+            'https://belowzero.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+
+        new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
+            "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
+            'https://core-keeper.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
+
+        new Game("Titanfall 2", "Titanfall2", "Titanfall2",
+            "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
+            'https://northstar.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
 
     ];
 

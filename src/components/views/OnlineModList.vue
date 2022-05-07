@@ -32,6 +32,13 @@
                 </span>
             </template>
             <template v-slot:other-icons>
+                <span class='card-header-icon' v-if="key.getDonationLink()">
+                    <Link :url="key.getDonationLink()" target="external" tag="span">
+                        <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                            <i class='fas fa-heart'></i>
+                        </span>
+                    </Link>
+                </span>
                 <span class='card-header-icon has-tooltip-left'
                       data-tooltip='Mod already installed'
                       v-if="isThunderstoreModInstalled(key)">
@@ -46,6 +53,9 @@
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
                 View on Website
             </Link>
+            <template v-if="key.getDonationLink() !== undefined">
+                <DonateButton :mod="key"/>
+            </template>
             <div class='card-footer-item non-selectable'>
                 <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
             </div>
@@ -67,10 +77,12 @@ import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
+import DonateButton from '../../components/buttons/DonateButton.vue';
 import Timeout = NodeJS.Timeout;
 
 @Component({
         components: {
+            DonateButton,
             DownloadModModal,
             ExpandableCard,
             Link

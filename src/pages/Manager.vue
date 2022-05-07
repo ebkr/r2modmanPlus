@@ -88,13 +88,13 @@
 					<code v-if="doorstopTarget.length > 0">
 						{{ doorstopTarget }}
 					</code>
-                    <code v-else>These parameters will be available after installing BepInEx.</code>
+                    <code v-else>These parameters will be available after installing a mod loader.</code>
 				</p>
 				<br/>
 				<p>Vanilla:
 					<br>
 					<code>
-						--doorstop-enable false
+						{{ vanillaLaunchArgs }}
 					</code>
 				</p>
 				<br/>
@@ -355,6 +355,7 @@ import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
+import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 
 @Component({
 		components: {
@@ -415,6 +416,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
         importingLocalMod: boolean = false;
 
         doorstopTarget: string = "";
+        vanillaLaunchArgs: string = "";
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
@@ -520,6 +522,10 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
 		get localModList() : ManifestV2[] {
 		    if (this.contextProfile !== null) {
+                GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile!).then(async instructions => {
+                    this.doorstopTarget = instructions.moddedParameters;
+                    this.vanillaLaunchArgs = instructions.vanillaParameters;
+                });
                 GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
                     if (target instanceof R2Error) {
                         this.doorstopTarget = "";

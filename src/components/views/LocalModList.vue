@@ -119,7 +119,9 @@
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
                    @start="drag=canShowSortIcons(); $emit('sort-start')"
-                   @end="drag=false; $emit('sort-end')">
+                   @end="drag=false; $emit('sort-end')"
+                   :force-fallback="true"
+                   :scroll-sensitivity="100">
             <expandable-card
                 v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
                 @moveUp="moveUp(key)"
@@ -154,6 +156,13 @@
                 </template>
                 <template v-slot:other-icons>
                     <!-- Show update and missing dependency icons -->
+                    <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
+                        <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
+                            <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
+                                <i class='fas fa-heart'></i>
+                            </span>
+                        </Link>
+                    </span>
                     <span class='card-header-icon has-tooltip-left'
                           @click.prevent.stop="updateMod(key)"
                           data-tooltip='An update is available' v-if="!isLatest(key)">
@@ -192,6 +201,11 @@
                    @click="downloadDependency(getMissingDependencies(key)[0])">
                     Download dependency
                 </a>
+                <template v-if="getThunderstoreModFromMod(key) !== undefined">
+                    <template v-if="getThunderstoreModFromMod(key).getDonationLink() !== undefined">
+                        <DonateButton :mod="getThunderstoreModFromMod(key)"/>
+                    </template>
+                </template>
             </expandable-card>
         </draggable>
 
@@ -226,10 +240,12 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
+import DonateButton from '../../components/buttons/DonateButton.vue';
 import Timeout = NodeJS.Timeout;
 
 @Component({
         components: {
+            DonateButton,
             DownloadModModal,
             Link,
             ExpandableCard,
@@ -327,6 +343,10 @@ import Timeout = NodeJS.Timeout;
                 return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
                     || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
             });
+        }
+
+        getThunderstoreModFromMod(mod: ManifestV2) {
+            return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
         }
 
         async moveUp(vueMod: any) {
