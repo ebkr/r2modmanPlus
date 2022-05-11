@@ -29,6 +29,7 @@ import InstallRules_Subnautica from '../default_installation_rules/game_rules/In
 import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
 import InstallRules_CoreKeeper from '../default_installation_rules/game_rules/InstallRules_CoreKeeper';
 import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/InstallRules_Titanfall2';
+import InstallRules_Peglin from '../default_installation_rules/game_rules/InstallRules_Peglin';
 
 export default class InstallationRuleApplicator {
 
@@ -63,6 +64,7 @@ export default class InstallationRuleApplicator {
             InstallRules_SubnauticaBZ(),
             InstallRules_CoreKeeper(),
             InstallRules_Titanfall2(),
+            InstallRules_Peglin(),
         ]
     }
 
