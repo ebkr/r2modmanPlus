@@ -30,6 +30,7 @@ import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/
 import InstallRules_CoreKeeper from '../default_installation_rules/game_rules/InstallRules_CoreKeeper';
 import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/InstallRules_Titanfall2';
 import InstallRules_Peglin from '../default_installation_rules/game_rules/InstallRules_Peglin';
+import InstallRules_VRising from '../default_installation_rules/game_rules/InstallRules_VRising';
 
 export default class InstallationRuleApplicator {
 
@@ -65,6 +66,7 @@ export default class InstallationRuleApplicator {
             InstallRules_CoreKeeper(),
             InstallRules_Titanfall2(),
             InstallRules_Peglin(),
+            InstallRules_VRising(),
         ]
     }
 
