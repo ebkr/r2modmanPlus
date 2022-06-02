@@ -4,6 +4,7 @@ import InstallRules_DysonSphereProgram from '../default_installation_rules/game_
 import InstallRules_Valheim from '../default_installation_rules/game_rules/InstallRules_Valheim';
 import InstallRules_GTFO from '../default_installation_rules/game_rules/InstallRules_GTFO';
 import InstallRules_Outward from '../default_installation_rules/game_rules/InstallRules_Outward';
+import InstallRules_OutwardDe from '../default_installation_rules/game_rules/InstallRules_OutwardDe';
 import InstallRules_TaleSpire from '../default_installation_rules/game_rules/InstallRules_TaleSpire';
 import InstallRules_H3VR from '../default_installation_rules/game_rules/InstallRules_H3VR';
 import InstallRules_ROUNDS from '../default_installation_rules/game_rules/InstallRules_ROUNDS';
@@ -42,6 +43,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Valheim(),
             InstallRules_GTFO(),
             InstallRules_Outward(),
+            InstallRules_OutwardDe(),
             InstallRules_TaleSpire(),
             InstallRules_H3VR(),
             InstallRules_ROUNDS(),
