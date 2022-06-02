@@ -13,6 +13,8 @@ import InstallationRuleApplicator from 'src/r2mm/installing/default_installation
 import NodeFs from 'src/providers/generic/file/NodeFs';
 import FileTree from 'src/model/file/FileTree';
 import R2Error from 'src/model/errors/R2Error';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import NoResolutionConflictManagement from 'src/r2mm/installing/NoResolutionConflictManagement';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -53,6 +55,7 @@ describe('NASB Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
+        ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
         const baseFolderStructurePath = path.join(__dirname, "../../../../../folder-structure-testing");
         const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
         if (tree instanceof R2Error) {

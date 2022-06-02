@@ -12,6 +12,8 @@ import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManageme
 import StateTracker from 'src/model/installing/StateTracker';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import GameManager from 'src/model/game/GameManager';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import NoResolutionConflictManagement from 'src/r2mm/installing/NoResolutionConflictManagement';
 
 let sandbox = Sinon.createSandbox();
 let mlProfileInstaller: GenericProfileInstaller;
@@ -45,6 +47,8 @@ describe("State testing", () => {
 
             const fsStub = sandbox.stub(FsProvider.instance);
             FsProvider.provide(() => fsStub);
+
+            ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
 
             fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state")).returns(Promise.resolve(true));
             fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(false));

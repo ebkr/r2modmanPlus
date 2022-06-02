@@ -13,6 +13,8 @@ import InstallationRuleApplicator from 'src/r2mm/installing/default_installation
 import NodeFs from 'src/providers/generic/file/NodeFs';
 import FileTree from 'src/model/file/FileTree';
 import R2Error from 'src/model/errors/R2Error';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import NoResolutionConflictManagement from 'src/r2mm/installing/NoResolutionConflictManagement';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -53,6 +55,7 @@ describe('GTFO Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
+        ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
         const baseFolderStructurePath = path.join(__dirname, "../../../../../folder-structure-testing");
         const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
         if (tree instanceof R2Error) {
@@ -138,6 +141,7 @@ describe('GTFO Install Logic', () => {
             // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
             [path.join("BIE", "GameSpecific", "GTFO", "Assets"), "BepInEx"],
+            [path.join("BIE", "GameSpecific", "GTFO", "PersistentData"), path.join("BepInEx", "plugins")],
         ]
 
         InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");

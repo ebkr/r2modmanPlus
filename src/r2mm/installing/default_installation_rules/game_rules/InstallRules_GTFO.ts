@@ -11,7 +11,14 @@ export default function(): CoreRuleType {
                 isDefaultLocation: true,
                 defaultFileExtensions: [".dll"],
                 trackingMethod: "SUBDIR",
-                subRoutes: []
+                subRoutes: [
+                    {
+                        route: path.join("PersistentData"),
+                        defaultFileExtensions: [],
+                        trackingMethod: "STATE",
+                        subRoutes: []
+                    }
+                ]
             },
             {
                 route: path.join("BepInEx", "core"),
@@ -48,7 +55,7 @@ export default function(): CoreRuleType {
                 defaultFileExtensions: [],
                 trackingMethod: "STATE",
                 subRoutes: []
-            }
+            },
         ]
     }
 

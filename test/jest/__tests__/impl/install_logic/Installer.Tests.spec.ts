@@ -11,6 +11,8 @@ import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import InstallationRules from 'src/r2mm/installing/InstallationRules';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import NoResolutionConflictManagement from 'src/r2mm/installing/NoResolutionConflictManagement';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -26,6 +28,7 @@ describe('Installer Tests', () => {
             const inMemoryFs = new InMemoryFsProvider();
             FsProvider.provide(() => inMemoryFs);
             InMemoryFsProvider.clear();
+            ConflictManagementProvider.provide(() => new NoResolutionConflictManagement());
             PathResolver.MOD_ROOT = 'MODS';
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
