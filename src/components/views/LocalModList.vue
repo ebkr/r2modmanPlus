@@ -439,7 +439,6 @@ import Timeout = NodeJS.Timeout;
         }
 
         async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
-            console.log("Disabling")
             for (let mod of mods) {
                 const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
                 if (disableErr instanceof R2Error) {

@@ -42,12 +42,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                             return tree;
                         }
                         for (const value of tree.getRecursiveFiles()) {
-                            console.log("Changing sd:", value)
                             if (mode === ModMode.DISABLED && mod.isEnabled()) {
-                                console.log("Disabling");
                                 await FsProvider.instance.rename(value, `${value}.old`);
                             } else if (mode === ModMode.ENABLED && !mod.isEnabled()) {
-                                console.log("Enabling");
                                 if (value.toLowerCase().endsWith(".old")) {
                                     await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
                                 }
@@ -61,20 +58,14 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private async applyModModeForState(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         try {
-            console.log("Applying mod mode:", mode);
             const modStateFilePath = path.join(location, "_state", `${mod.getName()}-state.yml`);
             if (await FsProvider.instance.exists(modStateFilePath)) {
-                console.log("State file exists")
                 const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
-                    console.log("Files to disable:", value);
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        console.log("File is active")
                         if (mode === ModMode.DISABLED) {
-                            console.log("Disabling");
                             if (await FsProvider.instance.exists(path.join(location, value))) {
-                                console.log("Unlinking")
                                 await FsProvider.instance.unlink(path.join(location, value));
                             }
                         } else {
@@ -407,7 +398,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     public async addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
-        console.log("Adding to state file");
         await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), "_state"));
         let existing: Map<string, string> = new Map();
         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
@@ -415,7 +405,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             const tracker = (yaml.parse(read.toString()) as ModFileTracker);
             existing = new Map(tracker.files);
         }
-        console.log("State files:", files);
         files.forEach((value, key) => {
             existing.set(key, value);
         })
@@ -423,7 +412,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             modName: mod.getName(),
             files: Array.from(existing.entries())
         }
-        console.log("mft:", mft);
         await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
         await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
     }
