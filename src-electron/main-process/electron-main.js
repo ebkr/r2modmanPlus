@@ -1,7 +1,6 @@
-import { app, BrowserWindow, nativeTheme, protocol } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeTheme, protocol } from 'electron';
 import Listeners from './ipcListeners';
 import Persist from './window-state-persist';
-import { ipcMain } from 'electron';
 import path from 'path';
 import ipcServer from 'node-ipc';
 import * as fs from 'fs';
@@ -44,7 +43,8 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
-            webSecurity: false
+            webSecurity: false,
+            contextIsolation: false,
         },
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD
