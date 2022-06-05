@@ -5,6 +5,8 @@ import BepInExGameInstructions from './instructions/loader/BepInExGameInstructio
 import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameInstructions';
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
+import VRisingDedicatedInstructions
+    from 'src/r2mm/launching/instructions/instructions/game_specific/VRisingDedicatedInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -13,7 +15,10 @@ export interface GameInstruction {
 
 export default class GameInstructions {
 
-    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map();
+    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
+        ["VRisingServer", new VRisingDedicatedInstructions()]
+    ]);
+
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
@@ -21,8 +26,8 @@ export default class GameInstructions {
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {
-        if (this.GAME_INSTRUCTIONS.has(game.internalFolderName)) {
-            return await this.GAME_INSTRUCTIONS.get(game.internalFolderName)!.generate(game, profile);
+        if (this.GAME_INSTRUCTIONS.has(game.settingsIdentifier)) {
+            return await this.GAME_INSTRUCTIONS.get(game.settingsIdentifier)!.generate(game, profile);
         }
         if (this.LOADER_INSTRUCTIONS.has(game.packageLoader)) {
             return await this.LOADER_INSTRUCTIONS.get(game.packageLoader)!.generate(game, profile);

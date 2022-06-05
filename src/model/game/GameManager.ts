@@ -230,6 +230,11 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1604030")], "VRising.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["vrising"]),
 
+        new Game("V Rising Dedicated Server", "VRising", "VRisingServer",
+            "VRisingDedicatedServer", ["VRisingServer.exe"], "VRising_Data",
+            "https://thunderstore.io/c/v-rising/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1829350")], "VRising.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["vrising"]),
     ];
 
     static get activeGame(): Game {

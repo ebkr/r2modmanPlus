@@ -43,14 +43,14 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.STEAM_DIRECT]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner()
         },
         [PackageLoader.MELON_LOADER]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
+            "win32": new DirectGameRunner(),
+            "linux": new DirectGameRunner(),
+            "darwin": new DirectGameRunner()
         },
         [PackageLoader.NORTHSTAR]: {
             "win32": new DirectGameRunner(),
