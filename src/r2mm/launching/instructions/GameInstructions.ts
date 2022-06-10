@@ -5,8 +5,6 @@ import BepInExGameInstructions from './instructions/loader/BepInExGameInstructio
 import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameInstructions';
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
-import VRisingDedicatedInstructions
-    from 'src/r2mm/launching/instructions/instructions/game_specific/VRisingDedicatedInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -16,7 +14,6 @@ export interface GameInstruction {
 export default class GameInstructions {
 
     public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
-        ["VRisingServer", new VRisingDedicatedInstructions()]
     ]);
 
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
