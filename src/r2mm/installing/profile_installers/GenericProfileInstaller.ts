@@ -260,6 +260,32 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
+    private async installSubDirNoFlatten(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+        const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
+        await FileUtils.ensureDirectory(subDir);
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+        for (const source of installSources) {
+            const relativePath = path.relative(cachedLocationOfMod, source);
+            if ((await FsProvider.instance.lstat(source)).isFile()) {
+                const dest = path.join(subDir, relativePath);
+                await FileUtils.ensureDirectory(path.dirname(dest));
+                await FsProvider.instance.copyFile(source, dest);
+            } else {
+                for (const content of (await FsProvider.instance.readdir(source))) {
+                    const cacheContentLocation = path.join(source, content);
+                    const contentDest = path.join(subDir, content);
+                    await FileUtils.ensureDirectory(path.dirname(contentDest));
+                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
+                    } else {
+                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
+                    }
+                }
+            }
+        }
+    }
+
     private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const fileRelocations = new Map<string, string>();
         for (const source of installSources) {
@@ -313,6 +339,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 case 'STATE': await this.installState(profile, managedRule, files, mod); break;
                 case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
                 case 'NONE': await this.installUntracked(profile, managedRule, files, mod); break;
+                case 'SUBDIR_NO_FLATTEN': await this.installSubDirNoFlatten(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
