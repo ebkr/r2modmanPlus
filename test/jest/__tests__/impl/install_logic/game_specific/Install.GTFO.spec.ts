@@ -13,6 +13,8 @@ import InstallationRuleApplicator from 'src/r2mm/installing/default_installation
 import NodeFs from 'src/providers/generic/file/NodeFs';
 import FileTree from 'src/model/file/FileTree';
 import R2Error from 'src/model/errors/R2Error';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -72,6 +74,8 @@ describe('GTFO Install Logic', () => {
         new Profile('TestProfile');
         await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
         InstallationRuleApplicator.apply();
+
+        ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
 
         pkg = packageBuilder('test_mod', 'author', new VersionNumber('1.0.0'));
         cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());

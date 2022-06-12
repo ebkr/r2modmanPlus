@@ -18,7 +18,7 @@ class ProfileProviderImpl extends ProfileProvider {
     }
 }
 
-describe('ModLinker (win32)', () => {
+const def = () => describe('ModLinker (win32)', () => {
 
     let settings!: ManagerSettings;
 
@@ -87,3 +87,18 @@ describe('ModLinker (win32)', () => {
     });
 
 });
+
+if (process.platform === "win32") {
+    console.log("Running def")
+    def();
+}
+
+/**
+ * Need a dud test to pass otherwise jest throws an error anyway.
+ * thanks jest
+ */
+describe("dud_test", () => {
+    test("Force pass", async () => {
+        return true;
+    })
+})
