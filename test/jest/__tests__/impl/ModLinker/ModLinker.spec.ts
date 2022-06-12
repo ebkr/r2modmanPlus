@@ -89,7 +89,6 @@ const def = () => describe('ModLinker (win32)', () => {
 });
 
 if (process.platform === "win32") {
-    console.log("Running def")
     def();
 }
 

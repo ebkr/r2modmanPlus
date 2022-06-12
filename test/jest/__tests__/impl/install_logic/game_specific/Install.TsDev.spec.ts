@@ -61,7 +61,7 @@ describe('TS Dev No Flatten Install Logic', () => {
         const allFiles = tree.getRecursiveFiles()
             .map(value => path.relative(baseFolderStructurePath, value))
             // Filter out file generation script.
-            .filter(value => value !== "populator.mjs");
+            .filter(value => value !== "populator.mjs" && value !== "depopulator.mjs");
 
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
@@ -118,23 +118,17 @@ describe('TS Dev No Flatten Install Logic', () => {
     test('SUBDIR_NO_FLATTEN with unstructured files', async () => {
 
         /** Expect files to be installed as intended **/
-        const subdirPaths = new Map<string, string>([
-            [
-                path.join("BIE", "GameSpecific", "ThunderstoreDev", "Also Sub"),
-                "BIE_GameSpecific_ThunderstoreDev_Also Sub"
-            ]
-            ])
+        const subdirPaths = [
+            path.join('BIE', 'GameSpecific', 'ThunderstoreDev', 'Also Sub'),
+        ]
 
-        console.log(InMemoryFsProvider.jsonFileStructure())
-
-        for (const [value, convertedName] of subdirPaths.entries()) {
+        for (const value of subdirPaths) {
             const noFlattenDir = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "NoFlatten");
-            // Add one to remove trailing path separator.
-            const subdirPathAfterNoFlatten = value.substring(path.join("BIE", "GameSpecific", "ThunderstoreDev").length + 1);
-            console.log("Expected:", path.join(
-                noFlattenDir, pkg.getName(), subdirPathAfterNoFlatten, `${convertedName}_Files`, `${convertedName}_file.txt`));
+            const convertedName = value.replace(/[\/\\]/g, "_");
+
             expect(await FsProvider.instance.exists(path.join(
-                noFlattenDir, pkg.getName(), subdirPathAfterNoFlatten, `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+                noFlattenDir, pkg.getName(), "Package", value, `${convertedName}_Files`, `${convertedName}_file.txt`
+            ))).toBeTruthy();
         }
     });
 
