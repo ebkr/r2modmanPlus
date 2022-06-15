@@ -203,6 +203,7 @@
                                 @clicked-installed="view = 'installed'"
                                 @clicked-online="view = 'online'"
                                 @clicked-settings="view = 'settings'"
+                                @clicked-serverlist="view = 'serverlist'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
                                 @clicked-downloads="openRoute('/downloads')"
@@ -210,6 +211,15 @@
                 />
 			</div>
 			<div class="column" :class="contentClass">
+
+                <div v-show="view === 'serverlist'">
+                    <template>
+                        <ServerList
+                            :data="serverlistData"
+                        />
+                    </template>
+                </div>
+
 				<div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
 						<div class='is-shadowless is-square'>
@@ -264,6 +274,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div v-show="view === 'installed'">
 					<template>
 						<div class="relative-position full-height--minus-em" v-if="localModList.length === 0">
@@ -297,11 +308,13 @@
 						</template>
 					</template>
 				</div>
+
 				<div v-show="view === 'settings'">
 					<template>
                         <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
 					</template>
 				</div>
+
 			</div>
 		</div>
 	</div>
@@ -356,6 +369,7 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
+import ServerListProvider from "../providers/components/loaders/ServerListProvider";
 
 @Component({
 		components: {
@@ -363,6 +377,7 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
+            ServerList: ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
@@ -536,6 +551,65 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             }
 			return this.$store.state.localModList || [];
 		}
+
+
+        get serverlistData() {
+            return {
+                1: {
+                    id: "0181480e-a389-006a-0792-7623a0bdde32",
+                    name: "Mythic Rising",
+                    description: "Rising Mythic",
+                    community: "v-rising",
+                    connection_data: "",
+                    mods: [
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
+                    ],
+                    is_pvp: true,
+                    requires_password: true,
+                    datetime_created: "2022-06-09T10:42:07.881782Z",
+                    datetime_updated: "2022-06-09T10:42:07.881794Z"
+                },
+                2: {
+                    id: "123asd123asd",
+                    name: "Noob rising",
+                    description: "Rising noobs",
+                    community: "v-rising",
+                    connection_data: "",
+                    mods: [
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    is_pvp: false,
+                    requires_password: false,
+                    datetime_created: "2022-06-09T10:42:07.881782Z",
+                    datetime_updated: "2022-06-09T10:42:07.881794Z"
+                },
+                3: {
+                    id: "asdfasdfsadf",
+                    name: "Long server name just to demonstrate server list",
+                    description: "A bit longer server description for demonstration purposes",
+                    community: "v-rising",
+                    connection_data: "",
+                    mods: [
+                        "1",
+                        "2",
+                        "4",
+                        "4",
+                        "5"
+                    ],
+                    is_pvp: false,
+                    requires_password: true,
+                    datetime_created: "2022-06-09T10:42:07.881782Z",
+                    datetime_updated: "2022-06-09T10:42:07.881794Z"
+                }
+            }
+        }
 
 		updatePageNumber(page: number) {
 			this.pageNumber = page;
