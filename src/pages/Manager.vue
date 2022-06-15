@@ -214,9 +214,7 @@
 
                 <div v-show="view === 'serverlist'">
                     <template>
-                        <ServerList
-                            :data="serverlistData"
-                        />
+                        <serverlist />
                     </template>
                 </div>
 
@@ -377,7 +375,7 @@ import ServerListProvider from "../providers/components/loaders/ServerListProvid
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
-            ServerList: ServerListProvider.provider,
+            'serverlist': ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
@@ -551,65 +549,6 @@ import ServerListProvider from "../providers/components/loaders/ServerListProvid
             }
 			return this.$store.state.localModList || [];
 		}
-
-
-        get serverlistData() {
-            return {
-                1: {
-                    id: "0181480e-a389-006a-0792-7623a0bdde32",
-                    name: "Mythic Rising",
-                    description: "Rising Mythic",
-                    community: "v-rising",
-                    connection_data: "",
-                    mods: [
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
-                    ],
-                    is_pvp: true,
-                    requires_password: true,
-                    datetime_created: "2022-06-09T10:42:07.881782Z",
-                    datetime_updated: "2022-06-09T10:42:07.881794Z"
-                },
-                2: {
-                    id: "123asd123asd",
-                    name: "Noob rising",
-                    description: "Rising noobs",
-                    community: "v-rising",
-                    connection_data: "",
-                    mods: [
-                        "2",
-                        "3",
-                        "6"
-                    ],
-                    is_pvp: false,
-                    requires_password: false,
-                    datetime_created: "2022-06-09T10:42:07.881782Z",
-                    datetime_updated: "2022-06-09T10:42:07.881794Z"
-                },
-                3: {
-                    id: "asdfasdfsadf",
-                    name: "Long server name just to demonstrate server list",
-                    description: "A bit longer server description for demonstration purposes",
-                    community: "v-rising",
-                    connection_data: "",
-                    mods: [
-                        "1",
-                        "2",
-                        "4",
-                        "4",
-                        "5"
-                    ],
-                    is_pvp: false,
-                    requires_password: true,
-                    datetime_created: "2022-06-09T10:42:07.881782Z",
-                    datetime_updated: "2022-06-09T10:42:07.881794Z"
-                }
-            }
-        }
 
 		updatePageNumber(page: number) {
 			this.pageNumber = page;
