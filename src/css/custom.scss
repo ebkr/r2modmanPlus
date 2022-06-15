@@ -458,3 +458,23 @@ code {
     height: 40px;
     align-items: center;
 }
+
+.tableview > tr > td {
+    border-top: 1px solid #999;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    vertical-align: middle;
+    &.centered {
+        text-align: center !important;
+    }
+}
+
+.tableview > tr > th {
+    font-weight: bold;
+    padding-right: 1rem;
+    padding-left: 0.5rem;
+}
+
+.tableview-row:hover {
+    filter: brightness(1.5);
+    cursor: pointer;
+}
