@@ -90,6 +90,7 @@ import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import { setGameDirIfUnset } from '../../utils/LaunchUtils';
 
 @Component
     export default class NavigationMenu extends Vue {
@@ -127,21 +128,13 @@ import { PackageLoader } from '../../model/installing/PackageLoader';
         }
 
         async prepareLaunch() {
-            const settings = await this.settings;
-            let dir: string | R2Error;
-            if (settings.getContext().gameSpecific.gameDirectory === null) {
-                dir = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
-            } else {
-                dir = settings.getContext().gameSpecific.gameDirectory!;
-            }
-            if (dir instanceof R2Error) {
-                // Show folder selection dialog.
-                this.$emit("error", dir);
-            } else {
-                const setInstallDirError: R2Error | void = await settings.setGameDirectory(dir);
-                if (setInstallDirError instanceof R2Error) {
-                    this.$emit("error", setInstallDirError);
-                    return;
+            try {
+                await setGameDirIfUnset(this.activeGame);
+            } catch (error) {
+                if (error instanceof R2Error) {
+                    this.$emit("error", error);
+                } else {
+                    throw error;
                 }
             }
         }
