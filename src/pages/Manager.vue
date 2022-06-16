@@ -212,11 +212,7 @@
 			</div>
 			<div class="column" :class="contentClass">
 
-                <div v-show="view === 'serverlist'">
-                    <template>
-                        <serverlist />
-                    </template>
-                </div>
+                <server-list v-show="view === 'serverlist'" />
 
 				<div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
@@ -375,7 +371,7 @@ import ServerListProvider from "../providers/components/loaders/ServerListProvid
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
-            'serverlist': ServerListProvider.provider,
+            ServerList: ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
