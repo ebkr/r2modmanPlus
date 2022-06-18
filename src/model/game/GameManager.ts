@@ -60,10 +60,19 @@ export default class GameManager {
             'Outward', ['Outward.exe'], 'Outward_Data',
             'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
-                new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
+                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+
+        new Game('Outward Definitive', 'OutwardDe', 'OutwardDe',
+            'Outward/Outward_Defed', ['Outward Definitive Edition.exe'], 'Outward Definitive Edition_Data',
+            'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "f07a51af8ac845ea96f792fb485e04a3"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ], "OutwardDe.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('TaleSpire', 'TaleSpire', 'TaleSpire',
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
@@ -208,6 +217,18 @@ export default class GameManager {
             'https://northstar.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
+
+        new Game("Peglin", "Peglin", "Peglin",
+            "Peglin", ["Peglin.exe"], "Peglin_Data",
+            "https://thunderstore.io/c/peglin/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1296610"), new StorePlatformMetadata(StorePlatform.OTHER)], "Peglin.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("V Rising", "VRising", "VRising",
+            "VRising", ["VRising.exe"], "VRising_Data",
+            "https://thunderstore.io/c/v-rising/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1604030")], "VRising.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["vrising"]),
 
     ];
 

@@ -864,7 +864,7 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
                     this.showError(profileErr);
                     continue;
                 }
-                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, (updatingMod: ManifestV2) => {
+                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
                     if (enabled) {
                         updatingMod.enable();
                     } else {

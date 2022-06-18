@@ -413,6 +413,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             files: Array.from(existing.entries())
         }
         await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
+        await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
     }
 
 }

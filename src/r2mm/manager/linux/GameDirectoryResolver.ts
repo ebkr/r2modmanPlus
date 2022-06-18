@@ -10,6 +10,7 @@ import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
+import { getPropertyFromPath } from '../../../utils/Common';
 
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
@@ -200,7 +201,16 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         const userAccountID = (BigInt(userSteamID64) & BigInt(0xFFFFFFFF)).toString();
 
         const localConfig = vdf.parse((await FsProvider.instance.readFile(path.join(steamBaseDir, 'userdata', userAccountID, 'config', 'localconfig.vdf'))).toString());
-        const apps = localConfig.UserLocalConfigStore.Software.Valve.Steam.Apps || localConfig.UserLocalConfigStore.Software.Valve.Steam.apps;
+
+        //find apps in one of possible locations.
+        const apps = getPropertyFromPath(localConfig, [
+            'UserLocalConfigStore.Software.Valve.Steam.Apps',
+            'UserLocalConfigStore.Software.Valve.Steam.apps',
+            'UserLocalConfigStore.Software.Valve.steam.apps'
+        ]);
+        if (!apps) {
+            console.warn('Steam.Apps not found !');
+        }
 
         return apps[game.activePlatform.storeIdentifier!].LaunchOptions || '';
     }
