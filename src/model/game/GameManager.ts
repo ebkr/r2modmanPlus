@@ -230,6 +230,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1604030")], "VRising.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["vrising"]),
 
+        new Game("Hard Bullet", "HardBullet", "HardBullet",
+            "Hard Bullet", ["Hard Bullet.exe"], "Hard Bullet_Data",
+            "https://thunderstore.io/c/hard-bullet/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1294760")], "HardBullet.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["hb"]),
+
     ];
 
     static get activeGame(): Game {
