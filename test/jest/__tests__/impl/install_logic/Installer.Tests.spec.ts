@@ -11,6 +11,8 @@ import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import InstallationRules from 'src/r2mm/installing/InstallationRules';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -133,6 +135,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
             InstallationRuleApplicator.apply();
+            ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
         });
 
         test('Loose file', async () => {
