@@ -1,7 +1,7 @@
 {
   "name": "r2modman",
-  "version": "3.1.28",
-  "description": "A simple and easy to use mod manager for several Unity games using Thunderstore.",
+  "version": "3.1.29",
+  "description": "A simple and easy to use mod manager for several games using Thunderstore.",
   "productName": "r2modman",
   "author": "ebkr",
   "private": true,
