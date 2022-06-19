@@ -69,6 +69,16 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.29
+- Added games:
+  - Outward Definitive Edition
+  - V Rising
+  - Peglin
+- Upgraded Electron and some other libraries to a far more recent version, hopefully providing better performance.
+- Fixed more disabling bugs.
+  - Profile imports now properly disable mods.
+  - BONEWORKS disabling no longer needs a mod to be disabled+enabled prior to working.
+
 ### 3.1.28
 - Added more games:
   - For The King.
@@ -98,13 +108,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Mod exclusion list will fallback should a connection to the list fail.
 - Added support for NASB movesets.
 - Other fixes.
-
-### 3.1.25
-- Added Nickelodeon All-Star Brawl support.
-- Added Inscryption support.
-- Added Starsand support.
-- Configs can now be opened directly (thanks @MSchmoecker)
-- Mods installed using the state-based format can now be disabled correctly. (Sideloader and BONEWORKS mods).
 
 ## Screenshots
 
