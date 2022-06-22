@@ -47,5 +47,9 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     Titanfall2: [new ModLoaderPackageMapping("Northstar-Northstar", "Northstar", PackageLoader.NORTHSTAR)],
     Peglin: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Peglin", "BepInExPack_Peglin", PackageLoader.BEPINEX)],
     VRising: [new ModLoaderPackageMapping("BepInEx-BepInExPack_V_Rising", "BepInExPack_V_Rising", PackageLoader.BEPINEX)],
+<<<<<<< HEAD
     HardBullet: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
+=======
+    MinutesTillDawn: [new ModLoaderPackageMapping("BepInEx-BepInExPack_MinutesTillDawn", "BepInExPack_MinutesTillDawn", PackageLoader.BEPINEX)],
+>>>>>>> fb47cf0 (20 Minutes Till Dawn support)
 }
