@@ -1,11 +1,19 @@
 import ThunderstoreMod from './ThunderstoreMod';
 import R2Error from './errors/R2Error';
 import ThunderstoreVersion from './ThunderstoreVersion';
+import ManifestV2 from './ManifestV2';
 
 export default class ThunderstoreCombo {
 
     private mod: ThunderstoreMod = new ThunderstoreMod();
     private version: ThunderstoreVersion = new ThunderstoreVersion();
+
+    public static combine(mod: ThunderstoreMod, version: ThunderstoreVersion): ThunderstoreCombo {
+        const combo = new ThunderstoreCombo();
+        combo.mod = mod;
+        combo.version = version;
+        return combo;
+    }
 
     public static fromProtocol(protocol: string, modList: ThunderstoreMod[]): ThunderstoreCombo | R2Error {
         // Strip out protocol information
@@ -29,10 +37,7 @@ export default class ThunderstoreCombo {
                 'Relaunch the manager to update the mod list'
             );
         }
-        const combo = new ThunderstoreCombo();
-        combo.mod = foundMod;
-        combo.version = foundVersion;
-        return combo;
+        return ThunderstoreCombo.combine(foundMod, foundVersion);
     }
 
     public getMod(): ThunderstoreMod {
@@ -51,4 +56,17 @@ export default class ThunderstoreCombo {
         this.version = version;
     }
 
+    public isEqualTo(combo: ThunderstoreCombo): boolean {
+        return combo.getMod().getFullName() === this.mod.getFullName()
+            && combo.getVersion().getVersionNumber().isEqualTo(this.version.getVersionNumber());
+    }
+
+    public isEqualToManifestV2(manifest: ManifestV2): boolean {
+        return manifest.getName() === this.mod.getFullName()
+            && manifest.getVersionNumber().isEqualTo(this.version.getVersionNumber());
+    }
+
+    public split(): [ThunderstoreMod, ThunderstoreVersion] {
+        return [this.mod, this.version];
+    }
 }
