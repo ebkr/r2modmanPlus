@@ -35,7 +35,7 @@ const def = () => describe('ModLinker (win32)', () => {
         settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
         await settings.load(true);
         // Hack to work around Dexie loading issue during test
-        (ManagerSettings['CONTEXT'] as any) = ({
+        ((ManagerSettings as any)['CONTEXT'] as any) = ({
             global: {
                 steamDirectory: "STEAM_DIR"
             },

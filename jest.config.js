@@ -9,6 +9,9 @@ module.exports = {
       pug: { doctype: 'html' },
     },
   },
+  setupFiles: [
+      "fake-indexeddb/auto"
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/jest.setup.ts'],
   // noStackTrace: true,
   // bail: true,

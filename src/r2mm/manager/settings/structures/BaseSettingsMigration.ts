@@ -1,6 +1,6 @@
 export default abstract class BaseSettingsMigration {
 
     public abstract version(): number;
-    public abstract async migrate(): Promise<void>;
+    public abstract migrate(): Promise<void>;
 
 }
