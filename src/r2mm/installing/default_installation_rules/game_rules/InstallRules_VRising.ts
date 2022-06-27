@@ -4,11 +4,11 @@ import * as path from 'path';
 export default function(): CoreRuleType {
 
     return {
-        gameName: "ThunderstoreDev",
+        gameName: "VRising",
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
-                isDefaultLocation: false,
+                isDefaultLocation: true,
                 defaultFileExtensions: [".dll"],
                 trackingMethod: "SUBDIR",
                 subRoutes: []
@@ -37,13 +37,6 @@ export default function(): CoreRuleType {
                 trackingMethod: "NONE",
                 subRoutes: []
             },
-            {
-                route: path.join("BepInEx", "NoFlatten"),
-                defaultFileExtensions: [],
-                trackingMethod: "SUBDIR_NO_FLATTEN",
-                subRoutes: [],
-                isDefaultLocation: true
-            }
         ]
     }
 
