@@ -203,6 +203,7 @@
                                 @clicked-installed="view = 'installed'"
                                 @clicked-online="view = 'online'"
                                 @clicked-settings="view = 'settings'"
+                                @clicked-serverlist="view = 'serverlist'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
                                 @clicked-downloads="openRoute('/downloads')"
@@ -210,7 +211,10 @@
                 />
 			</div>
 			<div class="column" :class="contentClass">
-				<div v-show="view === 'online'">
+
+                <server-list v-show="view === 'serverlist'" />
+
+                <div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
 						<div class='is-shadowless is-square'>
 							<div class='no-padding-left card-header-title'>
