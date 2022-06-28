@@ -19,6 +19,13 @@
             <aside class="menu">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <ul class="menu-list">
+                    <li v-if="canShowServerList">
+                        <a href="#" data-ref="serverlist" @click="emitClick($event.target)"
+                           class="tagged-link" :class="[view === 'serverlist' ? 'is-active' : '']">
+                            <i class="fas fa-server tagged-link__icon icon--margin-right" data-ref="serverlist" @click.prevent.stop="emitClick($event.target)"/>
+                            <span class="tagged-link__content margin-right margin-right--half-width" data-ref="serverlist" @click.prevent.stop="emitClick($event.target)">Server List</span>
+                        </a>
+                    </li>
                     <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                     </li>
                     <li>
@@ -120,6 +127,10 @@ import { PackageLoader } from '../../model/installing/PackageLoader';
 
         get canShowConfigEditor() {
             return this.activeGame.packageLoader === PackageLoader.BEPINEX;
+        }
+
+        get canShowServerList(): boolean {
+            return GameManager.activeGame.settingsIdentifier === "VRising";
         }
 
         emitClick(element: any) {
