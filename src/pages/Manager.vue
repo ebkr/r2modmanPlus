@@ -203,7 +203,6 @@
                                 @clicked-installed="view = 'installed'"
                                 @clicked-online="view = 'online'"
                                 @clicked-settings="view = 'settings'"
-                                @clicked-serverlist="view = 'serverlist'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
                                 @clicked-downloads="openRoute('/downloads')"
@@ -211,10 +210,7 @@
                 />
 			</div>
 			<div class="column" :class="contentClass">
-
-                <server-list v-show="view === 'serverlist'" />
-
-                <div v-show="view === 'online'">
+				<div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
 						<div class='is-shadowless is-square'>
 							<div class='no-padding-left card-header-title'>
@@ -354,7 +350,6 @@ import SettingsViewProvider from '../providers/components/loaders/SettingsViewPr
 import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
 import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
 import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
-import ServerListProvider from "../providers/components/loaders/ServerListProvider";
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
@@ -368,7 +363,6 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
-            ServerList: ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
