@@ -4,7 +4,7 @@ import * as path from 'path';
 export default function (): CoreRuleType {
 
     return {
-        gameName: "MinutesTillDawn",
+        gameName: "20MinutesTillDawn",
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
