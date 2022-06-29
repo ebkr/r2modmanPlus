@@ -49,4 +49,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     VRising: [new ModLoaderPackageMapping("BepInEx-BepInExPack_V_Rising", "BepInExPack_V_Rising", PackageLoader.BEPINEX)],
     HardBullet: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     GreenHellVR: [new ModLoaderPackageMapping("PCVR_Modders-BepInExPack_GHVR", "BepInExPack_GHVR", PackageLoader.BEPINEX)],
+    VTOL_VR: [new ModLoaderPackageMapping("BepInEx-BepInExPack_VTOL_VR", "BepInExPack_VTOL_VR", PackageLoader.BEPINEX)],
 }

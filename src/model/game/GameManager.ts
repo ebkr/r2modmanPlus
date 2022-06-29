@@ -242,6 +242,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ghvr"]),
 
+        new Game("VTOL VR", "VTOL_VR", "VTOL_VR",
+            "VTOL VR", ["VTOLVR.exe"], "VTOLVR_Data",
+            "https://thunderstore.io/c/vtol-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "667970")], "VtolVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
     ];
 
     static get activeGame(): Game {
