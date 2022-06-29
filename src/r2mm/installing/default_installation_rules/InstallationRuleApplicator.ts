@@ -33,7 +33,7 @@ import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/In
 import InstallRules_Peglin from '../default_installation_rules/game_rules/InstallRules_Peglin';
 import InstallRules_VRising from '../default_installation_rules/game_rules/InstallRules_VRising';
 import InstallRules_HardBullet from '../default_installation_rules/game_rules/InstallRules_HardBullet';
-import InstallRules_20MinutesTillDawn from './game_rules/InstallRules_20MinutesTillDawn';
+import InstallRules_20MinutesTillDawn from '../default_installation_rules/game_rules/InstallRules_20MinutesTillDawn';
 
 export default class InstallationRuleApplicator {
 
