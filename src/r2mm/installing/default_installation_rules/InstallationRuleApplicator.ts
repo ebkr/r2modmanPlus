@@ -33,6 +33,7 @@ import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/In
 import InstallRules_Peglin from '../default_installation_rules/game_rules/InstallRules_Peglin';
 import InstallRules_VRising from '../default_installation_rules/game_rules/InstallRules_VRising';
 import InstallRules_HardBullet from '../default_installation_rules/game_rules/InstallRules_HardBullet';
+import InstallRules_GreenHellVR from '../default_installation_rules/game_rules/InstallRules_GreenHellVR';
 
 export default class InstallationRuleApplicator {
 
@@ -71,6 +72,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Peglin(),
             InstallRules_VRising(),
             InstallRules_HardBullet(),
+            InstallRules_GreenHellVR(),
         ]
     }
 
