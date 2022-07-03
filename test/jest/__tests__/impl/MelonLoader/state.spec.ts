@@ -12,6 +12,7 @@ import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManageme
 import StateTracker from 'src/model/installing/StateTracker';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import GameManager from 'src/model/game/GameManager';
+import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
 
 let sandbox = Sinon.createSandbox();
 let mlProfileInstaller: GenericProfileInstaller;
@@ -23,6 +24,7 @@ let beforeSetup = () => {
     mlProfileInstaller = new GenericProfileInstaller();
     conflictManagement = new ConflictManagementProviderImpl();
     GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
+    ConflictManagementProvider.provide(() => conflictManagement);
 }
 
 describe("State testing", () => {
