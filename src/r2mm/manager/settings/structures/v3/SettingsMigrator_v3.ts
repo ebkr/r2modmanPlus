@@ -55,11 +55,8 @@ export default class SettingsMigrator_v3 extends BaseSettingsMigration {
         const newGameStructure = new GameSettingsStructure_V3(this.version(), gameSettings);
         await newGameStructure.init();
 
-        console.log("Save #1");
         await newGlobalStructure.save();
-        console.log("Save #2");
         await newGameStructure.save();
-        console.log("Saved");
     }
 
 }
