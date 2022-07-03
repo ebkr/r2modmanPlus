@@ -95,7 +95,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "identity-obj-proxy": "^3.0.0",
     "majestic": "^1.8.1",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.6",
     "mocha": "^8.0.1",
     "mock-require": "^3.0.3",
     "node-sass": "^7.0.1",
