@@ -360,6 +360,7 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
+import ServerListProvider from "../providers/components/loaders/ServerListProvider";
 
 @Component({
 		components: {
@@ -367,6 +368,7 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
+            ServerList: ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
