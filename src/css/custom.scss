@@ -241,6 +241,7 @@ select {
     border-top: 1px solid $scheme-border;
     text-align: left;
     z-index: 10;
+    margin: 0 !important;
 }
 
 .pagination--invisible {
@@ -457,4 +458,16 @@ code {
     gap: 16px;
     height: 40px;
     align-items: center;
+}
+
+
+.main-navbar-one-quarter {
+  height: 100%;
+  flex-basis: 25%;
+}
+
+.main-content-three-quarters {
+  height: 100%;
+  flex-basis: 75%;
+  overflow-y: auto;
 }

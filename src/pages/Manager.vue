@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="max-size-container">
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -197,8 +197,8 @@
             @error="showError($event)"
         />
 
-		<div class='columns' id='content'>
-			<div class="column non-selectable" :class="navbarClass">
+		<div class='main-container' id='content'>
+			<div class="non-selectable" :class="navbarClass">
                 <NavigationMenu :view="view"
                                 @clicked-installed="view = 'installed'"
                                 @clicked-online="view = 'online'"
@@ -210,7 +210,7 @@
                                 @error="showError($event)"
                 />
 			</div>
-			<div class="column" :class="contentClass">
+			<div :class="contentClass">
 
                 <server-list v-show="view === 'serverlist'" />
 
@@ -381,10 +381,10 @@ import ServerListProvider from "../providers/components/loaders/ServerListProvid
 	})
 	export default class Manager extends Vue {
 
-	    @Prop({default: "is-one-quarter"})
+	    @Prop({default: "main-navbar-one-quarter"})
         private navbarClass!: string;
 
-        @Prop({default: "is-three-quarters"})
+        @Prop({default: "main-content-three-quarters"})
         private contentClass!: string;
 
 
@@ -1055,3 +1055,19 @@ import ServerListProvider from "../providers/components/loaders/ServerListProvid
 	}
 
 </script>
+
+<style scoped lang="scss">
+
+.main-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.max-size-container {
+    width: 100%;
+    height: 100%;
+}
+
+</style>

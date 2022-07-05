@@ -1,6 +1,6 @@
 <template>
-    <div class='columns'>
-        <div class="column non-selectable" :class="navbarClass">
+    <div class='main-container'>
+        <div class="non-selectable" :class="navbarClass">
             <NavigationMenu view="online"
                             @clicked-installed="route('installed')"
                             @clicked-online="route('online')"
@@ -10,7 +10,7 @@
                             @clicked-help="goto('/help')"
             />
         </div>
-        <div class="column" :class="contentClass">
+        <div :class="contentClass">
             <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="is-info"/>
             <template v-if="activeDownloads.length === 0">
                 <div class='text-center top'>
@@ -69,10 +69,10 @@ import Timeout = NodeJS.Timeout;
 })
 export default class DownloadMonitor extends Vue {
 
-    @Prop({ default: 'is-one-quarter' })
+    @Prop({ default: 'main-navbar-one-quarter' })
     private navbarClass!: string;
 
-    @Prop({ default: 'is-three-quarters' })
+    @Prop({ default: 'main-content-three-quarters' })
     private contentClass!: string;
 
     private refreshInterval!: Timeout;
@@ -100,3 +100,15 @@ export default class DownloadMonitor extends Vue {
 }
 
 </script>
+
+
+<style scoped lang="scss">
+
+.main-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+</style>

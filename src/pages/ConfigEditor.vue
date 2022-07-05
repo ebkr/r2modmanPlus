@@ -37,10 +37,10 @@
     })
     export default class BetterConfigEditor extends Vue {
 
-        @Prop({default: "is-one-quarter"})
+        @Prop({default: "main-navbar-one-quarter"})
         private navbarClass!: string;
 
-        @Prop({default: "is-three-quarters"})
+        @Prop({default: "main-content-three-quarters"})
         private contentClass!: string;
 
         private editing: ConfigFile | null = null;
