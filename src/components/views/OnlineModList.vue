@@ -17,12 +17,12 @@
             :darkTheme="darkTheme"
             :expandedByDefault="cardExpanded">
             <template v-slot:title>
-                <span v-if="key.isPinned()" class='has-tooltip-left'
+                <span v-if="key.isPinned()" class='has-tooltip-top'
                       data-tooltip='Pinned on Thunderstore'>
                     <span class="tag is-info margin-right margin-right--half-width">Pinned</span>
                     <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
                 </span>
-                <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
+                <span v-else-if="isModDeprecated(key)" class='has-tooltip-top'
                       data-tooltip='This mod is potentially broken'>
                     <span class="tag is-danger margin-right margin-right--half-width">Deprecated</span>
                     <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
@@ -39,7 +39,7 @@
                         </span>
                     </Link>
                 </span>
-                <span class='card-header-icon has-tooltip-left'
+                <span class='card-header-icon has-tooltip-top'
                       data-tooltip='Mod already installed'
                       v-if="isThunderstoreModInstalled(key)">
                     <i class='fas fa-check'></i>
