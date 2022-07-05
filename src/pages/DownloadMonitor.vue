@@ -5,6 +5,7 @@
                             @clicked-installed="route('installed')"
                             @clicked-online="route('online')"
                             @clicked-settings="route('settings')"
+                            @clicked-serverlist="route('serverlist')"
                             @clicked-config-editor="goto('/config-editor')"
                             @clicked-help="goto('/help')"
             />
