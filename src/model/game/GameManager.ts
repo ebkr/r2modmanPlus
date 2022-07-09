@@ -241,6 +241,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966900")], "20MinutesTillDawn.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mtd", "20mtd"]),
 
+        new Game("Green Hell VR", "GreenHellVR", "GreenHellVR",
+            "Green Hell VR", ["GHVR.exe"], "GHVR_Data",
+            "https://thunderstore.io/c/green-hell-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ghvr"]),
+
     ];
 
     static get activeGame(): Game {
