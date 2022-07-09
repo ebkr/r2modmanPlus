@@ -34,6 +34,7 @@ import InstallRules_Peglin from '../default_installation_rules/game_rules/Instal
 import InstallRules_VRising from '../default_installation_rules/game_rules/InstallRules_VRising';
 import InstallRules_HardBullet from '../default_installation_rules/game_rules/InstallRules_HardBullet';
 import InstallRules_GreenHellVR from '../default_installation_rules/game_rules/InstallRules_GreenHellVR';
+import InstallRules_20MinutesTillDawn from '../default_installation_rules/game_rules/InstallRules_20MinutesTillDawn';
 
 export default class InstallationRuleApplicator {
 
@@ -73,6 +74,7 @@ export default class InstallationRuleApplicator {
             InstallRules_VRising(),
             InstallRules_HardBullet(),
             InstallRules_GreenHellVR(),
+            InstallRules_20MinutesTillDawn(),
         ]
     }
 
