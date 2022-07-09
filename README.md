@@ -69,6 +69,13 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.31
+- Downgraded node-ipc
+
+### 3.1.30
+- Added Hard Bullet support.
+- Added support for doorstop v4.
+
 ### 3.1.29
 - Added games:
   - Outward Definitive Edition
@@ -90,24 +97,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - "State based" installs now disable correctly.
 - Autoscroll when dragging mods.
 - Other bug fixes.
-
-### (3.1.26 ... 3.1.27)
-- Added several supported games:
-  - Cats are Liquid - A Better Place.
-  - Potion Craft.
-  - Nearly Dead.
-  - AGAINST.
-  - Rogue Tower.
-  - House of the Dying Sun.
-- You can now change game from the profile selection screen.
-- You may specify an export directory for profile file exports.
-- EGS game directories are now auto resolved.
-- Potentially resolved directory scanning issues on Linux.
-- Slider added to the config editor when tweaking numerical range values (credit @MSchmoecker).
-- Significantly reduced disk writes on game launch.
-- Mod exclusion list will fallback should a connection to the list fail.
-- Added support for NASB movesets.
-- Other fixes.
 
 ## Screenshots
 

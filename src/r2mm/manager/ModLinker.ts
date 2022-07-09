@@ -103,7 +103,7 @@ export default class ModLinker {
                         }
                     } else {
                         if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
-                            if (!["bepinex", "mods", "melonloader", "plugins", "userdata", "_state", "userlibs", "qmods"].includes(file.toLowerCase())) {
+                            if (!["bepinex", "bepinex_server", "mods", "melonloader", "plugins", "userdata", "_state", "userlibs", "qmods"].includes(file.toLowerCase())) {
                                 const fileProfileFolderPath = path.join(profile.getPathOfProfile(), file);
                                 const fileTree = await FileTree.buildFromLocation(fileProfileFolderPath);
                                 if (fileTree instanceof R2Error) {
