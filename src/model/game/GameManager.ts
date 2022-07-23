@@ -259,6 +259,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "2066510")], "BackpackHero.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["bh", "farlands"]),
 
+        new Game("Stacklands", "Stacklands", "Stacklands",
+            "Stacklands", ["Stacklands.exe"], "Stacklands_Data",
+            "https://thunderstore.io/c/stacklands/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
     ];
 
     static get activeGame(): Game {
