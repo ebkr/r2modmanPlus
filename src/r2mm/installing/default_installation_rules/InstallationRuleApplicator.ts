@@ -37,6 +37,7 @@ import InstallRules_GreenHellVR from '../default_installation_rules/game_rules/I
 import InstallRules_20MinutesTillDawn from '../default_installation_rules/game_rules/InstallRules_20MinutesTillDawn';
 import InstallRules_VTOL_VR from '../default_installation_rules/game_rules/InstallRules_VTOL_VR';
 import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
+import InstallRules_Stacklands from '../default_installation_rules/game_rules/InstallRules_Stacklands';
 
 export default class InstallationRuleApplicator {
 
@@ -79,6 +80,7 @@ export default class InstallationRuleApplicator {
             InstallRules_20MinutesTillDawn(),
             InstallRules_VTOL_VR(),
             InstallRules_BackpackHero(),
+            InstallRules_Stacklands(),
         ]
     }
 
