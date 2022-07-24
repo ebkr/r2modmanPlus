@@ -265,6 +265,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
 
+        new Game("Enter the Gungeon", "ETG", "EnterTheGungeon",
+            "Enter the Gungeon", ["EtG.exe"], "EtG_Data",
+            "https://thunderstore.io/c/enter-the-gungeon/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "311690"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Garlic")], "EnterTheGungeon.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["etg"]),
+
     ];
 
     static get activeGame(): Game {
