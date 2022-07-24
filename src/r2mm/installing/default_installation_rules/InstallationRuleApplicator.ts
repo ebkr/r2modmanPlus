@@ -38,6 +38,7 @@ import InstallRules_20MinutesTillDawn from '../default_installation_rules/game_r
 import InstallRules_VTOL_VR from '../default_installation_rules/game_rules/InstallRules_VTOL_VR';
 import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
 import InstallRules_Stacklands from '../default_installation_rules/game_rules/InstallRules_Stacklands';
+import InstallRules_EnterTheGungeon from '../default_installation_rules/game_rules/InstallRules_EnterTheGungeon';
 
 export default class InstallationRuleApplicator {
 
@@ -81,6 +82,7 @@ export default class InstallationRuleApplicator {
             InstallRules_VTOL_VR(),
             InstallRules_BackpackHero(),
             InstallRules_Stacklands(),
+            InstallRules_EnterTheGungeon(),
         ]
     }
 
