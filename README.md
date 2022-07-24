@@ -69,35 +69,34 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
-### (3.1.26 ... 3.1.27)
-- Added several supported games:
-  - Cats are Liquid - A Better Place.
-  - Potion Craft.
-  - Nearly Dead.
-  - AGAINST.
-  - Rogue Tower.
-  - House of the Dying Sun.
-- You can now change game from the profile selection screen.
-- You may specify an export directory for profile file exports.
-- EGS game directories are now auto resolved.
-- Potentially resolved directory scanning issues on Linux.
-- Slider added to the config editor when tweaking numerical range values (credit @MSchmoecker).
-- Significantly reduced disk writes on game launch.
-- Mod exclusion list will fallback should a connection to the list fail.
-- Added support for NASB movesets.
-- Other fixes.
+### 3.1.31
+- Downgraded node-ipc
 
-### 3.1.25
-- Added Nickelodeon All-Star Brawl support.
-- Added Inscryption support.
-- Added Starsand support.
-- Configs can now be opened directly (thanks @MSchmoecker)
-- Mods installed using the state-based format can now be disabled correctly. (Sideloader and BONEWORKS mods).
+### 3.1.30
+- Added Hard Bullet support.
+- Added support for doorstop v4.
 
-### (3.1.22 ... 3.1.24)
-- Fixed enable/disable issue when no monomod folder is present.
-- Fixed bugged profile installations.
-- Fixed issue with disabling.
+### 3.1.29
+- Added games:
+  - Outward Definitive Edition
+  - V Rising
+  - Peglin
+- Upgraded Electron and some other libraries to a far more recent version, hopefully providing better performance.
+- Fixed more disabling bugs.
+  - Profile imports now properly disable mods.
+  - BONEWORKS disabling no longer needs a mod to be disabled+enabled prior to working.
+
+### 3.1.28
+- Added more games:
+  - For The King.
+  - Subnautica (and Subnautica: Below Zero).
+  - Core Keeper.
+  - Titanfall 2.
+  - EGS support for RoR2.
+- Fixed disable bug where .old is appended multiple times.
+- "State based" installs now disable correctly.
+- Autoscroll when dragging mods.
+- Other bug fixes.
 
 ## Screenshots
 

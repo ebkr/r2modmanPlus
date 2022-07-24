@@ -14,7 +14,10 @@ export default class GameManager {
         new Game('Risk of Rain 2', 'RiskOfRain2', 'RiskOfRain2',
             'Risk of Rain 2', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
             'https://thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "632360")], "RiskOfRain2.jpg",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "632360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "4b3dcc5723454a47a9112d8fe8fd5f5c"),
+            ], "RiskOfRain2.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ROR2"]),
 
         new Game('Thunderstore Dev', 'ThunderstoreDev', 'ThunderstoreBeta',
@@ -57,10 +60,19 @@ export default class GameManager {
             'Outward', ['Outward.exe'], 'Outward_Data',
             'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
-                new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
+                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+
+        new Game('Outward Definitive', 'OutwardDe', 'OutwardDe',
+            'Outward/Outward_Defed', ['Outward Definitive Edition.exe'], 'Outward Definitive Edition_Data',
+            'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "f07a51af8ac845ea96f792fb485e04a3"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ], "OutwardDe.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('TaleSpire', 'TaleSpire', 'TaleSpire',
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
@@ -193,6 +205,71 @@ export default class GameManager {
             'https://belowzero.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+
+        new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
+            "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
+            'https://core-keeper.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
+
+        new Game("Titanfall 2", "Titanfall2", "Titanfall2",
+            "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
+            'https://northstar.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
+
+        new Game("Peglin", "Peglin", "Peglin",
+            "Peglin", ["Peglin.exe"], "Peglin_Data",
+            "https://thunderstore.io/c/peglin/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1296610"), new StorePlatformMetadata(StorePlatform.OTHER)], "Peglin.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("V Rising", "VRising", "VRising",
+            "VRising", ["VRising.exe"], "VRising_Data",
+            "https://thunderstore.io/c/v-rising/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1604030")], "VRising.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["vrising"]),
+
+        new Game("Hard Bullet", "HardBullet", "HardBullet",
+            "Hard Bullet", ["Hard Bullet.exe"], "Hard Bullet_Data",
+            "https://thunderstore.io/c/hard-bullet/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1294760")], "HardBullet.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["hb"]),
+        new Game("20 Minutes Till Dawn", "20MinutesTillDawn", "20MinutesTillDawn",
+            "20MinuteTillDawn", ["MinutesTillDawn.exe"], "MinutesTillDawn_Data",
+            "https://thunderstore.io/c/20-minutes-till-dawn/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1966900")], "20MinutesTillDawn.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mtd", "20mtd"]),
+
+        new Game("Green Hell VR", "GreenHellVR", "GreenHellVR",
+            "Green Hell VR", ["GHVR.exe"], "GHVR_Data",
+            "https://thunderstore.io/c/green-hell-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ghvr"]),
+
+        new Game("VTOL VR", "VTOL_VR", "VTOL_VR",
+            "VTOL VR", ["VTOLVR.exe"], "VTOLVR_Data",
+            "https://thunderstore.io/c/vtol-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "667970")], "VtolVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Backpack Hero", "BackpackHero", "BackpackHero",
+            "Backpack Hero Demo", ["Backpack Hero.exe", "linux.x86_64"], "Backpack Hero_Data",
+            "https://thunderstore.io/c/backpack-hero/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2066510")], "BackpackHero.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["bh", "farlands"]),
+
+        new Game("Stacklands", "Stacklands", "Stacklands",
+            "Stacklands", ["Stacklands.exe"], "Stacklands_Data",
+            "https://thunderstore.io/c/stacklands/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Enter the Gungeon", "ETG", "EnterTheGungeon",
+            "Enter the Gungeon", ["EtG.exe"], "EtG_Data",
+            "https://thunderstore.io/c/enter-the-gungeon/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "311690"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Garlic"), new StorePlatformMetadata(StorePlatform.OTHER)], "EnterTheGungeon.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["etg"]),
 
     ];
 

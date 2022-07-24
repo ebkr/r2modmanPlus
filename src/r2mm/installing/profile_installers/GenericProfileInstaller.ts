@@ -150,7 +150,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    private async installBepInEx(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+    private async basicModLoaderInstaller(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
         let bepInExRoot: string;
         if (modLoaderMapping.rootFolder.trim().length > 0) {
             bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
@@ -182,8 +182,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await this.installBepInEx(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
     }
@@ -194,7 +195,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         for (const file of tree.getFiles()) {
             // Find matching rule for file based on extension name.
             // If a matching extension name is longer (EG: .plugin.dll vs .dll) then assume the longer one is the correct match.
-            let matchingRule: ManagedRule;
+            let matchingRule: ManagedRule | undefined;
             try {
                 matchingRule = flatRules.filter(value => value.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase())))
                     .reduce((previousValue, currentValue) => {
@@ -208,6 +209,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             } catch (e) {
                 // No matching rule
                 matchingRule = flatRules.find(value => value.isDefaultLocation)!;
+            }
+            if (matchingRule === undefined) {
+                continue;
             }
             const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, this.rule);
             const updatedArray = installationIntent.get(subType) || [];
@@ -246,6 +250,32 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 for (const content of (await FsProvider.instance.readdir(source))) {
                     const cacheContentLocation = path.join(source, content);
                     const contentDest = path.join(subDir, content);
+                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
+                    } else {
+                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
+                    }
+                }
+            }
+        }
+    }
+
+    private async installSubDirNoFlatten(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+        const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
+        await FileUtils.ensureDirectory(subDir);
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+        for (const source of installSources) {
+            const relativePath = path.relative(cachedLocationOfMod, source);
+            if ((await FsProvider.instance.lstat(source)).isFile()) {
+                const dest = path.join(subDir, relativePath);
+                await FileUtils.ensureDirectory(path.dirname(dest));
+                await FsProvider.instance.copyFile(source, dest);
+            } else {
+                for (const content of (await FsProvider.instance.readdir(source))) {
+                    const cacheContentLocation = path.join(source, content);
+                    const contentDest = path.join(subDir, content);
+                    await FileUtils.ensureDirectory(path.dirname(contentDest));
                     if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
                         await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                     } else {
@@ -309,6 +339,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 case 'STATE': await this.installState(profile, managedRule, files, mod); break;
                 case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
                 case 'NONE': await this.installUntracked(profile, managedRule, files, mod); break;
+                case 'SUBDIR_NO_FLATTEN': await this.installSubDirNoFlatten(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
@@ -409,6 +440,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             files: Array.from(existing.entries())
         }
         await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
+        await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
     }
 
 }

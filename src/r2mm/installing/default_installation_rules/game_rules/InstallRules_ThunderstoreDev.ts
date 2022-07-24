@@ -8,7 +8,7 @@ export default function(): CoreRuleType {
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
-                isDefaultLocation: true,
+                isDefaultLocation: false,
                 defaultFileExtensions: [".dll"],
                 trackingMethod: "SUBDIR",
                 subRoutes: []
@@ -36,6 +36,13 @@ export default function(): CoreRuleType {
                 defaultFileExtensions: [],
                 trackingMethod: "NONE",
                 subRoutes: []
+            },
+            {
+                route: path.join("BepInEx", "NoFlatten"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR_NO_FLATTEN",
+                subRoutes: [],
+                isDefaultLocation: true
             }
         ]
     }
