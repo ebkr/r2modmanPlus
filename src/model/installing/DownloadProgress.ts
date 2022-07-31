@@ -8,5 +8,6 @@ export default interface DownloadProgress {
     currentModDownloadSize: number;
     currentModDownloadProgress: number;
     err: R2Error | null;
+    currentModBytesDownloaded: number;
     totalDownloadSize: number;
 }

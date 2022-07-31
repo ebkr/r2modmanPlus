@@ -44,7 +44,7 @@ export default class Mod implements ReactiveObjectConverterInterface {
     }
 
     public getDependencies(): string[] {
-        return this.dependencies;
+        return this.dependencies || [];
     }
 
     public setDependencies(dependencies: string[]) {

@@ -5,12 +5,19 @@
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading {{downloadObject.modName}}</h3>
-                    <p>{{convertSizeToReadable(downloadObject.currentProgress, false)}}/{{convertSizeToReadable(downloadObject.currentModSize, true)}}</p>
-                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
+                    <p>Total size: {{convertSizeToReadable(downloadObject.totalDownloadSize, true)}}</p>
+                    <p>Total complete: {{Math.floor(downloadObject.progress)}}%</p>
                     <Progress
                         :max='100'
                         :value='downloadObject.progress'
                         :className="['is-dark']"
+                    />
+                    <p>Current mod: {{Math.floor(downloadObject.currentProgress)}}%</p>
+                    <p>Progress: {{convertSizeToReadable(downloadObject.currentModBytesDownloaded, false)}}/{{convertSizeToReadable(downloadObject.currentModSize, true)}}</p>
+                    <Progress
+                        :max="100"
+                        :value="downloadObject.currentProgress"
+                        class-name="is-success"
                     />
                 </div>
             </div>
@@ -60,10 +67,13 @@
                                     {{selectedVersion}} is an outdated version
                                 </span>
                             </div>
+                            <div class="column is-narrow" v-if="thunderstoreMod !== null && selectedVersion !== null">
+                                {{getDownloadSize(thunderstoreMod, selectedVersion)}}
+                            </div>
                         </div>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies
+                        <button class="button is-info" @click="downloadThunderstoreMod()" v-if="thunderstoreMod !== null && selectedVersion !== null">Download with dependencies ({{getTotalDownloadSize(thunderstoreMod, selectedVersion)}})
                         </button>
                     </div>
                 </div>
@@ -118,6 +128,8 @@ import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import DownloadProgress from '../../model/installing/DownloadProgress';
 import FormatUtils from '../../utils/FormatUtils';
+import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 let assignId = 0;
 
@@ -138,6 +150,7 @@ let assignId = 0;
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
+        private settings!: ManagerSettings;
 
         private convertSizeToReadable(size: number, withSizeIndicator: boolean) {
             return FormatUtils.convertSizeToReadable(size, withSizeIndicator);
@@ -154,9 +167,11 @@ let assignId = 0;
                     modName: '',
                     assignId: currentAssignId,
                     failed: false,
-                    currentProgress: 0,
+                    totalProgress: 0,
                     currentModSize: 0,
                     totalDownloadSize: 0,
+                    currentProgress: 0,
+                    currentModBytesDownloaded: 0,
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
                 setTimeout(() => {
@@ -176,9 +191,10 @@ let assignId = 0;
                                 modName: downloadProgress.mod.getName(),
                                 assignId: currentAssignId,
                                 failed: false,
-                                currentProgress: downloadProgress.currentModDownloadProgress,
+                                currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
                                 currentModSize: downloadProgress.currentModDownloadSize,
                                 totalDownloadSize: downloadProgress.totalDownloadSize,
+                                currentProgress: downloadProgress.currentModDownloadProgress,
                             }
                             DownloadModModal.allVersions[assignIndex] = [currentAssignId, obj];
                         }
@@ -276,9 +292,11 @@ let assignId = 0;
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
-                currentProgress: 0,
+                totalProgress: 0,
                 currentModSize: 0,
                 totalDownloadSize: 0,
+                currentProgress: 0,
+                currentModBytesDownloaded: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
@@ -301,9 +319,11 @@ let assignId = 0;
                         initialMods: outdatedMods.map(value => `${value.getName()} (${value.getVersionNumber().toString()})`),
                         assignId: currentAssignId,
                         failed: false,
-                        currentProgress: downloadProgress.currentModDownloadProgress,
+                        totalProgress: downloadProgress.currentModDownloadProgress,
                         currentModSize: downloadProgress.currentModDownloadSize,
                         totalDownloadSize: downloadProgress.totalDownloadSize,
+                        currentProgress: downloadProgress.currentModDownloadProgress,
+                        currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
                     }
                     if (this.downloadObject.assignId === currentAssignId) {
                         this.downloadObject = Object.assign({}, obj);
@@ -342,9 +362,11 @@ let assignId = 0;
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
-                currentProgress: 0,
+                totalProgress: 0,
                 currentModSize: 0,
                 totalDownloadSize: 0,
+                currentProgress: 0,
+                currentModBytesDownloaded: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
@@ -368,9 +390,11 @@ let assignId = 0;
                             modName: downloadProgress.mod.getName(),
                             assignId: currentAssignId,
                             failed: false,
-                            currentProgress: downloadProgress.currentModDownloadProgress,
+                            totalProgress: downloadProgress.currentModDownloadProgress,
                             currentModSize: downloadProgress.currentModDownloadSize,
                             totalDownloadSize: downloadProgress.totalDownloadSize,
+                            currentProgress: downloadProgress.currentModDownloadProgress,
+                            currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
                         }
                         if (this.downloadObject.assignId === currentAssignId) {
                             this.downloadObject = Object.assign({}, obj);
@@ -448,9 +472,41 @@ let assignId = 0;
             });
         }
 
+        getDownloadSize(mod: ThunderstoreMod, versionString: string): string {
+            const version = this.getModVersionByString(mod, versionString);
+            let combo = new ThunderstoreCombo();
+            combo.setMod(mod);
+            combo.setVersion(version);
+            const downloadSize = ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo], this.settings);
+            return FormatUtils.convertSizeToReadable(downloadSize, true);
+        }
+
+        getTotalDownloadSize(mod: ThunderstoreMod, versionString: string): string {
+            const version = this.getModVersionByString(mod, versionString);
+            let combo = new ThunderstoreCombo();
+            combo.setMod(mod);
+            combo.setVersion(version);
+
+            let dependencySet;
+            if (mod.getCategories().map(value => value.toLowerCase()).includes("Modpacks")) {
+                dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySet(version, ThunderstorePackages.PACKAGES, []);
+            } else {
+                dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySetUsingLatest(version, ThunderstorePackages.PACKAGES, []);
+            }
+            const downloadSize = ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo, ...dependencySet], this.settings);
+            return FormatUtils.convertSizeToReadable(downloadSize, true);
+        }
+
+        getModVersionByString(mod: ThunderstoreMod, version: string) {
+            return mod.getVersions().find(value => value.getVersionNumber().toString() === version)!;
+        }
+
         created() {
             this.activeGame = GameManager.activeGame;
             this.contextProfile = Profile.getActiveProfile();
+            ManagerSettings.getSingleton(this.activeGame).then(settings => {
+                this.settings = settings;
+            });
         }
 
     }
