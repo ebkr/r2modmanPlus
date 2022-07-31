@@ -146,6 +146,9 @@ let assignId = 0;
         selectedVersion: string | null = null;
         currentVersion: string | null = null;
 
+        downloadSize: string = "";
+        downloadSizeWithDependencies: string = "";
+
         static allVersions: [number, any][] = [];
 
         private activeGame!: Game;
@@ -477,8 +480,14 @@ let assignId = 0;
             let combo = new ThunderstoreCombo();
             combo.setMod(mod);
             combo.setVersion(version);
-            const downloadSize = ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo], this.settings);
-            return FormatUtils.convertSizeToReadable(downloadSize, true);
+            // Since Vue can't deal with Promises, workaround.
+            setTimeout(() => {
+                ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo], this.settings)
+                    .then(value => {
+                        this.downloadSize = FormatUtils.convertSizeToReadable(value, true)
+                    });
+            }, 0);
+            return this.downloadSize;
         }
 
         getTotalDownloadSize(mod: ThunderstoreMod, versionString: string): string {
@@ -487,14 +496,19 @@ let assignId = 0;
             combo.setMod(mod);
             combo.setVersion(version);
 
-            let dependencySet;
+            let dependencySet: ThunderstoreCombo[];
             if (mod.getCategories().map(value => value.toLowerCase()).includes("Modpacks")) {
                 dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySet(version, ThunderstorePackages.PACKAGES, []);
             } else {
                 dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySetUsingLatest(version, ThunderstorePackages.PACKAGES, []);
             }
-            const downloadSize = ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo, ...dependencySet], this.settings);
-            return FormatUtils.convertSizeToReadable(downloadSize, true);
+            setTimeout(() => {
+                ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo, ...dependencySet], this.settings)
+                    .then(value => {
+                        this.downloadSizeWithDependencies = FormatUtils.convertSizeToReadable(value, true);
+                    });
+            }, 0);
+            return this.downloadSizeWithDependencies;
         }
 
         getModVersionByString(mod: ThunderstoreMod, version: string) {

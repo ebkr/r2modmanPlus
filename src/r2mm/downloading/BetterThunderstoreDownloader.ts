@@ -140,7 +140,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let downloadCount = 0;
         const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
 
-        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(dependencies, await ManagerSettings.getSingleton(game));
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(dependencies, await ManagerSettings.getSingleton(game));
 
         await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (downloadProgress: DownloadProgress) => {
             if (downloadProgress.status === StatusEnum.FAILURE) {
@@ -225,8 +225,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
         }
 
-        console.log("Size of download", dependencies, this.getTotalDownloadSizeInBytes(dependencies, settings), combo.getVersion().getFileSize())
-        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(dependencies, settings) + combo.getVersion().getFileSize();
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(dependencies, settings) + combo.getVersion().getFileSize();
 
         await this.downloadAndSave(combo, settings, async (downloadProgress: DownloadProgress) => {
             if (downloadProgress.status === StatusEnum.FAILURE) {
@@ -328,7 +327,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         const settings = await ManagerSettings.getSingleton(game);
 
-        const totalDownloadSizeInBytes = this.getTotalDownloadSizeInBytes(comboList, settings);
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(comboList, settings);
 
         let downloadCount = 0;
         await this.queueDownloadDependencies(settings, comboList.entries(), (downloadProgress: DownloadProgress) => {
