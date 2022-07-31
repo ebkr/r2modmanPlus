@@ -6,6 +6,7 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
 
     private downloads: number = 0;
     private downloadUrl: string = '';
+    private fileSize: number = 0;
 
     public make(version: any): ThunderstoreVersion {
         this.setName(version.name);
@@ -16,6 +17,7 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
         this.setIcon(version.icon);
         this.setDownloadCount(version.downloads);
         this.setDownloadUrl(version.download_url);
+        this.setFileSize(version.file_size);
         return this;
     }
 
@@ -23,6 +25,7 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
         super.fromReactive(reactive);
         this.setDownloadCount(reactive.downloadCount);
         this.setDownloadUrl(reactive.downloadUrl);
+        this.setFileSize(reactive.fileSize);
         return this;
     }
 
@@ -40,5 +43,13 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
 
     public setDownloadUrl(url: string) {
         this.downloadUrl = url;
+    }
+
+    public setFileSize(size: number) {
+        this.fileSize = size;
+    }
+
+    public getFileSize() {
+        return this.fileSize;
     }
 }

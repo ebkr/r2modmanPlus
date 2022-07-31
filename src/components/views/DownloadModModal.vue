@@ -5,11 +5,19 @@
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading {{downloadObject.modName}}</h3>
-                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
+                    <p>Total size: {{convertSizeToReadable(downloadObject.totalDownloadSize, true)}}</p>
+                    <p>Total complete: {{Math.floor(downloadObject.progress)}}%</p>
                     <Progress
                         :max='100'
                         :value='downloadObject.progress'
                         :className="['is-dark']"
+                    />
+                    <p>Current mod: {{Math.floor(downloadObject.currentProgress)}}%</p>
+                    <p>Progress: {{convertSizeToReadable(downloadObject.currentModBytesDownloaded, false)}}/{{convertSizeToReadable(downloadObject.currentModSize, true)}}</p>
+                    <Progress
+                        :max="100"
+                        :value="downloadObject.currentProgress"
+                        class-name="is-success"
                     />
                 </div>
             </div>
@@ -59,10 +67,13 @@
                                     {{selectedVersion}} is an outdated version
                                 </span>
                             </div>
+                            <div class="column is-narrow" v-if="thunderstoreMod !== null && selectedVersion !== null">
+                                {{getDownloadSize(thunderstoreMod, selectedVersion)}}
+                            </div>
                         </div>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies
+                        <button class="button is-info" @click="downloadThunderstoreMod()" v-if="thunderstoreMod !== null && selectedVersion !== null">Download with dependencies ({{getTotalDownloadSize(thunderstoreMod, selectedVersion)}})
                         </button>
                     </div>
                 </div>
@@ -115,6 +126,10 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import DownloadProgress from '../../model/installing/DownloadProgress';
+import FormatUtils from '../../utils/FormatUtils';
+import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 let assignId = 0;
 
@@ -131,10 +146,18 @@ let assignId = 0;
         selectedVersion: string | null = null;
         currentVersion: string | null = null;
 
+        downloadSize: string = "";
+        downloadSizeWithDependencies: string = "";
+
         static allVersions: [number, any][] = [];
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
+        private settings!: ManagerSettings;
+
+        private convertSizeToReadable(size: number, withSizeIndicator: boolean) {
+            return FormatUtils.convertSizeToReadable(size, withSizeIndicator);
+        }
 
         public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]): Promise<void> {
             return new Promise((resolve, reject) => {
@@ -147,25 +170,34 @@ let assignId = 0;
                     modName: '',
                     assignId: currentAssignId,
                     failed: false,
+                    totalProgress: 0,
+                    currentModSize: 0,
+                    totalDownloadSize: 0,
+                    currentProgress: 0,
+                    currentModBytesDownloaded: 0,
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
                 setTimeout(() => {
-                    ThunderstoreDownloaderProvider.instance.download(game, profile, tsMod, tsVersion, thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                    ThunderstoreDownloaderProvider.instance.download(game, profile, tsMod, tsVersion, thunderstorePackages, (downloadProgress: DownloadProgress) => {
                         const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-                        if (status === StatusEnum.FAILURE) {
-                            if (err !== null) {
+                        if (downloadProgress.status === StatusEnum.FAILURE) {
+                            if (downloadProgress.err !== null) {
                                 const existing = DownloadModModal.allVersions[assignIndex]
                                 existing[1].failed = true;
                                 DownloadModModal.allVersions[assignIndex] = [currentAssignId, existing[1]];
-                                return reject(err);
+                                return reject(downloadProgress.err);
                             }
-                        } else if (status === StatusEnum.PENDING) {
+                        } else if (downloadProgress.status === StatusEnum.PENDING) {
                             const obj = {
-                                progress: progress,
+                                progress: downloadProgress.progress,
                                 initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                                modName: modName,
+                                modName: downloadProgress.mod.getName(),
                                 assignId: currentAssignId,
                                 failed: false,
+                                currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                                currentModSize: downloadProgress.currentModDownloadSize,
+                                totalDownloadSize: downloadProgress.totalDownloadSize,
+                                currentProgress: downloadProgress.currentModDownloadProgress,
                             }
                             DownloadModModal.allVersions[assignIndex] = [currentAssignId, obj];
                         }
@@ -263,28 +295,38 @@ let assignId = 0;
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
+                totalProgress: 0,
+                currentModSize: 0,
+                totalDownloadSize: 0,
+                currentProgress: 0,
+                currentModBytesDownloaded: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, outdatedMods, this.thunderstorePackages, (downloadProgress: DownloadProgress) => {
                 const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-                if (status === StatusEnum.FAILURE) {
-                    if (err !== null) {
+                if (downloadProgress.status === StatusEnum.FAILURE) {
+                    if (downloadProgress.err !== null) {
                         this.downloadingMod = false;
                         const existing = DownloadModModal.allVersions[assignIndex]
                         existing[1].failed = true;
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                        this.$emit('error', err);
+                        this.$emit('error', downloadProgress.err);
                         return;
                     }
-                } else if (status === StatusEnum.PENDING) {
+                } else if (downloadProgress.status === StatusEnum.PENDING) {
                     const obj = {
-                        progress: progress,
-                        modName: modName,
+                        progress: downloadProgress.progress,
+                        modName: downloadProgress.mod.getName(),
                         initialMods: outdatedMods.map(value => `${value.getName()} (${value.getVersionNumber().toString()})`),
                         assignId: currentAssignId,
                         failed: false,
+                        totalProgress: downloadProgress.currentModDownloadProgress,
+                        currentModSize: downloadProgress.currentModDownloadSize,
+                        totalDownloadSize: downloadProgress.totalDownloadSize,
+                        currentProgress: downloadProgress.currentModDownloadProgress,
+                        currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
                     }
                     if (this.downloadObject.assignId === currentAssignId) {
                         this.downloadObject = Object.assign({}, obj);
@@ -323,29 +365,39 @@ let assignId = 0;
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
+                totalProgress: 0,
+                currentModSize: 0,
+                totalDownloadSize: 0,
+                currentProgress: 0,
+                currentModBytesDownloaded: 0,
             };
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.contextProfile!, tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.contextProfile!, tsMod, tsVersion, this.thunderstorePackages, (downloadProgress: DownloadProgress) => {
                     const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-                    if (status === StatusEnum.FAILURE) {
-                        if (err !== null) {
+                    if (downloadProgress.status === StatusEnum.FAILURE) {
+                        if (downloadProgress.err !== null) {
                             this.downloadingMod = false;
                             const existing = DownloadModModal.allVersions[assignIndex]
                             existing[1].failed = true;
                             this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            this.$emit('error', err);
+                            this.$emit('error', downloadProgress.err);
                             return;
                         }
-                    } else if (status === StatusEnum.PENDING) {
+                    } else if (downloadProgress.status === StatusEnum.PENDING) {
                         const obj = {
-                            progress: progress,
+                            progress: downloadProgress.progress,
                             initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                            modName: modName,
+                            modName: downloadProgress.mod.getName(),
                             assignId: currentAssignId,
                             failed: false,
+                            totalProgress: downloadProgress.currentModDownloadProgress,
+                            currentModSize: downloadProgress.currentModDownloadSize,
+                            totalDownloadSize: downloadProgress.totalDownloadSize,
+                            currentProgress: downloadProgress.currentModDownloadProgress,
+                            currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
                         }
                         if (this.downloadObject.assignId === currentAssignId) {
                             this.downloadObject = Object.assign({}, obj);
@@ -423,9 +475,52 @@ let assignId = 0;
             });
         }
 
+        getDownloadSize(mod: ThunderstoreMod, versionString: string): string {
+            const version = this.getModVersionByString(mod, versionString);
+            let combo = new ThunderstoreCombo();
+            combo.setMod(mod);
+            combo.setVersion(version);
+            // Since Vue can't deal with Promises, workaround.
+            setTimeout(() => {
+                ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo], this.settings)
+                    .then(value => {
+                        this.downloadSize = FormatUtils.convertSizeToReadable(value, true)
+                    });
+            }, 0);
+            return this.downloadSize;
+        }
+
+        getTotalDownloadSize(mod: ThunderstoreMod, versionString: string): string {
+            const version = this.getModVersionByString(mod, versionString);
+            let combo = new ThunderstoreCombo();
+            combo.setMod(mod);
+            combo.setVersion(version);
+
+            let dependencySet: ThunderstoreCombo[];
+            if (mod.getCategories().map(value => value.toLowerCase()).includes("Modpacks")) {
+                dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySet(version, ThunderstorePackages.PACKAGES, []);
+            } else {
+                dependencySet = ThunderstoreDownloaderProvider.instance.buildDependencySetUsingLatest(version, ThunderstorePackages.PACKAGES, []);
+            }
+            setTimeout(() => {
+                ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes([combo, ...dependencySet], this.settings)
+                    .then(value => {
+                        this.downloadSizeWithDependencies = FormatUtils.convertSizeToReadable(value, true);
+                    });
+            }, 0);
+            return this.downloadSizeWithDependencies;
+        }
+
+        getModVersionByString(mod: ThunderstoreMod, version: string) {
+            return mod.getVersions().find(value => value.getVersionNumber().toString() === version)!;
+        }
+
         created() {
             this.activeGame = GameManager.activeGame;
             this.contextProfile = Profile.getActiveProfile();
+            ManagerSettings.getSingleton(this.activeGame).then(settings => {
+                this.settings = settings;
+            });
         }
 
     }

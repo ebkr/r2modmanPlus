@@ -20,6 +20,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import DownloadProgress from '../../model/installing/DownloadProgress';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -125,7 +126,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
-                                      callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                                      callback: (downloadProgress: DownloadProgress) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependenciesToUpdate: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
@@ -139,16 +140,45 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let downloadCount = 0;
         const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
 
-        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
-            if (status === StatusEnum.FAILURE) {
-                callback(0, modName, status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
-            } else if (status === StatusEnum.SUCCESS) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(dependencies, await ManagerSettings.getSingleton(game));
+
+        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (downloadProgress: DownloadProgress) => {
+            if (downloadProgress.status === StatusEnum.FAILURE) {
+                callback(downloadProgress);
+            } else if (downloadProgress.status === StatusEnum.PENDING) {
+                callback({
+                    progress: this.generateProgressPercentage(downloadProgress, downloadCount, downloadableDependencySize + 1),
+                    status: downloadProgress.status,
+                    err: downloadProgress.err,
+                    currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                    currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
+                    currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                });
+            } else if (downloadProgress.status === StatusEnum.SUCCESS) {
+                callback({
+                    progress: this.generateProgressPercentage(downloadProgress, downloadCount, downloadableDependencySize + 1),
+                    status: StatusEnum.PENDING,
+                    err: downloadProgress.err,
+                    currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                    currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
+                    currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                });
                 downloadCount += 1;
                 if (downloadCount >= dependencies.length) {
-                    callback(100, modName, StatusEnum.PENDING, err);
+                    callback({
+                        progress: 100,
+                        status: StatusEnum.PENDING,
+                        err: downloadProgress.err,
+                        currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                        currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                        mod: downloadProgress.mod,
+                        totalDownloadSize: totalDownloadSizeInBytes,
+                        currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                    });
                     completedCallback([...dependencies]);
                 }
             }
@@ -156,7 +186,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async download(game: Game, profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
-                           callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                           callback: (downloadProgress: DownloadProgress) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         this.sortDependencyOrder(dependencies);
@@ -167,7 +197,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         const modList = await ProfileModList.getModList(profile);
         if (modList instanceof R2Error) {
-            return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
+            return callback({
+                progress: 0,
+                status: StatusEnum.FAILURE,
+                err: modList,
+                currentModDownloadSize: mod.getFileSize() || 0,
+                currentModBytesDownloaded: mod.getFileSize() || 0,
+                mod: mod,
+                totalDownloadSize: combo.getVersion().getFileSize(),
+                currentModDownloadProgress: 0,
+            });
         }
 
         const settings = await ManagerSettings.getSingleton(game);
@@ -182,35 +221,82 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
-            dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
+            dependencies = dependencies.filter(dep => (modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined) || settings.getContext().global.ignoreCache);
             downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
         }
 
-        await this.downloadAndSave(combo, settings, async (progress: number, status: number, err: R2Error | null) => {
-            if (status === StatusEnum.FAILURE) {
-                callback(0, mod.getName(), status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), mod.getName(), status, err);
-            } else if (status === StatusEnum.SUCCESS) {
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(dependencies, settings) + combo.getVersion().getFileSize();
+
+        await this.downloadAndSave(combo, settings, async (downloadProgress: DownloadProgress) => {
+            if (downloadProgress.status === StatusEnum.FAILURE) {
+                callback(downloadProgress);
+            } else if (downloadProgress.status === StatusEnum.PENDING) {
+                callback({
+                    progress: this.generateProgressPercentage(downloadProgress, downloadCount, downloadableDependencySize + 1),
+                    status: downloadProgress.status,
+                    err: downloadProgress.err,
+                    currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                    currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                    mod: downloadProgress.mod,
+                    totalDownloadSize: totalDownloadSizeInBytes,
+                    currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                });
+            } else if (downloadProgress.status === StatusEnum.SUCCESS) {
                 downloadCount += 1;
                 // If no dependencies, end here.
                 if (dependencies.length === 0) {
-                    callback(100, mod.getName(), StatusEnum.PENDING, err);
+                    callback({
+                        progress: 100,
+                        status: StatusEnum.PENDING,
+                        err: downloadProgress.err,
+                        currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                        currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                        mod: downloadProgress.mod,
+                        totalDownloadSize: totalDownloadSizeInBytes,
+                        currentModDownloadProgress: 100,
+                    });
                     completedCallback([combo]);
                     return;
                 }
 
                 // If dependencies, queue and download.
-                await this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    if (status === StatusEnum.FAILURE) {
-                        callback(0, modName, status, err);
-                    } else if (status === StatusEnum.PENDING) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
-                    } else if (status === StatusEnum.SUCCESS) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
+                await this.queueDownloadDependencies(settings, dependencies.entries(), (downloadProgress: DownloadProgress) => {
+                    if (downloadProgress.status === StatusEnum.FAILURE) {
+                        callback(downloadProgress);
+                    } else if (downloadProgress.status === StatusEnum.PENDING) {
+                        callback({
+                            progress: this.generateProgressPercentage(downloadProgress, downloadCount, downloadableDependencySize + 1),
+                            status: downloadProgress.status,
+                            err: downloadProgress.err,
+                            currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                            currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                            mod: downloadProgress.mod,
+                            totalDownloadSize: totalDownloadSizeInBytes,
+                            currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                        });
+                    } else if (downloadProgress.status === StatusEnum.SUCCESS) {
+                        callback({
+                            progress: this.generateProgressPercentage(downloadProgress, downloadCount, downloadableDependencySize + 1),
+                            status: StatusEnum.PENDING,
+                            err: downloadProgress.err,
+                            currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                            currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                            mod: downloadProgress.mod,
+                            totalDownloadSize: totalDownloadSizeInBytes,
+                            currentModDownloadProgress: downloadProgress.currentModDownloadProgress,
+                        });
                         downloadCount += 1;
                         if (downloadCount >= dependencies.length + 1) {
-                            callback(100, modName, StatusEnum.PENDING, err);
+                            callback({
+                                progress: 100,
+                                status: StatusEnum.PENDING,
+                                err: downloadProgress.err,
+                                currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                                currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                                mod: downloadProgress.mod,
+                                totalDownloadSize: totalDownloadSizeInBytes,
+                                currentModDownloadProgress: 100,
+                            });
                             completedCallback([...dependencies, combo]);
                         }
                     }
@@ -220,7 +306,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async downloadImportedMods(game: Game, modList: ExportMod[],
-                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
+                                       callback: (downloadProgress: DownloadProgress) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
         const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
         const comboList: ThunderstoreCombo[] = [];
@@ -241,38 +327,43 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         const settings = await ManagerSettings.getSingleton(game);
 
+        const totalDownloadSizeInBytes = await this.getTotalDownloadSizeInBytes(comboList, settings);
+
         let downloadCount = 0;
-        await this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
-            if (status === StatusEnum.FAILURE) {
-                callback(0, modName, status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, status, err);
-            } else if (status === StatusEnum.SUCCESS) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, StatusEnum.PENDING, err);
+        await this.queueDownloadDependencies(settings, comboList.entries(), (downloadProgress: DownloadProgress) => {
+            if (downloadProgress.status === StatusEnum.FAILURE || downloadProgress.status === StatusEnum.PENDING) {
+                callback(downloadProgress);
+            } else if (downloadProgress.status === StatusEnum.SUCCESS) {
+                callback(downloadProgress);
                 downloadCount += 1;
                 if (downloadCount >= comboList.length) {
-                    callback(100, modName, StatusEnum.PENDING, err);
+                    callback({
+                        progress: 100,
+                        mod: downloadProgress.mod,
+                        status: downloadProgress.status,
+                        err: downloadProgress.err,
+                        currentModBytesDownloaded: downloadProgress.currentModBytesDownloaded,
+                        currentModDownloadSize: downloadProgress.currentModDownloadSize,
+                        totalDownloadSize: totalDownloadSizeInBytes,
+                        currentModDownloadProgress: 100,
+                    });
                     completedCallback(comboList);
                 }
             }
         });
     }
 
-    public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
+    public generateProgressPercentage(downloadProgress: DownloadProgress, currentIndex: number, total: number): number {
         const completedProgress = (currentIndex / total) * 100;
-        return completedProgress + (progress * 1/total);
+        return completedProgress + (downloadProgress.progress * 1/total);
     }
 
-    public async queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    public async queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (downloadProgress: DownloadProgress) => void) {
         const entry = entries.next();
         if (!entry.done) {
-            await this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, async (progress: number, status: number, err: R2Error | null) => {
-                if (status === StatusEnum.FAILURE) {
-                    callback(0, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                } else if (status === StatusEnum.PENDING) {
-                    callback(progress, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                } else if (status === StatusEnum.SUCCESS) {
-                    callback(100, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
+            await this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, async (downloadProgress: DownloadProgress) => {
+                callback(downloadProgress);
+                if (downloadProgress.status === StatusEnum.SUCCESS) {
                     await this.queueDownloadDependencies(settings, entries, callback);
                 }
             });
@@ -283,14 +374,32 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return list.length;
     }
 
-    public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
+    public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (downloadProgress: DownloadProgress) => void) {
         if (await this.isVersionAlreadyDownloaded(combo) && !settings.getContext().global.ignoreCache) {
-            callback(100, StatusEnum.SUCCESS, null);
+            callback({
+                progress: 100,
+                status: StatusEnum.SUCCESS,
+                err: null,
+                currentModDownloadSize: combo.getVersion().getFileSize(),
+                currentModBytesDownloaded: combo.getVersion().getFileSize(),
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
+                currentModDownloadProgress: 100,
+            });
             return;
         }
         axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => {
-                callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
+                callback({
+                    progress: (progress.loaded / progress.total) * 100,
+                    status: StatusEnum.PENDING,
+                    err: null,
+                    currentModDownloadSize: combo.getVersion().getFileSize(),
+                    currentModBytesDownloaded: progress.loaded,
+                    mod: combo.getMod(),
+                    totalDownloadSize: 0, // Assigned on callback
+                    currentModDownloadProgress: (progress.loaded / progress.total) * 100,
+                });
             },
             responseType: 'arraybuffer',
             headers: {
@@ -299,16 +408,40 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
         }).then(async response => {
             const buf: Buffer = Buffer.from(response.data)
-            callback(100, StatusEnum.PENDING, null);
+            callback({
+                progress: 100,
+                status: StatusEnum.PENDING,
+                err: null,
+                currentModDownloadSize: combo.getVersion().getFileSize(),
+                currentModBytesDownloaded: combo.getVersion().getFileSize(),
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
+                currentModDownloadProgress: 100,
+            });
             await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
-                if (success) {
-                    callback(100, StatusEnum.SUCCESS, error || null);
-                } else {
-                    callback(100, StatusEnum.FAILURE, error || null);
-                }
+                const status = success ? StatusEnum.SUCCESS : StatusEnum.FAILURE;
+                callback({
+                    progress: 100,
+                    status: status,
+                    err: error || null,
+                    currentModDownloadSize: combo.getVersion().getFileSize(),
+                    currentModBytesDownloaded: combo.getVersion().getFileSize(),
+                    mod: combo.getMod(),
+                    totalDownloadSize: 0, // Assigned on callback
+                    currentModDownloadProgress: 100,
+                });
             });
         }).catch((reason: Error) => {
-            callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
+            callback({
+                progress: 100,
+                status: StatusEnum.SUCCESS,
+                err: new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null),
+                currentModDownloadSize: combo.getVersion().getFileSize(),
+                currentModBytesDownloaded: combo.getVersion().getFileSize(),
+                mod: combo.getMod(),
+                totalDownloadSize: 0, // Assigned on callback
+                currentModDownloadProgress: 100,
+            });
         })
     }
 

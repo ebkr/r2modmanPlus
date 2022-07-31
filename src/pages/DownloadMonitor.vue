@@ -28,13 +28,24 @@
                             <div class="border-at-bottom pad pad--sides">
                                 <div class="card is-shadowless">
                                     <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
+                                    <p>Final download size: {{ convertSizeToReadable(downloadObject.totalDownloadSize, true) }}</p>
                                     <p v-if="downloadObject.progress < 100">Downloading: {{ downloadObject.modName }}</p>
                                     <p>{{Math.min(Math.floor(downloadObject.progress), 100)}}% complete</p>
-                                    <Progress v-if="!downloadObject.failed"
-                                        :max='100'
-                                        :value='downloadObject.progress'
-                                        :className="['is-info']"
-                                    />
+                                    <template v-if="!downloadObject.failed">
+                                        <Progress v-if="!downloadObject.failed"
+                                                  :max='100'
+                                                  :value='downloadObject.progress'
+                                                  :className="['is-info']"
+                                        />
+                                        <template v-if="Math.floor(downloadObject.progress) < 100">
+                                            <p>Progress: {{convertSizeToReadable(downloadObject.currentModBytesDownloaded, false)}}/{{convertSizeToReadable(downloadObject.currentModSize, true)}}</p>
+                                            <Progress
+                                                :max="100"
+                                                :value="downloadObject.currentProgress"
+                                                class-name="is-success"
+                                            />
+                                        </template>
+                                    </template>
                                     <Progress v-else-if="downloadObject.failed"
                                         :max='100'
                                         :value='100'
@@ -57,6 +68,7 @@ import { Hero } from '../components/all';
 import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import Progress from '../components/Progress.vue';
+import FormatUtils from '../utils/FormatUtils';
 import Timeout = NodeJS.Timeout;
 
 @Component({
@@ -79,6 +91,10 @@ export default class DownloadMonitor extends Vue {
 
     route(ref: string) {
         this.$router.replace(`/manager?view=${ref}`);
+    }
+
+    private convertSizeToReadable(size: number, withSizeIndicator: boolean) {
+        return FormatUtils.convertSizeToReadable(size, withSizeIndicator);
     }
 
     goto(ref: string) {
