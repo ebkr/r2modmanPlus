@@ -38,7 +38,7 @@
             <div class="tabs">
                 <ul>
                     <li :class="[{'is-active': activeTab === 0}]" @click="changeTab(0)"><a>All ({{ getTabCountForAll }})</a></li>
-                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)"><a>Installed ({{ getTabCountForInstalled }})</a></li>
+                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)"><a>Tracked ({{ getTabCountForInstalled }})</a></li>
                     <li :class="[{'is-active': activeTab === 2}]" @click="changeTab(2)"><a>Dependencies ({{ getTabCountForDependencies }})</a></li>
                 </ul>
             </div>
