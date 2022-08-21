@@ -463,8 +463,10 @@ export default class Profiles extends Vue {
                 for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
                         await ProfileModList.updateMod(installResult, Profile.getActiveProfile(), async modToDisable => {
-                            modToDisable.disable();
+                            // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
+                            modToDisable.enable();
                             await ProfileInstallerProvider.instance.disableMod(modToDisable, Profile.getActiveProfile());
+                            modToDisable.disable();
                         });
                     }
                 }

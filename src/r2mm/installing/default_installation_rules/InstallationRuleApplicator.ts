@@ -4,6 +4,7 @@ import InstallRules_DysonSphereProgram from '../default_installation_rules/game_
 import InstallRules_Valheim from '../default_installation_rules/game_rules/InstallRules_Valheim';
 import InstallRules_GTFO from '../default_installation_rules/game_rules/InstallRules_GTFO';
 import InstallRules_Outward from '../default_installation_rules/game_rules/InstallRules_Outward';
+import InstallRules_OutwardDe from '../default_installation_rules/game_rules/InstallRules_OutwardDe';
 import InstallRules_TaleSpire from '../default_installation_rules/game_rules/InstallRules_TaleSpire';
 import InstallRules_H3VR from '../default_installation_rules/game_rules/InstallRules_H3VR';
 import InstallRules_ROUNDS from '../default_installation_rules/game_rules/InstallRules_ROUNDS';
@@ -29,6 +30,15 @@ import InstallRules_Subnautica from '../default_installation_rules/game_rules/In
 import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
 import InstallRules_CoreKeeper from '../default_installation_rules/game_rules/InstallRules_CoreKeeper';
 import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/InstallRules_Titanfall2';
+import InstallRules_Peglin from '../default_installation_rules/game_rules/InstallRules_Peglin';
+import InstallRules_VRising from '../default_installation_rules/game_rules/InstallRules_VRising';
+import InstallRules_HardBullet from '../default_installation_rules/game_rules/InstallRules_HardBullet';
+import InstallRules_GreenHellVR from '../default_installation_rules/game_rules/InstallRules_GreenHellVR';
+import InstallRules_20MinutesTillDawn from '../default_installation_rules/game_rules/InstallRules_20MinutesTillDawn';
+import InstallRules_VTOL_VR from '../default_installation_rules/game_rules/InstallRules_VTOL_VR';
+import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
+import InstallRules_Stacklands from '../default_installation_rules/game_rules/InstallRules_Stacklands';
+import InstallRules_EnterTheGungeon from '../default_installation_rules/game_rules/InstallRules_EnterTheGungeon';
 
 export default class InstallationRuleApplicator {
 
@@ -40,6 +50,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Valheim(),
             InstallRules_GTFO(),
             InstallRules_Outward(),
+            InstallRules_OutwardDe(),
             InstallRules_TaleSpire(),
             InstallRules_H3VR(),
             InstallRules_ROUNDS(),
@@ -63,6 +74,15 @@ export default class InstallationRuleApplicator {
             InstallRules_SubnauticaBZ(),
             InstallRules_CoreKeeper(),
             InstallRules_Titanfall2(),
+            InstallRules_Peglin(),
+            InstallRules_VRising(),
+            InstallRules_HardBullet(),
+            InstallRules_GreenHellVR(),
+            InstallRules_20MinutesTillDawn(),
+            InstallRules_VTOL_VR(),
+            InstallRules_BackpackHero(),
+            InstallRules_Stacklands(),
+            InstallRules_EnterTheGungeon(),
         ]
     }
 

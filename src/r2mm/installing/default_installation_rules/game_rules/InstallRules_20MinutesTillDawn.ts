@@ -1,14 +1,14 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
 
-export default function(): CoreRuleType {
+export default function (): CoreRuleType {
 
     return {
-        gameName: "ThunderstoreDev",
+        gameName: "20MinutesTillDawn",
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
-                isDefaultLocation: false,
+                isDefaultLocation: true,
                 defaultFileExtensions: [".dll"],
                 trackingMethod: "SUBDIR",
                 subRoutes: []
@@ -36,13 +36,6 @@ export default function(): CoreRuleType {
                 defaultFileExtensions: [],
                 trackingMethod: "NONE",
                 subRoutes: []
-            },
-            {
-                route: path.join("BepInEx", "NoFlatten"),
-                defaultFileExtensions: [],
-                trackingMethod: "SUBDIR_NO_FLATTEN",
-                subRoutes: [],
-                isDefaultLocation: true
             }
         ]
     }

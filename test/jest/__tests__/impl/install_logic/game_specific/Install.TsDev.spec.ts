@@ -13,8 +13,6 @@ import InstallationRuleApplicator from 'src/r2mm/installing/default_installation
 import NodeFs from 'src/providers/generic/file/NodeFs';
 import FileTree from 'src/model/file/FileTree';
 import R2Error from 'src/model/errors/R2Error';
-import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
-import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -51,7 +49,7 @@ let packageBuilder = (name: string, author: string, version: VersionNumber): Man
 let pkg: ManifestV2;
 let cachePkgRoot: string;
 
-describe('BONEWORKS Install Logic', () => {
+describe('TS Dev No Flatten Install Logic', () => {
 
     beforeAll(async () => {
         FsProvider.provide(() => new NodeFs());
@@ -63,7 +61,7 @@ describe('BONEWORKS Install Logic', () => {
         const allFiles = tree.getRecursiveFiles()
             .map(value => path.relative(baseFolderStructurePath, value))
             // Filter out file generation script.
-            .filter(value => value !== "populator.mjs");
+            .filter(value => value !== "populator.mjs" && value !== "depopulator.mjs");
 
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
@@ -75,8 +73,6 @@ describe('BONEWORKS Install Logic', () => {
         await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
         InstallationRuleApplicator.apply();
 
-        ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-
         pkg = packageBuilder('test_mod', 'author', new VersionNumber('1.0.0'));
         cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
 
@@ -86,7 +82,7 @@ describe('BONEWORKS Install Logic', () => {
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
         }
 
-        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
+        GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "ThunderstoreDev")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
@@ -100,38 +96,39 @@ describe('BONEWORKS Install Logic', () => {
     afterAll(() => {
         InMemoryFsProvider.clear();
         InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
-    });
+    })
 
-    test('STATE', async () => {
+    test('SUBDIR_NO_FLATTEN', async () => {
 
         /** Expect files to be installed as intended **/
-        // [package_path, install_dir_relative_to_profile_folder]
         const subdirPaths = [
-            [path.join("ML", "MelonLoader"), "."],
-            [path.join("ML", "Managed"), "MelonLoader"],
-            [path.join("ML", "Libs"), "MelonLoader"],
-            [path.join("ML", "UserLibs"), ""],
-            [path.join("ML", "Mods"), "."],
-            [path.join("ML", "Plugins"), "."],
-            [path.join("ML", "UserData"), "."],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomItems"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomMaps"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "PlayerModels"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomLoadScreens"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "Music"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "Food"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "Scoreworks"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "CustomSkins"), "UserData"],
-            [path.join("ML", "GameSpecific", "BONEWORKS", "Grenades"), "UserData"],
+            path.join("BIE", "GameSpecific", "ThunderstoreDev", "NoFlatten", "Sub"),
         ]
 
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
+        for (const value of subdirPaths) {
+            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
+            const noFlattenDir = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "NoFlatten");
+            // Add one to remove trailing path separator.
+            const subdirPathAfterNoFlatten = value.substring(path.join("BIE", "GameSpecific", "ThunderstoreDev", "NoFlatten").length + 1);
+            expect(await FsProvider.instance.exists(path.join(
+                noFlattenDir, pkg.getName(), subdirPathAfterNoFlatten, `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+        }
+    });
+
+    test('SUBDIR_NO_FLATTEN with unstructured files', async () => {
+
+        /** Expect files to be installed as intended **/
+        const subdirPaths = [
+            path.join('BIE', 'GameSpecific', 'ThunderstoreDev', 'Also Sub'),
+        ]
 
         for (const value of subdirPaths) {
-            const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
+            const noFlattenDir = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "NoFlatten");
+            const convertedName = value.replace(/[\/\\]/g, "_");
+
             expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "_state", `${pkg.getName()}.yml`)))
+                noFlattenDir, pkg.getName(), "Package", value, `${convertedName}_Files`, `${convertedName}_file.txt`
+            ))).toBeTruthy();
         }
     });
 
