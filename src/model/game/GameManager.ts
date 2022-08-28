@@ -271,6 +271,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "311690"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Garlic"), new StorePlatformMetadata(StorePlatform.OTHER)], "EnterTheGungeon.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["etg"]),
 
+        new Game("Ravenfield", "Ravenfield", "Ravenfield",
+            "Ravenfield", ["ravenfield.exe"], "ravenfield_Data",
+            "https://thunderstore.io/c/ravenfield/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "636480")], "Ravenfield.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
+
     ];
 
     static get activeGame(): Game {

@@ -54,4 +54,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     BackpackHero: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     Stacklands: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Stacklands", "BepInExPack_Stacklands", PackageLoader.BEPINEX)],
     ETG: [new ModLoaderPackageMapping("BepInEx-BepInExPack_EtG", "BepInExPack_EtG", PackageLoader.BEPINEX)],
+    Ravenfield: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Ravenfield", "BepInExPack_Ravenfield", PackageLoader.BEPINEX)],
 }
