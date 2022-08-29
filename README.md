@@ -69,6 +69,18 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.32
+- Re-added win 7 support
+- Added games:
+  - Green Hell VR
+  - VTOL VR
+  - 20 Minutes Till Dawn
+  - Backpack Hero
+  - Stacklands
+  - Enter the Gungeon
+- Fixed BepInEx doorstop assembly
+- Other small fixes
+
 ### 3.1.31
 - Downgraded node-ipc
 

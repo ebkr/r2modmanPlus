@@ -256,7 +256,7 @@ export default class GameManager {
         new Game("Backpack Hero", "BackpackHero", "BackpackHero",
             "Backpack Hero Demo", ["Backpack Hero.exe", "linux.x86_64"], "Backpack Hero_Data",
             "https://thunderstore.io/c/backpack-hero/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2066510")], "BackpackHero.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1970580")], "BackpackHero.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["bh", "farlands"]),
 
         new Game("Stacklands", "Stacklands", "Stacklands",
