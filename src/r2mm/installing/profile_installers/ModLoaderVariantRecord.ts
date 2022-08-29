@@ -48,4 +48,10 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     Peglin: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Peglin", "BepInExPack_Peglin", PackageLoader.BEPINEX)],
     VRising: [new ModLoaderPackageMapping("BepInEx-BepInExPack_V_Rising", "BepInExPack_V_Rising", PackageLoader.BEPINEX)],
     HardBullet: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
+    GreenHellVR: [new ModLoaderPackageMapping("PCVR_Modders-BepInExPack_GHVR", "BepInExPack_GHVR", PackageLoader.BEPINEX)],
+    "20MinutesTillDawn": [new ModLoaderPackageMapping("BepInExPackMTD-BepInExPack_20MTD", "BepInExPack_20MTD", PackageLoader.BEPINEX)],
+    VTOL_VR: [new ModLoaderPackageMapping("BepInEx-BepInExPack_VTOL_VR", "BepInExPack_VTOL_VR", PackageLoader.BEPINEX)],
+    BackpackHero: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
+    Stacklands: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Stacklands", "BepInExPack_Stacklands", PackageLoader.BEPINEX)],
+    ETG: [new ModLoaderPackageMapping("BepInEx-BepInExPack_EtG", "BepInExPack_EtG", PackageLoader.BEPINEX)],
 }

@@ -235,6 +235,41 @@ export default class GameManager {
             "https://thunderstore.io/c/hard-bullet/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1294760")], "HardBullet.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["hb"]),
+        new Game("20 Minutes Till Dawn", "20MinutesTillDawn", "20MinutesTillDawn",
+            "20MinuteTillDawn", ["MinutesTillDawn.exe"], "MinutesTillDawn_Data",
+            "https://thunderstore.io/c/20-minutes-till-dawn/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1966900")], "20MinutesTillDawn.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mtd", "20mtd"]),
+
+        new Game("Green Hell VR", "GreenHellVR", "GreenHellVR",
+            "Green Hell VR", ["GHVR.exe"], "GHVR_Data",
+            "https://thunderstore.io/c/green-hell-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ghvr"]),
+
+        new Game("VTOL VR", "VTOL_VR", "VTOL_VR",
+            "VTOL VR", ["VTOLVR.exe"], "VTOLVR_Data",
+            "https://thunderstore.io/c/vtol-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "667970")], "VtolVR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Backpack Hero", "BackpackHero", "BackpackHero",
+            "Backpack Hero", ["Backpack Hero.exe", "linux.x86_64"], "Backpack Hero_Data",
+            "https://thunderstore.io/c/backpack-hero/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1970580")], "BackpackHero.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["bh", "farlands"]),
+
+        new Game("Stacklands", "Stacklands", "Stacklands",
+            "Stacklands", ["Stacklands.exe"], "Stacklands_Data",
+            "https://thunderstore.io/c/stacklands/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Enter the Gungeon", "ETG", "EnterTheGungeon",
+            "Enter the Gungeon", ["EtG.exe"], "EtG_Data",
+            "https://thunderstore.io/c/enter-the-gungeon/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "311690"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Garlic"), new StorePlatformMetadata(StorePlatform.OTHER)], "EnterTheGungeon.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["etg"]),
 
     ];
 
