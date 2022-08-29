@@ -23,7 +23,7 @@ export default function(/* { store, ssrContext } */) {
     });
 
     Router.afterEach((to: Route, ignored: Route) => {
-        document.title = to.meta.title();
+        document.title = to.meta!.title();
     });
     return Router;
 }
