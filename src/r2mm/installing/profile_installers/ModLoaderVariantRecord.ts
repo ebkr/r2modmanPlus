@@ -56,4 +56,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     ETG: [new ModLoaderPackageMapping("BepInEx-BepInExPack_EtG", "BepInExPack_EtG", PackageLoader.BEPINEX)],
     Ravenfield: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Ravenfield", "BepInExPack_Ravenfield", PackageLoader.BEPINEX)],
     Aloft: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Aloft", "BepInExPack_Aloft", PackageLoader.BEPINEX)],
+    COTL: [new ModLoaderPackageMapping("BepInEx-BepInExPack_CultOfTheLamb", "BepInExPack_CultOfTheLamb", PackageLoader.BEPINEX)],
 }

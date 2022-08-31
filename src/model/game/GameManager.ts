@@ -263,7 +263,7 @@ export default class GameManager {
             "Stacklands", ["Stacklands.exe"], "Stacklands_Data",
             "https://thunderstore.io/c/stacklands/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Enter the Gungeon", "ETG", "EnterTheGungeon",
             "Enter the Gungeon", ["EtG.exe"], "EtG_Data",
@@ -281,7 +281,13 @@ export default class GameManager {
             "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
             "https://thunderstore.io/c/aloft/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1660080")], "Aloft.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Cult of the Lamb", "COTL", "COTL",
+            "Cult of the Lamb", ["cotl.exe"], "cotl_Data",
+            "https://thunderstore.io/c/cult-of-the-lamb/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1313140")], "Cotl.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cotl"]),
 
     ];
 
