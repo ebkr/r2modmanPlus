@@ -277,6 +277,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "636480")], "Ravenfield.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
 
+        new Game("Aloft", "Aloft", "Aloft",
+            "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
+            "https://thunderstore.io/c/aloft/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1660080")], "Aloft.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
+
     ];
 
     static get activeGame(): Game {

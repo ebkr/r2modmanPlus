@@ -40,6 +40,7 @@ import InstallRules_BackpackHero from '../default_installation_rules/game_rules/
 import InstallRules_Stacklands from '../default_installation_rules/game_rules/InstallRules_Stacklands';
 import InstallRules_EnterTheGungeon from '../default_installation_rules/game_rules/InstallRules_EnterTheGungeon';
 import InstallRules_Ravenfield from '../default_installation_rules/game_rules/InstallRules_Ravenfield';
+import InstallRules_Aloft from '../default_installation_rules/game_rules/InstallRules_Aloft';
 
 export default class InstallationRuleApplicator {
 
@@ -85,6 +86,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Stacklands(),
             InstallRules_EnterTheGungeon(),
             InstallRules_Ravenfield(),
+            InstallRules_Aloft(),
         ]
     }
 
