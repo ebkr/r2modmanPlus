@@ -280,7 +280,7 @@ export default class GameManager {
         new Game("Aloft", "Aloft", "Aloft",
             "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
             "https://thunderstore.io/c/aloft/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1660080")], "Aloft.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2051980")], "Aloft.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
 
     ];
