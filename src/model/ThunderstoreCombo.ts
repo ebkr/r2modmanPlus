@@ -17,7 +17,7 @@ export default class ThunderstoreCombo {
 
     public static fromProtocol(protocol: string, modList: ThunderstoreMod[]): ThunderstoreCombo | R2Error {
         // Strip out protocol information
-        const reducedProtocol = protocol.replace(new RegExp("ror2mm://v1/install/([a-zA-Z0-9]+\.)?thunderstore\.io/"), '');
+        const reducedProtocol = protocol.replace(new RegExp("ror2mm://v1/install/([a-zA-Z0-9\-]+\.)?thunderstore\.io/"), '');
         const information = reducedProtocol.split('/');
         const packageName = `${information[0]}-${information[1]}`;
         const packageVersion = information[2];
