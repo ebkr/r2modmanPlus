@@ -289,6 +289,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1313140")], "Cotl.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cotl"]),
 
+        new Game("Chrono Ark", "ChronoArk", "ChronoArk",
+            path.join("Chrono Ark", "x64", "Master"), ["ChronoArk.exe"], "ChronoArk_Data",
+            "https://thunderstore.io/c/chrono-ark/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1188930")], "ChronoArk.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
     ];
 
     static get activeGame(): Game {

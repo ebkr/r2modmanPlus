@@ -42,6 +42,7 @@ import InstallRules_EnterTheGungeon from '../default_installation_rules/game_rul
 import InstallRules_Ravenfield from '../default_installation_rules/game_rules/InstallRules_Ravenfield';
 import InstallRules_Aloft from '../default_installation_rules/game_rules/InstallRules_Aloft';
 import InstallRules_COTL from '../default_installation_rules/game_rules/InstallRules_COTL';
+import InstallRules_ChronoArk from '../default_installation_rules/game_rules/InstallRules_ChronoArk';
 
 export default class InstallationRuleApplicator {
 
@@ -89,6 +90,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Ravenfield(),
             InstallRules_Aloft(),
             InstallRules_COTL(),
+            InstallRules_ChronoArk(),
         ]
     }
 
