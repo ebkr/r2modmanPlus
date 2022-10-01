@@ -295,6 +295,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1188930")], "ChronoArk.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
+        new Game("BONELAB", "BONELAB", "BONELAB",
+            "BONELAB", ["BONELAB_Steam_Windows64.exe"], "BONELAB_Steam_Windows64",
+            "https://thunderstore.io/c/bonelab/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190")], "BONELAB.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BL"]),
+
     ];
 
     static get activeGame(): Game {
