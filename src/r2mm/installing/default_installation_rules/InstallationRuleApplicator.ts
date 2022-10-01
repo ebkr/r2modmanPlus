@@ -43,6 +43,7 @@ import InstallRules_Ravenfield from '../default_installation_rules/game_rules/In
 import InstallRules_Aloft from '../default_installation_rules/game_rules/InstallRules_Aloft';
 import InstallRules_COTL from '../default_installation_rules/game_rules/InstallRules_COTL';
 import InstallRules_ChronoArk from '../default_installation_rules/game_rules/InstallRules_ChronoArk';
+import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 
 export default class InstallationRuleApplicator {
 
@@ -91,6 +92,7 @@ export default class InstallationRuleApplicator {
             InstallRules_Aloft(),
             InstallRules_COTL(),
             InstallRules_ChronoArk(),
+            InstallRules_BONELAB(),
         ]
     }
 

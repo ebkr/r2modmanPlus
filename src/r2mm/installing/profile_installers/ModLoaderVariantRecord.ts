@@ -58,4 +58,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     Aloft: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Aloft", "BepInExPack_Aloft", PackageLoader.BEPINEX)],
     COTL: [new ModLoaderPackageMapping("BepInEx-BepInExPack_CultOfTheLamb", "BepInExPack_CultOfTheLamb", PackageLoader.BEPINEX)],
     ChronoArk: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Chrono_Ark", "BepInExPack_Chrono_Ark", PackageLoader.BEPINEX)],
+    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
 }
