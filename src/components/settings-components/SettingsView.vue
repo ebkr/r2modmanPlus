@@ -64,7 +64,6 @@ import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
-import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
@@ -329,7 +328,7 @@ import moment from 'moment';
                 'fa-gamepad',
                 async () => {
                     await ManagerSettings.resetDefaults();
-                    await InteractionProvider.instance.restartApp();
+                    await this.$router.push("/");
                 }
             ),
             new SettingsRow(
