@@ -46,7 +46,7 @@ export default class ManagerSettings {
     }
 
 
-    private async save(): Promise<R2Error | void> {
+    private async save(): Promise<void> {
         await ManagerSettings.DEXIE_STORE.save(ManagerSettings.CONTEXT);
     }
 
@@ -158,21 +158,13 @@ export default class ManagerSettings {
     }
 
     public async setDefaultGame(defaultGame: Game | undefined) {
-        if (defaultGame === undefined) {
-            ManagerSettings.CONTEXT.global.defaultGame = undefined;
-        } else {
-            ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
-        }
-        return await this.save();
+        ManagerSettings.CONTEXT.global.defaultGame = defaultGame?.internalFolderName;
+        await this.save();
     }
 
     public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
-        if (storePlatform === undefined) {
-            ManagerSettings.CONTEXT.global.defaultStore = undefined;
-        } else {
-            ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
-        }
-        return await this.save();
+        ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
+        await this.save();
     }
 
     public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
