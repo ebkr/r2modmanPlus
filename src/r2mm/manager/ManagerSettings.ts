@@ -27,6 +27,24 @@ export default class ManagerSettings {
         return this.LOADED_SETTINGS;
     }
 
+    /**
+     * Reset the default game selection before redirecting the user to
+     * game selection screen. Otherwise the game would be automatically
+     * reselected and the user redirected to profile selection screen.
+     */
+    public static async resetDefaults() {
+        const settings = await ManagerSettings.getSingleton(ManagerSettings.ACTIVE_GAME);
+        const error = await settings.load();
+
+        if (error) {
+            throw error;
+        }
+
+        ManagerSettings.CONTEXT.global.defaultGame = undefined;
+        ManagerSettings.CONTEXT.global.defaultStore = undefined;
+        await settings.save();
+    }
+
     public async load(forceRefresh?: boolean): Promise<R2Error | void> {
         try {
             if (ManagerSettings.CONTEXT === undefined || forceRefresh === true) {
