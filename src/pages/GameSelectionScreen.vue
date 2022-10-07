@@ -267,81 +267,56 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private async proceed() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        GameManager.activeGame = this.selectedGame;
+        GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
+        PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setLastSelectedGame(this.selectedGame);
+
+        const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
+        if (gameRunner === undefined) {
+            this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
+            return;
+        }
+        GameRunnerProvider.provide(() => gameRunner);
+
+        const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
+        if (directoryResolver === undefined) {
+            this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
+            return;
+        }
+
+        GameDirectoryResolverProvider.provide(() => directoryResolver);
+
+        switch (this.selectedGame.packageLoader) {
+            case PackageLoader.BEPINEX:
+                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+                break;
+            case PackageLoader.MELON_LOADER:
+                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+            case PackageLoader.NORTHSTAR:
+                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+        }
+
+        await this.$router.replace("/splash");
     }
 
     private async proceedDefault() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-            await settings.setDefaultGame(this.selectedGame);
-            await settings.setDefaultStorePlatform(this.selectedPlatform);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setDefaultGame(this.selectedGame);
+        await settings.setDefaultStorePlatform(this.selectedPlatform);
+
+        this.proceed();
     }
 
     private toggleFavourite(game: Game) {
