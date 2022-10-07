@@ -164,10 +164,7 @@ import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
-import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
 import ProviderUtils from '../providers/generic/ProviderUtils';
-import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
-import { PackageLoader } from '../model/installing/PackageLoader';
 
 @Component({
     components: {
@@ -280,16 +277,6 @@ export default class GameSelectionScreen extends Vue {
         const settings = await ManagerSettings.getSingleton(this.selectedGame);
         await settings.setLastSelectedGame(this.selectedGame);
         await GameManager.activate(this.selectedGame, this.selectedPlatform);
-
-        switch (this.selectedGame.packageLoader) {
-            case PackageLoader.BEPINEX:
-                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                break;
-            case PackageLoader.MELON_LOADER:
-                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            case PackageLoader.NORTHSTAR:
-                ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-        }
 
         await this.$router.replace("/splash");
     }

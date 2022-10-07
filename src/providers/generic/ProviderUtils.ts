@@ -2,9 +2,11 @@ import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import ProviderError from '../../model/errors/ProviderError';
 import { StorePlatform } from '../../model/game/StorePlatform';
+import ConflictManagementProviderImpl from '../../r2mm/installing/ConflictManagementProviderImpl';
 import GameDirectoryResolverProvider from '../ror2/game/GameDirectoryResolverProvider';
 import GameRunnerProvider from './game/GameRunnerProvider';
 import PlatformInterceptorProvider from './game/platform_interceptor/PlatformInterceptorProvider';
+import ConflictManagementProvider from './installing/ConflictManagementProvider';
 
 export default class ProviderUtils {
 
@@ -23,6 +25,7 @@ export default class ProviderUtils {
 
         GameRunnerProvider.provide(() => runner);
         GameDirectoryResolverProvider.provide(() => resolver);
+        ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
     }
 
     public static throwNotProvidedError(providerName: string): ProviderError {
