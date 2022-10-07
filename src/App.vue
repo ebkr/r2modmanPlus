@@ -3,7 +3,7 @@
 
         <router-view @error="showError" v-if="visible"/>
 
-        <div id='errorModal' :class="['modal', {'is-active':(errorMessage !== '')}]">
+        <div id='errorModal' :class="['modal', 'z-top', {'is-active':(errorMessage !== '')}]">
             <div class="modal-background" @click="closeErrorModal()"></div>
             <div class='modal-content'>
                 <div class='notification is-danger'>
