@@ -271,13 +271,9 @@ export default class GameSelectionScreen extends Vue {
             return;
         }
 
-        GameManager.activeGame = this.selectedGame;
-        GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-        PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-
         const settings = await ManagerSettings.getSingleton(this.selectedGame);
         await settings.setLastSelectedGame(this.selectedGame);
+        await GameManager.activate(this.selectedGame, this.selectedPlatform);
 
         const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
         if (gameRunner === undefined) {
