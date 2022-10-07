@@ -183,6 +183,7 @@ import Hero from '../components/Hero.vue';
 import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
+import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
@@ -389,41 +390,20 @@ export default class GameSelectionScreen extends Vue {
         await this.$store.dispatch('checkMigrations');
         this.runningMigration = false;
 
-        ManagerSettings.getSingleton(GameManager.unsetGame()).then(settings => {
-            const lastSelectedGame = settings.getContext().global.lastSelectedGame;
-            const savedViewMode = settings.getContext().global.gameSelectionViewMode;
-            switch (savedViewMode) {
-                case "List": this.viewMode = GameSelectionViewMode.LIST; break;
-                case "Card":
-                case undefined:
-                    this.viewMode = GameSelectionViewMode.CARD;
-                    break;
-            }
-            if (lastSelectedGame !== null) {
-                const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
-                if (game !== undefined) {
-                    this.selectedGame = game;
-                }
-            }
-        });
-        ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
-            this.settings = value;
-            this.favourites = value.getContext().global.favouriteGames || [];
-            if (value.getContext().global.defaultGame !== undefined) {
-                if (value.getContext().global.defaultStore !== undefined) {
-                    const game = GameManager.gameList
-                        .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
+        this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
+        const globalSettings = this.settings.getContext().global;
+        this.viewMode = globalSettings.gameSelectionViewMode;
+        this.favourites = globalSettings.favouriteGames ?? [];
+        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) ?? null;
 
-                    const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
+        // Skip game selection view if valid default game & platform are set.
+        const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
 
-                    this.selectedGame = game;
-                    this.selectedPlatform = platform.storePlatform;
-
-                    this.proceed();
-                    return;
-                }
-            }
-        });
+        if (defaultGame && defaultPlatform) {
+            this.selectedGame = defaultGame;
+            this.selectedPlatform = defaultPlatform;
+            this.proceed();
+        }
     }
 
     toggleViewMode() {

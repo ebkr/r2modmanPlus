@@ -206,7 +206,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     favouriteGames: string[] | undefined;
     defaultGame: string | undefined;
     defaultStore: StorePlatform | undefined;
-    gameSelectionViewMode: string | undefined;
+    gameSelectionViewMode: GameSelectionViewMode;
 }
 
 /**
