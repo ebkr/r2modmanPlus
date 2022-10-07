@@ -156,21 +156,16 @@ import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import Hero from '../components/Hero.vue';
-import PathResolver from '../r2mm/manager/PathResolver';
-import * as path from 'path';
-import FileUtils from '../utils/FileUtils';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
-import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
-import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
 import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
+import ProviderUtils from '../providers/generic/ProviderUtils';
 import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
 import { PackageLoader } from '../model/installing/PackageLoader';
 
@@ -271,24 +266,20 @@ export default class GameSelectionScreen extends Vue {
             return;
         }
 
+        try {
+            ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
+        } catch (error) {
+            if (error instanceof R2Error) {
+                this.$emit("error", error);
+                return;
+            }
+
+            throw error;
+        }
+
         const settings = await ManagerSettings.getSingleton(this.selectedGame);
         await settings.setLastSelectedGame(this.selectedGame);
         await GameManager.activate(this.selectedGame, this.selectedPlatform);
-
-        const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-        if (gameRunner === undefined) {
-            this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-            return;
-        }
-        GameRunnerProvider.provide(() => gameRunner);
-
-        const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-        if (directoryResolver === undefined) {
-            this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-            return;
-        }
-
-        GameDirectoryResolverProvider.provide(() => directoryResolver);
 
         switch (this.selectedGame.packageLoader) {
             case PackageLoader.BEPINEX:
