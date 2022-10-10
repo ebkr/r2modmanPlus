@@ -685,11 +685,8 @@ export default class Profiles extends Vue {
     }
 
     private async backToGameSelection() {
-        const settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.load();
-        await settings.setDefaultGame(undefined);
-        await settings.setDefaultStorePlatform(undefined);
-        await InteractionProvider.instance.restartApp();
+        await ManagerSettings.resetDefaults();
+        await this.$router.push("/");
     }
 }
 </script>
