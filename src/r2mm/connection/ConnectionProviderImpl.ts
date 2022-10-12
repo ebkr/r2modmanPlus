@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 import GameManager from '../../model/game/GameManager';
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
+import ConnectionProvider, { DownloadProgressed } from '../../providers/generic/connection/ConnectionProvider';
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
-    public cleanExclusions(exclusions: string|string[]) {
+    private cleanExclusions(exclusions: string|string[]) {
         const exclusions_ = Array.isArray(exclusions) ? exclusions : exclusions.split("\n");
         return exclusions_.map((e) => e.trim()).filter(Boolean);
     }
@@ -15,20 +15,21 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         return this.cleanExclusions(exclusionList.exclusions);
     }
 
-    private async getExclusionsFromRemote(downloadProgressed?: (percentDownloaded: number) => void) {
-        return axios.get(GameManager.activeGame.exclusionsUrl, {
+    public async getExclusionsFromRemote(downloadProgressed?: DownloadProgressed) {
+        const response = await axios.get(GameManager.activeGame.exclusionsUrl, {
             onDownloadProgress: progress => {
                 if (downloadProgressed !== undefined) {
                     downloadProgressed((progress.loaded / progress.total) * 100);
                 }
             },
             timeout: 20000
-        }).then(response => {
-            if (response.data === undefined) {
-                throw new Error("Exclusion response was undefined.");
-            }
-            return this.cleanExclusions(response.data as string);
         });
+
+        if (response.data === undefined) {
+            throw new Error("Exclusion response was undefined.");
+        }
+
+        return this.cleanExclusions(response.data as string);
     }
 
     public async getExclusions(downloadProgressed?: (percentDownloaded: number) => void, attempt?: number): Promise<string[]> {
