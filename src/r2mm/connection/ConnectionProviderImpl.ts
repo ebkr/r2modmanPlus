@@ -5,22 +5,17 @@ import ConnectionProvider from '../../providers/generic/connection/ConnectionPro
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
-    public exclusionsToMap(exclusions: string|string[]) {
+    public cleanExclusions(exclusions: string|string[]) {
         const exclusions_ = Array.isArray(exclusions) ? exclusions : exclusions.split("\n");
-
-        return new Map(
-            exclusions_
-                .filter((text) => text.trim().length > 0)
-                .map((text): [string, boolean] => [text.trim(), true])
-        );
+        return exclusions_.map((e) => e.trim()).filter(Boolean);
     }
 
-    public getExclusionsFromInternalFile(): Map<string, boolean> {
+    public getExclusionsFromInternalFile() {
         const exclusionList: {exclusions: string[]} = require("../../../modExclusions.json");
-        return this.exclusionsToMap(exclusionList.exclusions);
+        return this.cleanExclusions(exclusionList.exclusions);
     }
 
-    private async getExclusionsFromRemote(downloadProgressed?: (percentDownloaded: number) => void): Promise<Map<string, boolean>> {
+    private async getExclusionsFromRemote(downloadProgressed?: (percentDownloaded: number) => void) {
         return axios.get(GameManager.activeGame.exclusionsUrl, {
             onDownloadProgress: progress => {
                 if (downloadProgressed !== undefined) {
@@ -32,11 +27,11 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
             if (response.data === undefined) {
                 throw new Error("Exclusion response was undefined.");
             }
-            return this.exclusionsToMap(response.data as string);
+            return this.cleanExclusions(response.data as string);
         });
     }
 
-    public async getExclusions(downloadProgressed?: (percentDownloaded: number) => void, attempt?: number): Promise<Map<string, boolean>> {
+    public async getExclusions(downloadProgressed?: (percentDownloaded: number) => void, attempt?: number): Promise<string[]> {
         if (attempt === undefined) {
             attempt = 0;
         }

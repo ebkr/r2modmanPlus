@@ -10,7 +10,7 @@ export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
     public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
-    public static EXCLUSIONS: Map<string, boolean> = new Map<string, boolean>();
+    public static EXCLUSIONS: string[] = [];
 
     /**
      * Fetch latest V1 API data and apply to {PACKAGES}
@@ -37,7 +37,7 @@ export default class ThunderstorePackages {
         if (response.data !== undefined) {
             response.data.forEach((mod: any) => {
                 let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
-                if (!ThunderstorePackages.EXCLUSIONS.has(tsMod.getFullName())) {
+                if (!ThunderstorePackages.EXCLUSIONS.includes(tsMod.getFullName())) {
                     tsMods.push(tsMod.parseFromThunderstoreData(mod));
                 }
             });
