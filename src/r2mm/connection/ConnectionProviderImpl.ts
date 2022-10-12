@@ -10,12 +10,12 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         return exclusions_.map((e) => e.trim()).filter(Boolean);
     }
 
-    public getExclusionsFromInternalFile() {
+    private getExclusionsFromInternalFile() {
         const exclusionList: {exclusions: string[]} = require("../../../modExclusions.json");
         return this.cleanExclusions(exclusionList.exclusions);
     }
 
-    public async getExclusionsFromRemote(downloadProgressed?: DownloadProgressed) {
+    private async getExclusionsFromRemote(downloadProgressed?: DownloadProgressed) {
         const response = await axios.get(GameManager.activeGame.exclusionsUrl, {
             onDownloadProgress: progress => {
                 if (downloadProgressed !== undefined) {
@@ -32,19 +32,36 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         return this.cleanExclusions(response.data as string);
     }
 
-    public async getExclusions(downloadProgressed?: (percentDownloaded: number) => void, attempt?: number): Promise<string[]> {
-        if (attempt === undefined) {
-            attempt = 0;
+    /**
+     * Return a list of packages that might be returned by Thunderstore
+     * API but which should not be treated as valid mods by the manager.
+     *
+     * E.g. the mod manager itself is usually listed under a community
+     * for easy access, but attempting to install it as a mod makes no
+     * sense.
+     */
+    public async getExclusions(downloadProgressed?: DownloadProgressed, retries = 4): Promise<string[]> {
+        if (retries < 0) {
+            throw new Error("Parameter `retries` can't be a negative number");
         }
-        if (attempt < 5) {
+
+        const error = `Error while fetching exclusions (${retries} attempts left):`;
+
+        if (retries === 0) {
             try {
                 return await this.getExclusionsFromRemote(downloadProgressed);
             } catch (e) {
-                console.log(e);
-                return this.getExclusions(downloadProgressed, attempt + 1);
+                console.error(error, e);
+                console.log("Reading exclusions from local file");
+                return this.getExclusionsFromInternalFile();
             }
-        } else {
-            return this.getExclusionsFromInternalFile();
+        }
+
+        try {
+            return await this.getExclusionsFromRemote(downloadProgressed);
+        } catch (e) {
+            console.error(error, e);
+            return this.getExclusions(downloadProgressed, retries - 1);
         }
     }
 
