@@ -1,23 +1,23 @@
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import GameManager from '../../model/game/GameManager';
 import axios from 'axios';
+
+import GameManager from '../../model/game/GameManager';
+import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
-    private exclusionsToMap(exclusions: string[]): Map<string, boolean> {
-        const map = new Map<string, boolean>();
-        exclusions.forEach(value => {
-            if (value.length > 0) {
-                map.set(value, true);
-            }
-        });
-        return map;
+    public exclusionsToMap(exclusions: string|string[]) {
+        const exclusions_ = Array.isArray(exclusions) ? exclusions : exclusions.split("\n");
+
+        return new Map(
+            exclusions_
+                .filter((text) => text.trim().length > 0)
+                .map((text): [string, boolean] => [text.trim(), true])
+        );
     }
 
-    private getExclusionsFromInternalFile(): Map<string, boolean> {
-        const manualExclusions = require("../../../modExclusions.json");
-        const stringExclusions = (manualExclusions.exclusions as string[]);
-        return this.exclusionsToMap(stringExclusions);
+    public getExclusionsFromInternalFile(): Map<string, boolean> {
+        const exclusionList: {exclusions: string[]} = require("../../../modExclusions.json");
+        return this.exclusionsToMap(exclusionList.exclusions);
     }
 
     private async getExclusionsFromRemote(downloadProgressed?: (percentDownloaded: number) => void): Promise<Map<string, boolean>> {
@@ -32,9 +32,7 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
             if (response.data === undefined) {
                 throw new Error("Exclusion response was undefined.");
             }
-            const exclusionList = (response.data!).split("\n");
-            const filteredList = exclusionList.filter((x: string) => x.trim().length > 0);
-            return this.exclusionsToMap(filteredList);
+            return this.exclusionsToMap(response.data as string);
         });
     }
 

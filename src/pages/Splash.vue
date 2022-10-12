@@ -170,8 +170,6 @@ export default class Splash extends Vue {
     ];
     isOffline: boolean = false;
 
-    exclusionMap: Map<string, boolean> = new Map();
-
     // Used to produce a single, combined, RequestItem./
     private reduceRequests(): RequestItem {
         return this.requests.reduce((x, y) => x.merge(y));
@@ -180,23 +178,23 @@ export default class Splash extends Vue {
     // Ensure that r2modman isn't outdated.
     private checkForUpdates() {
         this.loadingText = 'Preparing';
-        ipcRenderer.once('update-done', () => {
+        ipcRenderer.once('update-done', async () => {
             this.getRequestItem('UpdateCheck').setProgress(100);
-            this.getExclusions();
+            await this.getExclusions();
+            await this.getThunderstoreMods(0);
         });
         ipcRenderer.send('update-app');
     }
 
     private async getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
-        ConnectionProvider.instance.getExclusions(percentageProgress => {
+
+        const showProgress = (progress: number) => {
             this.loadingText = 'Downloading exclusions';
-            this.getRequestItem('ExclusionsList').setProgress(percentageProgress);
-        }).then(exclusions => {
-            this.exclusionMap = exclusions;
-            ThunderstorePackages.EXCLUSIONS = this.exclusionMap;
-            this.getThunderstoreMods(0);
-        });
+            this.getRequestItem('ExclusionsList').setProgress(progress);
+        };
+
+        ThunderstorePackages.EXCLUSIONS = await ConnectionProvider.instance.getExclusions(showProgress);
     }
 
     // Provide access to a request item, as item is not stored in a map.

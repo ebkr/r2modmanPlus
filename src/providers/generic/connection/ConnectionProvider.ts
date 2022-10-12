@@ -16,4 +16,10 @@ export default abstract class ConnectionProvider {
 
     public abstract getExclusions(downloadProgressed?: (percentDownloaded: number) => void, attempt?: number): Promise<Map<string, boolean>>;
 
+    // TODO: These used to be private, which makes sense since they
+    // contain implementation details the Vue components don't need to
+    // know about. See if they can be returned back to private once
+    // refactoring is done.
+    public abstract exclusionsToMap(exclusions: string|string[]): Map<string, boolean>;
+    public abstract getExclusionsFromInternalFile(): Map<string, boolean>;
 }
