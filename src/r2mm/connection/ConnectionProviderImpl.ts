@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+import ApiResponse, { isApiResonse } from '../../model/api/ApiResponse';
+import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConnectionProvider, { DownloadProgressed } from '../../providers/generic/connection/ConnectionProvider';
+import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
@@ -30,6 +33,28 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         }
 
         return this.cleanExclusions(response.data as string);
+    }
+
+    private async getPackagesFromRemote(game: Game, downloadProgressed?: DownloadProgressed) {
+        const response = await axios.get(game.thunderstoreUrl, {
+            onDownloadProgress: progress => {
+                if (downloadProgressed !== undefined) {
+                    downloadProgressed((progress.loaded / progress.total) * 100);
+                }
+            },
+            timeout: 30000
+        });
+
+        if (isApiResonse(response)) {
+            return response as ApiResponse;
+        }
+
+        LoggerProvider.instance.Log(
+            LogSeverity.ACTION_STOPPED,
+            `Response data from API was invalid: ${JSON.stringify(response)}`
+        );
+
+        throw new Error("Package response was invalid.");
     }
 
     /**
@@ -62,6 +87,27 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         } catch (e) {
             console.error(error, e);
             return this.getExclusions(downloadProgressed, retries - 1);
+        }
+    }
+
+    /**
+     * Return packages for given game from Thunderstore API
+     */
+    public async getPackages(game: Game, downloadProgressed?: DownloadProgressed, retries = 0): Promise<ApiResponse> {
+        if (retries < 0) {
+            throw new Error("Parameter `retries` can't be a negative number");
+        }
+
+        try {
+            return await this.getPackagesFromRemote(game, downloadProgressed);
+        } catch (e) {
+            console.error(`Error while fetching packages (${retries} attempts left):`, e);
+
+            if (retries > 0) {
+                return this.getPackages(game, downloadProgressed, retries - 1);
+            } else {
+                throw e;
+            }
         }
     }
 

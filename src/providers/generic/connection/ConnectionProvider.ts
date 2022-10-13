@@ -1,3 +1,5 @@
+import ApiResponse from '../../../model/api/ApiResponse';
+import Game from '../../../model/game/Game';
 import ProviderUtils from '../ProviderUtils';
 
 export type DownloadProgressed = (percentDownloaded: number) => void;
@@ -17,5 +19,10 @@ export default abstract class ConnectionProvider {
     }
 
     public abstract getExclusions(downloadProgressed?: DownloadProgressed, retries?: number): Promise<string[]>;
+    public abstract getPackages(
+        game: Game,
+        downloadProgressed?: DownloadProgressed,
+        retries?: number
+    ): Promise<ApiResponse>;
 
 }
