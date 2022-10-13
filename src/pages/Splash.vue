@@ -135,12 +135,12 @@ import Component from 'vue-class-component';
 import { Hero, Link, Progress } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
-import axios from 'axios';
 import * as path from 'path';
 import Profile from '../model/Profile';
 
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { ipcRenderer } from 'electron';
+import ApiResponse from '../model/api/ApiResponse';
 import GameManager from '../model/game/GameManager';
 import ApiCacheUtils from '../utils/ApiCacheUtils';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
@@ -181,7 +181,7 @@ export default class Splash extends Vue {
         ipcRenderer.once('update-done', async () => {
             this.getRequestItem('UpdateCheck').setProgress(100);
             await this.getExclusions();
-            await this.getThunderstoreMods(0);
+            await this.getThunderstoreMods();
         });
         ipcRenderer.send('update-app');
     }
@@ -203,42 +203,38 @@ export default class Splash extends Vue {
     }
 
     // Get the list of Thunderstore mods via /api/v1/package.
-    private async getThunderstoreMods(attempt: number) {
+    private async getThunderstoreMods() {
         this.loadingText = 'Connecting to Thunderstore';
+
         ApiCacheUtils.getLastRequest().then(async resp => {
             if (resp === undefined) {
-                axios.get(this.activeGame.thunderstoreUrl, {
-                    onDownloadProgress: progress => {
-                        this.loadingText = 'Getting mod list from Thunderstore';
-                        this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
-                    },
-                    timeout: 30000
-                }).then(async response => {
-                    // Temporary. Creates a new standard profile until Profiles section is completed
-                    new Profile('Default');
-                    if (response.data === undefined) {
-                        throw new Error("Response was undefined, retry for appropriate response.");
-                    } else {
-                        ThunderstorePackages.handlePackageApiResponse(response);
-                        this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-                        await this.moveToNextScreen();
-                    }
-                }).catch((e_) => {
-                    console.log(e_);
+                let response: ApiResponse;
+
+                const showProgress = (progress: number) => {
+                    this.loadingText = 'Getting mod list from Thunderstore';
+                    this.getRequestItem('ThunderstoreDownload').setProgress(progress);
+                };
+
+                try {
+                    response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
+                } catch (e) {
                     this.isOffline = true;
-                    if (attempt < 3) {
-                        this.getThunderstoreMods(attempt + 1);
-                    } else {
-                        this.heroTitle = 'Failed to get mods from Thunderstore';
-                        this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-                    }
-                });
+                    this.heroTitle = 'Failed to get mods from Thunderstore';
+                    this.loadingText = 'You may be offline, however you may still use R2MM offline.';
+                    return;
+                }
+
+                // Temporary. Creates a new standard profile until Profiles section is completed
+                new Profile('Default');
+
+                ThunderstorePackages.handlePackageApiResponse(response);
+                await this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
+                await this.moveToNextScreen();
             } else {
                 ThunderstorePackages.handlePackageApiResponse({ data: resp.payload });
                 if (ThunderstorePackages.EXCLUSIONS.length === 0) {
                     ThunderstorePackages.EXCLUSIONS = resp.exclusions ?? [];
                 }
-                this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
 
                 await ThunderstorePackages.update(this.activeGame);
                 await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
