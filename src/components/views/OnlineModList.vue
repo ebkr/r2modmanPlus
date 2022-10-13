@@ -51,7 +51,7 @@
             </template>
             <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
-                View on Website
+                Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </Link>
             <template v-if="key.getDonationLink() !== undefined">
                 <DonateButton :mod="key"/>

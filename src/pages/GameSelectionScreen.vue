@@ -32,60 +32,38 @@
         </div>
         <div class="columns">
             <div class="column is-full">
-                <br/>
-
                 <div class="sticky-top is-shadowless background-bg z-top">
-                    <div class="container" v-if="viewMode === 'Card'">
-                        <nav class="level">
+                    <div class="container">
+                        <nav class="level mb-2" v-if="viewMode === 'Card'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <label for="local-search" class="non-selectable">Search</label>
                                         <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <br/>
                                 <i class="button fas fa-list" @click="toggleViewMode"></i>
                             </div>
                         </nav>
-                        <div class="level">
-                            <div class="level-item">
-                                <div class="tabs">
-                                    <ul class="text-center">
-                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
-                                            :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container" v-else-if="viewMode === 'List'">
-                        <nav class="level">
+                        <nav class="level mb-2" v-else-if="viewMode === 'List'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <label for="local-search" class="non-selectable">Search</label>
                                         <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="margin-right">
-                                <br/>
                                 <a class="button is-info"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
                                     game</a>
                             </div>
                             <div class="margin-right">
-                                <br/>
                                 <a class="button"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
                             </div>
                             <div>
-                                <br/>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
                             </div>
                         </nav>
@@ -107,8 +85,7 @@
                     <article class="media">
                         <div class="media-content">
                             <div class="content pad--sides" v-if="viewMode === 'Card'">
-                                <h1 class="title is-4">{{ activeTab }}s</h1>
-                                <div>
+                                <div class="game-cards-container">
                                     <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
                                         <div class="inline">
@@ -165,7 +142,6 @@
                                         </div>
                                     </a>
                                 </div>
-                                <br/>
                             </div>
                         </div>
                     </article>
@@ -459,3 +435,16 @@ export default class GameSelectionScreen extends Vue {
 
 }
 </script>
+
+
+<style lang="scss" scoped>
+.game-cards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.mb-2 {
+    margin-bottom: 0.5rem !important;
+}
+</style>
