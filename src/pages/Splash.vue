@@ -175,6 +175,11 @@ export default class Splash extends Vue {
         return this.requests.reduce((x, y) => x.merge(y));
     }
 
+    // Provide access to a request item, as item is not stored in a map.
+    private getRequestItem(name: string): RequestItem {
+        return this.requests.filter(ri => ri.getName() === name)[0];
+    }
+
     // Ensure that r2modman isn't outdated.
     private checkForUpdates() {
         this.loadingText = 'Preparing';
@@ -195,11 +200,6 @@ export default class Splash extends Vue {
         };
 
         ThunderstorePackages.EXCLUSIONS = await ConnectionProvider.instance.getExclusions(showProgress);
-    }
-
-    // Provide access to a request item, as item is not stored in a map.
-    private getRequestItem(name: string): RequestItem {
-        return this.requests.filter(ri => ri.getName() === name)[0];
     }
 
     // Get the list of Thunderstore mods via /api/v1/package.
