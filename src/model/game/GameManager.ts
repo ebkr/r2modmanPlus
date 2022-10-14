@@ -301,6 +301,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1592190")], "BONELAB.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BL"]),
 
+        new Game("Trombone Champ", "TromboneChamp", "TromboneChamp",
+            "TromboneChamp", ["TromboneChamp.exe"], "TromboneChamp_Data",
+            "https://thunderstore.io/c/trombone-champ/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1059990")], "TromboneChamp.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tc"]),
+
     ];
 
     static get activeGame(): Game {

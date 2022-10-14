@@ -44,6 +44,7 @@ import InstallRules_Aloft from '../default_installation_rules/game_rules/Install
 import InstallRules_COTL from '../default_installation_rules/game_rules/InstallRules_COTL';
 import InstallRules_ChronoArk from '../default_installation_rules/game_rules/InstallRules_ChronoArk';
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
+import InstallRules_TromboneChamp from '../default_installation_rules/game_rules/InstallRules_TromboneChamp';
 
 export default class InstallationRuleApplicator {
 
@@ -93,6 +94,7 @@ export default class InstallationRuleApplicator {
             InstallRules_COTL(),
             InstallRules_ChronoArk(),
             InstallRules_BONELAB(),
+            InstallRules_TromboneChamp(),
         ]
     }
 
