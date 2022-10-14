@@ -205,42 +205,40 @@ export default class Splash extends Vue {
     // Get the list of Thunderstore mods via /api/v1/package.
     private async getThunderstoreMods() {
         this.loadingText = 'Connecting to Thunderstore';
+        const cachedResponse = await ApiCacheUtils.getLastRequest();
 
-        ApiCacheUtils.getLastRequest().then(async resp => {
-            if (resp === undefined) {
-                let response: ApiResponse;
-
-                const showProgress = (progress: number) => {
-                    this.loadingText = 'Getting mod list from Thunderstore';
-                    this.getRequestItem('ThunderstoreDownload').setProgress(progress);
-                };
-
-                try {
-                    response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
-                } catch (e) {
-                    this.isOffline = true;
-                    this.heroTitle = 'Failed to get mods from Thunderstore';
-                    this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-                    return;
-                }
-
-                // Temporary. Creates a new standard profile until Profiles section is completed
-                new Profile('Default');
-
-                ThunderstorePackages.handlePackageApiResponse(response);
-                await this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-                await this.moveToNextScreen();
-            } else {
-                ThunderstorePackages.handlePackageApiResponse({ data: resp.payload });
-                if (ThunderstorePackages.EXCLUSIONS.length === 0) {
-                    ThunderstorePackages.EXCLUSIONS = resp.exclusions ?? [];
-                }
-
-                await ThunderstorePackages.update(this.activeGame);
-                await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                await this.moveToNextScreen();
+        if (cachedResponse) {
+            ThunderstorePackages.handlePackageApiResponse({ data: cachedResponse.payload });
+            if (ThunderstorePackages.EXCLUSIONS.length === 0) {
+                ThunderstorePackages.EXCLUSIONS = cachedResponse.exclusions ?? [];
             }
-        });
+
+            await ThunderstorePackages.update(this.activeGame);
+        } else {
+            let response: ApiResponse;
+
+            const showProgress = (progress: number) => {
+                this.loadingText = 'Getting mod list from Thunderstore';
+                this.getRequestItem('ThunderstoreDownload').setProgress(progress);
+            };
+
+            try {
+                response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
+            } catch (e) {
+                this.isOffline = true;
+                this.heroTitle = 'Failed to get mods from Thunderstore';
+                this.loadingText = 'You may be offline, however you may still use R2MM offline.';
+                return;
+            }
+
+            // Temporary. Creates a new standard profile until Profiles section is completed
+            new Profile('Default');
+
+            ThunderstorePackages.handlePackageApiResponse(response);
+        }
+
+        await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+        await this.moveToNextScreen();
     }
 
     async moveToNextScreen() {
