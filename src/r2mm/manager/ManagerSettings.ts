@@ -176,8 +176,12 @@ export default class ManagerSettings {
     }
 
     public async setDefaultGame(defaultGame: Game | undefined) {
-        ManagerSettings.CONTEXT.global.defaultGame = defaultGame?.internalFolderName;
-        await this.save();
+        if (defaultGame === undefined) {
+            ManagerSettings.CONTEXT.global.defaultGame = undefined;
+        } else {
+            ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
+        }
+        return await this.save();
     }
 
     public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
