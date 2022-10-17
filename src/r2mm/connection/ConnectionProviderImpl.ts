@@ -5,6 +5,7 @@ import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConnectionProvider, { DownloadProgressed } from '../../providers/generic/connection/ConnectionProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
+import { sleep } from '../../utils/Common';
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
@@ -86,6 +87,7 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
             return await this.getExclusionsFromRemote(downloadProgressed);
         } catch (e) {
             console.error(error, e);
+            await sleep(1000);
             return this.getExclusions(downloadProgressed, retries - 1);
         }
     }
@@ -104,6 +106,7 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
             console.error(`Error while fetching packages (${retries} attempts left):`, e);
 
             if (retries > 0) {
+                await sleep(1000);
                 return this.getPackages(game, downloadProgressed, retries - 1);
             } else {
                 throw e;

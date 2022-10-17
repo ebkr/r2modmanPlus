@@ -25,3 +25,5 @@ export const getPropertyFromPath = (object: Mappable, path: string | string[]): 
     }
     return undefined;
 };
+
+export const sleep = (ms: number): Promise<void> => new Promise((res) => setTimeout(res, ms));
