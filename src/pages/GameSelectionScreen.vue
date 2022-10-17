@@ -27,7 +27,7 @@
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
                 <p>An update to the manager has occurred and needs to do background work.</p>
-                <p>The option to select a game will appear once the work has completed.</p>
+                <p>The options to select a game are disabled until the work has completed.</p>
             </div>
         </div>
         <div class="columns">
@@ -156,10 +156,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import Hero from '../components/Hero.vue';
-import FolderMigration from '../migrations/FolderMigration';
 import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FileUtils from '../utils/FileUtils';
+import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
@@ -361,61 +361,25 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
-    created() {
-        const self = this;
+    async created() {
         this.runningMigration = true;
-        FolderMigration.needsMigration()
-            .then(isMigrationRequired => {
-                if (!isMigrationRequired) {
-                    this.runningMigration = false;
-                } else {
-                    return FolderMigration.runMigration();
-                }
-            })
-            .then(() => {
-                this.runningMigration = false;
-            })
-            .catch((e) => {
-                console.log(e);
-                this.runningMigration = false;
-            })
-        .finally(() => {
-            ManagerSettings.getSingleton(GameManager.unsetGame()).then(settings => {
-                const lastSelectedGame = settings.getContext().global.lastSelectedGame;
-                const savedViewMode = settings.getContext().global.gameSelectionViewMode;
-                switch (savedViewMode) {
-                    case "List": this.viewMode = GameSelectionViewMode.LIST; break;
-                    case "Card":
-                    case undefined:
-                        this.viewMode = GameSelectionViewMode.CARD;
-                        break;
-                }
-                if (lastSelectedGame !== null) {
-                    const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
-                    if (game !== undefined) {
-                        this.selectedGame = game;
-                    }
-                }
-            });
-            ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
-                this.settings = value;
-                this.favourites = value.getContext().global.favouriteGames || [];
-                if (value.getContext().global.defaultGame !== undefined) {
-                    if (value.getContext().global.defaultStore !== undefined) {
-                        const game = GameManager.gameList
-                            .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
+        await this.$store.dispatch('checkMigrations');
+        this.runningMigration = false;
 
-                        const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
+        this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
+        const globalSettings = this.settings.getContext().global;
+        this.viewMode = globalSettings.gameSelectionViewMode;
+        this.favourites = globalSettings.favouriteGames ?? [];
+        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) ?? null;
 
-                        this.selectedGame = game;
-                        this.selectedPlatform = platform.storePlatform;
+        // Skip game selection view if valid default game & platform are set.
+        const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
 
-                        this.proceed();
-                        return;
-                    }
-                }
-            });
-        })
+        if (defaultGame && defaultPlatform) {
+            this.selectedGame = defaultGame;
+            this.selectedPlatform = defaultPlatform;
+            this.proceed();
+        }
     }
 
     toggleViewMode() {

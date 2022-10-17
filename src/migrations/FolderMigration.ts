@@ -1,25 +1,35 @@
-import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
+import PathResolver from '../r2mm/manager/PathResolver';
 import FileUtils from '../utils/FileUtils';
-import CacheUtil from '../r2mm/mods/CacheUtil';
 
-export default class FolderMigration {
+/**
+ * Mod directory structure was changed when support for other games
+ * besides RoR2 was added. Update the dir structure if the old one is
+ * still in use.
+ */
+export class FolderMigration {
 
-    public static async needsMigration(): Promise<boolean> {
+    public static async needsMigration() {
         const fs = FsProvider.instance;
         return await fs.exists(path.join(PathResolver.ROOT, "mods"));
     }
 
-    public static async runMigration(): Promise<void> {
-        console.log("Started migration");
-        const fs = FsProvider.instance;
-        await CacheUtil.clean();
-        if ((await fs.exists(path.join(PathResolver.ROOT, "RiskOfRain2")))) {
-            await FileUtils.emptyDirectory(path.join(PathResolver.ROOT, "RiskOfRain2"));
-            await fs.rmdir(path.join(PathResolver.ROOT, "RiskOfRain2"));
+    public static async runMigration() {
+        if (!await this.needsMigration()) {
+            return;
         }
-        await fs.rename(path.join(PathResolver.ROOT, "mods"), path.join(PathResolver.ROOT, "RiskOfRain2"));
-    }
 
+        console.log("Started legacy directory migration");
+        const fs = FsProvider.instance;
+        const rorPath = path.join(PathResolver.ROOT, "RiskOfRain2");
+
+        if (await fs.exists(rorPath)) {
+            await FileUtils.emptyDirectory(rorPath);
+            await fs.rmdir(rorPath);
+        }
+
+        await fs.rename(path.join(PathResolver.ROOT, "mods"), rorPath);
+        console.log("Directory migration done");
+    }
 }

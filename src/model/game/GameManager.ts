@@ -325,4 +325,10 @@ export default class GameManager {
     public static unsetGame(): Game {
         return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
     }
+
+    public static findByFolderName(name?: string|null) {
+        return name
+            ? this._gameList.find((game) => game.internalFolderName === name)
+            : undefined;
+    }
 }
