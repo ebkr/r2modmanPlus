@@ -220,7 +220,9 @@ export default class Splash extends Vue {
             this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
         }
 
-        if (!response) {
+        if (response) {
+            ApiCacheUtils.storeLastRequest(response.data);
+        } else {
             const cachedResponse = await ApiCacheUtils.getLastRequest();
             response = cachedResponse ? { data: cachedResponse.payload } : undefined;
         }

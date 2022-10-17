@@ -1,6 +1,5 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import Game from '../../model/game/Game';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
@@ -17,6 +16,8 @@ export default class ThunderstorePackages {
         this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
         const response = await ConnectionProvider.instance.getPackages(game);
         this.handlePackageApiResponse(response);
+
+        return response;
     }
 
     /**
@@ -24,8 +25,6 @@ export default class ThunderstorePackages {
      * @param response api/v1/package data.
      */
     public static handlePackageApiResponse(response: ApiResponse) {
-        ApiCacheUtils.storeLastRequest(response.data);
-
         ThunderstorePackages.PACKAGES = response.data
             .map(ThunderstoreMod.parseFromThunderstoreData)
             .filter((mod) => !ThunderstorePackages.EXCLUSIONS.includes(mod.getFullName()));

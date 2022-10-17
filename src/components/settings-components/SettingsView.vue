@@ -313,8 +313,9 @@ import moment from 'moment';
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
                         ThunderstorePackages.update(GameManager.activeGame)
-                            .then(_ => {
-                                this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                            .then(async response => {
+                                await ApiCacheUtils.storeLastRequest(response.data);
+                                await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                                 this.emitInvoke('RefreshedThunderstorePackages');
                             })
                             .catch(e => {

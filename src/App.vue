@@ -69,6 +69,7 @@ import InstallationRuleApplicator from './r2mm/installing/default_installation_r
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
 import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
+import ApiCacheUtils from './utils/ApiCacheUtils';
 
 @Component
 export default class App extends Vue {
@@ -171,8 +172,9 @@ export default class App extends Vue {
     private hookModListRefresh() {
         setInterval(() => {
                 ThunderstorePackages.update(GameManager.activeGame)
-                    .then(() => {
-                        this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+                    .then(async (response) => {
+                        await ApiCacheUtils.storeLastRequest(response.data);
+                        await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
                         // Ignore the warning. If no profile is selected on game selection then getActiveProfile will return undefined.
                         if (Profile.getActiveProfile() !== undefined) {
                             ProfileModList.getModList(Profile.getActiveProfile()).then((value: ManifestV2[] | R2Error) => {
