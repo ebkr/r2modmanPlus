@@ -137,7 +137,6 @@ import { Hero, Link, Progress } from '../components/all';
 
 import RequestItem from '../model/requests/RequestItem';
 import * as path from 'path';
-import Profile from '../model/Profile';
 
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { ipcRenderer } from 'electron';
@@ -227,9 +226,6 @@ export default class Splash extends Vue {
         }
 
         if (response) {
-            // Temporary. Creates a new standard profile until Profiles section is completed
-            new Profile('Default');
-
             ThunderstorePackages.handlePackageApiResponse(response);
             await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
             await this.moveToNextScreen();
