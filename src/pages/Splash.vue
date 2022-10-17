@@ -5,6 +5,7 @@
             <p>Game updates may break mods. If a new update has been released, please be patient.</p>
         </div>
         <progress-bar
+            v-if="!isOffline"
             :max='requests.length * 100'
             :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
             :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
@@ -205,40 +206,37 @@ export default class Splash extends Vue {
     // Get the list of Thunderstore mods via /api/v1/package.
     private async getThunderstoreMods() {
         this.loadingText = 'Connecting to Thunderstore';
-        const cachedResponse = await ApiCacheUtils.getLastRequest();
+        let response: ApiResponse|undefined = undefined;
 
-        if (cachedResponse) {
-            ThunderstorePackages.handlePackageApiResponse({ data: cachedResponse.payload });
-            if (ThunderstorePackages.EXCLUSIONS.length === 0) {
-                ThunderstorePackages.EXCLUSIONS = cachedResponse.exclusions ?? [];
-            }
+        const showProgress = (progress: number) => {
+            this.loadingText = 'Getting mod list from Thunderstore';
+            this.getRequestItem('ThunderstoreDownload').setProgress(progress);
+        };
 
-            await ThunderstorePackages.update(this.activeGame);
-        } else {
-            let response: ApiResponse;
+        try {
+            response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
+        } catch (e) {
+            this.isOffline = true;
+            this.heroTitle = 'Failed to get mods from Thunderstore';
+            this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+        }
 
-            const showProgress = (progress: number) => {
-                this.loadingText = 'Getting mod list from Thunderstore';
-                this.getRequestItem('ThunderstoreDownload').setProgress(progress);
-            };
+        if (!response) {
+            const cachedResponse = await ApiCacheUtils.getLastRequest();
+            response = cachedResponse ? { data: cachedResponse.payload } : undefined;
+        }
 
-            try {
-                response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
-            } catch (e) {
-                this.isOffline = true;
-                this.heroTitle = 'Failed to get mods from Thunderstore';
-                this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-                return;
-            }
-
+        if (response) {
             // Temporary. Creates a new standard profile until Profiles section is completed
             new Profile('Default');
 
             ThunderstorePackages.handlePackageApiResponse(response);
+            await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+            await this.moveToNextScreen();
+        } else {
+            this.heroTitle = 'Failed to get mods from Thunderstore and cache';
+            this.loadingText = 'You may be offline or Thunderstore is unavailabe. However, you may still use the manager offline.';
         }
-
-        await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-        await this.moveToNextScreen();
     }
 
     async moveToNextScreen() {
