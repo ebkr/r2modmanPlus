@@ -24,8 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import Component, { mixins } from 'vue-class-component';
 import 'bulma-steps/dist/js/bulma-steps.min.js';
 import R2Error from './model/errors/R2Error';
 import ManagerSettings from './r2mm/manager/ManagerSettings';
@@ -57,10 +56,6 @@ import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
 import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
 import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
 import GameManager from './model/game/GameManager';
-import ThunderstorePackages from './r2mm/data/ThunderstorePackages';
-import ProfileModList from './r2mm/mods/ProfileModList';
-import Profile from './model/Profile';
-import ManifestV2 from './model/ManifestV2';
 import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
@@ -69,10 +64,10 @@ import InstallationRuleApplicator from './r2mm/installing/default_installation_r
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
 import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
-import ApiCacheUtils from './utils/ApiCacheUtils';
+import UtilityMixin from './components/mixins/UtilityMixin.vue';
 
 @Component
-export default class App extends Vue {
+export default class App extends mixins(UtilityMixin) {
 
     private errorMessage: string = '';
     private errorStack: string = '';
@@ -100,7 +95,8 @@ export default class App extends Vue {
         const riskOfRain2Game = GameManager.gameList.find(value => value.displayName === "Risk of Rain 2")!;
         GameManager.activeGame = riskOfRain2Game;
 
-        this.hookModListRefresh();
+        this.hookThunderstoreModListRefresh();
+        this.hookProfileModListRefresh();
 
         const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
         this.settings = settings;
@@ -167,24 +163,6 @@ export default class App extends Vue {
         PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 
         BindLoaderImpl.bind();
-    }
-
-    private hookModListRefresh() {
-        setInterval(() => {
-                ThunderstorePackages.update(GameManager.activeGame)
-                    .then(async (response) => {
-                        await ApiCacheUtils.storeLastRequest(response.data);
-                        await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                        // Ignore the warning. If no profile is selected on game selection then getActiveProfile will return undefined.
-                        if (Profile.getActiveProfile() !== undefined) {
-                            ProfileModList.getModList(Profile.getActiveProfile()).then((value: ManifestV2[] | R2Error) => {
-                                if (!(value instanceof R2Error)) {
-                                    this.$store.dispatch("updateModList", value);
-                                }
-                            });
-                        }
-                    });
-            }, 5 * 60 * 1000);
     }
 
 }
