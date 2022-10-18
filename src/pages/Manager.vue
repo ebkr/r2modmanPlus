@@ -663,6 +663,34 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             });
 		}
 
+		changeGameInstallDirectoryGamePass() {
+			const ror2Directory: string = this.settings.getContext().gameSpecific.gameDirectory || this.computeDefaultInstallDirectory();
+			InteractionProvider.instance.selectFile({
+                title: `Locate gamelaunchhelper Executable`,
+                filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
+				defaultPath: ror2Directory,
+				buttonLabel: 'Select Executable'
+			}).then(async files => {
+				if (files.length === 1) {
+					try {
+						const containsGameExecutable = (path.basename(files[0]).toLowerCase() === "gamelaunchhelper.exe");
+						if (containsGameExecutable) {
+							await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+						} else {
+							throw new Error("The selected executable is not gamelaunchhelper.exe");
+						}
+					} catch (e) {
+						const err: Error = e as Error;
+						this.showError(new R2Error(
+							"Failed to change the game directory",
+							err.message,
+							null
+						));
+					}
+				}
+			});
+		}
+
 		computeDefaultSteamDirectory() : string {
 			switch(process.platform){
 				case 'win32':
@@ -936,6 +964,9 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
                     break;
                 case "ChangeGameDirectory":
                     this.changeGameInstallDirectory();
+					break;
+                case "ChangeGameDirectoryGamePass":
+                    this.changeGameInstallDirectoryGamePass();
                     break;
                 case "ChangeSteamDirectory":
                     this.changeSteamDirectory();
