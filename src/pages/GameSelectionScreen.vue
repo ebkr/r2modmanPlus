@@ -369,8 +369,8 @@ export default class GameSelectionScreen extends Vue {
         this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
         const globalSettings = this.settings.getContext().global;
         this.viewMode = globalSettings.gameSelectionViewMode;
-        this.favourites = globalSettings.favouriteGames ?? [];
-        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) ?? null;
+        this.favourites = globalSettings.favouriteGames || [];
+        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
 
         // Skip game selection view if valid default game & platform are set.
         const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
