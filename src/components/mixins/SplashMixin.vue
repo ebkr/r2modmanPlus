@@ -20,7 +20,13 @@ export default class SplashMixin extends Vue {
 
     // Provide access to a request item, as item is not stored in a map.
     getRequestItem(name: string) {
-        return this.requests.filter(ri => ri.getName() === name)[0];
+        const item = this.requests.find((ri) => ri.getName() === name);
+
+        if (item === undefined) {
+            throw new Error(`Unknown RequestItem "${name}"`);
+        }
+
+        return item;
     }
 
     // Used to produce a single, combined, RequestItem.
