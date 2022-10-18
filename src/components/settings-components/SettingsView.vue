@@ -45,8 +45,8 @@
 
 <script lang="ts">
 
-import { Vue, Watch } from 'vue-property-decorator';
-import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import Component, { mixins } from 'vue-class-component';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -60,13 +60,13 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { Hero } from '../all';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ManifestV2 from '../../model/ManifestV2';
-import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
+import UtilityMixin from '../mixins/UtilityMixin.vue';
 
 @Component({
         components: {
@@ -74,7 +74,7 @@ import moment from 'moment';
             Hero
         }
     })
-    export default class SettingsView extends Vue {
+    export default class SettingsView extends mixins(UtilityMixin) {
 
         private activeTab: string = 'All';
         private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
@@ -309,22 +309,20 @@ import moment from 'moment';
                         return "No API information available";
                     },
                 'fa-exchange-alt',
-                () => {
+                async () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
-                        ThunderstorePackages.update(GameManager.activeGame)
-                            .then(async response => {
-                                await ApiCacheUtils.storeLastRequest(response.data);
-                                await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                                this.emitInvoke('RefreshedThunderstorePackages');
-                            })
-                            .catch(e => {
-                                const err: Error = e;
-                                this.$store.dispatch("updateApiConnectionError", err.message);
-                            })
-                            .finally(() => {
-                               this.downloadingThunderstoreModList = false;
-                            });
+                        await this.$store.dispatch("updateApiConnectionError", "");
+
+                        try {
+                            await this.refreshThunderstoreModList();
+                            this.emitInvoke("RefreshedThunderstorePackages");
+                        } catch (e) {
+                            const err = e instanceof Error ? e.message : "Unknown error";
+                            await this.$store.dispatch("updateApiConnectionError", err);
+                        } finally {
+                            this.downloadingThunderstoreModList = false;
+                        }
                     }
                 }
             ),
