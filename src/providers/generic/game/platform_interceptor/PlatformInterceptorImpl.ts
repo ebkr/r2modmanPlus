@@ -5,7 +5,7 @@ import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/
 import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linux/GameDirectoryResolver';
 import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
-import XGPDirectoryResolver from '../directory_resolver/win/XGPDirectoryResolver';
+import XboxGamePassDirectoryResolver from '../directory_resolver/win/XboxGamePassDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
@@ -123,7 +123,7 @@ const RESOLVERS: ResolverType = {
         "darwin": new DRMFreeDirectoryResolver()
     },
     [StorePlatform.PC_GAME_PASS]: {
-        "win32": new XGPDirectoryResolver(),
+        "win32": new XboxGamePassDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },

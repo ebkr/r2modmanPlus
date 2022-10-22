@@ -5,7 +5,7 @@ import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import child from 'child_process';
 
-export default class XGPDirectoryResolver extends GameDirectoryResolverProvider {
+export default class XboxGamePassDirectoryResolver extends GameDirectoryResolverProvider {
 
     public async getDirectory(game: Game): Promise<string | R2Error> {
         const settings = await ManagerSettings.getSingleton(game);
