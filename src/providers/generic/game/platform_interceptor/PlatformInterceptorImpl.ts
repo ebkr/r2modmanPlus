@@ -80,7 +80,7 @@ const RUNNERS: RunnerType = {
           "darwin": new DirectGameRunner(),
       }
     },
-    [StorePlatform.PC_GAME_PASS]: {
+    [StorePlatform.XBOX_GAME_PASS]: {
         [PackageLoader.BEPINEX]: {
             "win32": new DirectGameRunner(),
             "linux": new DirectGameRunner(),
@@ -122,7 +122,7 @@ const RESOLVERS: ResolverType = {
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },
-    [StorePlatform.PC_GAME_PASS]: {
+    [StorePlatform.XBOX_GAME_PASS]: {
         "win32": new XboxGamePassDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()

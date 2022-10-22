@@ -4,6 +4,6 @@ export enum StorePlatform {
     EPIC_GAMES_STORE = "Epic Games Store",
     OCULUS_STORE = "Oculus Store",
     ORIGIN = "Origin / EA Desktop",
-    PC_GAME_PASS = "PC Game Pass",
+    XBOX_GAME_PASS = "Xbox Game Pass",
     OTHER = "Other",
 }

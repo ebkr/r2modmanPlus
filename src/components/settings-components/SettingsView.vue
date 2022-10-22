@@ -121,7 +121,7 @@ import moment from 'moment';
                 },
                 'fa-folder-open',
                 () => {
-                    if (StorePlatform.PC_GAME_PASS == this.activeGame.activePlatform.storePlatform) {
+                    if (StorePlatform.XBOX_GAME_PASS == this.activeGame.activePlatform.storePlatform) {
                         this.emitInvoke('ChangeGameDirectoryGamePass');
                     }
                     else {
