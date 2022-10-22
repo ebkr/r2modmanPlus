@@ -33,7 +33,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["ROR2"]),
 
         new Game('Dyson Sphere Program', 'DysonSphereProgram', 'DysonSphereProgram',
-            'Dyson Sphere Program', ['DSPGAME.exe', 'Dyson Sphere Program.exe'], 'DSPGAME_Data',
+            'Dyson Sphere Program', ['DSPGAME.exe'], 'DSPGAME_Data',
             'https://dsp.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
@@ -41,7 +41,7 @@ export default class GameManager {
             ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
 
         new Game('Valheim', 'Valheim', 'Valheim',
-            'Valheim', ['valheim.exe', 'valheim.x86_64', 'Valheim.exe'], 'valheim_Data',
+            'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "892970"),
@@ -49,11 +49,10 @@ export default class GameManager {
             ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
-            'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64', 'ValheimServer.exe'], 'valheim_server_Data',
+            'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
-                new StorePlatformMetadata(StorePlatform.STEAM, "896660"),
-                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "")
+                new StorePlatformMetadata(StorePlatform.STEAM, "896660")
             ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
 
         new Game('GTFO', 'GTFO', 'GTFO',
@@ -129,7 +128,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TB"]),
 
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
-            "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe", "TABS.exe"], "TotallyAccurateBattleSimulator_Data",
+            "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe"], "TotallyAccurateBattleSimulator_Data",
             "https://totally-accurate-battle-simulator.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "508440"),
@@ -216,8 +215,10 @@ export default class GameManager {
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
             'https://belowzero.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
+            ], 'SubnauticaBelowZero.png', GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
 
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",

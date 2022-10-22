@@ -14,6 +14,7 @@ import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/D
 import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/SteamGameRunner_Linux';
 import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
 import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
+import XboxGamePassGameRunner from '../../../../r2mm/launching/runners/windows/XboxGamePassGameRunner';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -82,7 +83,7 @@ const RUNNERS: RunnerType = {
     },
     [StorePlatform.XBOX_GAME_PASS]: {
         [PackageLoader.BEPINEX]: {
-            "win32": new DirectGameRunner(),
+            "win32": new XboxGamePassGameRunner(),
             "linux": new DirectGameRunner(),
             "darwin": new DirectGameRunner(),
         }
