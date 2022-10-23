@@ -39,6 +39,12 @@ import InstallRules_VTOL_VR from '../default_installation_rules/game_rules/Insta
 import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
 import InstallRules_Stacklands from '../default_installation_rules/game_rules/InstallRules_Stacklands';
 import InstallRules_EnterTheGungeon from '../default_installation_rules/game_rules/InstallRules_EnterTheGungeon';
+import InstallRules_Ravenfield from '../default_installation_rules/game_rules/InstallRules_Ravenfield';
+import InstallRules_Aloft from '../default_installation_rules/game_rules/InstallRules_Aloft';
+import InstallRules_COTL from '../default_installation_rules/game_rules/InstallRules_COTL';
+import InstallRules_ChronoArk from '../default_installation_rules/game_rules/InstallRules_ChronoArk';
+import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
+import InstallRules_TromboneChamp from '../default_installation_rules/game_rules/InstallRules_TromboneChamp';
 
 export default class InstallationRuleApplicator {
 
@@ -83,6 +89,12 @@ export default class InstallationRuleApplicator {
             InstallRules_BackpackHero(),
             InstallRules_Stacklands(),
             InstallRules_EnterTheGungeon(),
+            InstallRules_Ravenfield(),
+            InstallRules_Aloft(),
+            InstallRules_COTL(),
+            InstallRules_ChronoArk(),
+            InstallRules_BONELAB(),
+            InstallRules_TromboneChamp(),
         ]
     }
 

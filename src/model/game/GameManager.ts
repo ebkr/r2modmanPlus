@@ -254,22 +254,58 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Backpack Hero", "BackpackHero", "BackpackHero",
-            "Backpack Hero Demo", ["Backpack Hero.exe", "linux.x86_64"], "Backpack Hero_Data",
+            "Backpack Hero", ["Backpack Hero.exe", "linux.x86_64"], "Backpack Hero_Data",
             "https://thunderstore.io/c/backpack-hero/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2066510")], "BackpackHero.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1970580")], "BackpackHero.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["bh", "farlands"]),
 
         new Game("Stacklands", "Stacklands", "Stacklands",
             "Stacklands", ["Stacklands.exe"], "Stacklands_Data",
             "https://thunderstore.io/c/stacklands/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1948280")], "Stacklands.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Enter the Gungeon", "ETG", "EnterTheGungeon",
             "Enter the Gungeon", ["EtG.exe"], "EtG_Data",
             "https://thunderstore.io/c/enter-the-gungeon/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "311690"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Garlic"), new StorePlatformMetadata(StorePlatform.OTHER)], "EnterTheGungeon.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["etg"]),
+
+        new Game("Ravenfield", "Ravenfield", "Ravenfield",
+            "Ravenfield", ["ravenfield.exe"], "ravenfield_Data",
+            "https://thunderstore.io/c/ravenfield/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "636480")], "Ravenfield.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rf"]),
+
+        new Game("Aloft", "Aloft", "Aloft",
+            "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
+            "https://thunderstore.io/c/aloft/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2051980")], "Aloft.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Cult of the Lamb", "COTL", "COTL",
+            "Cult of the Lamb", ["Cult Of The Lamb.exe"], "Cult Of The Lamb_Data",
+            "https://thunderstore.io/c/cult-of-the-lamb/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1313140")], "Cotl.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cotl"]),
+
+        new Game("Chrono Ark", "ChronoArk", "ChronoArk",
+            path.join("Chrono Ark", "x64", "Master"), ["ChronoArk.exe"], "ChronoArk_Data",
+            "https://thunderstore.io/c/chrono-ark/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1188930")], "ChronoArk.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("BONELAB", "BONELAB", "BONELAB",
+            "BONELAB", ["BONELAB_Steam_Windows64.exe"], "BONELAB_Steam_Windows64",
+            "https://thunderstore.io/c/bonelab/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190")], "BONELAB.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BL"]),
+
+        new Game("Trombone Champ", "TromboneChamp", "TromboneChamp",
+            "TromboneChamp", ["TromboneChamp.exe"], "TromboneChamp_Data",
+            "https://thunderstore.io/c/trombone-champ/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1059990")], "TromboneChamp.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tc"]),
 
     ];
 
@@ -288,5 +324,11 @@ export default class GameManager {
     // Return RiskOfRain2 game as base startup to be used for settings load.
     public static unsetGame(): Game {
         return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+    }
+
+    public static findByFolderName(name?: string|null) {
+        return name
+            ? this._gameList.find((game) => game.internalFolderName === name)
+            : undefined;
     }
 }

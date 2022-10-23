@@ -196,7 +196,7 @@
                        v-if="key.enabled">Disable</a>
                     <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                 </template>
-                <a class='card-footer-item' @click="viewDependencyList(key)">View associated</a>
+                <a class='card-footer-item' @click="viewDependencyList(key)">Associated</a>
                 <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
                       :target="'external'"
                       class="card-footer-item">
