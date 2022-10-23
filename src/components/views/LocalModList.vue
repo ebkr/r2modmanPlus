@@ -36,10 +36,22 @@
                 </div>
             </div>
             <div class="tabs">
-                <ul>
-                    <li :class="[{'is-active': activeTab === 0}]" @click="changeTab(0)"><a>All ({{ getTabCountForAll }})</a></li>
-                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)"><a>Tracked ({{ getTabCountForInstalled }})</a></li>
-                    <li :class="[{'is-active': activeTab === 2}]" @click="changeTab(2)"><a>Dependencies ({{ getTabCountForDependencies }})</a></li>
+                <ul class="margin-bottom">
+                    <li :class="[{'is-active': activeTab === 0}]" @click="changeTab(0)">
+                        <a>
+                            All <span :class="[{'is-link': activeTab === 0}]" class="tag tagged-link__tag margin-left">{{ getTabCountForAll }}</span>
+                        </a>
+                    </li>
+                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)">
+                        <a>
+                            Installed <span :class="[{'is-link': activeTab === 1}]" class="tag tagged-link__tag margin-left">{{ getTabCountForInstalled }}</span>
+                        </a>
+                    </li>
+                    <li :class="[{'is-active': activeTab === 2}]" @click="changeTab(2)">
+                        <a>
+                            Dependencies <span :class="[{'is-link': activeTab === 2}]" class="tag tagged-link__tag margin-left">{{ getTabCountForDependencies }}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
