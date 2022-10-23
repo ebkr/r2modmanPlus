@@ -5,6 +5,7 @@ import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/
 import GameDirectoryResolverImpl_Steam_Linux from '../../../../r2mm/manager/linux/GameDirectoryResolver';
 import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterceptorProvider';
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
+import XboxGamePassDirectoryResolver from '../directory_resolver/win/XboxGamePassDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
 import { PackageLoader } from '../../../../model/installing/PackageLoader';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
@@ -13,6 +14,7 @@ import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/D
 import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/SteamGameRunner_Linux';
 import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
 import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
+import XboxGamePassGameRunner from '../../../../r2mm/launching/runners/windows/XboxGamePassGameRunner';
 
 type RunnerType = {
     [platkey in StorePlatform]: {
@@ -79,6 +81,11 @@ const RUNNERS: RunnerType = {
           "darwin": new DirectGameRunner(),
       }
     },
+    [StorePlatform.XBOX_GAME_PASS]: {
+        [PackageLoader.BEPINEX]: {
+            "win32": new XboxGamePassGameRunner()
+        }
+    },
     [StorePlatform.OTHER]: {
         [PackageLoader.BEPINEX]: {
             "win32": new DirectGameRunner(),
@@ -113,6 +120,9 @@ const RESOLVERS: ResolverType = {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
+    },
+    [StorePlatform.XBOX_GAME_PASS]: {
+        "win32": new XboxGamePassDirectoryResolver()
     },
     [StorePlatform.OTHER]: {
         "win32": new DRMFreeDirectoryResolver(),

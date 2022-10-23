@@ -120,7 +120,14 @@ import moment from 'moment';
                     return 'Please set manually';
                 },
                 'fa-folder-open',
-                () => this.emitInvoke('ChangeGameDirectory')
+                () => {
+                    if (StorePlatform.XBOX_GAME_PASS == this.activeGame.activePlatform.storePlatform) {
+                        this.emitInvoke('ChangeGameDirectoryGamePass');
+                    }
+                    else {
+                        this.emitInvoke('ChangeGameDirectory');
+                    }
+                }
             ),
             new SettingsRow(
                 'Locations',

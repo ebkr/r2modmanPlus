@@ -37,20 +37,25 @@ export default class GameManager {
         new Game('Dyson Sphere Program', 'DysonSphereProgram', 'DysonSphereProgram',
             'Dyson Sphere Program', ['DSPGAME.exe'], 'DSPGAME_Data',
             'https://dsp.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1366540")], "DysonSphereProgram.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "GameraGame.DysonSphereProgram")
+            ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
 
         new Game('Valheim', 'Valheim', 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "892970")], "Valheim.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "892970"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "CoffeeStainStudios.Valheim")
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
             'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "896660")], "Valheim.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "896660")
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
 
         new Game('GTFO', 'GTFO', 'GTFO',
             'GTFO', ['GTFO.exe'], 'GTFO_Data',
@@ -127,7 +132,11 @@ export default class GameManager {
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
             "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe"], "TotallyAccurateBattleSimulator_Data",
             "https://totally-accurate-battle-simulator.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "508440"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish")], "TotallyAccurateBattleSimulator.jpg",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "508440"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "LandfallGames.TotallyAccurateBattleSimulator")
+            ], "TotallyAccurateBattleSimulator.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Totally Accurate Battle Simulator"]),
 
         new Game("Nickelodeon All‑Star Brawl", "NASB", "NASB",
@@ -199,14 +208,19 @@ export default class GameManager {
         new Game('Subnautica', 'Subnautica', 'Subnautica',
             'Subnautica', ['Subnautica.exe'], 'Subnautica_Data',
             'https://subnautica.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "264710"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar")], "Subnautica.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "264710"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.GAMEPREVIEWSubnautica"),
+            ], "Subnautica.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
             'https://belowzero.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
+            ], 'SubnauticaBelowZero.png', GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
 
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
