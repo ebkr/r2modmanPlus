@@ -4,6 +4,8 @@ import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
 import { GameInstanceType } from '../../model/game/GameInstanceType';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import PathResolver from '../../r2mm/manager/PathResolver';
+import FileUtils from '../../utils/FileUtils';
 import * as path from 'path';
 
 export default class GameManager {
@@ -319,6 +321,13 @@ export default class GameManager {
 
     static set activeGame(game: Game) {
         this._activeGame = game;
+    }
+
+    public static async activate(game: Game, platform: StorePlatform) {
+        this._activeGame = game;
+        this._activeGame.setActivePlatformByStore(platform);
+        PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
     }
 
     // Return RiskOfRain2 game as base startup to be used for settings load.
