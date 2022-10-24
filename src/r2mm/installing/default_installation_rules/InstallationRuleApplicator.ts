@@ -45,6 +45,7 @@ import InstallRules_COTL from '../default_installation_rules/game_rules/InstallR
 import InstallRules_ChronoArk from '../default_installation_rules/game_rules/InstallRules_ChronoArk';
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 import InstallRules_TromboneChamp from '../default_installation_rules/game_rules/InstallRules_TromboneChamp';
+import InstallRules_RogueGenesia from '../default_installation_rules/game_rules/InstallRules_RogueGenesia';
 
 export default class InstallationRuleApplicator {
 
@@ -95,6 +96,7 @@ export default class InstallationRuleApplicator {
             InstallRules_ChronoArk(),
             InstallRules_BONELAB(),
             InstallRules_TromboneChamp(),
+            InstallRules_RogueGenesia(),
         ]
     }
 

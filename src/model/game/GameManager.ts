@@ -323,6 +323,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1059990")], "TromboneChamp.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tc"]),
 
+        new Game("Rogue : Genesia", "RogueGenesia", "RogueGenesia",
+            "Rogue Genesia", ["Rogue Genesia.exe"], "Rogue Genesia_Data",
+            "https://thunderstore.io/c/rogue-genesia/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2067920")], "RogueGenesia.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rg"]),
+
     ];
 
     static get activeGame(): Game {
