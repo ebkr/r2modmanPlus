@@ -46,6 +46,7 @@ import InstallRules_ChronoArk from '../default_installation_rules/game_rules/Ins
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 import InstallRules_TromboneChamp from '../default_installation_rules/game_rules/InstallRules_TromboneChamp';
 import InstallRules_RogueGenesia from '../default_installation_rules/game_rules/InstallRules_RogueGenesia';
+import { buildBepInExRules } from '../default_installation_rules/game_rules/InstallRules_BepInex';
 
 export default class InstallationRuleApplicator {
 
@@ -97,6 +98,7 @@ export default class InstallationRuleApplicator {
             InstallRules_BONELAB(),
             InstallRules_TromboneChamp(),
             InstallRules_RogueGenesia(),
+            buildBepInExRules("AcrossTheObelisk"),
         ]
     }
 

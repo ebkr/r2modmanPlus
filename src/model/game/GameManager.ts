@@ -329,6 +329,11 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "2067920")], "RogueGenesia.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rg"]),
 
+        new Game("Across the Obelisk", "AcrossTheObelisk", "AcrossTheObelisk",
+            "Across the Obelisk", ["AcrossTheObelisk.exe"], "AcrossTheObelisk_Data",
+            "https://thunderstore.io/c/across-the-obelisk/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ato", "ao"]),
     ];
 
     static get activeGame(): Game {
