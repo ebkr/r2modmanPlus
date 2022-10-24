@@ -1,8 +1,8 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
-import { MOD_LOADER_VARIANTS } from '../../profile_installers/ModLoaderVariantRecord';
+import { GAME_NAME } from '../../profile_installers/ModLoaderVariantRecord';
 
-export function buildBepInExRules(gameName: keyof typeof MOD_LOADER_VARIANTS): CoreRuleType {
+export function buildBepInExRules(gameName: GAME_NAME): CoreRuleType {
     return {
         gameName: gameName,
         rules: [
