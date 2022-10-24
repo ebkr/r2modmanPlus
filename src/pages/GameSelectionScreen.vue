@@ -113,7 +113,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded"/>
+                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                         </div>
                                                     </header>
                                                 </div>
@@ -359,5 +359,10 @@ export default class GameSelectionScreen extends Vue {
 }
 .mb-2 {
     margin-bottom: 0.5rem !important;
+}
+.game-thumbnail {
+    width: 188px;
+    height: 250px;
+    object-fit: cover;
 }
 </style>
