@@ -60,4 +60,5 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     ChronoArk: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Chrono_Ark", "BepInExPack_Chrono_Ark", PackageLoader.BEPINEX)],
     BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     TromboneChamp: [new ModLoaderPackageMapping("BepInEx-BepInExPack_TromboneChamp", "BepInExPack_TromboneChamp", PackageLoader.BEPINEX)],
+    RogueGenesia: [new ModLoaderPackageMapping("BepInEx-BepInExPack_RogueGenesia", "BepInExPack_RogueGenesia", PackageLoader.BEPINEX)],
 }
