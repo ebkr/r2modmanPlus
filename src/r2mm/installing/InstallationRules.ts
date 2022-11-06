@@ -1,8 +1,9 @@
 import GameManager from '../../model/game/GameManager';
 import * as path from 'path';
+import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
 export type CoreRuleType = {
-    gameName: string,
+    gameName: GAME_NAME,
     rules: RuleSubtype[],
     relativeFileExclusions?: string[],
 }
