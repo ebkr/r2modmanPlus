@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="max-size-container">
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -197,20 +197,24 @@
             @error="showError($event)"
         />
 
-		<div class='columns' id='content'>
-			<div class="column non-selectable" :class="navbarClass">
+		<div class='main-container' id='content'>
+			<div class="non-selectable" :class="navbarClass">
                 <NavigationMenu :view="view"
                                 @clicked-installed="view = 'installed'"
                                 @clicked-online="view = 'online'"
                                 @clicked-settings="view = 'settings'"
+                                @clicked-serverlist="view = 'serverlist'"
                                 @clicked-help="openRoute('/help')"
                                 @clicked-config-editor="openRoute('/config-editor')"
                                 @clicked-downloads="openRoute('/downloads')"
                                 @error="showError($event)"
                 />
 			</div>
-			<div class="column" :class="contentClass">
-				<div v-show="view === 'online'">
+			<div :class="contentClass">
+
+                <server-list ref="serverListing" v-show="view === 'serverlist'" />
+
+                <div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
 						<div class='is-shadowless is-square'>
 							<div class='no-padding-left card-header-title'>
@@ -356,6 +360,8 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
+import ServerListProvider from "../providers/components/loaders/ServerListProvider";
+import {parseCustomUri, Ror2Uri, URI_ACTION_INSTALL, URI_ACTION_SYNC} from '../utils/UriUtils';
 
 @Component({
 		components: {
@@ -363,6 +369,7 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             OnlineModList: OnlineModListProvider.provider,
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
+            ServerList: ServerListProvider.provider,
             SettingsView,
             DownloadModModal,
 			'hero': Hero,
@@ -375,10 +382,10 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 	})
 	export default class Manager extends Vue {
 
-	    @Prop({default: "is-one-quarter"})
+	    @Prop({default: "main-navbar-one-quarter"})
         private navbarClass!: string;
 
-        @Prop({default: "is-three-quarters"})
+        @Prop({default: "main-content-three-quarters"})
         private contentClass!: string;
 
 
@@ -1052,27 +1059,70 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 			}
 			this.sortThunderstoreModList();
 
-			InteractionProvider.instance.hookModInstallProtocol(async data => {
-                const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
-                if (combo instanceof R2Error) {
-                    this.showError(combo);
-                    LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
+            InteractionProvider.instance.hookModInstallProtocol(async data => {
+                if (typeof data !== "string") {
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.activeGame, this.contextProfile!, combo, this.thunderstoreModList)
-                    .then(async value => {
-                        const modList = await ProfileModList.getModList(this.contextProfile!);
-                        if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('updateModList', modList);
-                        } else {
-                            this.showError(modList);
-                        }
-                    })
-                    .catch(this.showError);
+
+                const uri = parseCustomUri(data);
+
+                if (uri?.action === URI_ACTION_INSTALL) {
+                    this.installModFromUrl(data);
+                } else if (uri?.action === URI_ACTION_SYNC) {
+                    this.serverSyncFromUrl(uri);
+                }
             });
 
-			this.isManagerUpdateAvailable();
-		}
+            this.isManagerUpdateAvailable();
+        }
+
+        async installModFromUrl(url: string) {
+            const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(url, this.thunderstoreModList);
+            if (combo instanceof R2Error) {
+                this.showError(combo);
+                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${combo.name}\n-> ${combo.message}`);
+                return;
+            }
+            DownloadModModal.downloadSpecific(this.activeGame, this.contextProfile!, combo, this.thunderstoreModList)
+                .then(async value => {
+                    const modList = await ProfileModList.getModList(this.contextProfile!);
+                    if (!(modList instanceof R2Error)) {
+                        await this.$store.dispatch('updateModList', modList);
+                    } else {
+                        this.showError(modList);
+                    }
+                })
+                .catch(this.showError);
+        }
+
+        async serverSyncFromUrl(uri: Ror2Uri) {
+            const [syncType, serverId] = uri.parameters;
+
+            if (syncType !== "server" || !serverId || !this.$store.hasModule("serverListing")) {
+                return;
+            }
+
+            // TODO: server listing API only return's community id, which isn't
+            // available in game listing, forcing us to parse it from game's TS
+            // URL - a process that can easily break in the future. It would
+            // probably be better for the API to return some identifier that can
+            // be directly compared with the values available in mod manager.
+            const payload = {
+                serverId,
+                communityId: this.activeGame.thunderstoreCommunity,
+            };
+
+            // Clumsily check that the given UUID matches one of the servers,
+            // and that the server is for the currently selected game. If wrong
+            // game is selected, mod download will fail.
+            if (!await this.$store.dispatch("serverListing/validateCommunity", payload)) {
+                return;
+            }
+
+            this.view = "serverlist";
+            // @ts-ignore TODO: can this be avoided by typing ServerListing?
+            await this.$refs.serverListing.launch(serverId);
+        }
 
 		mounted() {
 		    this.view = (this.$route.query.view as string) || "installed";
@@ -1080,3 +1130,19 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 	}
 
 </script>
+
+<style scoped lang="scss">
+
+.main-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.max-size-container {
+    width: 100%;
+    height: 100%;
+}
+
+</style>

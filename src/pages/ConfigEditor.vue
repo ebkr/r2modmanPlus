@@ -5,6 +5,7 @@
                 @clicked-installed="route('installed')"
                 @clicked-online="route('online')"
                 @clicked-settings="route('settings')"
+                @clicked-serverlist="route('serverlist')"
                 @clicked-help="goto('/help')"
                 @clicked-downloads="goto('/downloads')"
             />
@@ -36,10 +37,10 @@
     })
     export default class BetterConfigEditor extends Vue {
 
-        @Prop({default: "is-one-quarter"})
+        @Prop({default: "main-navbar-one-quarter"})
         private navbarClass!: string;
 
-        @Prop({default: "is-three-quarters"})
+        @Prop({default: "main-content-three-quarters"})
         private contentClass!: string;
 
         private editing: ConfigFile | null = null;

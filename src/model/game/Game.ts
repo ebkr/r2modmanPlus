@@ -5,6 +5,9 @@ import { GameInstanceType } from '../../model/game/GameInstanceType';
 import { PackageLoader } from '../../model/installing/PackageLoader';
 import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
+const oldPackegeListRe = new RegExp(/https:\/\/([\w\-]+).thunderstore.io\/api\/v1\/package\//);
+const newPackegeListRe = new RegExp(/https:\/\/thunderstore.io\/c\/([\w\-]+)\/api\/v1\/package\//);
+
 export default class Game {
 
     private readonly _displayName: string;
@@ -73,6 +76,17 @@ export default class Game {
 
     get thunderstoreUrl(): string {
         return this._thunderstoreUrl;
+    }
+
+    /**
+     * Try to read TS community id from the URL.
+     *
+     * Uses RoR2 as the fallback, since it has special URLs.
+     */
+    get thunderstoreCommunity(): string {
+        let matches = this._thunderstoreUrl.match(oldPackegeListRe)?.[1];
+        matches = matches ?? this._thunderstoreUrl.match(newPackegeListRe)?.[1];
+        return matches ?? "risk-of-rain2"
     }
 
     get exclusionsUrl(): string {

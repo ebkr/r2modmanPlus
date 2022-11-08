@@ -5,6 +5,7 @@
                             @clicked-installed="route('installed')"
                             @clicked-online="route('online')"
                             @clicked-settings="route('settings')"
+                            @clicked-serverlist="route('serverlist')"
                             @clicked-config-editor="goto('/config-editor')"
                             @clicked-downloads="goto('downloads')"
             />
@@ -118,10 +119,10 @@
     })
     export default class Help extends Vue {
 
-        @Prop({ default: 'is-one-quarter' })
+        @Prop({ default: 'main-navbar-one-quarter' })
         private navbarClass!: string;
 
-        @Prop({ default: 'is-three-quarters' })
+        @Prop({ default: 'main-content-three-quarters' })
         private contentClass!: string;
 
         private activeTab = 'General';
