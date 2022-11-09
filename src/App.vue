@@ -101,15 +101,36 @@ export default class App extends Vue {
 
         this.hookModListRefresh();
 
-        const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
-        this.settings = settings;
+        const loadSettings = async () => {
+            const settingsResult = await ManagerSettings.getSafeSingleton(riskOfRain2Game);
+            if (settingsResult instanceof R2Error) {
+                this.showError(settingsResult);
+            }
+            return settingsResult;
+        }
+
+        let settingsLoadAttempt = await loadSettings();
+        let settings: ManagerSettings;
+
+        if (settingsLoadAttempt instanceof R2Error) {
+            // Retry loading settings one more time.
+            await setTimeout(async () => {
+                settingsLoadAttempt = await loadSettings();
+            }, 1000);
+        }
+
+        if (settingsLoadAttempt instanceof R2Error) {
+            console.log(`Failed to load settings due to: ${settingsLoadAttempt.message}`)
+            settings = new ManagerSettings();
+        } else {
+            settings = settingsLoadAttempt;
+        }
 
         InstallationRuleApplicator.apply();
         InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
-            await settings.load();
             PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
             // Legacy path. Needed for migration.
             PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");

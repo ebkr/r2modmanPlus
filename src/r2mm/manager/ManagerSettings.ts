@@ -17,6 +17,26 @@ export default class ManagerSettings {
 
     private static CONTEXT: ManagerSettingsInterfaceHolder;
 
+    public static async getSafeSingleton(game: Game): Promise<ManagerSettings | R2Error> {
+        try {
+            return this.getSingleton(game);
+        } catch (e) {
+            // See: https://dexie.org/docs/DexieErrors/Dexie.AbortError
+            // AbortError wraps the real error and so we need to pull out the correct one to display to the user.
+            const handleError = (internalError: Error): R2Error => {
+                if (internalError.name === "AbortError") {
+                    return handleError((internalError as any).inner);
+                }
+                return new R2Error(
+                    `Failed to initialise settings for game: ${game.displayName}`,
+                    internalError.message,
+                    "Reinstalling the manager may resolve this issue. Also ensure you have free space on your device."
+                );
+            }
+            return handleError(e as Error);
+        }
+    }
+
     public static async getSingleton(game: Game): Promise<ManagerSettings> {
         if (this.LOADED_SETTINGS === undefined || this.ACTIVE_GAME === undefined || (this.ACTIVE_GAME.displayName !== game.displayName)) {
             this.ACTIVE_GAME = game;
