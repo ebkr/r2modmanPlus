@@ -1,0 +1,61 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: linux
+            os: ubuntu-latest
+            platform: linux
+          - kind: windows
+            os: windows-latest
+            platform: win
+          - kind: mac
+            os: macos-latest
+            platform: osx
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          # The talk on the street says this might be a good version for building.
+          node-version: 14.20.1
+          cache: yarn
+
+      - name: Install Yarn dependencies
+        run: yarn install --frozen-lockfile
+
+      - if: matrix.platform == 'linux'
+        name: Install bsdtar # Required by electron-builder when targeting pacman.
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libarchive-tools
+
+      - name: Build project
+        id: build
+        uses: StarUbiquitous/command-output@v1.0.1 # Store stdout/stderr to outputs.
+        # You might want to turn this on if there's problems with electron-builder.
+        # env:
+        #   DEBUG: electron-builder
+        with:
+          run: yarn build-${{ matrix.platform }} --publish=never
+
+      - if: steps.build.outputs.stderr != ''
+        name: Log stderr
+        continue-on-error: true
+        run: echo '${{ steps.build.outputs.stderr }}'
+
+      # Creating Electron executables can in some cases fail with exit code 0.
+      # Check the output of build step for obvious signs of failure.
+      - if: contains(steps.build.outputs.stderr, '[FAIL]')
+        name: Check STDERR for trouble
+        uses: actions/github-script@v6
+        with:
+          script: core.setFailed('It seems the build process failed silently. See previous step for more info.')
