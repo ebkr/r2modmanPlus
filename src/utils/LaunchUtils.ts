@@ -7,8 +7,10 @@ import GameDirectoryResolverProvider from "../providers/ror2/game/GameDirectoryR
 import ManagerSettings from "../r2mm/manager/ManagerSettings";
 import ModLinker from "../r2mm/manager/ModLinker";
 
-export const launch = async (game: Game, profile: Profile, modded: boolean): Promise<void> => {
-    const error = modded
+export enum LaunchMode { VANILLA, MODDED };
+
+export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Promise<void> => {
+    const error = (mode === LaunchMode.MODDED)
         ? await GameRunnerProvider.instance.startModded(game, profile)
         : await GameRunnerProvider.instance.startVanilla(game, profile);
 

@@ -20,10 +20,10 @@
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <ul class="menu-list">
                     <li>
-                        <a href="#" @click="launch(true)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                        <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                     </li>
                     <li>
-                        <a href="#" @click="launch(false)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
+                        <a href="#" @click="launch(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
                     </li>
                 </ul>
                 <p class="menu-label">Mods</p>
@@ -87,6 +87,7 @@ import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
 import { PackageLoader } from '../../model/installing/PackageLoader';
 import {
+    LaunchMode,
     launch,
     linkProfileFiles,
     setGameDirIfUnset,
@@ -98,6 +99,7 @@ import {
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
+        private LaunchMode = LaunchMode;
 
         @Prop({default: ""})
         private view!: string;
@@ -128,17 +130,17 @@ import {
             this.$emit("clicked-" + element.getAttribute("data-ref"));
         }
 
-        async launch(useMods: boolean) {
+        async launch(mode: LaunchMode) {
             try {
                 await setGameDirIfUnset(this.activeGame);
                 await throwIfNoGameDir(this.activeGame);
 
-                if (useMods) {
+                if (mode === LaunchMode.MODDED) {
                     await linkProfileFiles(this.activeGame, this.contextProfile!);
                 }
 
                 this.gameRunning = true;
-                await launch(this.activeGame, this.contextProfile!, useMods);
+                await launch(this.activeGame, this.contextProfile!, mode);
             } catch (error) {
                 if (error instanceof R2Error) {
                     this.gameRunning = false;
