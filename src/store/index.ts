@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+
+import ModalsModule from './modules/ModalsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 
 // import example from './module-example'
@@ -65,7 +67,7 @@ export default function(/* { ssrContext } */) {
             }
         },
         modules: {
-            // example
+            modals: ModalsModule,
         },
 
         // enable strict mode (adds overhead!)
