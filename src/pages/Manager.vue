@@ -139,7 +139,7 @@
                         <option selected disabled>
                             Select a category
                         </option>
-                        <option v-for="(key, index) in availableCategories" :key="`category--${key}-${index}`">
+                        <option v-for="(key, index) in $store.getters['modFilters/unselectedCategories']" :key="`category--${key}-${index}`">
                             {{ key }}
                         </option>
                     </select>
@@ -147,10 +147,10 @@
                 <br/>
                 <div class="input-group">
                     <label>Selected categories:</label>
-                    <div class="field has-addons" v-if="filterCategories.length > 0">
-                        <div class="control" v-for="(key, index) in filterCategories" :key="`${key}-${index}`">
+                    <div class="field has-addons" v-if="$store.state.modFilters.selectedCategories.length > 0">
+                        <div class="control" v-for="(key, index) in $store.state.modFilters.selectedCategories" :key="`${key}-${index}`">
                             <span class="block margin-right">
-                                <a href="#" @click="removeCategory(key)">
+                                <a href="#" @click="$store.commit('modFilters/unselectCategory', key)">
                                     <span class="tags has-addons">
                                         <span class="tag">{{ key }}</span>
                                         <span class="tag is-danger">
@@ -413,9 +413,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
         showDependencyStrings: boolean = false;
 
         showCategoryFilterModal: boolean = false;
-        filterCategories: string[] = [];
-        categoryFilterMode: string = CategoryFilterMode.OR;
-        allowNsfw: boolean = false;
 
         importingLocalMod: boolean = false;
 
@@ -437,6 +434,22 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 			this.pageNumber = 1;
 			this.filterThunderstoreModList();
 		}
+
+        get allowNsfw(): boolean {
+            return this.$store.state.modFilters.allowNsfw;
+        }
+
+        set allowNsfw(value: boolean) {
+            this.$store.commit("modFilters/setAllowNsfw", value);
+        }
+
+        get categoryFilterMode(): CategoryFilterMode {
+            return this.$store.state.modFilters.categoryFilterMode;
+        }
+
+        set categoryFilterMode(value: CategoryFilterMode) {
+            this.$store.commit("modFilters/setCategoryFilterMode", value);
+        }
 
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
@@ -468,6 +481,10 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
         }
 
 		filterThunderstoreModList() {
+            const allowNsfw = this.$store.state.modFilters.allowNsfw;
+            const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
+            const filterCategories = this.$store.state.modFilters.selectedCategories;
+
             const lowercaseSearchFilter = this.thunderstoreSearchFilter.toLowerCase();
             this.searchableThunderstoreModList = this.sortedThunderstoreModList;
             if (lowercaseSearchFilter.trim().length > 0) {
@@ -476,18 +493,18 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
                         || x.getVersions()[0].getDescription().toLowerCase().indexOf(lowercaseSearchFilter) >= 0;
                 });
             }
-            if (!this.allowNsfw) {
+            if (!allowNsfw) {
                 this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
             }
-			if (this.filterCategories.length > 0) {
+			if (filterCategories.length > 0) {
 			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
-			        switch(this.categoryFilterMode) {
+			        switch(categoryFilterMode) {
 			            case CategoryFilterMode.OR:
-			                return ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+			                return ArrayUtils.includesSome(x.getCategories(), filterCategories);
                         case CategoryFilterMode.AND:
-                            return ArrayUtils.includesAll(x.getCategories(), this.filterCategories);
+                            return ArrayUtils.includesAll(x.getCategories(), filterCategories);
                         case CategoryFilterMode.EXCLUDE:
-                            return !ArrayUtils.includesSome(x.getCategories(), this.filterCategories);
+                            return !ArrayUtils.includesSome(x.getCategories(), filterCategories);
                     }
                 })
             }
@@ -938,25 +955,9 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
             });
         }
 
-        get availableCategories(): string[] {
-		    this.filterCategories.includes("");
-		    const flatArray: Array<string> = Array.from(
-		        new Set(this.thunderstoreModList
-                    .map((value) => value.getCategories())
-                    .flat(1))
-            );
-		    return flatArray
-                .filter((category) => !this.filterCategories.includes(category))
-                .sort();
-        }
-
         addFilterCategory(target: HTMLSelectElement) {
-		    this.filterCategories.push(target.value);
+            this.$store.commit("modFilters/selectCategory", target.value);
             target.selectedIndex = 0;
-        }
-
-        removeCategory(key: string) {
-		    this.filterCategories = this.filterCategories.filter(value => value !== key);
         }
 
         get categoryFilterValues() {
@@ -1060,6 +1061,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
                 this.$emit('error', newModList);
 			}
 			this.sortThunderstoreModList();
+			this.$store.commit("modFilters/reset");
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);

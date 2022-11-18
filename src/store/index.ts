@@ -2,12 +2,22 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import ModalsModule from './modules/ModalsModule';
+import ModFilterModule from './modules/ModFilterModule';
 import { FolderMigration } from '../migrations/FolderMigration';
+import ManifestV2 from '../model/ManifestV2';
+import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
-// import example from './module-example'
-
 Vue.use(Vuex);
+
+export interface State {
+    apiConnectionError: string;
+    deprecatedMods: Map<string, boolean>;
+    dismissedUpdateAll: boolean;
+    isMigrationChecked: boolean;
+    localModList: ManifestV2[];
+    thunderstoreModList: ThunderstoreMod[];
+}
 
 /*
  * If not building with SSR mode, you can
@@ -15,7 +25,7 @@ Vue.use(Vuex);
  */
 
 export default function(/* { ssrContext } */) {
-    const Store = new Vuex.Store({
+    const Store = new Vuex.Store<State>({
         state: {
             localModList: [],
             thunderstoreModList: [],
@@ -74,6 +84,7 @@ export default function(/* { ssrContext } */) {
         },
         modules: {
             modals: ModalsModule,
+            modFilters: ModFilterModule,
         },
 
         // enable strict mode (adds overhead!)
