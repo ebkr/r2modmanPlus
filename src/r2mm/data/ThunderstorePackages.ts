@@ -51,14 +51,43 @@ export default class ThunderstorePackages {
         [ThunderstorePackages.PACKAGES, ThunderstorePackages.PACKAGES_MAP] = [tsMods, tsPackageMap];
     }
 
-    public static isPackageDeprecated(mod: ThunderstoreMod): boolean {
-        return mod.isDeprecated() || (mod.getDependencies() || []).some(dependency => {
-            const tsVariant = this.PACKAGES_MAP.get(dependency)
-            if (tsVariant === undefined) {
-                return false;
-            }
-            return this.isPackageDeprecated(tsVariant);
+    public static getDeprecatedPackageMap(): Map<string, boolean> {
+        const result = new Map<string, boolean>();
+        this.PACKAGES.forEach(pkg => {
+            this.populateDeprecatedPackageMapForModChain(pkg, result);
         });
+        return result;
+    }
+
+    /**
+     * "Smart" package deprecation determination by keeping track of previously determine dependencies.
+     * This ensures that we hit as few iterations as possible to speed up calculation time.
+     *
+     * @param mod The mod to check for deprecation status / deprecated dependencies
+     * @param map A map to record previously hit items
+     * @private
+     */
+    private static populateDeprecatedPackageMapForModChain(mod: ThunderstoreMod, map: Map<string, boolean>) {
+        if (map.get(mod.getFullName()) != undefined) {
+            return; // Deprecation status has already been decided.
+        } else {
+            if (mod.isDeprecated()) {
+                map.set(mod.getFullName(), true);
+            } else {
+                for (const value of mod.getDependencies()) {
+                    const tsVariant = this.PACKAGES_MAP.get(value)
+                    if (tsVariant === undefined) {
+                        continue;
+                    }
+                    this.populateDeprecatedPackageMapForModChain(tsVariant, map);
+                }
+                // If mod was not set down the chain then has no deprecated dependencies.
+                // This means the mod does not result in a deprecation status.
+                if (map.get(mod.getFullName()) === undefined) {
+                    map.set(mod.getFullName(), false);
+                }
+            }
+        }
     }
 
 }

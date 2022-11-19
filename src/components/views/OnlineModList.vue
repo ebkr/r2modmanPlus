@@ -78,7 +78,6 @@ import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import DonateButton from '../../components/buttons/DonateButton.vue';
-import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import Timeout = NodeJS.Timeout;
 
 @Component({
@@ -115,9 +114,13 @@ export default class OnlineModList extends Vue {
         return this.$store.state.localModList;
     }
 
+    get deprecationMap(): Map<string, boolean> {
+        return this.$store.state.deprecatedMods;
+    }
+
     isModDeprecated(key: any) {
         const mod: ThunderstoreMod = new ThunderstoreMod().fromReactive(key);
-        return ThunderstorePackages.isPackageDeprecated(mod);
+        return this.deprecationMap.get(mod.getFullName()) || false;
     }
 
     isThunderstoreModInstalled(vueMod: any) {

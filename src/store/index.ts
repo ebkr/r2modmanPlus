@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { FolderMigration } from '../migrations/FolderMigration';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 // import example from './module-example'
 
@@ -18,7 +19,8 @@ export default function(/* { ssrContext } */) {
             thunderstoreModList: [],
             dismissedUpdateAll: false,
             isMigrationChecked: false,
-            apiConnectionError: ""
+            apiConnectionError: "",
+            deprecatedMods: new Map<string, boolean>(),
         },
         actions: {
             updateModList({ commit }, modList) {
@@ -26,6 +28,7 @@ export default function(/* { ssrContext } */) {
             },
             updateThunderstoreModList({ commit }, modList) {
                 commit('setThunderstoreModList', modList);
+                commit('setDeprecatedMods', modList);
             },
             dismissUpdateAll({commit}) {
                 commit('dismissUpdateAll');
@@ -62,6 +65,9 @@ export default function(/* { ssrContext } */) {
             },
             setApiConnectionError(state, err) {
                 state.apiConnectionError = err;
+            },
+            setDeprecatedMods(state, err) {
+                state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
             }
         },
         modules: {
