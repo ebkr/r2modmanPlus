@@ -9,6 +9,7 @@ import ConnectionProvider from '../../providers/generic/connection/ConnectionPro
 export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
+    public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
     public static EXCLUSIONS: Map<string, boolean> = new Map<string, boolean>();
 
     /**
@@ -43,7 +44,21 @@ export default class ThunderstorePackages {
         } else {
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Response data from API was undefined: ${JSON.stringify(response)}`);
         }
-        ThunderstorePackages.PACKAGES = tsMods;
+        var tsPackageMap = tsMods.reduce((map, pkg) => {
+            (map as Map<String, ThunderstoreMod>).set(pkg.getFullName(), pkg);
+            return map;
+        }, new Map<String, ThunderstoreMod>());
+        [ThunderstorePackages.PACKAGES, ThunderstorePackages.PACKAGES_MAP] = [tsMods, tsPackageMap];
+    }
+
+    public static isPackageDeprecated(mod: ThunderstoreMod): boolean {
+        return mod.isDeprecated() || (mod.getDependencies() || []).some(dependency => {
+            const tsVariant = this.PACKAGES_MAP.get(dependency)
+            if (tsVariant === undefined) {
+                return false;
+            }
+            return this.isPackageDeprecated(tsVariant);
+        });
     }
 
 }

@@ -464,12 +464,17 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
         }
 
 		filterThunderstoreModList() {
-			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-				return x.getFullName().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
-                    || x.getVersions()[0].getDescription().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
-                    || this.thunderstoreSearchFilter.trim() === '';
-			});
-			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
+            const lowercaseSearchFilter = this.thunderstoreSearchFilter.toLowerCase();
+            this.searchableThunderstoreModList = this.sortedThunderstoreModList;
+            if (lowercaseSearchFilter.trim().length > 0) {
+                this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+                    return x.getFullName().toLowerCase().indexOf(lowercaseSearchFilter) >= 0
+                        || x.getVersions()[0].getDescription().toLowerCase().indexOf(lowercaseSearchFilter) >= 0;
+                });
+            }
+            if (!this.allowNsfw) {
+                this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
+            }
 			if (this.filterCategories.length > 0) {
 			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
 			        switch(this.categoryFilterMode) {
