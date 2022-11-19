@@ -69,6 +69,22 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.33
+- Added games:
+  - Ravenfield
+  - Aloft
+  - Cult of the Lamb
+  - Chrono Ark (64 bit)
+  - BONELAB
+  - Trombone Champ
+  - Rogue : Genesia
+  - Across the Obelisk
+- Xbox Game Pass support
+  - Thanks to starfi5h
+- Other improvements thanks to the Thunderstore team:
+  - Game can now be changed without an app restart
+  - Internal refactors and improvements
+
 ### 3.1.32
 - Re-added win 7 support
 - Added games:
@@ -83,32 +99,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 ### 3.1.31
 - Downgraded node-ipc
-
-### 3.1.30
-- Added Hard Bullet support.
-- Added support for doorstop v4.
-
-### 3.1.29
-- Added games:
-  - Outward Definitive Edition
-  - V Rising
-  - Peglin
-- Upgraded Electron and some other libraries to a far more recent version, hopefully providing better performance.
-- Fixed more disabling bugs.
-  - Profile imports now properly disable mods.
-  - BONEWORKS disabling no longer needs a mod to be disabled+enabled prior to working.
-
-### 3.1.28
-- Added more games:
-  - For The King.
-  - Subnautica (and Subnautica: Below Zero).
-  - Core Keeper.
-  - Titanfall 2.
-  - EGS support for RoR2.
-- Fixed disable bug where .old is appended multiple times.
-- "State based" installs now disable correctly.
-- Autoscroll when dragging mods.
-- Other bug fixes.
 
 ## Screenshots
 

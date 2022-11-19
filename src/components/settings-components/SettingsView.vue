@@ -64,7 +64,6 @@ import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
-import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
@@ -121,7 +120,14 @@ import moment from 'moment';
                     return 'Please set manually';
                 },
                 'fa-folder-open',
-                () => this.emitInvoke('ChangeGameDirectory')
+                () => {
+                    if (StorePlatform.XBOX_GAME_PASS == this.activeGame.activePlatform.storePlatform) {
+                        this.emitInvoke('ChangeGameDirectoryGamePass');
+                    }
+                    else {
+                        this.emitInvoke('ChangeGameDirectory');
+                    }
+                }
             ),
             new SettingsRow(
                 'Locations',
@@ -327,14 +333,9 @@ import moment from 'moment';
               'Change the current game (restarts the manager)',
               async () => "",
                 'fa-gamepad',
-                () => {
-                    (async () => {
-                        const settings = await ManagerSettings.getSingleton(this.activeGame);
-                        await settings.load();
-                        await settings.setDefaultGame(undefined);
-                        await settings.setDefaultStorePlatform(undefined);
-                        await InteractionProvider.instance.restartApp();
-                  })();
+                async () => {
+                    await ManagerSettings.resetDefaults();
+                    await this.$router.push("/");
                 }
             ),
             new SettingsRow(

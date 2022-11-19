@@ -27,65 +27,43 @@
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
                 <p>An update to the manager has occurred and needs to do background work.</p>
-                <p>The option to select a game will appear once the work has completed.</p>
+                <p>The options to select a game are disabled until the work has completed.</p>
             </div>
         </div>
         <div class="columns">
             <div class="column is-full">
-                <br/>
-
                 <div class="sticky-top is-shadowless background-bg z-top">
-                    <div class="container" v-if="viewMode === 'Card'">
-                        <nav class="level">
+                    <div class="container">
+                        <nav class="level mb-2" v-if="viewMode === 'Card'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <label for="local-search" class="non-selectable">Search</label>
                                         <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <br/>
                                 <i class="button fas fa-list" @click="toggleViewMode"></i>
                             </div>
                         </nav>
-                        <div class="level">
-                            <div class="level-item">
-                                <div class="tabs">
-                                    <ul class="text-center">
-                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
-                                            :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container" v-else-if="viewMode === 'List'">
-                        <nav class="level">
+                        <nav class="level mb-2" v-else-if="viewMode === 'List'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <label for="local-search" class="non-selectable">Search</label>
                                         <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="margin-right">
-                                <br/>
                                 <a class="button is-info"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
                                     game</a>
                             </div>
                             <div class="margin-right">
-                                <br/>
                                 <a class="button"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
                             </div>
                             <div>
-                                <br/>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
                             </div>
                         </nav>
@@ -107,8 +85,7 @@
                     <article class="media">
                         <div class="media-content">
                             <div class="content pad--sides" v-if="viewMode === 'Card'">
-                                <h1 class="title is-4">{{ activeTab }}s</h1>
-                                <div>
+                                <div class="game-cards-container">
                                     <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
                                         <div class="inline">
@@ -136,7 +113,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded"/>
+                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                         </div>
                                                     </header>
                                                 </div>
@@ -165,7 +142,6 @@
                                         </div>
                                     </a>
                                 </div>
-                                <br/>
                             </div>
                         </div>
                     </article>
@@ -180,23 +156,15 @@ import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import Hero from '../components/Hero.vue';
-import FolderMigration from '../migrations/FolderMigration';
-import PathResolver from '../r2mm/manager/PathResolver';
-import * as path from 'path';
-import FileUtils from '../utils/FileUtils';
+import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
-import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
-import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
-import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
-import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import ProviderUtils from '../providers/generic/ProviderUtils';
 
 @Component({
     components: {
@@ -291,81 +259,38 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private async proceed() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        try {
+            ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
+        } catch (error) {
+            if (error instanceof R2Error) {
+                this.$emit("error", error);
+                return;
+            }
+
+            throw error;
+        }
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setLastSelectedGame(this.selectedGame);
+        await GameManager.activate(this.selectedGame, this.selectedPlatform);
+
+        await this.$router.replace("/splash");
     }
 
     private async proceedDefault() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-            await settings.setDefaultGame(this.selectedGame);
-            await settings.setDefaultStorePlatform(this.selectedPlatform);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setDefaultGame(this.selectedGame);
+        await settings.setDefaultStorePlatform(this.selectedPlatform);
+
+        this.proceed();
     }
 
     private toggleFavourite(game: Game) {
@@ -385,61 +310,25 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
-    created() {
-        const self = this;
+    async created() {
         this.runningMigration = true;
-        FolderMigration.needsMigration()
-            .then(isMigrationRequired => {
-                if (!isMigrationRequired) {
-                    this.runningMigration = false;
-                } else {
-                    return FolderMigration.runMigration();
-                }
-            })
-            .then(() => {
-                this.runningMigration = false;
-            })
-            .catch((e) => {
-                console.log(e);
-                this.runningMigration = false;
-            })
-        .finally(() => {
-            ManagerSettings.getSingleton(GameManager.unsetGame()).then(settings => {
-                const lastSelectedGame = settings.getContext().global.lastSelectedGame;
-                const savedViewMode = settings.getContext().global.gameSelectionViewMode;
-                switch (savedViewMode) {
-                    case "List": this.viewMode = GameSelectionViewMode.LIST; break;
-                    case "Card":
-                    case undefined:
-                        this.viewMode = GameSelectionViewMode.CARD;
-                        break;
-                }
-                if (lastSelectedGame !== null) {
-                    const game = GameManager.gameList.find(value => value.internalFolderName === lastSelectedGame);
-                    if (game !== undefined) {
-                        this.selectedGame = game;
-                    }
-                }
-            });
-            ManagerSettings.getSingleton(GameManager.unsetGame()).then(value => {
-                this.settings = value;
-                this.favourites = value.getContext().global.favouriteGames || [];
-                if (value.getContext().global.defaultGame !== undefined) {
-                    if (value.getContext().global.defaultStore !== undefined) {
-                        const game = GameManager.gameList
-                            .find(value1 => value1.internalFolderName === value.getContext().global.defaultGame)!;
+        await this.$store.dispatch('checkMigrations');
+        this.runningMigration = false;
 
-                        const platform = game.storePlatformMetadata.find(value1 => value1.storePlatform === value.getContext().global.defaultStore)!;
+        this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
+        const globalSettings = this.settings.getContext().global;
+        this.viewMode = globalSettings.gameSelectionViewMode;
+        this.favourites = globalSettings.favouriteGames || [];
+        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
 
-                        this.selectedGame = game;
-                        this.selectedPlatform = platform.storePlatform;
+        // Skip game selection view if valid default game & platform are set.
+        const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
 
-                        this.proceed();
-                        return;
-                    }
-                }
-            });
-        })
+        if (defaultGame && defaultPlatform) {
+            this.selectedGame = defaultGame;
+            this.selectedPlatform = defaultPlatform;
+            this.proceed();
+        }
     }
 
     toggleViewMode() {
@@ -459,3 +348,21 @@ export default class GameSelectionScreen extends Vue {
 
 }
 </script>
+
+
+<style lang="scss" scoped>
+.game-cards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.mb-2 {
+    margin-bottom: 0.5rem !important;
+}
+.game-thumbnail {
+    width: 188px;
+    height: 250px;
+    object-fit: cover;
+}
+</style>

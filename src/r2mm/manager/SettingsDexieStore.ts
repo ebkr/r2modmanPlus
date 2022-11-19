@@ -32,7 +32,7 @@ export default class SettingsDexieStore extends Dexie {
 
         // Add all games to store. Borked v2-3 locally
         // Increment per game or change to settings.
-        this.version(43).stores(store);
+        this.version(51).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");
@@ -206,7 +206,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     favouriteGames: string[] | undefined;
     defaultGame: string | undefined;
     defaultStore: StorePlatform | undefined;
-    gameSelectionViewMode: string | undefined;
+    gameSelectionViewMode: GameSelectionViewMode;
 }
 
 /**

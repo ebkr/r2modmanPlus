@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { FolderMigration } from '../migrations/FolderMigration';
 
 // import example from './module-example'
 
@@ -16,6 +17,7 @@ export default function(/* { ssrContext } */) {
             localModList: [],
             thunderstoreModList: [],
             dismissedUpdateAll: false,
+            isMigrationChecked: false,
             apiConnectionError: ""
         },
         actions: {
@@ -30,6 +32,19 @@ export default function(/* { ssrContext } */) {
             },
             updateApiConnectionError({commit}, err) {
                 commit('setApiConnectionError', err);
+            },
+            async checkMigrations({commit, state}) {
+                if (state.isMigrationChecked) {
+                    return;
+                }
+
+                try {
+                    await FolderMigration.runMigration();
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    commit('setMigrationChecked');
+                }
             }
         },
         mutations: {
@@ -41,6 +56,9 @@ export default function(/* { ssrContext } */) {
             },
             dismissUpdateAll(state) {
                 state.dismissedUpdateAll = true;
+            },
+            setMigrationChecked(state) {
+                state.isMigrationChecked = true;
             },
             setApiConnectionError(state, err) {
                 state.apiConnectionError = err;

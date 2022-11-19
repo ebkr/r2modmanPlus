@@ -1,10 +1,10 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
+import { GAME_NAME } from '../../profile_installers/ModLoaderVariantRecord';
 
-export default function(): CoreRuleType {
-
+export function buildBepInExRules(gameName: GAME_NAME): CoreRuleType {
     return {
-        gameName: "VRising",
+        gameName: gameName,
         rules: [
             {
                 route: path.join("BepInEx", "plugins"),
@@ -36,8 +36,7 @@ export default function(): CoreRuleType {
                 defaultFileExtensions: [],
                 trackingMethod: "NONE",
                 subRoutes: []
-            },
+            }
         ]
     }
-
 }
