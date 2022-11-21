@@ -17,7 +17,7 @@ export default class TestSetup {
 
     private static preSetUp() {
         ThunderstorePackages.PACKAGES = [];
-        ThunderstorePackages.EXCLUSIONS = new Map<string, boolean>();
+        ThunderstorePackages.EXCLUSIONS = [];
     }
 
     public static setUp() {

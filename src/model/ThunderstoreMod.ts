@@ -16,35 +16,36 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     private hasNsfwContent: boolean = false;
     private donationLink: string | undefined;
 
-    public parseFromThunderstoreData(data: any): ThunderstoreMod {
-        this.setName(data.name);
-        this.setFullName(data.full_name);
-        this.setOwner(data.owner);
-        this.setDateCreated(data.date_created);
-        this.setDateUpdated(data.date_updated);
-        this.setDeprecatedStatus(data.is_deprecated);
-        this.setPinnedStatus(data.is_pinned);
+    public static parseFromThunderstoreData(data: any): ThunderstoreMod {
+        const mod = new ThunderstoreMod();
+        mod.setName(data.name);
+        mod.setFullName(data.full_name);
+        mod.setOwner(data.owner);
+        mod.setDateCreated(data.date_created);
+        mod.setDateUpdated(data.date_updated);
+        mod.setDeprecatedStatus(data.is_deprecated);
+        mod.setPinnedStatus(data.is_pinned);
         const versions = [];
         for (const version of data.versions) {
             versions.push(new ThunderstoreVersion().make(version));
         }
-        this.setVersions(versions);
-        this.setDownloadCount(
-            this.versions
+        mod.setVersions(versions);
+        mod.setDownloadCount(
+            mod.versions
                 .map(version => version.getDownloadCount())
                 .reduce((x, y) => x + y)
         );
-        this.setRating(data.rating_score);
-        this.setTotalDownloads(
-            this.getVersions()
+        mod.setRating(data.rating_score);
+        mod.setTotalDownloads(
+            mod.getVersions()
                 .map(x => x.getDownloadCount())
                 .reduce((x, y) => x + y)
         );
-        this.setPackageUrl(data.package_url);
-        this.setCategories(data.categories);
-        this.setNsfwFlag(data.has_nsfw_content);
-        this.setDonationLink(data.donation_link);
-        return this;
+        mod.setPackageUrl(data.package_url);
+        mod.setCategories(data.categories);
+        mod.setNsfwFlag(data.has_nsfw_content);
+        mod.setDonationLink(data.donation_link);
+        return mod;
     }
 
     public fromReactive(reactive: any): ThunderstoreMod {

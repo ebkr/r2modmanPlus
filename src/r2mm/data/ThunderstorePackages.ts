@@ -1,54 +1,38 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import axios from 'axios';
 import Game from '../../model/game/Game';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import ApiResponse from '../../model/api/ApiResponse';
-import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
     public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
-    public static EXCLUSIONS: Map<string, boolean> = new Map<string, boolean>();
+    public static EXCLUSIONS: string[] = [];
 
     /**
      * Fetch latest V1 API data and apply to {PACKAGES}
-     * @return Empty promise
      */
-    public static async update(game: Game): Promise<any> {
+    public static async update(game: Game) {
         this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
-        return axios.get(game.thunderstoreUrl, {
-            timeout: 30000
-        })
-            .then(value => {
-                this.handlePackageApiResponse(value);
-                return value;
-            });
+        const response = await ConnectionProvider.instance.getPackages(game);
+        this.handlePackageApiResponse(response);
+
+        return response;
     }
 
     /**
-     * Transform {response.data} to ThunderstoreMod list.
+     * Transform {response.data} to ThunderstoreMod list and map.
      * @param response api/v1/package data.
      */
     public static handlePackageApiResponse(response: ApiResponse) {
-        ApiCacheUtils.storeLastRequest(response.data);
-        let tsMods: ThunderstoreMod[] = [];
-        if (response.data !== undefined) {
-            response.data.forEach((mod: any) => {
-                let tsMod = new ThunderstoreMod().parseFromThunderstoreData(mod);
-                if (!ThunderstorePackages.EXCLUSIONS.has(tsMod.getFullName())) {
-                    tsMods.push(tsMod.parseFromThunderstoreData(mod));
-                }
-            });
-        } else {
-            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Response data from API was undefined: ${JSON.stringify(response)}`);
-        }
-        var tsPackageMap = tsMods.reduce((map, pkg) => {
-            (map as Map<String, ThunderstoreMod>).set(pkg.getFullName(), pkg);
+        ThunderstorePackages.PACKAGES = response.data
+            .map(ThunderstoreMod.parseFromThunderstoreData)
+            .filter((mod) => !ThunderstorePackages.EXCLUSIONS.includes(mod.getFullName()));
+
+        ThunderstorePackages.PACKAGES_MAP = ThunderstorePackages.PACKAGES.reduce((map, pkg) => {
+            map.set(pkg.getFullName(), pkg);
             return map;
         }, new Map<String, ThunderstoreMod>());
-        [ThunderstorePackages.PACKAGES, ThunderstorePackages.PACKAGES_MAP] = [tsMods, tsPackageMap];
     }
 
     public static getDeprecatedPackageMap(): Map<string, boolean> {
