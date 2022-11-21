@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { FolderMigration } from '../migrations/FolderMigration';
-import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 // import example from './module-example'
 
