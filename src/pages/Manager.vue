@@ -127,66 +127,7 @@
 			</template>
 		</modal>
 
-        <modal v-show="showCategoryFilterModal" :open="showCategoryFilterModal" :show-close="false">
-            <template v-slot:title>
-                <p class='card-header-title'>Filter mod categories</p>
-            </template>
-            <template v-slot:body>
-
-                <div class="input-group">
-                    <label>Categories</label>
-                    <select class="select select--content-spacing" @change="addFilterCategory($event.target)">
-                        <option selected disabled>
-                            Select a category
-                        </option>
-                        <option v-for="(key, index) in $store.getters['modFilters/unselectedCategories']" :key="`category--${key}-${index}`">
-                            {{ key }}
-                        </option>
-                    </select>
-                </div>
-                <br/>
-                <div class="input-group">
-                    <label>Selected categories:</label>
-                    <div class="field has-addons" v-if="$store.state.modFilters.selectedCategories.length > 0">
-                        <div class="control" v-for="(key, index) in $store.state.modFilters.selectedCategories" :key="`${key}-${index}`">
-                            <span class="block margin-right">
-                                <a href="#" @click="$store.commit('modFilters/unselectCategory', key)">
-                                    <span class="tags has-addons">
-                                        <span class="tag">{{ key }}</span>
-                                        <span class="tag is-danger">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                    </span>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="field has-addons" v-else>
-                        <span class="tags">
-                            <span class="tag">No categories selected</span>
-                        </span>
-                    </div>
-                </div>
-                <hr/>
-                <div>
-                    <input class="is-checkradio has-background-color" id="nsfwCheckbox" type="checkbox" :class="[{'is-dark':!settings.darkTheme}, {'is-white':settings.darkTheme}]" v-model="allowNsfw">
-                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
-                </div>
-                <br/>
-                <div>
-                    <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
-                        <input type="radio" :id="`cat-filter-${key}-${index}`" name="categoryFilterCondition" :value=key :checked="index === 0 ? true : undefined" v-model="categoryFilterMode">
-                        <label :for="`cat-filter-${key}-${index}`"><span class="margin-right margin-right--half-width"/>{{ key }}</label>
-                    </div>
-                </div>
-            </template>
-            <template v-slot:footer>
-                <button class="button is-info" @click="showCategoryFilterModal = false;">
-                    Apply filters
-                </button>
-            </template>
-        </modal>
-
+        <CategoryFilterModal :onClose="sortThunderstoreModList" />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" @error="showError($event)"/>
 
         <DownloadModModal
@@ -233,7 +174,7 @@
                                 <div class="input-group">
                                     <div class="input-group input-group--flex">
                                         <label for="thunderstore-category-filter">Additional filters</label>
-                                        <button id="thunderstore-category-filter" class="button" @click="showCategoryFilterModal = true;">Filter categories</button>
+                                        <button id="thunderstore-category-filter" class="button" @click="$store.commit('openCategoryFilterModal')">Filter categories</button>
                                     </div>
                                 </div>
 							</div>
@@ -358,6 +299,7 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
+import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import GameRunningModal from '../components/modals/GameRunningModal.vue';
 
 @Component({
@@ -367,6 +309,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
             LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
             SettingsView,
+            CategoryFilterModal,
             DownloadModModal,
             GameRunningModal,
 			'hero': Hero,
@@ -412,8 +355,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 		showUpdateAllModal: boolean = false;
         showDependencyStrings: boolean = false;
 
-        showCategoryFilterModal: boolean = false;
-
         importingLocalMod: boolean = false;
 
         doorstopTarget: string = "";
@@ -434,22 +375,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 			this.pageNumber = 1;
 			this.filterThunderstoreModList();
 		}
-
-        get allowNsfw(): boolean {
-            return this.$store.state.modFilters.allowNsfw;
-        }
-
-        set allowNsfw(value: boolean) {
-            this.$store.commit("modFilters/setAllowNsfw", value);
-        }
-
-        get categoryFilterMode(): CategoryFilterMode {
-            return this.$store.state.modFilters.categoryFilterMode;
-        }
-
-        set categoryFilterMode(value: CategoryFilterMode) {
-            this.$store.commit("modFilters/setCategoryFilterMode", value);
-        }
 
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
@@ -475,7 +400,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
         }
 
         @Watch("thunderstoreModList")
-        @Watch("showCategoryFilterModal")
         thunderstoreModListUpdate() {
 		    this.sortThunderstoreModList();
         }
@@ -953,15 +877,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
                     }
                 }
             });
-        }
-
-        addFilterCategory(target: HTMLSelectElement) {
-            this.$store.commit("modFilters/selectCategory", target.value);
-            target.selectedIndex = 0;
-        }
-
-        get categoryFilterValues() {
-		    return Object.values(CategoryFilterMode);
         }
 
         handleSettingsCallbacks(invokedSetting: any) {
