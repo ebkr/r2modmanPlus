@@ -1,20 +1,5 @@
 <template>
     <div class="full-height">
-        <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
-            <div class="modal-background" @click="closeGameRunningModal()"></div>
-            <div class='modal-content'>
-                <div class='notification is-info' v-if="activeGame !== undefined">
-                    <h3 class='title' v-if="activeGame.activePlatform.storePlatform === 'Steam'">{{ activeGame.displayName }} is launching via Steam</h3>
-                    <h3 class='title' v-else>{{ activeGame.displayName }} is starting</h3>
-                    <h5 class="title is-5">Close this message to continue modding.</h5>
-                    <div v-if="activeGame.activePlatform.storePlatform === 'Steam'">
-                        <p>If this is taking a while, it's likely due to Steam starting.</p>
-                        <p>Please be patient, and have fun!</p>
-                    </div>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
-        </div>
         <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
             <aside class="menu">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
@@ -104,8 +89,6 @@ import {
         @Prop({default: ""})
         private view!: string;
 
-        private gameRunning: boolean = false;
-
         get settings() {
             return ManagerSettings.getSingleton(this.activeGame);
         }
@@ -139,21 +122,17 @@ import {
                     await linkProfileFiles(this.activeGame, this.contextProfile!);
                 }
 
-                this.gameRunning = true;
+                this.$store.commit("openGameRunningModal");
                 await launch(this.activeGame, this.contextProfile!, mode);
             } catch (error) {
                 if (error instanceof R2Error) {
-                    this.gameRunning = false;
+                    this.$store.commit("closeGameRunningModal");
                     this.$emit("error", error);
                 } else {
                     throw error;
                 }
             }
 
-        }
-
-        closeGameRunningModal() {
-            this.gameRunning = false;
         }
 
         created() {

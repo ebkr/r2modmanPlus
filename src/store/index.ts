@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+
+import ModalsModule from './modules/ModalsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
@@ -71,7 +73,7 @@ export default function(/* { ssrContext } */) {
             }
         },
         modules: {
-            // example
+            modals: ModalsModule,
         },
 
         // enable strict mode (adds overhead!)
