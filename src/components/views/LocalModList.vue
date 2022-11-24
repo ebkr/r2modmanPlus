@@ -37,14 +37,6 @@
             </div>
         </div>
 
-        <DownloadModModal
-            :show-download-modal="manifestModAsThunderstoreMod !== null"
-            :thunderstore-mod="manifestModAsThunderstoreMod"
-            :update-all-mods="false"
-            @closed-modal="manifestModAsThunderstoreMod = null;"
-            @error="emitError($event)"
-        />
-
         <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
                @close-modal="showingDependencyList = null" :open="showingDependencyList">
             <template v-slot:title>
@@ -280,7 +272,6 @@ import Timeout = NodeJS.Timeout;
         private searchableModList: ManifestV2[] = [];
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
-        private manifestModAsThunderstoreMod: ThunderstoreMod | null = null;
         private dependencyListDisplayType: string = 'view';
 
         // Filtering
@@ -586,9 +577,9 @@ import Timeout = NodeJS.Timeout;
                 this.thunderstorePackages
             );
             if (mod instanceof ThunderstoreMod) {
-                this.manifestModAsThunderstoreMod = mod;
+                this.$store.commit("openDownloadModModal", mod);
             } else {
-                this.manifestModAsThunderstoreMod = null;
+                this.$store.commit("closeDownloadModModal");
             }
         }
 
@@ -597,7 +588,7 @@ import Timeout = NodeJS.Timeout;
                 (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
             );
             if (mod === undefined) {
-                this.manifestModAsThunderstoreMod = null;
+                this.$store.commit("closeDownloadModModal");
                 const error = new R2Error(
                     `${missingDependency} could not be found`,
                     'You may be offline, or the mod was removed from Thunderstore.',
@@ -606,7 +597,7 @@ import Timeout = NodeJS.Timeout;
                 this.$emit('error', error);
                 return;
             }
-            this.manifestModAsThunderstoreMod = mod;
+            this.$store.commit("openDownloadModModal", mod);
         }
 
         getTooltipText(mod: ManifestV2) {
