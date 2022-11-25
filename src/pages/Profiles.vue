@@ -260,7 +260,6 @@ import StatusEnum from '../model/enums/StatusEnum';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
-import PathResolver from '../r2mm/manager/PathResolver';
 import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
 import * as  yaml from 'yaml';
@@ -273,7 +272,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
-import { ProfileApiClient } from '../r2mm/profiles/ProfilesClient';
+import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -478,23 +477,12 @@ export default class Profiles extends Vue {
         });
     }
 
-    async parseProfileResponse(profileData: string) {
-        if (profileData.startsWith("#r2modman")) {
-            const buf = Buffer.from(profileData.substring(9).trim(), 'base64');
-            await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
-            await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
-            await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
-        } else {
-            throw new Error('Code invalid, no profile is associated with this code');
-        }
-    }
-
     async importProfileUsingCode() {
         try {
-            const resp = await ProfileApiClient.getProfile(this.profileImportCode);
-            await this.parseProfileResponse(resp.data);
+            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode);
+            await this.importProfileHandler([filepath]);
         } catch (e: any) {
-            this.showError(R2Error.fromThrownValue(e, "Failed to find profile"));
+            this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
         }
     }
 
