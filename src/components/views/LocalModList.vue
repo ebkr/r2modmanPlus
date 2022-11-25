@@ -208,7 +208,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
@@ -247,8 +247,7 @@ import Timeout = NodeJS.Timeout;
     })
     export default class LocalModList extends Vue {
 
-        @Prop({required: true})
-        private settings!: ManagerSettings;
+        settings: ManagerSettings = new ManagerSettings();
 
         private cardExpanded: boolean = false;
         private darkTheme: boolean = false;
@@ -628,8 +627,9 @@ import Timeout = NodeJS.Timeout;
         }
 
         async created() {
-            this.contextProfile = Profile.getActiveProfile();
             this.activeGame = GameManager.activeGame;
+            this.settings = await ManagerSettings.getSingleton(this.activeGame);
+            this.contextProfile = Profile.getActiveProfile();
             this.filterModList();
             if (this.settingsUpdateTimer !== null) {
                 clearInterval(this.settingsUpdateTimer);
