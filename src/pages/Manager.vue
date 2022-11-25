@@ -127,7 +127,7 @@
 			</template>
 		</modal>
 
-        <CategoryFilterModal :onClose="sortThunderstoreModList" />
+        <CategoryFilterModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" @error="showError($event)"/>
         <DownloadModModal @error="showError($event)" />
         <GameRunningModal :activeGame="activeGame" />
@@ -337,7 +337,10 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 		    this.sortThunderstoreModList();
         }
 
-		filterThunderstoreModList() {
+        @Watch("$store.state.modFilters.allowNsfw")
+        @Watch("$store.state.modFilters.categoryFilterMode")
+        @Watch("$store.state.modFilters.selectedCategories")
+        filterThunderstoreModList() {
             const allowNsfw = this.$store.state.modFilters.allowNsfw;
             const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
             const filterCategories = this.$store.state.modFilters.selectedCategories;

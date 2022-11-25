@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
 import { Modal } from '../../components/all';
 import CategoryFilterMode from "../../model/enums/CategoryFilterMode";
@@ -87,9 +87,6 @@ import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 })
 export default class CategoryFilterModal extends Vue {
     settings: ManagerSettings = new ManagerSettings();
-
-    @Prop({default: () => null})
-    private onClose!: () => Promise<void>;
 
     get allowNsfw(): boolean {
         return this.$store.state.modFilters.allowNsfw;
@@ -112,7 +109,6 @@ export default class CategoryFilterModal extends Vue {
     }
 
     close() {
-        this.onClose();
         this.$store.commit("closeCategoryFilterModal");
     }
 
