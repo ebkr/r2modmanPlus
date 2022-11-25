@@ -17,7 +17,7 @@ export default class XboxGamePassDirectoryResolver extends GameDirectoryResolver
             const installDirectoryQuery = `get-appxpackage -Name ${game.activePlatform.storeIdentifier} | select -expand InstallLocation`;
             const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
             const realInstallLocation = await FsProvider.instance.realpath(queryResult);
-            if (FsProvider.instance.exists(realInstallLocation)) {
+            if (await FsProvider.instance.exists(realInstallLocation)) {
                 return realInstallLocation;
             }
             else {
@@ -26,7 +26,7 @@ export default class XboxGamePassDirectoryResolver extends GameDirectoryResolver
         } catch (err) {
             return new R2Error(
                 `Unable to resolve the ${game.displayName} install directory`,
-                err.message,
+                `${err}`,
                 `Try manually locating the ${game.displayName} install directory through the settings`
             );
         }
