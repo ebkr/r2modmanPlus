@@ -218,7 +218,6 @@ import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
-import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
@@ -241,7 +240,6 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import { homedir } from 'os';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
-import SettingsView from '../components/settings-components/SettingsView.vue';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import CategoryFilterMode from '../model/enums/CategoryFilterMode';
@@ -266,7 +264,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
             LocalFileImportModal,
             OnlineModList: OnlineModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
-            SettingsView,
             CategoryFilterModal,
             DownloadModModal,
             GameRunningModal,
@@ -294,9 +291,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 		pagedThunderstoreModList: ThunderstoreMod[] = [];
 		thunderstoreSearchFilter: string = '';
 		settings: ManagerSettings = new ManagerSettings();
-		// Increment by one each time new modal is shown
-		downloadObject: any | null = null;
-		downloadingMod: boolean = false;
 		sortingStyleModel: string = SortingStyle.DEFAULT;
 		sortingStyle: string = SortingStyle.DEFAULT;
 		sortingDirectionModel: string = SortingDirection.STANDARD;
@@ -336,17 +330,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
-        }
-
-        get profilePath(): string {
-		    if (this.contextProfile === null) {
-		        return "";
-            }
-		    return this.contextProfile!.getPathOfProfile().replace("/", "\\");
-        }
-
-        get appName(): string {
-		    return ManagerInformation.APP_NAME;
         }
 
         @Watch("thunderstoreModList")
@@ -446,13 +429,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			});
 		}
 
-		closeModal() {
-			const modal: Element | null = document.getElementById('downloadModal');
-			if (modal !== null) {
-				modal.className = 'modal';
-			}
-		}
-
 		showError(error: R2Error) {
 			this.$emit("error", error);
 		}
@@ -467,25 +443,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 				this.showError(res);
 			} else {
 				this.fixingPreloader = true;
-			}
-		}
-
-		async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
-			const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-			if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                await ProfileInstallerProvider.instance.uninstallMod(manifestMod, this.contextProfile!);
-			}
-			const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.contextProfile!);
-			if (!(installError instanceof R2Error)) {
-				const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.contextProfile!);
-				if (!(newModList instanceof R2Error)) {
-					await this.$store.dispatch("updateModList", newModList);
-					// this.localModList = newModList;
-					this.sortThunderstoreModList();
-				}
-			} else {
-				// (mod failed to be placed in /{profile} directory)
-				this.showError(installError);
 			}
 		}
 
@@ -920,7 +877,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
 			if (!(newModList instanceof R2Error)) {
 				await this.$store.dispatch("updateModList", newModList);
-				// this.localModList = newModList;
 			} else {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
                 this.$emit('error', newModList);
