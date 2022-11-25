@@ -146,60 +146,7 @@
 			</div>
 			<div class="column" :class="contentClass">
 				<InstalledModView v-show="view === 'installed'" />
-				<div v-show="view === 'online'">
-					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
-						<div class='is-shadowless is-square'>
-							<div class='no-padding-left card-header-title'>
-                                <div class="input-group input-group--flex margin-right">
-                                    <label for="thunderstore-search-filter">Search</label>
-                                    <input id="thunderstore-search-filter" v-model='thunderstoreSearchFilter' class="input" type="text" placeholder="Search for a mod"/>
-                                </div>
-                                <div class="input-group margin-right">
-                                    <label for="thunderstore-sort">Sort</label>
-                                    <select id="thunderstore-sort" class='select select--content-spacing margin-right margin-right--half-width' v-model="sortingStyleModel">
-                                        <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-                                    </select>
-                                    <select class='select select--content-spacing' v-model="sortingDirectionModel"
-                                            :disabled="sortingStyleModel === 'Default'">
-                                        <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group input-group--flex">
-                                        <label for="thunderstore-category-filter">Additional filters</label>
-                                        <button id="thunderstore-category-filter" class="button" @click="$store.commit('openCategoryFilterModal')">Filter categories</button>
-                                    </div>
-                                </div>
-							</div>
-						</div>
-					</div>
-					<OnlineModList
-                        :settings="settings"
-                        :local-mod-list="localModList"
-                        :paged-mod-list="pagedThunderstoreModList"
-                        @error="showError($event)"
-                    />
-					<div class='in-mod-list' v-if='getPaginationSize() > 1'>
-						<p class='notification margin-right'>
-							Use the numbers below to change page
-						</p>
-					</div>
-					<div class='in-mod-list' v-else-if='getPaginationSize() === 0'>
-						<p class='notification margin-right'>
-							No mods with that name found
-						</p>
-					</div>
-                    <br/>
-					<div class='pagination'>
-						<div class='smaller-font'>
-							<a v-for='index in getPaginationSize()' :key='"pagination-" + index'
-							   :class='["pagination-link", {"is-current": index === pageNumber}]'
-							   @click='updatePageNumber(index)'>
-								{{index}}
-							</a>
-						</div>
-					</div>
-				</div>
+				<OnlineModView v-show="view === 'online'" />
 				<div v-show="view === 'settings'">
 					<template>
                         <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
@@ -213,7 +160,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -227,8 +174,6 @@ import LoggerProvider, { LogSeverity } from '../providers/ror2/logging/LoggerPro
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import SortingStyle from '../model/enums/SortingStyle';
-import SortingDirection from '../model/enums/SortingDirection';
 import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 import R2Error from '../model/errors/R2Error';
 import ManifestV2 from '../model/ManifestV2';
@@ -242,12 +187,9 @@ import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
-import CategoryFilterMode from '../model/enums/CategoryFilterMode';
-import ArrayUtils from '../utils/ArrayUtils';
 import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
 import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
-import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
 import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
@@ -258,11 +200,11 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import GameRunningModal from '../components/modals/GameRunningModal.vue';
 import InstalledModView from '../components/views/InstalledModView.vue';
+import OnlineModView from '../components/views/OnlineModView.vue';
 
 @Component({
 		components: {
             LocalFileImportModal,
-            OnlineModList: OnlineModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
             CategoryFilterModal,
             DownloadModModal,
@@ -274,6 +216,7 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			'modal': Modal,
             'settings-view': SettingsViewProvider.provider,
             InstalledModView,
+            OnlineModView,
 		}
 	})
 	export default class Manager extends Vue {
@@ -284,131 +227,28 @@ import InstalledModView from '../components/views/InstalledModView.vue';
         @Prop({default: "is-three-quarters"})
         private contentClass!: string;
 
-
 		view: string = 'installed';
-		sortedThunderstoreModList: ThunderstoreMod[] = [];
-		searchableThunderstoreModList: ThunderstoreMod[] = [];
-		pagedThunderstoreModList: ThunderstoreMod[] = [];
-		thunderstoreSearchFilter: string = '';
 		settings: ManagerSettings = new ManagerSettings();
-		sortingStyleModel: string = SortingStyle.DEFAULT;
-		sortingStyle: string = SortingStyle.DEFAULT;
-		sortingDirectionModel: string = SortingDirection.STANDARD;
-		sortDescending: boolean = true;
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
 		fixingPreloader: boolean = false;
 		exportCode: string = '';
-		pageNumber: number = 1;
 		showSteamIncorrectDirectoryModal: boolean = false;
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
 		showLaunchParameterModal: boolean = false;
         showDependencyStrings: boolean = false;
-
         importingLocalMod: boolean = false;
-
         doorstopTarget: string = "";
         vanillaLaunchArgs: string = "";
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
 
-		@Watch('pageNumber')
-		changePage() {
-			this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
-				(this.pageNumber - 1) * this.getPageResultSize(),
-				this.pageNumber * this.getPageResultSize());
-		}
-
-		@Watch('thunderstoreSearchFilter')
-		onThunderstoreFilterUpdate() {
-			this.pageNumber = 1;
-			this.filterThunderstoreModList();
-		}
-
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
         }
-
-        @Watch("thunderstoreModList")
-        thunderstoreModListUpdate() {
-		    this.sortThunderstoreModList();
-        }
-
-        @Watch("$store.state.modFilters.allowNsfw")
-        @Watch("$store.state.modFilters.categoryFilterMode")
-        @Watch("$store.state.modFilters.selectedCategories")
-        filterThunderstoreModList() {
-            const allowNsfw = this.$store.state.modFilters.allowNsfw;
-            const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
-            const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
-            const filterCategories = this.$store.state.modFilters.selectedCategories;
-
-            const lowercaseSearchFilter = this.thunderstoreSearchFilter.toLowerCase();
-            this.searchableThunderstoreModList = this.sortedThunderstoreModList;
-            if (lowercaseSearchFilter.trim().length > 0) {
-                this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-                    return x.getFullName().toLowerCase().indexOf(lowercaseSearchFilter) >= 0
-                        || x.getVersions()[0].getDescription().toLowerCase().indexOf(lowercaseSearchFilter) >= 0;
-                });
-            }
-            if (!allowNsfw) {
-                this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
-            }
-            if (!showDeprecatedPackages) {
-                this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
-            }
-			if (filterCategories.length > 0) {
-			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
-			        switch(categoryFilterMode) {
-			            case CategoryFilterMode.OR:
-			                return ArrayUtils.includesSome(x.getCategories(), filterCategories);
-                        case CategoryFilterMode.AND:
-                            return ArrayUtils.includesAll(x.getCategories(), filterCategories);
-                        case CategoryFilterMode.EXCLUDE:
-                            return !ArrayUtils.includesSome(x.getCategories(), filterCategories);
-                    }
-                })
-            }
-			this.changePage();
-		}
-
-		@Watch('sortingStyleModel')
-		@Watch('sortingDirectionModel')
-		sortThunderstoreModList() {
-			this.sortingStyle = this.sortingStyleModel;
-			this.sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
-			const sortedList = [...this.thunderstoreModList];
-			sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
-				let result: boolean;
-				switch (this.sortingStyle) {
-					case SortingStyle.LAST_UPDATED:
-						result = this.sortDescending ? a.getDateUpdated() < b.getDateUpdated() : a.getDateUpdated() > b.getDateUpdated();
-						break;
-					case SortingStyle.ALPHABETICAL:
-						result = this.sortDescending ? a.getName().localeCompare(b.getName()) > 0 : a.getName().localeCompare(b.getName()) < 0;
-						break;
-					case SortingStyle.DOWNLOADS:
-						result = this.sortDescending ? a.getDownloadCount() < b.getDownloadCount() : a.getDownloadCount() > b.getDownloadCount();
-						break;
-					case SortingStyle.RATING:
-						result = this.sortDescending ? a.getRating() < b.getRating() : a.getRating() > b.getRating();
-						break;
-					case SortingStyle.DEFAULT:
-						result = true;
-						break;
-					default:
-						result = true;
-						break;
-				}
-				return result ? 1 : -1;
-			});
-			this.sortedThunderstoreModList = sortedList;
-			this.filterThunderstoreModList();
-		}
-
 
 		get localModList() : ManifestV2[] {
 		    if (this.contextProfile !== null) {
@@ -427,15 +267,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			return this.$store.state.localModList || [];
 		}
 
-		updatePageNumber(page: number) {
-			this.pageNumber = page;
-			window.scrollTo({
-				top: 0,
-				left: 0,
-				behavior: 'auto'
-			});
-		}
-
 		showError(error: R2Error) {
 			this.$emit("error", error);
 		}
@@ -451,24 +282,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			} else {
 				this.fixingPreloader = true;
 			}
-		}
-
-		getSortOptions() {
-			const options = [];
-			const sorting: { [key: string]: string } = SortingStyle;
-			for (const key in sorting) {
-				options.push(sorting[key]);
-			}
-			return options;
-		}
-
-		getSortDirections() {
-			const options = [];
-			const sorting: { [key: string]: string } = SortingDirection;
-			for (const key in sorting) {
-				options.push(sorting[key]);
-			}
-			return options;
 		}
 
 		computeDefaultInstallDirectory() : string {
@@ -703,14 +516,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
 			return;
 		}
 
-		getPaginationSize() {
-			return Math.ceil(this.searchableThunderstoreModList.length / this.getPageResultSize());
-		}
-
-		getPageResultSize() {
-			return 140;
-		}
-
 		showLaunchParameters() {
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
@@ -888,7 +693,6 @@ import InstalledModView from '../components/views/InstalledModView.vue';
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
                 this.$emit('error', newModList);
 			}
-			this.sortThunderstoreModList();
 			this.$store.commit("modFilters/reset");
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
