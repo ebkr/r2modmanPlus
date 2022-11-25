@@ -246,7 +246,6 @@ import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
 import sanitize from 'sanitize-filename';
 import ZipProvider from '../providers/generic/zip/ZipProvider';
-import Axios from 'axios';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
@@ -274,6 +273,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
+import { ProfileApiClient } from '../r2mm/profiles/ProfilesClient';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -478,22 +478,24 @@ export default class Profiles extends Vue {
         });
     }
 
-    importProfileUsingCode() {
-        Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
-            .then(resp => resp.data)
-            .then(async resp => {
-                if (resp.startsWith("#r2modman")) {
-                    const buf = Buffer.from(resp.substring(9).trim(), 'base64');
-                    await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
-                    await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
-                    await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
-                } else {
-                        throw new Error('Code invalid, no profile is associated with this code');
-                }
-            }).catch(e => {
-                const err = new R2Error('Failed to find profile', e.message, null);
-                this.showError(err);
-            })
+    async parseProfileResponse(profileData: string) {
+        if (profileData.startsWith("#r2modman")) {
+            const buf = Buffer.from(profileData.substring(9).trim(), 'base64');
+            await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
+            await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
+            await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
+        } else {
+            throw new Error('Code invalid, no profile is associated with this code');
+        }
+    }
+
+    async importProfileUsingCode() {
+        try {
+            const resp = await ProfileApiClient.getProfile(this.profileImportCode);
+            await this.parseProfileResponse(resp.data);
+        } catch (e: any) {
+            this.showError(R2Error.fromThrownValue(e, "Failed to find profile"));
+        }
     }
 
     async importProfileHandler(files: string[] | null) {
