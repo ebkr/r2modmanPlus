@@ -145,6 +145,7 @@
                 />
 			</div>
 			<div class="column" :class="contentClass">
+				<InstalledModView v-show="view === 'installed'" />
 				<div v-show="view === 'online'">
 					<div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
 						<div class='is-shadowless is-square'>
@@ -199,39 +200,6 @@
 						</div>
 					</div>
 				</div>
-				<div v-show="view === 'installed'">
-					<template>
-						<div class="relative-position full-height--minus-em" v-if="localModList.length === 0">
-                            <div class='absolute-center text-center top'>
-                                <div class="margin-right">
-                                    <div>
-                                        <i class="fas fa-exclamation fa-5x"></i>
-                                    </div>
-                                    <br/>
-                                    <h3 class='title is-4'>Looks like you don't have any mods installed</h3>
-                                    <h4 class='subtitle is-5'>Click the Online tab on the left, or click <a
-                                            @click="view = 'online'"
-                                    >here</a>.
-                                    </h4>
-                                </div>
-                            </div>
-						</div>
-						<template v-if="localModList.length > 0">
-							<LocalModList
-                                :settings="settings"
-                                @error="showError($event)">
-                                <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
-                                    <div class="margin-bottom">
-                                        <div class="notification is-warning margin-right">
-                                            <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?</span>
-                                            <a class="float-right cursor-pointer" @click="$store.dispatch('dismissUpdateAll')"><i class="fas fa-times"></i></a>
-                                        </div>
-                                    </div>
-                                </template>
-                            </LocalModList>
-						</template>
-					</template>
-				</div>
 				<div v-show="view === 'settings'">
 					<template>
                         <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
@@ -250,7 +218,6 @@ import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
-import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
@@ -283,7 +250,6 @@ import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
 import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
 import OnlineModListProvider from '../providers/components/loaders/OnlineModListProvider';
-import LocalModListProvider from '../providers/components/loaders/LocalModListProvider';
 import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
@@ -293,12 +259,12 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import GameRunningModal from '../components/modals/GameRunningModal.vue';
+import InstalledModView from '../components/views/InstalledModView.vue';
 
 @Component({
 		components: {
             LocalFileImportModal,
             OnlineModList: OnlineModListProvider.provider,
-            LocalModList: LocalModListProvider.provider,
             NavigationMenu: NavigationMenuProvider.provider,
             SettingsView,
             CategoryFilterModal,
@@ -310,6 +276,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 			'link-component': Link,
 			'modal': Modal,
             'settings-view': SettingsViewProvider.provider,
+            InstalledModView,
 		}
 	})
 	export default class Manager extends Vue {
@@ -380,14 +347,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 
         get appName(): string {
 		    return ManagerInformation.APP_NAME;
-        }
-
-        get numberOfModsWithUpdates(): number {
-		    return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.$store.state.localModList, this.$store.state.thunderstoreModList).length;
-        }
-
-        get dismissedUpdateAll() {
-		    return this.$store.state.dismissedUpdateAll;
         }
 
         @Watch("thunderstoreModList")
