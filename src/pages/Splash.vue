@@ -181,16 +181,16 @@ export default class Splash extends mixins(SplashMixin) {
                 const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
                 console.log(`Launch arguments for this game:`, launchArgs);
                 if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                    this.$router.push({ path: '/linux-native-game-setup' });
+                    this.$router.push({name: 'linux'});
                     return;
                 }
             }
         } else if (process.platform === 'darwin') {
             await this.ensureWrapperInGameFolder();
-            this.$router.push({ path: '/linux-native-game-setup' });
+            this.$router.push({name: 'linux'});
             return;
         }
-        this.$router.push({ path: '/profiles' });
+        this.$router.push({name: 'profiles'});
     }
 
     retryConnection() {

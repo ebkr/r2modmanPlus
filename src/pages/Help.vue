@@ -1,13 +1,7 @@
 <template>
     <div class='columns'>
         <div class="column non-selectable" :class="navbarClass">
-            <NavigationMenu view="help"
-                            @clicked-installed="route('installed')"
-                            @clicked-online="route('online')"
-                            @clicked-settings="route('settings')"
-                            @clicked-config-editor="goto('/config-editor')"
-                            @clicked-downloads="goto('downloads')"
-            />
+            <NavigationMenu />
         </div>
         <div class="column" :class="contentClass">
             <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="is-info"/>
@@ -135,14 +129,6 @@
 
         getActiveProfile(): Profile {
             return Profile.getActiveProfile();
-        }
-
-        route(ref: string) {
-            this.$router.replace(`/manager?view=${ref}`);
-        }
-
-        goto(ref: string) {
-            this.$router.replace(ref);
         }
 
         created() {

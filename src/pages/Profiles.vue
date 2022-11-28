@@ -432,7 +432,7 @@ export default class Profiles extends Vue {
 
     setProfileAndContinue() {
         settings.setProfile(Profile.getActiveProfile().getProfileName());
-        this.$router.push({ path: '/manager' });
+        this.$router.push({name: 'manager.installed'});
     }
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
@@ -688,7 +688,7 @@ export default class Profiles extends Vue {
 
     private async backToGameSelection() {
         await ManagerSettings.resetDefaults();
-        await this.$router.push("/");
+        await this.$router.push({name: "index"});
     }
 }
 </script>
