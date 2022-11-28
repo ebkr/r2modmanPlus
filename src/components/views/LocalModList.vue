@@ -123,9 +123,6 @@
                 :description="key.description"
                 :funkyMode="funkyMode"
                 :showSort="canShowSortIcons()"
-                :manualSortUp="index > 0"
-                :manualSortDown="index < searchableModList.length - 1"
-                :darkTheme="darkTheme"
                 :expandedByDefault="cardExpanded"
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
@@ -249,7 +246,6 @@ import DonateButton from '../../components/buttons/DonateButton.vue';
         settings: ManagerSettings = new ManagerSettings();
 
         private cardExpanded: boolean = false;
-        private darkTheme: boolean = false;
         private funkyMode: boolean = false;
 
         get modifiableModList(): ManifestV2[] {
@@ -625,7 +621,6 @@ import DonateButton from '../../components/buttons/DonateButton.vue';
             this.filterModList();
 
             this.cardExpanded = this.settings.getContext().global.expandedCards;
-            this.darkTheme = this.settings.getContext().global.darkTheme;
             this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
 
