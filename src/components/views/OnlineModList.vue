@@ -6,7 +6,6 @@
             :id="index"
             :description="key.getVersions()[0].getDescription()"
             :funkyMode="funkyMode"
-            :darkTheme="darkTheme"
             :expandedByDefault="cardExpanded">
             <template v-slot:title>
                 <span v-if="key.isPinned()" class='has-tooltip-left'
@@ -88,7 +87,6 @@ export default class OnlineModList extends Vue {
     settings: ManagerSettings = new ManagerSettings();
 
     private cardExpanded: boolean = false;
-    private darkTheme: boolean = false;
     private funkyMode: boolean = false;
 
     get localModList(): ManifestV2[] {
@@ -131,7 +129,6 @@ export default class OnlineModList extends Vue {
     async created() {
         this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         this.cardExpanded = this.settings.getContext().global.expandedCards;
-        this.darkTheme = this.settings.getContext().global.darkTheme;
         this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
     }
 
