@@ -20,9 +20,13 @@
             </template>
         </modal>
         <hero
-            title="Game selection"
-            subtitle="Which game are you managing your mods for?"
-            heroType="is-info"
+            :title="`${activeTab} selection`"
+            :subtitle="
+                activeTab === 'Game'
+                    ? 'Which game are you managing your mods for?'
+                    : 'Which dedicated server are you managing your mods for?'
+            "
+            :heroType="activeTab === 'Game' ? 'is-info' : 'is-warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -57,7 +61,7 @@
                             <div class="margin-right">
                                 <a class="button is-info"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
-                                    game</a>
+                                    {{ activeTab.toLowerCase() }}</a>
                             </div>
                             <div class="margin-right">
                                 <a class="button"
@@ -91,7 +95,7 @@
                                         <div class="inline">
                                             <div class='card is-shadowless'>
                                                 <div class='cursor-pointer'>
-                                                    <header class='card-header is-shadowless is-relative'>
+                                                    <header class='card-header is-shadowless is-relative has-background-black'>
                                                         <div class="absolute-full z-fab flex">
                                                             <div class="card-action-overlay rounded">
                                                                 <div class="absolute-top card-header-title">
@@ -106,14 +110,20 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select game</button>
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select
+                                                                        {{ activeTab.toLowerCase() }}</button>
                                                                     <br/><br/>
                                                                     <button class="button" @click="selectDefaultGame(game)">Set as default</button>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                            <template v-if="activeTab === 'Game'">
+                                                                <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                            </template>
+                                                            <template v-else>
+                                                                <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
+                                                            </template>
                                                         </div>
                                                     </header>
                                                 </div>
