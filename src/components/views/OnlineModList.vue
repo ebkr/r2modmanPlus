@@ -71,7 +71,6 @@ import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import DonateButton from '../../components/buttons/DonateButton.vue';
-import Timeout = NodeJS.Timeout;
 
 @Component({
     components: {
@@ -91,14 +90,6 @@ export default class OnlineModList extends Vue {
     private cardExpanded: boolean = false;
     private darkTheme: boolean = false;
     private funkyMode: boolean = false;
-
-    private settingsUpdateTimer: Timeout | null = null;
-
-    private updatedSettings() {
-        this.cardExpanded = this.settings.getContext().global.expandedCards;
-        this.darkTheme = this.settings.getContext().global.darkTheme;
-        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-    }
 
     get localModList(): ManifestV2[] {
         return this.$store.state.localModList;
@@ -139,20 +130,9 @@ export default class OnlineModList extends Vue {
 
     async created() {
         this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-
-        if (this.settingsUpdateTimer !== null) {
-            clearInterval(this.settingsUpdateTimer);
-        }
-        this.settingsUpdateTimer = setInterval(async () => {
-            this.updatedSettings();
-        }, 100);
-    }
-
-    destroyed() {
-        if (this.settingsUpdateTimer !== null) {
-            clearInterval(this.settingsUpdateTimer);
-            this.settingsUpdateTimer = null;
-        }
+        this.cardExpanded = this.settings.getContext().global.expandedCards;
+        this.darkTheme = this.settings.getContext().global.darkTheme;
+        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
     }
 
 }
