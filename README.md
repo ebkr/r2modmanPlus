@@ -69,6 +69,11 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.34
+- Profile exports changed to use Thunderstore provided host
+- Significantly improved search performance in the online tab
+- Game selection server tab modified to reduce user mis-clicks
+
 ### 3.1.33
 - Added games:
   - Ravenfield
@@ -96,9 +101,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
   - Enter the Gungeon
 - Fixed BepInEx doorstop assembly
 - Other small fixes
-
-### 3.1.31
-- Downgraded node-ipc
 
 ## Screenshots
 
