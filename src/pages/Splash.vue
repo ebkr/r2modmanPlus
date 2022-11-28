@@ -5,6 +5,7 @@
             <p>Game updates may break mods. If a new update has been released, please be patient.</p>
         </div>
         <progress-bar
+            v-if="!isOffline"
             :max='requests.length * 100'
             :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
             :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
@@ -130,24 +131,18 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Hero, Link, Progress } from '../components/all';
-
-import RequestItem from '../model/requests/RequestItem';
-import axios from 'axios';
 import * as path from 'path';
-import Profile from '../model/Profile';
 
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import { ipcRenderer } from 'electron';
-import GameManager from '../model/game/GameManager';
-import ApiCacheUtils from '../utils/ApiCacheUtils';
+import Component, { mixins } from 'vue-class-component';
+
+import { Hero, Link, Progress } from '../components/all';
+import SplashMixin from '../components/mixins/SplashMixin.vue';
+import RequestItem from '../model/requests/RequestItem';
+import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
-import FsProvider from '../providers/generic/file/FsProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
-import ConnectionProvider from '../providers/generic/connection/ConnectionProvider';
 
 @Component({
     components: {
@@ -156,103 +151,26 @@ import ConnectionProvider from '../providers/generic/connection/ConnectionProvid
         'link-component': Link
     }
 })
-export default class Splash extends Vue {
+export default class Splash extends mixins(SplashMixin) {
     heroTitle: string = 'Starting r2modman';
     loadingText: string = 'Initialising';
-    heroType: string = 'is-info';
     view: string = 'main';
-    activeGame = GameManager.activeGame;
 
     requests = [
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
         new RequestItem('ExclusionsList', 0)
     ];
-    isOffline: boolean = false;
-
-    exclusionMap: Map<string, boolean> = new Map();
-
-    // Used to produce a single, combined, RequestItem./
-    private reduceRequests(): RequestItem {
-        return this.requests.reduce((x, y) => x.merge(y));
-    }
 
     // Ensure that r2modman isn't outdated.
     private checkForUpdates() {
         this.loadingText = 'Preparing';
-        ipcRenderer.once('update-done', () => {
+        ipcRenderer.once('update-done', async () => {
             this.getRequestItem('UpdateCheck').setProgress(100);
-            this.getExclusions();
+            await this.getExclusions();
+            await this.getThunderstoreMods();
         });
         ipcRenderer.send('update-app');
-    }
-
-    private async getExclusions() {
-        this.loadingText = 'Connecting to GitHub repository';
-        ConnectionProvider.instance.getExclusions(percentageProgress => {
-            this.loadingText = 'Downloading exclusions';
-            this.getRequestItem('ExclusionsList').setProgress(percentageProgress);
-        }).then(exclusions => {
-            this.exclusionMap = exclusions;
-            ThunderstorePackages.EXCLUSIONS = this.exclusionMap;
-            this.getThunderstoreMods(0);
-        });
-    }
-
-    // Provide access to a request item, as item is not stored in a map.
-    private getRequestItem(name: string): RequestItem {
-        return this.requests.filter(ri => ri.getName() === name)[0];
-    }
-
-    // Get the list of Thunderstore mods via /api/v1/package.
-    private async getThunderstoreMods(attempt: number) {
-        this.loadingText = 'Connecting to Thunderstore';
-        ApiCacheUtils.getLastRequest().then(async resp => {
-            if (resp === undefined) {
-                axios.get(this.activeGame.thunderstoreUrl, {
-                    onDownloadProgress: progress => {
-                        this.loadingText = 'Getting mod list from Thunderstore';
-                        this.getRequestItem('ThunderstoreDownload').setProgress((progress.loaded / progress.total) * 100);
-                    },
-                    timeout: 30000
-                }).then(async response => {
-                    // Temporary. Creates a new standard profile until Profiles section is completed
-                    new Profile('Default');
-                    if (response.data === undefined) {
-                        throw new Error("Response was undefined, retry for appropriate response.");
-                    } else {
-                        ThunderstorePackages.handlePackageApiResponse(response);
-                        this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-                        await this.moveToNextScreen();
-                    }
-                }).catch((e_) => {
-                    console.log(e_);
-                    this.isOffline = true;
-                    if (attempt < 3) {
-                        this.getThunderstoreMods(attempt + 1);
-                    } else {
-                        this.heroTitle = 'Failed to get mods from Thunderstore';
-                        this.loadingText = 'You may be offline, however you may still use R2MM offline.';
-                    }
-                });
-            } else {
-                ThunderstorePackages.handlePackageApiResponse({ data: resp.payload });
-                if (ThunderstorePackages.EXCLUSIONS.size === 0) {
-                    const exclusions = new Map<string, boolean>();
-                    if (resp.exclusions) {
-                        resp.exclusions.forEach(exclusion => {
-                            exclusions.set(exclusion, true);
-                        });
-                    }
-                    ThunderstorePackages.EXCLUSIONS = exclusions;
-                }
-                this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                ThunderstorePackages.update(this.activeGame).then(() => {
-                    this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
-                });
-                await this.moveToNextScreen();
-            }
-        });
     }
 
     async moveToNextScreen() {
@@ -279,11 +197,6 @@ export default class Splash extends Vue {
         this.$router.go(0);
     }
 
-    continueOffline() {
-        ThunderstorePackages.PACKAGES = [];
-        this.moveToNextScreen();
-    }
-
     private async ensureWrapperInGameFolder() {
         const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
         console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
@@ -292,7 +205,7 @@ export default class Splash extends Vue {
             const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
             const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
             if (!oldBuf.equals(newBuf)) {
-                throw new Error("Outdated buffer");
+                throw new Error('Outdated buffer');
             }
         } catch (_) {
             if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {

@@ -1,29 +1,14 @@
 <template>
     <div class="full-height">
-        <div id='gameRunningModal' :class="['modal', {'is-active':(gameRunning !== false)}]">
-            <div class="modal-background" @click="closeGameRunningModal()"></div>
-            <div class='modal-content'>
-                <div class='notification is-info' v-if="activeGame !== undefined">
-                    <h3 class='title' v-if="activeGame.activePlatform.storePlatform === 'Steam'">{{ activeGame.displayName }} is launching via Steam</h3>
-                    <h3 class='title' v-else>{{ activeGame.displayName }} is starting</h3>
-                    <h5 class="title is-5">Close this message to continue modding.</h5>
-                    <div v-if="activeGame.activePlatform.storePlatform === 'Steam'">
-                        <p>If this is taking a while, it's likely due to Steam starting.</p>
-                        <p>Please be patient, and have fun!</p>
-                    </div>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeGameRunningModal()"></button>
-        </div>
         <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
             <aside class="menu">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <ul class="menu-list">
-                    <li><a href="#" @click="launchModded"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                    <li>
+                        <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                     </li>
                     <li>
-                        <a href="#" @click="launchVanilla"><i class="far fa-play-circle icon--margin-right"/>Start
-                            vanilla</a>
+                        <a href="#" @click="launch(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
                     </li>
                 </ul>
                 <p class="menu-label">Mods</p>
@@ -79,28 +64,30 @@
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
-import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
-import FsProvider from '../../providers/generic/file/FsProvider';
-import ModLinker from '../../r2mm/manager/ModLinker';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ManifestV2 from '../../model/ManifestV2';
-import GameRunnerProvider from '../../providers/generic/game/GameRunnerProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import {
+    LaunchMode,
+    launch,
+    linkProfileFiles,
+    setGameDirIfUnset,
+    throwIfNoGameDir
+ } from '../../utils/LaunchUtils';
 
 @Component
     export default class NavigationMenu extends Vue {
 
         private activeGame!: Game;
         private contextProfile: Profile | null = null;
+        private LaunchMode = LaunchMode;
 
         @Prop({default: ""})
         private view!: string;
-
-        private gameRunning: boolean = false;
 
         get settings() {
             return ManagerSettings.getSingleton(this.activeGame);
@@ -126,76 +113,26 @@ import { PackageLoader } from '../../model/installing/PackageLoader';
             this.$emit("clicked-" + element.getAttribute("data-ref"));
         }
 
-        async prepareLaunch() {
-            const settings = await this.settings;
-            let dir: string | R2Error;
-            if (settings.getContext().gameSpecific.gameDirectory === null) {
-                dir = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
-            } else {
-                dir = settings.getContext().gameSpecific.gameDirectory!;
-            }
-            if (dir instanceof R2Error) {
-                // Show folder selection dialog.
-                this.$emit("error", dir);
-            } else {
-                const setInstallDirError: R2Error | void = await settings.setGameDirectory(dir);
-                if (setInstallDirError instanceof R2Error) {
-                    this.$emit("error", setInstallDirError);
-                    return;
-                }
-            }
-        }
+        async launch(mode: LaunchMode) {
+            try {
+                await setGameDirIfUnset(this.activeGame);
+                await throwIfNoGameDir(this.activeGame);
 
-        async launchModded() {
-            const fs = FsProvider.instance;
-            const settings = await this.settings;
-            await this.prepareLaunch();
-            if (!((await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame)) instanceof R2Error) && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
-                const newLinkedFiles = await ModLinker.link(this.contextProfile!, this.activeGame);
-                if (newLinkedFiles instanceof R2Error) {
-                    this.$emit("error", newLinkedFiles);
-                    return;
+                if (mode === LaunchMode.MODDED) {
+                    await linkProfileFiles(this.activeGame, this.contextProfile!);
+                }
+
+                this.$store.commit("openGameRunningModal");
+                await launch(this.activeGame, this.contextProfile!, mode);
+            } catch (error) {
+                if (error instanceof R2Error) {
+                    this.$store.commit("closeGameRunningModal");
+                    this.$emit("error", error);
                 } else {
-                    const saveError = await settings.setLinkedFiles(newLinkedFiles);
-                    if (saveError instanceof R2Error) {
-                        this.$emit("error", saveError);
-                        return;
-                    }
+                    throw error;
                 }
-                this.gameRunning = true;
-                GameRunnerProvider.instance.startModded(this.activeGame, this.contextProfile!).then(value => {
-                    if (value instanceof R2Error) {
-                        this.$emit("error", value);
-                        this.gameRunning = false;
-                    }
-                });
-            } else {
-                const err = new R2Error(`Failed to start ${this.activeGame.displayName}`, `The ${this.activeGame.displayName} directory does not exist`,
-                    `Set the ${this.activeGame.displayName} directory in the Settings screen`);
-                this.$emit("error", err);
             }
-        }
 
-        async launchVanilla() {
-            const fs = FsProvider.instance;
-            const settings = await this.settings;
-            await this.prepareLaunch();
-            if (!((await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame)) instanceof R2Error) && await fs.exists(settings.getContext().gameSpecific.gameDirectory!)) {
-                this.gameRunning = true;
-                GameRunnerProvider.instance.startVanilla(this.activeGame, this.contextProfile!).then(value => {
-                    if (value instanceof R2Error) {
-                        this.$emit("error", value);
-                    }
-                });
-            } else {
-                const err = new R2Error(`Failed to start ${this.activeGame.displayName}`, `The ${this.activeGame.displayName} directory does not exist`,
-                    `Set the ${this.activeGame.displayName} directory in the Settings screen`);
-                this.$emit("error", err);
-            }
-        }
-
-        closeGameRunningModal() {
-            this.gameRunning = false;
         }
 
         created() {

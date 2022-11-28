@@ -197,6 +197,8 @@
             @error="showError($event)"
         />
 
+		<GameRunningModal :activeGame="activeGame" />
+
 		<div class='columns' id='content'>
 			<div class="column non-selectable" :class="navbarClass">
                 <NavigationMenu :view="view"
@@ -356,6 +358,7 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
+import GameRunningModal from '../components/modals/GameRunningModal.vue';
 
 @Component({
 		components: {
@@ -365,6 +368,7 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
             NavigationMenu: NavigationMenuProvider.provider,
             SettingsView,
             DownloadModModal,
+            GameRunningModal,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
@@ -464,12 +468,17 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
         }
 
 		filterThunderstoreModList() {
-			this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-				return x.getFullName().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
-                    || x.getVersions()[0].getDescription().toLowerCase().indexOf(this.thunderstoreSearchFilter.toLowerCase()) >= 0
-                    || this.thunderstoreSearchFilter.trim() === '';
-			});
-			this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => (mod.getNsfwFlag() && this.allowNsfw) || !mod.getNsfwFlag());
+            const lowercaseSearchFilter = this.thunderstoreSearchFilter.toLowerCase();
+            this.searchableThunderstoreModList = this.sortedThunderstoreModList;
+            if (lowercaseSearchFilter.trim().length > 0) {
+                this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+                    return x.getFullName().toLowerCase().indexOf(lowercaseSearchFilter) >= 0
+                        || x.getVersions()[0].getDescription().toLowerCase().indexOf(lowercaseSearchFilter) >= 0;
+                });
+            }
+            if (!this.allowNsfw) {
+                this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
+            }
 			if (this.filterCategories.length > 0) {
 			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
 			        switch(this.categoryFilterMode) {
