@@ -87,7 +87,7 @@ export default class SplashMixin extends Vue {
     }
 
     async moveToNextScreen() {
-        this.$router.push({ path: '/profiles' });
+        this.$router.push({name: 'profiles'});
     }
 }
 </script>
