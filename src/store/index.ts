@@ -2,12 +2,11 @@ import Vue from 'vue';
 import Vuex, { ActionContext } from 'vuex';
 
 import ModalsModule from './modules/ModalsModule';
+import ModFilterModule from './modules/ModFilterModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
-
-// import example from './module-example'
 
 Vue.use(Vuex);
 
@@ -85,7 +84,8 @@ export const store = {
         }
     },
     modules: {
-        modals: ModalsModule
+        modals: ModalsModule,
+        modFilters: ModFilterModule,
     },
 
     // enable strict mode (adds overhead!)
