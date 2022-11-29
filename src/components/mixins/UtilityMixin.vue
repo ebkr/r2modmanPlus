@@ -12,13 +12,14 @@ import ApiCacheUtils from '../../utils/ApiCacheUtils';
 @Component
 export default class UtilityMixin extends Vue {
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
+    private tsRefreshFailed = false;
 
     hookProfileModListRefresh() {
         setInterval(this.refreshProfileModList, this.REFRESH_INTERVAL);
     }
 
     hookThunderstoreModListRefresh() {
-        setInterval(this.refreshThunderstoreModList, this.REFRESH_INTERVAL);
+        setInterval(this.tryRefreshThunderstoreModList, this.REFRESH_INTERVAL);
     }
 
     async refreshProfileModList() {
@@ -40,6 +41,28 @@ export default class UtilityMixin extends Vue {
         const response = await ThunderstorePackages.update(GameManager.activeGame);
         await ApiCacheUtils.storeLastRequest(response.data);
         await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+    }
+
+    /**
+     * Thunderstore's Sentry gets regular errors about this failing with
+     * HTTP status code 0. The assumption is that it's caused by users
+     * closing the window while update is in progress. Ignore the first
+     * failure to see how this affects the number of reported errors.
+     */
+    private async tryRefreshThunderstoreModList() {
+        try {
+            await this.refreshThunderstoreModList();
+        } catch (e) {
+            if (this.tsRefreshFailed) {
+                console.error("Two consecutive background refresh attempts failed");
+                throw e;
+            }
+
+            this.tsRefreshFailed = true;
+            return;
+        }
+
+        this.tsRefreshFailed = false;
     }
 }
 </script>
