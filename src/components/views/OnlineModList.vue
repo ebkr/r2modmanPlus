@@ -1,13 +1,5 @@
 <template>
     <div>
-        <DownloadModModal
-            :show-download-modal="modToDownload !== null"
-            :thunderstore-mod="modToDownload"
-            :update-all-mods="false"
-            @closed-modal="modToDownload = null;"
-            @error="emitError($event)"
-        />
-
         <ExpandableCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="key.getVersions()[0].getIcon()"
@@ -102,8 +94,6 @@ export default class OnlineModList extends Vue {
 
     private settingsUpdateTimer: Timeout | null = null;
 
-    private modToDownload: ThunderstoreMod | null = null;
-
     private updatedSettings() {
         this.cardExpanded = this.settings.getContext().global.expandedCards;
         this.darkTheme = this.settings.getContext().global.darkTheme;
@@ -129,7 +119,8 @@ export default class OnlineModList extends Vue {
     }
 
     showDownloadModal(mod: any) {
-        this.modToDownload = new ThunderstoreMod().fromReactive(mod);
+        const modToDownload = new ThunderstoreMod().fromReactive(mod);
+        this.$store.commit("openDownloadModModal", modToDownload);
     }
 
     getReadableDate(date: Date): string {

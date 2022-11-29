@@ -129,16 +129,8 @@
 
         <CategoryFilterModal :onClose="sortThunderstoreModList" />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" @error="showError($event)"/>
-
-        <DownloadModModal
-            :show-download-modal="showUpdateAllModal"
-            :update-all-mods="true"
-            :thunderstore-mod="null"
-            @closed-modal="showUpdateAllModal = false;"
-            @error="showError($event)"
-        />
-
-		<GameRunningModal :activeGame="activeGame" />
+        <DownloadModModal @error="showError($event)" />
+        <GameRunningModal :activeGame="activeGame" />
 
 		<div class='columns' id='content'>
 			<div class="column non-selectable" :class="navbarClass">
@@ -231,7 +223,7 @@
                                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
                                     <div class="margin-bottom">
                                         <div class="notification is-warning margin-right">
-                                            <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="showUpdateAllModal = true">update all</a>?</span>
+                                            <span>You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}. Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?</span>
                                             <a class="float-right cursor-pointer" @click="$store.dispatch('dismissUpdateAll')"><i class="fas fa-times"></i></a>
                                         </div>
                                     </div>
@@ -352,7 +344,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
 		showLaunchParameterModal: boolean = false;
-		showUpdateAllModal: boolean = false;
         showDependencyStrings: boolean = false;
 
         importingLocalMod: boolean = false;
@@ -938,7 +929,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
                     this.setAllModsEnabled(false);
                     break;
                 case "UpdateAllMods":
-                    this.showUpdateAllModal = true;
+                    this.$store.commit("openUpdateAllModsModal");
                     break;
                 case "ShowDependencyStrings":
                     this.showDependencyStrings = true;
