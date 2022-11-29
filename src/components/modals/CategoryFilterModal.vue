@@ -120,8 +120,6 @@ export default class CategoryFilterModal extends Vue {
         this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
     }
 
-    // TODO: The value doesn't get updated if the theme is toggled while
-    // the modal in mounted.
     get isDarkTheme(): boolean {
         return this.settings.getContext().global.darkTheme;
     }

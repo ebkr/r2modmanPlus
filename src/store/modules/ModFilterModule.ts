@@ -32,10 +32,8 @@ export default {
         },
 
         unselectedCategories (state, getters) {
-            // TODO: try to find a way to fix typing for getters parameter.
-            const cats: string[] = getters.allCategories;
-
-            return cats.filter((c: string) => !state.selectedCategories.includes(c));
+            const categories: string[] = getters.allCategories;
+            return categories.filter((c: string) => !state.selectedCategories.includes(c));
         }
     },
 
