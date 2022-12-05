@@ -397,6 +397,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 
 		filterThunderstoreModList() {
             const allowNsfw = this.$store.state.modFilters.allowNsfw;
+            const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
             const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
             const filterCategories = this.$store.state.modFilters.selectedCategories;
 
@@ -410,6 +411,9 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
             }
             if (!allowNsfw) {
                 this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
+            }
+            if (!showDeprecatedPackages) {
+                this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
             }
 			if (filterCategories.length > 0) {
 			    this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {

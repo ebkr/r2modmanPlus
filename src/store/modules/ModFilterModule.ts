@@ -1,12 +1,13 @@
-import { GetterTree } from "vuex";
+import { GetterTree } from 'vuex';
 
-import { State as RootState } from "../index";
-import CategoryFilterMode from "../../model/enums/CategoryFilterMode";
+import { State as RootState } from '../index';
+import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 
 interface State {
     allowNsfw: boolean;
     categoryFilterMode: CategoryFilterMode;
     selectedCategories: string[];
+    showDeprecatedPackages: boolean;
 }
 
 export default {
@@ -15,7 +16,8 @@ export default {
     state: (): State => ({
         allowNsfw: false,
         categoryFilterMode: CategoryFilterMode.OR,
-        selectedCategories: []
+        selectedCategories: [],
+        showDeprecatedPackages: false
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -58,6 +60,10 @@ export default {
 
         unselectCategory: function(state: State, category: string) {
             state.selectedCategories = state.selectedCategories.filter((c) => c !== category);
-        }
+        },
+
+        setShowDeprecatedPackages: function(state: State, value: boolean) {
+            state.showDeprecatedPackages = value;
+        },
     },
 }

@@ -48,6 +48,14 @@
                     :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                 >
                 <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                <input
+                    v-model="showDeprecatedPackages"
+                    id="showDeprecatedCheckbox"
+                    class="is-checkradio has-background-color"
+                    type="checkbox"
+                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                >
+                <label for="showDeprecatedCheckbox">Show deprecated mods</label>
             </div>
             <br/>
             <div>
@@ -75,12 +83,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { Modal } from '../../components/all';
-import CategoryFilterMode from "../../model/enums/CategoryFilterMode";
-import GameManager from "../../model/game/GameManager";
-import ManagerSettings from "../../r2mm/manager/ManagerSettings";
+import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
+import GameManager from '../../model/game/GameManager';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 
 @Component({
     components: { Modal }
@@ -109,6 +117,14 @@ export default class CategoryFilterModal extends Vue {
 
     get categoryFilterValues() {
         return Object.values(CategoryFilterMode);
+    }
+
+    get showDeprecatedPackages(): boolean {
+        return this.$store.state.modFilters.showDeprecatedPackages;
+    }
+
+    set showDeprecatedPackages(value: boolean) {
+        this.$store.commit("modFilters/setShowDeprecatedPackages", value);
     }
 
     close() {
