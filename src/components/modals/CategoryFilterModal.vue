@@ -40,22 +40,26 @@
             </div>
             <hr/>
             <div>
-                <input
-                    v-model="allowNsfw"
-                    id="nsfwCheckbox"
-                    class="is-checkradio has-background-color"
-                    type="checkbox"
-                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                >
-                <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
-                <input
-                    v-model="showDeprecatedPackages"
-                    id="showDeprecatedCheckbox"
-                    class="is-checkradio has-background-color"
-                    type="checkbox"
-                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                >
-                <label for="showDeprecatedCheckbox">Show deprecated mods</label>
+                <div>
+                    <input
+                        v-model="allowNsfw"
+                        id="nsfwCheckbox"
+                        class="is-checkradio has-background-color"
+                        type="checkbox"
+                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                    >
+                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                </div>
+                <div>
+                    <input
+                        v-model="showDeprecatedPackages"
+                        id="showDeprecatedCheckbox"
+                        class="is-checkradio has-background-color"
+                        type="checkbox"
+                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                    >
+                    <label for="showDeprecatedCheckbox">Show deprecated mods</label>
+                </div>
             </div>
             <br/>
             <div>
