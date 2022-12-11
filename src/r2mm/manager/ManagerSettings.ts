@@ -7,6 +7,7 @@ import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDe
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import Dexie from 'dexie';
 
 export default class ManagerSettings {
 
@@ -23,7 +24,13 @@ export default class ManagerSettings {
                 const result = await this.tryGetSingleton(game);
                 if (result instanceof R2Error) {
                     if (attemptNumber >= 2) {
-                        console.log("Failed to load settings: ", JSON.stringify(result));
+                        // Can only console.log as PathResolver paths may have potentially not been set at this point.
+                        // Not all fields are displayed when encoding the result for an unknown reason. All fields are public?
+                        console.log("Failed to load settings: ", JSON.stringify({
+                            name: result.name,
+                            message: result.message,
+                            stack: result.stack
+                        }));
                         reject(result);
                     } else {
                         setTimeout(() => attempt(attemptNumber + 1), 1000);
@@ -42,17 +49,19 @@ export default class ManagerSettings {
         } catch (e) {
             // See: https://dexie.org/docs/DexieErrors/Dexie.AbortError
             // AbortError wraps the real error and so we need to pull out the correct one to display to the user.
-            const handleError = (internalError: Error): R2Error => {
-                if (internalError.name === "AbortError") {
-                    return handleError((internalError as any).inner);
-                }
-                return new R2Error(
-                    `Failed to initialise settings for game: ${game.displayName}`,
-                    internalError.message,
-                    "Reinstalling the manager may resolve this issue. Also ensure you have free space on your device."
-                );
+            let errorMessage;
+            if (e instanceof Dexie.AbortError) {
+                errorMessage = e.inner.message;
+            } else if (e instanceof Error) {
+                errorMessage = e.message;
+            } else {
+                errorMessage = JSON.stringify(e);
             }
-            return handleError(e as Error);
+            return new R2Error(
+                `Failed to initialise settings for game: ${game.displayName}`,
+                errorMessage,
+                "Reinstalling the manager may resolve this issue. Also ensure you have free space on your device."
+            );
         }
     }
 
