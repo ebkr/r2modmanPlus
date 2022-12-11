@@ -21,6 +21,12 @@ export default function(): CoreRuleType {
                 subRoutes: []
             },
             {
+                route: path.join('UserData', 'CustomNPCs'),
+                defaultFileExtensions: [".npc"],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            },
+            {
                 route: path.join('UserLibs'),
                 defaultFileExtensions: ['.lib.dll'],
                 trackingMethod: 'STATE',
