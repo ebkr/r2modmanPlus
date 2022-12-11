@@ -101,29 +101,14 @@ export default class App extends Vue {
 
         this.hookModListRefresh();
 
-        const loadSettings = async () => {
-            const settingsResult = await ManagerSettings.getSafeSingleton(riskOfRain2Game);
-            if (settingsResult instanceof R2Error) {
-                this.showError(settingsResult);
-            }
-            return settingsResult;
-        }
-
-        let settingsLoadAttempt = await loadSettings();
         let settings: ManagerSettings;
 
-        if (settingsLoadAttempt instanceof R2Error) {
-            // Retry loading settings one more time.
-            await setTimeout(async () => {
-                settingsLoadAttempt = await loadSettings();
-            }, 1000);
-        }
-
-        if (settingsLoadAttempt instanceof R2Error) {
-            console.log(`Failed to load settings due to: ${settingsLoadAttempt.message}`)
+        const settingsResult = await ManagerSettings.getSafeSingleton(riskOfRain2Game);
+        if (settingsResult instanceof R2Error) {
+            this.showError(settingsResult);
             settings = new ManagerSettings();
         } else {
-            settings = settingsLoadAttempt;
+            settings = settingsResult;
         }
 
         InstallationRuleApplicator.apply();

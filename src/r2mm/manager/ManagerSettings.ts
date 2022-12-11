@@ -18,6 +18,25 @@ export default class ManagerSettings {
     private static CONTEXT: ManagerSettingsInterfaceHolder;
 
     public static async getSafeSingleton(game: Game): Promise<ManagerSettings | R2Error> {
+        return new Promise((resolve, reject) => {
+            const attempt = async (attemptNumber: number = 0) => {
+                const result = await this.tryGetSingleton(game);
+                if (result instanceof R2Error) {
+                    if (attemptNumber >= 2) {
+                        console.log("Failed to load settings: ", JSON.stringify(result));
+                        reject(result);
+                    } else {
+                        setTimeout(() => attempt(attemptNumber + 1), 1000);
+                    }
+                } else {
+                    resolve(result);
+                }
+            }
+            attempt();
+        });
+    }
+
+    private static async tryGetSingleton(game: Game): Promise<ManagerSettings | R2Error> {
         try {
             return this.getSingleton(game);
         } catch (e) {
