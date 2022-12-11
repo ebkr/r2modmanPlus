@@ -293,6 +293,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import GameRunningModal from '../components/modals/GameRunningModal.vue';
+import debounce from 'lodash.debounce';
 
 @Component({
 		components: {
@@ -362,7 +363,11 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 		}
 
 		@Watch('thunderstoreSearchFilter')
-		onThunderstoreFilterUpdate() {
+        onThunderstoreFilterUpdate = debounce(() => {
+            this.performThunderstoreFilterUpdate();
+        }, 50);
+
+		performThunderstoreFilterUpdate() {
 			this.pageNumber = 1;
 			this.filterThunderstoreModList();
 		}
