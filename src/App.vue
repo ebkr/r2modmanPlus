@@ -98,15 +98,21 @@ export default class App extends mixins(UtilityMixin) {
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
 
-        const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
-        this.settings = settings;
+        let settings: ManagerSettings;
+
+        const settingsResult = await ManagerSettings.getSafeSingleton(riskOfRain2Game);
+        if (settingsResult instanceof R2Error) {
+            this.showError(settingsResult);
+            settings = new ManagerSettings();
+        } else {
+            settings = settingsResult;
+        }
 
         InstallationRuleApplicator.apply();
         InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
 
-            await settings.load();
             PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
             // Legacy path. Needed for migration.
             PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
