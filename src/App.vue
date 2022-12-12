@@ -1,5 +1,5 @@
 <template>
-    <div id="q-app">
+    <div>
 
         <router-view @error="showError" v-if="visible"/>
 
@@ -90,23 +90,19 @@ export default class App extends mixins(UtilityMixin) {
     }
 
     async created() {
-
         // Use as default game for settings load.
-        const riskOfRain2Game = GameManager.gameList.find(value => value.displayName === "Risk of Rain 2")!;
-        GameManager.activeGame = riskOfRain2Game;
+        GameManager.activeGame = GameManager.unsetGame();
 
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
 
-        const settings = await ManagerSettings.getSingleton(riskOfRain2Game);
+        const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         this.settings = settings;
 
         InstallationRuleApplicator.apply();
         InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
-
-            await settings.load();
             PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
             // Legacy path. Needed for migration.
             PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
@@ -130,7 +126,6 @@ export default class App extends mixins(UtilityMixin) {
             ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
                 ManagerInformation.IS_PORTABLE = isPortable;
                 LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
-                await settings.load();
                 this.visible = true;
             });
             ipcRenderer.send('get-is-portable');
