@@ -17,7 +17,7 @@
                         <router-link :to="{name: 'manager.installed'}" class="tagged-link">
                             <i class="fas fa-folder tagged-link__icon icon--margin-right" />
                             <span class="tagged-link__content">Installed</span>
-                            <span :class="getTagLinkClasses('manager.installed')">{{localModList.length}}</span>
+                            <span :class="getTagLinkClasses(['manager.installed'])">{{localModList.length}}</span>
                         </router-link>
                     </li>
                     <li>
@@ -29,7 +29,7 @@
                             <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
                                 <i class="tag fas fa-download is-primary" />
                             </router-link>
-                            <span :class="getTagLinkClasses('manager.online')">{{thunderstoreModList.length}}</span>
+                            <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModList.length}}</span>
                         </router-link>
                     </li>
                 </ul>
@@ -90,9 +90,9 @@ export default class NavigationMenu extends Vue {
         return this.$store.state.localModList || [];
     }
 
-    getTagLinkClasses(routeName: string) {
+    getTagLinkClasses(routeNames: string[]) {
         const base = ["tag", "tagged-link__tag"];
-        return this.$route.name === routeName ? base : [...base, "is-link"];
+        return routeNames.includes(this.$route.name || "") ? base : [...base, "is-link"];
     }
 
     async launch(mode: LaunchMode) {
