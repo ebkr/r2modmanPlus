@@ -10,9 +10,6 @@ describe("ExpandableCard component", () => {
             id: string,
             expandedByDefault: boolean,
             showSort: boolean,
-            manualSortUp: boolean,
-            manualSortDown: boolean,
-            darkTheme: boolean,
             enabled: boolean
         },
         slots: {
@@ -30,9 +27,6 @@ describe("ExpandableCard component", () => {
                 id: "some-id",
                 expandedByDefault: false,
                 showSort: false,
-                manualSortUp: true,
-                manualSortDown: true,
-                darkTheme: false,
                 enabled: true
             },
             slots: {

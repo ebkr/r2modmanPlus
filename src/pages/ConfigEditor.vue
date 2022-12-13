@@ -1,13 +1,7 @@
 <template>
     <div class='columns'>
         <div class="column non-selectable" :class="navbarClass">
-            <NavigationMenu view="config-editor"
-                @clicked-installed="route('installed')"
-                @clicked-online="route('online')"
-                @clicked-settings="route('settings')"
-                @clicked-help="goto('/help')"
-                @clicked-downloads="goto('/downloads')"
-            />
+            <NavigationMenu />
         </div>
         <div class="column" :class="contentClass">
             <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
@@ -46,14 +40,6 @@
 
         bindEdit(editing: ConfigFile | null) {
             this.editing = editing;
-        }
-
-        route(ref: string) {
-            this.$router.replace(`/manager?view=${ref}`);
-        }
-
-        goto(ref: string) {
-            this.$router.replace(ref);
         }
 
     }

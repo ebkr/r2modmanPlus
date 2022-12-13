@@ -134,24 +134,10 @@
 
 		<div class='columns' id='content'>
 			<div class="column non-selectable" :class="navbarClass">
-                <NavigationMenu :view="view"
-                                @clicked-installed="view = 'installed'"
-                                @clicked-online="view = 'online'"
-                                @clicked-settings="view = 'settings'"
-                                @clicked-help="openRoute('/help')"
-                                @clicked-config-editor="openRoute('/config-editor')"
-                                @clicked-downloads="openRoute('/downloads')"
-                                @error="showError($event)"
-                />
+				<NavigationMenu @error="showError" />
 			</div>
 			<div class="column" :class="contentClass">
-				<InstalledModView v-show="view === 'installed'" />
-				<OnlineModView v-show="view === 'online'" />
-				<div v-show="view === 'settings'">
-					<template>
-                        <settings-view v-on:setting-invoked="handleSettingsCallbacks($event)"/>
-					</template>
-				</div>
+				<router-view @error="showError" v-on:setting-invoked="handleSettingsCallbacks($event)" />
 			</div>
 		</div>
 	</div>
@@ -189,7 +175,6 @@ import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
-import SettingsViewProvider from '../providers/components/loaders/SettingsViewProvider';
 import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
@@ -199,8 +184,6 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import GameRunningModal from '../components/modals/GameRunningModal.vue';
-import InstalledModView from '../components/views/InstalledModView.vue';
-import OnlineModView from '../components/views/OnlineModView.vue';
 
 @Component({
 		components: {
@@ -214,9 +197,6 @@ import OnlineModView from '../components/views/OnlineModView.vue';
 			'ExpandableCard': ExpandableCard,
 			'link-component': Link,
 			'modal': Modal,
-            'settings-view': SettingsViewProvider.provider,
-            InstalledModView,
-            OnlineModView,
 		}
 	})
 	export default class Manager extends Vue {
@@ -227,7 +207,6 @@ import OnlineModView from '../components/views/OnlineModView.vue';
         @Prop({default: "is-three-quarters"})
         private contentClass!: string;
 
-		view: string = 'installed';
 		settings: ManagerSettings = new ManagerSettings();
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
@@ -449,10 +428,6 @@ import OnlineModView from '../components/views/OnlineModView.vue';
 			}
 		}
 
-		changeProfile() {
-			this.$router.push({ path: '/profiles' });
-		}
-
 		browseDataFolder() {
             LinkProvider.instance.openLink('file://' + PathResolver.ROOT);
 		}
@@ -467,8 +442,7 @@ import OnlineModView from '../components/views/OnlineModView.vue';
 			} else {
 				this.settings.collapseCards();
 			}
-			this.view = 'installed';
-			this.$forceUpdate();
+			this.$router.push({name: "manager.installed"});
 		}
 
 		async toggleDarkTheme() {
@@ -477,10 +451,6 @@ import OnlineModView from '../components/views/OnlineModView.vue';
 				this.showError(result);
 			}
 			ThemeManager.apply();
-		}
-
-		openRoute(route: string) {
-			this.$router.push(route);
 		}
 
 		isManagerUpdateAvailable() {
@@ -574,7 +544,7 @@ import OnlineModView from '../components/views/OnlineModView.vue';
                 }
                 await this.$store.dispatch("updateModList", update);
             }
-            this.view = 'installed';
+            await this.$router.push({name: "manager.installed"});
         }
 
         changeDataFolder() {
@@ -628,7 +598,7 @@ import OnlineModView from '../components/views/OnlineModView.vue';
                     this.showLaunchParameters();
                     break;
                 case "ChangeProfile":
-                    this.changeProfile();
+                    this.$router.push({name: "profiles"});
                     break;
                 case "ImportLocalMod":
                     this.importingLocalMod = true;
@@ -716,10 +686,6 @@ import OnlineModView from '../components/views/OnlineModView.vue';
 
 			this.isManagerUpdateAvailable();
 		}
-
-		mounted() {
-		    this.view = (this.$route.query.view as string) || "installed";
-        }
 	}
 
 </script>

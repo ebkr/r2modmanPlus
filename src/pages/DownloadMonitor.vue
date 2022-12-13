@@ -1,13 +1,7 @@
 <template>
     <div class='columns'>
         <div class="column non-selectable" :class="navbarClass">
-            <NavigationMenu view="online"
-                            @clicked-installed="route('installed')"
-                            @clicked-online="route('online')"
-                            @clicked-settings="route('settings')"
-                            @clicked-config-editor="goto('/config-editor')"
-                            @clicked-help="goto('/help')"
-            />
+            <NavigationMenu />
         </div>
         <div class="column" :class="contentClass">
             <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="is-info"/>
@@ -16,7 +10,8 @@
                     <div class="margin-right">
                         <br/>
                         <h3 class='title is-4'>You don't have anything downloading.</h3>
-                        <h4 class='subtitle is-5'>Click <a @click="route('online')">here</a> to download something.
+                        <h4 class='subtitle is-5'>
+                            Click <a @click="$router.push({name: 'manager.online'})">here</a> to download something.
                         </h4>
                     </div>
                 </div>
@@ -76,14 +71,6 @@ export default class DownloadMonitor extends Vue {
 
     private refreshInterval!: Timeout;
     private activeDownloads: [number, any][] = [];
-
-    route(ref: string) {
-        this.$router.replace(`/manager?view=${ref}`);
-    }
-
-    goto(ref: string) {
-        this.$router.replace(ref);
-    }
 
     created() {
         this.activeDownloads = [...DownloadModModal.allVersions].reverse();

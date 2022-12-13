@@ -123,9 +123,6 @@
                 :description="key.description"
                 :funkyMode="funkyMode"
                 :showSort="canShowSortIcons()"
-                :manualSortUp="index > 0"
-                :manualSortDown="index < searchableModList.length - 1"
-                :darkTheme="darkTheme"
                 :expandedByDefault="cardExpanded"
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
@@ -233,7 +230,6 @@ import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
 import DonateButton from '../../components/buttons/DonateButton.vue';
-import Timeout = NodeJS.Timeout;
 
 @Component({
         components: {
@@ -250,14 +246,7 @@ import Timeout = NodeJS.Timeout;
         settings: ManagerSettings = new ManagerSettings();
 
         private cardExpanded: boolean = false;
-        private darkTheme: boolean = false;
         private funkyMode: boolean = false;
-
-        private updatedSettings() {
-            this.cardExpanded = this.settings.getContext().global.expandedCards;
-            this.darkTheme = this.settings.getContext().global.darkTheme;
-            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-        }
 
         get modifiableModList(): ManifestV2[] {
             return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
@@ -282,7 +271,6 @@ import Timeout = NodeJS.Timeout;
 
         // Context
         private contextProfile: Profile | null = null;
-        private settingsUpdateTimer: Timeout | null = null;
 
         get draggableList() {
             return [...this.searchableModList]
@@ -631,19 +619,9 @@ import Timeout = NodeJS.Timeout;
             this.settings = await ManagerSettings.getSingleton(this.activeGame);
             this.contextProfile = Profile.getActiveProfile();
             this.filterModList();
-            if (this.settingsUpdateTimer !== null) {
-                clearInterval(this.settingsUpdateTimer);
-            }
-            this.settingsUpdateTimer = setInterval(async () => {
-                this.updatedSettings();
-            }, 100);
-        }
 
-        destroyed() {
-            if (this.settingsUpdateTimer !== null) {
-                clearInterval(this.settingsUpdateTimer);
-                this.settingsUpdateTimer = null;
-            }
+            this.cardExpanded = this.settings.getContext().global.expandedCards;
+            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
 
         emitError(error: R2Error) {
