@@ -9,6 +9,8 @@ import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
+export const SETTINGS_DB_NAME = "settings";
+
 export default class SettingsDexieStore extends Dexie {
 
     global: Dexie.Table<SettingsInterface, number>;
@@ -16,7 +18,7 @@ export default class SettingsDexieStore extends Dexie {
     activeGame: Game;
 
     constructor(game: Game) {
-        super(`settings`);
+        super(SETTINGS_DB_NAME);
         this.version(1).stores({
             value: `++id,settings`,
         });
