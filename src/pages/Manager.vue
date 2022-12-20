@@ -132,21 +132,15 @@
         <DownloadModModal @error="showError($event)" />
         <GameRunningModal :activeGame="activeGame" />
 
-		<div class='columns' id='content'>
-			<div class="column non-selectable" :class="navbarClass">
-				<NavigationMenu @error="showError" />
-			</div>
-			<div class="column" :class="contentClass">
-				<router-view @error="showError" v-on:setting-invoked="handleSettingsCallbacks($event)" />
-			</div>
-		</div>
-	</div>
+        <router-view name="subview"
+                     @error="showError"
+                     v-on:setting-invoked="handleSettingsCallbacks($event)" />
+    </div>
 </template>
 
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
 import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -175,7 +169,6 @@ import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
-import NavigationMenuProvider from '../providers/components/loaders/NavigationMenuProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
@@ -188,7 +181,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 @Component({
 		components: {
             LocalFileImportModal,
-            NavigationMenu: NavigationMenuProvider.provider,
             CategoryFilterModal,
             DownloadModModal,
             GameRunningModal,
@@ -200,13 +192,6 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 		}
 	})
 	export default class Manager extends Vue {
-
-	    @Prop({default: "is-one-quarter"})
-        private navbarClass!: string;
-
-        @Prop({default: "is-three-quarters"})
-        private contentClass!: string;
-
 		settings: ManagerSettings = new ManagerSettings();
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;

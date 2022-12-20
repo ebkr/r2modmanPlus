@@ -15,7 +15,7 @@ const routes: RouteConfig[] = [
     },
     {
         name: 'splash',
-        path: '/splash',
+        path: '/splash/',
         component: () => import('pages/Splash.vue'),
         meta: {
             title: () => appTitle
@@ -23,7 +23,7 @@ const routes: RouteConfig[] = [
     },
     {
         name: 'linux',
-        path: '/linux-native-game-setup',
+        path: '/linux-native-game-setup/',
         component: () => import('pages/LinuxNativeGameSetup.vue'),
         meta: {
             title: () => ManagerInformation.APP_NAME
@@ -31,70 +31,85 @@ const routes: RouteConfig[] = [
     },
     {
         name: 'profiles',
-        path: '/profiles',
+        path: '/profiles/',
         component: () => import('pages/Profiles.vue'),
         meta: {
             title: () => appTitle
         }
     },
     {
-        name: 'manager',
-        path: '/manager/',
-        component: () => import('pages/Manager.vue'),
+        path: '/',
+        component: () => import('components/navigation/NavigationLayout.vue'),
         meta: {
-            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+            title: () => appTitle
         },
         children: [
             {
-                name: 'manager.installed',
-                path: 'installed/',
-                alias: '',
-                component: () => import('components/views/InstalledModView.vue'),
+                name: 'manager',
+                path: 'manager/',
+                component: () => import('pages/Manager.vue'),
+                meta: {
+                    title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+                },
+                children: [
+                    {
+                        name: 'manager.installed',
+                        path: 'installed/',
+                        alias: '',
+                        components: {
+                            subview: () => import('components/views/InstalledModView.vue')
+                        },
+                        meta: {
+                            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+                        },
+                    },
+                    {
+                        name: 'manager.online',
+                        path: 'online/',
+                        components: {
+                            subview: () => import('components/views/OnlineModView.vue')
+                        },
+                        meta: {
+                            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+                        },
+                    },
+                    {
+                        name: 'manager.settings',
+                        path: 'settings/',
+                        components: {
+                            subview: () => import('components/settings-components/SettingsView.vue')
+                        },
+                        meta: {
+                            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
+                        }
+                    }
+                ]
+            },
+            {
+                name: 'config-editor',
+                path: 'config-editor/',
+                component: () => import('pages/ConfigEditor.vue'),
                 meta: {
                     title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
                 }
             },
             {
-                name: 'manager.online',
-                path: 'online/',
-                component: () => import('components/views/OnlineModView.vue'),
+                name: 'help',
+                path: 'help/',
+                component: () => import('pages/Help.vue'),
                 meta: {
                     title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
                 }
             },
             {
-                name: 'manager.settings',
-                path: 'settings/',
-                component: () => import('components/settings-components/SettingsView.vue'),
+                name: 'downloads',
+                path: 'downloads/',
+                component: () => import('pages/DownloadMonitor.vue'),
                 meta: {
                     title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
                 }
             }
         ]
-    },
-    {
-        name: 'config-editor',
-        path: '/config-editor',
-        component: () => import('pages/ConfigEditor.vue'),
-        meta: {
-            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
-        }
-    },
-    {
-        name: 'help',
-        path: '/help',
-        component: () => import('pages/Help.vue'),
-        meta: {
-            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
-        }
-    },
-    {
-        name: 'downloads',
-        path: '/downloads',
-        component: () => import('pages/DownloadMonitor.vue'),
-        meta: {
-            title: () => `${appTitle} - ${Profile.getActiveProfile().getProfileName()}`
-        }
     }
 ];
 
