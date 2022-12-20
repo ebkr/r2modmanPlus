@@ -136,6 +136,7 @@ export default class OnlineModView extends Vue {
     @Watch("$store.state.modFilters.allowNsfw")
     @Watch("$store.state.modFilters.categoryFilterMode")
     @Watch("$store.state.modFilters.selectedCategories")
+    @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
         const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
