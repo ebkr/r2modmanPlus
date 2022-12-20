@@ -1,6 +1,6 @@
 <template>
     <div id="q-app">
-        <SettingsLoader :logError="logError">
+        <SettingsLoader :logError="logError" :openLink="openLink">
             <App />
         </SettingsLoader>
     </div>
@@ -13,6 +13,7 @@ import { Component } from "vue-property-decorator";
 import App from "./App.vue";
 import SettingsLoader from "./components/SettingsLoader.vue";
 import R2Error from "./model/errors/R2Error";
+import LinkImpl from './r2mm/component_override/LinkImpl';
 
 @Component({
     components: {App, SettingsLoader}
@@ -20,6 +21,10 @@ import R2Error from "./model/errors/R2Error";
 export default class AppWrapper extends Vue {
     logError(error: R2Error) {
         console.error(error.name, error.message, error.stack);
+    }
+
+    openLink(url: string) {
+        new LinkImpl().openLink(url);
     }
 }
 </script>

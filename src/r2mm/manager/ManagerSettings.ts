@@ -27,6 +27,10 @@ export default class ManagerSettings {
         return this.LOADED_SETTINGS;
     }
 
+    public static discardSingleton() {
+        this.LOADED_SETTINGS = undefined;
+    }
+
     /**
      * Reset the default game selection before redirecting the user to
      * game selection screen. Otherwise the game would be automatically
