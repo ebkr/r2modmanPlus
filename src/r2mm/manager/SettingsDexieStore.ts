@@ -87,12 +87,16 @@ export default class SettingsDexieStore extends Dexie {
     }
 
     public async getLatest(): Promise<ManagerSettingsInterfaceHolder> {
-        const latestGlobal = await this.getLatestGlobal();
-        const latestGameSpecific = await this.getLatestGameSpecific();
-        return {
-            global: latestGlobal,
-            gameSpecific: latestGameSpecific
+        const get = async () => {
+            const latestGlobal = await this.getLatestGlobal();
+            const latestGameSpecific = await this.getLatestGameSpecific();
+            return {
+                global: latestGlobal,
+                gameSpecific: latestGameSpecific
+            };
         };
+
+        return await this.transaction("rw!", this.global, this.gameSpecific, get);
     }
 
     private createNewSettingsInstance(): ManagerSettingsInterfaceHolder {
@@ -125,16 +129,20 @@ export default class SettingsDexieStore extends Dexie {
     }
 
     public async save(holder: ManagerSettingsInterfaceHolder) {
-        await this.global.toArray().then(async result => {
-            for (let settingsInterface of result) {
-                await this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
-            }
-        });
-        await this.gameSpecific.toArray().then(async result => {
-            for (let settingsInterface of result) {
-                await this.gameSpecific.update(settingsInterface.id!, {settings: JSON.stringify(holder.gameSpecific)});
-            }
-        });
+        const update = async () => {
+            await this.global.toArray().then(async result => {
+                for (let settingsInterface of result) {
+                    await this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
+                }
+            });
+            await this.gameSpecific.toArray().then(async result => {
+                for (let settingsInterface of result) {
+                    await this.gameSpecific.update(settingsInterface.id!, {settings: JSON.stringify(holder.gameSpecific)});
+                }
+            });
+        }
+
+        await this.transaction("rw!", this.global, this.gameSpecific, update);
     }
 
     private mapLegacyToV2(itf: ManagerSettingsInterface_Legacy, game: Game): ManagerSettingsInterfaceHolder {
