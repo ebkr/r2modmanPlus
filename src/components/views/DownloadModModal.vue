@@ -411,9 +411,12 @@ let assignId = 0;
                     }
                     if (olderInstallOfMod !== undefined) {
                         if (!olderInstallOfMod.isEnabled()) {
-                            await ProfileModList.updateMod(manifestMod, profile, async mod => {
+                            const updateError = await ProfileModList.updateMod(manifestMod, profile, async mod => {
                                 mod.disable();
                             });
+                            if (updateError instanceof R2Error) {
+                                return reject(updateError);
+                            }
                             await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
                         }
                     }
