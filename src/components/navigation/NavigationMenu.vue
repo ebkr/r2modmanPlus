@@ -17,7 +17,7 @@
                         <router-link :to="{name: 'manager.installed'}" class="tagged-link">
                             <i class="fas fa-folder tagged-link__icon icon--margin-right" />
                             <span class="tagged-link__content">Installed</span>
-                            <span :class="getTagLinkClasses(['manager.installed'])">{{localModList.length}}</span>
+                            <span :class="getTagLinkClasses(['manager.installed'])">{{localModCount}}</span>
                         </router-link>
                     </li>
                     <li>
@@ -29,7 +29,7 @@
                             <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
                                 <i class="tag fas fa-download is-primary" />
                             </router-link>
-                            <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModList.length}}</span>
+                            <span :class="getTagLinkClasses(['manager.online', 'downloads'])">{{thunderstoreModCount}}</span>
                         </router-link>
                     </li>
                 </ul>
@@ -64,10 +64,10 @@
 
 import { Component, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
-import ManifestV2 from '../../model/ManifestV2';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 import {
     LaunchMode,
     launch,
@@ -82,12 +82,16 @@ export default class NavigationMenu extends Vue {
     private contextProfile: Profile | null = null;
     private LaunchMode = LaunchMode;
 
-    get thunderstoreModList() {
-        return this.$store.state.thunderstoreModList || [];
+    get thunderstoreModCount() {
+        let mods: ThunderstoreMod[] = this.$store.state.thunderstoreModList || [];
+
+        return this.$store.state.modFilters.showDeprecatedPackages
+          ? mods.length
+          : mods.filter((m) => !m.isDeprecated()).length;
     }
 
-    get localModList(): ManifestV2[] {
-        return this.$store.state.localModList || [];
+    get localModCount(): number {
+        return (this.$store.state.localModList || []).length;
     }
 
     getTagLinkClasses(routeNames: string[]) {
