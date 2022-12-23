@@ -431,10 +431,7 @@ import GameRunningModal from '../components/modals/GameRunningModal.vue';
 		}
 
 		async toggleDarkTheme() {
-			const result: R2Error | void = await this.settings.toggleDarkTheme();
-			if (result instanceof R2Error) {
-				this.showError(result);
-			}
+			await this.settings.toggleDarkTheme();
 			ThemeManager.apply();
 		}
 

@@ -27,10 +27,7 @@ export const linkProfileFiles = async (game: Game, profile: Profile): Promise<vo
         throw newLinkedFiles;
     }
 
-    const saveError = await settings.setLinkedFiles(newLinkedFiles);
-    if (saveError instanceof R2Error) {
-        throw saveError;
-    }
+    await settings.setLinkedFiles(newLinkedFiles);
 };
 
 export const setGameDirIfUnset = async (game: Game): Promise<void> => {
@@ -43,10 +40,7 @@ export const setGameDirIfUnset = async (game: Game): Promise<void> => {
             throw dir;
         }
 
-        const setDirError = await settings.setGameDirectory(dir);
-        if (setDirError instanceof R2Error) {
-            throw setDirError;
-        }
+        await settings.setGameDirectory(dir);
     }
 };
 
