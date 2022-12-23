@@ -88,3 +88,10 @@
         }
     }
 </script>
+
+
+<style lang="scss" scoped>
+.card-header-title {
+    word-break: break-all;
+}
+</style>
