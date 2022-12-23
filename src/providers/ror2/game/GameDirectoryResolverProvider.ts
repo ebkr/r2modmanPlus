@@ -12,7 +12,7 @@ export default abstract class GameDirectoryResolverProvider {
 
     public static get instance(): GameDirectoryResolverProvider {
         if (GameDirectoryResolverProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError('GameDirectoryResolverProvider');
+            ProviderUtils.throwNotProvidedError('GameDirectoryResolverProvider');
         }
         return GameDirectoryResolverProvider.provider();
     }

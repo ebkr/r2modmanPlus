@@ -13,7 +13,7 @@ export default abstract class ConflictManagementProvider {
 
     public static get instance(): ConflictManagementProvider {
         if (ConflictManagementProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ConflictManagementProvider");
+            ProviderUtils.throwNotProvidedError("ConflictManagementProvider");
         }
         return ConflictManagementProvider.provider();
     }

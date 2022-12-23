@@ -14,7 +14,7 @@ export default abstract class ProfileInstallerProvider {
 
     public static get instance(): ProfileInstallerProvider {
         if (ProfileInstallerProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError('ProfileInstallerProvider');
+            ProviderUtils.throwNotProvidedError('ProfileInstallerProvider');
         }
         return ProfileInstallerProvider.provider();
     }
