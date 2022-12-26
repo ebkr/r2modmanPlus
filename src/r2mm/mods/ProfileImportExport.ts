@@ -4,8 +4,6 @@ import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
 
-let fs: FsProvider
-
 const IMPORT_CACHE_DIRNAME = "_import_cache";
 const PROFILE_DATA_PREFIX = "#r2modman";
 
@@ -36,6 +34,7 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
         throw new Error("Invalid profile data");
     }
 
+    const fs = FsProvider.instance;
     const b64 = profileData.substring(PROFILE_DATA_PREFIX.length).trim();
     const decoded = Buffer.from(b64, "base64");
     const destination = await getDownloadDestination();
