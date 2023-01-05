@@ -68,63 +68,63 @@ export default class ManagerSettings {
     }
 
 
-    private async save(): Promise<void> {
+    private async save() {
         await ManagerSettings.DEXIE_STORE.save(ManagerSettings.CONTEXT);
     }
 
-    public async setGameDirectory(dir: string): Promise<R2Error | void> {
+    public async setGameDirectory(dir: string) {
         ManagerSettings.CONTEXT.gameSpecific.gameDirectory = dir;
-        return await this.save();
+        await this.save();
     }
 
-    public async setSteamDirectory(dir: string): Promise<R2Error | void> {
+    public async setSteamDirectory(dir: string) {
         ManagerSettings.CONTEXT.global.steamDirectory = dir;
-        return await this.save();
+        await this.save();
     }
 
-    public async setLinkedFiles(linkedFiles: string[]): Promise<R2Error | void> {
+    public async setLinkedFiles(linkedFiles: string[]) {
         ManagerSettings.CONTEXT.gameSpecific.linkedFiles = linkedFiles;
-        return await this.save();
+        await this.save();
     }
 
-    public async setProfile(profile: string): Promise<R2Error | void> {
+    public async setProfile(profile: string) {
         ManagerSettings.CONTEXT.gameSpecific.lastSelectedProfile = profile;
-        return await this.save();
+        await this.save();
     }
 
-    public async setFunkyMode(enabled: boolean): Promise<R2Error | void> {
+    public async setFunkyMode(enabled: boolean) {
         ManagerSettings.CONTEXT.global.funkyModeEnabled = enabled;
-        return await this.save();
+        await this.save();
     }
 
-    public async expandCards(): Promise<R2Error | void> {
+    public async expandCards() {
         ManagerSettings.CONTEXT.global.expandedCards = true;
-        return await this.save();
+        await this.save();
     }
 
-    public async collapseCards(): Promise<R2Error | void> {
+    public async collapseCards() {
         ManagerSettings.CONTEXT.global.expandedCards = false;
-        return await this.save();
+        await this.save();
     }
 
-    public async toggleDarkTheme(): Promise<R2Error | void> {
+    public async toggleDarkTheme() {
         ManagerSettings.CONTEXT.global.darkTheme = !ManagerSettings.CONTEXT.global.darkTheme;
-        return await this.save();
+        await this.save();
     }
 
-    public async setLaunchParameters(launchParams: string): Promise<R2Error | void> {
+    public async setLaunchParameters(launchParams: string) {
         ManagerSettings.CONTEXT.gameSpecific.launchParameters = launchParams;
-        return await this.save();
+        await this.save();
     }
 
-    public async setIgnoreCache(ignore: boolean): Promise<R2Error | void> {
+    public async setIgnoreCache(ignore: boolean) {
         ManagerSettings.CONTEXT.global.ignoreCache = ignore;
-        return await this.save();
+        await this.save();
     }
 
-    public async setDataDirectory(dataDirectory: string): Promise<R2Error | void> {
+    public async setDataDirectory(dataDirectory: string) {
         ManagerSettings.CONTEXT.global.dataDirectory = dataDirectory;
-        return await this.save();
+        await this.save();
     }
 
     public getInstalledSortBy() {
@@ -136,9 +136,9 @@ export default class ManagerSettings {
         }
     }
 
-    public async setInstalledSortBy(sortNaming: string): Promise<R2Error | void> {
+    public async setInstalledSortBy(sortNaming: string) {
         ManagerSettings.CONTEXT.gameSpecific.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
-        return await this.save();
+        await this.save();
     }
 
     public getInstalledSortDirection() {
@@ -150,9 +150,9 @@ export default class ManagerSettings {
         }
     }
 
-    public async setInstalledSortDirection(sortDirection: string): Promise<R2Error | void> {
+    public async setInstalledSortDirection(sortDirection: string) {
         ManagerSettings.CONTEXT.gameSpecific.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
-        return await this.save();
+        await this.save();
     }
 
     public getInstalledDisablePosition() {
@@ -164,19 +164,19 @@ export default class ManagerSettings {
         }
     }
 
-    public async setInstalledDisablePosition(disablePosition: string): Promise<R2Error | void> {
+    public async setInstalledDisablePosition(disablePosition: string) {
         ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
-        return await this.save();
+        await this.save();
     }
 
     public async setLastSelectedGame(game: Game) {
         ManagerSettings.CONTEXT.global.lastSelectedGame = game.internalFolderName;
-        return await this.save();
+        await this.save();
     }
 
     public async setFavouriteGames(favourites: string[]) {
         ManagerSettings.CONTEXT.global.favouriteGames = favourites;
-        return await this.save();
+        await this.save();
     }
 
     public async setDefaultGame(defaultGame: Game | undefined) {
@@ -185,7 +185,7 @@ export default class ManagerSettings {
         } else {
             ManagerSettings.CONTEXT.global.defaultGame = defaultGame.internalFolderName;
         }
-        return await this.save();
+        await this.save();
     }
 
     public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
@@ -195,6 +195,6 @@ export default class ManagerSettings {
 
     public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
         ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
-        return await this.save();
+        await this.save();
     }
 }
