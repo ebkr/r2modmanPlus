@@ -13,7 +13,7 @@ export default abstract class ConnectionProvider {
 
     public static get instance(): ConnectionProvider {
         if (ConnectionProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ConnectionProvider");
+            ProviderUtils.throwNotProvidedError("ConnectionProvider");
         }
         return ConnectionProvider.provider();
     }

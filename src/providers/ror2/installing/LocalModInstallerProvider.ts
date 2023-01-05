@@ -12,7 +12,7 @@ export default abstract class LocalModInstallerProvider {
 
     public static get instance(): LocalModInstallerProvider {
         if (LocalModInstallerProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("LocalModInstallerProvider");
+            ProviderUtils.throwNotProvidedError("LocalModInstallerProvider");
         }
         return LocalModInstallerProvider.provider();
     }

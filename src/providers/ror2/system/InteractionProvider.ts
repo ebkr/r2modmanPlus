@@ -10,7 +10,7 @@ export default abstract class InteractionProvider {
 
     public static get instance(): InteractionProvider {
         if (InteractionProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError('InteractionProvider');
+            ProviderUtils.throwNotProvidedError('InteractionProvider');
         }
         return InteractionProvider.provider();
     }

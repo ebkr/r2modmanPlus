@@ -18,7 +18,7 @@ export default abstract class ThunderstoreDownloaderProvider {
 
     public static get instance(): ThunderstoreDownloaderProvider {
         if (ThunderstoreDownloaderProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ThunderstoreDownloaderProvider");
+            ProviderUtils.throwNotProvidedError("ThunderstoreDownloaderProvider");
         }
         return ThunderstoreDownloaderProvider.provider();
     }
