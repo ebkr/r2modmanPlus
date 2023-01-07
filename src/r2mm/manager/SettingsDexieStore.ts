@@ -9,6 +9,8 @@ import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
+export const SETTINGS_DB_NAME = "settings";
+
 export default class SettingsDexieStore extends Dexie {
 
     global: Dexie.Table<SettingsInterface, number>;
@@ -16,7 +18,7 @@ export default class SettingsDexieStore extends Dexie {
     activeGame: Game;
 
     constructor(game: Game) {
-        super(`settings`);
+        super(SETTINGS_DB_NAME);
         this.version(1).stores({
             value: `++id,settings`,
         });
@@ -40,7 +42,7 @@ export default class SettingsDexieStore extends Dexie {
     }
 
     public async getLatestGlobal(): Promise<ManagerSettingsInterfaceGlobal_V2> {
-        return this.global.toArray().then(result => {
+        return this.global.toArray().then(async result => {
             if (result.length > 0) {
                 const globalEntry = result[result.length - 1];
                 const parsed = JSON.parse(globalEntry.settings);
@@ -50,22 +52,22 @@ export default class SettingsDexieStore extends Dexie {
                 } else {
                     // Is legacy.
                     const legacyToV2 = this.mapLegacyToV2(parsed, this.activeGame);
-                    this.global.put({ settings: JSON.stringify(legacyToV2.global) });
-                    this.gameSpecific.put({ settings: JSON.stringify(legacyToV2.gameSpecific) });
+                    await this.global.put({ settings: JSON.stringify(legacyToV2.global) });
+                    await this.gameSpecific.put({ settings: JSON.stringify(legacyToV2.gameSpecific) });
                     return legacyToV2.global;
                 }
             } else {
                 ManagerSettings.NEEDS_MIGRATION = true;
                 const obj = this.createNewSettingsInstance();
-                this.global.put({ settings: JSON.stringify(obj.global) });
-                this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
+                await this.global.put({ settings: JSON.stringify(obj.global) });
+                await this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
                 return obj.global;
             }
         });
     }
 
     public async getLatestGameSpecific(): Promise<ManagerSettingsInterfaceGame_V2> {
-        return this.gameSpecific.toArray().then(result => {
+        return this.gameSpecific.toArray().then(async result => {
             if (result.length > 0) {
                 const globalEntry = result[result.length - 1];
                 const parsed = JSON.parse(globalEntry.settings);
@@ -78,19 +80,23 @@ export default class SettingsDexieStore extends Dexie {
                 }
             } else {
                 const obj = this.createNewSettingsInstance();
-                this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
+                await this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
                 return obj.gameSpecific;
             }
         });
     }
 
     public async getLatest(): Promise<ManagerSettingsInterfaceHolder> {
-        const latestGlobal = await this.getLatestGlobal();
-        const latestGameSpecific = await this.getLatestGameSpecific();
-        return {
-            global: latestGlobal,
-            gameSpecific: latestGameSpecific
+        const get = async () => {
+            const latestGlobal = await this.getLatestGlobal();
+            const latestGameSpecific = await this.getLatestGameSpecific();
+            return {
+                global: latestGlobal,
+                gameSpecific: latestGameSpecific
+            };
         };
+
+        return await this.transaction("rw!", this.global, this.gameSpecific, get);
     }
 
     private createNewSettingsInstance(): ManagerSettingsInterfaceHolder {
@@ -123,16 +129,20 @@ export default class SettingsDexieStore extends Dexie {
     }
 
     public async save(holder: ManagerSettingsInterfaceHolder) {
-        await this.global.toArray().then(result => {
-            for (let settingsInterface of result) {
-                this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
-            }
-        });
-        await this.gameSpecific.toArray().then(result => {
-            for (let settingsInterface of result) {
-                this.gameSpecific.update(settingsInterface.id!, {settings: JSON.stringify(holder.gameSpecific)});
-            }
-        });
+        const update = async () => {
+            await this.global.toArray().then(async result => {
+                for (let settingsInterface of result) {
+                    await this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
+                }
+            });
+            await this.gameSpecific.toArray().then(async result => {
+                for (let settingsInterface of result) {
+                    await this.gameSpecific.update(settingsInterface.id!, {settings: JSON.stringify(holder.gameSpecific)});
+                }
+            });
+        }
+
+        await this.transaction("rw!", this.global, this.gameSpecific, update);
     }
 
     private mapLegacyToV2(itf: ManagerSettingsInterface_Legacy, game: Game): ManagerSettingsInterfaceHolder {

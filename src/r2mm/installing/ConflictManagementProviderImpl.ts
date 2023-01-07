@@ -98,7 +98,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         } as StateTracker));
     }
 
-    public async isFileActive(mod: ManifestV2, profile: Profile, file: string): Promise<R2Error | boolean> {
+    public async isFileActive(mod: ManifestV2, profile: Profile, file: string) {
         const state = await this.getTotalState(profile);
         for (const [stateFile, stateMod] of state.currentState) {
             if (stateFile === file) {

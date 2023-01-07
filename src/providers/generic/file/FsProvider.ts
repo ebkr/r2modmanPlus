@@ -10,7 +10,7 @@ export default abstract class FsProvider {
 
     public static get instance(): FsProvider {
         if (FsProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("FsProvider");
+            ProviderUtils.throwNotProvidedError("FsProvider");
         }
         return FsProvider.provider();
     }

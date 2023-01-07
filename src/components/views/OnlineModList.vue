@@ -1,20 +1,11 @@
 <template>
     <div>
-        <DownloadModModal
-            :show-download-modal="modToDownload !== null"
-            :thunderstore-mod="modToDownload"
-            :update-all-mods="false"
-            @closed-modal="modToDownload = null;"
-            @error="emitError($event)"
-        />
-
         <ExpandableCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="key.getVersions()[0].getIcon()"
             :id="index"
             :description="key.getVersions()[0].getDescription()"
             :funkyMode="funkyMode"
-            :darkTheme="darkTheme"
             :expandedByDefault="cardExpanded">
             <template v-slot:title>
                 <span v-if="key.isPinned()" class='has-tooltip-left'
@@ -72,13 +63,13 @@
 import { Prop, Vue } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import GameManager from '../../model/game/GameManager';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import DonateButton from '../../components/buttons/DonateButton.vue';
-import Timeout = NodeJS.Timeout;
 
 @Component({
     components: {
@@ -93,22 +84,10 @@ export default class OnlineModList extends Vue {
     @Prop()
     pagedModList!: ThunderstoreMod[];
 
-    @Prop({required: true})
-    private settings!: ManagerSettings;
+    settings: ManagerSettings = new ManagerSettings();
 
     private cardExpanded: boolean = false;
-    private darkTheme: boolean = false;
     private funkyMode: boolean = false;
-
-    private settingsUpdateTimer: Timeout | null = null;
-
-    private modToDownload: ThunderstoreMod | null = null;
-
-    private updatedSettings() {
-        this.cardExpanded = this.settings.getContext().global.expandedCards;
-        this.darkTheme = this.settings.getContext().global.darkTheme;
-        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-    }
 
     get localModList(): ManifestV2[] {
         return this.$store.state.localModList;
@@ -129,7 +108,8 @@ export default class OnlineModList extends Vue {
     }
 
     showDownloadModal(mod: any) {
-        this.modToDownload = new ThunderstoreMod().fromReactive(mod);
+        const modToDownload = new ThunderstoreMod().fromReactive(mod);
+        this.$store.commit("openDownloadModModal", modToDownload);
     }
 
     getReadableDate(date: Date): string {
@@ -146,20 +126,10 @@ export default class OnlineModList extends Vue {
         this.$emit('error', error);
     }
 
-    created() {
-        if (this.settingsUpdateTimer !== null) {
-            clearInterval(this.settingsUpdateTimer);
-        }
-        this.settingsUpdateTimer = setInterval(async () => {
-            this.updatedSettings();
-        }, 100);
-    }
-
-    destroyed() {
-        if (this.settingsUpdateTimer !== null) {
-            clearInterval(this.settingsUpdateTimer);
-            this.settingsUpdateTimer = null;
-        }
+    async created() {
+        this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
+        this.cardExpanded = this.settings.getContext().global.expandedCards;
+        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
     }
 
 }

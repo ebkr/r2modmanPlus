@@ -1,12 +1,8 @@
 import Axios, { AxiosResponse } from 'axios';
 import R2Error from '../../model/errors/R2Error';
 
-const getProfileUrl = (profileImportCode: string, fallback: boolean = false): string => {
-    if (!fallback) {
-        return `https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`;
-    } else {
-        return `https://r2modman-hastebin.herokuapp.com/raw/${profileImportCode}`;
-    }
+const getProfileUrl = (profileImportCode: string): string => {
+    return `https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`;
 }
 
 async function createProfile(payload: string): Promise<AxiosResponse<{ key: string }>> {
@@ -44,14 +40,7 @@ async function createProfile(payload: string): Promise<AxiosResponse<{ key: stri
 }
 
 async function getProfile(profileImportCode: string): Promise<AxiosResponse<string>> {
-    try {
-        return await Axios.get(getProfileUrl(profileImportCode));
-    } catch (e: any) {
-        if (!Axios.isAxiosError(e) || !e.response || e.response.status !== 404) {
-            throw e;
-        }
-        return await Axios.get(getProfileUrl(profileImportCode, true));
-    }
+    return await Axios.get(getProfileUrl(profileImportCode));
 }
 
 export const ProfileApiClient = {

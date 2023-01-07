@@ -64,15 +64,6 @@
         @Prop({default: false})
         showSort: boolean | undefined;
 
-        @Prop({default: false})
-        manualSortUp: boolean | undefined;
-
-        @Prop({default: false})
-        manualSortDown: boolean | undefined;
-
-        @Prop({default: false})
-        darkTheme: boolean | undefined;
-
         @Prop({default: true})
         enabled: boolean | undefined;
 
@@ -97,3 +88,10 @@
         }
     }
 </script>
+
+
+<style lang="scss" scoped>
+.card-header-title {
+    word-break: break-all;
+}
+</style>

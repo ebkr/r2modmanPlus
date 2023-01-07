@@ -13,7 +13,7 @@ export default abstract class ConflictManagementProvider {
 
     public static get instance(): ConflictManagementProvider {
         if (ConflictManagementProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ConflictManagementProvider");
+            ProviderUtils.throwNotProvidedError("ConflictManagementProvider");
         }
         return ConflictManagementProvider.provider();
     }
@@ -22,7 +22,7 @@ export default abstract class ConflictManagementProvider {
 
     public abstract overrideInstalledState(mod: ManifestV2, profile: Profile): Promise<R2Error | void>;
 
-    public abstract isFileActive(mod: ManifestV2, profile: Profile, file: string): Promise<R2Error | boolean>;
+    public abstract isFileActive(mod: ManifestV2, profile: Profile, file: string): Promise<boolean>;
 
 }
 

@@ -10,7 +10,7 @@ export default abstract class LoggerProvider {
 
     public static get instance(): LoggerProvider {
         if (LoggerProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError('LoggerProvider');
+            ProviderUtils.throwNotProvidedError('LoggerProvider');
         }
         return LoggerProvider.provider();
     }

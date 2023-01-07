@@ -13,7 +13,7 @@ import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+    public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void) {
         const result: Buffer | null = await ZipProvider.instance.readFile(zipFile,'manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
@@ -43,7 +43,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         }
     }
 
-    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void> {
+    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
         const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
         await this.initialiseCacheDirectory(manifest);
         await ZipExtract.extractOnly(
@@ -78,7 +78,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         );
     }
 
-    public async placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void): Promise<R2Error | void> {
+    public async placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
         try {
             const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
             await this.initialiseCacheDirectory(manifest);

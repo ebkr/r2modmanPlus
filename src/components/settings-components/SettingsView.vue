@@ -334,7 +334,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'fa-gamepad',
                 async () => {
                     await ManagerSettings.resetDefaults();
-                    await this.$router.push("/");
+                    await this.$router.push({name: 'index'});
                 }
             ),
             new SettingsRow(

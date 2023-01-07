@@ -69,6 +69,15 @@ From small features such as always-expanded cards, all the way to larger feature
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
 
 ## Changelog
+### 3.1.35
+- Improved online search performance
+- Config names wrap if too long
+- Deprecated mods are hidden by default in the online section
+  - Deprecated mods can be made visible in the filters modal within the online section
+- Potential fix for blank game selection screen
+- Added support for .npc files in Hard Bullet
+- Internal refactoring
+
 ### 3.1.34
 - Profile exports changed to use Thunderstore provided host
 - Significantly improved search performance in the online tab
@@ -89,18 +98,6 @@ The only thing you have to consider when suggesting a feature is the impact it w
 - Other improvements thanks to the Thunderstore team:
   - Game can now be changed without an app restart
   - Internal refactors and improvements
-
-### 3.1.32
-- Re-added win 7 support
-- Added games:
-  - Green Hell VR
-  - VTOL VR
-  - 20 Minutes Till Dawn
-  - Backpack Hero
-  - Stacklands
-  - Enter the Gungeon
-- Fixed BepInEx doorstop assembly
-- Other small fixes
 
 ## Screenshots
 
