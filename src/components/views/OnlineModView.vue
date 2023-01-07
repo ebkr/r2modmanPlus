@@ -72,16 +72,17 @@
 </template>
 
 <script lang="ts">
-import Component from "vue-class-component";
-import { Vue, Watch } from "vue-property-decorator";
+import Component from 'vue-class-component';
+import { Vue, Watch } from 'vue-property-decorator';
 
-import CategoryFilterMode from "../../model/enums/CategoryFilterMode";
-import SortingDirection from "../../model/enums/SortingDirection";
-import SortingStyle from "../../model/enums/SortingStyle";
-import ManifestV2 from "../../model/ManifestV2";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
-import OnlineModListProvider from "../../providers/components/loaders/OnlineModListProvider";
-import ArrayUtils from "../../utils/ArrayUtils";
+import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
+import SortingDirection from '../../model/enums/SortingDirection';
+import SortingStyle from '../../model/enums/SortingStyle';
+import ManifestV2 from '../../model/ManifestV2';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
+import ArrayUtils from '../../utils/ArrayUtils';
+import debounce from 'lodash.debounce';
 
 @Component({
     components: {
@@ -128,7 +129,9 @@ export default class OnlineModView extends Vue {
     }
 
     @Watch("thunderstoreSearchFilter")
-    onThunderstoreFilterUpdate() {
+    onThunderstoreFilterUpdate = debounce(this.performThunderstoreFilterUpdate, 150);
+
+    performThunderstoreFilterUpdate() {
         this.pageNumber = 1;
         this.filterThunderstoreModList();
     }
