@@ -43,3 +43,5 @@ L4rs-QuickFSR
 MPModTeam-Boneworks_MP
 
 MADH95Mods-JSONRenameUtility
+
+GamefaceGamers-Mod_Sync
