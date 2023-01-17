@@ -334,6 +334,12 @@ export default class GameManager {
             "https://thunderstore.io/c/across-the-obelisk/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ato", "ao"]),
+
+        new Game("ULTRAKILL", "ULTRAKILL", "ULTRAKILL",
+            "ULTRAKILL", ["ULTRAKILL.exe"], "ULTRAKILL_Data",
+            "https://thunderstore.io/c/ultrakill/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1229490")], "ULTRAKILL.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["uk"]),
     ];
 
     static get activeGame(): Game {
