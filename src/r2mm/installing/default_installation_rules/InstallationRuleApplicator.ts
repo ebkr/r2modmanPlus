@@ -13,6 +13,7 @@ import InstallRules_HardBullet from '../default_installation_rules/game_rules/In
 import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 import { buildBepInExRules } from '../default_installation_rules/game_rules/InstallRules_BepInex';
+import * as path from 'path';
 
 export default class InstallationRuleApplicator {
 
@@ -65,7 +66,12 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("TromboneChamp"),
             buildBepInExRules("RogueGenesia"),
             buildBepInExRules("AcrossTheObelisk"),
+            buildBepInExRules("ULTRAKILL", [{
+                route: path.join("BepInEx", "UMM Mods"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: []
+            }]),
         ]
     }
-
 }
