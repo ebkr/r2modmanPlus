@@ -12,6 +12,8 @@ import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
 
+const FORCE_PROTON_FILENAME = ".forceproton";
+
 export default class GameDirectoryResolverImpl extends GameDirectoryResolverProvider {
 
     public async getSteamDirectory(): Promise<string | R2Error> {
@@ -84,8 +86,21 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
     }
 
+    private async _isProtonForced(game: Game) {
+        const fs = FsProvider.instance;
+        const gameDir = await this.getDirectory(game);
+        if (gameDir instanceof R2Error)
+            return false;
+        return fs.exists(path.join(gameDir, FORCE_PROTON_FILENAME));
+    }
+
     public async isProtonGame(game: Game) {
         try {
+            if (await this._isProtonForced(game)) {
+                console.log(`Proton was forced due to presence of ${FORCE_PROTON_FILENAME} file`);
+                return true;
+            }
+
             const steamPath = await this.getSteamDirectory();
             if (steamPath instanceof R2Error)
                 return steamPath;
@@ -97,8 +112,6 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const appManifest = await this.parseAppManifest(manifestLocation, game);
             if (appManifest instanceof R2Error)
                 return appManifest;
-
-
 
             let isProton: boolean;
             const override_source = (appManifest.AppState.UserConfig.platform_override_source || "").toLowerCase();
