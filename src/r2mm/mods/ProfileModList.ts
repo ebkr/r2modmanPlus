@@ -194,6 +194,7 @@ export default class ProfileModList {
         if (tree instanceof R2Error) {
             return tree;
         }
+        tree.removeDirectories("dotnet");
         tree.navigateAndPerform(bepInExDir => {
             bepInExDir.removeDirectories("config");
             bepInExDir.navigateAndPerform(pluginDir => {
