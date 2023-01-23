@@ -131,7 +131,7 @@ export default class NavigationMenu extends Vue {
 
 <style lang="scss" scoped>
 
-.menu-list::v-deep a a {
+.menu-list a a {
     padding: 0;
 }
 

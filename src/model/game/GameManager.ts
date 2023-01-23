@@ -314,7 +314,7 @@ export default class GameManager {
         new Game("BONELAB", "BONELAB", "BONELAB",
             "BONELAB", ["BONELAB_Steam_Windows64.exe"], "BONELAB_Steam_Windows64",
             "https://thunderstore.io/c/bonelab/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190")], "BONELAB.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "BONELAB.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BL"]),
 
         new Game("Trombone Champ", "TromboneChamp", "TromboneChamp",
@@ -334,6 +334,12 @@ export default class GameManager {
             "https://thunderstore.io/c/across-the-obelisk/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ato", "ao"]),
+
+        new Game("ULTRAKILL", "ULTRAKILL", "ULTRAKILL",
+            "ULTRAKILL", ["ULTRAKILL.exe"], "ULTRAKILL_Data",
+            "https://thunderstore.io/c/ultrakill/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1229490")], "ULTRAKILL.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["uk"]),
     ];
 
     static get activeGame(): Game {

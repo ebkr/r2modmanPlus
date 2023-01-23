@@ -38,19 +38,7 @@
             <div class="column is-full">
                 <div class="sticky-top is-shadowless background-bg z-top">
                     <div class="container">
-                        <nav class="level mb-2" v-if="viewMode === 'Card'">
-                            <div class="level-item">
-                                <div class="card-header-title">
-                                    <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <i class="button fas fa-list" @click="toggleViewMode"></i>
-                            </div>
-                        </nav>
-                        <nav class="level mb-2" v-else-if="viewMode === 'List'">
+                        <nav class="level mb-2" v-if="viewMode === 'List'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
@@ -71,6 +59,18 @@
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
                             </div>
                         </nav>
+                        <nav class="level mb-2" v-else>
+                            <div class="level-item">
+                                <div class="card-header-title">
+                                    <div class="input-group input-group--flex margin-right">
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <i class="button fas fa-list" @click="toggleViewMode"></i>
+                            </div>
+                        </nav>
                         <div class="level">
                             <div class="level-item">
                                 <div class="tabs">
@@ -88,7 +88,26 @@
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
-                            <div class="content pad--sides" v-if="viewMode === 'Card'">
+                            <div class="content" v-if="viewMode === 'List'">
+                                <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`">
+                                    <a @click="selectedGame = game">
+                                        <div class="border-at-bottom cursor-pointer">
+                                            <div class="card is-shadowless">
+                                                <p
+                                                    :class="['card-header-title', {'has-text-info':selectedGame === game}]"
+                                                >
+                                                    <a :id="`${game.settingsIdentifier}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
+                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
+                                                        <i class="far fa-star" v-else></i>
+                                                    </a>
+                                                    {{ game.displayName }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="content pad--sides" v-else>
                                 <div class="game-cards-container">
                                     <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
@@ -134,25 +153,6 @@
                                 </div>
                             </div>
 
-                            <div class="content" v-if="viewMode === 'List'">
-                                <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`">
-                                    <a @click="selectedGame = game">
-                                        <div class="border-at-bottom cursor-pointer">
-                                            <div class="card is-shadowless">
-                                                <p
-                                                    :class="['card-header-title', {'has-text-info':selectedGame === game}]"
-                                                >
-                                                    <a :id="`${game.settingsIdentifier}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
-                                                        <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
-                                                        <i class="far fa-star" v-else></i>
-                                                    </a>
-                                                    {{ game.displayName }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </article>
                 </div>
@@ -327,9 +327,17 @@ export default class GameSelectionScreen extends Vue {
 
         this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
         const globalSettings = this.settings.getContext().global;
-        this.viewMode = globalSettings.gameSelectionViewMode;
         this.favourites = globalSettings.favouriteGames || [];
         this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
+
+        switch(globalSettings.gameSelectionViewMode) {
+            case GameSelectionViewMode.LIST:
+            case GameSelectionViewMode.CARD:
+                this.viewMode = globalSettings.gameSelectionViewMode;
+                break;
+            default:
+                this.viewMode = GameSelectionViewMode.CARD;
+        }
 
         // Skip game selection view if valid default game & platform are set.
         const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
@@ -342,7 +350,7 @@ export default class GameSelectionScreen extends Vue {
     }
 
     toggleViewMode() {
-        if (this.viewMode === "List") {
+        if (this.viewMode === GameSelectionViewMode.LIST) {
             this.viewMode = GameSelectionViewMode.CARD;
         } else {
             this.viewMode = GameSelectionViewMode.LIST;

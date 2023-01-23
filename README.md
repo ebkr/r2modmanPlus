@@ -8,16 +8,15 @@
 |---|---|---|---|---|---|---|
 
 ## Features
-- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, Outward, TaleSpire, H3VR, ROUNDS, Mechanica, Muck, BONEWORKS,
-Lethal League Blaze, Timberborn, Totally Accurate Battle Simulator, Nickelodeon All-Star Brawl, Inscryption, Starsand, and more.
-- A clean user interface designed to make modding as simple as possible.
-- Safer mod installation allowing you to play the game through Steam normally.
-- Mod profiles to switch between different sets of mods quickly and easily.
-- Export profiles to easily share both your mods and configs with friends.
-- Download and install mods directly from the manager.
-- View and update any outdated mods.
-- Edit configs directly from the manager.
-- Manager auto-updates.
+- Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, BONEWORKS, and more
+- A clean user interface designed to make modding as simple as possible
+- Safer mod installation allowing you to play the game through Steam normally
+- Mod profiles to switch between different sets of mods quickly and easily
+- Export profiles to easily share both your mods and configs with friends
+- Download and install mods directly from the manager
+- View and update any outdated mods
+- Edit configs directly from the manager
+- Auto-updates
 - And more!
 
 ## What is a mod manager?
@@ -47,6 +46,10 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 
  _Problems with Linux builds should be reported in the [r2modman discord](https://discord.gg/jE2zWHY)._
 
+##### Note
+- Temporary workaround to force Proton on Linux systems
+    - Place a `.forceproton` file in the game directory whilst a solution is in development
+
 ### Updating
 r2modman will automatically download any available updates whilst you use it.
 
@@ -67,37 +70,6 @@ Suggestions are welcome and there are already some suggestions that have made it
 From small features such as always-expanded cards, all the way to larger features such as code-based profile exports.
 
 The only thing you have to consider when suggesting a feature is the impact it will have on users who don't have a lot of experience with computers.
-
-## Changelog
-### 3.1.35
-- Improved online search performance
-- Config names wrap if too long
-- Deprecated mods are hidden by default in the online section
-  - Deprecated mods can be made visible in the filters modal within the online section
-- Potential fix for blank game selection screen
-- Added support for .npc files in Hard Bullet
-- Internal refactoring
-
-### 3.1.34
-- Profile exports changed to use Thunderstore provided host
-- Significantly improved search performance in the online tab
-- Game selection server tab modified to reduce user mis-clicks
-
-### 3.1.33
-- Added games:
-  - Ravenfield
-  - Aloft
-  - Cult of the Lamb
-  - Chrono Ark (64 bit)
-  - BONELAB
-  - Trombone Champ
-  - Rogue : Genesia
-  - Across the Obelisk
-- Xbox Game Pass support
-  - Thanks to starfi5h
-- Other improvements thanks to the Thunderstore team:
-  - Game can now be changed without an app restart
-  - Internal refactors and improvements
 
 ## Screenshots
 
