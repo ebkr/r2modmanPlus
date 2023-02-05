@@ -1,0 +1,7 @@
+{
+    "version": 1,
+    "depots": {
+        "Valheim": "valheim.depot.json",
+        "RiskOfRain2": "risk-of-rain-2.depot.json"
+    }
+}

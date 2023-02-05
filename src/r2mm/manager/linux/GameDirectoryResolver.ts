@@ -11,6 +11,8 @@ import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDire
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
+import DepotLoader from 'src/depots/loader/DepotLoader';
+import { Depot } from 'src/depots/loader/Depot';
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 
@@ -113,20 +115,20 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             if (appManifest instanceof R2Error)
                 return appManifest;
 
-            let isProton: boolean;
-            const override_source = (appManifest.AppState.UserConfig.platform_override_source || "").toLowerCase();
+            const installedDepots = appManifest.AppState.InstalledDepots || {"0": {}};
 
-            console.log("Config:", appManifest.AppState.UserConfig);
-
-            switch (override_source) {
-                case "": isProton = false; console.log("Proton.Empty"); break;
-                case "linux": isProton = false; console.log("Proton.Linux"); break;
-                default: isProton = true; console.log("Proton.DefaultCase", override_source);
+            const depotKeys = Object.keys(installedDepots);
+            let depotKey: string;
+            if (depotKeys.length > 0) {
+                depotKey = depotKeys[0];
+            } else {
+                depotKey = DepotLoader.DEPOT_DEFAULT_KEY;
             }
 
-            console.log("isProton:", isProton)
-
+            const isProton = DepotLoader.isProtonRequiredForDepot(game, depotKey);
+            console.log("Is proton game:", isProton);
             return isProton;
+
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
