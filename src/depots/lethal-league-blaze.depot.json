@@ -4,7 +4,10 @@
         "default": {
             "use_proton": false
         },
-        "892972": {
+        "553313": {
+            "use_proton": false
+        },
+        "553311": {
             "use_proton": true
         }
     }

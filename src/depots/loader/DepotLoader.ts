@@ -22,21 +22,20 @@ export default class DepotLoader {
     }
 
     public static isProtonRequiredForDepot(game: Game, depotIdentifier: string): boolean {
-        if (!this.LOADED_DEPOTS.has(game.internalFolderName)) {
+        if (!this.LOADED_DEPOTS.has(game.settingsIdentifier)) {
             this.load();
         }
-        const depots = this.LOADED_DEPOTS.get(game.internalFolderName);
-        console.log("Depots:", depots);
+        const depots = this.LOADED_DEPOTS.get(game.settingsIdentifier);
         if (depots === undefined) {
             throw new R2Error(
-                `Unable to load depot for ${game.internalFolderName}`,
+                `Unable to load depot for ${game.settingsIdentifier}`,
                 "This may be an issue with the manager. Report the issue in the appropriate discord server."
             );
         }
         const foundDepotKey = Object.keys(depots).find(value => value === depotIdentifier);
         let protonRequired: ProtonRequired;
         if (foundDepotKey === undefined) {
-            console.log(`Unable to find depot [${depotIdentifier}] for ${game.internalFolderName}`);
+            console.log(`Unable to find depot [${depotIdentifier}] for ${game.settingsIdentifier}`);
             protonRequired = (depots as any)[this.DEPOT_DEFAULT_KEY];
         } else {
             protonRequired = (depots as any)[foundDepotKey];

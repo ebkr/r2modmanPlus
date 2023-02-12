@@ -40,7 +40,7 @@
                 ]
             }
         },
-        "additionalProperties": false,
+        "additionalProperties": false
     },
     "required": [
         "depots", "$schema"

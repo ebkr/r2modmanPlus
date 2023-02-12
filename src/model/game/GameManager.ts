@@ -193,8 +193,8 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1843760")], "RogueTower.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt']),
 
-        new Game('House of the Dying Sun', 'HOTDS', 'HOTDS', 'DyingSun',
-            ['dyingsun.exe'], 'dyingsun_Data',
+        new Game('House of the Dying Sun', 'HOTDS', 'HOTDS',
+            'DyingSun', ['dyingsun.exe'], 'dyingsun_Data',
             'https://hotds.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, '283160')], "HOTDS.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds']),

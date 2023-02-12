@@ -11,8 +11,7 @@ import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDire
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
-import DepotLoader from 'src/depots/loader/DepotLoader';
-import { Depot } from 'src/depots/loader/Depot';
+import DepotLoader from '../../../depots/loader/DepotLoader';
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 
@@ -125,9 +124,22 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 depotKey = DepotLoader.DEPOT_DEFAULT_KEY;
             }
 
-            const isProton = DepotLoader.isProtonRequiredForDepot(game, depotKey);
-            console.log("Is proton game:", isProton);
-            return isProton;
+
+            try {
+                const isProton = DepotLoader.isProtonRequiredForDepot(game, depotKey);
+                console.log("Is proton game:", isProton);
+                return isProton;
+            } catch (e) {
+                console.log(`Unable to resolve depot ${depotKey} for game ${game.displayName}. Defaulting to exe lookup. Caught error:`, e);
+                const fs = FsProvider.instance;
+                const gameDir = await this.getDirectory(game);
+                if (gameDir instanceof R2Error)
+                    return false;
+                const dirContents = await fs.readdir(gameDir);
+                // Assume running with proton if the game directory contains an executable.
+                // If not found, we can relatively safely assume Linux.
+                return dirContents.filter(value => value.toLowerCase().endsWith(".exe")).length > 0;
+            }
 
         } catch (e) {
             const err: Error = e as Error;
