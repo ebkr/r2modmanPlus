@@ -16,12 +16,16 @@ import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/St
 import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
 import XboxGamePassGameRunner from '../../../../r2mm/launching/runners/windows/XboxGamePassGameRunner';
 
+type PlatformRunnersType = {
+    [procKey: string]: GameRunnerProvider
+}
+
+type LoaderRunnersType = {
+    [loader: number]: PlatformRunnersType
+}
+
 type RunnerType = {
-    [platkey in StorePlatform]: {
-        [loader: number]: {
-            [procKey: string]: GameRunnerProvider
-        }
-    }
+    [platkey in StorePlatform]: LoaderRunnersType
 };
 
 type ResolverType = {
@@ -30,69 +34,46 @@ type ResolverType = {
     }
 };
 
-const RUNNERS: RunnerType = {
-    [StorePlatform.STEAM]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
-        },
-        [PackageLoader.MELON_LOADER]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
-        }
-    },
-    [StorePlatform.STEAM_DIRECT]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
-        },
-        [PackageLoader.MELON_LOADER]: {
-            "win32": new SteamGameRunner_Windows(),
-            "linux": new SteamGameRunner_Linux(),
-            "darwin": new SteamGameRunner_Darwin()
-        },
-        [PackageLoader.NORTHSTAR]: {
-            "win32": new DirectGameRunner(),
-            "linux": new DirectGameRunner(),
-            "darwin": new DirectGameRunner()
-        },
-    },
-    [StorePlatform.EPIC_GAMES_STORE]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new EgsGameRunner(),
-            "linux": new EgsGameRunner(),
-            "darwin": new EgsGameRunner(),
-        }
-    },
-    [StorePlatform.OCULUS_STORE]: {
-        [PackageLoader.MELON_LOADER]: {
-            "win32": new DirectGameRunner(),
-            "linux": new DirectGameRunner(),
-            "darwin": new DirectGameRunner(),
-        }
-    },
-    [StorePlatform.ORIGIN]: {
-      [PackageLoader.NORTHSTAR]: {
-          "win32": new DirectGameRunner(),
-          "linux": new DirectGameRunner(),
-          "darwin": new DirectGameRunner(),
-      }
-    },
-    [StorePlatform.XBOX_GAME_PASS]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new XboxGamePassGameRunner()
-        }
-    },
-    [StorePlatform.OTHER]: {
-        [PackageLoader.BEPINEX]: {
-            "win32": new DirectGameRunner(),
-            "linux": new DirectGameRunner(),
-            "darwin": new DirectGameRunner(),
-        },
+const STEAM_RUNNERS = {
+    "win32": new SteamGameRunner_Windows(),
+    "linux": new SteamGameRunner_Linux(),
+    "darwin": new SteamGameRunner_Darwin(),
+}
+
+const DIRECT_RUNNERS = {
+    "win32": new DirectGameRunner(),
+    "linux": new DirectGameRunner(),
+    "darwin": new DirectGameRunner(),
+}
+
+const EGS_RUNNERS = {
+    "win32": new EgsGameRunner(),
+    "linux": new EgsGameRunner(),
+    "darwin": new EgsGameRunner(),
+}
+
+const XBOX_RUNNERS = {
+    "win32": new XboxGamePassGameRunner()
+}
+
+function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
+    return {
+        [PackageLoader.BEPINEX]: runners,
+        [PackageLoader.MELON_LOADER]: runners,
+        [PackageLoader.NORTHSTAR]: runners,
+        [PackageLoader.ANCIENT_DUNGEON_VR]: runners,
+        [PackageLoader.GODOT_ML]: runners,
     }
+}
+
+const RUNNERS: RunnerType = {
+    [StorePlatform.STEAM]: buildRunners(STEAM_RUNNERS),
+    [StorePlatform.STEAM_DIRECT]: buildRunners(DIRECT_RUNNERS),
+    [StorePlatform.EPIC_GAMES_STORE]: buildRunners(EGS_RUNNERS),
+    [StorePlatform.OCULUS_STORE]: buildRunners(DIRECT_RUNNERS),
+    [StorePlatform.ORIGIN]: buildRunners(DIRECT_RUNNERS),
+    [StorePlatform.XBOX_GAME_PASS]: buildRunners(XBOX_RUNNERS),
+    [StorePlatform.OTHER]: buildRunners(DIRECT_RUNNERS),
 };
 
 const RESOLVERS: ResolverType = {

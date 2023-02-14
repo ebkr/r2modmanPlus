@@ -63,6 +63,12 @@ const VARIANTS = {
     RogueGenesia: [new ModLoaderPackageMapping("BepInEx-BepInExPack_RogueGenesia", "BepInExPack_RogueGenesia", PackageLoader.BEPINEX)],
     AcrossTheObelisk: [new ModLoaderPackageMapping("BepInEx-BepInExPack_AcrossTheObelisk", "BepInExPack_AcrossTheObelisk", PackageLoader.BEPINEX)],
     ULTRAKILL: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    UltimateChickenHorse: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    AtrioTheDarkWild: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    AncientDungeonVR: [],
+    Brotato: [
+        // TODO: Add godot mod loader support
+    ],
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
