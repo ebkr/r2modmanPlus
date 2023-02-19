@@ -230,6 +230,7 @@ import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
 import DonateButton from '../../components/buttons/DonateButton.vue';
+import SearchUtils from '../../utils/SearchUtils';
 
 @Component({
         components: {
@@ -317,9 +318,9 @@ import DonateButton from '../../components/buttons/DonateButton.vue';
             if (this.searchQuery.trim() === '') {
                 this.searchableModList = [...(this.modifiableModList || [])];
             }
+            const searchKeys = SearchUtils.makeKeys(this.searchQuery);
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
-                    || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
+                return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
             });
         }
 
