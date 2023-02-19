@@ -1,0 +1,48 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "depot.v1",
+    "title": "Depot",
+    "description": "Launch determination via depot version",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "The schema to use",
+            "type": "string"
+        },
+        "depots": {
+            "description": "Container for all depots",
+            "type": "object",
+            "default": {
+                "description": "The fallback if the depot can't be resolved",
+                "type": "object",
+                "use_proton": {
+                    "description": "Should proton be used",
+                    "type": "boolean"
+                },
+                "required": [
+                    "use_proton"
+                ]
+            },
+            "required": [
+                "default"
+            ]
+        },
+        "patternProperties": {
+            "^[0-9]+$": {
+                "description": "The depot to resolve",
+                "type": "object",
+                "use_proton": {
+                    "description": "Should proton be used",
+                    "type": "boolean"
+                },
+                "required": [
+                    "use_proton"
+                ]
+            }
+        },
+        "additionalProperties": false
+    },
+    "required": [
+        "depots", "$schema"
+    ]
+}

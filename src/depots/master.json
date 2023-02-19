@@ -1,0 +1,11 @@
+{
+    "version": 1,
+    "depots": {
+        "Valheim": "valheim.depot.json",
+        "ValheimServer": "valheim-server.depot.json",
+        "Muck": "muck.depot.json",
+        "LethalLeagueBlaze": "lethal-league-blaze.depot.json",
+        "CatsAreLiquidABP": "cats-are-liquid-abp.depot.json",
+        "BackpackHero": "backpack-hero.depot.json"
+    }
+}
