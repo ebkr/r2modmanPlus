@@ -17,6 +17,7 @@ import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoad
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { PackageLoader } from '../../../model/installing/PackageLoader';
+import ZipProvider from "../../../providers/generic/zip/ZipProvider";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
@@ -286,6 +287,40 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
+    private async installPackageZip(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+        /*
+            This install method repackages the entire mod as-is and places it to the
+            destination route. Essentially the same as SUBDIR_NO_FLATTEN, but as a
+            zip instead of a directory. The zip name will be the mod ID.
+         */
+        const destDir = path.join(profile.getPathOfProfile(), rule.route);
+        await FileUtils.ensureDirectory(destDir);
+        const destination = path.join(destDir, `${mod.getName()}.ts.zip`);
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+        const builder = ZipProvider.instance.zipBuilder();
+        await builder.addFolder("", cachedLocationOfMod);
+        await builder.createZip(destination);
+    }
+
+    private async uninstallPackageZip(mod: ManifestV2, profile: Profile) {
+        const fs = FsProvider.instance;
+
+        const recursiveDelete = async (mainPath: string, match: string) => {
+            for (const subpath of (await fs.readdir(mainPath))) {
+                const fullSubpath = path.join(mainPath, subpath);
+                const subpathInfo = await fs.lstat(fullSubpath);
+                if (subpathInfo.isDirectory()) {
+                    await recursiveDelete(fullSubpath, match);
+                } else if (subpathInfo.isFile() && subpath == match) {
+                    await fs.unlink(fullSubpath);
+                }
+            }
+        }
+
+        await recursiveDelete(profile.getPathOfProfile(), `${mod.getName()}.ts.zip`);
+    }
+
     private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
         const fileRelocations = new Map<string, string>();
         for (const source of installSources) {
@@ -340,6 +375,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
                 case 'NONE': await this.installUntracked(profile, managedRule, files, mod); break;
                 case 'SUBDIR_NO_FLATTEN': await this.installSubDirNoFlatten(profile, managedRule, files, mod); break;
+                case 'PACKAGE_ZIP': await this.installPackageZip(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
@@ -420,6 +456,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const uninstallSubDir = await this.uninstallSubDir(mod, profile);
         if (uninstallSubDir instanceof R2Error) {
             return uninstallSubDir;
+        }
+        try {
+            await this.uninstallPackageZip(mod, profile);
+        } catch (e) {
+            return R2Error.fromThrownValue(e, "Failed to remove files");
         }
         return null;
     }

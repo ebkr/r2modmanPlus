@@ -14,6 +14,10 @@ import InstallRules_BackpackHero from '../default_installation_rules/game_rules/
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 import { buildBepInExRules } from '../default_installation_rules/game_rules/InstallRules_BepInex';
 import * as path from 'path';
+import { buildGodotMLRules } from "../default_installation_rules/game_rules/InstallRules_GodotML";
+import {
+    InstallRules_AncientDungeonVR
+} from "../default_installation_rules/game_rules/InstallRules_AncientDungeonVR";
 
 export default class InstallationRuleApplicator {
 
@@ -72,6 +76,10 @@ export default class InstallationRuleApplicator {
                 trackingMethod: "SUBDIR",
                 subRoutes: []
             }]),
+            buildBepInExRules("UltimateChickenHorse"),
+            buildBepInExRules("AtrioTheDarkWild"),
+            buildGodotMLRules("Brotato"),
+            InstallRules_AncientDungeonVR(),
         ]
     }
 }
