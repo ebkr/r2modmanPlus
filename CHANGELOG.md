@@ -1,3 +1,14 @@
+### 3.1.37
+- Proton detection should work correctly on Linux platforms once again
+  - Reasonable fallbacks should be provided if the manager fails to keep depots updated
+- Added games:
+  - Brotato
+  - Ancient Dungeon VR
+  - Atrio: The Dark Wild
+  - Ultimate Chicken Horse
+- BONELAB Oculus executable is now selectable
+
+
 ### 3.1.36
 - Temporary workaround to force Proton on Linux systems
   - Place a `.forceproton` file in the game directory whilst a solution is in development
