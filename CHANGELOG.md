@@ -7,6 +7,7 @@
   - Atrio: The Dark Wild
   - Ultimate Chicken Horse
 - BONELAB Oculus executable is now selectable
+- Online searching no longer requires underscores in the name (Thanks to MSchmoecker)
 
 
 ### 3.1.36
