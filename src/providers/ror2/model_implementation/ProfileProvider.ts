@@ -9,7 +9,7 @@ export default abstract class ProfileProvider {
 
     public static get instance(): ProfileProvider {
         if (ProfileProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ProfileProvider");
+            ProviderUtils.throwNotProvidedError("ProfileProvider");
         }
         return ProfileProvider.provider();
     }

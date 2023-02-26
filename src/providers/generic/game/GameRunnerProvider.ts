@@ -12,7 +12,7 @@ export default abstract class GameRunnerProvider {
 
     public static get instance(): GameRunnerProvider {
         if (GameRunnerProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("GameRunnerProvider");
+            ProviderUtils.throwNotProvidedError("GameRunnerProvider");
         }
         return GameRunnerProvider.provider();
     }

@@ -11,7 +11,7 @@ export default abstract class ZipProvider {
 
     public static get instance(): ZipProvider {
         if (ZipProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("ZipProvider");
+            ProviderUtils.throwNotProvidedError("ZipProvider");
         }
         return ZipProvider.provider();
     }

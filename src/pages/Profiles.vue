@@ -246,7 +246,6 @@ import Component from 'vue-class-component';
 import { Hero, Progress } from '../components/all';
 import sanitize from 'sanitize-filename';
 import ZipProvider from '../providers/generic/zip/ZipProvider';
-import Axios from 'axios';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
@@ -261,7 +260,6 @@ import StatusEnum from '../model/enums/StatusEnum';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
-import PathResolver from '../r2mm/manager/PathResolver';
 import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
 import * as  yaml from 'yaml';
@@ -274,6 +272,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
+import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 
 let settings: ManagerSettings;
 let fs: FsProvider;
@@ -432,7 +431,7 @@ export default class Profiles extends Vue {
 
     setProfileAndContinue() {
         settings.setProfile(Profile.getActiveProfile().getProfileName());
-        this.$router.push({ path: '/manager' });
+        this.$router.push({name: 'manager.installed'});
     }
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
@@ -478,22 +477,13 @@ export default class Profiles extends Vue {
         });
     }
 
-    importProfileUsingCode() {
-        Axios.get(`https://r2modman-hastebin.herokuapp.com/raw/${this.profileImportCode}`)
-            .then(resp => resp.data)
-            .then(async resp => {
-                if (resp.startsWith("#r2modman")) {
-                    const buf = Buffer.from(resp.substring(9).trim(), 'base64');
-                    await FileUtils.ensureDirectory(path.join(PathResolver.ROOT, '_import_cache'));
-                    await fs.writeFile(path.join(PathResolver.ROOT, '_import_cache', 'import.r2z'), buf);
-                    await this.importProfileHandler([path.join(PathResolver.ROOT, '_import_cache', 'import.r2z')]);
-                } else {
-                        throw new Error('Code invalid, no profile is associated with this code');
-                }
-            }).catch(e => {
-                const err = new R2Error('Failed to find profile', e.message, null);
-                this.showError(err);
-            })
+    async importProfileUsingCode() {
+        try {
+            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode);
+            await this.importProfileHandler([filepath]);
+        } catch (e: any) {
+            this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
+        }
     }
 
     async importProfileHandler(files: string[] | null) {
@@ -686,7 +676,7 @@ export default class Profiles extends Vue {
 
     private async backToGameSelection() {
         await ManagerSettings.resetDefaults();
-        await this.$router.push("/");
+        await this.$router.push({name: "index"});
     }
 }
 </script>

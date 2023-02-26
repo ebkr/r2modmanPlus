@@ -1,0 +1,14 @@
+{
+    "$schema": "depot.schema.json",
+    "depots": {
+        "default": {
+            "use_proton": false
+        },
+        "1188083": {
+            "use_proton": false
+        },
+        "1188081": {
+            "use_proton": true
+        }
+    }
+}

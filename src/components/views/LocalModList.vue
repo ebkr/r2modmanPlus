@@ -56,14 +56,6 @@
             </div>
         </div>
 
-        <DownloadModModal
-            :show-download-modal="manifestModAsThunderstoreMod !== null"
-            :thunderstore-mod="manifestModAsThunderstoreMod"
-            :update-all-mods="false"
-            @closed-modal="manifestModAsThunderstoreMod = null;"
-            @error="emitError($event)"
-        />
-
         <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
                @close-modal="showingDependencyList = null" :open="showingDependencyList">
             <template v-slot:title>
@@ -150,9 +142,6 @@
                 :description="key.description"
                 :funkyMode="funkyMode"
                 :showSort="canShowSortIcons()"
-                :manualSortUp="index > 0"
-                :manualSortDown="index < searchableModList.length - 1"
-                :darkTheme="darkTheme"
                 :expandedByDefault="cardExpanded"
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
@@ -235,7 +224,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
@@ -261,7 +250,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import Draggable from 'vuedraggable';
 import { LocalModTabs } from '../../model/enums/LocalModTabs';
 import DonateButton from '../../components/buttons/DonateButton.vue';
-import Timeout = NodeJS.Timeout;
+import SearchUtils from '../../utils/SearchUtils';
 
 @Component({
         components: {
@@ -275,20 +264,12 @@ import Timeout = NodeJS.Timeout;
     })
     export default class LocalModList extends Vue {
 
-        @Prop({required: true})
-        private settings!: ManagerSettings;
+        settings: ManagerSettings = new ManagerSettings();
 
         private cardExpanded: boolean = false;
-        private darkTheme: boolean = false;
         private funkyMode: boolean = false;
 
-        private activeTab: LocalModTabs = LocalModTabs.INSTALLED;
-
-        private updatedSettings() {
-            this.cardExpanded = this.settings.getContext().global.expandedCards;
-            this.darkTheme = this.settings.getContext().global.darkTheme;
-            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-        }
+    private activeTab: LocalModTabs = LocalModTabs.INSTALLED;
 
         get modifiableModList(): ManifestV2[] {
             return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
@@ -318,7 +299,6 @@ import Timeout = NodeJS.Timeout;
         private searchableModList: ManifestV2[] = [];
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
-        private manifestModAsThunderstoreMod: ThunderstoreMod | null = null;
         private dependencyListDisplayType: string = 'view';
 
         // Filtering
@@ -330,7 +310,6 @@ import Timeout = NodeJS.Timeout;
 
         // Context
         private contextProfile: Profile | null = null;
-        private settingsUpdateTimer: Timeout | null = null;
 
         get draggableList() {
             return [...this.searchableModList]
@@ -361,6 +340,7 @@ import Timeout = NodeJS.Timeout;
             if (this.searchQuery.trim() === '') {
                 this.searchableModList = [...(this.modifiableModList || [])];
             }
+            const searchKeys = SearchUtils.makeKeys(this.searchQuery);
             this.searchableModList = this.modifiableModList
                 .filter((mod: ManifestV2) => {
                     switch (this.activeTab) {
@@ -375,8 +355,7 @@ import Timeout = NodeJS.Timeout;
                     }
                 })
                 .filter((x: ManifestV2) => {
-                    return x.getName().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0
-                        || x.getDescription().toLowerCase().indexOf(this.searchQuery.toLowerCase()) >= 0;
+                    return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
                 });
         }
 
@@ -626,9 +605,9 @@ import Timeout = NodeJS.Timeout;
                 this.thunderstorePackages
             );
             if (mod instanceof ThunderstoreMod) {
-                this.manifestModAsThunderstoreMod = mod;
+                this.$store.commit("openDownloadModModal", mod);
             } else {
-                this.manifestModAsThunderstoreMod = null;
+                this.$store.commit("closeDownloadModModal");
             }
         }
 
@@ -637,7 +616,7 @@ import Timeout = NodeJS.Timeout;
                 (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
             );
             if (mod === undefined) {
-                this.manifestModAsThunderstoreMod = null;
+                this.$store.commit("closeDownloadModModal");
                 const error = new R2Error(
                     `${missingDependency} could not be found`,
                     'You may be offline, or the mod was removed from Thunderstore.',
@@ -646,7 +625,7 @@ import Timeout = NodeJS.Timeout;
                 this.$emit('error', error);
                 return;
             }
-            this.manifestModAsThunderstoreMod = mod;
+            this.$store.commit("openDownloadModModal", mod);
         }
 
         getTooltipText(mod: ManifestV2) {
@@ -677,22 +656,13 @@ import Timeout = NodeJS.Timeout;
         }
 
         async created() {
-            this.contextProfile = Profile.getActiveProfile();
             this.activeGame = GameManager.activeGame;
+            this.settings = await ManagerSettings.getSingleton(this.activeGame);
+            this.contextProfile = Profile.getActiveProfile();
             this.filterModList();
-            if (this.settingsUpdateTimer !== null) {
-                clearInterval(this.settingsUpdateTimer);
-            }
-            this.settingsUpdateTimer = setInterval(async () => {
-                this.updatedSettings();
-            }, 100);
-        }
 
-        destroyed() {
-            if (this.settingsUpdateTimer !== null) {
-                clearInterval(this.settingsUpdateTimer);
-                this.settingsUpdateTimer = null;
-            }
+            this.cardExpanded = this.settings.getContext().global.expandedCards;
+            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
 
         emitError(error: R2Error) {

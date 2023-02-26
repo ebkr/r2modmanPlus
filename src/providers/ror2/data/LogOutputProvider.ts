@@ -9,7 +9,7 @@ export default abstract class LogOutputProvider {
 
     public static get instance(): LogOutputProvider {
         if (LogOutputProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("LogOutputProvider");
+            ProviderUtils.throwNotProvidedError("LogOutputProvider");
         }
         return LogOutputProvider.provider();
     }

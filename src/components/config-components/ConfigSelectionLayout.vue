@@ -108,6 +108,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
             if (tree instanceof R2Error) {
                 return;
             }
+            tree.removeDirectories("dotnet");
             tree.navigateAndPerform(plugins => {
                 plugins.getDirectories().forEach(value => {
                     plugins.navigateAndPerform(sub => {

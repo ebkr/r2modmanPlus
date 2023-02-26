@@ -1,6 +1,6 @@
 {
     "name": "r2modman",
-    "version": "3.1.32",
+    "version": "3.1.37",
     "description": "A simple and easy to use mod manager for several games using Thunderstore.",
     "productName": "r2modman",
     "author": "ebkr",
@@ -43,6 +43,7 @@
         "fs-extra": "^8.1.0",
         "glob-parent": "^6.0.2",
         "highlight.js": "^10.4.1",
+        "lodash.debounce": "^4.0.8",
         "moment": "^2.29.1",
         "node-ipc": "^9.1.1",
         "quasar": "^1.14.7",
@@ -69,6 +70,7 @@
         "@types/async-lock": "^1.1.2",
         "@types/chai": "^4.2.11",
         "@types/fs-extra": "^8.0.1",
+        "@types/lodash.debounce": "^4.0.7",
         "@types/node": "^12.12.12",
         "@types/quill": "^2.0.3",
         "@types/sinon": "^10.0.2",
@@ -99,12 +101,12 @@
         "mocha": "^8.0.1",
         "mock-require": "^3.0.3",
         "node-sass": "^4.13.1",
+        "sass-loader": "^10.2.1",
         "sinon": "^11.1.1",
         "ts-node": "^8.10.2",
         "typescript": "^4.5.5",
         "vue-jest": "^3.0.0",
-        "wallaby-vue-compiler": "^1.0.3",
-        "sass-loader": "^10.2.1"
+        "wallaby-vue-compiler": "^1.0.3"
     },
     "browserslist": [
         "last 10 Chrome versions",

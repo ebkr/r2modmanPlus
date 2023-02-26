@@ -20,9 +20,13 @@
             </template>
         </modal>
         <hero
-            title="Game selection"
-            subtitle="Which game are you managing your mods for?"
-            heroType="is-info"
+            :title="`${activeTab} selection`"
+            :subtitle="
+                activeTab === 'Game'
+                    ? 'Which game are you managing your mods for?'
+                    : 'Which dedicated server are you managing your mods for?'
+            "
+            :heroType="activeTab === 'Game' ? 'is-info' : 'is-warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -34,19 +38,7 @@
             <div class="column is-full">
                 <div class="sticky-top is-shadowless background-bg z-top">
                     <div class="container">
-                        <nav class="level mb-2" v-if="viewMode === 'Card'">
-                            <div class="level-item">
-                                <div class="card-header-title">
-                                    <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <i class="button fas fa-list" @click="toggleViewMode"></i>
-                            </div>
-                        </nav>
-                        <nav class="level mb-2" v-else-if="viewMode === 'List'">
+                        <nav class="level mb-2" v-if="viewMode === 'List'">
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
@@ -57,7 +49,7 @@
                             <div class="margin-right">
                                 <a class="button is-info"
                                    :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
-                                    game</a>
+                                    {{ activeTab.toLowerCase() }}</a>
                             </div>
                             <div class="margin-right">
                                 <a class="button"
@@ -65,6 +57,18 @@
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
+                            </div>
+                        </nav>
+                        <nav class="level mb-2" v-else>
+                            <div class="level-item">
+                                <div class="card-header-title">
+                                    <div class="input-group input-group--flex margin-right">
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <i class="button fas fa-list" @click="toggleViewMode"></i>
                             </div>
                         </nav>
                         <div class="level">
@@ -84,46 +88,6 @@
                 <div class="container">
                     <article class="media">
                         <div class="media-content">
-                            <div class="content pad--sides" v-if="viewMode === 'Card'">
-                                <div class="game-cards-container">
-                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
-
-                                        <div class="inline">
-                                            <div class='card is-shadowless'>
-                                                <div class='cursor-pointer'>
-                                                    <header class='card-header is-shadowless is-relative'>
-                                                        <div class="absolute-full z-fab flex">
-                                                            <div class="card-action-overlay rounded">
-                                                                <div class="absolute-top card-header-title">
-                                                                    <p class="text-left title is-5 has-text-white">{{ game.displayName }}</p>
-                                                                </div>
-                                                                <div class="absolute-top-right card-header-title">
-                                                                    <p class="text-left title is-5">
-                                                                        <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="toggleFavourite(game)">
-                                                                            <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
-                                                                            <i class="far fa-star" v-else></i>
-                                                                        </a>
-                                                                    </p>
-                                                                </div>
-                                                                <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select game</button>
-                                                                    <br/><br/>
-                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded"/>
-                                                        </div>
-                                                    </header>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="content" v-if="viewMode === 'List'">
                                 <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`">
                                     <a @click="selectedGame = game">
@@ -143,6 +107,52 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="content pad--sides" v-else>
+                                <div class="game-cards-container">
+                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
+
+                                        <div class="inline">
+                                            <div class='card is-shadowless'>
+                                                <div class='cursor-pointer'>
+                                                    <header class='card-header is-shadowless is-relative has-background-black'>
+                                                        <div class="absolute-full z-fab flex">
+                                                            <div class="card-action-overlay rounded">
+                                                                <div class="absolute-top card-header-title">
+                                                                    <p class="text-left title is-5 has-text-white">{{ game.displayName }}</p>
+                                                                </div>
+                                                                <div class="absolute-top-right card-header-title">
+                                                                    <p class="text-left title is-5">
+                                                                        <a :id="`${game.settingsIdentifier}-star`" href="#" @click.prevent="toggleFavourite(game)">
+                                                                            <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
+                                                                            <i class="far fa-star" v-else></i>
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="absolute-center text-center">
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select
+                                                                        {{ activeTab.toLowerCase() }}</button>
+                                                                    <br/><br/>
+                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
+                                                            <template v-if="activeTab === 'Game'">
+                                                                <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                            </template>
+                                                            <template v-else>
+                                                                <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
+                                                            </template>
+                                                        </div>
+                                                    </header>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </article>
                 </div>
@@ -156,23 +166,15 @@ import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import Hero from '../components/Hero.vue';
-import PathResolver from '../r2mm/manager/PathResolver';
-import * as path from 'path';
-import FileUtils from '../utils/FileUtils';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
-import PlatformInterceptorProvider from '../providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
-import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
-import ConflictManagementProvider from '../providers/generic/installing/ConflictManagementProvider';
-import ConflictManagementProviderImpl from '../r2mm/installing/ConflictManagementProviderImpl';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import ProviderUtils from '../providers/generic/ProviderUtils';
 
 @Component({
     components: {
@@ -267,81 +269,38 @@ export default class GameSelectionScreen extends Vue {
     }
 
     private async proceed() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        try {
+            ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
+        } catch (error) {
+            if (error instanceof R2Error) {
+                this.$emit("error", error);
+                return;
+            }
+
+            throw error;
+        }
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setLastSelectedGame(this.selectedGame);
+        await GameManager.activate(this.selectedGame, this.selectedPlatform);
+
+        await this.$router.push({name: "splash"});
     }
 
     private async proceedDefault() {
-        if (this.selectedGame !== null && !this.runningMigration && this.selectedPlatform !== null) {
-            GameManager.activeGame = this.selectedGame;
-            GameManager.activeGame.setActivePlatformByStore(this.selectedPlatform);
-            PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, this.selectedGame.internalFolderName);
-            await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-            const settings = await ManagerSettings.getSingleton(this.selectedGame);
-            await settings.setLastSelectedGame(this.selectedGame);
-            await settings.setDefaultGame(this.selectedGame);
-            await settings.setDefaultStorePlatform(this.selectedPlatform);
-
-            const gameRunner = PlatformInterceptorProvider.instance.getRunnerForPlatform(this.selectedPlatform, this.selectedGame.packageLoader);
-            if (gameRunner === undefined) {
-                this.$emit("error", new R2Error("No suitable runner found", "Runner is likely not yet implemented.", null));
-                return;
-            }
-            GameRunnerProvider.provide(() => gameRunner);
-
-            const directoryResolver = PlatformInterceptorProvider.instance.getDirectoryResolverForPlatform(this.selectedPlatform);
-            if (directoryResolver === undefined) {
-                this.$emit("error", new R2Error("No suitable resolver found", "Resolver is likely not yet implemented.", null));
-                return;
-            }
-            GameDirectoryResolverProvider.provide(() => directoryResolver);
-
-            switch (this.selectedGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-                case PackageLoader.NORTHSTAR:
-                    ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
-            }
-
-            await this.$router.replace('/splash');
+        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
+            return;
         }
+
+        const settings = await ManagerSettings.getSingleton(this.selectedGame);
+        await settings.setDefaultGame(this.selectedGame);
+        await settings.setDefaultStorePlatform(this.selectedPlatform);
+
+        this.proceed();
     }
 
     private toggleFavourite(game: Game) {
@@ -368,9 +327,17 @@ export default class GameSelectionScreen extends Vue {
 
         this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
         const globalSettings = this.settings.getContext().global;
-        this.viewMode = globalSettings.gameSelectionViewMode;
         this.favourites = globalSettings.favouriteGames || [];
         this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
+
+        switch(globalSettings.gameSelectionViewMode) {
+            case GameSelectionViewMode.LIST:
+            case GameSelectionViewMode.CARD:
+                this.viewMode = globalSettings.gameSelectionViewMode;
+                break;
+            default:
+                this.viewMode = GameSelectionViewMode.CARD;
+        }
 
         // Skip game selection view if valid default game & platform are set.
         const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
@@ -383,7 +350,7 @@ export default class GameSelectionScreen extends Vue {
     }
 
     toggleViewMode() {
-        if (this.viewMode === "List") {
+        if (this.viewMode === GameSelectionViewMode.LIST) {
             this.viewMode = GameSelectionViewMode.CARD;
         } else {
             this.viewMode = GameSelectionViewMode.LIST;
@@ -410,5 +377,10 @@ export default class GameSelectionScreen extends Vue {
 }
 .mb-2 {
     margin-bottom: 0.5rem !important;
+}
+.game-thumbnail {
+    width: 188px;
+    height: 250px;
+    object-fit: cover;
 }
 </style>

@@ -5,6 +5,8 @@ import BepInExGameInstructions from './instructions/loader/BepInExGameInstructio
 import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameInstructions';
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
+import { GodotMLGameInstructions } from "../../launching/instructions/instructions/loader/GodotMLGameInstructions";
+import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -17,7 +19,9 @@ export default class GameInstructions {
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
-        [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()]
+        [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
+        [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
+        [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {

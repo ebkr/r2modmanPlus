@@ -13,7 +13,7 @@ export default abstract class PlatformInterceptorProvider {
 
     public static get instance(): PlatformInterceptorProvider {
         if (PlatformInterceptorProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("PlatformInterceptorProvider");
+            ProviderUtils.throwNotProvidedError("PlatformInterceptorProvider");
         }
         return PlatformInterceptorProvider.provider();
     }

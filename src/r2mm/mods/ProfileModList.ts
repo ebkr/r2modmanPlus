@@ -13,7 +13,6 @@ import ExportFormat from '../../model/exports/ExportFormat';
 import ExportMod from '../../model/exports/ExportMod';
 import PathResolver from '../manager/PathResolver';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
-import Axios from 'axios';
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
@@ -23,6 +22,7 @@ import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderV
 import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
+import { ProfileApiClient } from '../profiles/ProfilesClient';
 
 export default class ProfileModList {
 
@@ -194,6 +194,7 @@ export default class ProfileModList {
         if (tree instanceof R2Error) {
             return tree;
         }
+        tree.removeDirectories("dotnet");
         tree.navigateAndPerform(bepInExDir => {
             bepInExDir.removeDirectories("config");
             bepInExDir.navigateAndPerform(pluginDir => {
@@ -249,12 +250,12 @@ export default class ProfileModList {
         } else {
             await exportBuilder.createZip(exportPath);
             const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportPath));
-            Axios.post('https://r2modman-hastebin.herokuapp.com/documents', profileBuffer)
-                .then(resp => callback(resp.data.key, null))
-                .catch(e => {
-                    const err: Error = e;
-                    callback('', new R2Error('Failed to export profile', err.message, null));
-                });
+            try {
+                const storageResponse = await ProfileApiClient.createProfile(profileBuffer);
+                callback(storageResponse.data.key, null);
+            } catch (e: R2Error | unknown) {
+                callback('', R2Error.fromThrownValue(e, "Failed to export profile"));
+            }
         }
     }
 

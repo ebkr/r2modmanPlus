@@ -7,7 +7,7 @@ import { PackageLoader } from '../../../model/installing/PackageLoader';
  * Mapping is:
  * game's InternalFolderName: Mapping
  */
-export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
+const VARIANTS = {
     RiskOfRain2: [new ModLoaderPackageMapping("bbepis-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     ThunderstoreDev: [new ModLoaderPackageMapping("xiaoxiao921-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     DysonSphereProgram: [new ModLoaderPackageMapping("xiaoye97-BepInEx", "BepInExPack", PackageLoader.BEPINEX)],
@@ -60,4 +60,18 @@ export const MOD_LOADER_VARIANTS: {[key: string]: ModLoaderPackageMapping[]} = {
     ChronoArk: [new ModLoaderPackageMapping("BepInEx-BepInExPack_Chrono_Ark", "BepInExPack_Chrono_Ark", PackageLoader.BEPINEX)],
     BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     TromboneChamp: [new ModLoaderPackageMapping("BepInEx-BepInExPack_TromboneChamp", "BepInExPack_TromboneChamp", PackageLoader.BEPINEX)],
-}
+    RogueGenesia: [new ModLoaderPackageMapping("BepInEx-BepInExPack_RogueGenesia", "BepInExPack_RogueGenesia", PackageLoader.BEPINEX)],
+    AcrossTheObelisk: [new ModLoaderPackageMapping("BepInEx-BepInExPack_AcrossTheObelisk", "BepInExPack_AcrossTheObelisk", PackageLoader.BEPINEX)],
+    ULTRAKILL: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    UltimateChickenHorse: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    AtrioTheDarkWild: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    AncientDungeonVR: [],
+    Brotato: [
+        // TODO: Add godot mod loader support
+    ],
+};
+// Exported separately from the definition in order to preserve the key names in the type definition.
+// Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
+// Casting is done here to ensure the values are ModLoaderPackageMapping[]
+export type GAME_NAME = keyof typeof VARIANTS;
+export const MOD_LOADER_VARIANTS: {[key in GAME_NAME]: ModLoaderPackageMapping[]} = VARIANTS;

@@ -43,4 +43,8 @@ fi
 
 [ -n "$R2STARTSERVER" ] && exec "$BASEDIR/profiles/$R2PROFILE/start_server_bepinex.sh" $args || true
 
-exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" $args
+if test -f "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh"; then
+    exec "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh" $args
+else
+   exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" $args
+fi

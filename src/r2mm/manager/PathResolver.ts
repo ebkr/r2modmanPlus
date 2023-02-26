@@ -1,7 +1,3 @@
-import * as path from 'path';
-import ManagerSettings from './ManagerSettings';
-import FileUtils from '../../utils/FileUtils';
-
 export default class PathResolver {
 
     private static _APPDATA_DIR: string = '';
@@ -19,7 +15,6 @@ export default class PathResolver {
     static get ROOT(): string {
         return PathResolver._ROOT;
     }
-
 
     static set ROOT(value: string) {
         this._ROOT = value;

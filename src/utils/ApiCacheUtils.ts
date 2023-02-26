@@ -23,8 +23,8 @@ export default class ApiCacheUtils {
                 try {
                     const lastCacheContent = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"))).toString();
                     const apiData = JSON.parse(lastCacheContent) as ApiData;
-                    if (ThunderstorePackages.EXCLUSIONS.size > 0) {
-                        apiData.exclusions = Array.from(ThunderstorePackages.EXCLUSIONS, ([name]) => name)
+                    if (ThunderstorePackages.EXCLUSIONS.length > 0) {
+                        apiData.exclusions = ThunderstorePackages.EXCLUSIONS
                     }
                     this.CACHED_REQUEST = apiData;
                     return apiData;
@@ -42,7 +42,7 @@ export default class ApiCacheUtils {
             const apiData: ApiData = {
                 time: new Date(),
                 payload: data,
-                exclusions: Array.from(ThunderstorePackages.EXCLUSIONS, ([name]) => name)
+                exclusions: ThunderstorePackages.EXCLUSIONS
             }
             this.CACHED_REQUEST = apiData;
             await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"), JSON.stringify(apiData));

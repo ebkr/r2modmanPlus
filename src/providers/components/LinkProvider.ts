@@ -9,7 +9,7 @@ export default abstract class LinkProvider {
 
     public static get instance(): LinkProvider {
         if (LinkProvider.provider === undefined) {
-            throw ProviderUtils.throwNotProvidedError("LinkProvider");
+            ProviderUtils.throwNotProvidedError("LinkProvider");
         }
         return LinkProvider.provider();
     }

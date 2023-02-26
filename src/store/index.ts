@@ -1,77 +1,101 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
-import { FolderMigration } from '../migrations/FolderMigration';
+import Vuex, { ActionContext } from 'vuex';
 
-// import example from './module-example'
+import ModalsModule from './modules/ModalsModule';
+import ModFilterModule from './modules/ModFilterModule';
+import { FolderMigration } from '../migrations/FolderMigration';
+import ManifestV2 from '../model/ManifestV2';
+import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 Vue.use(Vuex);
+
+export interface State {
+    apiConnectionError: string;
+    deprecatedMods: Map<string, boolean>;
+    dismissedUpdateAll: boolean;
+    isMigrationChecked: boolean;
+    localModList: ManifestV2[];
+    thunderstoreModList: ThunderstoreMod[];
+}
+
+type Context = ActionContext<State, State>;
 
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
 
-export default function(/* { ssrContext } */) {
-    const Store = new Vuex.Store({
-        state: {
-            localModList: [],
-            thunderstoreModList: [],
-            dismissedUpdateAll: false,
-            isMigrationChecked: false,
-            apiConnectionError: ""
+export const store = {
+    state: {
+        localModList: [],
+        thunderstoreModList: [],
+        dismissedUpdateAll: false,
+        isMigrationChecked: false,
+        apiConnectionError: "",
+        deprecatedMods: new Map<string, boolean>(),
+    },
+    actions: {
+        updateModList({ commit }: Context, modList: ManifestV2[]) {
+            commit('setLocalModList', modList);
         },
-        actions: {
-            updateModList({ commit }, modList) {
-                commit('setLocalModList', modList);
-            },
-            updateThunderstoreModList({ commit }, modList) {
-                commit('setThunderstoreModList', modList);
-            },
-            dismissUpdateAll({commit}) {
-                commit('dismissUpdateAll');
-            },
-            updateApiConnectionError({commit}, err) {
-                commit('setApiConnectionError', err);
-            },
-            async checkMigrations({commit, state}) {
-                if (state.isMigrationChecked) {
-                    return;
-                }
-
-                try {
-                    await FolderMigration.runMigration();
-                } catch (e) {
-                    console.error(e);
-                } finally {
-                    commit('setMigrationChecked');
-                }
+        updateThunderstoreModList({ commit }: Context, modList: ThunderstoreMod[]) {
+            commit('setThunderstoreModList', modList);
+            commit('setDeprecatedMods', modList);
+        },
+        dismissUpdateAll({commit}: Context) {
+            commit('dismissUpdateAll');
+        },
+        updateApiConnectionError({commit}: Context, err: string) {
+            commit('setApiConnectionError', err);
+        },
+        async checkMigrations({commit, state}: Context) {
+            if (state.isMigrationChecked) {
+                return;
             }
-        },
-        mutations: {
-            setLocalModList(state, list) {
-                state.localModList = list;
-            },
-            setThunderstoreModList(state, list) {
-                state.thunderstoreModList = list;
-            },
-            dismissUpdateAll(state) {
-                state.dismissedUpdateAll = true;
-            },
-            setMigrationChecked(state) {
-                state.isMigrationChecked = true;
-            },
-            setApiConnectionError(state, err) {
-                state.apiConnectionError = err;
+
+            try {
+                await FolderMigration.runMigration();
+            } catch (e) {
+                console.error(e);
+            } finally {
+                commit('setMigrationChecked');
             }
+        }
+    },
+    mutations: {
+        setLocalModList(state: State, list: ManifestV2[]) {
+            state.localModList = list;
         },
-        modules: {
-            // example
+        setThunderstoreModList(state: State, list: ThunderstoreMod[]) {
+            state.thunderstoreModList = list;
         },
+        dismissUpdateAll(state: State) {
+            state.dismissedUpdateAll = true;
+        },
+        setMigrationChecked(state: State) {
+            state.isMigrationChecked = true;
+        },
+        setApiConnectionError(state: State, err: string) {
+            state.apiConnectionError = err;
+        },
+        setDeprecatedMods(state: State) {
+            state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
+        }
+    },
+    modules: {
+        modals: ModalsModule,
+        modFilters: ModFilterModule,
+    },
 
-        // enable strict mode (adds overhead!)
-        // for dev mode only
-        strict: process.env.DEV === 'true'
-    });
+    // enable strict mode (adds overhead!)
+    // for dev mode only
+    strict: process.env.DEV === 'true'
+};
 
-    return Store;
-}
+/*
+ * If not building with SSR mode, you can
+ * directly export the Store instantiation
+ */
+
+export default (/* { ssrContext } */) => new Vuex.Store<State>(store);

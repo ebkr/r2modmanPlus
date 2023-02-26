@@ -15,7 +15,7 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
-        <div id="downloadModal" :class="['modal', {'is-active':showDownloadModal}]" v-if="!updateAllMods">
+        <div id="downloadModal" :class="['modal', {'is-active': isOpen}]" v-if="thunderstoreMod !== null">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
                 <div class='card'>
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div id="updateAllModal" :class="['modal', {'is-active':showDownloadModal}]" v-if="updateAllMods">
+        <div id="updateAllModal" :class="['modal', {'is-active': isOpen}]" v-if="thunderstoreMod === null">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
                 <div class='card'>
@@ -99,7 +99,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -194,14 +194,13 @@ let assignId = 0;
             });
         }
 
-        @Prop()
-        thunderstoreMod: ThunderstoreMod | null = null;
+        get thunderstoreMod(): ThunderstoreMod | null {
+            return this.$store.state.modals.downloadModModalMod;
+        }
 
-        @Prop()
-        showDownloadModal: boolean = false;
-
-        @Prop({ default: true })
-        updateAllMods: boolean | undefined;
+        get isOpen(): boolean {
+            return this.$store.state.modals.isDownloadModModalOpen;
+        }
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
@@ -211,7 +210,7 @@ let assignId = 0;
             return this.$store.state.localModList || [];
         }
 
-        @Watch('thunderstoreMod')
+        @Watch('$store.state.modals.downloadModModalMod')
         async getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
@@ -230,7 +229,7 @@ let assignId = 0;
         }
 
         closeModal() {
-            this.$emit('closed-modal');
+            this.$store.commit("closeDownloadModModal");
         }
 
         downloadThunderstoreMod() {

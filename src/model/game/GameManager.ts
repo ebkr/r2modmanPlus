@@ -4,6 +4,8 @@ import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
 import { GameInstanceType } from '../../model/game/GameInstanceType';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import PathResolver from '../../r2mm/manager/PathResolver';
+import FileUtils from '../../utils/FileUtils';
 import * as path from 'path';
 
 export default class GameManager {
@@ -35,20 +37,25 @@ export default class GameManager {
         new Game('Dyson Sphere Program', 'DysonSphereProgram', 'DysonSphereProgram',
             'Dyson Sphere Program', ['DSPGAME.exe'], 'DSPGAME_Data',
             'https://dsp.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1366540")], "DysonSphereProgram.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "GameraGame.DysonSphereProgram")
+            ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
 
         new Game('Valheim', 'Valheim', 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "892970")], "Valheim.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "892970"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "CoffeeStainStudios.Valheim")
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
             'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
             'https://valheim.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "896660")], "Valheim.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "896660")
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
 
         new Game('GTFO', 'GTFO', 'GTFO',
             'GTFO', ['GTFO.exe'], 'GTFO_Data',
@@ -125,7 +132,11 @@ export default class GameManager {
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
             "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe"], "TotallyAccurateBattleSimulator_Data",
             "https://totally-accurate-battle-simulator.thunderstore.io/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "508440"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish")], "TotallyAccurateBattleSimulator.jpg",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "508440"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "LandfallGames.TotallyAccurateBattleSimulator")
+            ], "TotallyAccurateBattleSimulator.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Totally Accurate Battle Simulator"]),
 
         new Game("Nickelodeon All‑Star Brawl", "NASB", "NASB",
@@ -182,8 +193,8 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1843760")], "RogueTower.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt']),
 
-        new Game('House of the Dying Sun', 'HOTDS', 'HOTDS', 'DyingSun',
-            ['dyingsun.exe'], 'dyingsun_Data',
+        new Game('House of the Dying Sun', 'HOTDS', 'HOTDS',
+            'DyingSun', ['dyingsun.exe'], 'dyingsun_Data',
             'https://hotds.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [new StorePlatformMetadata(StorePlatform.STEAM, '283160')], "HOTDS.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds']),
@@ -197,14 +208,19 @@ export default class GameManager {
         new Game('Subnautica', 'Subnautica', 'Subnautica',
             'Subnautica', ['Subnautica.exe'], 'Subnautica_Data',
             'https://subnautica.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, "264710"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar")], "Subnautica.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "264710"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.GAMEPREVIEWSubnautica"),
+            ], "Subnautica.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
             'https://belowzero.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
-            [new StorePlatformMetadata(StorePlatform.STEAM, '848450')], 'SubnauticaBelowZero.png',
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
+            ], 'SubnauticaBelowZero.png', GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
 
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
@@ -296,9 +312,9 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("BONELAB", "BONELAB", "BONELAB",
-            "BONELAB", ["BONELAB_Steam_Windows64.exe"], "BONELAB_Steam_Windows64",
+            "BONELAB", ["BONELAB_Steam_Windows64.exe", "BONELAB_Oculus_Windows64.exe"], "BONELAB_Steam_Windows64",
             "https://thunderstore.io/c/bonelab/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190")], "BONELAB.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1592190"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "BONELAB.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BL"]),
 
         new Game("Trombone Champ", "TromboneChamp", "TromboneChamp",
@@ -307,6 +323,47 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1059990")], "TromboneChamp.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tc"]),
 
+        new Game("Rogue : Genesia", "RogueGenesia", "RogueGenesia",
+            "Rogue Genesia", ["Rogue Genesia.exe"], "Rogue Genesia_Data",
+            "https://thunderstore.io/c/rogue-genesia/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2067920")], "RogueGenesia.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rg"]),
+
+        new Game("Across the Obelisk", "AcrossTheObelisk", "AcrossTheObelisk",
+            "Across the Obelisk", ["AcrossTheObelisk.exe"], "AcrossTheObelisk_Data",
+            "https://thunderstore.io/c/across-the-obelisk/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ato", "ao"]),
+
+        new Game("ULTRAKILL", "ULTRAKILL", "ULTRAKILL",
+            "ULTRAKILL", ["ULTRAKILL.exe"], "ULTRAKILL_Data",
+            "https://thunderstore.io/c/ultrakill/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1229490")], "ULTRAKILL.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["uk"]),
+
+        new Game("Ultimate Chicken Horse", "UltimateChickenHorse", "UltimateChickenHorse",
+            "Ultimate Chicken Horse", ["UltimateChickenHorse.exe"], "UltimateChickenHorse_Data",
+            "https://thunderstore.io/c/ultimate-chicken-horse/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "386940")], "ultimate-chicken-horse.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["uch"]),
+
+        new Game("Atrio: The Dark Wild", "AtrioTheDarkWild", "AtrioTheDarkWild",
+            "Atrio The Dark Wild", ["Atrio.exe"], "Atrio_Data",
+            "https://thunderstore.io/c/atrio-the-dark-wild/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1125390")], "atrio-the-dark-wild.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["adw"]),
+
+        new Game("Brotato", "Brotato", "Brotato",
+            "Brotato", ["Brotato.exe"], "",
+            "https://thunderstore.io/c/brotato/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1942280")], "brotato.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.GODOT_ML, []),
+
+        new Game("Ancient Dungeon VR", "AncientDungeonVR", "AncientDungeonVR",
+            "Ancient Dungeon VR", ["Ancient_Dungeon.exe"], "Ancient_Dungeon_Data",
+            "https://thunderstore.io/c/ancient-dungeon-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1125240"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "ancient-dungeon-vr.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.ANCIENT_DUNGEON_VR, ["adv"]),
     ];
 
     static get activeGame(): Game {
@@ -319,6 +376,13 @@ export default class GameManager {
 
     static set activeGame(game: Game) {
         this._activeGame = game;
+    }
+
+    public static async activate(game: Game, platform: StorePlatform) {
+        this._activeGame = game;
+        this._activeGame.setActivePlatformByStore(platform);
+        PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
     }
 
     // Return RiskOfRain2 game as base startup to be used for settings load.
