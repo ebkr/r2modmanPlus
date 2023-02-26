@@ -1,6 +1,6 @@
-import { Depot } from 'src/depots/loader/Depot';
-import R2Error from 'src/model/errors/R2Error';
-import Game from 'src/model/game/Game';
+import { Depot } from '../../depots/loader/Depot';
+import R2Error from '../../model/errors/R2Error';
+import Game from '../../model/game/Game';
 
 export default class DepotLoader {
 

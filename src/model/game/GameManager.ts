@@ -364,6 +364,36 @@ export default class GameManager {
             "https://thunderstore.io/c/ancient-dungeon-vr/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1125240"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "ancient-dungeon-vr.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.ANCIENT_DUNGEON_VR, ["adv"]),
+
+        new Game("RUMBLE", "RUMBLE", "RUMBLE",
+            "RUMBLE", ["RUMBLE.exe"], "RUMBLE_Data",
+            "https://thunderstore.io/c/rumble/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "890550")], "RUMBLE.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, []),
+
+        new Game("Dome Keeper", "DomeKeeper", "DomeKeeper",
+            "Dome Keeper", ["domekeeper.exe"], "",
+            "https://thunderstore.io/c/dome-keeper/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1637320")], "dome-keeper.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.GODOT_ML, ["dk"]),
+
+        new Game("Skul: The Hero Slayer", "SkulTheHeroSlayer", "SkulTheHeroSlayer",
+            "Skul", ["Skul.exe"], "Skul_Data",
+            "https://thunderstore.io/c/skul-the-hero-slayer/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1147560")], "skul-the-hero-slayer.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Sons Of The Forest", "SonsOfTheForest", "SonsOfTheForest",
+            "Sons Of The Forest", ["SonsOfTheForest.exe"], "SonsOfTheForest_Data",
+            "https://thunderstore.io/c/sons-of-the-forest/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1326470")], "sons-of-the-forest.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sotf"]),
+
+        new Game("The Ouroboros King", "TheOuroborosKing", "TheOuroborosKing",
+            "The Ouroboros King", ["The Ouroboros King.exe"], "The Ouroboros King_Data",
+            "https://thunderstore.io/c/the-ouroboros-king/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2096510")], "the-ouroboros-king.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tok"]),
     ];
 
     static get activeGame(): Game {

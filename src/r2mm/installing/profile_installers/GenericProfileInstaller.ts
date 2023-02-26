@@ -181,10 +181,24 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
+    private async installGodotML(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        const copyFrom = path.join(mlLocation, "addons", "mod_loader");
+        const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
+        const fs = FsProvider.instance;
+
+        if (await fs.exists(copyFrom)) {
+            if (!await fs.exists(copyTo)) {
+                await fs.mkdirs(copyTo);
+            }
+            await fs.copyFolder(copyFrom, copyTo);
+        }
+    }
+
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
             case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.GODOT_ML: await this.installGodotML(bieLocation, modLoaderMapping, profile); break;
             case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
