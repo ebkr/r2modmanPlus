@@ -67,7 +67,7 @@ export default class GameManager {
             'Outward', ['Outward.exe'], 'Outward_Data',
             'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
-                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
+                new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
@@ -76,7 +76,7 @@ export default class GameManager {
             'Outward/Outward_Defed', ['Outward Definitive Edition.exe'], 'Outward Definitive Edition_Data',
             'https://outward.thunderstore.io/api/v1/package/', 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md',
             [
-                new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "794260"),
+                new StorePlatformMetadata(StorePlatform.STEAM, "1758860"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "f07a51af8ac845ea96f792fb485e04a3"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "OutwardDe.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),

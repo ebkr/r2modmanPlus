@@ -1,24 +1,32 @@
+### 3.1.38
+
+- Outward Definitive Edition now launches correctly
+    - The bug previously caused Steam to prompt about launch arguments and would discard them even if the user accepted
+      them.
+
 ### 3.1.37
+
 - Proton detection should work correctly on Linux platforms once again
-  - Reasonable fallbacks should be provided if the manager fails to keep depots updated
+    - Reasonable fallbacks should be provided if the manager fails to keep depots updated
 - Added games:
-  - Brotato
-  - Ancient Dungeon VR
-  - Atrio: The Dark Wild
-  - Ultimate Chicken Horse
+    - Brotato
+    - Ancient Dungeon VR
+    - Atrio: The Dark Wild
+    - Ultimate Chicken Horse
 - BONELAB Oculus executable is now selectable
 - Online searching no longer requires underscores in the name (Thanks to MSchmoecker)
 
-
 ### 3.1.36
+
 - Temporary workaround to force Proton on Linux systems
-  - Place a `.forceproton` file in the game directory whilst a solution is in development
+    - Place a `.forceproton` file in the game directory whilst a solution is in development
 - The blank screen on game selection has another potential fix
 - BONELAB can now be used on copies from the Oculus Store
 - ULTRAKILL support added
 - `dotnet` files will no longer appear in the config editor for BepInEx 6 BE builds.
 
 ### 3.1.35
+
 - Improved online search performance
 - Config names wrap if too long
 - Deprecated mods are hidden by default in the online section
@@ -28,11 +36,13 @@
 - Internal refactoring
 
 ### 3.1.34
+
 - Profile exports changed to use Thunderstore provided host
 - Significantly improved search performance in the online tab
 - Game selection server tab modified to reduce user mis-clicks
 
 ### 3.1.33
+
 - Added games:
     - Ravenfield
     - Aloft
