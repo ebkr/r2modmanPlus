@@ -296,7 +296,7 @@ let assignId = 0;
                 ProfileModList.requestLock(async () => {
                     const tsOutdatedMods = outdatedMods.filter(value => !value.getImplicitlyInstalled())
                         .map(value => ModBridge.getThunderstoreModFromMod(value, tsMods))
-                        .filter(value => value !== undefined) as ThunderstoreMod[];
+                        .filter((value): value is ThunderstoreMod => value !== undefined);
                     for (const combo of downloadedMods) {
                         try {
                             await DownloadModModal.installModAfterDownload(this.contextProfile!, tsOutdatedMods, combo.getMod(), combo.getVersion());

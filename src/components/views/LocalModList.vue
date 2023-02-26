@@ -37,19 +37,19 @@
             </div>
             <div class="tabs">
                 <ul class="margin-bottom">
-                    <li :class="[{'is-active': activeTab === 0}]" @click="changeTab(0)">
+                    <li :class="[{'is-active': activeTab === tabs.ALL}]" @click="changeTab(tabs.ALL)">
                         <a>
-                            All <span :class="[{'is-link': activeTab === 0}]" class="tag tagged-link__tag margin-left">{{ getTabCountForAll }}</span>
+                            All <span :class="[{'is-link': activeTab === tabs.ALL}]" class="tag tagged-link__tag margin-left">{{ getTabCountForAll }}</span>
                         </a>
                     </li>
-                    <li :class="[{'is-active': activeTab === 1}]" @click="changeTab(1)">
+                    <li :class="[{'is-active': activeTab === tabs.INSTALLED}]" @click="changeTab(tabs.INSTALLED)">
                         <a>
-                            Installed <span :class="[{'is-link': activeTab === 1}]" class="tag tagged-link__tag margin-left">{{ getTabCountForInstalled }}</span>
+                            Installed <span :class="[{'is-link': activeTab === tabs.INSTALLED}]" class="tag tagged-link__tag margin-left">{{ getTabCountForInstalled }}</span>
                         </a>
                     </li>
-                    <li :class="[{'is-active': activeTab === 2}]" @click="changeTab(2)">
+                    <li :class="[{'is-active': activeTab === tabs.DEPENDENCIES}]" @click="changeTab(tabs.DEPENDENCIES)">
                         <a>
-                            Dependencies <span :class="[{'is-link': activeTab === 2}]" class="tag tagged-link__tag margin-left">{{ getTabCountForDependencies }}</span>
+                            Dependencies <span :class="[{'is-link': activeTab === tabs.DEPENDENCIES}]" class="tag tagged-link__tag margin-left">{{ getTabCountForDependencies }}</span>
                         </a>
                     </li>
                 </ul>
@@ -261,447 +261,448 @@ import SearchUtils from '../../utils/SearchUtils';
             Modal,
             Draggable
         }
-    })
-    export default class LocalModList extends Vue {
+})
+export default class LocalModList extends Vue {
 
-        settings: ManagerSettings = new ManagerSettings();
+    settings: ManagerSettings = new ManagerSettings();
 
-        private cardExpanded: boolean = false;
-        private funkyMode: boolean = false;
+    private cardExpanded: boolean = false;
+    private funkyMode: boolean = false;
 
     private activeTab: LocalModTabs = LocalModTabs.INSTALLED;
+    private tabs = LocalModTabs;
 
-        get modifiableModList(): ManifestV2[] {
-            return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
-                this.sortDisabledPosition, this.sortOrder);
+    get modifiableModList(): ManifestV2[] {
+        return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
+            this.sortDisabledPosition, this.sortOrder);
+    }
+
+    get thunderstorePackages(): ThunderstoreMod[] {
+        return this.$store.state.thunderstoreModList || [];
+    }
+
+    get getTabCountForAll() {
+        return this.$store.state.localModList.length;
+    }
+
+    get getTabCountForInstalled() {
+        return this.$store.state.localModList
+            .filter((value: ManifestV2) => !value.getImplicitlyInstalled())
+            .length;
+    }
+
+    get getTabCountForDependencies() {
+        return this.$store.state.localModList
+            .filter((value: ManifestV2) => value.getImplicitlyInstalled())
+            .length;;
+    }
+
+    private searchableModList: ManifestV2[] = [];
+    private showingDependencyList: boolean = false;
+    private selectedManifestMod: ManifestV2 | null = null;
+    private dependencyListDisplayType: string = 'view';
+
+    // Filtering
+    private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
+    private sortOrder: SortNaming = this.settings.getInstalledSortBy();
+    private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
+    private searchQuery: string = '';
+    private activeGame: Game | null = null;
+
+    // Context
+    private contextProfile: Profile | null = null;
+
+    get draggableList() {
+        return [...this.searchableModList]
+    }
+
+    @Watch("sortOrder")
+    sortOrderChanged(newValue: string) {
+        this.settings.setInstalledSortBy(newValue);
+    }
+
+    @Watch("sortDirection")
+    sortDirectionChanged(newValue: string) {
+        this.settings.setInstalledSortDirection(newValue);
+    }
+
+    @Watch("sortDisabledPosition")
+    sortDisabledPositionChanged(newValue: string) {
+        this.settings.setInstalledDisablePosition(newValue);
+    }
+
+    @Watch('modifiableModList')
+    modListUpdated() {
+        this.filterModList();
+    }
+
+    @Watch('searchQuery')
+    filterModList() {
+        if (this.searchQuery.trim() === '') {
+            this.searchableModList = [...(this.modifiableModList || [])];
         }
-
-        get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList || [];
-        }
-
-        get getTabCountForAll() {
-            return this.$store.state.localModList.length;
-        }
-
-        get getTabCountForInstalled() {
-            return this.$store.state.localModList
-                .filter((value: ManifestV2) => !value.getImplicitlyInstalled())
-                .length;
-        }
-
-        get getTabCountForDependencies() {
-            return this.$store.state.localModList
-                .filter((value: ManifestV2) => value.getImplicitlyInstalled())
-                .length;;
-        }
-
-        private searchableModList: ManifestV2[] = [];
-        private showingDependencyList: boolean = false;
-        private selectedManifestMod: ManifestV2 | null = null;
-        private dependencyListDisplayType: string = 'view';
-
-        // Filtering
-        private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
-        private sortOrder: SortNaming = this.settings.getInstalledSortBy();
-        private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
-        private searchQuery: string = '';
-        private activeGame: Game | null = null;
-
-        // Context
-        private contextProfile: Profile | null = null;
-
-        get draggableList() {
-            return [...this.searchableModList]
-        }
-
-        @Watch("sortOrder")
-        sortOrderChanged(newValue: string) {
-            this.settings.setInstalledSortBy(newValue);
-        }
-
-        @Watch("sortDirection")
-        sortDirectionChanged(newValue: string) {
-            this.settings.setInstalledSortDirection(newValue);
-        }
-
-        @Watch("sortDisabledPosition")
-        sortDisabledPositionChanged(newValue: string) {
-            this.settings.setInstalledDisablePosition(newValue);
-        }
-
-        @Watch('modifiableModList')
-        modListUpdated() {
-            this.filterModList();
-        }
-
-        @Watch('searchQuery')
-        filterModList() {
-            if (this.searchQuery.trim() === '') {
-                this.searchableModList = [...(this.modifiableModList || [])];
-            }
-            const searchKeys = SearchUtils.makeKeys(this.searchQuery);
-            this.searchableModList = this.modifiableModList
-                .filter((mod: ManifestV2) => {
-                    switch (this.activeTab) {
-                        case LocalModTabs.ALL:
-                            return true;
-                        case LocalModTabs.INSTALLED:
-                            return !mod.getImplicitlyInstalled();
-                        case LocalModTabs.DEPENDENCIES:
-                            return mod.getImplicitlyInstalled();
-                        default:
-                            throw new Error(`Local tab [${this.activeTab}] not implemented`);
-                    }
-                })
-                .filter((x: ManifestV2) => {
-                    return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
-                });
-        }
-
-        @Watch('activeTab')
-        activeTabUpdated() {
-            this.filterModList();
-        }
-
-        getThunderstoreModFromMod(mod: ManifestV2) {
-            return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
-        }
-
-        async moveUp(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            await this.$store.dispatch("updateModList",updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
-        }
-
-        async moveDown(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryDown(mod, this.contextProfile!);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
-        }
-
-        isLatest(vueMod: any): boolean {
-            return ModBridge.isLatestVersion(vueMod);
-        }
-
-        getMissingDependencies(vueMod: any): string[] {
-            const mod: Mod = new Mod().fromReactive(vueMod);
-            return mod.getDependencies().filter((dependency: string) => {
-                // Include in filter if mod isn't found.
-                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")) === undefined;
+        const searchKeys = SearchUtils.makeKeys(this.searchQuery);
+        this.searchableModList = this.modifiableModList
+            .filter((mod: ManifestV2) => {
+                switch (this.activeTab) {
+                    case LocalModTabs.ALL:
+                        return true;
+                    case LocalModTabs.INSTALLED:
+                        return !mod.getImplicitlyInstalled();
+                    case LocalModTabs.DEPENDENCIES:
+                        return mod.getImplicitlyInstalled();
+                    default:
+                        throw new Error(`Local tab [${this.activeTab}] not implemented`);
+                }
+            })
+            .filter((x: ManifestV2) => {
+                return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
             });
-        }
+    }
 
-        getDependantList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependantList(mod, this.modifiableModList);
-        }
+    @Watch('activeTab')
+    activeTabUpdated() {
+        this.filterModList();
+    }
 
-        getDependencyList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependencyList(mod, this.modifiableModList);
-        }
+    getThunderstoreModFromMod(mod: ManifestV2) {
+        return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
+    }
 
-        async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
-            const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
-            if (uninstallError instanceof R2Error) {
-                // Uninstall failed
-                this.showingDependencyList = false;
-                this.$emit('error', uninstallError);
-                return uninstallError;
-            }
-            const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
-            if (modList instanceof R2Error) {
-                // Failed to remove mod from local list.
-                this.showingDependencyList = false;
-                this.$emit('error', modList);
-                return modList;
-            }
-            await this.$store.dispatch("updateModList",modList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
+    async moveUp(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
+        if (updatedList instanceof R2Error) {
+            this.$emit('error', updatedList);
+            return;
         }
-
-        async disableMod(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            try {
-                const result = await this.performDisable([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit("error", err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            }
-            this.selectedManifestMod = null;
+        await this.$store.dispatch("updateModList",updatedList);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
         }
+        this.filterModList();
+    }
 
-        async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
-            for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                if (disableErr instanceof R2Error) {
-                    // Failed to disable
-                    this.showingDependencyList = false;
-                    this.$emit('error', disableErr);
-                    return disableErr;
-                }
-            }
-            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
-                updatingMod.disable();
-            });
-            if (updatedList instanceof R2Error) {
-                // Failed to update mod list.
-                this.showingDependencyList = false;
-                this.$emit('error', updatedList);
-                return updatedList;
-            }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+    async moveDown(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const updatedList = await ProfileModList.shiftModEntryDown(mod, this.contextProfile!);
+        if (updatedList instanceof R2Error) {
+            this.$emit('error', updatedList);
+            return;
         }
+        await this.$store.dispatch("updateModList", updatedList);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
+        }
+        this.filterModList();
+    }
 
-        async uninstallMod(vueMod: any) {
-            let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            try {
-                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
-                    const result = await this.performUninstallMod(dependant);
-                    if (result instanceof R2Error) {
-                        this.$emit('error', result);
-                        return;
-                    }
-                }
-                const result = await this.performUninstallMod(mod);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to uninstall mod.
-                const err: Error = e as Error;
-                this.$emit('error', err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            }
-            this.selectedManifestMod = null;
-            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
+    isLatest(vueMod: any): boolean {
+        return ModBridge.isLatestVersion(vueMod);
+    }
+
+    getMissingDependencies(vueMod: any): string[] {
+        const mod: Mod = new Mod().fromReactive(vueMod);
+        return mod.getDependencies().filter((dependency: string) => {
+            // Include in filter if mod isn't found.
+            return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")) === undefined;
+        });
+    }
+
+    getDependantList(mod: ManifestV2): Set<ManifestV2> {
+        return Dependants.getDependantList(mod, this.modifiableModList);
+    }
+
+    getDependencyList(mod: ManifestV2): Set<ManifestV2> {
+        return Dependants.getDependencyList(mod, this.modifiableModList);
+    }
+
+    async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
+        const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
+        if (uninstallError instanceof R2Error) {
+            // Uninstall failed
+            this.showingDependencyList = false;
+            this.$emit('error', uninstallError);
+            return uninstallError;
+        }
+        const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
+        if (modList instanceof R2Error) {
+            // Failed to remove mod from local list.
+            this.showingDependencyList = false;
+            this.$emit('error', modList);
+            return modList;
+        }
+        await this.$store.dispatch("updateModList",modList);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
+        }
+    }
+
+    async disableMod(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            const result = await this.performDisable([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
             if (result instanceof R2Error) {
                 this.$emit('error', result);
                 return;
             }
-            await this.$store.dispatch("updateModList", result);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+        } catch (e) {
+            // Failed to disable mod.
+            const err: Error = e as Error;
+            this.$emit("error", err);
+            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
         }
+        this.selectedManifestMod = null;
+    }
 
-        showDependencyList(vueMod: any, displayType: string) {
-            this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
-            this.dependencyListDisplayType = displayType;
-            this.showingDependencyList = true;
-            console.log(this.dependencyListDisplayType, this.showingDependencyList)
-        }
-
-        uninstallModRequireConfirmation(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            if (this.getDependantList(mod).size === 0) {
-                this.performUninstallMod(mod);
-                this.filterModList();
-            } else {
-                this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
-            }
-        }
-
-        disableModRequireConfirmation(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const enabledDependants: ManifestV2[] = [];
-            this.getDependantList(mod).forEach(value => {
-               if (value.isEnabled()) {
-                   enabledDependants.push(value);
-               }
-            });
-            if (enabledDependants.length === 0) {
-                this.performDisable([mod]);
-            } else {
-                this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
-            }
-        }
-
-        viewDependencyList(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.showDependencyList(mod, DependencyListDisplayType.VIEW);
-        }
-
-        async enableMod(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            try {
-                const result = await this.performEnable([...Dependants.getDependencyList(mod, this.modifiableModList), mod]);
-                if (result instanceof R2Error) {
-                    throw result;
-                }
-            } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit('error', err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            }
-        }
-
-        async performEnable(mods: ManifestV2[]): Promise<R2Error | void> {
-            for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                if (disableErr instanceof R2Error) {
-                    // Failed to disable
-                    this.showingDependencyList = false;
-                    this.$emit('error', disableErr);
-                    return disableErr;
-                }
-            }
-            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
-                updatingMod.enable();
-            });
-            if (updatedList instanceof R2Error) {
-                // Failed to update mod list.
+    async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
+        for (let mod of mods) {
+            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
+            if (disableErr instanceof R2Error) {
+                // Failed to disable
                 this.showingDependencyList = false;
-                this.$emit('error', updatedList);
-                return updatedList;
-            }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
-        }
-
-        updateMod(vueMod: any) {
-            this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
-            const mod = ModBridge.getThunderstoreModFromMod(
-                this.selectedManifestMod,
-                this.thunderstorePackages
-            );
-            if (mod instanceof ThunderstoreMod) {
-                this.$store.commit("openDownloadModModal", mod);
-            } else {
-                this.$store.commit("closeDownloadModModal");
+                this.$emit('error', disableErr);
+                return disableErr;
             }
         }
+        const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
+            updatingMod.disable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            this.showingDependencyList = false;
+            this.$emit('error', updatedList);
+            return updatedList;
+        }
+        await this.$store.dispatch("updateModList", updatedList);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
+        }
+        this.filterModList();
+    }
 
-        downloadDependency(missingDependency: string) {
-            const mod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
-                (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
-            );
-            if (mod === undefined) {
-                this.$store.commit("closeDownloadModModal");
-                const error = new R2Error(
-                    `${missingDependency} could not be found`,
-                    'You may be offline, or the mod was removed from Thunderstore.',
-                    'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
-                );
-                this.$emit('error', error);
+    async uninstallMod(vueMod: any) {
+        let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
+                const result = await this.performUninstallMod(dependant);
+                if (result instanceof R2Error) {
+                    this.$emit('error', result);
+                    return;
+                }
+            }
+            const result = await this.performUninstallMod(mod);
+            if (result instanceof R2Error) {
+                this.$emit('error', result);
                 return;
             }
-            this.$store.commit("openDownloadModModal", mod);
+        } catch (e) {
+            // Failed to uninstall mod.
+            const err: Error = e as Error;
+            this.$emit('error', err);
+            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
         }
-
-        getTooltipText(mod: ManifestV2) {
-            return ModListTooltipManager.getTooltipText(mod);
+        this.selectedManifestMod = null;
+        const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
+        if (result instanceof R2Error) {
+            this.$emit('error', result);
+            return;
         }
-
-        getDeprecatedFilterOptions() {
-            return Object.values(SortLocalDisabledMods);
+        await this.$store.dispatch("updateModList", result);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
         }
-
-        getSortOrderOptions() {
-            return Object.values(SortNaming);
-        }
-
-        getSortDirectionOptions() {
-            return Object.values(SortDirection);
-        }
-
-        canShowSortIcons() {
-            return this.sortDirection === SortDirection.STANDARD
-                && this.sortOrder === SortNaming.CUSTOM
-                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
-                && this.searchQuery.length === 0;
-        }
-
-        getProfileName() {
-            return this.contextProfile!.getProfileName();
-        }
-
-        async created() {
-            this.activeGame = GameManager.activeGame;
-            this.settings = await ManagerSettings.getSingleton(this.activeGame);
-            this.contextProfile = Profile.getActiveProfile();
-            this.filterModList();
-
-            this.cardExpanded = this.settings.getContext().global.expandedCards;
-            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-        }
-
-        emitError(error: R2Error) {
-            this.$emit('error', error);
-        }
-
-        changeTab(num: LocalModTabs) {
-            this.activeTab = num;
-        }
-
-        resolveDraggedItem(startIndex: number, newIndex: number) {
-            ProfileModList.requestLock(async () => {
-                // Update the mod list using Vuex store list to prevent flickering due to IO overhead.
-                // Profile locking will prevent issues related to concurrent modifications.
-                const newList = this.resolveDraggedItemAgainstList(startIndex, newIndex, this.$store.state.localModList);
-                await this.$store.dispatch("updateModList", newList);
-
-                const result = await ProfileModList.saveModList(this.contextProfile!, newList);
-                if (result instanceof R2Error) {
-                    this.emitError(result);
-                    return;
-                }
-                const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
-                if (err instanceof R2Error) {
-                    this.emitError(err);
-                    return;
-                }
-                this.filterModList();
-            });
-        }
-
-        resolveDraggedItemAgainstList(startIndex: number, newIndex: number, list: ManifestV2[]): ManifestV2[] {
-            // Workaround to position above/below based on direction moved.
-            let indexAddition = startIndex > newIndex ? 0 : 1;
-            const modMoved = this.searchableModList[startIndex];
-            const modAtIndexAfterNew = this.searchableModList[newIndex + indexAddition];
-            return ProfileModList.moveEntryAboveWithoutSaving(modMoved, modAtIndexAfterNew, [...list]);
-        }
-
+        this.filterModList();
     }
+
+    showDependencyList(vueMod: any, displayType: string) {
+        this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
+        this.dependencyListDisplayType = displayType;
+        this.showingDependencyList = true;
+        console.log(this.dependencyListDisplayType, this.showingDependencyList)
+    }
+
+    uninstallModRequireConfirmation(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        if (this.getDependantList(mod).size === 0) {
+            this.performUninstallMod(mod);
+            this.filterModList();
+        } else {
+            this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
+        }
+    }
+
+    disableModRequireConfirmation(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        const enabledDependants: ManifestV2[] = [];
+        this.getDependantList(mod).forEach(value => {
+           if (value.isEnabled()) {
+               enabledDependants.push(value);
+           }
+        });
+        if (enabledDependants.length === 0) {
+            this.performDisable([mod]);
+        } else {
+            this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+        }
+    }
+
+    viewDependencyList(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        this.showDependencyList(mod, DependencyListDisplayType.VIEW);
+    }
+
+    async enableMod(vueMod: any) {
+        const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        try {
+            const result = await this.performEnable([...Dependants.getDependencyList(mod, this.modifiableModList), mod]);
+            if (result instanceof R2Error) {
+                throw result;
+            }
+        } catch (e) {
+            // Failed to disable mod.
+            const err: Error = e as Error;
+            this.$emit('error', err);
+            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+        }
+    }
+
+    async performEnable(mods: ManifestV2[]): Promise<R2Error | void> {
+        for (let mod of mods) {
+            const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
+            if (disableErr instanceof R2Error) {
+                // Failed to disable
+                this.showingDependencyList = false;
+                this.$emit('error', disableErr);
+                return disableErr;
+            }
+        }
+        const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
+            updatingMod.enable();
+        });
+        if (updatedList instanceof R2Error) {
+            // Failed to update mod list.
+            this.showingDependencyList = false;
+            this.$emit('error', updatedList);
+            return updatedList;
+        }
+        await this.$store.dispatch("updateModList", updatedList);
+        const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+        if (err instanceof R2Error) {
+            this.$emit('error', err);
+        }
+        this.filterModList();
+    }
+
+    updateMod(vueMod: any) {
+        this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
+        const mod = ModBridge.getThunderstoreModFromMod(
+            this.selectedManifestMod,
+            this.thunderstorePackages
+        );
+        if (mod instanceof ThunderstoreMod) {
+            this.$store.commit("openDownloadModModal", mod);
+        } else {
+            this.$store.commit("closeDownloadModModal");
+        }
+    }
+
+    downloadDependency(missingDependency: string) {
+        const mod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
+            (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
+        );
+        if (mod === undefined) {
+            this.$store.commit("closeDownloadModModal");
+            const error = new R2Error(
+                `${missingDependency} could not be found`,
+                'You may be offline, or the mod was removed from Thunderstore.',
+                'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
+            );
+            this.$emit('error', error);
+            return;
+        }
+        this.$store.commit("openDownloadModModal", mod);
+    }
+
+    getTooltipText(mod: ManifestV2) {
+        return ModListTooltipManager.getTooltipText(mod);
+    }
+
+    getDeprecatedFilterOptions() {
+        return Object.values(SortLocalDisabledMods);
+    }
+
+    getSortOrderOptions() {
+        return Object.values(SortNaming);
+    }
+
+    getSortDirectionOptions() {
+        return Object.values(SortDirection);
+    }
+
+    canShowSortIcons() {
+        return this.sortDirection === SortDirection.STANDARD
+            && this.sortOrder === SortNaming.CUSTOM
+            && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
+            && this.searchQuery.length === 0;
+    }
+
+    getProfileName() {
+        return this.contextProfile!.getProfileName();
+    }
+
+    async created() {
+        this.activeGame = GameManager.activeGame;
+        this.settings = await ManagerSettings.getSingleton(this.activeGame);
+        this.contextProfile = Profile.getActiveProfile();
+        this.filterModList();
+
+        this.cardExpanded = this.settings.getContext().global.expandedCards;
+        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
+    }
+
+    emitError(error: R2Error) {
+        this.$emit('error', error);
+    }
+
+    changeTab(tab: LocalModTabs) {
+        this.activeTab = tab;
+    }
+
+    resolveDraggedItem(startIndex: number, newIndex: number) {
+        ProfileModList.requestLock(async () => {
+            // Update the mod list using Vuex store list to prevent flickering due to IO overhead.
+            // Profile locking will prevent issues related to concurrent modifications.
+            const newList = this.resolveDraggedItemAgainstList(startIndex, newIndex, this.$store.state.localModList);
+            await this.$store.dispatch("updateModList", newList);
+
+            const result = await ProfileModList.saveModList(this.contextProfile!, newList);
+            if (result instanceof R2Error) {
+                this.emitError(result);
+                return;
+            }
+            const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.emitError(err);
+                return;
+            }
+            this.filterModList();
+        });
+    }
+
+    resolveDraggedItemAgainstList(startIndex: number, newIndex: number, list: ManifestV2[]): ManifestV2[] {
+        // Workaround to position above/below based on direction moved.
+        let indexAddition = startIndex > newIndex ? 0 : 1;
+        const modMoved = this.searchableModList[startIndex];
+        const modAtIndexAfterNew = this.searchableModList[newIndex + indexAddition];
+        return ProfileModList.moveEntryAboveWithoutSaving(modMoved, modAtIndexAfterNew, [...list]);
+    }
+
+}
 
 </script>
