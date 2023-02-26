@@ -115,6 +115,7 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 let assignId = 0;
 
@@ -173,7 +174,7 @@ let assignId = 0;
                         ProfileModList.requestLock(async () => {
                             for (const combo of downloadedMods) {
                                 try {
-                                    await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
+                                    await DownloadModModal.installModAfterDownload(profile, [tsMod], combo.getMod(), combo.getVersion());
                                 } catch (e) {
                                     const err: Error = e as Error;
                                     return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
@@ -247,6 +248,7 @@ let assignId = 0;
         }
 
         async downloadLatest() {
+            const tsMods = ThunderstorePackages.PACKAGES;
             this.closeModal();
             const localMods = await ProfileModList.getModList(this.contextProfile!);
             if (localMods instanceof R2Error) {
@@ -292,9 +294,12 @@ let assignId = 0;
                 }
             }, async (downloadedMods: ThunderstoreCombo[]) => {
                 ProfileModList.requestLock(async () => {
+                    const tsOutdatedMods = outdatedMods.filter(value => !value.getImplicitlyInstalled())
+                        .map(value => ModBridge.getThunderstoreModFromMod(value, tsMods))
+                        .filter((value): value is ThunderstoreMod => value !== undefined);
                     for (const combo of downloadedMods) {
                         try {
-                            await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
+                            await DownloadModModal.installModAfterDownload(this.contextProfile!, tsOutdatedMods, combo.getMod(), combo.getVersion());
                         } catch (e) {
                             const err: Error = e as Error;
                             return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
@@ -355,7 +360,7 @@ let assignId = 0;
                     ProfileModList.requestLock(async () => {
                         for (const combo of downloadedMods) {
                             try {
-                                await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
+                                await DownloadModModal.installModAfterDownload(this.contextProfile!, [tsMod], combo.getMod(), combo.getVersion());
                             } catch (e) {
                                 const err: Error = e as Error;
                                 return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
@@ -379,7 +384,7 @@ let assignId = 0;
             return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.localModList, this.thunderstorePackages);
         }
 
-        static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
+        static async installModAfterDownload(profile: Profile, initiatingMods: ThunderstoreMod[], mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             return new Promise(async (resolve, reject) => {
                 const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
                 const profileModList = await ProfileModList.getModList(profile);
@@ -402,6 +407,10 @@ let assignId = 0;
                     }
                     const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
                     if (!(installError instanceof R2Error)) {
+                        if (initiatingMods.find(value => value.getFullName() === manifestMod.getName())) {
+                            manifestMod.setImplicitlyInstalled(false);
+                        }
+                        manifestMod.setInstalledOn(new Date().getTime());
                         const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
                         if (newModList instanceof R2Error) {
                             return reject(newModList);
@@ -417,6 +426,18 @@ let assignId = 0;
                             await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
                         }
                     }
+                } else if (modAlreadyInstalled) {
+                    manifestMod.setImplicitlyInstalled(false);
+                    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
+                    if (newModList instanceof R2Error) {
+                        return reject(newModList);
+                    }
+                    if (!modAlreadyInstalled.isEnabled()) {
+                        await ProfileModList.updateMod(manifestMod, profile, mod => {
+                            mod.disable();
+                        });
+                    }
+
                 }
                 return resolve();
             });
