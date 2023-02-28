@@ -130,7 +130,6 @@
         <CategoryFilterModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" @error="showError($event)"/>
         <DownloadModModal @error="showError($event)" />
-        <GameRunningModal :activeGame="activeGame" />
 
         <router-view name="subview"
                      @error="showError"
@@ -176,14 +175,12 @@ import LocalFileImportModal from '../components/importing/LocalFileImportModal.v
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
-import GameRunningModal from '../components/modals/GameRunningModal.vue';
 
 @Component({
 		components: {
             LocalFileImportModal,
             CategoryFilterModal,
             DownloadModModal,
-            GameRunningModal,
 			'hero': Hero,
 			'progress-bar': Progress,
 			'ExpandableCard': ExpandableCard,
