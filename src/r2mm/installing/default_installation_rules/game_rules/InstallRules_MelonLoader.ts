@@ -1,10 +1,12 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
+import { GAME_NAME } from "../../profile_installers/ModLoaderVariantRecord";
+import { RuleSubtype } from "../../InstallationRules";
 
-export default function(): CoreRuleType {
 
+export function buildMelonLoaderRules(gameName: GAME_NAME, extraRules?: RuleSubtype[]): CoreRuleType {
     return {
-        gameName: 'HardBullet',
+        gameName: gameName,
         relativeFileExclusions: ["manifest.json", "icon.png", "README.md", "LICENCE"],
         rules: [
             {
@@ -18,12 +20,6 @@ export default function(): CoreRuleType {
                 isDefaultLocation: true,
                 defaultFileExtensions: [],
                 trackingMethod: 'SUBDIR_NO_FLATTEN',
-                subRoutes: []
-            },
-            {
-                route: path.join('UserData', 'CustomNPCs'),
-                defaultFileExtensions: [".npc"],
-                trackingMethod: 'STATE',
                 subRoutes: []
             },
             {
@@ -52,8 +48,7 @@ export default function(): CoreRuleType {
                     }
                 ]
             },
-        ]
-    };
-
+            ...(extraRules ? extraRules : []),
+        ],
+    }
 }
-

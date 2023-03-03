@@ -11,19 +11,22 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
+import { PackageLoader } from "../../model/installing/PackageLoader";
 
 export default class ModLinker {
 
     public static async link(profile: Profile, game: Game): Promise<string[] | R2Error> {
-        if (process.platform === 'linux') {
-            const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
-            if (!isProton) {
-                // Game is native, BepInEx doesn't require moving. No linked files.
+        if (game.packageLoader == PackageLoader.BEPINEX) {
+            if (process.platform === 'linux') {
+                const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+                if (!isProton) {
+                    // Game is native, BepInEx doesn't require moving. No linked files.
+                    return [];
+                }
+            } else if (process.platform === 'darwin') {
+                // Linux games don't require moving BepInEx files.
                 return [];
             }
-        } else if (process.platform === 'darwin') {
-            // Linux games don't require moving BepInEx files.
-            return [];
         }
         const gameDirectory: string | R2Error = await GameDirectoryResolverProvider.instance.getDirectory(game);
         if (gameDirectory instanceof R2Error) {

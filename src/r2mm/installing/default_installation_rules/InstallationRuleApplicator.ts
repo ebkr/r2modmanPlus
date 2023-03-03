@@ -9,8 +9,6 @@ import InstallRules_NASB from '../default_installation_rules/game_rules/InstallR
 import InstallRules_Subnautica from '../default_installation_rules/game_rules/InstallRules_Subnautica';
 import InstallRules_SubnauticaBZ from '../default_installation_rules/game_rules/InstallRules_SubnauticaBZ';
 import InstallRules_Titanfall2 from '../default_installation_rules/game_rules/InstallRules_Titanfall2';
-import InstallRules_HardBullet from '../default_installation_rules/game_rules/InstallRules_HardBullet';
-import InstallRules_BackpackHero from '../default_installation_rules/game_rules/InstallRules_BackpackHero';
 import InstallRules_BONELAB from '../default_installation_rules/game_rules/InstallRules_BONELAB';
 import { buildBepInExRules } from '../default_installation_rules/game_rules/InstallRules_BepInex';
 import * as path from 'path';
@@ -18,6 +16,9 @@ import { buildGodotMLRules } from "../default_installation_rules/game_rules/Inst
 import {
     InstallRules_AncientDungeonVR
 } from "../default_installation_rules/game_rules/InstallRules_AncientDungeonVR";
+import {
+    buildMelonLoaderRules
+} from "../default_installation_rules/game_rules/InstallRules_MelonLoader";
 
 export default class InstallationRuleApplicator {
 
@@ -55,11 +56,17 @@ export default class InstallationRuleApplicator {
             InstallRules_Titanfall2(),
             buildBepInExRules("Peglin"),
             buildBepInExRules("VRising"),
-            InstallRules_HardBullet(),
+            buildMelonLoaderRules("HardBullet", [
+            {
+                route: path.join('UserData', 'CustomNPCs'),
+                defaultFileExtensions: [".npc"],
+                trackingMethod: 'STATE',
+                subRoutes: []
+            }]),
             buildBepInExRules("GreenHellVR"),
             buildBepInExRules("20MinutesTillDawn"),
             buildBepInExRules("VTOL_VR"),
-            InstallRules_BackpackHero(),
+            buildMelonLoaderRules("BackpackHero"),
             buildBepInExRules("Stacklands"),
             buildBepInExRules("ETG"),
             buildBepInExRules("Ravenfield"),
@@ -80,6 +87,11 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("AtrioTheDarkWild"),
             buildGodotMLRules("Brotato"),
             InstallRules_AncientDungeonVR(),
+            buildMelonLoaderRules("RUMBLE"),
+            buildGodotMLRules("DomeKeeper"),
+            buildBepInExRules("SkulTheHeroSlayer"),
+            buildBepInExRules("SonsOfTheForest"),
+            buildBepInExRules("TheOuroborosKing"),
         ]
     }
 }
