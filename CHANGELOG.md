@@ -1,3 +1,14 @@
+### 3.1.39
+- Added support for more games:
+  - RUMBLE
+  - Dome Keeper
+  - Skul: The Hero Slayer
+  - Sons Of The Forest
+  - The Ouroboros King
+- Bug fixed where game launch modal didn't always appear if clicked from certain screens
+- _Note: Credits for all changes in this release go the Thunderstore team_
+
+
 ### 3.1.38
 
 - Outward Definitive Edition now launches correctly
