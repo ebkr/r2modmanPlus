@@ -126,11 +126,15 @@
                 :expandedByDefault="cardExpanded"
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
-                    <span :class="['non-selectable', {'has-tooltip-left': getTooltipText(key).length > 2}]" :data-tooltip="getTooltipText(key).length > 0 ? getTooltipText(key) : null">
-                        <span v-if="key.isDeprecated()" class="tag is-danger margin-right margin-right--half-width">
+                    <span class="non-selectable">
+                        <span v-if="key.isDeprecated()"
+                              class="tag is-danger margin-right margin-right--half-width"
+                              v-tooltip.right="'This mod is deprecated and could be broken'">
                             Deprecated
                         </span>
-                        <span v-if="!key.isEnabled()" class="tag is-warning margin-right margin-right--half-width">
+                        <span v-if="!key.isEnabled()"
+                              class="tag is-warning margin-right margin-right--half-width"
+                              v-tooltip.right="'This mod will not be used in-game'">
                             Disabled
                         </span>
                         <span class="card-title selectable">
@@ -147,27 +151,23 @@
                     <!-- Show update and missing dependency icons -->
                     <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
                         <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
-                            <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
-                                <i class='fas fa-heart'></i>
-                            </span>
+                            <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
                         </Link>
                     </span>
-                    <span class='card-header-icon has-tooltip-left'
+                    <span class='card-header-icon'
                           @click.prevent.stop="updateMod(key)"
-                          data-tooltip='An update is available' v-if="!isLatest(key)">
-                        <i class='fas fa-cloud-upload-alt'></i>
+                          v-if="!isLatest(key)">
+                        <i class='fas fa-cloud-upload-alt' v-tooltip.left="'An update is available'"></i>
                     </span>
-                    <span class='card-header-icon has-tooltip-left'
-                          :data-tooltip="`Missing ${getMissingDependencies(key).length} dependencies`"
+                    <span class='card-header-icon'
                           v-if="getMissingDependencies(key).length > 0">
-                        <i class='fas fa-exclamation-circle'></i>
+                        <i class='fas fa-exclamation-circle' v-tooltip.left="`Missing ${getMissingDependencies(key).length} dependencies`"></i>
                     </span>
-                    <span class='card-header-icon has-tooltip-left'
-                          @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)"
-                          :data-tooltip='key.isEnabled() ? "Disable" : "Enable"'>
+                    <span class='card-header-icon'
+                          @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)">
                         <div class="field">
                           <input id="switchExample" type="checkbox" name="switchExample" :class='`switch is-small  ${key.isEnabled() ? "switch is-info" : ""}`' :checked="key.isEnabled()">
-                          <label for="switchExample"></label>
+                          <label for="switchExample" v-tooltip.left="key.isEnabled() ? 'Disable' : 'Enable'"></label>
                         </div>
                     </span>
                 </template>
@@ -220,7 +220,6 @@ import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import DownloadModModal from './DownloadModModal.vue';
 import { ExpandableCard, Link, Modal } from '../all';
-import ModListTooltipManager from '../../r2mm/mods/ModListTooltipManager';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
@@ -586,10 +585,6 @@ import SearchUtils from '../../utils/SearchUtils';
                 return;
             }
             this.$store.commit("openDownloadModModal", mod);
-        }
-
-        getTooltipText(mod: ManifestV2) {
-            return ModListTooltipManager.getTooltipText(mod);
         }
 
         getDeprecatedFilterOptions() {

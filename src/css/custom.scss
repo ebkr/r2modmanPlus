@@ -3,6 +3,10 @@ html {
     background-color: $scheme-background;
 }
 
+body {
+    position: relative;
+}
+
 body.body--dark {
     color: $scheme-text;
 }
@@ -320,12 +324,6 @@ select {
 select[disabled] {
     opacity: 0.3 !important;
     color: gray;
-}
-
-[data-tooltip]::before {
-    max-width: 90vw !important;
-    width: max-content !important;
-    white-space: pre-wrap !important;
 }
 
 .ql-editor {
