@@ -25,7 +25,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
     public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
         const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
+        const dependenciesToIterate = [...mod.getDependencies(), ...mod.getMetaDependencies()];
+        dependenciesToIterate.forEach(dependency => {
             // Find matching ThunderstoreMod.
             const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
             if (matchingProvider !== undefined) {
@@ -54,7 +55,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
     public buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
         const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
+        const dependenciesToIterate = [...mod.getDependencies(), ...mod.getMetaDependencies()];
+        console.log("dti", dependenciesToIterate);
+        dependenciesToIterate.forEach(dependency => {
             // Find matching ThunderstoreMod.
             const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
             if (matchingProvider !== undefined) {
@@ -69,6 +72,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                     // If otherVersionAlreadyAdded, or full names are equal
                     otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
                 });
+                console.log(matchingVersion.getFullName(), "is already added:", otherVersionAlreadyAdded)
                 if (!otherVersionAlreadyAdded) {
                     const tsCombo = new ThunderstoreCombo();
                     tsCombo.setMod(matchingProvider);
@@ -77,7 +81,14 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 }
             }
         })
-        foundDependencies.forEach(found => builder.push(found));
+        foundDependencies.forEach(found => {
+            if (!builder.find(value => value.getMod().getFullName() === found.getMod().getFullName())) {
+                builder.push(found);
+            }
+            if (mod.getMetaDependencies().find(value => found.getMod().getFullName() === value)) {
+                foundDependencies.forEach(found => this.buildDependencySet(found.getVersion(), allMods, builder));
+            }
+        });
         foundDependencies.forEach(found => this.buildDependencySetUsingLatest(found.getVersion(), allMods, builder));
         return builder;
     }

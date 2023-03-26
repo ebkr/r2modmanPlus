@@ -2,6 +2,10 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
+import {
+    MOD_LOADER_VARIANTS,
+    VARIANT_DEPENDENCIES
+} from 'src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
 export default class ThunderstorePackages {
 
@@ -15,9 +19,30 @@ export default class ThunderstorePackages {
     public static async update(game: Game) {
         this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
         const response = await ConnectionProvider.instance.getPackages(game);
-        this.handlePackageApiResponse(response);
+        await this.handlePackageApiResponse(response);
+        await this.linkModLoaderVariantDependencies(game);
 
         return response;
+    }
+
+    public static async linkModLoaderVariantDependencies(game: Game) {
+        const loaderVariants = MOD_LOADER_VARIANTS[game.internalFolderName]
+            .map(value => value.packageName);
+
+        this.PACKAGES.filter(pkg => loaderVariants.includes(pkg.getFullName()))
+            .forEach(pkg => {
+                const varDeps = VARIANT_DEPENDENCIES[game.internalFolderName];
+                const resolvedVariantDependencies = this.PACKAGES
+                    .filter(value => varDeps.includes(value.getFullName()))
+                    .map(value => value.getVersions()
+                        .reduce((previousValue, currentValue) => previousValue.getVersionNumber().isNewerThan(currentValue.getVersionNumber())
+                            ? previousValue
+                            : currentValue
+                        ))
+                    .map(value => value.getFullName());
+                pkg.setMetaDependencies(resolvedVariantDependencies);
+                pkg.getVersions().forEach(pkgVersion => pkgVersion.setMetaDependencies(resolvedVariantDependencies))
+            })
     }
 
     /**

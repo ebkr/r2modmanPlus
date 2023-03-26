@@ -143,6 +143,7 @@ import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import PathResolver from '../r2mm/manager/PathResolver';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 @Component({
     components: {
@@ -174,6 +175,7 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     async moveToNextScreen() {
+        await ThunderstorePackages.linkModLoaderVariantDependencies(this.activeGame);
         if (process.platform === 'linux') {
             if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
                 console.log('Not proton game');

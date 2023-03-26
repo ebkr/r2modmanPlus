@@ -76,5 +76,10 @@ const VARIANTS = {
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
 // Casting is done here to ensure the values are ModLoaderPackageMapping[]
+
+export const VARIANT_DEPENDENCIES: {[key: string]: string[]} = {
+    SkulTheHeroSlayer: ["UnityLibs-UnityUnstripped"]
+}
+
 export type GAME_NAME = keyof typeof VARIANTS;
 export const MOD_LOADER_VARIANTS: {[key in GAME_NAME]: ModLoaderPackageMapping[]} = VARIANTS;
