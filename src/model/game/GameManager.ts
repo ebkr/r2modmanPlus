@@ -394,6 +394,12 @@ export default class GameManager {
             "https://thunderstore.io/c/the-ouroboros-king/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2096510")], "the-ouroboros-king.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tok"]),
+
+        new Game("Wrestling Empire", "WrestlingEmpire", "WrestlingEmpire",
+            "Wrestling Empire", ["Wrestling Empire.exe"], "Wrestling Empire_Data",
+            "https://thunderstore.io/c/wrestling-empire/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1620340")], "wrestling-empire.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["we"]),
     ];
 
     static get activeGame(): Game {
