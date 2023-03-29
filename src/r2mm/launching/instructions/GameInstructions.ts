@@ -5,8 +5,10 @@ import BepInExGameInstructions from './instructions/loader/BepInExGameInstructio
 import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameInstructions';
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
-import { GodotMLGameInstructions } from "../../launching/instructions/instructions/loader/GodotMLGameInstructions";
-import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
+import { GodotMLGameInstructions } from '../../launching/instructions/instructions/loader/GodotMLGameInstructions';
+import { AncientVRGameInstructions } from '../../launching/instructions/instructions/loader/AncientVRGameInstructions';
+import SkulTheHeroSlayerGameInstructions
+    from 'src/r2mm/launching/instructions/instructions/loader/SkulTheHeroSlayerGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -15,7 +17,9 @@ export interface GameInstruction {
 
 export default class GameInstructions {
 
-    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map();
+    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
+        ["SkulTheHeroSlayer", new SkulTheHeroSlayerGameInstructions()]
+    ]);
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
