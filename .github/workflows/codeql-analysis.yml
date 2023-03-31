@@ -3,20 +3,20 @@
 #
 # You may wish to alter this file to override the set of languages analyzed,
 # or to provide custom queries or build logic.
-name: "CodeQL"
+name: "代码审查"
 
 on:
   push:
-    branches: [master]
+    branches: [中文翻译]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [master]
+    branches: [中文翻译]
   schedule:
     - cron: '0 17 * * 5'
 
 jobs:
   analyze:
-    name: Analyze
+    name: 分析
     runs-on: ubuntu-latest
 
     strategy:
@@ -29,7 +29,7 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
-    - name: Checkout repository
+    - name: 签出存储库
       uses: actions/checkout@v2
       with:
         # We must fetch at least the immediate parents so that if this is
@@ -42,7 +42,7 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
 
     # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
+    - name: 初始化审查
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
@@ -53,7 +53,7 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
+    - name: 自动构建
       uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
@@ -67,5 +67,5 @@ jobs:
     #   make bootstrap
     #   make release
 
-    - name: Perform CodeQL Analysis
+    - name: 执行代码审查分析
       uses: github/codeql-action/analyze@v1
