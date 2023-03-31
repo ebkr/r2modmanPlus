@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Hero title='Settings'
+        <Hero title='设置'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='is-info'/>
         <div class="margin-right">
