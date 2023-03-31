@@ -117,7 +117,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                             return directory;
                         }
                     }
-                    return 'Please set manually';
+                    return '请手动设置';
                 },
                 'fa-folder-open',
                 () => {
@@ -131,8 +131,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Locations',
-                'Browse profile folder',
-                'Open the folder where mods are stored for the current profile.',
+                '浏览配置文件文件夹',
+                '打开为当前配置文件存储模组的文件夹.',
                 async () => {
                     return Profile.getActiveProfile().getPathOfProfile();
                 },
