@@ -1,7 +1,7 @@
 <template>
     <div>
         <Hero title='设置'
-              :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
+              :subtitle='`高级选项用于 ${appName}: ` + managerVersionNumber.toString()'
               heroType='is-info'/>
         <div class="margin-right">
             <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
@@ -97,8 +97,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         private settingsList = [
             new SettingsRow(
                 'Locations',
-                'Browse data folder',
-                'Open the directory where mods are stored for all games and profiles.',
+                '浏览数据文件夹',
+                '打开存储所有游戏和配置文件的模组的目录.',
                 async () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
