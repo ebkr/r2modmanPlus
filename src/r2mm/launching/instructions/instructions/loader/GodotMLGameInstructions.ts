@@ -9,7 +9,7 @@ export class GodotMLGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `--enable-mods --mods-path "${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, "mods")}"`,
+            moddedParameters: `--script res://addons/mod_loader/mod_loader_setup.gd --enable-mods --mods-path "${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, "mods")}"`,
             vanillaParameters: ''
         }
     }

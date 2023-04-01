@@ -1,11 +1,10 @@
 <template>
     <Link :url="mod.getDonationLink()"
           :target="'external'"
-          class="card-footer-item">
-        <div class="has-tooltip-left has-tooltip-multiline" data-tooltip="Donate to the mod author">
-            <i class='fas fa-heart margin-right margin-right--half-width'></i>
-            Donate
-        </div>
+          class="card-footer-item"
+          v-tooltip.left="{content: 'Donate to the mod author', distance: 0}">
+        <i class='fas fa-heart margin-right margin-right--half-width'></i>
+        Donate
     </Link>
 </template>
 

@@ -8,14 +8,18 @@
             :funkyMode="funkyMode"
             :expandedByDefault="cardExpanded">
             <template v-slot:title>
-                <span v-if="key.isPinned()" class='has-tooltip-left'
-                      data-tooltip='Pinned on Thunderstore'>
-                    <span class="tag is-info margin-right margin-right--half-width">Pinned</span>
+                <span v-if="key.isPinned()">
+                    <span class="tag is-info margin-right margin-right--half-width"
+                          v-tooltip.right="'Pinned on Thunderstore'">
+                        Pinned
+                    </span>
                     <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
                 </span>
-                <span v-else-if="isModDeprecated(key)" class='has-tooltip-left'
-                      data-tooltip='This mod is potentially broken'>
-                    <span class="tag is-danger margin-right margin-right--half-width">Deprecated</span>
+                <span v-else-if="isModDeprecated(key)">
+                    <span class="tag is-danger margin-right margin-right--half-width"
+                          v-tooltip.right="'This mod is potentially broken'">
+                        Deprecated
+                    </span>
                     <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
                 </span>
                 <span v-else class='selectable'>
@@ -25,15 +29,11 @@
             <template v-slot:other-icons>
                 <span class='card-header-icon' v-if="key.getDonationLink()">
                     <Link :url="key.getDonationLink()" target="external" tag="span">
-                        <span class="has-tooltip-left" data-tooltip="Donate to the mod author">
-                            <i class='fas fa-heart'></i>
-                        </span>
+                        <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
                     </Link>
                 </span>
-                <span class='card-header-icon has-tooltip-left'
-                      data-tooltip='Mod already installed'
-                      v-if="isThunderstoreModInstalled(key)">
-                    <i class='fas fa-check'></i>
+                <span class='card-header-icon' v-if="isThunderstoreModInstalled(key)">
+                    <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
                 </span>
             </template>
             <template v-slot:description>

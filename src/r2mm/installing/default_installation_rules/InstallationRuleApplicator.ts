@@ -92,6 +92,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("SkulTheHeroSlayer"),
             buildBepInExRules("SonsOfTheForest"),
             buildBepInExRules("TheOuroborosKing"),
+            buildBepInExRules("WrestlingEmpire"),
         ]
     }
 }
