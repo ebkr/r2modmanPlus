@@ -69,7 +69,7 @@ export default class GameInstructionParser {
     }
 
     private static async skulTheHeroSlayerCorelibsPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
-        const corelibsPath = path.join(profile.getPathOfProfile(), "plugins", "UnityLibs-UnityUnstripped", "unstripped_corlib");
+        const corelibsPath = path.join(profile.getPathOfProfile(), "BepInEx", "plugins", "UnityLibs-UnityUnstripped", "unstripped_corlib");
         try {
             return await FsProvider.instance.realpath(corelibsPath);
         } catch (e) {

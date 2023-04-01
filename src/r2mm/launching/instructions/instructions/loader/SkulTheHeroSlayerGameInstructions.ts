@@ -28,10 +28,11 @@ export default class SkulTheHeroSlayerGameInstructions extends GameInstructionGe
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
-                extraArguments += ` --doorstop-dll-search-override "${DynamicGameInstruction.SKUL_THE_HERO_SLAYER_CORELIBS}"`;
-            }
         }
+
+        // For this game, the corelibs are mandatory, so we can just delegate to the resolver.
+        extraArguments += ` --doorstop-dll-search-override "${DynamicGameInstruction.SKUL_THE_HERO_SLAYER_CORELIBS}"`;
+
         return {
             moddedParameters: `--doorstop-enable true --doorstop-target "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
             vanillaParameters: `--doorstop-enable false`
@@ -45,10 +46,11 @@ export default class SkulTheHeroSlayerGameInstructions extends GameInstructionGe
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
-                extraArguments += ` --doorstop-mono-dll-search-path-override "${DynamicGameInstruction.SKUL_THE_HERO_SLAYER_CORELIBS}"`;
-            }
         }
+
+        // For this game, the corelibs are mandatory, so we can just delegate to the resolver.
+        extraArguments += ` --doorstop-mono-dll-search-path-override "${DynamicGameInstruction.SKUL_THE_HERO_SLAYER_CORELIBS}"`;
+
         return {
             moddedParameters: `--doorstop-enabled true --doorstop-target-assembly "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
             vanillaParameters: `--doorstop-enabled false`
