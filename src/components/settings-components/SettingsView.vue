@@ -141,7 +141,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Locations',
-                'Change data folder directory测试',
+                'Change data folder directory测试666',
                 'Change the directory where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
                 async () => {
                     return PathResolver.ROOT;
