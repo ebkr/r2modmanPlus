@@ -78,7 +78,7 @@ const VARIANTS = {
 // Casting is done here to ensure the values are ModLoaderPackageMapping[]
 
 export const VARIANT_DEPENDENCIES: {[key: string]: string[]} = {
-    SkulTheHeroSlayer: ["UnityLibs-UnityUnstripped"]
+    SkulTheHeroSlayer: ["UnityLibs-SkulTheHeroSlayer_UnityUnstripped"]
 }
 
 export type GAME_NAME = keyof typeof VARIANTS;
