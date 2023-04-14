@@ -104,12 +104,20 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         return this.dateCreated;
     }
 
+    public getDateCreatedUnix(): Number {
+        return new Date(this.dateCreated).getTime();
+    }
+    
     public setDateCreated(date: Date) {
         this.dateCreated = date;
     }
-
+    
     public getDateUpdated(): Date {
         return this.dateUpdated;
+    }
+    
+    public getDateUpdatedUnix(): Number {
+        return new Date(this.dateUpdated).getTime();
     }
 
     public setDateUpdated(date: Date) {

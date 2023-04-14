@@ -41,6 +41,49 @@
             <hr/>
             <div>
                 <div>
+                    <span>Creation Date</span>
+                    <br/>
+                    <label for="filterDateCreatedFromInput">From</label>
+                    <datepicker
+                    v-model="filterDateCreatedFrom"
+                    id="filterDateCreatedFromInput"
+                    class="is-checkradio has-background-color"
+                    :clear-button=true
+                    ></datepicker>
+                    <label for="filterDateCreatedToInput">To</label>
+                    <datepicker
+                    v-model="filterDateCreatedTo"
+                    id="filterDateCreatedToInput"
+                    class="is-checkradio has-background-color"
+                    :clear-button=true
+                    ></datepicker>
+                </div>
+                <br/>
+                <div>
+                    <div>
+                        <span>Update Date</span>
+                        <br/>
+                        <label for="filterDateUpdatedFromInput">From</label>
+                        <datepicker
+                        v-model="filterDateUpdatedFrom"
+                        id="filterDateUpdatedFromInput"
+                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                        :clear-button=true
+                        ></datepicker>
+                        <label for="filterDateUpdatedToInput">To</label>
+                        <datepicker
+                        v-model="filterDateUpdatedTo"
+                        id="filterDateUpdatedToInput"
+                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                        :clear-button=true
+                        ></datepicker>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div>
+
+                <div>
                     <input
                         v-model="allowNsfw"
                         id="nsfwCheckbox"
@@ -88,6 +131,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import Datepicker from "vuejs-datepicker";
 
 import { Modal } from '../../components/all';
 import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
@@ -95,7 +139,7 @@ import GameManager from '../../model/game/GameManager';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 
 @Component({
-    components: { Modal }
+    components: { Modal, Datepicker }
 })
 export default class CategoryFilterModal extends Vue {
     settings: ManagerSettings = new ManagerSettings();
@@ -106,6 +150,38 @@ export default class CategoryFilterModal extends Vue {
 
     set allowNsfw(value: boolean) {
         this.$store.commit("modFilters/setAllowNsfw", value);
+    }
+
+    get filterDateCreatedFrom(): Date {
+        return this.$store.state.modFilters.filterDateCreatedFrom;
+    }
+
+    set filterDateCreatedFrom(value: Date) {
+        this.$store.commit("modFilters/setfilterDateCreatedFrom", value);
+    }
+
+    get filterDateCreatedTo(): Date {
+        return this.$store.state.modFilters.filterDateCreatedTo;
+    }
+
+    set filterDateCreatedTo(value: Date) {
+        this.$store.commit("modFilters/setfilterDateCreatedTo", value);
+    }
+
+    get filterDateUpdatedFrom(): Date {
+        return this.$store.state.modFilters.filterDateUpdatedFrom;
+    }
+
+    set filterDateUpdatedFrom(value: Date) {
+        this.$store.commit("modFilters/setfilterDateUpdatedFrom", value);
+    }
+
+    get filterDateUpdatedTo(): Date {
+        return this.$store.state.modFilters.filterDateUpdatedTo;
+    }
+
+    set filterDateUpdatedTo(value: Date) {
+        this.$store.commit("modFilters/setfilterDateUpdatedTo", value);
     }
 
     get categoryFilterMode(): CategoryFilterMode {
