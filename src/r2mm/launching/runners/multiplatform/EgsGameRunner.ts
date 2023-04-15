@@ -11,7 +11,7 @@ import { DynamicGameInstruction } from '../../instructions/DynamicGameInstructio
 import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
 import ConfigLine from '../../../../model/file/ConfigLine';
-import { getUnityDoorstopVersion } from 'src/utils/UnityDoorstopUtils';
+import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
 
 export default class EgsGameRunner extends GameRunnerProvider {
 
