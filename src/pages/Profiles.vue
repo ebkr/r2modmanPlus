@@ -639,7 +639,7 @@ export default class Profiles extends Vue {
         await fs.readdir(profilesDirectory).then(dirContents => {
             dirContents.forEach(async (file: string) => {
                 if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
-                    this.profileList.push(file);
+                    this.profileList = [...this.profileList, file].sort();
                 }
             });
         }).catch(() => { /* Do nothing */ });
