@@ -60,24 +60,22 @@
                 </div>
                 <br/>
                 <div>
-                    <div>
-                        <span>Update Date</span>
-                        <br/>
-                        <label for="filterDateUpdatedFromInput">From</label>
-                        <datepicker
-                        v-model="filterDateUpdatedFrom"
-                        id="filterDateUpdatedFromInput"
-                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                        :clear-button=true
-                        ></datepicker>
-                        <label for="filterDateUpdatedToInput">To</label>
-                        <datepicker
-                        v-model="filterDateUpdatedTo"
-                        id="filterDateUpdatedToInput"
-                        :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                        :clear-button=true
-                        ></datepicker>
-                    </div>
+                    <span>Update Date</span>
+                    <br/>
+                    <label for="filterDateUpdatedFromInput">From</label>
+                    <datepicker
+                    v-model="filterDateUpdatedFrom"
+                    id="filterDateUpdatedFromInput"
+                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                    :clear-button=true
+                    ></datepicker>
+                    <label for="filterDateUpdatedToInput">To</label>
+                    <datepicker
+                    v-model="filterDateUpdatedTo"
+                    id="filterDateUpdatedToInput"
+                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
+                    :clear-button=true
+                    ></datepicker>
                 </div>
             </div>
             <hr/>
@@ -152,35 +150,35 @@ export default class CategoryFilterModal extends Vue {
         this.$store.commit("modFilters/setAllowNsfw", value);
     }
 
-    get filterDateCreatedFrom(): Date {
+    get filterDateCreatedFrom(): Date|null {
         return this.$store.state.modFilters.filterDateCreatedFrom;
     }
 
-    set filterDateCreatedFrom(value: Date) {
+    set filterDateCreatedFrom(value: Date|null) {
         this.$store.commit("modFilters/setfilterDateCreatedFrom", value);
     }
 
-    get filterDateCreatedTo(): Date {
+    get filterDateCreatedTo(): Date|null {
         return this.$store.state.modFilters.filterDateCreatedTo;
     }
 
-    set filterDateCreatedTo(value: Date) {
+    set filterDateCreatedTo(value: Date|null) {
         this.$store.commit("modFilters/setfilterDateCreatedTo", value);
     }
 
-    get filterDateUpdatedFrom(): Date {
+    get filterDateUpdatedFrom(): Date|null {
         return this.$store.state.modFilters.filterDateUpdatedFrom;
     }
 
-    set filterDateUpdatedFrom(value: Date) {
+    set filterDateUpdatedFrom(value: Date|null) {
         this.$store.commit("modFilters/setfilterDateUpdatedFrom", value);
     }
 
-    get filterDateUpdatedTo(): Date {
+    get filterDateUpdatedTo(): Date|null {
         return this.$store.state.modFilters.filterDateUpdatedTo;
     }
 
-    set filterDateUpdatedTo(value: Date) {
+    set filterDateUpdatedTo(value: Date|null) {
         this.$store.commit("modFilters/setfilterDateUpdatedTo", value);
     }
 

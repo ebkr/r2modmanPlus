@@ -50,10 +50,10 @@ export default {
     mutations: {
         reset: function(state: State) {
             state.allowNsfw = false;
-            state.filterDateCreatedFrom = new Date();
-            state.filterDateCreatedTo = new Date();
-            state.filterDateUpdatedFrom = new Date();
-            state.filterDateUpdatedTo = new Date();
+            state.filterDateCreatedFrom = null;
+            state.filterDateCreatedTo = null;
+            state.filterDateUpdatedFrom = null;
+            state.filterDateUpdatedTo = null;
             state.categoryFilterMode = CategoryFilterMode.OR;
             state.selectedCategories = [];
         },
