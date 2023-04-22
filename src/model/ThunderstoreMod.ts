@@ -111,7 +111,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     public setDateCreated(date: Date) {
         this.dateCreated = date;
     }
-    
+
     public getDateUpdated(): Date {
         return this.dateUpdated;
     }
