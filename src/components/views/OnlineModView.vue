@@ -140,16 +140,16 @@ export default class OnlineModView extends Vue {
     @Watch("$store.state.modFilters.allowNsfw")
     @Watch("$store.state.modFilters.filterDateCreatedFrom")
     @Watch("$store.state.modFilters.filterDateCreatedTo")
-    @Watch("$store.state.modFilters.filterDateCreatedFrom")
-    @Watch("$store.state.modFilters.filterDateCreatedTo")
+    @Watch("$store.state.modFilters.filterDateUpdatedFrom")
+    @Watch("$store.state.modFilters.filterDateUpdatedTo")
     @Watch("$store.state.modFilters.categoryFilterMode")
     @Watch("$store.state.modFilters.selectedCategories")
     @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
         const filterDateCreatedFrom = this.$store.state.modFilters.filterDateCreatedFrom;
         const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo;
-        const filterDateUpdatedFrom = this.$store.state.modFilters.filterDateCreatedFrom;
-        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateCreatedTo;
+        const filterDateUpdatedFrom = this.$store.state.modFilters.filterDateUpdatedFrom;
+        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo;
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
         const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
         const filterCategories = this.$store.state.modFilters.selectedCategories;
@@ -175,10 +175,10 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateCreatedTo.getTime() >= mod.getDateCreatedUnix())))
         }
         if (filterDateUpdatedFrom) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedFrom.getTime() <= mod.getDateCreatedUnix())))
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedFrom.getTime() <= mod.getDateUpdatedUnix())))
         }
         if (filterDateUpdatedTo) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedTo.getTime() >= mod.getDateCreatedUnix())))
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedTo.getTime() >= mod.getDateUpdatedUnix)))
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {

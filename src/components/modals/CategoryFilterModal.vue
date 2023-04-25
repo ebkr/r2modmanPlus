@@ -41,42 +41,50 @@
             <hr/>
             <div>
                 <div>
-                    <span>Creation Date</span>
+                    <span>Creation date</span>
                     <br/>
-                    <label for="filterDateCreatedFromInput">From</label>
-                    <datepicker
-                    v-model="filterDateCreatedFrom"
-                    id="filterDateCreatedFromInput"
-                    class="is-checkradio has-background-color"
-                    :clear-button=true
-                    ></datepicker>
-                    <label for="filterDateCreatedToInput">To</label>
-                    <datepicker
-                    v-model="filterDateCreatedTo"
-                    id="filterDateCreatedToInput"
-                    class="is-checkradio has-background-color"
-                    :clear-button=true
-                    ></datepicker>
+                    <div class="row">
+                        <datepicker
+                            v-model="filterDateCreatedFrom"
+                            id="filterDateCreatedFromInput"
+                            calendar-class="datepicker-dark"
+                            :clear-button=true
+                            :disabled-dates="disabledDates"
+                        ></datepicker>
+                        <span class="margin-left margin-right">-</span>
+                        <datepicker
+                            v-model="filterDateCreatedTo"
+                            id="filterDateCreatedToInput"
+                            calendar-class="datepicker-dark"
+                            :clear-button=true
+                            :disabled-dates="disabledDates"
+                        ></datepicker>
+                    </div>
                 </div>
                 <br/>
                 <div>
-                    <span>Update Date</span>
+                    <span>Update date</span>
                     <br/>
-                    <label for="filterDateUpdatedFromInput">From</label>
-                    <datepicker
-                    v-model="filterDateUpdatedFrom"
-                    id="filterDateUpdatedFromInput"
-                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                    :clear-button=true
-                    ></datepicker>
-                    <label for="filterDateUpdatedToInput">To</label>
-                    <datepicker
-                    v-model="filterDateUpdatedTo"
-                    id="filterDateUpdatedToInput"
-                    :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
-                    :clear-button=true
-                    ></datepicker>
+                    <div class="row">
+                        <datepicker
+                            v-model="filterDateUpdatedFrom"
+                            id="filterDateUpdatedFromInput"
+                            calendar-class="datepicker-dark"
+                            :clear-button=true
+                            :disabled-dates="disabledDates"
+                        ></datepicker>
+                        <span class="margin-left margin-right">-</span>
+                        <datepicker
+                            v-model="filterDateUpdatedTo"
+                            id="filterDateUpdatedToInput"
+                            calendar-class="datepicker-dark"
+                            :clear-button=true
+                            :disabled-dates="disabledDates"
+                        ></datepicker>
+                    </div>
                 </div>
+                <br/>
+                <br/>
             </div>
             <hr/>
             <div>
@@ -237,6 +245,18 @@ export default class CategoryFilterModal extends Vue {
 
     get unselectedCategories(): string[] {
         return this.$store.getters["modFilters/unselectedCategories"];
+    }
+
+    get disabledDates() {
+        return { from: new Date() };
+    }
+
+    get highlightedCreatedDates() {
+        
+        const highlighted = Object();
+        highlighted.from = this.$store.state.modFilters.filterDateCreatedFrom
+        highlighted.to = this.$store.state.modFilters.filterDateCreatedTo
+        return { from: new Date() };
     }
 }
 </script>
