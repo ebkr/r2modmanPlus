@@ -486,6 +486,27 @@ export default class Profiles extends Vue {
         }
     }
 
+    async fixThunderstoreFile(file: string) {
+        const bytes = await fs.readFile(file);
+        // find zip end header
+        // end header is 22 bytes long, but starts with a 4 byte signature
+        const zipEndHeader = Buffer.from([0x50, 0x4b, 0x05, 0x06]);
+        const zipEndHeaderIndex = bytes.lastIndexOf(zipEndHeader);
+        if (zipEndHeaderIndex === -1) {
+            throw new Error("Failed to find zip end header");
+        }
+        // check if we have padding after the end header
+        const padding = bytes.slice(zipEndHeaderIndex + 22);
+        if (padding.length === 0) {
+            // no padding, we're done
+            return;
+        }
+        // trim file to zip end header
+        const trimmedBytes = bytes.slice(0, zipEndHeaderIndex + 22);
+        // write trimmed file
+        await fs.writeFile(file, trimmedBytes);
+    }
+
     async importProfileHandler(files: string[] | null) {
         if (files === null || files.length === 0) {
             this.importingProfile = false;
@@ -495,6 +516,7 @@ export default class Profiles extends Vue {
         if (files[0].endsWith('.r2x')) {
             read = await fs.readFile(files[0]).toString();
         } else if (files[0].endsWith('.r2z')) {
+            await this.fixThunderstoreFile(files[0]);
             const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
             if (result === null) {
                 return;
