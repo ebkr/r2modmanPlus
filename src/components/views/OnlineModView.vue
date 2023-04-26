@@ -36,7 +36,7 @@
                                 class="button"
                                 @click="$store.commit('openCategoryFilterModal')"
                             >
-                                Filter categories
+                                Edit filters
                             </button>
                         </div>
                     </div>

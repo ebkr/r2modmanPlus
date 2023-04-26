@@ -40,21 +40,6 @@
             </div>
             <hr/>
             <div>
-                <div class="datepicker-container">
-                    <div class="datepicker-row">
-                        <span>Creation date</span>
-                        <span>Update date</span>
-                    </div>
-                    <div class="datepicker-row">
-                        <q-date v-model="filterDateCreated" range minimal class="datepicker-dark"/>
-                        <q-date v-model="filterDateUpdated" range minimal class="datepicker-dark"/>
-                    </div>
-                </div>
-                <br/>
-                <br/>
-            </div>
-            <hr/>
-            <div>
 
                 <div>
                     <input
@@ -91,6 +76,19 @@
                         <span class="margin-right margin-right--half-width" />
                         {{ key }}
                     </label>
+                </div>
+            </div>
+            <hr/>
+            <div>
+                <div class="datepicker-container">
+                    <div class="datepicker-row">
+                        <span>Creation date</span>
+                        <span>Update date</span>
+                    </div>
+                    <div class="datepicker-row">
+                        <q-date v-model="filterDateCreated" range minimal class="datepicker-model"/>
+                        <q-date v-model="filterDateUpdated" range minimal class="datepicker-model"/>
+                    </div>
                 </div>
             </div>
         </template>
@@ -204,18 +202,6 @@ export default class CategoryFilterModal extends Vue {
 
     get unselectedCategories(): string[] {
         return this.$store.getters["modFilters/unselectedCategories"];
-    }
-
-    get disabledDates() {
-        return { from: new Date() };
-    }
-
-    get highlightedCreatedDates() {
-        
-        const highlighted = Object();
-        highlighted.from = this.$store.state.modFilters.filterDateCreatedFrom
-        highlighted.to = this.$store.state.modFilters.filterDateCreatedTo
-        return { from: new Date() };
     }
 }
 </script>
