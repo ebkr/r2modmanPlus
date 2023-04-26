@@ -465,6 +465,20 @@ code {
     align-items: center;
 }
 
+.datepicker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.datepicker-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
 .datepicker-dark {
-    background-color: $scheme-background!important;
+    min-width: 50%!important;
+    max-width: 50%!important;
 }

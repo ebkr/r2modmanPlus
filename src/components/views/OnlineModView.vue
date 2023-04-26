@@ -178,7 +178,7 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedFrom.getTime() <= mod.getDateUpdatedUnix())))
         }
         if (filterDateUpdatedTo) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedTo.getTime() >= mod.getDateUpdatedUnix)))
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedTo.getTime() >= mod.getDateUpdatedUnix())))
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {

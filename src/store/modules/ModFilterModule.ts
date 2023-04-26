@@ -66,20 +66,36 @@ export default {
             state.allowNsfw = value;
         },
 
-        setfilterDateCreatedFrom: function(state: State, value: Date | null) {
-            state.filterDateCreatedFrom = value;
+        setfilterDateCreatedFrom: function(state: State, value: string | null) {
+            if (value) {
+                state.filterDateCreatedFrom = new Date(value);
+            } else {
+                state.filterDateCreatedFrom = null;
+            }
         },
 
-        setfilterDateCreatedTo: function(state: State, value: Date | null) {
-            state.filterDateCreatedTo = value;
+        setfilterDateCreatedTo: function(state: State, value: string | null) {
+            if (value) {
+                state.filterDateCreatedTo = new Date(value);
+            } else {
+                state.filterDateCreatedTo = null;
+            }
         },
 
-        setfilterDateUpdatedFrom: function(state: State, value: Date | null) {
-            state.filterDateUpdatedFrom = value;
+        setfilterDateUpdatedFrom: function(state: State, value: string | null) {
+            if (value) {
+                state.filterDateUpdatedFrom = new Date(value);
+            } else {
+                state.filterDateUpdatedFrom = null;
+            }
         },
 
-        setfilterDateUpdatedTo: function(state: State, value: Date | null) {
-            state.filterDateUpdatedTo = value;
+        setfilterDateUpdatedTo: function(state: State, value: string | null) {
+            if (value) {
+                state.filterDateUpdatedTo = new Date(value);
+            } else {
+                state.filterDateUpdatedTo = null;
+            }
         },
 
         setCategoryFilterMode: function(state: State, value: CategoryFilterMode) {

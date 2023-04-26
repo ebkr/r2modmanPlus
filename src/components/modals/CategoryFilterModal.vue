@@ -40,47 +40,14 @@
             </div>
             <hr/>
             <div>
-                <div>
-                    <span>Creation date</span>
-                    <br/>
-                    <div class="row">
-                        <datepicker
-                            v-model="filterDateCreatedFrom"
-                            id="filterDateCreatedFromInput"
-                            calendar-class="datepicker-dark"
-                            :clear-button=true
-                            :disabled-dates="disabledDates"
-                        ></datepicker>
-                        <span class="margin-left margin-right">-</span>
-                        <datepicker
-                            v-model="filterDateCreatedTo"
-                            id="filterDateCreatedToInput"
-                            calendar-class="datepicker-dark"
-                            :clear-button=true
-                            :disabled-dates="disabledDates"
-                        ></datepicker>
+                <div class="datepicker-container">
+                    <div class="datepicker-row">
+                        <span>Creation date</span>
+                        <span>Update date</span>
                     </div>
-                </div>
-                <br/>
-                <div>
-                    <span>Update date</span>
-                    <br/>
-                    <div class="row">
-                        <datepicker
-                            v-model="filterDateUpdatedFrom"
-                            id="filterDateUpdatedFromInput"
-                            calendar-class="datepicker-dark"
-                            :clear-button=true
-                            :disabled-dates="disabledDates"
-                        ></datepicker>
-                        <span class="margin-left margin-right">-</span>
-                        <datepicker
-                            v-model="filterDateUpdatedTo"
-                            id="filterDateUpdatedToInput"
-                            calendar-class="datepicker-dark"
-                            :clear-button=true
-                            :disabled-dates="disabledDates"
-                        ></datepicker>
+                    <div class="datepicker-row">
+                        <q-date v-model="filterDateCreated" range minimal class="datepicker-dark"/>
+                        <q-date v-model="filterDateUpdated" range minimal class="datepicker-dark"/>
                     </div>
                 </div>
                 <br/>
@@ -137,15 +104,15 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Datepicker from "vuejs-datepicker";
 
 import { Modal } from '../../components/all';
 import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 import GameManager from '../../model/game/GameManager';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import { date } from "quasar";
 
 @Component({
-    components: { Modal, Datepicker }
+    components: { Modal }
 })
 export default class CategoryFilterModal extends Vue {
     settings: ManagerSettings = new ManagerSettings();
@@ -158,36 +125,28 @@ export default class CategoryFilterModal extends Vue {
         this.$store.commit("modFilters/setAllowNsfw", value);
     }
 
-    get filterDateCreatedFrom(): Date|null {
-        return this.$store.state.modFilters.filterDateCreatedFrom;
+    get filterDateCreated(): { from: string | null, to: string | null } | null {
+        return {
+            from: date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD'),
+            to: date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD'),
+        };
     }
 
-    set filterDateCreatedFrom(value: Date|null) {
-        this.$store.commit("modFilters/setfilterDateCreatedFrom", value);
+    set filterDateCreated(value: { from: string | null, to: string | null } | null) {
+        this.$store.commit("modFilters/setfilterDateCreatedFrom", value ? value.from : value);
+        this.$store.commit("modFilters/setfilterDateCreatedTo", value ? value.to : value);
     }
 
-    get filterDateCreatedTo(): Date|null {
-        return this.$store.state.modFilters.filterDateCreatedTo;
+    get filterDateUpdated(): { from: string | null, to: string | null } | null {
+        return {
+            from: date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD'),
+            to: date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD'),
+        };
     }
 
-    set filterDateCreatedTo(value: Date|null) {
-        this.$store.commit("modFilters/setfilterDateCreatedTo", value);
-    }
-
-    get filterDateUpdatedFrom(): Date|null {
-        return this.$store.state.modFilters.filterDateUpdatedFrom;
-    }
-
-    set filterDateUpdatedFrom(value: Date|null) {
-        this.$store.commit("modFilters/setfilterDateUpdatedFrom", value);
-    }
-
-    get filterDateUpdatedTo(): Date|null {
-        return this.$store.state.modFilters.filterDateUpdatedTo;
-    }
-
-    set filterDateUpdatedTo(value: Date|null) {
-        this.$store.commit("modFilters/setfilterDateUpdatedTo", value);
+    set filterDateUpdated(value: { from: string | null, to: string | null } | null) {
+        this.$store.commit("modFilters/setfilterDateUpdatedFrom", value ? value.from : value);
+        this.$store.commit("modFilters/setfilterDateUpdatedTo", value ? value.to : value);
     }
 
     get categoryFilterMode(): CategoryFilterMode {
