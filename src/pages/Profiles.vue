@@ -487,24 +487,37 @@ export default class Profiles extends Vue {
     }
 
     async fixThunderstoreFile(file: string) {
-        const bytes = await fs.readFile(file);
-        // find zip end header
-        // end header is 22 bytes long, but starts with a 4 byte signature
+        let headerLoc = -1;
+
+        // zip end header starts with a 4 byte signature
         const zipEndHeader = Buffer.from([0x50, 0x4b, 0x05, 0x06]);
-        const zipEndHeaderIndex = bytes.lastIndexOf(zipEndHeader);
-        if (zipEndHeaderIndex === -1) {
+    
+        // stream until we find the end header
+        await fs.createReadStream(file, 8192, async (stream) => {
+            for await(const data of stream) {
+                const index = data.lastIndexOf(zipEndHeader);
+                if (index !== -1) {
+                    headerLoc += index;
+                    break;
+                } else {
+                    headerLoc += data.length;
+                }
+            }
+        });
+
+        // ensure exitst
+        if (headerLoc === -1) {
             throw new Error("Failed to find zip end header");
         }
-        // check if we have padding after the end header
-        const padding = bytes.slice(zipEndHeaderIndex + 22);
-        if (padding.length === 0) {
-            // no padding, we're done
-            return;
-        }
-        // trim file to zip end header
-        const trimmedBytes = bytes.slice(0, zipEndHeaderIndex + 22);
-        // write trimmed file
-        await fs.writeFile(file, trimmedBytes);
+
+        // header loc is size, so we must add 1 since it's 0 indexed
+        headerLoc += 1;
+
+        // trim file
+        // zip end header is 22 bytes long
+        await fs.truncate(file, headerLoc + 22);
+        
+        console.log(file)
     }
 
     async importProfileHandler(files: string[] | null) {

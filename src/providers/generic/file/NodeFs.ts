@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import StatInterface from './StatInterface';
 import * as path from 'path';
 import Lock from 'async-lock';
+import { Readable } from 'stream';
 
 export default class NodeFs extends FsProvider {
 
@@ -150,6 +151,35 @@ export default class NodeFs extends FsProvider {
                     reject(e);
                 }
             }).catch(reject);
+        });
+    }
+
+    async truncate(path: string, length: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    await fs.promises.truncate(path, length);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    async createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    const stream = fs.createReadStream(path, {
+                        highWaterMark: chunk_size
+                    });
+                    await callback(stream);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
         });
     }
 }

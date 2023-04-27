@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import StatInterface from '../../../../../src/providers/generic/file/StatInterface';
 import * as path from 'path';
@@ -210,5 +211,18 @@ export default class InMemoryFsProvider extends FsProvider {
     async setModifiedTime(file: string, time: Date): Promise<void> {
         const found = this.findFileType(file);
         found.mtime = time;
+    }
+
+
+    async truncate(path: string, length: number): Promise<void> {
+        const found = this.findFileType(path, "FILE");
+        found.content = found.content!.substring(0, length);
+    }
+
+
+    async createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void> {
+        const found = this.findFileType(path, "FILE");
+        const stream = Readable.from(found.content!, {highWaterMark: chunk_size, encoding: "utf-8"});
+        await callback(stream);
     }
 }
