@@ -2,10 +2,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import {
-    MOD_LOADER_VARIANTS,
-    VARIANT_DEPENDENCIES
-} from 'src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
+import { MOD_LOADER_VARIANTS } from 'src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
 export default class ThunderstorePackages {
 
@@ -31,7 +28,7 @@ export default class ThunderstorePackages {
 
         this.PACKAGES.filter(pkg => loaderVariants.includes(pkg.getFullName()))
             .forEach(pkg => {
-                const varDeps = VARIANT_DEPENDENCIES[game.internalFolderName];
+                const varDeps = MOD_LOADER_VARIANTS[game.internalFolderName].flatMap(value => value.metalinkedDependencies);
                 const resolvedVariantDependencies = this.PACKAGES
                     .filter(value => varDeps.includes(value.getFullName()))
                     .map(value => value.getVersions()

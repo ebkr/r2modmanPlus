@@ -21,7 +21,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
         return this.genDoorstopV3(game, profile);
     }
 
-    private async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {
+    public async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {
         let extraArguments = "";
         if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
             extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
@@ -38,7 +38,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
         };
     }
 
-    private async genDoorstopV4(game: Game, profile: Profile): Promise<GameInstruction> {
+    public async genDoorstopV4(game: Game, profile: Profile): Promise<GameInstruction> {
         let extraArguments = "";
         if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
             extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;

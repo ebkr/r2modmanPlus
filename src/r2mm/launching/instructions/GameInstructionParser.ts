@@ -14,7 +14,7 @@ export default class GameInstructionParser {
         [DynamicGameInstruction.BEPINEX_PRELOADER_PATH, GameInstructionParser.bepInExPreloaderPathResolver],
         [DynamicGameInstruction.PROFILE_DIRECTORY, GameInstructionParser.profileDirectoryResolver],
         [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver],
-        [DynamicGameInstruction.SKUL_THE_HERO_SLAYER_CORELIBS, GameInstructionParser.skulTheHeroSlayerCorelibsPathResolver],
+        [DynamicGameInstruction.BEPINEX_CORLIBS_UNITYLIBS_PLUGIN, GameInstructionParser.skulTheHeroSlayerCorelibsPathResolver],
         [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
         [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver]
     ]);

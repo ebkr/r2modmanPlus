@@ -69,17 +69,17 @@ const VARIANTS = {
     Brotato: [],
     RUMBLE: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     DomeKeeper: [new ModLoaderPackageMapping("GodotModding-GodotModLoader", "", PackageLoader.GODOT_ML)],
-    SkulTheHeroSlayer: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    SkulTheHeroSlayer: [
+        new ModLoaderPackageMapping(
+            'BepInEx-BepInExPack',
+            'BepInExPack',
+            PackageLoader.BEPINEX,
+            ['UnityLibs-SkulTheHeroSlayer_UnityUnstripped']
+        )
+    ],
     SonsOfTheForest: [new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX)],
     TheOuroborosKing: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
 };
-// Exported separately from the definition in order to preserve the key names in the type definition.
-// Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
-// Casting is done here to ensure the values are ModLoaderPackageMapping[]
-
-export const VARIANT_DEPENDENCIES: {[key: string]: string[]} = {
-    SkulTheHeroSlayer: ["UnityLibs-SkulTheHeroSlayer_UnityUnstripped"]
-}
 
 export type GAME_NAME = keyof typeof VARIANTS;
 export const MOD_LOADER_VARIANTS: {[key in GAME_NAME]: ModLoaderPackageMapping[]} = VARIANTS;

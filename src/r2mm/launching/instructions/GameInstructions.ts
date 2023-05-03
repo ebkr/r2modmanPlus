@@ -7,8 +7,8 @@ import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
 import { GodotMLGameInstructions } from '../../launching/instructions/instructions/loader/GodotMLGameInstructions';
 import { AncientVRGameInstructions } from '../../launching/instructions/instructions/loader/AncientVRGameInstructions';
-import SkulTheHeroSlayerGameInstructions
-    from 'src/r2mm/launching/instructions/instructions/loader/SkulTheHeroSlayerGameInstructions';
+import BepInExGameInstructionsWithUnityLibsCorlibsResolver
+    from 'src/r2mm/launching/instructions/instructions/loader/BepInExGameInstructionsWithUnityLibsCorlibsResolver';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -18,7 +18,7 @@ export interface GameInstruction {
 export default class GameInstructions {
 
     public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
-        ["SkulTheHeroSlayer", new SkulTheHeroSlayerGameInstructions()]
+        ["SkulTheHeroSlayer", new BepInExGameInstructionsWithUnityLibsCorlibsResolver()]
     ]);
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
