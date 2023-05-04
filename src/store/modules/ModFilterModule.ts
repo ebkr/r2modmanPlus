@@ -67,35 +67,19 @@ export default {
         },
 
         setfilterDateCreatedFrom: function(state: State, value: string | null) {
-            if (value) {
-                state.filterDateCreatedFrom = new Date(value);
-            } else {
-                state.filterDateCreatedFrom = null;
-            }
+            state.filterDateCreatedFrom = value ? new Date(value) : null;
         },
 
         setfilterDateCreatedTo: function(state: State, value: string | null) {
-            if (value) {
-                state.filterDateCreatedTo = new Date(value);
-            } else {
-                state.filterDateCreatedTo = null;
-            }
+            state.filterDateCreatedTo = value ? new Date(value) : null;
         },
 
         setfilterDateUpdatedFrom: function(state: State, value: string | null) {
-            if (value) {
-                state.filterDateUpdatedFrom = new Date(value);
-            } else {
-                state.filterDateUpdatedFrom = null;
-            }
+            state.filterDateUpdatedFrom = value ? new Date(value) : null;
         },
 
         setfilterDateUpdatedTo: function(state: State, value: string | null) {
-            if (value) {
-                state.filterDateUpdatedTo = new Date(value);
-            } else {
-                state.filterDateUpdatedTo = null;
-            }
+            state.filterDateUpdatedTo = value ? new Date(value) : null;
         },
 
         setCategoryFilterMode: function(state: State, value: CategoryFilterMode) {

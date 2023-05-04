@@ -40,7 +40,6 @@
             </div>
             <hr/>
             <div>
-
                 <div>
                     <input
                         v-model="allowNsfw"
@@ -130,9 +129,14 @@ export default class CategoryFilterModal extends Vue {
         };
     }
 
-    set filterDateCreated(value: { from: string | null, to: string | null } | null) {
-        this.$store.commit("modFilters/setfilterDateCreatedFrom", value ? value.from : value);
-        this.$store.commit("modFilters/setfilterDateCreatedTo", value ? value.to : value);
+    set filterDateCreated(value: { from: string | null, to: string | null } | string | null) {
+        if (typeof value === "string") {
+            this.$store.commit("modFilters/setfilterDateCreatedFrom", value);
+            this.$store.commit("modFilters/setfilterDateCreatedTo", value);
+        } else {
+            this.$store.commit("modFilters/setfilterDateCreatedFrom", value ? value.from : value);
+            this.$store.commit("modFilters/setfilterDateCreatedTo", value ? value.to : value);
+        }
     }
 
     get filterDateUpdated(): { from: string | null, to: string | null } | null {
