@@ -184,7 +184,7 @@ export default class ProfileModList {
             return list;
         }
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
-        const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
+        const exportFormat = new ExportFormat(profile.getProfileName(), GameManager.activeGame.displayName, GameManager.activeGame.thunderstoreCommunityIdentifier, exportModList);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
