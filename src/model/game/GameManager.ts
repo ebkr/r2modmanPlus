@@ -420,7 +420,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["pq"]),
 
         new Game("Shadows Over Loathing", "ShadowsOverLoathing", "ShadowsOverLoathing",
-            "Shadows Over Loathing", ["Shadows Over Loathing.exe"], "ShadowsOverLoathing_Data",
+            path.join("Shadows Over Loathing", "Shadows Over Loathing"), ["Shadows Over Loathing.exe"], "ShadowsOverLoathing_Data",
             "https://thunderstore.io/c/shadows-over-loathing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1939160")], "shadows-over-loathing.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sol"]),
