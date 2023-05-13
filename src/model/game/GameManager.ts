@@ -430,6 +430,18 @@ export default class GameManager {
             "https://thunderstore.io/c/west-of-loathing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "597220")], "west-of-loathing.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wol"]),
+
+        new Game("Sun Haven", "SunHaven", "SunHaven",
+            "Sun Haven", ["Sun Haven.exe"], "SunHaven_Data",
+            "https://thunderstore.io/c/sun-haven/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1432860")], "sun-haven.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sh"]),
+
+        new Game("Wildfrost", "Wildfrost", "Wildfrost",
+            "Wildfrost", ["Wildfrost.exe"], "Wildfrost_Data",
+            "https://thunderstore.io/c/wildfrost/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1811990")], "wildfrost.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wfrst"]),
     ];
 
     static get activeGame(): Game {

@@ -98,6 +98,8 @@ export default class InstallationRuleApplicator {
             buildMelonLoaderRules("PatchQuest"),
             buildBepInExRules("ShadowsOverLoathing"),
             buildBepInExRules("WestofLoathing"),
+            buildBepInExRules("SunHaven"),
+            buildBepInExRules("Wildfrost"),
         ]
     }
 }
