@@ -400,6 +400,36 @@ export default class GameManager {
             "https://thunderstore.io/c/wrestling-empire/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1620340")], "wrestling-empire.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["we"]),
+
+        new Game("Receiver 2", "Receiver2", "Receiver2",
+            "Receiver 2", ["Receiver2.exe"], "Receiver2_Data",
+            "https://thunderstore.io/c/receiver-2/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1129310")], "receiver-2.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rec2"]),
+
+        new Game("The Planet Crafter", "ThePlanetCrafter", "ThePlanetCrafter",
+            "The Planet Crafter", ["Planet Crafter.exe"], "ThePlanetCrafter_Data",
+            "https://thunderstore.io/c/the-planet-crafter/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1284190")], "the-planet-crafter.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tpc"]),
+
+        new Game("Patch Quest", "PatchQuest", "PatchQuest",
+            "Patch Quest", ["Patch Quest.exe"], "PatchQuest_Data",
+            "https://thunderstore.io/c/patch-quest/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1347970")], "patch-quest.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["pq"]),
+
+        new Game("Shadows Over Loathing", "ShadowsOverLoathing", "ShadowsOverLoathing",
+            "Shadows Over Loathing", ["Shadows Over Loathing.exe"], "ShadowsOverLoathing_Data",
+            "https://thunderstore.io/c/shadows-over-loathing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1939160")], "shadows-over-loathing.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sol"]),
+
+        new Game("West of Loathing", "WestofLoathing", "WestofLoathing",
+            "West of Loathing", ["West of Loathing.exe"], "WestofLoathing_Data",
+            "https://thunderstore.io/c/west-of-loathing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "597220")], "west-of-loathing.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wol"]),
     ];
 
     static get activeGame(): Game {

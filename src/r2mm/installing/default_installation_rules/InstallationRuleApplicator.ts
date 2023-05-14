@@ -93,6 +93,11 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("SonsOfTheForest"),
             buildBepInExRules("TheOuroborosKing"),
             buildBepInExRules("WrestlingEmpire"),
+            buildBepInExRules("Receiver2"),
+            buildBepInExRules("ThePlanetCrafter"),
+            buildMelonLoaderRules("PatchQuest"),
+            buildBepInExRules("ShadowsOverLoathing"),
+            buildBepInExRules("WestofLoathing"),
         ]
     }
 }
