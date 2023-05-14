@@ -6,19 +6,16 @@ import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import path from 'path';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
+import { getUnityDoorstopVersion } from '../../../../../utils/UnityDoorstopUtils';
 
 export default class BepInExGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
-        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), ".doorstop_version"))) {
-            const dvContent = (await FsProvider.instance.readFile(path.join(profile.getPathOfProfile(), ".doorstop_version"))).toString();
-            const majorVersion = Number(dvContent.split(".")[0]);
-            if (majorVersion === 4) {
-                return this.genDoorstopV4(game, profile);
-            }
+        const doorstopVersion = await getUnityDoorstopVersion(profile);
+        switch (doorstopVersion) {
+            case 4: return this.genDoorstopV4(game, profile);
+            default: return this.genDoorstopV3(game, profile);
         }
-        // Fallback to V3.
-        return this.genDoorstopV3(game, profile);
     }
 
     public async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {

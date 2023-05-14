@@ -1,3 +1,10 @@
+### 3.1.41
+- Fixed an issue where Risk of Rain 2 could not launch when selecting the EGS platform
+
+### 3.1.40
+- Added Wrestling Empire support
+- GodotML setup script is now called for Dome Keeper
+
 ### 3.1.39
 - Added support for more games:
   - RUMBLE

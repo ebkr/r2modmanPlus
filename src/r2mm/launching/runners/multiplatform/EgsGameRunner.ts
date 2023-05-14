@@ -11,6 +11,7 @@ import { DynamicGameInstruction } from '../../instructions/DynamicGameInstructio
 import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
 import ConfigLine from '../../../../model/file/ConfigLine';
+import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
 
 export default class EgsGameRunner extends GameRunnerProvider {
 
@@ -30,12 +31,32 @@ export default class EgsGameRunner extends GameRunnerProvider {
             if (preloaderPath instanceof R2Error) {
                 return preloaderPath;
             }
-            const updateResult = await this.updateDoorstopConfigVars(profile, {
-                UnityDoorstop: {
-                    targetAssembly: preloaderPath,
-                    enabled: "true"
-                }
-            });
+
+            let doorstopUpdateVars: {[section: string]: {[key: string]: string}};
+            const doorstopVersion = await getUnityDoorstopVersion(profile);
+            if (doorstopVersion === 3) {
+                doorstopUpdateVars = {
+                    UnityDoorstop: {
+                        targetAssembly: preloaderPath,
+                        enabled: "true"
+                    }
+                };
+            } else if (doorstopVersion === 4) {
+                doorstopUpdateVars = {
+                    General: {
+                        ["target_assembly"]: preloaderPath,
+                        enabled: "true"
+                    }
+                };
+            } else {
+                return new R2Error(
+                    "Unsupported Doorstop version",
+                    "The version of Unity Doorstop is unsupported. This is likely due to a BepInEx update.",
+                    "Either downgrade your BepInEx version or wait for a manager update"
+                );
+            }
+
+            const updateResult = await this.updateDoorstopConfigVars(profile, doorstopUpdateVars);
             if (updateResult instanceof R2Error) {
                 return updateResult;
             }
