@@ -47,3 +47,5 @@ MADH95Mods-JSONRenameUtility
 GamefaceGamers-Mod_Sync
 
 codengine-SOTFEdit
+
+DevLeon-SonsOfTheForestMap
