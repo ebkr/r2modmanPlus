@@ -148,9 +148,9 @@ export default class OnlineModView extends Vue {
     @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
         const filterDateCreatedFrom = this.$store.state.modFilters.filterDateCreatedFrom;
-        const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateCreatedTo, { hour: 23, minute: 59, second: 59 }) : null;
+        const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateCreatedTo, { hours: 23, minutes: 59, seconds: 59 }) : null;
         const filterDateUpdatedFrom = this.$store.state.modFilters.filterDateUpdatedFrom;
-        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateUpdatedTo, { hour: 23, minute: 59, second: 59 }) : null;
+        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateUpdatedTo, { hours: 23, minutes: 59, seconds: 59 }) : null;
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
         const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
         const filterCategories = this.$store.state.modFilters.selectedCategories;
