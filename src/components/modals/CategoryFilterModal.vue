@@ -122,11 +122,15 @@ export default class CategoryFilterModal extends Vue {
         this.$store.commit("modFilters/setAllowNsfw", value);
     }
 
-    get filterDateCreated(): { from: string | null, to: string | null } | null {
-        return {
-            from: date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD'),
-            to: date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD'),
-        };
+    get filterDateCreated(): { from: string | null, to: string | null } | string | null {
+        if (date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD') === date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD')) {
+            return date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD')
+        } else {
+            return {
+                from: date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD'),
+                to: date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD'),
+            };
+        }
     }
 
     set filterDateCreated(value: { from: string | null, to: string | null } | string | null) {
@@ -139,16 +143,25 @@ export default class CategoryFilterModal extends Vue {
         }
     }
 
-    get filterDateUpdated(): { from: string | null, to: string | null } | null {
-        return {
-            from: date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD'),
-            to: date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD'),
-        };
+    get filterDateUpdated(): { from: string | null, to: string | null } | string | null {
+        if (date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD') === date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD')) {
+            return date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD')
+        } else {
+            return {
+                from: date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD'),
+                to: date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD'),
+            };
+        }
     }
 
-    set filterDateUpdated(value: { from: string | null, to: string | null } | null) {
-        this.$store.commit("modFilters/setfilterDateUpdatedFrom", value ? value.from : value);
-        this.$store.commit("modFilters/setfilterDateUpdatedTo", value ? value.to : value);
+    set filterDateUpdated(value: { from: string | null, to: string | null } | string | null) {
+        if (typeof value === "string") {
+            this.$store.commit("modFilters/setfilterDateUpdatedFrom", value);
+            this.$store.commit("modFilters/setfilterDateUpdatedTo", value);
+        } else {
+            this.$store.commit("modFilters/setfilterDateUpdatedFrom", value ? value.from : value);
+            this.$store.commit("modFilters/setfilterDateUpdatedTo", value ? value.to : value);
+        }
     }
 
     get categoryFilterMode(): CategoryFilterMode {

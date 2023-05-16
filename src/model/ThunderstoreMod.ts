@@ -104,7 +104,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         return this.dateCreated;
     }
 
-    public getDateCreatedUnix(): Number {
+    public getDateCreatedUnix(): number {
         return new Date(this.dateCreated).getTime();
     }
     
@@ -116,7 +116,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         return this.dateUpdated;
     }
     
-    public getDateUpdatedUnix(): Number {
+    public getDateUpdatedUnix(): number {
         return new Date(this.dateUpdated).getTime();
     }
 

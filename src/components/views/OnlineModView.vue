@@ -84,6 +84,7 @@ import OnlineModListProvider from '../../providers/components/loaders/OnlineModL
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
 import SearchUtils from '../../utils/SearchUtils';
+import { date } from 'quasar';
 
 @Component({
     components: {
@@ -147,9 +148,9 @@ export default class OnlineModView extends Vue {
     @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
         const filterDateCreatedFrom = this.$store.state.modFilters.filterDateCreatedFrom;
-        const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo;
+        const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateCreatedTo, { hour: 23, minute: 59, second: 59 }) : null;
         const filterDateUpdatedFrom = this.$store.state.modFilters.filterDateUpdatedFrom;
-        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo;
+        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateUpdatedTo, { hour: 23, minute: 59, second: 59 }) : null;
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
         const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
         const filterCategories = this.$store.state.modFilters.selectedCategories;
