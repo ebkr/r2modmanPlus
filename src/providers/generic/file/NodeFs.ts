@@ -167,6 +167,14 @@ export default class NodeFs extends FsProvider {
         });
     }
 
+    /**
+     *  https://nodejs.org/api/fs.html#fs_filehandle_createreadstream_options
+     *  we make the callback inside here because we want it to be before the file closes, and we can't do that with a Promise.then
+     * 
+     *  @param path path to the file being read
+     *  @param chunk_size size in bytes to read at one time
+     *  @param callback read handler to be executed on each chunk before the promise resolves
+     */
     async createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire(path, async () => {
