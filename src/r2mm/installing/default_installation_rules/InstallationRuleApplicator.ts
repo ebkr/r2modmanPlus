@@ -100,6 +100,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("WestofLoathing"),
             buildBepInExRules("SunHaven"),
             buildBepInExRules("Wildfrost"),
+            buildBepInExRules("ShadowsofDoubt"),
         ]
     }
 }

@@ -80,6 +80,7 @@ const VARIANTS = {
     WestofLoathing: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     SunHaven: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     Wildfrost: [new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX)],
+    ShadowsofDoubt: [new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX)],
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

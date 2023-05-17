@@ -442,6 +442,12 @@ export default class GameManager {
             "https://thunderstore.io/c/wildfrost/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1811990")], "wildfrost.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wfrst"]),
+
+        new Game("Shadows of Doubt", "ShadowsofDoubt", "ShadowsofDoubt",
+            "Shadows of Doubt", ["Shadows of Doubt.exe"], "ShadowsofDoubt_Data",
+            "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
     ];
 
     static get activeGame(): Game {
