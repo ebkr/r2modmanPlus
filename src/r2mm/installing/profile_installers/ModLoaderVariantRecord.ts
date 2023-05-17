@@ -69,7 +69,10 @@ const VARIANTS = {
     Brotato: [],
     RUMBLE: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     DomeKeeper: [new ModLoaderPackageMapping("GodotModding-GodotModLoader", "", PackageLoader.GODOT_ML)],
-    SkulTheHeroSlayer: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
+    SkulTheHeroSlayer: [
+        new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX),
+        new ModLoaderPackageMapping("BepInEx-BepInExPack_Skul", "BepInExPack", PackageLoader.BEPINEX),
+    ],
     SonsOfTheForest: [new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX)],
     TheOuroborosKing: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
     WrestlingEmpire: [new ModLoaderPackageMapping("BepInEx-BepInExPack", "BepInExPack", PackageLoader.BEPINEX)],
