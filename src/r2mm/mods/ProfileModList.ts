@@ -26,6 +26,8 @@ import { ProfileApiClient } from '../profiles/ProfilesClient';
 
 export default class ProfileModList {
 
+    public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml"];
+
     private static lock = new AsyncLock();
 
     public static async requestLock(fn: () => any) {
@@ -195,6 +197,7 @@ export default class ProfileModList {
             return tree;
         }
         tree.removeDirectories("dotnet");
+        tree.removeDirectories("_state");
         tree.navigateAndPerform(bepInExDir => {
             bepInExDir.removeDirectories("config");
             bepInExDir.navigateAndPerform(pluginDir => {
@@ -205,7 +208,7 @@ export default class ProfileModList {
         // Add all tree contents to buffer.
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
-            if (fileLower.endsWith(".cfg") || fileLower.endsWith(".txt") || fileLower.endsWith(".json")) {
+            if (this.SUPPORTED_CONFIG_FILE_EXTENSIONS.filter(value => fileLower.endsWith(value)).length > 0) {
                 await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
             }
         }

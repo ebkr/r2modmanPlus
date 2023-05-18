@@ -68,6 +68,7 @@ import ConfigSort from '../../r2mm/configs/ConfigSort';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
 
 @Component({
         components: {
@@ -109,6 +110,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
                 return;
             }
             tree.removeDirectories("dotnet");
+            tree.removeDirectories("_state");
             tree.navigateAndPerform(plugins => {
                 plugins.getDirectories().forEach(value => {
                     plugins.navigateAndPerform(sub => {
@@ -118,11 +120,9 @@ import LinkProvider from '../../providers/components/LinkProvider';
                 });
             }, "BepInEx", "plugins");
             const files = tree.getDirectories().flatMap(value => value.getRecursiveFiles());
+            const supportedExtensions = ProfileModList.SUPPORTED_CONFIG_FILE_EXTENSIONS;
             for (const file of files) {
-                if (path.extname(file).toLowerCase() === '.cfg' || path.extname(file).toLowerCase() === '.txt') {
-                    const fileStat = await fs.lstat(file);
-                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
-                } else if (path.extname(file).toLowerCase() === '.json') {
+                if (supportedExtensions.includes(path.extname(file).toLowerCase())) {
                     const fileStat = await fs.lstat(file);
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
                 }
