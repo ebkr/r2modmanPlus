@@ -12,6 +12,9 @@ export default class Mod implements ReactiveObjectConverterInterface {
     private icon: string = ''
     private enabled: boolean = true;
 
+    // Transient meta-linking of dependencies to circumvent missing dependencies error in local view
+    private metaDependencies: string[] = [];
+
     public async fromManifest(): Promise<Mod | R2Error> {
         return await ModFromManifest.get(this.getFullName(), this.getVersionNumber());
     }
@@ -23,6 +26,7 @@ export default class Mod implements ReactiveObjectConverterInterface {
         this.setFullName(reactive.fullName);
         this.setDescription(reactive.description);
         this.setIcon(reactive.icon);
+        this.setMetaDependencies(reactive.metaDependencies);
         this.enabled = reactive.enabled;
         return this;
     }
@@ -49,6 +53,14 @@ export default class Mod implements ReactiveObjectConverterInterface {
 
     public setDependencies(dependencies: string[]) {
         this.dependencies = dependencies;
+    }
+
+    public getMetaDependencies(): string[] {
+        return this.metaDependencies;
+    }
+
+    public setMetaDependencies(metaDependencies: string[]) {
+        this.metaDependencies = metaDependencies;
     }
 
     public getFullName(): string {

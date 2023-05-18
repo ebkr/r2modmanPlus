@@ -14,6 +14,7 @@ export default class GameInstructionParser {
         [DynamicGameInstruction.BEPINEX_PRELOADER_PATH, GameInstructionParser.bepInExPreloaderPathResolver],
         [DynamicGameInstruction.PROFILE_DIRECTORY, GameInstructionParser.profileDirectoryResolver],
         [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver],
+        [DynamicGameInstruction.BEPINEX_CORLIBS_UNITYLIBS_PLUGIN, GameInstructionParser.skulTheHeroSlayerCorelibsPathResolver],
         [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
         [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver]
     ]);
@@ -64,6 +65,16 @@ export default class GameInstructionParser {
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${Profile.getActiveProfile().getPathOfProfile()}.\nReason: ${err.message}`, null);
+        }
+    }
+
+    private static async skulTheHeroSlayerCorelibsPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
+        const corelibsPath = path.join(profile.getPathOfProfile(), "BepInEx", "plugins", "UnityLibs-UnityUnstripped", "unstripped_corlib");
+        try {
+            return await FsProvider.instance.realpath(corelibsPath);
+        } catch (e) {
+            const err: Error = e as Error;
+            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${corelibsPath}.\nReason: ${err.message}`, null);
         }
     }
 
