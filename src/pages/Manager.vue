@@ -535,13 +535,21 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                 buttonLabel: 'Select Data Folder'
             }).then(async files => {
                 if (files.length === 1) {
+                    const dataDirectoryOverrideFile = ".ddir.mm";
                     const filesInDirectory = await fs.readdir(files[0]);
-                    if (filesInDirectory.length > 0 && files[0] !== PathResolver.APPDATA_DIR) {
+
+                    const hasOverrideFile = filesInDirectory.find(value => value.toLowerCase() === dataDirectoryOverrideFile) != undefined;
+                    const directoryHasContents = filesInDirectory.length > 0;
+                    const isDefaultDataDirectory = files[0] === PathResolver.APPDATA_DIR;
+
+                    if (hasOverrideFile || !directoryHasContents || isDefaultDataDirectory) {
+                        await this.settings.setDataDirectory(files[0]);
+                        // Write dataDirectoryOverrideFile to allow re-selection of directory if changed at a later point.
+                        await fs.writeFile(path.join(files[0], dataDirectoryOverrideFile), "");
+                        InteractionProvider.instance.restartApp();
+                    } else {
                         this.showError(new R2Error("Selected directory is not empty", `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`, "Select an empty directory or create a new one."));
                         return;
-                    } else {
-                        await this.settings.setDataDirectory(files[0]);
-                        InteractionProvider.instance.restartApp();
                     }
                 }
             });
