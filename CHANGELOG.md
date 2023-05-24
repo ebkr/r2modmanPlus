@@ -1,3 +1,19 @@
+### 3.1.42
+- Games using MelonLoader should now correctly generate assemblies on first launch (EG: BONEWORKS / BONELABS)
+- Data directory can (finally) be re-set to an older directory without having to clear settings
+- (Thunderstore team) Added games:
+    - Sun Haven
+    - Wild Frost
+    - Shadows of Doubt
+    - Receiver 2
+    - The Planet Crafter
+    - Patch Quest
+    - Shadows Over Loathing
+    - West of Loathing
+- YAML is now supported in the config editor
+  - Additionally an issue with the cursor when editing non .cfg files has been resolved (Thanks to [sheybey](https://github.com/sheybey))
+- Other minor fixes
+
 ### 3.1.41
 - Fixed an issue where Risk of Rain 2 could not launch when selecting the EGS platform
 
