@@ -35,7 +35,11 @@
         @Watch("textValue")
         private updatedModel(newValue: string) {
             if (this.editor !== null) {
+                const selection = this.editor.getSelection();
                 this.editor.setText(newValue);
+                if (selection) {
+                    this.editor.setSelection(Math.min(newValue.length, selection.index), 0);
+                }
             }
         }
 
