@@ -2,11 +2,13 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
+import ThunderstoreVersion from 'src/model/ThunderstoreVersion';
 
 export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
     public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
+    public static VERSIONS_MAP: Map<String, ThunderstoreVersion> = new Map();
     public static EXCLUSIONS: string[] = [];
 
     /**
@@ -33,6 +35,13 @@ export default class ThunderstorePackages {
             map.set(pkg.getFullName(), pkg);
             return map;
         }, new Map<String, ThunderstoreMod>());
+
+        ThunderstorePackages.VERSIONS_MAP = ThunderstorePackages.PACKAGES
+            .flatMap(value => value.getVersions())
+            .reduce((map, version) => {
+                map.set(version.getFullName(), version);
+                return map;
+        }, new Map<String, ThunderstoreVersion>())
     }
 
     public static getDeprecatedPackageMap(): Map<string, boolean> {

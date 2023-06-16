@@ -115,6 +115,7 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import PackageDownloader from 'src/r2mm/downloading/PackageDownloader';
 
 let assignId = 0;
 
@@ -231,21 +232,21 @@ let assignId = 0;
             this.$store.commit("closeDownloadModModal");
         }
 
-        downloadThunderstoreMod() {
-            const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
-            const refSelectedVersion: string | null = this.selectedVersion;
-            if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
-                // Shouldn't happen, but shouldn't throw an error.
-                return;
-            }
-            const version = refSelectedThunderstoreMod.getVersions()
-                .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
-            if (version === undefined) {
-                return;
-            }
-            this.downloadHandler(refSelectedThunderstoreMod, version);
-        }
-
+        // downloadThunderstoreMod() {
+        //     const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
+        //     const refSelectedVersion: string | null = this.selectedVersion;
+        //     if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
+        //         // Shouldn't happen, but shouldn't throw an error.
+        //         return;
+        //     }
+        //     const version = refSelectedThunderstoreMod.getVersions()
+        //         .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
+        //     if (version === undefined) {
+        //         return;
+        //     }
+        //     this.downloadHandler(refSelectedThunderstoreMod, version);
+        // }
+        //
         async downloadLatest() {
             this.closeModal();
             const localMods = await ProfileModList.getModList(this.contextProfile!);
@@ -311,6 +312,24 @@ let assignId = 0;
                     }
                 });
             });
+        }
+
+        downloadThunderstoreMod() {
+            const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
+            const refSelectedVersion: string | null = this.selectedVersion;
+            if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
+                // Shouldn't happen, but shouldn't throw an error.
+                return;
+            }
+            const version = refSelectedThunderstoreMod.getVersions()
+                .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
+            if (version === undefined) {
+                return;
+            }
+            const combo = new ThunderstoreCombo();
+            combo.setMod(refSelectedThunderstoreMod);
+            combo.setVersion(version);
+            new PackageDownloader().download([combo], (dto) => {})
         }
 
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
