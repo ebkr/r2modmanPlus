@@ -105,6 +105,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Thronefall"),
             buildBepInExRules("Techtonica"),
             buildBepInExRules("GarfieldKartFuriousRacing"),
+            buildBepInExRules("WizardOfLegend"),
         ]
     }
 }
