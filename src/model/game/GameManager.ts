@@ -448,6 +448,12 @@ export default class GameManager {
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
+
+        new Game("Wizard of Legend", "WizardOfLegend", "WizardOfLegend",
+            "Wizard of Legend", ["WizardOfLegend.exe"], "WizardOfLegend_Data",
+            "https://thunderstore.io/c/wizard-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "445980")], "WizardOfLegend.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wol"]),
     ];
 
     static get activeGame(): Game {
