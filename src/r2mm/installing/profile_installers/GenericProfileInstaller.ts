@@ -21,6 +21,84 @@ import ZipProvider from "../../../providers/generic/zip/ZipProvider";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
+
+
+abstract class PackageInstaller {
+    abstract install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<void>;
+    // abstract uninstall(): Promise<void>;  // TODO: Implement
+}
+
+
+// TODO: Implement
+// class InstallRuleInstaller extends PackageInstaller {
+//     /**
+//      * The default installer that handles the game-specific install rules
+//      */
+// }
+
+
+class BepInExInstaller extends PackageInstaller {
+    /**
+     * Handles installation of BepInEx
+     */
+    async install(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        let bepInExRoot: string;
+        if (modLoaderMapping.rootFolder.trim().length > 0) {
+            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        } else {
+            bepInExRoot = path.join(bieLocation);
+        }
+        for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
+            if (!basePackageFiles.includes(item.toLowerCase())) {
+                if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
+                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                } else {
+                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                }
+            }
+        }
+    }
+}
+
+
+class MelonLoaderInstaller extends PackageInstaller {
+    /**
+     * Handles installation of MelonLoader
+     */
+    async install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        for (const item of (await FsProvider.instance.readdir(mlLocation))) {
+            if (!basePackageFiles.includes(item.toLowerCase())) {
+                if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
+                    await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
+                } else {
+                    await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
+                }
+            }
+        }
+    }
+}
+
+
+class GodotMLInstaller extends PackageInstaller {
+    /**
+     * Handles installation of GodotML
+     */
+    async install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+        const copyFrom = path.join(mlLocation, "addons", "mod_loader");
+        const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
+        const fs = FsProvider.instance;
+
+        if (await fs.exists(copyFrom)) {
+            if (!await fs.exists(copyTo)) {
+                await fs.mkdirs(copyTo);
+            }
+            await fs.copyFolder(copyFrom, copyTo);
+        }
+    }
+}
+
+
+
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private rule: CoreRuleType;
@@ -151,55 +229,13 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(mod, profile, cachedLocationOfMod);
     }
 
-    private async basicModLoaderInstaller(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        let bepInExRoot: string;
-        if (modLoaderMapping.rootFolder.trim().length > 0) {
-            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
-        } else {
-            bepInExRoot = path.join(bieLocation);
-        }
-        for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
-            if (!basePackageFiles.includes(item.toLowerCase())) {
-                if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-                } else {
-                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-                }
-            }
-        }
-    }
-
-    private async installMelonLoader(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        for (const item of (await FsProvider.instance.readdir(mlLocation))) {
-            if (!basePackageFiles.includes(item.toLowerCase())) {
-                if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
-                } else {
-                    await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
-                }
-            }
-        }
-    }
-
-    private async installGodotML(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        const copyFrom = path.join(mlLocation, "addons", "mod_loader");
-        const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
-        const fs = FsProvider.instance;
-
-        if (await fs.exists(copyFrom)) {
-            if (!await fs.exists(copyTo)) {
-                await fs.mkdirs(copyTo);
-            }
-            await fs.copyFolder(copyFrom, copyTo);
-        }
-    }
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
         switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.MELON_LOADER: await this.installMelonLoader(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.GODOT_ML: await this.installGodotML(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.NORTHSTAR: await this.basicModLoaderInstaller(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.BEPINEX: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.MELON_LOADER: await (new MelonLoaderInstaller()).install(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.GODOT_ML: await (new GodotMLInstaller()).install(bieLocation, modLoaderMapping, profile); break;
+            case PackageLoader.NORTHSTAR: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
         }
         return Promise.resolve(null);
     }
