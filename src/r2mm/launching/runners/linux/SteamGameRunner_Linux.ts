@@ -7,10 +7,11 @@ import R2Error from '../../../../model/errors/R2Error';
 import Profile from '../../../../model/Profile';
 import ManagerSettings from '../../../manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
-import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
-import { exec } from 'child_process';
+import LoggerProvider, {LogSeverity} from '../../../../providers/ror2/logging/LoggerProvider';
+import {exec} from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
+import {homedir} from "os";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -68,8 +69,10 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
+        const steamCmd = steamDir.indexOf(path.join(homedir(), '.var', 'app', 'com.valvesoftware.Steam')) == 0 ? `flatpak run --branch=stable --arch=x86_64 --command=/app/bin/steam-wrapper --file-forwarding --filesystem=home/.config/r2modmanPlus-local com.valvesoftware.Steam` : `"${steamDir}/steam.sh"`;
+
         try {
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
+            const cmd = `${steamCmd} -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await exec(cmd);
         } catch(err) {
