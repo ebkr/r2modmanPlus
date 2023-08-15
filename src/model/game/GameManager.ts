@@ -448,6 +448,12 @@ export default class GameManager {
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
+
+        new Game("7 Days To Die", "7DaysToDie", "7DaysToDie",
+            "7 Days To Die", ["7dLauncher.exe"], "7DaysToDie_Data",
+            "https://thunderstore.io/c/7-days-to-die/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "251570")], "7DaysToDie.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["7dtd"]),
     ];
 
     static get activeGame(): Game {
