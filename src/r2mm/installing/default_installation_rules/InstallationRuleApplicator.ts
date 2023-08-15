@@ -101,6 +101,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("SunHaven"),
             buildBepInExRules("Wildfrost"),
             buildBepInExRules("ShadowsofDoubt"),
+            buildBepInExRules("EndlessSpace2"),
         ]
     }
 }

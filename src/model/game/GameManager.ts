@@ -448,6 +448,12 @@ export default class GameManager {
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
+
+        new Game("Endless Space 2", "EndlessSpace2", "EndlessSpace2",
+            "Endless Space 2", ["EndlessSpace2.exe"], "EndlessSpace2_Data",
+            "https://thunderstore.io/c/endless-space-2/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "392110")], "endless-space-2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["es2"]),
     ];
 
     static get activeGame(): Game {
