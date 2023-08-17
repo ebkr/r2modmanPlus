@@ -448,6 +448,31 @@ export default class GameManager {
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
+
+        new Game("Garfield Kart - Furious Racing", "GarfieldKartFuriousRacing", "GarfieldKartFuriousRacing",
+            "Garfield Kart - Furious Racing", ["Garfield Kart Furious Racing.exe"], "GarfieldKartFuriousRacing_Data",
+            "https://thunderstore.io/c/garfield-kart-furious-racing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1085510")], "garfield-kart-furious-racing.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gkfr"]),
+
+        new Game("Techtonica", "Techtonica", "Techtonica",
+            "Techtonica", ["Techtonica.exe"], "Techtonica_Data",
+            "https://thunderstore.io/c/techtonica/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1457320")], "techtonica.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tt"]),
+
+        new Game("Thronefall", "Thronefall", "Thronefall",
+            "Thronefall", ["Thronefall.exe"], "Thronefall_Data",
+            "https://thunderstore.io/c/thronefall/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2239150")], "thronefall.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tf"]),
+            
+        new Game("We Love Katamari REROLL+ Royal Reverie", "WeLoveKatamariRerollRoyalReverie", "WeLoveKatamariRerollRoyalReverie",
+            "WLKRR", ["WLKRR.exe"], "WeLoveKatamariRerollRoyalReverie_Data",
+            "https://thunderstore.io/c/we-love-katamari-reroll-royal-reverie/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1730700")], "WLKRR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wlkrr"]),
+
     ];
 
     static get activeGame(): Game {
