@@ -60,6 +60,7 @@ const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Skul", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("Modding_Council-BepInExPack_of_Legend", "BepInExPack_of_Legend", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_Thronefall", "BepInExPack", PackageLoader.BEPINEX),
 ];
 
 
@@ -137,7 +138,7 @@ const VARIANTS = {
     Wildfrost: MODLOADER_PACKAGES,
     ShadowsofDoubt: MODLOADER_PACKAGES,
     WeLoveKatamariRerollRoyalReverie: MODLOADER_PACKAGES,
-    Thronefall:MODLOADER_PACKAGES,
+    Thronefall: MODLOADER_PACKAGES,
     Techtonica: MODLOADER_PACKAGES,
     GarfieldKartFuriousRacing: MODLOADER_PACKAGES,
     WizardOfLegend: MODLOADER_PACKAGES,
