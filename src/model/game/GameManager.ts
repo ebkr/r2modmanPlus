@@ -466,13 +466,18 @@ export default class GameManager {
             "https://thunderstore.io/c/thronefall/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2239150")], "thronefall.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tf"]),
-            
+
         new Game("We Love Katamari REROLL+ Royal Reverie", "WeLoveKatamariRerollRoyalReverie", "WeLoveKatamariRerollRoyalReverie",
             "WLKRR", ["WLKRR.exe"], "WeLoveKatamariRerollRoyalReverie_Data",
             "https://thunderstore.io/c/we-love-katamari-reroll-royal-reverie/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1730700")], "WLKRR.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wlkrr"]),
 
+        new Game("Wizard of Legend", "WizardOfLegend", "WizardOfLegend",
+            "Wizard of Legend", ["WizardOfLegend.exe"], "WizardOfLegend_Data",
+            "https://thunderstore.io/c/wizard-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "445980")], "WizardOfLegend.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wol"]),
     ];
 
     static get activeGame(): Game {

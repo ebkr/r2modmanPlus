@@ -59,6 +59,7 @@ const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("GodotModding-GodotModLoader", "", PackageLoader.GODOT_ML),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Skul", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("Modding_Council-BepInExPack_of_Legend", "BepInExPack_of_Legend", PackageLoader.BEPINEX),
 ];
 
 
@@ -139,6 +140,7 @@ const VARIANTS = {
     Thronefall:MODLOADER_PACKAGES,
     Techtonica: MODLOADER_PACKAGES,
     GarfieldKartFuriousRacing: MODLOADER_PACKAGES,
+    WizardOfLegend: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
