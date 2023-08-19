@@ -106,6 +106,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Techtonica"),
             buildBepInExRules("GarfieldKartFuriousRacing"),
             buildBepInExRules("WizardOfLegend"),
+            buildBepInExRules("BombRushCyberfunk"),
+            buildBepInExRules("TouhouLostBranchOfLegend"),
         ]
     }
 }
