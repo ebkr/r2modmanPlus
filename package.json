@@ -1,6 +1,6 @@
 {
     "name": "r2modman",
-    "version": "3.1.42",
+    "version": "3.1.43",
     "description": "A simple and easy to use mod manager for several games using Thunderstore.",
     "productName": "r2modman",
     "author": "ebkr",
@@ -9,6 +9,7 @@
     "scripts": {
         "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
         "run": "quasar dev -m electron --modern",
+        "sync": "ts-node ./scripts/sync.ts",
         "build-win": "quasar build --mode electron -T win32",
         "build-linux": "quasar build --mode electron -T linux",
         "build-osx": "quasar build --mode electron -T mac",
