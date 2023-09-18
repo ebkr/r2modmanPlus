@@ -496,7 +496,7 @@ export default class GameManager {
          new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
             "wizardwithagun", ['wizardwithagun.exe'], "wizardwithagun_Data",
             "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizGun.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizardWithAGun.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wizgun"]),
 
     ];
