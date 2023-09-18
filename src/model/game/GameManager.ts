@@ -493,7 +493,7 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
         
-         new Game("WizardWithAGun", "WizardWithAGun", "WizardWithAGun",
+         new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
             "wizardwithagun", ['wizardwithagun.exe'], "wizardwithagun_Data",
             "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizGun.jpg",
