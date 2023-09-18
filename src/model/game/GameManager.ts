@@ -492,6 +492,13 @@ export default class GameManager {
             "https://thunderstore.io/c/touhou-lost-branch-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
+        
+         new Game("WizardWithAGun", "WizardWithAGun", "WizardWithAGun",
+            "wizardwithagun", ['wizardwithagun.exe'], "wizardwithagun_Data",
+            "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizGun.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wizgun"]),
+
     ];
 
     static get activeGame(): Game {
