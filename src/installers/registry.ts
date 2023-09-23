@@ -3,6 +3,7 @@ import { GodotMLInstaller } from "./GodotMLInstaller";
 import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
 import { PackageInstaller } from "./PackageInstaller";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import { ShimloaderInstaller } from "./ShimloaderInstaller";
 
 
 const _PackageInstallers = {
@@ -10,6 +11,7 @@ const _PackageInstallers = {
     "bepinex": new BepInExInstaller(),
     "godotml": new GodotMLInstaller(),
     "melonloader": new MelonLoaderInstaller(),
+    "shimloader": new ShimloaderInstaller(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;

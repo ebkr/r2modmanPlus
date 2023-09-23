@@ -6,6 +6,7 @@ export enum PackageLoader {
     NORTHSTAR,
     GODOT_ML,
     ANCIENT_DUNGEON_VR,
+    SHIMLOADER,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {

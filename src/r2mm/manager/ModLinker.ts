@@ -87,8 +87,16 @@ export default class ModLinker {
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
                         if (file.toLowerCase() !== 'mods.yml') {
                             try {
-                                const gameDirFilePath = path.join(installDirectory, file);
+                                var gameDirFilePath = path.join(installDirectory, file);
                                 const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
+
+                                // HACK: This forces r2mm to install shimloader and ue4ss into the correct directory, even if they
+                                // exist at the very top of the profile folder.
+                                if (game.packageLoader == PackageLoader.SHIMLOADER) {
+                                    gameDirFilePath = path.join(installDirectory, game.dataFolderName, "Binaries", "Win64", file);
+                                    console.log("new gameDirFilePath: " + gameDirFilePath);
+                                }
+
                                 if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
                                     await fs.copyFile(profileDirFilePath, gameDirFilePath);
                                     const profileDirFileStat = await fs.stat(profileDirFilePath);
@@ -106,7 +114,13 @@ export default class ModLinker {
                         }
                     } else {
                         if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
-                            if (!["bepinex", "bepinex_server", "mods", "melonloader", "plugins", "userdata", "_state", "userlibs", "qmods"].includes(file.toLowerCase())) {
+                            const exclusionsList = [
+                                "bepinex", "bepinex_server", "mods",
+                                "melonloader", "plugins", "userdata",
+                                "_state", "userlibs", "qmods", "shimloader"
+                            ];
+
+                            if (!exclusionsList.includes(file.toLowerCase())) {
                                 const fileProfileFolderPath = path.join(profile.getPathOfProfile(), file);
                                 const fileTree = await FileTree.buildFromLocation(fileProfileFolderPath);
                                 if (fileTree instanceof R2Error) {

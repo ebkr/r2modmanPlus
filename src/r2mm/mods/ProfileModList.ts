@@ -26,7 +26,7 @@ import { ProfileApiClient } from '../profiles/ProfilesClient';
 
 export default class ProfileModList {
 
-    public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml"];
+    public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml", ".modconf", ".ini"];
 
     private static lock = new AsyncLock();
 
