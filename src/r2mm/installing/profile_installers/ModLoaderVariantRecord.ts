@@ -62,6 +62,7 @@ const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("Modding_Council-BepInExPack_of_Legend", "BepInExPack_of_Legend", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Thronefall", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_WizardWithAGun", "BepInExPack", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("SunkenlandModding-BepInExPack_Sunkenland", "BepInExPack_Sunkenland", PackageLoader.BEPINEX),
 ];
 
 
