@@ -108,6 +108,10 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("WizardOfLegend"),
             buildBepInExRules("BombRushCyberfunk"),
             buildBepInExRules("TouhouLostBranchOfLegend"),
+            buildBepInExRules("WizardWithAGun"),
+            buildBepInExRules("Sunkenland"),
+            buildBepInExRules("Atomicrops"),
+            buildBepInExRules("Erenshor"),
         ]
     }
 }
