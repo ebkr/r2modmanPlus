@@ -84,6 +84,10 @@ export default class ModLinker {
             const profileFiles = await fs.readdir(profile.getPathOfProfile());
             try {
                 for (const file of profileFiles) {
+                    if (file.toLowerCase() === '.git') {
+                        continue;
+                    }
+
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
                         if (file.toLowerCase() !== 'mods.yml') {
                             try {
