@@ -169,7 +169,7 @@
                     </span>
                     <span class='card-header-icon'
                           v-if="getDisabledDependencies(key).length > 0 || getMissingDependencies(key).length > 0">
-                        <i class='fas fa-exclamation-circle' v-tooltip.left="`Missing ${getMissingDependencies(key).length} dependencies`"></i>
+                        <i class='fas fa-exclamation-circle' v-tooltip.left="`There is an issue with the dependencies for this mod`"></i>
                     </span>
                     <span class='card-header-icon'
                           @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)">
@@ -393,8 +393,6 @@ import SearchUtils from '../../utils/SearchUtils';
 
             const safeInstalledDependencies = installedDependencies as ManifestV2[];
 
-            console.log("disable deps:", safeInstalledDependencies.filter(value => !value.isEnabled()))
-
             return safeInstalledDependencies.filter(value => !value.isEnabled());
         }
 
@@ -556,7 +554,6 @@ import SearchUtils from '../../utils/SearchUtils';
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
-            console.log(this.dependencyListDisplayType, this.showingDependencyList)
         }
 
         uninstallModRequireConfirmation(vueMod: any) {
