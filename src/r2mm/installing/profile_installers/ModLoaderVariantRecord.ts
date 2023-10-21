@@ -59,6 +59,7 @@ const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("GodotModding-GodotModLoader", "", PackageLoader.GODOT_ML),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Skul", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_IL2CPP", "BepInExPack", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_x86", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("Modding_Council-BepInExPack_of_Legend", "BepInExPack_of_Legend", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Thronefall", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_WizardWithAGun", "BepInExPack", PackageLoader.BEPINEX),
