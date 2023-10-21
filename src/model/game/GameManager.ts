@@ -516,6 +516,18 @@ export default class GameManager {
             "https://thunderstore.io/c/erenshor/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2382520")], "Erenshor.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Last Train Outta' Wormtown", "LastTrainOuttaWormtown", "LastTrainOuttaWormtown",
+            "Last Train Outta' Wormtown", ["Last Train Out Of WormTown.exe"], "Last Train Out Of WormTown_Data",
+            "https://thunderstore.io/c/last-train-outta-wormtown/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2318480")], "LastTrainOuttaWormtown.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("DREDGE", "Dredge", "Dredge",
+            "DREDGE", ["DREDGE.exe"], "DREDGE_Data",
+            "https://thunderstore.io/c/dredge/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1562430")], "Dredge.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
