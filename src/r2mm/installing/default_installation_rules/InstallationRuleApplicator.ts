@@ -112,6 +112,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Sunkenland"),
             buildBepInExRules("Atomicrops"),
             buildBepInExRules("Erenshor"),
+            buildBepInExRules("LastTrainOuttaWormtown"),
+            buildBepInExRules("Dredge"),
         ]
     }
 }
