@@ -448,6 +448,72 @@ export default class GameManager {
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
+
+        new Game("Garfield Kart - Furious Racing", "GarfieldKartFuriousRacing", "GarfieldKartFuriousRacing",
+            "Garfield Kart - Furious Racing", ["Garfield Kart Furious Racing.exe"], "GarfieldKartFuriousRacing_Data",
+            "https://thunderstore.io/c/garfield-kart-furious-racing/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1085510")], "garfield-kart-furious-racing.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gkfr"]),
+
+        new Game("Techtonica", "Techtonica", "Techtonica",
+            "Techtonica", ["Techtonica.exe"], "Techtonica_Data",
+            "https://thunderstore.io/c/techtonica/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1457320")], "techtonica.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tt"]),
+
+        new Game("Thronefall", "Thronefall", "Thronefall",
+            "Thronefall", ["Thronefall.exe"], "Thronefall_Data",
+            "https://thunderstore.io/c/thronefall/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2239150")], "thronefall.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["tf"]),
+
+        new Game("We Love Katamari REROLL+ Royal Reverie", "WeLoveKatamariRerollRoyalReverie", "WeLoveKatamariRerollRoyalReverie",
+            "WLKRR", ["WLKRR.exe"], "WeLoveKatamariRerollRoyalReverie_Data",
+            "https://thunderstore.io/c/we-love-katamari-reroll-royal-reverie/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1730700")], "WLKRR.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wlkrr"]),
+
+        new Game("Wizard of Legend", "WizardOfLegend", "WizardOfLegend",
+            "Wizard of Legend", ["WizardOfLegend.exe"], "WizardOfLegend_Data",
+            "https://thunderstore.io/c/wizard-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "445980")], "WizardOfLegend.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wol"]),
+
+        new Game(
+            "Bomb Rush Cyberfunk", "BombRushCyberfunk", "BombRushCyberfunk",
+            "BombRushCyberfunk", ["Bomb Rush Cyberfunk.exe"], "Bomb Rush Cyberfunk_Data",
+            "https://thunderstore.io/c/bomb-rush-cyberfunk/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1353230")], "BombRushCyberfunk.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
+
+        new Game(
+            "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend",
+            "LBoL", ["LBoL.exe"], "LBoL_Data",
+            "https://thunderstore.io/c/touhou-lost-branch-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
+         new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
+            "wizardwithagun", ['wizardwithagun.exe'], "wizardwithagun_Data",
+            "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizardWithAGun.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wizgun"]),
+        new Game("Sunkenland", "Sunkenland", "Sunkenland",
+            "Sunkenland", ["Sunkenland.exe"], "Sunkenland_Data",
+            "https://thunderstore.io/c/sunkenland/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2080690")], "Sunkenland.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Atomicrops", "Atomicrops", "Atomicrops",
+            "Atomicrops", ["Atomicrops.exe"], "Atomicrops_Data",
+            "https://thunderstore.io/c/atomicrops/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "757320")], "Atomicrops.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Erenshor", "Erenshor", "Erenshor",
+            "Erenshor", ["Erenshor.exe"], "Erenshor_Data",
+            "https://thunderstore.io/c/erenshor/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2382520")], "Erenshor.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {

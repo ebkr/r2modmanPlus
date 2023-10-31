@@ -101,6 +101,17 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("SunHaven"),
             buildBepInExRules("Wildfrost"),
             buildBepInExRules("ShadowsofDoubt"),
+            buildBepInExRules("WeLoveKatamariRerollRoyalReverie"),
+            buildBepInExRules("Thronefall"),
+            buildBepInExRules("Techtonica"),
+            buildBepInExRules("GarfieldKartFuriousRacing"),
+            buildBepInExRules("WizardOfLegend"),
+            buildBepInExRules("BombRushCyberfunk"),
+            buildBepInExRules("TouhouLostBranchOfLegend"),
+            buildBepInExRules("WizardWithAGun"),
+            buildBepInExRules("Sunkenland"),
+            buildBepInExRules("Atomicrops"),
+            buildBepInExRules("Erenshor"),
         ]
     }
 }

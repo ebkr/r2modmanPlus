@@ -25,3 +25,4 @@ log.txt
 *.ntvs*
 *.njsproj
 *.sln
+/.vs
