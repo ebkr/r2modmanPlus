@@ -7,6 +7,22 @@
 | [Features](#features) | [What is a mod manager?](#what-is-a-mod-manager) | [Installing](#installing) | [Help](#help) | [Feedback and suggestions](#feedback-and-suggestions) | [Changelog](#changelog) | [Screenshots](#screenshots) |
 |---|---|---|---|---|---|---|
 
+## This fork
+This fork is a slightly modified version of r2modman. It is specifically modified to run on modern MacOS systems with Silicon processors. The automatic directory detection and validation was removed so it can be used with more flexibility. This version also features an optional json to lets you define launchers overrides for easier use with CrossOver (+ Game Porting Toolkit).
+
+More info on how to setup CrossOver bottles will eventually be published.
+
+## Optional JSON
+You can find an optional json in ```r2modman.app/Contents/Frameworks/game.json```
+For each games, a launcher override can be defined in this file. Ex:
+```
+{ 
+    ...
+    "crossOverLaunchers": {"modded": "/Users/USER/Applications/CrossOver/GAME/MODDEDGAME.app", "vanilla": "/Users/USER/Applications/CrossOver/GAME/GAME.app"}
+    ...
+}
+```
+
 ## Features
 - Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, BONEWORKS, and more
 - A clean user interface designed to make modding as simple as possible
@@ -92,4 +108,3 @@ Config editor
 Profiles
 
 ![](https://i.imgur.com/nLfNaQJ.png)
-
