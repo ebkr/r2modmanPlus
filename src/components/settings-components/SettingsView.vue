@@ -114,9 +114,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 async () => {
                     if (this.settings.getContext().gameSpecific.gameDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
-                        if (!(directory instanceof R2Error)) {
                             return directory;
-                        }
                     }
                     return 'Please set manually';
                 },

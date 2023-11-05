@@ -28,7 +28,7 @@
 			<div class='modal-content'>
 				<div class='notification is-danger'>
 					<h3 class='title'>Failed to set the {{ activeGame.displayName }} directory</h3>
-					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
+					<p>The executable must be selected.</p>
 					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
 				</div>
 			</div>
@@ -258,27 +258,13 @@ import ModalCard from '../components/ModalCard.vue';
                 title: `Locate ${this.activeGame.displayName} Executable`,
                 // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
                 // Should fix if needed, although unlikely.
-                filters: (this.activeGame.exeName.map(value => {
-                    const nameSplit = value.split(".");
-                    return [{
-                        name: nameSplit[0],
-                        extensions: [nameSplit[1]]
-                    }]
-                }).reduce((previousValue, currentValue) => {
-                    previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
-                    return previousValue;
-                })),
+                filters: [],
                 defaultPath: ror2Directory,
                 buttonLabel: 'Select Executable'
             }).then(async files => {
                 if (files.length === 1) {
                     try {
-                        const containsGameExecutable = this.activeGame.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
-                        if (containsGameExecutable) {
                             await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                        } else {
-                            this.showRor2IncorrectDirectoryModal = true;
-                        }
                     } catch (e) {
                         const err = R2Error.fromThrownValue(e, 'Failed to change the game directory');
                         this.$store.commit('error/handleError', err);

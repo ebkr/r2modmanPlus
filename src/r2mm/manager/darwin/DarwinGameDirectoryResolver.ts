@@ -116,11 +116,7 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
             )
         }
         if (manifestLocation === null) {
-            return new FileNotFoundError(
-                `Unable to locate ${game.displayName} Installation Directory`,
-                `Searched locations: ${locations}`,
-                null
-            )
+            manifestLocation ='/'
         }
         // Game manifest found at ${manifestLocation}
         try {
@@ -136,19 +132,11 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
                     return riskOfRain2Path;
                 }
             } else {
-                return new FileNotFoundError(
-                    `${game.displayName} does not exist in Steam\'s specified location`,
-                    `Failed to find directory: ${riskOfRain2Path}`,
-                    null
-                )
+                return '/'
             }
         } catch(e) {
             const err: Error = e as Error;
-            return new R2Error(
-                `An error occurred whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
-                err.message,
-                null
-            )
+            return '/'
         }
     }
 

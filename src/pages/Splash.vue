@@ -189,10 +189,6 @@ export default class Splash extends mixins(SplashMixin) {
                     return;
                 }
             }
-        } else if (process.platform === 'darwin') {
-            await this.ensureWrapperInGameFolder();
-            this.$router.push({name: 'linux'});
-            return;
         }
         this.$router.push({name: 'profiles'});
     }

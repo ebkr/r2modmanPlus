@@ -50,17 +50,11 @@ export const throwIfNoGameDir = async (game: Game): Promise<void> => {
         `The ${game.displayName} directory does not exist`,
         `Set the ${game.displayName} directory in the Settings screen`
     );
-
-    const resolverGameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
-    if (resolverGameDir instanceof R2Error) {
-        throw error;
-    }
-
     const settings = await ManagerSettings.getSingleton(game);
     const ctcGameDir = settings.getContext().gameSpecific.gameDirectory!;
     const ctxGameDirExists = await FsProvider.instance.exists(ctcGameDir);
 
     if (!ctxGameDirExists) {
-        throw error;
+        //throw error;
     }
 };

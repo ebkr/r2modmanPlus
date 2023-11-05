@@ -7,7 +7,7 @@ import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVar
 
 export default class Game {
 
-    private readonly _displayName: string;
+    public _displayName: string;
     private readonly _internalFolderName: GAME_NAME;
     private readonly _steamFolderName: string;
     private readonly _settingsIdentifier: string;
