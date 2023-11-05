@@ -36,7 +36,6 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
         let displayName = game.displayName;
         var jsonpath = path.join(process.argv[0], '../../../../', 'games.json');
         var jsonpathexists = await FsProvider.instance.exists(jsonpath);
-        console.log(jsonpath);
 
         async function launchMacOSSteam(){
             const settings = await ManagerSettings.getSingleton(game);
@@ -73,7 +72,6 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
             Object.keys(GameList.games).filter(function (g) {
                 let gameName = GameList.games[g as keyof typeof GameList.games].meta.displayName;
                 if (gameName === displayName) {
-                    console.log(GameList.games[g as keyof typeof GameList.games])
                     gameDetails = GameList.games[g as keyof typeof GameList.games];
                     gameDetails = gameDetails['r2modman' as keyof typeof gameDetails];
                 }
@@ -83,8 +81,10 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
                 try {
                     var cmd = ``;
                     if (action === 'modded') {
+                        console.log(`Opening modded with CrossOver override using launcher: ${gameLaunchers['modded']}`);
                         var cmd = `open "${gameLaunchers['modded']}"`;
                     } else if (action === 'vanilla') {
+                        console.log(`Opening vanilla with CrossOver override using launcher: ${gameLaunchers['vanilla']}`);
                         var cmd = `open "${gameLaunchers['vanilla']}"`;
                     }
                     LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);

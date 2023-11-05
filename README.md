@@ -8,17 +8,25 @@
 |---|---|---|---|---|---|---|
 
 ## This fork
-This fork is a slightly modified version of r2modman. It is specifically modified to run on modern MacOS systems with Silicon processors. The automatic directory detection and validation was removed so it can be used with more flexibility. This version also features an optional json to lets you define launchers overrides for easier use with CrossOver (+ Game Porting Toolkit).
+> [!NOTE]
+>This adaptation was designed for my own ease of use and is in no way production ready. If I eventually find time, I will properly integrate the crossover overrides in the Settings menu of each games.
 
-More info on how to setup CrossOver bottles will eventually be published.
+This fork is a slightly modified version of r2modman. 
+
+It is specifically modified to run on modern MacOS systems with Silicon processors. The automatic directory detection and validation was removed so it can be used with more flexibility. This version also features an optional json that lets you define launchers overrides for easier use with CrossOver (+ Game Porting Toolkit).
+
+>Instructions on how to setup CrossOver bottles will eventually be published.
 
 ## Optional JSON
-You can find an optional json in ```r2modman.app/Contents/Frameworks/game.json```
+You can find an optional json in ```r2modman.app/Contents/Frameworks/games.json```
 For each games, a launcher override can be defined in this file. Ex:
 ```
-{ 
+{  
     ...
-    "crossOverLaunchers": {"modded": "/Users/USER/Applications/CrossOver/GAME/MODDEDGAME.app", "vanilla": "/Users/USER/Applications/CrossOver/GAME/GAME.app"}
+   "r2modman": { 
+        "crossOverLaunchers": {"modded": "/Users/USER/Applications/CrossOver/GAME/MODDEDGAME.app", "vanilla": "/Users/USER/Applications/CrossOver/GAME/GAME.app"},
+        ...
+    }
     ...
 }
 ```
