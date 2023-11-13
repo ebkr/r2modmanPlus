@@ -528,6 +528,18 @@ export default class GameManager {
             "https://thunderstore.io/c/dredge/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1562430")], "Dredge.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Cities: Skylines II", "CitiesSkylines2", "CitiesSkylines2",
+            "Cities Skylines II", ["Cities2.exe"], "CitiesSkylines2_Data",
+            "https://thunderstore.io/c/cities-skylines-2/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "949230")], "CitiesSkylines2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Lethal Company", "LethalCompany", "LethalCompany",
+            "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
+            "https://thunderstore.io/c/lethal-company/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
