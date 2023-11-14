@@ -29,25 +29,25 @@ export type CliStateCallback = {
 
 export interface CliProvider {
 
-    isPackageInCache: (packageName: string, version: VersionNumber) => boolean;
-    hasPackageExtractedSuccessfully: (packageName: string, version: VersionNumber) => boolean;
+    isPackageInCache: (packageName: string, version: VersionNumber) => Promise<boolean>;
+    hasPackageExtractedSuccessfully: (packageName: string, version: VersionNumber) => Promise<boolean>;
     // Returns an array of package full names to install
     // EG: author-modname-1.2.3
-    getRequiredPackageUpdates: (profile: Profile) => string[];
+    getRequiredPackageUpdates: (profile: Profile) => Promise<string[]>;
 
     downloadPackage: (
         packageName: string,
         version: VersionNumber,
         downloadEventManager: EventManager<CliProgressCallback>,
-        writeToDiskEventManager: () => EventManager<CliProgressCallback>,
-        successStateManager: () => EventManager<CliStateCallback>
-    ) => void;
+        writeToDiskEventManager: EventManager<CliProgressCallback>,
+        successStateManager: EventManager<CliStateCallback>
+    ) => Promise<void>;
 
     installPackage: (
         packageName: string,
         version: VersionNumber,
         writeToDiskEventManager: () => EventManager<CliProgressCallback>,
         successStateManager: () => EventManager<CliStateCallback>
-    ) => void;
+    ) => Promise<void>;
 
 }

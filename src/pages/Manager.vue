@@ -175,6 +175,7 @@ import LocalFileImportModal from '../components/importing/LocalFileImportModal.v
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
+import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 
 @Component({
 		components: {
@@ -670,6 +671,8 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     })
                     .catch(this.showError);
             });
+
+            console.log("TS package map", ThunderstorePackages.PACKAGES_MAP);
 
 			this.isManagerUpdateAvailable();
 		}
