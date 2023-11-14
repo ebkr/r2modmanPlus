@@ -114,6 +114,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Erenshor"),
             buildBepInExRules("LastTrainOuttaWormtown"),
             buildBepInExRules("Dredge"),
+            buildBepInExRules("CitiesSkylines2"),
+            buildBepInExRules("LethalCompany"),
         ]
     }
 }
