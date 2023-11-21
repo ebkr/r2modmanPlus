@@ -532,7 +532,7 @@ export default class GameManager {
         new Game("Cities: Skylines II", "CitiesSkylines2", "CitiesSkylines2",
             "Cities Skylines II", ["Cities2.exe"], "CitiesSkylines2_Data",
             "https://thunderstore.io/c/cities-skylines-ii/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "949230")], "CitiesSkylines2.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "949230"), new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "ParadoxInteractive.CitiesSkylinesII-PCEdition")], "CitiesSkylines2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Lethal Company", "LethalCompany", "LethalCompany",
