@@ -115,6 +115,8 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import { CliProgressCallback, cliProvider, CliStateCallback } from 'src/cli/CliProvider';
+import { EventManager } from 'src/cli/EventManager';
 
 let assignId = 0;
 
@@ -243,7 +245,36 @@ let assignId = 0;
             if (version === undefined) {
                 return;
             }
-            this.downloadHandler(refSelectedThunderstoreMod, version);
+            // this.downloadHandler(refSelectedThunderstoreMod, version);
+
+            const downloadProgressCallback = new EventManager<CliProgressCallback>();
+            const downloadProgressSubscriber = downloadProgressCallback.subscribe(e => {
+                console.log(`Download progress: ${e.currentBytes}/${e.totalBytes}`);
+            })
+
+            const diskWriteCallback = new EventManager<CliProgressCallback>();
+            const diskWriteProgressSubscriber = diskWriteCallback.subscribe(e => {
+                console.log(`Disk write progress: ${e.currentBytes}/${e.totalBytes}`)
+            })
+
+            const successCallback = new EventManager<CliStateCallback>();
+            const successSubscriber = successCallback.subscribe(e => {
+                console.log(`Finished. Successful?: ${e.finished}`);
+                if (e.error !== undefined) {
+                    this.$emit('error', e.error);
+                }
+                successSubscriber.unsubscribe();
+                downloadProgressSubscriber.unsubscribe();
+                diskWriteProgressSubscriber.unsubscribe();
+            })
+
+            cliProvider().downloadPackage(
+                refSelectedThunderstoreMod!.getFullName(),
+                version.getVersionNumber(),
+                downloadProgressCallback,
+                diskWriteCallback,
+                successCallback
+            );
         }
 
         async downloadLatest() {

@@ -2,11 +2,13 @@ import { CliProgressCallback, CliProvider, CliStateCallback } from 'src/cli/CliP
 import VersionNumber from 'src/model/VersionNumber';
 import { EventManager } from 'src/cli/EventManager';
 import Profile from 'src/model/Profile';
+import PackageDownloader from 'src/cli/PackageDownloader';
+
 
 export default class CliProviderImpl implements CliProvider {
 
     downloadPackage(packageName: string, version: VersionNumber, downloadEventManager: EventManager<CliProgressCallback>, writeToDiskEventManager: EventManager<CliProgressCallback>, successStateManager: EventManager<CliStateCallback>): Promise<void> {
-        return Promise.reject("Not yet implemented");
+        return PackageDownloader.downloadPackage(packageName, version, downloadEventManager, writeToDiskEventManager, successStateManager);
     }
 
     getRequiredPackageUpdates(profile: Profile): Promise<string[]> {

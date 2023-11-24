@@ -65,6 +65,8 @@ import GenericProfileInstaller from './r2mm/installing/profile_installers/Generi
 import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
 import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
+import CliProviderImpl from 'src/cli/CliProviderImpl';
+import { setCliProvider } from 'src/cli/CliProvider';
 
 @Component
 export default class App extends mixins(UtilityMixin) {
@@ -144,6 +146,9 @@ export default class App extends mixins(UtilityMixin) {
 
         ProfileProvider.provide(() => new ProfileImpl());
         LogOutputProvider.provide(() => LogOutput.getSingleton());
+
+        const cliProvider = new CliProviderImpl();
+        setCliProvider(() => cliProvider);
 
         const betterThunderstoreDownloader = new BetterThunderstoreDownloader();
         ThunderstoreDownloaderProvider.provide(() => betterThunderstoreDownloader);
