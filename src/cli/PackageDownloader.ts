@@ -3,13 +3,10 @@ import { EventManager } from 'src/cli/EventManager';
 import { CliProgressCallback, CliStateCallback } from 'src/cli/CliProvider';
 import ThunderstorePackages from 'src/r2mm/data/ThunderstorePackages';
 import R2Error from 'src/model/errors/R2Error';
-import { createWriteStream } from 'fs';
 import * as path from 'path';
 import PathResolver from 'src/r2mm/manager/PathResolver';
 import FsProvider from 'src/providers/generic/file/FsProvider';
 import axios from 'axios';
-// @ts-ignore
-import HttpAdapter from 'axios/lib/adapters/http';
 
 export default class PackageDownloader {
 
@@ -20,8 +17,6 @@ export default class PackageDownloader {
         writeToDiskEventManager: EventManager<CliProgressCallback>,
         successStateManager: EventManager<CliStateCallback>)
         : Promise<void> {
-
-        console.log(`Attempting to download ${packageName}-${version.toString()}`);
 
         const packageMap = ThunderstorePackages.PACKAGES_MAP;
         if (!packageMap.has(packageName)) {
@@ -53,30 +48,27 @@ export default class PackageDownloader {
             await FsProvider.instance.unlink(filePath);
         }
 
-        const writer = createWriteStream(filePath);
-
         axios.get(pkgVersion.getDownloadUrl(), {
-            adapter: HttpAdapter,
             onDownloadProgress: progress => {
                 downloadEventManager.publish({
                     currentBytes: progress.loaded,
                     totalBytes: progress.total
                 } as CliProgressCallback);
             },
-            responseType: 'stream',
+            responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'application/zip',
                 'Access-Control-Allow-Origin': '*'
             }
         })
             .then(response => {
-                console.log(response);
+                const buf: Buffer = Buffer.from(response.data);
+                return FsProvider.instance.writeFile(filePath, buf);
             })
             .then(() => {
                 successStateManager.publish({
                     finished: true
                 } as CliStateCallback);
-                writer.close();
             })
             .catch(reason => {
                 successStateManager.publish({
@@ -86,7 +78,6 @@ export default class PackageDownloader {
                         reason
                     )
                 } as CliStateCallback);
-                writer.close();
             });
     }
 
