@@ -1,5 +1,4 @@
 Mod Manager Development Environment Setup Information
-Don't trust versions in any .md file or other READMEs. Even this one. Those might not be correct.
 
 (Windows)
 1 Install Git Bash
@@ -20,7 +19,6 @@ Don't trust versions in any .md file or other READMEs. Even this one. Those migh
 16 Run `yarn build-win`
 17 Go to `r2modmanplus/dist/electron/Packaged` with Windows's file explorer and run `r2modman VERSION_NUMBER.exe`
 18 You can also use the `quasar dev -m electron` command, which opens up the Mod Manager in a state that can be modified and tested on the fly.
-19 k thanks bye
 
 
 Random info
