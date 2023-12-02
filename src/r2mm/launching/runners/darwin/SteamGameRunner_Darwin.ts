@@ -76,16 +76,18 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
                     gameDetails = gameDetails['r2modman' as keyof typeof gameDetails];
                 }
             });
-            var gameLaunchers = gameDetails['crossOverLaunchers' as keyof typeof gameDetails];
-            if (gameLaunchers) {
+            var gameLauncher = gameDetails['crossOverLauncher' as keyof typeof gameDetails];
+            const settings = await ManagerSettings.getSingleton(game);
+            if (gameLauncher) {
                 try {
                     var cmd = ``;
+                    console.log(`Opening ${action} with CrossOver override using launcher: ${gameLauncher}`);
+                    var gameId = game.activePlatform.storeIdentifier;
                     if (action === 'modded') {
-                        console.log(`Opening modded with CrossOver override using launcher: ${gameLaunchers['modded']}`);
-                        var cmd = `open "${gameLaunchers['modded']}"`;
+                        var profileName = args.split('--r2profile ')[1].slice(1,-1);
+                        cmd = `"${gameLauncher}/Contents/MacOS/Menu Helper" modded-${gameId}-${profileName}`;
                     } else if (action === 'vanilla') {
-                        console.log(`Opening vanilla with CrossOver override using launcher: ${gameLaunchers['vanilla']}`);
-                        var cmd = `open "${gameLaunchers['vanilla']}"`;
+                        cmd = `"${gameLauncher}/Contents/MacOS/Menu Helper" vanilla-${gameId}`;
                     }
                     LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
                     execSync(cmd);
