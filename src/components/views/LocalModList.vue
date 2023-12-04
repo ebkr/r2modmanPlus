@@ -179,7 +179,7 @@
                     <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                 </template>
                 <a class='card-footer-item' @click="viewDependencyList(key)">Associated</a>
-                <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
+                <Link :url="`${key.getWebsiteUrl()}v/${key.getVersionNumber().toString()}`"
                       :target="'external'"
                       class="card-footer-item">
                         <i class='fas fa-code-branch margin-right margin-right--half-width'></i>
