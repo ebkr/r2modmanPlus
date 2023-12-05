@@ -1,3 +1,12 @@
+### 3.1.45
+- Games added:
+  - Cities: Skylines II
+  - Lethal Company
+  - DREDGE
+  - Last Train Outta' Wormtown
+  - Wizard With a Gun
+    - Now boots the full game instead of the demo (Thanks to @RandomWolf)
+
 ### 3.1.44
 
 - Games added:
