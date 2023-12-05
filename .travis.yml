@@ -1,6 +1,11 @@
 language: node_js
+before_script
+  - nvm install 14
+  - nvm use 14
+  - npm install yarn
+  - npm install 16
+  - npm use 16
 node_js:
-  - 14
   - 16
 script:
   - yarn install --ignore-engines
