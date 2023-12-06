@@ -31,8 +31,8 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     private dependencies: string[] = [];
     private incompatibilities: string[] = [];
     private optionalDependencies: string[] = [];
-    // add a new type?
-    private dateUpdated: Date = new Date(); // newly added line
+
+    private dateUpdated: Date = new Date();
 
     private versionNumber: VersionNumber = new VersionNumber('0.0.0');
 
