@@ -540,6 +540,12 @@ export default class GameManager {
             "https://thunderstore.io/c/lethal-company/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("A Robot Named Fight!", "ARobotNamedFight", "ARobotNamedFight",
+            "A Robot Named Fight!", ["ARobotNamedFight.exe"], "ARobotNamedFight_Data",
+            "https://thunderstore.io/c/a-robot-named-fight/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "603530")], "ARobotNamedFight.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
