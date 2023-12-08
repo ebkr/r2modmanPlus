@@ -41,6 +41,34 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-header-title">
+                    <div class="input-group input-group--flex margin-right">
+                        <div class="tabs is-fullwidth">
+                            <ul>
+                                <li v-bind:class="{ 'is-active': mainFilter == 'All' }" @click="mainFilter = 'All'">
+                                    <a>
+                                        <span>All</span>
+                                    </a>
+                                </li>
+                                <li v-bind:class="{ 'is-active': mainFilter == 'Mods' }" @click="mainFilter = 'Mods'">
+                                    <a>
+                                        <span>Mods</span>
+                                    </a>
+                                </li>
+                                <li v-bind:class="{ 'is-active': mainFilter == 'Libraries' }" @click="mainFilter = 'Libraries'">
+                                    <a>
+                                        <span>APIs & Libraries</span>
+                                    </a>
+                                </li>
+                                <li v-bind:class="{ 'is-active': mainFilter == 'Modpacks' }" @click="mainFilter = 'Modpacks'">
+                                    <a>
+                                        <span>Modpacks</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <OnlineModList
@@ -100,6 +128,7 @@ export default class OnlineModView extends Vue {
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
+    mainFilter = "All";
 
     get localModList(): ManifestV2[] {
         return this.$store.state.localModList;
@@ -160,6 +189,12 @@ export default class OnlineModView extends Vue {
         if (!showDeprecatedPackages) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
         }
+        if (this.mainFilter != 'All') {
+            console.log('allllll')
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+                return ArrayUtils.includesSome(x.getCategories(), [this.mainFilter]);
+            })
+        }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
                 switch(categoryFilterMode) {
@@ -216,6 +251,11 @@ export default class OnlineModView extends Vue {
             left: 0,
             behavior: "auto"
         });
+    }
+
+    @Watch("mainFilter")
+    mainFilterTab() {
+        this.sortThunderstoreModList();
     }
 
     async created() {
