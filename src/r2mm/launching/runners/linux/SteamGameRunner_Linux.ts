@@ -69,7 +69,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
 
-        const steamCmd = steamDir.indexOf(path.join(homedir(), '.var', 'app', 'com.valvesoftware.Steam')) == 0 ? `flatpak run --branch=stable --arch=x86_64 --command=/app/bin/steam-wrapper --file-forwarding --filesystem=home/.config/r2modmanPlus-local com.valvesoftware.Steam` : `"${steamDir}/steam.sh"`;
+        const steamCmd = steamDir.indexOf(path.join(homedir(), '.var', 'app', 'com.valvesoftware.Steam')) >= 0 ? `flatpak run com.valvesoftware.Steam` : `"${steamDir}/steam.sh"`;
 
         try {
             const cmd = `${steamCmd} -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
