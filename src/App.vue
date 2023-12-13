@@ -76,6 +76,7 @@ export default class App extends mixins(UtilityMixin) {
 
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
+        await this.checkCdnConnection();
 
         const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         this.settings = settings;

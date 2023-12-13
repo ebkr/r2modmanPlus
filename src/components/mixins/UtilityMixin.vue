@@ -5,6 +5,7 @@ import Component from 'vue-class-component';
 import R2Error from '../../model/errors/R2Error';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
@@ -80,6 +81,22 @@ export default class UtilityMixin extends Vue {
         }
 
         this.tsRefreshFailed = false;
+    }
+
+    /**
+     * Set internal state of CdnProvider to prefer a mirror CDN if the
+     * main CDN is unreachable.
+     */
+    async checkCdnConnection() {
+        try {
+            await CdnProvider.checkCdnConnection();
+        } catch (error: unknown) {
+            if (error instanceof R2Error) {
+                this.showError(error);
+            } else {
+                console.error(error);
+            }
+        }
     }
 }
 </script>
