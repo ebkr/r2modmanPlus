@@ -540,6 +540,18 @@ export default class GameManager {
             "https://thunderstore.io/c/lethal-company/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Meeple Station", "MeepleStation", "MeepleStation",
+            "Meeple Station", ["Meeple Station.exe"], "MeepleStation_Data",
+            "https://thunderstore.io/c/meeple-station/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "900010")], "MeepleStation.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Void Crew", "VoidCrew", "VoidCrew",
+            "Void Crew", ["Void Crew.exe"], "VoidCrew_Data",
+            "https://thunderstore.io/c/void-crew/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1063420")], "VoidCrew.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
