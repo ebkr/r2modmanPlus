@@ -2,7 +2,7 @@
     <div>
         <ExpandableCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
-            :image="key.getVersions()[0].getIcon()"
+            :image="getImageUrl(key)"
             :id="index"
             :description="key.getVersions()[0].getDescription()"
             :funkyMode="funkyMode"
@@ -70,6 +70,7 @@ import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import DonateButton from '../../components/buttons/DonateButton.vue';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
     components: {
@@ -120,6 +121,12 @@ export default class OnlineModList extends Vue {
     getReadableCategories(tsMod: ThunderstoreMod) {
         const mod = new ThunderstoreMod().fromReactive(tsMod);
         return mod.getCategories().join(", ");
+    }
+
+    getImageUrl(tsMod: ThunderstoreMod): string {
+        return CdnProvider.replaceCdnHost(
+            tsMod.getVersions()[0].getIcon()
+        );
     }
 
     emitError(error: R2Error) {
