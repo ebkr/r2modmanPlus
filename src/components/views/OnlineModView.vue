@@ -130,10 +130,6 @@ export default class OnlineModView extends Vue {
     }
     
     get thunderstoreSectionFilter(): SectionFilter[] {
-        //var filters = [new SectionFilter('mods', 'Mods', [], ['mods'])];
-        //return filters;
-        //console.log('thunderstoreSectionFilters');
-        //console.log(this.$store.state.thunderstoreSectionFilter);
         return this.$store.state.thunderstoreSectionFilter || [];
     }
 
@@ -159,11 +155,6 @@ export default class OnlineModView extends Vue {
             (this.pageNumber - 1) * this.pageSize,
             this.pageNumber * this.pageSize
         );
-    }
-
-    debug(data: any) {
-        console.log("DEBUG");
-        console.log(data);
     }
 
     @Watch("thunderstoreSearchFilter")
@@ -198,21 +189,12 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
         }
         if (this.mainFilter != 'all') {
-            console.log('allllll')
             var filters = this.getThunderstoreSectionFilters()
-            console.log(filters)
-            console.log(this.mainFilter)
             for (var filter of filters) {
-                console.log(filter.label)
-                console.log(filter)
                 if (filter.label == this.mainFilter) {
-                    console.log("matches")
                     if (filter.requireCategories.length > 0) {
-                        console.log("requireCategories")
-                        console.log(filter.requireCategories.map(v => v.toLowerCase()))
                         this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
                             var categories = x.getCategories().map(v => v.toLowerCase());
-                            console.log(categories)
                             var filterCategories = filter.requireCategories.map(v => {
                                 var out = v.replaceAll('-', ' ');
                                 return out.toLowerCase()
@@ -221,8 +203,6 @@ export default class OnlineModView extends Vue {
                         })
                     }
                     if (filter.excludeCategories.length > 0) {
-                        console.log("excludeCategories")
-                        console.log(filter.excludeCategories.map(v => v.toLowerCase()))
                         this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
                             var categories = x.getCategories().map(v => v.toLowerCase());
                             var filterCategories = filter.excludeCategories.map(v => {
@@ -232,7 +212,6 @@ export default class OnlineModView extends Vue {
                             return !ArrayUtils.includesSome(categories, filterCategories);
                         })
                     }
-                    console.log("done")
                 }
             }
         }

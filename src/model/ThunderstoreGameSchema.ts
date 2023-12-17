@@ -1,56 +1,6 @@
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import SectionFilter from './section/SectionFilter';
 
-/*
-"atomicrops": {
-    "uuid": "0730de09-f183-4cdc-ba4e-ddff5077f99b",
-    "label": "atomicrops",
-    "meta": {
-        "displayName": "Atomicrops",
-        "iconUrl": "None"
-    },
-    "distributions": [],
-    "thunderstore": {
-        "displayName": "Atomicrops",
-        "categories": {
-            "mods": {
-            "label": "Mods"
-            },
-            "modpacks": {
-            "label": "Modpacks"
-            },
-            "tools": {
-            "label": "Tools"
-            },
-            "libraries": {
-            "label": "Libraries"
-            },
-            "misc": {
-            "label": "Misc"
-            },
-            "audio": {
-            "label": "Audio"
-            }
-        },
-        "sections": {
-            "mods": {
-            "name": "Mods",
-            "excludeCategories": [
-                "modpacks"
-            ]
-            },
-            "modpacks": {
-            "name": "Modpacks",
-            "requireCategories": [
-                "modpacks"
-            ]
-            }
-        },
-        "discordUrl": "https://discord.gg/4G3sfhYp"
-    }
-}
-*/
-
 export default class ThunderstoreGameSchema implements ReactiveObjectConverterInterface {
 
     private uuid: string = '';
@@ -59,13 +9,9 @@ export default class ThunderstoreGameSchema implements ReactiveObjectConverterIn
     private sections: SectionFilter[] = [];
 
     public static parseFromThunderstoreData(data: any): ThunderstoreGameSchema {
-        console.log("parseFromThunderstoreData")
-        console.log(data)
         const mod = new ThunderstoreGameSchema();
         if (Object.prototype.hasOwnProperty.call(data, "thunderstore")) {
-            console.log("has thunderstore")
             if (Object.prototype.hasOwnProperty.call(data.thunderstore, "sections")) {
-                console.log("has sections")
                 for (var [label, value] of Object.entries(data.thunderstore.sections)) {
                     mod.addSectionFitlers(SectionFilter.fromData(label, value));
                 }

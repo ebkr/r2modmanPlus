@@ -8,7 +8,7 @@ export default class ThunderstorePackages {
     public static GAME_SCHEMA: ThunderstoreGameSchema | null = null;
 
     /**
-     * Fetch latest V1 API data and apply to {PACKAGES}
+     * Fetch latest schema and apply to {GAME_SCHEMA}
      */
     public static async update(game: Game) {
         var schema = (await ConnectionProvider.instance.getSchema()).data;

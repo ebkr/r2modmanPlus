@@ -3,8 +3,6 @@ export default interface ObjectResponse {
 }
 
 export const isObjectResonse = (arg: any): arg is ObjectResponse => {
-    console.log("isObjectResonse");
-    console.log(arg);
     if (arg.data != null && arg.data instanceof Object) {
         return true;
     }
