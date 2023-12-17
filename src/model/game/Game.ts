@@ -8,6 +8,7 @@ import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVar
 export default class Game {
 
     private readonly _displayName: string;
+    private readonly _thunderstoreLabel: string;
     private readonly _internalFolderName: GAME_NAME;
     private readonly _steamFolderName: string;
     private readonly _settingsIdentifier: string;
@@ -28,7 +29,7 @@ export default class Game {
     constructor(displayName: string, internalFolderName: GAME_NAME, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, exclusionsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
-                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader, additionalSearchStrings?: string[]) {
+                displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader, additionalSearchStrings?: string[], thunderstoreLabel?: string) {
 
         this._displayName = displayName;
         this._internalFolderName = internalFolderName;
@@ -45,10 +46,15 @@ export default class Game {
         this._instanceType = instanceType;
         this._packageLoader = packageLoader;
         this._additionalSearchStrings = additionalSearchStrings || [];
+        this._thunderstoreLabel = thunderstoreLabel || '';
     }
 
     get displayName(): string {
         return this._displayName;
+    }
+
+    get thunderstoreLabel(): string {
+        return this._thunderstoreLabel;
     }
 
     get internalFolderName(): GAME_NAME {

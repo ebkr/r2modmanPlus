@@ -7,6 +7,7 @@ import GameManager from '../../model/game/GameManager';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+import ThunderstoreSchema from '../../r2mm/data/ThunderstoreSchema';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
@@ -74,9 +75,43 @@ export default class SplashMixin extends Vue {
         if (response) {
             ThunderstorePackages.handlePackageApiResponse(response);
             await this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
-            await this.moveToNextScreen();
+            await this.getThunderstoreSchema();
         } else {
             this.heroTitle = 'Failed to get mods from Thunderstore and cache';
+            this.loadingText = 'You may be offline or Thunderstore is unavailabe. However, you may still use the manager offline.';
+        }
+    }
+
+    async getThunderstoreSchema() {
+        this.loadingText = 'Connecting to Thunderstore';
+        let response: ApiResponse|undefined = undefined;
+
+        const showProgress = (progress: number) => {
+            this.loadingText = 'Getting schema from Thunderstore';
+            this.getRequestItem('ThunderstoreDownload').setProgress(progress);
+        };
+
+        try {
+            response = await ConnectionProvider.instance.getSchema(showProgress, 3);
+        } catch (e) {
+            this.isOffline = true;
+            this.heroTitle = 'Failed to get schema from Thunderstore';
+            this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+        }
+
+        if (response) {
+            ApiCacheUtils.storeLastRequest(response.data);
+        } else {
+            const cachedResponse = await ApiCacheUtils.getLastRequest();
+            response = cachedResponse ? { data: cachedResponse.payload } : undefined;
+        }
+
+        if (response) {
+            ThunderstoreSchema.handleSchemaApiResponse(this.activeGame, response);
+            await this.$store.dispatch('updateThunderstoreSectionFilter', ThunderstoreSchema.GAME_SCHEMA);
+            await this.moveToNextScreen();
+        } else {
+            this.heroTitle = 'Failed to get schema from Thunderstore and cache';
             this.loadingText = 'You may be offline or Thunderstore is unavailabe. However, you may still use the manager offline.';
         }
     }

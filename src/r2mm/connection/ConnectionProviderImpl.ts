@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import ApiResponse, { isApiResonse } from '../../model/api/ApiResponse';
+import ObjectResponse, { isObjectResonse } from '../../model/api/ObjectResponse';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import ConnectionProvider, { DownloadProgressed } from '../../providers/generic/connection/ConnectionProvider';
@@ -34,6 +35,33 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         }
 
         return this.cleanExclusions(response.data as string);
+    }
+
+    private async getSchemaFromRemote(downloadProgressed?: DownloadProgressed) {
+        const response = await axios.get("https://thunderstore.io/api/experimental/schema/dev/latest/", {
+            onDownloadProgress: progress => {
+                if (downloadProgressed !== undefined) {
+                    downloadProgressed((progress.loaded / progress.total) * 100);
+                }
+            },
+            timeout: 20000
+        });
+
+        if (isObjectResonse(response)) {
+            return response as ObjectResponse;
+        }
+
+        LoggerProvider.instance.Log(
+            LogSeverity.ACTION_STOPPED,
+            `Response data from Schema API was invalid: ${JSON.stringify(response)}`
+        );
+
+        throw new Error("Package response was invalid.");
+    }
+
+    private getSchemaFromInternalFile() {
+        const schema = require("../../assets/data/games.json");
+        return { data: schema } as ObjectResponse;
     }
 
     private async getPackagesFromRemote(game: Game, downloadProgressed?: DownloadProgressed) {
@@ -89,6 +117,32 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
             console.error(error, e);
             await sleep(1000);
             return this.getExclusions(downloadProgressed, retries - 1);
+        }
+    }
+
+    public async getSchema(downloadProgressed?: DownloadProgressed, retries = 4): Promise<ObjectResponse> {
+        if (retries < 0) {
+            throw new Error("Parameter `retries` can't be a negative number");
+        }
+
+        const error = `Error while fetching exclusions (${retries} attempts left):`;
+
+        if (retries === 0) {
+            try {
+                return await this.getSchemaFromRemote(downloadProgressed);
+            } catch (e) {
+                console.error(error, e);
+                console.log("Reading exclusions from local file");
+                return this.getSchemaFromInternalFile();
+            }
+        }
+
+        try {
+            return await this.getSchemaFromRemote(downloadProgressed);
+        } catch (e) {
+            console.error(error, e);
+            await sleep(1000);
+            return this.getSchema(downloadProgressed, retries - 1);
         }
     }
 

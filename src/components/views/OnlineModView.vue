@@ -45,24 +45,14 @@
                     <div class="input-group input-group--flex margin-right">
                         <div class="tabs is-fullwidth">
                             <ul>
-                                <li v-bind:class="{ 'is-active': mainFilter == 'All' }" @click="mainFilter = 'All'">
+                                <li v-bind:class="{ 'is-active': mainFilter == 'all' }" @click="mainFilter = 'all'">
                                     <a>
                                         <span>All</span>
                                     </a>
                                 </li>
-                                <li v-bind:class="{ 'is-active': mainFilter == 'Mods' }" @click="mainFilter = 'Mods'">
+                                <li v-if="getThunderstoreSectionFilters().length > 0" v-for="sectionFilter in getThunderstoreSectionFilters()" v-bind:key="sectionFilter.label" v-bind:class="{ 'is-active': mainFilter == sectionFilter.label }" @click="mainFilter = sectionFilter.label">
                                     <a>
-                                        <span>Mods</span>
-                                    </a>
-                                </li>
-                                <li v-bind:class="{ 'is-active': mainFilter == 'Libraries' }" @click="mainFilter = 'Libraries'">
-                                    <a>
-                                        <span>APIs & Libraries</span>
-                                    </a>
-                                </li>
-                                <li v-bind:class="{ 'is-active': mainFilter == 'Modpacks' }" @click="mainFilter = 'Modpacks'">
-                                    <a>
-                                        <span>Modpacks</span>
+                                        <span>{{ sectionFilter.displayName }}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -108,6 +98,7 @@ import SortingDirection from '../../model/enums/SortingDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import SectionFilter from '../../model/section/SectionFilter';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
@@ -128,7 +119,7 @@ export default class OnlineModView extends Vue {
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
-    mainFilter = "All";
+    mainFilter = "all";
 
     get localModList(): ManifestV2[] {
         return this.$store.state.localModList;
@@ -136,6 +127,18 @@ export default class OnlineModView extends Vue {
 
     get thunderstoreModList(): ThunderstoreMod[] {
         return this.$store.state.thunderstoreModList;
+    }
+    
+    get thunderstoreSectionFilter(): SectionFilter[] {
+        //var filters = [new SectionFilter('mods', 'Mods', [], ['mods'])];
+        //return filters;
+        //console.log('thunderstoreSectionFilters');
+        //console.log(this.$store.state.thunderstoreSectionFilter);
+        return this.$store.state.thunderstoreSectionFilter || [];
+    }
+
+    getThunderstoreSectionFilters() {
+        return this.thunderstoreSectionFilter.sections;
     }
 
     getPaginationSize() {
@@ -156,6 +159,11 @@ export default class OnlineModView extends Vue {
             (this.pageNumber - 1) * this.pageSize,
             this.pageNumber * this.pageSize
         );
+    }
+
+    debug(data: any) {
+        console.log("DEBUG");
+        console.log(data);
     }
 
     @Watch("thunderstoreSearchFilter")
@@ -189,11 +197,44 @@ export default class OnlineModView extends Vue {
         if (!showDeprecatedPackages) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
         }
-        if (this.mainFilter != 'All') {
+        if (this.mainFilter != 'all') {
             console.log('allllll')
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
-                return ArrayUtils.includesSome(x.getCategories(), [this.mainFilter]);
-            })
+            var filters = this.getThunderstoreSectionFilters()
+            console.log(filters)
+            console.log(this.mainFilter)
+            for (var filter of filters) {
+                console.log(filter.label)
+                console.log(filter)
+                if (filter.label == this.mainFilter) {
+                    console.log("matches")
+                    if (filter.requireCategories.length > 0) {
+                        console.log("requireCategories")
+                        console.log(filter.requireCategories.map(v => v.toLowerCase()))
+                        this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+                            var categories = x.getCategories().map(v => v.toLowerCase());
+                            console.log(categories)
+                            var filterCategories = filter.requireCategories.map(v => {
+                                var out = v.replaceAll('-', ' ');
+                                return out.toLowerCase()
+                            });
+                            return ArrayUtils.includesSome(categories, filterCategories);
+                        })
+                    }
+                    if (filter.excludeCategories.length > 0) {
+                        console.log("excludeCategories")
+                        console.log(filter.excludeCategories.map(v => v.toLowerCase()))
+                        this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+                            var categories = x.getCategories().map(v => v.toLowerCase());
+                            var filterCategories = filter.excludeCategories.map(v => {
+                                var out = v.replaceAll('-', ' ');
+                                return out.toLowerCase()
+                            });
+                            return !ArrayUtils.includesSome(categories, filterCategories);
+                        })
+                    }
+                    console.log("done")
+                }
+            }
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
