@@ -7,6 +7,7 @@ import { FolderMigration } from '../migrations/FolderMigration';
 import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
+import SectionFilter from 'src/model/section/SectionFilter';
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ export interface State {
     isMigrationChecked: boolean;
     localModList: ManifestV2[];
     thunderstoreModList: ThunderstoreMod[];
+    thunderstoreSectionFilter: SectionFilter[];
 }
 
 type Context = ActionContext<State, State>;
@@ -30,6 +32,7 @@ export const store = {
     state: {
         localModList: [],
         thunderstoreModList: [],
+        thunderstoreSectionFilter: [],
         dismissedUpdateAll: false,
         isMigrationChecked: false,
         apiConnectionError: "",
@@ -42,6 +45,9 @@ export const store = {
         updateThunderstoreModList({ commit }: Context, modList: ThunderstoreMod[]) {
             commit('setThunderstoreModList', modList);
             commit('setDeprecatedMods', modList);
+        },
+        updateThunderstoreSectionFilter({ commit }: Context, sectionFilters: SectionFilter[]) {
+            commit('setThunderstoreSectionFilter', sectionFilters);
         },
         dismissUpdateAll({commit}: Context) {
             commit('dismissUpdateAll');
@@ -69,6 +75,9 @@ export const store = {
         },
         setThunderstoreModList(state: State, list: ThunderstoreMod[]) {
             state.thunderstoreModList = list;
+        },
+        setThunderstoreSectionFilter(state: State, list: SectionFilter[]) {
+            state.thunderstoreSectionFilter = list;
         },
         dismissUpdateAll(state: State) {
             state.dismissedUpdateAll = true;

@@ -8,6 +8,7 @@ import Profile from '../../model/Profile';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+import ThunderstoreSchema from '../../r2mm/data/ThunderstoreSchema';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
@@ -17,6 +18,7 @@ export default class UtilityMixin extends Vue {
     private errorStack: string = '';
     private errorSolution: string = '';
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
+    readonly FILTER_REFRESH_MODIFIER = 4;
     private tsRefreshFailed = false;
 
     showError(error: R2Error) {
@@ -40,6 +42,10 @@ export default class UtilityMixin extends Vue {
         setInterval(this.tryRefreshThunderstoreModList, this.REFRESH_INTERVAL);
     }
 
+    hookThunderstoreSectionFilterRefresh() {
+        setInterval(this.refreshThunderstoreSectionFilter, this.REFRESH_INTERVAL * this.FILTER_REFRESH_MODIFIER);
+    }
+
     async refreshProfileModList() {
         const profile = Profile.getActiveProfile();
 
@@ -59,6 +65,14 @@ export default class UtilityMixin extends Vue {
         const response = await ThunderstorePackages.update(GameManager.activeGame);
         await ApiCacheUtils.storeLastRequest(response.data);
         await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+    }
+
+    async refreshThunderstoreSectionFilter() {
+        const response = await ThunderstoreSchema.update(GameManager.activeGame);
+        await ApiCacheUtils.storeLastRequest(response.data);
+        if (ThunderstoreSchema.GAME_SCHEMA !== null) {
+            await this.$store.dispatch("updateThunderstoreSectionFilter", ThunderstoreSchema.GAME_SCHEMA.sections);
+        }
     }
 
     /**

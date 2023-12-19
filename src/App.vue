@@ -74,6 +74,7 @@ export default class App extends mixins(UtilityMixin) {
         // Use as default game for settings load.
         GameManager.activeGame = GameManager.unsetGame();
 
+        this.hookThunderstoreSectionFilterRefresh();
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
         await this.checkCdnConnection();

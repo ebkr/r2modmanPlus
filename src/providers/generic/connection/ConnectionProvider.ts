@@ -1,3 +1,4 @@
+import ObjectResponse from '../../../model/api/ObjectResponse';
 import ApiResponse from '../../../model/api/ApiResponse';
 import Game from '../../../model/game/Game';
 import ProviderUtils from '../ProviderUtils';
@@ -19,6 +20,7 @@ export default abstract class ConnectionProvider {
     }
 
     public abstract getExclusions(downloadProgressed?: DownloadProgressed, retries?: number): Promise<string[]>;
+    public abstract getSchema(downloadProgressed?: DownloadProgressed, retries?: number): Promise<ObjectResponse>;
     public abstract getPackages(
         game: Game,
         downloadProgressed?: DownloadProgressed,

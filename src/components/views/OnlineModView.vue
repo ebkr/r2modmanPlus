@@ -41,6 +41,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-header-title">
+                    <div class="input-group input-group--flex margin-right">
+                        <div class="tabs is-fullwidth">
+                            <ul>
+                                <li v-bind:class="{ 'is-active': mainFilter == 'all' }" @click="mainFilter = 'all'">
+                                    <a>
+                                        <span>All</span>
+                                    </a>
+                                </li>
+                                <li v-if="getThunderstoreSectionFilters().length > 0" v-for="sectionFilter in getThunderstoreSectionFilters()" v-bind:key="sectionFilter.label" v-bind:class="{ 'is-active': mainFilter == sectionFilter.label }" @click="mainFilter = sectionFilter.label">
+                                    <a>
+                                        <span>{{ sectionFilter.displayName }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <OnlineModList
@@ -80,6 +98,7 @@ import SortingDirection from '../../model/enums/SortingDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import SectionFilter from '../../model/section/SectionFilter';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
@@ -100,6 +119,7 @@ export default class OnlineModView extends Vue {
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
+    mainFilter = "all";
 
     get localModList(): ManifestV2[] {
         return this.$store.state.localModList;
@@ -107,6 +127,14 @@ export default class OnlineModView extends Vue {
 
     get thunderstoreModList(): ThunderstoreMod[] {
         return this.$store.state.thunderstoreModList;
+    }
+    
+    get thunderstoreSectionFilter(): SectionFilter[] {
+        return this.$store.state.thunderstoreSectionFilter || [];
+    }
+
+    getThunderstoreSectionFilters() {
+        return this.thunderstoreSectionFilter.sections;
     }
 
     getPaginationSize() {
@@ -159,6 +187,33 @@ export default class OnlineModView extends Vue {
         }
         if (!showDeprecatedPackages) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
+        }
+        if (this.mainFilter != 'all') {
+            var filters = this.getThunderstoreSectionFilters()
+            for (var filter of filters) {
+                if (filter.label == this.mainFilter) {
+                    if (filter.requireCategories.length > 0) {
+                        this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+                            var categories = x.getCategories().map(v => v.toLowerCase());
+                            var filterCategories = filter.requireCategories.map(v => {
+                                var out = v.replaceAll('-', ' ');
+                                return out.toLowerCase()
+                            });
+                            return ArrayUtils.includesSome(categories, filterCategories);
+                        })
+                    }
+                    if (filter.excludeCategories.length > 0) {
+                        this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
+                            var categories = x.getCategories().map(v => v.toLowerCase());
+                            var filterCategories = filter.excludeCategories.map(v => {
+                                var out = v.replaceAll('-', ' ');
+                                return out.toLowerCase()
+                            });
+                            return !ArrayUtils.includesSome(categories, filterCategories);
+                        })
+                    }
+                }
+            }
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
@@ -216,6 +271,11 @@ export default class OnlineModView extends Vue {
             left: 0,
             behavior: "auto"
         });
+    }
+
+    @Watch("mainFilter")
+    mainFilterTab() {
+        this.sortThunderstoreModList();
     }
 
     async created() {

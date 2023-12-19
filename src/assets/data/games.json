@@ -2008,6 +2008,17 @@
           "icon.png",
           "LICENCE"
         ]
+      },
+      "tcli": {
+        "autodiscovery": [
+          {
+            "kind": "RegistryLookup",
+            "platform": "windows",
+            "args": {
+              "registryPath": "Software\\Respawn\\Titanfall2"
+            }
+          }
+        ]
       }
     },
     "outward": {
@@ -3269,7 +3280,8 @@
               "modpacks"
             ]
           }
-        }
+        },
+        "discordUrl": "https://discord.com/invite/wXS2FpJpCt"
       }
     },
     "ancient-dungeon-vr": {
@@ -3322,6 +3334,53 @@
         "discordUrl": "https://discord.gg/advr"
       }
     },
+    "atomicrops": {
+      "uuid": "0730de09-f183-4cdc-ba4e-ddff5077f99b",
+      "label": "atomicrops",
+      "meta": {
+        "displayName": "Atomicrops",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Atomicrops",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/4G3sfhYp"
+      }
+    },
     "atrio-the-dark-wild": {
       "uuid": "867747e7-e916-4747-8ee9-8682cfdd4aa5",
       "label": "atrio-the-dark-wild",
@@ -3372,6 +3431,53 @@
         "discordUrl": "https://discord.gg/yRdVvMeTNS"
       }
     },
+    "bomb-rush-cyberfunk": {
+      "uuid": "0a5f2248-3eff-408b-87ed-cd982e4f1c91",
+      "label": "bomb-rush-cyberfunk",
+      "meta": {
+        "displayName": "Bomb Rush Cyberfunk",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Bomb Rush Cyberfunk",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/TmBBV2qRuq"
+      }
+    },
     "brotato": {
       "uuid": "b20dbe1e-1f04-4c5a-849b-481a5b3758e5",
       "label": "brotato",
@@ -3420,6 +3526,100 @@
           }
         },
         "discordUrl": "https://discord.gg/j39jE6k"
+      }
+    },
+    "cities-skylines-ii": {
+      "uuid": "549e0efb-bf7c-47f8-a76f-dfe61c89196c",
+      "label": "cities-skylines-ii",
+      "meta": {
+        "displayName": "Cities: Skylines II",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Cities: Skylines II",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/optimus-code/Cities2Modding"
+      }
+    },
+    "cobalt-core": {
+      "uuid": "d03f61b8-9604-4cc7-8d77-4647db475aa9",
+      "label": "cobalt-core",
+      "meta": {
+        "displayName": "Cobalt Core",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Cobalt Core",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/m8jhYA4TvV"
       }
     },
     "dicey-dungeons": {
@@ -3514,6 +3714,54 @@
         }
       }
     },
+    "dredge": {
+      "uuid": "a292ab38-090b-49aa-b155-ca7c8360ce0d",
+      "label": "dredge",
+      "meta": {
+        "displayName": "Dredge",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Dredge",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://dredge.fandom.com/wiki/DREDGE_Wiki",
+        "discordUrl": "https://discord.gg/qFqPuTUAmD"
+      }
+    },
     "endless-space-2": {
       "uuid": "5e4137bc-7823-44b1-a39b-0765cb6477b4",
       "label": "endless-space-2",
@@ -3557,7 +3805,56 @@
               "modpacks"
             ]
           }
-        }
+        },
+        "discordUrl": "https://discord.gg/KZRVjVEe5v"
+      }
+    },
+    "erenshor": {
+      "uuid": "588b3202-55b4-4701-8d28-0da252f8101f",
+      "label": "erenshor",
+      "meta": {
+        "displayName": "Erenshor",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Erenshor",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://erenshor.fandom.com/wiki/Erenshor_Wiki",
+        "discordUrl": "https://discord.gg/6zptX24a"
       }
     },
     "garfield-kart-furious-racing": {
@@ -3651,6 +3948,302 @@
           }
         },
         "discordUrl": "https://discord.gg/Hu2cTCr2m2"
+      }
+    },
+    "last-train-outta-wormtown": {
+      "uuid": "476f1d7a-4009-4ede-9ccd-e620a57f4040",
+      "label": "last-train-outta-wormtown",
+      "meta": {
+        "displayName": "Last Train Outta' Wormtown",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Last Train Outta' Wormtown",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://lasttrainouttawormtown.fandom.com/wiki/Last_Train_Outta'_Wormtown_Wiki",
+        "discordUrl": "https://discord.gg/wormtown"
+      }
+    },
+    "lethal-company": {
+      "uuid": "40c7d846-cff1-45fe-8679-4abe993abafb",
+      "label": "lethal-company",
+      "meta": {
+        "displayName": "Lethal Company",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Lethal Company",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "bepinex": {
+            "label": "BepInEx"
+          },
+          "melonloader": {
+            "label": "MelonLoader"
+          },
+          "suits": {
+            "label": "Suits"
+          },
+          "equipment": {
+            "label": "Equipment"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "monsters": {
+            "label": "Monsters"
+          },
+          "moons": {
+            "label": "Moons"
+          },
+          "furniture": {
+            "label": "Furniture"
+          },
+          "clientside": {
+            "label": "Client-side"
+          },
+          "serverside": {
+            "label": "Server-side"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "asset-replacements": {
+            "label": "Asset Replacements"
+          },
+          "translations": {
+            "label": "Translations"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks",
+              "asset-replacements"
+            ]
+          },
+          "asset-replacements": {
+            "name": "Asset Replacements",
+            "requireCategories": [
+              "asset-replacements"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "libraries": {
+            "name": "APIs & Libraries",
+            "requireCategories": [
+              "libraries"
+            ],
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/XeyYqRdRGC",
+        "wikiUrl": "https://lethal.wiki/"
+      }
+    },
+    "lizards-must-die": {
+      "uuid": "37b2e210-0f07-4386-9d3e-97f767eacca2",
+      "label": "lizards-must-die",
+      "meta": {
+        "displayName": "Lizards Must Die",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Lizards Must Die",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/c5Ee98GNvb"
+      }
+    },
+    "meeple-station": {
+      "uuid": "ff1755e6-c96f-4b4d-8ab2-a8ca6e2f1769",
+      "label": "meeple-station",
+      "meta": {
+        "displayName": "Meeple Station",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Meeple Station",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://meeplestation.fandom.com/wiki/Meeple_Station_Wiki",
+        "discordUrl": "https://discord.gg/gameclaw"
+      }
+    },
+    "mirrors-edge": {
+      "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
+      "label": "mirrors-edge",
+      "meta": {
+        "displayName": "Mirror's Edge",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Mirror's Edge",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/gV8QW6F"
       }
     },
     "patch-quest": {
@@ -3760,6 +4353,53 @@
           }
         },
         "discordUrl": "https://discord.gg/wolfire"
+      }
+    },
+    "risk-of-rain-returns": {
+      "uuid": "624e16e1-47e6-406f-9ab4-cfc9b8398ab8",
+      "label": "risk-of-rain-returns",
+      "meta": {
+        "displayName": "Risk of Rain Returns",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Risk of Rain Returns",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/VjS57cszMq"
       }
     },
     "rumble": {
@@ -4066,6 +4706,53 @@
         "discordUrl": "https://discord.gg/sunhaven"
       }
     },
+    "sunkenland": {
+      "uuid": "da78ae80-b42f-4956-b239-bfa408594ebc",
+      "label": "sunkenland",
+      "meta": {
+        "displayName": "Sunkenland",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Sunkenland",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/Vd89cSgxNW"
+      }
+    },
     "techtonica": {
       "uuid": "3383f232-8539-4052-8da9-3067549a029c",
       "label": "techtonica",
@@ -4252,6 +4939,99 @@
         }
       }
     },
+    "touhou-lost-branch-of-legend": {
+      "uuid": "375634e8-16b6-486d-aa9d-26ba422d4143",
+      "label": "touhou-lost-branch-of-legend",
+      "meta": {
+        "displayName": "Touhou: Lost Branch of Legend",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Touhou: Lost Branch of Legend",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "qol": {
+            "label": "QoL"
+          },
+          "cards": {
+            "label": "Cards"
+          },
+          "difficulty": {
+            "label": "Difficulty"
+          },
+          "memes": {
+            "label": "Memes"
+          },
+          "balance": {
+            "label": "Balance"
+          },
+          "bosses": {
+            "label": "Bosses"
+          },
+          "enemies": {
+            "label": "Enemies"
+          },
+          "skins": {
+            "label": "Skins"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "characters": {
+            "label": "Characters"
+          },
+          "run-modifiers": {
+            "label": "Run Modifiers"
+          },
+          "music": {
+            "label": "Music"
+          },
+          "localization": {
+            "label": "Localization"
+          },
+          "exhibits": {
+            "label": "Exhibits"
+          },
+          "events": {
+            "label": "Events"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/WT4qdfYhhG",
+        "wikiUrl": "https://lbol.miraheze.org/wiki/Main_Page"
+      }
+    },
     "ultimate-chicken-horse": {
       "uuid": "c34fe1cf-1752-4185-bb39-25e29a6394f3",
       "label": "ultimate-chicken-horse",
@@ -4417,6 +5197,53 @@
       "distributions": [],
       "thunderstore": {
         "displayName": "Voices of the Void",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/WKBvqu4tjV"
+      }
+    },
+    "void-crew": {
+      "uuid": "337b81bd-6acd-44b5-9a9f-13edc45c6d07",
+      "label": "void-crew",
+      "meta": {
+        "displayName": "Void Crew",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Void Crew",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -4634,7 +5461,55 @@
               "modpacks"
             ]
           }
-        }
+        },
+        "discordUrl": "https://discord.gg/C8wWcRW5eX"
+      }
+    },
+    "wizard-with-a-gun": {
+      "uuid": "646b9aff-b0b4-4a83-a661-4d50d1bb904b",
+      "label": "wizard-with-a-gun",
+      "meta": {
+        "displayName": "Wizard with a Gun",
+        "iconUrl": "None"
+      },
+      "distributions": [],
+      "thunderstore": {
+        "displayName": "Wizard with a Gun",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/galvanicgames"
       }
     },
     "wrestling-empire": {
@@ -4748,7 +5623,8 @@
             "modpacks"
           ]
         }
-      }
+      },
+      "discordUrl": "https://discord.com/invite/wXS2FpJpCt"
     },
     "ancient-dungeon-vr": {
       "displayName": "Ancient Dungeon VR",
@@ -4791,6 +5667,44 @@
       },
       "discordUrl": "https://discord.gg/advr"
     },
+    "atomicrops": {
+      "displayName": "Atomicrops",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/4G3sfhYp"
+    },
     "atrio-the-dark-wild": {
       "displayName": "Atrio: The Dark Wild",
       "categories": {
@@ -4832,6 +5746,44 @@
       },
       "discordUrl": "https://discord.gg/yRdVvMeTNS"
     },
+    "bomb-rush-cyberfunk": {
+      "displayName": "Bomb Rush Cyberfunk",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/TmBBV2qRuq"
+    },
     "brotato": {
       "displayName": "Brotato",
       "categories": {
@@ -4872,6 +5824,82 @@
         }
       },
       "discordUrl": "https://discord.gg/j39jE6k"
+    },
+    "cities-skylines-ii": {
+      "displayName": "Cities: Skylines II",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/optimus-code/Cities2Modding"
+    },
+    "cobalt-core": {
+      "displayName": "Cobalt Core",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/m8jhYA4TvV"
     },
     "dicey-dungeons": {
       "displayName": "Dicey Dungeons",
@@ -4947,6 +5975,45 @@
         }
       }
     },
+    "dredge": {
+      "displayName": "Dredge",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://dredge.fandom.com/wiki/DREDGE_Wiki",
+      "discordUrl": "https://discord.gg/qFqPuTUAmD"
+    },
     "endless-space-2": {
       "displayName": "Endless Space 2",
       "categories": {
@@ -4982,7 +6049,47 @@
             "modpacks"
           ]
         }
-      }
+      },
+      "discordUrl": "https://discord.gg/KZRVjVEe5v"
+    },
+    "erenshor": {
+      "displayName": "Erenshor",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://erenshor.fandom.com/wiki/Erenshor_Wiki",
+      "discordUrl": "https://discord.gg/6zptX24a"
     },
     "garfield-kart-furious-racing": {
       "displayName": "Garfield Kart - Furious Racing",
@@ -5058,6 +6165,257 @@
         }
       },
       "discordUrl": "https://discord.gg/Hu2cTCr2m2"
+    },
+    "last-train-outta-wormtown": {
+      "displayName": "Last Train Outta' Wormtown",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://lasttrainouttawormtown.fandom.com/wiki/Last_Train_Outta'_Wormtown_Wiki",
+      "discordUrl": "https://discord.gg/wormtown"
+    },
+    "lethal-company": {
+      "displayName": "Lethal Company",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "bepinex": {
+          "label": "BepInEx"
+        },
+        "melonloader": {
+          "label": "MelonLoader"
+        },
+        "suits": {
+          "label": "Suits"
+        },
+        "equipment": {
+          "label": "Equipment"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "monsters": {
+          "label": "Monsters"
+        },
+        "moons": {
+          "label": "Moons"
+        },
+        "furniture": {
+          "label": "Furniture"
+        },
+        "clientside": {
+          "label": "Client-side"
+        },
+        "serverside": {
+          "label": "Server-side"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "asset-replacements": {
+          "label": "Asset Replacements"
+        },
+        "translations": {
+          "label": "Translations"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks",
+            "asset-replacements"
+          ]
+        },
+        "asset-replacements": {
+          "name": "Asset Replacements",
+          "requireCategories": [
+            "asset-replacements"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "libraries": {
+          "name": "APIs & Libraries",
+          "requireCategories": [
+            "libraries"
+          ],
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/XeyYqRdRGC",
+      "wikiUrl": "https://lethal.wiki/"
+    },
+    "lizards-must-die": {
+      "displayName": "Lizards Must Die",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/c5Ee98GNvb"
+    },
+    "meeple-station": {
+      "displayName": "Meeple Station",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://meeplestation.fandom.com/wiki/Meeple_Station_Wiki",
+      "discordUrl": "https://discord.gg/gameclaw"
+    },
+    "mirrors-edge": {
+      "displayName": "Mirror's Edge",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/gV8QW6F"
     },
     "patch-quest": {
       "displayName": "Patch Quest",
@@ -5149,6 +6507,44 @@
         }
       },
       "discordUrl": "https://discord.gg/wolfire"
+    },
+    "risk-of-rain-returns": {
+      "displayName": "Risk of Rain Returns",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/VjS57cszMq"
     },
     "rumble": {
       "displayName": "RUMBLE",
@@ -5400,6 +6796,44 @@
       },
       "discordUrl": "https://discord.gg/sunhaven"
     },
+    "sunkenland": {
+      "displayName": "Sunkenland",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/Vd89cSgxNW"
+    },
     "techtonica": {
       "displayName": "Techtonica",
       "categories": {
@@ -5550,6 +6984,90 @@
         }
       }
     },
+    "touhou-lost-branch-of-legend": {
+      "displayName": "Touhou: Lost Branch of Legend",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "qol": {
+          "label": "QoL"
+        },
+        "cards": {
+          "label": "Cards"
+        },
+        "difficulty": {
+          "label": "Difficulty"
+        },
+        "memes": {
+          "label": "Memes"
+        },
+        "balance": {
+          "label": "Balance"
+        },
+        "bosses": {
+          "label": "Bosses"
+        },
+        "enemies": {
+          "label": "Enemies"
+        },
+        "skins": {
+          "label": "Skins"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "characters": {
+          "label": "Characters"
+        },
+        "run-modifiers": {
+          "label": "Run Modifiers"
+        },
+        "music": {
+          "label": "Music"
+        },
+        "localization": {
+          "label": "Localization"
+        },
+        "exhibits": {
+          "label": "Exhibits"
+        },
+        "events": {
+          "label": "Events"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/WT4qdfYhhG",
+      "wikiUrl": "https://lbol.miraheze.org/wiki/Main_Page"
+    },
     "ultimate-chicken-horse": {
       "displayName": "Ultimate Chicken Horse",
       "categories": {
@@ -5634,6 +7152,44 @@
     },
     "voices-of-the-void": {
       "displayName": "Voices of the Void",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/WKBvqu4tjV"
+    },
+    "void-crew": {
+      "displayName": "Void Crew",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -5815,7 +7371,46 @@
             "modpacks"
           ]
         }
-      }
+      },
+      "discordUrl": "https://discord.gg/C8wWcRW5eX"
+    },
+    "wizard-with-a-gun": {
+      "displayName": "Wizard with a Gun",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/galvanicgames"
     },
     "wrestling-empire": {
       "displayName": "Wrestling Empire",
