@@ -552,6 +552,12 @@ export default class GameManager {
             "https://thunderstore.io/c/void-crew/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1063420")], "VoidCrew.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Sailwind", "Sailwind", "Sailwind",
+            "Sailwind", ["Sailwind.exe"], "Sailwind_Data",
+            "https://thunderstore.io/c/sailwind/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1764530")], "Sailwind.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
