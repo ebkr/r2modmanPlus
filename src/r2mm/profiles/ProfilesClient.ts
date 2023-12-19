@@ -1,5 +1,6 @@
 import Axios, { AxiosResponse } from 'axios';
 import R2Error from '../../model/errors/R2Error';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 const getProfileUrl = (profileImportCode: string): string => {
     return `https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`;
@@ -40,7 +41,10 @@ async function createProfile(payload: string): Promise<AxiosResponse<{ key: stri
 }
 
 async function getProfile(profileImportCode: string): Promise<AxiosResponse<string>> {
-    return await Axios.get(getProfileUrl(profileImportCode));
+    const url = CdnProvider.addCdnQueryParameter(
+        getProfileUrl(profileImportCode)
+    );
+    return await Axios.get(url);
 }
 
 export const ProfileApiClient = {
