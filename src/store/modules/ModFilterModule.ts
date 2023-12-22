@@ -5,6 +5,10 @@ import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 
 interface State {
     allowNsfw: boolean;
+    filterDateCreatedFrom: Date | null;
+    filterDateCreatedTo: Date | null;
+    filterDateUpdatedFrom: Date | null;
+    filterDateUpdatedTo: Date | null;
     categoryFilterMode: CategoryFilterMode;
     selectedCategories: string[];
     showDeprecatedPackages: boolean;
@@ -15,6 +19,10 @@ export default {
 
     state: (): State => ({
         allowNsfw: false,
+        filterDateCreatedFrom: null,
+        filterDateCreatedTo: null,
+        filterDateUpdatedFrom: null,
+        filterDateUpdatedTo: null,
         categoryFilterMode: CategoryFilterMode.OR,
         selectedCategories: [],
         showDeprecatedPackages: false
@@ -42,6 +50,10 @@ export default {
     mutations: {
         reset: function(state: State) {
             state.allowNsfw = false;
+            state.filterDateCreatedFrom = null;
+            state.filterDateCreatedTo = null;
+            state.filterDateUpdatedFrom = null;
+            state.filterDateUpdatedTo = null;
             state.categoryFilterMode = CategoryFilterMode.OR;
             state.selectedCategories = [];
         },
@@ -52,6 +64,22 @@ export default {
 
         setAllowNsfw: function(state: State, value: boolean) {
             state.allowNsfw = value;
+        },
+
+        setfilterDateCreatedFrom: function(state: State, value: string | null) {
+            state.filterDateCreatedFrom = value ? new Date(value) : null;
+        },
+
+        setfilterDateCreatedTo: function(state: State, value: string | null) {
+            state.filterDateCreatedTo = value ? new Date(value) : null;
+        },
+
+        setfilterDateUpdatedFrom: function(state: State, value: string | null) {
+            state.filterDateUpdatedFrom = value ? new Date(value) : null;
+        },
+
+        setfilterDateUpdatedTo: function(state: State, value: string | null) {
+            state.filterDateUpdatedTo = value ? new Date(value) : null;
         },
 
         setCategoryFilterMode: function(state: State, value: CategoryFilterMode) {

@@ -464,3 +464,21 @@ code {
     height: 40px;
     align-items: center;
 }
+
+.datepicker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.datepicker-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
+.datepicker-model {
+    min-width: 50%;
+    max-width: 50%;
+}

@@ -77,6 +77,19 @@
                     </label>
                 </div>
             </div>
+            <hr/>
+            <div>
+                <div class="datepicker-container">
+                    <div class="datepicker-row">
+                        <span>Creation date</span>
+                        <span>Update date</span>
+                    </div>
+                    <div class="datepicker-row">
+                        <q-date v-model="filterDateCreated" range minimal class="datepicker-model"/>
+                        <q-date v-model="filterDateUpdated" range minimal class="datepicker-model"/>
+                    </div>
+                </div>
+            </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
@@ -93,6 +106,7 @@ import { Modal } from '../../components/all';
 import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 import GameManager from '../../model/game/GameManager';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import { date } from "quasar";
 
 @Component({
     components: { Modal }
@@ -106,6 +120,48 @@ export default class CategoryFilterModal extends Vue {
 
     set allowNsfw(value: boolean) {
         this.$store.commit("modFilters/setAllowNsfw", value);
+    }
+
+    get filterDateCreated(): { from: string | null, to: string | null } | string | null {
+        if (date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD') === date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD')) {
+            return date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD')
+        } else {
+            return {
+                from: date.formatDate(this.$store.state.modFilters.filterDateCreatedFrom, 'YYYY/MM/DD'),
+                to: date.formatDate(this.$store.state.modFilters.filterDateCreatedTo, 'YYYY/MM/DD'),
+            };
+        }
+    }
+
+    set filterDateCreated(value: { from: string | null, to: string | null } | string | null) {
+        if (typeof value === "string") {
+            this.$store.commit("modFilters/setfilterDateCreatedFrom", value);
+            this.$store.commit("modFilters/setfilterDateCreatedTo", value);
+        } else {
+            this.$store.commit("modFilters/setfilterDateCreatedFrom", value ? value.from : value);
+            this.$store.commit("modFilters/setfilterDateCreatedTo", value ? value.to : value);
+        }
+    }
+
+    get filterDateUpdated(): { from: string | null, to: string | null } | string | null {
+        if (date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD') === date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD')) {
+            return date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD')
+        } else {
+            return {
+                from: date.formatDate(this.$store.state.modFilters.filterDateUpdatedFrom, 'YYYY/MM/DD'),
+                to: date.formatDate(this.$store.state.modFilters.filterDateUpdatedTo, 'YYYY/MM/DD'),
+            };
+        }
+    }
+
+    set filterDateUpdated(value: { from: string | null, to: string | null } | string | null) {
+        if (typeof value === "string") {
+            this.$store.commit("modFilters/setfilterDateUpdatedFrom", value);
+            this.$store.commit("modFilters/setfilterDateUpdatedTo", value);
+        } else {
+            this.$store.commit("modFilters/setfilterDateUpdatedFrom", value ? value.from : value);
+            this.$store.commit("modFilters/setfilterDateUpdatedTo", value ? value.to : value);
+        }
     }
 
     get categoryFilterMode(): CategoryFilterMode {

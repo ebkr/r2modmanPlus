@@ -36,7 +36,7 @@
                                 class="button"
                                 @click="$store.commit('openCategoryFilterModal')"
                             >
-                                Filter categories
+                                Edit filters
                             </button>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                No mods with that name found
+                No mods matching search criteria found
             </p>
         </div>
         <br/>
@@ -84,6 +84,7 @@ import OnlineModListProvider from '../../providers/components/loaders/OnlineModL
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
 import SearchUtils from '../../utils/SearchUtils';
+import { date } from 'quasar';
 
 @Component({
     components: {
@@ -138,10 +139,18 @@ export default class OnlineModView extends Vue {
     }
 
     @Watch("$store.state.modFilters.allowNsfw")
+    @Watch("$store.state.modFilters.filterDateCreatedFrom")
+    @Watch("$store.state.modFilters.filterDateCreatedTo")
+    @Watch("$store.state.modFilters.filterDateUpdatedFrom")
+    @Watch("$store.state.modFilters.filterDateUpdatedTo")
     @Watch("$store.state.modFilters.categoryFilterMode")
     @Watch("$store.state.modFilters.selectedCategories")
     @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
+        const filterDateCreatedFrom = this.$store.state.modFilters.filterDateCreatedFrom;
+        const filterDateCreatedTo = this.$store.state.modFilters.filterDateCreatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateCreatedTo, { hours: 23, minutes: 59, seconds: 59 }) : null;
+        const filterDateUpdatedFrom = this.$store.state.modFilters.filterDateUpdatedFrom;
+        const filterDateUpdatedTo = this.$store.state.modFilters.filterDateUpdatedTo ? date.adjustDate(this.$store.state.modFilters.filterDateUpdatedTo, { hours: 23, minutes: 59, seconds: 59 }) : null;
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
         const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
         const filterCategories = this.$store.state.modFilters.selectedCategories;
@@ -159,6 +168,18 @@ export default class OnlineModView extends Vue {
         }
         if (!showDeprecatedPackages) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
+        }
+        if (filterDateCreatedFrom) {
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateCreatedFrom.getTime() <= mod.getDateCreatedUnix())))
+        }
+        if (filterDateCreatedTo) {
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateCreatedTo.getTime() >= mod.getDateCreatedUnix())))
+        }
+        if (filterDateUpdatedFrom) {
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedFrom.getTime() <= mod.getDateUpdatedUnix())))
+        }
+        if (filterDateUpdatedTo) {
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((mod: ThunderstoreMod) => ((filterDateUpdatedTo.getTime() >= mod.getDateUpdatedUnix())))
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
