@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@node-steam/vdf": "^2.1.0",
+        "@quasar/cli": "^2.3.0",
         "@quasar/extras": "^1.0.0",
         "adm-zip": "^0.5.5",
         "async-lock": "^1.2.6",
@@ -101,7 +102,7 @@
         "minimist": "^1.2.2",
         "mocha": "^8.0.1",
         "mock-require": "^3.0.3",
-        "node-sass": "^4.13.1",
+        "node-sass": "^9.0.0",
         "sass-loader": "^10.2.1",
         "sinon": "^11.1.1",
         "ts-node": "^8.10.2",
@@ -124,5 +125,6 @@
         "node": ">= 10.18.1",
         "npm": ">= 6.13.4",
         "yarn": ">= 1.21.1"
-    }
+    },
+    "packageManager": "yarn@1.21.1"
 }
