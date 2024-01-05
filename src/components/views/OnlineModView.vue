@@ -101,7 +101,7 @@ import { PaginationButton, truncatePagination } from "../../utils/Pagination";
 })
 
 export default class OnlineModView extends Vue {
-    readonly pageSize = 140;
+    readonly pageSize = 40;
     pagedThunderstoreModList: ThunderstoreMod[] = [];
     pageNumber = 1;
     searchableThunderstoreModList: ThunderstoreMod[] = [];
