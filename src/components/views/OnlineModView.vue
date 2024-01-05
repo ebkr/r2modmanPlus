@@ -60,16 +60,21 @@
         </div>
         <br/>
         <div class="pagination">
-            <div class="smaller-font">
-                <a
+            <ul class="pagination-list">
+                <li
                     v-for="button in getPaginationButtons()"
                     :key="`pagination-${button.index}`"
-                    :class="['pagination-link', {'is-current': button.index === pageNumber}]"
-                    @click="updatePageNumber(button.index)"
                 >
-                    {{ button.title }}
-                </a>
-            </div>
+                    <a
+                        :class="[
+                            'pagination-link',
+                            'flex-centered',
+                            {'is-current': button.index === pageNumber}
+                        ]"
+                        @click="updatePageNumber(button.index)"
+                    >{{button.title}}</a>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -239,3 +244,11 @@ export default class OnlineModView extends Vue {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+.flex-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
