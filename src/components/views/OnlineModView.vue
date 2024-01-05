@@ -59,23 +59,12 @@
             </p>
         </div>
         <br/>
-        <div class="pagination">
-            <ul class="pagination-list">
-                <li
-                    v-for="button in getPaginationButtons()"
-                    :key="`pagination-${button.index}`"
-                >
-                    <a
-                        :class="[
-                            'pagination-link',
-                            'flex-centered',
-                            {'is-current': button.index === pageNumber}
-                        ]"
-                        @click="updatePageNumber(button.index)"
-                    >{{button.title}}</a>
-                </li>
-            </ul>
-        </div>
+        <PaginationButtons
+            :current-page="pageNumber"
+            :page-count="getPaginationSize()"
+            :context-size="3"
+            :on-click="updatePageNumber"
+        />
     </div>
 </template>
 
@@ -92,11 +81,12 @@ import OnlineModListProvider from '../../providers/components/loaders/OnlineModL
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
 import SearchUtils from '../../utils/SearchUtils';
-import { PaginationButton, truncatePagination } from "../../utils/Pagination";
+import PaginationButtons from "../navigation/PaginationButtons.vue";
 
 @Component({
     components: {
         OnlineModList: OnlineModListProvider.provider,
+        PaginationButtons,
     }
 })
 
@@ -120,18 +110,6 @@ export default class OnlineModView extends Vue {
 
     getPaginationSize() {
         return Math.ceil(this.searchableThunderstoreModList.length / this.pageSize);
-    }
-
-    @Watch("pageNumber")
-    @Watch("getPaginationSize")
-    getPaginationButtons(): PaginationButton[] {
-        const result = truncatePagination({
-            currentPage: this.pageNumber,
-            pageCount: this.getPaginationSize(),
-            contextSize: 3,
-        });
-        console.log(result);
-        return result;
     }
 
     getSortDirections() {
@@ -244,11 +222,3 @@ export default class OnlineModView extends Vue {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-.flex-centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-</style>
