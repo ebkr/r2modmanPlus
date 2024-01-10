@@ -2,6 +2,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
+import ModBridge from '../mods/ModBridge';
 
 export default class ThunderstorePackages {
 
@@ -28,6 +29,8 @@ export default class ThunderstorePackages {
         ThunderstorePackages.PACKAGES = response.data
             .map(ThunderstoreMod.parseFromThunderstoreData)
             .filter((mod) => !ThunderstorePackages.EXCLUSIONS.includes(mod.getFullName()));
+
+        ModBridge.clearCache();
 
         ThunderstorePackages.PACKAGES_MAP = ThunderstorePackages.PACKAGES.reduce((map, pkg) => {
             map.set(pkg.getFullName(), pkg);

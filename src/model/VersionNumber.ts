@@ -64,4 +64,8 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
         const patchCompare = Math.sign(this.patch - version.patch);
         return (majorCompare === 0 && minorCompare === 0 && patchCompare === 0);
     }
+
+    public isEqualOrNewerThan(version: VersionNumber): boolean {
+        return this.isEqualTo(version) || this.isNewerThan(version);
+    }
 }
