@@ -100,6 +100,9 @@
                         @click="uninstallMod(selectedManifestMod)">
                     Uninstall
                 </button>
+                <span v-if="modBeingUninstalled" class="tag is-warning margin-top--1rem margin-left">
+                    Uninstalling {{ modBeingUninstalled }}
+                </span>
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info"
                         @click="selectedManifestMod = null">
                     Done
@@ -264,6 +267,7 @@ import SearchUtils from '../../utils/SearchUtils';
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
+        private modBeingUninstalled: string | null = null;
 
         // Filtering
         private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
@@ -444,24 +448,30 @@ import SearchUtils from '../../utils/SearchUtils';
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
                 for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
+                    this.modBeingUninstalled = dependant.getName();
                     const result = await this.performUninstallMod(dependant, false);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
+                        this.modBeingUninstalled = null;
                         return;
                     }
                 }
+                this.modBeingUninstalled = mod.getName();
                 const result = await this.performUninstallMod(mod, false);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
+                    this.modBeingUninstalled = null;
                     return;
                 }
             } catch (e) {
                 // Failed to uninstall mod.
                 const err: Error = e as Error;
                 this.$emit('error', err);
+                this.modBeingUninstalled = null;
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
+            this.modBeingUninstalled = null;
             const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
             if (result instanceof R2Error) {
                 this.$emit('error', result);
