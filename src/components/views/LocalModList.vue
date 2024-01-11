@@ -96,7 +96,9 @@
                         @click="disableMod(selectedManifestMod)">
                     Disable
                 </button>
-                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info"
+                <button v-if="dependencyListDisplayType === 'uninstall'"
+                        class="button is-info"
+                        :disabled="modBeingUninstalled !== null"
                         @click="uninstallMod(selectedManifestMod)">
                     Uninstall
                 </button>
