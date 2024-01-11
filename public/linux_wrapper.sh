@@ -7,7 +7,7 @@ a="/$0"; a=${a%/*}; a=${a#/}; a=${a:-.}; BASEDIR=$(cd "$a"; pwd -P)
 
 R2PROFILE=""
 R2STARTSERVER=""
-args=""
+args=()
 
 while :; do
     case $1 in
@@ -26,11 +26,7 @@ while :; do
             if [ -z "$1" ]; then
                 break
             fi
-            if [ -z "$args" ]; then
-                args="$1"
-            else
-                args="$args $1"
-            fi
+            args+=( "$1" )
             ;;
     esac
     shift
@@ -38,13 +34,13 @@ done
 
 if [ -z "$R2PROFILE" ]; then
     echo "[R2MODMAN LINUX WRAPPER] Launching vanilla!"
-    exec $args
+    exec "${args[@]}"
 fi
 
 [ -n "$R2STARTSERVER" ] && exec "$BASEDIR/profiles/$R2PROFILE/start_server_bepinex.sh" $args || true
 
 if test -f "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh"; then
-    exec "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh" $args
+    exec "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh" "${args[@]}"
 else
-   exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" $args
+   exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" "${args[@]}"
 fi
