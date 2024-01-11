@@ -37,7 +37,7 @@ if [ -z "$R2PROFILE" ]; then
     exec "${args[@]}"
 fi
 
-[ -n "$R2STARTSERVER" ] && exec "$BASEDIR/profiles/$R2PROFILE/start_server_bepinex.sh" $args || true
+[ -n "$R2STARTSERVER" ] && exec "$BASEDIR/profiles/$R2PROFILE/start_server_bepinex.sh" "${args[@]}" || true
 
 if test -f "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh"; then
     exec "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh" "${args[@]}"
