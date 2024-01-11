@@ -330,6 +330,17 @@ import SearchUtils from '../../utils/SearchUtils';
             return ModBridge.getCachedThunderstoreModFromMod(mod);
         }
 
+        async updateModListAfterChange(updatedList: ManifestV2[]) {
+            await this.$store.dispatch("updateModList", updatedList);
+
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
+
+            this.filterModList();
+        }
+
         async moveUp(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
@@ -337,12 +348,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return;
             }
-            await this.$store.dispatch("updateModList",updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         async moveDown(vueMod: any) {
@@ -352,12 +358,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return;
             }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         isLatest(mod: ManifestV2): boolean {
@@ -438,12 +439,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         async uninstallMod(vueMod: any) {
@@ -473,12 +469,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', result);
                 return;
             }
-            await this.$store.dispatch("updateModList", result);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(result);
         }
 
         showDependencyList(vueMod: any, displayType: string) {
@@ -552,12 +543,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList",updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         updateMod(vueMod: any) {
