@@ -381,7 +381,7 @@ import SearchUtils from '../../utils/SearchUtils';
             return Dependants.getDependencyList(mod, this.modifiableModList);
         }
 
-        async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
+        async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<R2Error | void> {
             const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
@@ -396,10 +396,8 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', modList);
                 return modList;
             }
-            await this.$store.dispatch("updateModList",modList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
+            if (updateModList) {
+                await this.updateModListAfterChange(modList);
             }
         }
 
@@ -446,13 +444,13 @@ import SearchUtils from '../../utils/SearchUtils';
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
                 for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
-                    const result = await this.performUninstallMod(dependant);
+                    const result = await this.performUninstallMod(dependant, false);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         return;
                     }
                 }
-                const result = await this.performUninstallMod(mod);
+                const result = await this.performUninstallMod(mod, false);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -483,7 +481,6 @@ import SearchUtils from '../../utils/SearchUtils';
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             if (this.getDependantList(mod).size === 0) {
                 this.performUninstallMod(mod);
-                this.filterModList();
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
             }
