@@ -492,11 +492,13 @@ export default class GameManager {
             "https://thunderstore.io/c/touhou-lost-branch-of-legend/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
+
          new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
-            "wizardwithagun", ['wizardwithagun.exe'], "wizardwithagun_Data",
+            "Wizard With A Gun", ['wizardwithagun.exe'], "wizardwithagun_Data",
             "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2312630")], "WizardWithAGun.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1150530")], "WizardWithAGun.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wizgun"]),
+
         new Game("Sunkenland", "Sunkenland", "Sunkenland",
             "Sunkenland", ["Sunkenland.exe"], "Sunkenland_Data",
             "https://thunderstore.io/c/sunkenland/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
@@ -513,6 +515,48 @@ export default class GameManager {
             "Erenshor", ["Erenshor.exe"], "Erenshor_Data",
             "https://thunderstore.io/c/erenshor/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2382520")], "Erenshor.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Last Train Outta' Wormtown", "LastTrainOuttaWormtown", "LastTrainOuttaWormtown",
+            "Last Train Outta' Wormtown", ["Last Train Out Of WormTown.exe"], "Last Train Out Of WormTown_Data",
+            "https://thunderstore.io/c/last-train-outta-wormtown/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2318480")], "LastTrainOuttaWormtown.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("DREDGE", "Dredge", "Dredge",
+            "DREDGE", ["DREDGE.exe"], "DREDGE_Data",
+            "https://thunderstore.io/c/dredge/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1562430")], "Dredge.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Cities: Skylines II", "CitiesSkylines2", "CitiesSkylines2",
+            "Cities Skylines II", ["Cities2.exe"], "CitiesSkylines2_Data",
+            "https://thunderstore.io/c/cities-skylines-ii/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "949230"), new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "ParadoxInteractive.CitiesSkylinesII-PCEdition")], "CitiesSkylines2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Lethal Company", "LethalCompany", "LethalCompany",
+            "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
+            "https://thunderstore.io/c/lethal-company/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Meeple Station", "MeepleStation", "MeepleStation",
+            "Meeple Station", ["Meeple Station.exe"], "MeepleStation_Data",
+            "https://thunderstore.io/c/meeple-station/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "900010")], "MeepleStation.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Void Crew", "VoidCrew", "VoidCrew",
+            "Void Crew", ["Void Crew.exe"], "VoidCrew_Data",
+            "https://thunderstore.io/c/void-crew/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1063420")], "VoidCrew.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Sailwind", "Sailwind", "Sailwind",
+            "Sailwind", ["Sailwind.exe"], "Sailwind_Data",
+            "https://thunderstore.io/c/sailwind/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1764530")], "Sailwind.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 

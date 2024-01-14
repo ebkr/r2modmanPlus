@@ -146,12 +146,15 @@
                             Disabled
                         </span>
                         <span class="card-title selectable">
-                            <template v-if="key.isEnabled()">
-                                {{key.getDisplayName()}} <span class="card-byline selectable">by {{key.getAuthorName()}}</span>
-                            </template>
-                            <template v-else>
-                                <strike class='selectable'>{{key.getDisplayName()}} <span class="card-byline">by {{key.getAuthorName()}}</span></strike>
-                            </template>
+                            <component :is="key.isEnabled() ? 'span' : 'strike'" class="selectable">
+                                {{key.getDisplayName()}}
+                                <span class="selectable card-byline">
+                                    v{{key.getVersionNumber()}}
+                                </span>
+                                <span :class="`card-byline ${key.isEnabled() && 'selectable'}`">
+                                    by {{key.getAuthorName()}}
+                                </span>
+                            </component>
                         </span>
                     </span>
                 </template>
@@ -187,11 +190,11 @@
                     <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
                 </template>
                 <a class='card-footer-item' @click="viewDependencyList(key)">Associated</a>
-                <Link :url="`${key.getWebsiteUrl()}${key.getVersionNumber().toString()}`"
+                <Link :url="key.getWebsiteUrl()"
                       :target="'external'"
                       class="card-footer-item">
-                        <i class='fas fa-code-branch margin-right margin-right--half-width'></i>
-                        {{key.getVersionNumber().toString()}}
+                        Website
+                        <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
                 </Link>
                 <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
                 <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"

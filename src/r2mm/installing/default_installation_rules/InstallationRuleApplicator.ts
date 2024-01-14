@@ -112,6 +112,13 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Sunkenland"),
             buildBepInExRules("Atomicrops"),
             buildBepInExRules("Erenshor"),
+            buildBepInExRules("LastTrainOuttaWormtown"),
+            buildBepInExRules("Dredge"),
+            buildBepInExRules("CitiesSkylines2"),
+            buildBepInExRules("LethalCompany"),
+            buildBepInExRules("MeepleStation"),
+            buildBepInExRules("VoidCrew"),
+            buildBepInExRules("Sailwind"),
         ]
     }
 }
