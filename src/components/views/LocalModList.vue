@@ -93,7 +93,7 @@
             </template>
             <template v-slot:footer>
                 <button v-if="dependencyListDisplayType === 'disable'" class="button is-info"
-                        @click="disableMod(selectedManifestMod)">
+                        @click="disableModWithDependents(selectedManifestMod)">
                     Disable all (recommended)
                 </button>
                 <button v-if="dependencyListDisplayType === 'disable'" class="button"
@@ -101,7 +101,7 @@
                     Disable {{selectedManifestMod.getName()}} only
                 </button>
                 <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info"
-                        @click="uninstallMod(selectedManifestMod)">
+                        @click="uninstallModWithDependents(selectedManifestMod)">
                     Uninstall all (recommended)
                 </button>
                 <button v-if="dependencyListDisplayType === 'uninstall'" class="button"
@@ -426,27 +426,19 @@ import SearchUtils from '../../utils/SearchUtils';
             }
         }
 
-        async disableMod(vueMod: any) {
+        async disableModWithDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            try {
-                const result = await this.performDisable([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit("error", err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            }
-            this.selectedManifestMod = null;
+            this.disableMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
         }
 
         async disableModExcludeDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            this.disableMods([mod]);
+        }
+
+        async disableMods(modsToDisable: ManifestV2[]) {
             try {
-                const result = await this.performDisable([mod]);
+                const result = await this.performDisable(modsToDisable);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -487,48 +479,24 @@ import SearchUtils from '../../utils/SearchUtils';
             this.filterModList();
         }
 
-        async uninstallMod(vueMod: any) {
+        async uninstallModWithDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            try {
-                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
-                    const result = await this.performUninstallMod(dependant);
-                    if (result instanceof R2Error) {
-                        this.$emit('error', result);
-                        return;
-                    }
-                }
-                const result = await this.performUninstallMod(mod);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to uninstall mod.
-                const err: Error = e as Error;
-                this.$emit('error', err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            }
-            this.selectedManifestMod = null;
-            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
-            if (result instanceof R2Error) {
-                this.$emit('error', result);
-                return;
-            }
-            await this.$store.dispatch("updateModList", result);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            this.uninstallMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
         }
 
         async uninstallModExcludeDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            this.uninstallMods([mod]);
+        }
+
+        async uninstallMods(modsToUninstall: ManifestV2[]) {
             try {
-                const result = await this.performUninstallMod(mod);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
+                for (const mod of modsToUninstall) {
+                    const result = await this.performUninstallMod(mod);
+                    if (result instanceof R2Error) {
+                        this.$emit('error', result);
+                        return;
+                    }
                 }
             } catch (e) {
                 // Failed to uninstall mod.
@@ -568,17 +536,13 @@ import SearchUtils from '../../utils/SearchUtils';
 
         disableModRequireConfirmation(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const enabledDependants: ManifestV2[] = [];
-            this.getDependantList(mod).forEach(value => {
+            for (const value of this.getDependantList(mod)) {
                if (value.isEnabled()) {
-                   enabledDependants.push(value);
+                   this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+                   return;
                }
-            });
-            if (enabledDependants.length === 0) {
-                this.performDisable([mod]);
-            } else {
-                this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
             }
+            this.performDisable([mod]);
         }
 
         viewDependencyList(vueMod: any) {
