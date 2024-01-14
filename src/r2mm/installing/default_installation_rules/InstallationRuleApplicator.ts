@@ -116,6 +116,9 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Dredge"),
             buildBepInExRules("CitiesSkylines2"),
             buildBepInExRules("LethalCompany"),
+            buildBepInExRules("MeepleStation"),
+            buildBepInExRules("VoidCrew"),
+            buildBepInExRules("Sailwind"),
         ]
     }
 }

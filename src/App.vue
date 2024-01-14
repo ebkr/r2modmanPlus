@@ -26,7 +26,6 @@
 <script lang="ts">
 import Component, { mixins } from 'vue-class-component';
 import 'bulma-steps/dist/js/bulma-steps.min.js';
-import R2Error from './model/errors/R2Error';
 import ManagerSettings from './r2mm/manager/ManagerSettings';
 import ProfileProvider from './providers/ror2/model_implementation/ProfileProvider';
 import ProfileImpl from './r2mm/model_implementation/ProfileImpl';
@@ -68,26 +67,8 @@ import UtilityMixin from './components/mixins/UtilityMixin.vue';
 
 @Component
 export default class App extends mixins(UtilityMixin) {
-
-    private errorMessage: string = '';
-    private errorStack: string = '';
-    private errorSolution: string = '';
     private settings: ManagerSettings | null = null;
-
     private visible: boolean = false;
-
-    showError(error: R2Error) {
-        this.errorMessage = error.name;
-        this.errorStack = error.message;
-        this.errorSolution = error.solution;
-        LoggerProvider.instance.Log(LogSeverity.ERROR, `[${error.name}]: ${error.message}`);
-    }
-
-    closeErrorModal() {
-        this.errorMessage = '';
-        this.errorStack = '';
-        this.errorSolution = '';
-    }
 
     async created() {
         // Use as default game for settings load.
@@ -95,6 +76,7 @@ export default class App extends mixins(UtilityMixin) {
 
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
+        await this.checkCdnConnection();
 
         const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         this.settings = settings;
