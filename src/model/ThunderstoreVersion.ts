@@ -1,6 +1,7 @@
 import Mod from './Mod';
 import VersionNumber from './VersionNumber';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
+import CdnProvider from '../providers/generic/connection/CdnProvider';
 
 export default class ThunderstoreVersion extends Mod implements ReactiveObjectConverterInterface {
 
@@ -35,7 +36,7 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
     }
 
     public getDownloadUrl(): string {
-        return this.downloadUrl;
+        return CdnProvider.addCdnQueryParameter(this.downloadUrl);
     }
 
     public setDownloadUrl(url: string) {

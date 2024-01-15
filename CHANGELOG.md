@@ -1,3 +1,13 @@
+### 3.1.46
+- Games added:
+  - Sailwind
+  - Meeple Station
+  - Void Crew
+- Bug fixes:
+  - Clicking the version number no longer takes you to a broken link
+  - Pagination takes up less screen space
+- Dependencies can now be uninstalled/disabled without removing the dependent mod
+
 ### 3.1.45
 - Games added:
   - Cities: Skylines II

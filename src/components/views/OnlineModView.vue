@@ -59,15 +59,12 @@
             </p>
         </div>
         <br/>
-        <div class="pagination">
-            <div class="smaller-font">
-                <a v-for="index in getPaginationSize()" :key="`pagination-${index}`"
-                    :class="['pagination-link', {'is-current': index === pageNumber}]"
-                    @click="updatePageNumber(index)">
-                    {{index}}
-                </a>
-            </div>
-        </div>
+        <PaginationButtons
+            :current-page="pageNumber"
+            :page-count="getPaginationSize()"
+            :context-size="3"
+            :on-click="updatePageNumber"
+        />
     </div>
 </template>
 
@@ -84,15 +81,17 @@ import OnlineModListProvider from '../../providers/components/loaders/OnlineModL
 import ArrayUtils from '../../utils/ArrayUtils';
 import debounce from 'lodash.debounce';
 import SearchUtils from '../../utils/SearchUtils';
+import PaginationButtons from "../navigation/PaginationButtons.vue";
 
 @Component({
     components: {
         OnlineModList: OnlineModListProvider.provider,
+        PaginationButtons,
     }
 })
 
 export default class OnlineModView extends Vue {
-    readonly pageSize = 140;
+    readonly pageSize = 40;
     pagedThunderstoreModList: ThunderstoreMod[] = [];
     pageNumber = 1;
     searchableThunderstoreModList: ThunderstoreMod[] = [];
