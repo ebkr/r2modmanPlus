@@ -59,6 +59,7 @@ jobs:
           name: Windows Binary
           path: |
             dist/electron/Packaged/r2modman*.exe
+            dist/electron/Packaged/r2modman*.exe.blockmap
             
       - if: matrix.platform == 'linux'
         name: Archive Linux Binaries
@@ -70,6 +71,7 @@ jobs:
             dist/electron/Packaged/r2modman*.AppImage
             dist/electron/Packaged/r2modman*.tar.gz
             dist/electron/Packaged/r2modman*.rpm
+            dist/electron/Packaged/r2modman*.pacman
             
       - if: matrix.platform == 'osx'
         name: Archive MacOS Binaries
@@ -77,7 +79,9 @@ jobs:
         with:
           name: MacOS Binary
           path: |
-            dist/electron/Packaged/r2modman*.app
+            dist/electron/Packaged/r2modman*.dmg
+            dist/electron/Packaged/r2modman*mac.zip
+            dist/electron/Packaged/r2modman*.dmg.blockmap
             
 
       
