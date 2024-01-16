@@ -56,28 +56,28 @@ jobs:
         name: Archive Windows Binaries
         uses: actions/upload-artifact@v3
         with:
-          name: binary
+          name: Windows Binary
           path: |
             dist/electron/Packaged/r2modman*.exe
             
       - if: matrix.platform == 'linux'
-        name: Archive Windows Binaries
+        name: Archive Linux Binaries
         uses: actions/upload-artifact@v3
         with:
-          name: binary
+          name: Linux Binary
           path: |
             dist/electron/Packaged/r2modman*.deb
             dist/electron/Packaged/r2modman*.AppImage
             dist/electron/Packaged/r2modman*.tar.gz
             dist/electron/Packaged/r2modman*.rpm
             
-     # - if: matrix.platform == 'osx'
-     #   name: Archive Windows Binaries
-     #   uses: actions/upload-artifact@v3
-     #   with:
-     #     name: binary
-     #     path: |
-     #       dist/electron/Packaged/r2modman*.exe
+      - if: matrix.platform == 'osx'
+        name: Archive MacOS Binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: MacOS Binary
+          path: |
+            dist/electron/Packaged/r2modman*.app
             
 
       
