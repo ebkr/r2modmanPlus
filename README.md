@@ -17,9 +17,11 @@ You might run into an error in r2modman whenever closing a game after it being o
 ### How do I add a non-launcher game?
 To add a non-launcher game, simply select it in the game selection menu, select other, select your profile, go to settings, and then point the "Change (Game Name Here) directory" setting to your game directory.
 ### How do I download it?
-To get the download: go to the actions section of the repository, click on the latest build and download the binary for your respective operating system.
+To get the download: go to the actions section of the repository, click on the latest complete build (signified by a checkmark) and download the binary for your respective operating system. If you happen to catch the action before it is finished building, it may be an in-progress build, which you can wait for to finish.
 ### Who do I report an issue to?
 Most likely the original r2modman. Apart from the readme and the GitHub actions workflow file, the only file I amended was the file that handles the game list.
+### My game isn't supported!
+If you cannot add a game as other, then I probably have not amended the code since that game was added. Wait for me to update it, or feel free to submit a pull request.
 
 ## Features
 - Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, BONEWORKS, and more
