@@ -52,6 +52,35 @@ jobs:
         continue-on-error: true
         run: echo '${{ steps.build.outputs.stderr }}'
 
+      - if: matrix.platform == 'win'
+        name: Archive Windows Binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: binary
+          path: |
+            dist/electron/Packaged/r2modman*.exe
+            
+      - if: matrix.platform == 'linux'
+        name: Archive Windows Binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: binary
+          path: |
+            dist/electron/Packaged/r2modman*.deb
+            dist/electron/Packaged/r2modman*.AppImage
+            dist/electron/Packaged/r2modman*.tar.gz
+            dist/electron/Packaged/r2modman*.rpm
+            
+     # - if: matrix.platform == 'osx'
+     #   name: Archive Windows Binaries
+     #   uses: actions/upload-artifact@v3
+     #   with:
+     #     name: binary
+     #     path: |
+     #       dist/electron/Packaged/r2modman*.exe
+            
+
+      
       # Creating Electron executables can in some cases fail with exit code 0.
       # Check the output of build step for obvious signs of failure.
       - if: contains(steps.build.outputs.stderr, '[FAIL]')
