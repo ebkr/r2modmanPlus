@@ -54,16 +54,16 @@ jobs:
 
       - if: matrix.platform == 'win'
         name: Archive Windows Binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Windows Binary
           path: |
             dist/electron/Packaged/r2modman*.exe
             dist/electron/Packaged/r2modman*.exe.blockmap
-            
+
       - if: matrix.platform == 'linux'
         name: Archive Linux Binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Linux Binary
           path: |
@@ -75,7 +75,7 @@ jobs:
             
       - if: matrix.platform == 'osx'
         name: Archive MacOS Binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: MacOS Binary
           path: |
