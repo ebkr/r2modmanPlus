@@ -8,7 +8,10 @@
 |---|---|---|---|---|---|---|---|
 
 ## This fork
-This fork exists solely to allow r2modman to mod games that are not through any one launcher. For those who may be concerned, I do not condone piracy. I do not know any of the programming languages that this project utilizes, and I do not have a very good understanding of Git. I will not be maintaining this fork apart from adding support for new games and merging changes from upstream. You might run into an error in r2modman whenever closing a game after it being opened through r2modman. As far as I know, this error does not affect anything.
+This fork exists solely to allow r2modman to mod games that are not through any one launcher. 
+For those who may be concerned, I do not condone piracy. I do not know any of the programming languages that this project utilizes, and I do not have a very good understanding of Git. I will not be maintaining this fork apart from adding support for new games and merging changes from upstream. 
+You might run into an error in r2modman whenever closing a game after it being opened through r2modman. As far as I know, this error does not affect anything.
+To add a non-launcher game, simply select it in the game selection menu, select other, select your profile, go to settings, and then point the "Change (Game Name Here) directory" setting to your game directory.
 
 ## Features
 - Support for Risk of Rain 2, Dyson Sphere Program, Valheim, GTFO, BONEWORKS, and more
