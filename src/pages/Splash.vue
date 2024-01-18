@@ -194,7 +194,8 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     retryConnection() {
-        this.$router.go(0);
+        this.isOffline = false;
+        this.checkForUpdates();
     }
 
     private async ensureWrapperInGameFolder() {
