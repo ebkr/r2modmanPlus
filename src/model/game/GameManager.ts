@@ -251,10 +251,14 @@ export default class GameManager {
             "https://thunderstore.io/c/hard-bullet/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1294760")], "HardBullet.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["hb"]),
+
         new Game("20 Minutes Till Dawn", "20MinutesTillDawn", "20MinutesTillDawn",
             "20MinuteTillDawn", ["MinutesTillDawn.exe"], "MinutesTillDawn_Data",
             "https://thunderstore.io/c/20-minutes-till-dawn/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1966900")], "20MinutesTillDawn.jpg",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1966900"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "4656facc740742a39e265b026e13d075")
+            ], "20MinutesTillDawn.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mtd", "20mtd"]),
 
         new Game("Green Hell VR", "GreenHellVR", "GreenHellVR",
