@@ -46,7 +46,17 @@ jobs:
         #   DEBUG: electron-builder
         with:
           run: yarn build-${{ matrix.platform }} --publish=never
-
+      - name: Grab version
+        uses: michmich112/extract-version@main
+        with:
+          version-file: latest.yml
+          schema: major.minor.build
+      - name: Assign version variable
+        run: |
+          echo "version -> $VERSION"
+        env:
+          $VERSION: ${{ steps.version-step.outputs.version }}
+          
       - if: steps.build.outputs.stderr != ''
         name: Log stderr
         continue-on-error: true
@@ -92,7 +102,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: Release
+          tag_name: ${{ version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
