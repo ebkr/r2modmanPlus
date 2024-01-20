@@ -84,17 +84,28 @@ jobs:
             dist/electron/Packaged/r2modman*.dmg.blockmap
             
                       
-      - name: Plish
+      - name: Release
         uses: softprops/action-gh-release@v1
+        if: tartsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          draft: true
+          body: |
+            ${{ steps.commits.outputs.value }}
           files: |
-            Windows Binary.zip
-            MacOS Binary.zip
-            Linux Binary.zip
-          
+            dist/electron/Packaged/*.yml
+            dist/electron/Packaged/*.yaml
+            dist/electron/Packaged/*.deb
+            dist/electron/Packaged/*.dmg
+            dist/electron/Packaged/*.exe
+            dist/electron/Packaged/*.blockmap
+            dist/electron/Packaged/*.rpm
+            dist/electron/Packaged/*.zip
+            dist/electron/Packaged/*.AppImage
+            dist/electron/Packaged/*.pacman
+            dist/electron/Packaged/*.tar.gz
 
-
-      
       # Creating Electron executables can in some cases fail with exit code 0.
       # Check the output of build step for obvious signs of failure.
       - if: contains(steps.build.outputs.stderr, '[FAIL]')
