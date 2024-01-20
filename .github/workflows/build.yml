@@ -52,12 +52,12 @@ jobs:
         with:
           version-file: latest.yml
           schema: major.minor.build
-          
-      - name: Assign version variable
-        run: |
-          echo "version -> $VERSION"
-        env:
-          VERSION: ${{ steps.version-step.outputs.version }}
+#          
+#      - name: Assign version variable
+#        run: |
+#          echo "version -> $VERSION"
+#        env:
+#          VERSION: ${{ steps.version-step.outputs.version }}
           
       - if: steps.build.outputs.stderr != ''
         name: Log stderr
@@ -104,7 +104,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ VERSION }}
+          #tag_name: ${{ VERSION }}
+          tag_name: ${{ steps.version-step.outputs.version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
