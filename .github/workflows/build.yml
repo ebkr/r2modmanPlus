@@ -92,7 +92,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ github.ref }}
+          tag_name: Release
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
