@@ -83,6 +83,16 @@ jobs:
             dist/electron/Packaged/r2modman*mac.zip
             dist/electron/Packaged/r2modman*.dmg.blockmap
             
+                      
+      - name: Plish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            Windows Binary.zip
+            MacOS Binary.zip
+            Linux Binary.zip
+          
+
 
       
       # Creating Electron executables can in some cases fail with exit code 0.
