@@ -83,7 +83,8 @@ jobs:
             dist/electron/Packaged/r2modman*mac.zip
             dist/electron/Packaged/r2modman*.dmg.blockmap
             
-      - name: Grab version
+      - if: matrix.platform == 'osx'
+        name: Grab version
         id: version-step
         uses: michmich112/extract-version@main
         with:
