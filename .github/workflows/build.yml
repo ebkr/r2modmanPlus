@@ -46,18 +46,6 @@ jobs:
         #   DEBUG: electron-builder
         with:
           run: yarn build-${{ matrix.platform }} --publish=never
-      - name: Grab version
-        id: version-step
-        uses: michmich112/extract-version@main
-        with:
-          version-file: latest-mac.yml
-          schema: major.minor.build
-#          
-#      - name: Assign version variable
-#        run: |
-#          echo "version -> $VERSION"
-#        env:
-#          VERSION: ${{ steps.version-step.outputs.version }}
           
       - if: steps.build.outputs.stderr != ''
         name: Log stderr
@@ -95,11 +83,16 @@ jobs:
             dist/electron/Packaged/r2modman*mac.zip
             dist/electron/Packaged/r2modman*.dmg.blockmap
             
-                      
+      - name: Grab version
+        id: version-step
+        uses: michmich112/extract-version@main
+        with:
+          version-file: latest.yml
+          schema: major.minor.build
+                        
       - name: Release
         uses: softprops/action-gh-release@v1
         #if: startsWith(github.ref, 'refs/tags/')
-        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
