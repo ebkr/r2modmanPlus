@@ -10,8 +10,6 @@ jobs:
         - name: Fetch Version
           id: fetch-version
           uses: martinbeentjes/npm-get-version-action@v1.3.1
-          with:
-            path: package.json
     
   build:
     name: Build for ${{ matrix.platform }}
