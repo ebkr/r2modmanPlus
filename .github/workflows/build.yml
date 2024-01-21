@@ -10,9 +10,9 @@ jobs:
         - uses: actions/checkout@v3
         
         - id: fetch-version
-          uses: martinbeentjes/npm-get-version-action@v1.3.1
+          uses: stevenbenitez/get-package-version-action@v1
           env: 
-            CURRENTVERSION: ${{ steps.fetch-version.outputs.current-version}}
+            CURRENTVERSION: ${{ steps.fetch-version.outputs.version}}
         - id: print
           run: echo "$CURRENTVERSION"
     
