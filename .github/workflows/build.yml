@@ -3,11 +3,21 @@ name: Build
 on: [push]
 
 jobs:
+  fetch-version:
+    name: Fetch Application Version
+    runs-on: ubuntu-latest
+    steps:
+        - name: Fetch Version
+          id: fetch-version
+          uses: martinbeentjes/npm-get-version-action@v1.3.1
+          with:
+            path: package.json
+    
   build:
     name: Build for ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - kind: linux
@@ -51,12 +61,6 @@ jobs:
         name: Log stderr
         continue-on-error: true
         run: echo '${{ steps.build.outputs.stderr }}'
-
-      - name: Fetch Version
-        id: fetch-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-        with:
-          path: package.json
 
       - if: matrix.platform == 'win'
         name: Archive Windows Binaries
@@ -120,7 +124,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -136,7 +140,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -155,7 +159,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
