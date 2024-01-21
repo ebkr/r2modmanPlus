@@ -50,7 +50,10 @@ jobs:
         id: version-step
         uses: michmich112/extract-version@main
         with:
-          version-file: latest.yml
+          version-file: |
+            latest.yml
+            latest-linux.yml
+            latest-mac.yml
           schema: major.minor.build
 #          
 #      - name: Assign version variable
