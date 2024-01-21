@@ -7,6 +7,8 @@ jobs:
     name: Fetch Application Version
     runs-on: ubuntu-latest
     steps:
+        - uses: actions/checkout@v3
+        
         - name: Fetch Version
           id: fetch-version
           uses: martinbeentjes/npm-get-version-action@v1.3.1
