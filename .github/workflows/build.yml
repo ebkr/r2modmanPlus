@@ -83,12 +83,11 @@ jobs:
             dist/electron/Packaged/r2modman*mac.zip
             dist/electron/Packaged/r2modman*.dmg.blockmap
             
-      - if: matrix.platform == 'osx'
-        name: Grab version
+      - name: Grab version
         id: version-step
         uses: michmich112/extract-version@main
         with:
-          version-file: dist/electron/Packaged/latest-mac.yml
+          version-file: dist/electron/Packaged/latest*.yml
           schema: major.minor.build
                         
       - name: Release
