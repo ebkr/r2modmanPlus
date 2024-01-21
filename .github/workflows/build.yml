@@ -127,7 +127,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENT-VERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -143,7 +143,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENT-VERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -162,7 +162,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENT-VERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
