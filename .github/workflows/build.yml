@@ -16,6 +16,7 @@ jobs:
   build:
     name: Build for ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
+    needs: fetch-version
     strategy:
       fail-fast: true
       matrix:
@@ -124,7 +125,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ needs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -140,7 +141,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ needs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -159,7 +160,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ jobs.fetch-version.steps.fetch-version.outputs.current-version }}
+          tag_name: ${{ needs.fetch-version.steps.fetch-version.outputs.current-version }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
