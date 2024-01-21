@@ -12,7 +12,7 @@ jobs:
         - id: fetch-version
           uses: martinbeentjes/npm-get-version-action@v1.3.1
           env: 
-            CURRENT-VERSION: ${{ steps.fetch-version.outputs.current-version}}
+            CURRENTVERSION: ${{ steps.fetch-version.outputs.current-version}}
     
   build:
     name: Build for ${{ matrix.platform }}
@@ -49,7 +49,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
-          echo "$CURRENT-VERSION"
+          echo "$CURRENTVERSION"
 
       - name: Build project
       
@@ -128,7 +128,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ env.CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENTVERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -144,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ env.CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENTVERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
@@ -163,7 +163,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          tag_name: ${{ env.CURRENT-VERSION }}
+          tag_name: ${{ env.CURRENTVERSION }}
           generate_release_notes: true
           body: |
             ${{ steps.commits.outputs.value }}
