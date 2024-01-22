@@ -194,6 +194,9 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     retryConnection() {
+        this.getRequestItem('UpdateCheck').setProgress(0);
+        this.getRequestItem('ExclusionsList').setProgress(0);
+        this.getRequestItem('ThunderstoreDownload').setProgress(0);
         this.isOffline = false;
         this.checkForUpdates();
     }

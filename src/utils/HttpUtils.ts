@@ -31,11 +31,7 @@ export const getAxiosWithTimeouts = (responseTimeout = 5000, totalTimeout = 1000
 };
 
 interface LongRunningRequestOptions {
-    /**
-     * Custom function to be called when progress is made. Doesn't work
-     * properly currently, since the progress percentage can't be
-     * calculated because the total length of the content isn't known.
-     */
+    /** Custom function to be called when progress is made. */
     downloadProgressed?: DownloadProgressed;
     /**
      * Time (in ms) the request has to trigger the first download
@@ -84,10 +80,9 @@ export const makeLongRunningGetRequest = async (
         rollingTimeout = setTimeout(abort, transmissionTimeout);
 
         if (typeof downloadProgressed === "function") {
-            // TODO: Progress percentage can't be calculated since the
-            // content length is unknown. Looks like this hasn't worked
-            // in a while.
-            downloadProgressed(0);
+            // Backend might not provided total content length.
+            const percent = progress.total ? (progress.loaded / progress.total) * 100 : 0;
+            downloadProgressed(percent);
         }
     }
 
