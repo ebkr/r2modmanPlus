@@ -52,10 +52,10 @@
             </template>
             <template v-slot:body>
                 <div v-if="dependencyListDisplayType === 'disable'" class='notification is-warning'>
-                    <p>Other mods depend on this mod. Disabling this mod will disable all other dependants.</p>
+                    <p>Other mods depend on this mod. Select <strong>Disable all</strong> to disable dependent mods which may cause errors.</p>
                 </div>
                 <div v-if="dependencyListDisplayType === 'uninstall'" class='notification is-warning'>
-                    <p>Other mods depend on this mod. Uninstalling this mod will remove all mods that depend on it.</p>
+                    <p>Other mods depend on this mod. Select <strong>Uninstall all</strong> to uninstall dependent mods which may cause errors.</p>
                 </div>
                 <p v-if="dependencyListDisplayType === 'disable'">Mods to be disabled:</p>
                 <p v-if="dependencyListDisplayType === 'uninstall'">Mods to be uninstalled:</p>
@@ -93,14 +93,22 @@
             </template>
             <template v-slot:footer>
                 <button v-if="dependencyListDisplayType === 'disable'" class="button is-info"
-                        @click="disableMod(selectedManifestMod)">
-                    Disable
+                        @click="disableModWithDependents(selectedManifestMod)">
+                    Disable all (recommended)
                 </button>
-                <button v-if="dependencyListDisplayType === 'uninstall'"
-                        class="button is-info"
+                <button v-if="dependencyListDisplayType === 'disable'" class="button"
+                        @click="disableModExcludeDependents(selectedManifestMod)">
+                    Disable {{selectedManifestMod.getName()}} only
+                </button>
+                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info"
                         :disabled="modBeingUninstalled !== null"
-                        @click="uninstallMod(selectedManifestMod)">
-                    Uninstall
+                        @click="uninstallModWithDependents(selectedManifestMod)">
+                    Uninstall all (recommended)
+                </button>
+                <button v-if="dependencyListDisplayType === 'uninstall'" class="button"
+                        :disabled="modBeingUninstalled !== null"
+                        @click="uninstallModExcludeDependents(selectedManifestMod)">
+                    Uninstall {{selectedManifestMod.getName()}} only
                 </button>
                 <span v-if="modBeingUninstalled" class="tag is-warning margin-top--1rem margin-left">
                     Uninstalling {{ modBeingUninstalled }}
@@ -168,8 +176,8 @@
                         <i class='fas fa-cloud-upload-alt' v-tooltip.left="'An update is available'"></i>
                     </span>
                     <span class='card-header-icon'
-                          v-if="getMissingDependencies(key).length > 0">
-                        <i class='fas fa-exclamation-circle' v-tooltip.left="`Missing ${getMissingDependencies(key).length} dependencies`"></i>
+                          v-if="getDisabledDependencies(key).length > 0 || getMissingDependencies(key).length > 0">
+                        <i class='fas fa-exclamation-circle' v-tooltip.left="`There is an issue with the dependencies for this mod`"></i>
                     </span>
                     <span class='card-header-icon'
                           @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)">
@@ -197,6 +205,10 @@
                 <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
                    @click="downloadDependency(getMissingDependencies(key)[0])">
                     Download dependency
+                </a>
+                <a class='card-footer-item' v-if="getDisabledDependencies(key).length > 0"
+                   @click="enableMod(getDisabledDependencies(key)[0])">
+                    Enable {{getDisabledDependencies(key)[0].getDisplayName()}}
                 </a>
                 <template v-if="getThunderstoreModFromMod(key) !== undefined">
                     <template v-if="getThunderstoreModFromMod(key).getDonationLink() !== undefined">
@@ -379,6 +391,21 @@ import SearchUtils from '../../utils/SearchUtils';
             });
         }
 
+        getDisabledDependencies(vueMod: any): ManifestV2[] {
+            const mod: Mod = new Mod().fromReactive(vueMod);
+            const installedMods = [...this.modifiableModList];
+
+            const installedDependencies = mod.getDependencies().filter((dependency: string) => {
+                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-"));
+            })
+                .filter(value => installedMods.find(installed => value.toLowerCase().startsWith(installed.getName().toLowerCase() + "-")))
+                .map(value => installedMods.find(installed => value.toLowerCase().startsWith(installed.getName().toLowerCase() + "-")));
+
+            const safeInstalledDependencies = installedDependencies as ManifestV2[];
+
+            return safeInstalledDependencies.filter(value => !value.isEnabled());
+        }
+
         getDependantList(mod: ManifestV2): Set<ManifestV2> {
             return Dependants.getDependantList(mod, this.modifiableModList);
         }
@@ -408,10 +435,19 @@ import SearchUtils from '../../utils/SearchUtils';
             return modList;
         }
 
-        async disableMod(vueMod: any) {
+        async disableModWithDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            await this.disableMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+        }
+
+        async disableModExcludeDependents(vueMod: any) {
+            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            await this.disableMods([mod]);
+        }
+
+        async disableMods(modsToDisable: ManifestV2[]) {
             try {
-                const result = await this.performDisable([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+                const result = await this.performDisable(modsToDisable);
                 if (result instanceof R2Error) {
                     this.$emit('error', result);
                     return;
@@ -447,13 +483,21 @@ import SearchUtils from '../../utils/SearchUtils';
             await this.updateModListAfterChange(updatedList);
         }
 
-        async uninstallMod(vueMod: any) {
+        async uninstallModWithDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            await this.uninstallMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+        }
+
+        async uninstallModExcludeDependents(vueMod: any) {
+            let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            await this.uninstallMods([mod]);
+        }
+
+        async uninstallMods(modsToUninstall: ManifestV2[]) {
             let lastSuccess: ManifestV2[] | null = null;
             try {
-                for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
-                    this.modBeingUninstalled = dependant.getName();
-                    const result = await this.performUninstallMod(dependant, false);
+                for (const mod of modsToUninstall) {
+                    const result = await this.performUninstallMod(mod, false);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
                         this.modBeingUninstalled = null;
@@ -461,15 +505,6 @@ import SearchUtils from '../../utils/SearchUtils';
                     } else {
                         lastSuccess = result;
                     }
-                }
-                this.modBeingUninstalled = mod.getName();
-                const result = await this.performUninstallMod(mod, false);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    this.modBeingUninstalled = null;
-                    return;
-                } else {
-                    lastSuccess = result;
                 }
             } catch (e) {
                 // Failed to uninstall mod.
@@ -495,7 +530,6 @@ import SearchUtils from '../../utils/SearchUtils';
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
-            console.log(this.dependencyListDisplayType, this.showingDependencyList)
         }
 
         uninstallModRequireConfirmation(vueMod: any) {
@@ -509,17 +543,13 @@ import SearchUtils from '../../utils/SearchUtils';
 
         disableModRequireConfirmation(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const enabledDependants: ManifestV2[] = [];
-            this.getDependantList(mod).forEach(value => {
+            for (const value of this.getDependantList(mod)) {
                if (value.isEnabled()) {
-                   enabledDependants.push(value);
+                   this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
+                   return;
                }
-            });
-            if (enabledDependants.length === 0) {
-                this.performDisable([mod]);
-            } else {
-                this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
             }
+            this.performDisable([mod]);
         }
 
         viewDependencyList(vueMod: any) {
