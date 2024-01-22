@@ -101,13 +101,18 @@
                     Disable {{selectedManifestMod.getName()}} only
                 </button>
                 <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info"
+                        :disabled="modBeingUninstalled !== null"
                         @click="uninstallModWithDependents(selectedManifestMod)">
                     Uninstall all (recommended)
                 </button>
                 <button v-if="dependencyListDisplayType === 'uninstall'" class="button"
+                        :disabled="modBeingUninstalled !== null"
                         @click="uninstallModExcludeDependents(selectedManifestMod)">
                     Uninstall {{selectedManifestMod.getName()}} only
                 </button>
+                <span v-if="modBeingUninstalled" class="tag is-warning margin-top--1rem margin-left">
+                    Uninstalling {{ modBeingUninstalled }}
+                </span>
                 <button v-if="dependencyListDisplayType === 'view'" class="button is-info"
                         @click="selectedManifestMod = null">
                     Done
@@ -276,6 +281,7 @@ import SearchUtils from '../../utils/SearchUtils';
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
+        private modBeingUninstalled: string | null = null;
 
         // Filtering
         private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
@@ -342,6 +348,17 @@ import SearchUtils from '../../utils/SearchUtils';
             return ModBridge.getCachedThunderstoreModFromMod(mod);
         }
 
+        async updateModListAfterChange(updatedList: ManifestV2[]) {
+            await this.$store.dispatch("updateModList", updatedList);
+
+            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
+            if (err instanceof R2Error) {
+                this.$emit('error', err);
+            }
+
+            this.filterModList();
+        }
+
         async moveUp(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
@@ -349,12 +366,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return;
             }
-            await this.$store.dispatch("updateModList",updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         async moveDown(vueMod: any) {
@@ -364,12 +376,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return;
             }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         isLatest(mod: ManifestV2): boolean {
@@ -407,7 +414,7 @@ import SearchUtils from '../../utils/SearchUtils';
             return Dependants.getDependencyList(mod, this.modifiableModList);
         }
 
-        async performUninstallMod(mod: ManifestV2): Promise<R2Error | void> {
+        async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<ManifestV2[] | R2Error> {
             const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
@@ -422,21 +429,20 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', modList);
                 return modList;
             }
-            await this.$store.dispatch("updateModList",modList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
+            if (updateModList) {
+                await this.updateModListAfterChange(modList);
             }
+            return modList;
         }
 
         async disableModWithDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.disableMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+            await this.disableMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
         }
 
         async disableModExcludeDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.disableMods([mod]);
+            await this.disableMods([mod]);
         }
 
         async disableMods(modsToDisable: ManifestV2[]) {
@@ -474,31 +480,30 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList", updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         async uninstallModWithDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.uninstallMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+            await this.uninstallMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
         }
 
         async uninstallModExcludeDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            this.uninstallMods([mod]);
+            await this.uninstallMods([mod]);
         }
 
         async uninstallMods(modsToUninstall: ManifestV2[]) {
+            let lastSuccess: ManifestV2[] | null = null;
             try {
                 for (const mod of modsToUninstall) {
-                    const result = await this.performUninstallMod(mod);
+                    const result = await this.performUninstallMod(mod, false);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
+                        this.modBeingUninstalled = null;
                         return;
+                    } else {
+                        lastSuccess = result;
                     }
                 }
             } catch (e) {
@@ -506,6 +511,11 @@ import SearchUtils from '../../utils/SearchUtils';
                 const err: Error = e as Error;
                 this.$emit('error', err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+            } finally {
+                this.modBeingUninstalled = null;
+                if (lastSuccess) {
+                    await this.updateModListAfterChange(lastSuccess);
+                }
             }
             this.selectedManifestMod = null;
             const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
@@ -513,12 +523,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', result);
                 return;
             }
-            await this.$store.dispatch("updateModList", result);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(result, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(result);
         }
 
         showDependencyList(vueMod: any, displayType: string) {
@@ -531,7 +536,6 @@ import SearchUtils from '../../utils/SearchUtils';
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             if (this.getDependantList(mod).size === 0) {
                 this.performUninstallMod(mod);
-                this.filterModList();
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
             }
@@ -587,12 +591,7 @@ import SearchUtils from '../../utils/SearchUtils';
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            await this.$store.dispatch("updateModList",updatedList);
-            const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
-            if (err instanceof R2Error) {
-                this.$emit('error', err);
-            }
-            this.filterModList();
+            await this.updateModListAfterChange(updatedList);
         }
 
         updateMod(vueMod: any) {
