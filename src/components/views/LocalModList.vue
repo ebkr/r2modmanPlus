@@ -339,7 +339,7 @@ import SearchUtils from '../../utils/SearchUtils';
         }
 
         getThunderstoreModFromMod(mod: ManifestV2) {
-            return ModBridge.getThunderstoreModFromMod(mod, this.thunderstorePackages);
+            return ModBridge.getCachedThunderstoreModFromMod(mod);
         }
 
         async moveUp(vueMod: any) {
@@ -372,8 +372,8 @@ import SearchUtils from '../../utils/SearchUtils';
             this.filterModList();
         }
 
-        isLatest(vueMod: any): boolean {
-            return ModBridge.isLatestVersion(vueMod);
+        isLatest(mod: ManifestV2): boolean {
+            return ModBridge.isCachedLatestVersion(mod);
         }
 
         getMissingDependencies(vueMod: any): string[] {
