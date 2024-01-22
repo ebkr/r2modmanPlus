@@ -387,7 +387,7 @@ import SearchUtils from '../../utils/SearchUtils';
             return Dependants.getDependencyList(mod, this.modifiableModList);
         }
 
-        async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<R2Error | void> {
+        async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<ManifestV2[] | R2Error> {
             const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
@@ -405,6 +405,7 @@ import SearchUtils from '../../utils/SearchUtils';
             if (updateModList) {
                 await this.updateModListAfterChange(modList);
             }
+            return modList;
         }
 
         async disableMod(vueMod: any) {
@@ -448,6 +449,7 @@ import SearchUtils from '../../utils/SearchUtils';
 
         async uninstallMod(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+            let lastSuccess: ManifestV2[] | null = null;
             try {
                 for (const dependant of Dependants.getDependantList(mod, this.modifiableModList)) {
                     this.modBeingUninstalled = dependant.getName();
@@ -456,6 +458,8 @@ import SearchUtils from '../../utils/SearchUtils';
                         this.$emit('error', result);
                         this.modBeingUninstalled = null;
                         return;
+                    } else {
+                        lastSuccess = result;
                     }
                 }
                 this.modBeingUninstalled = mod.getName();
@@ -464,16 +468,21 @@ import SearchUtils from '../../utils/SearchUtils';
                     this.$emit('error', result);
                     this.modBeingUninstalled = null;
                     return;
+                } else {
+                    lastSuccess = result;
                 }
             } catch (e) {
                 // Failed to uninstall mod.
                 const err: Error = e as Error;
                 this.$emit('error', err);
-                this.modBeingUninstalled = null;
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+            } finally {
+                this.modBeingUninstalled = null;
+                if (lastSuccess) {
+                    await this.updateModListAfterChange(lastSuccess);
+                }
             }
             this.selectedManifestMod = null;
-            this.modBeingUninstalled = null;
             const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
             if (result instanceof R2Error) {
                 this.$emit('error', result);
