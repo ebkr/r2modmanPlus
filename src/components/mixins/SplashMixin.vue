@@ -44,6 +44,7 @@ export default class SplashMixin extends Vue {
         };
 
         ThunderstorePackages.EXCLUSIONS = await ConnectionProvider.instance.getExclusions(showProgress);
+        this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
     // Get the list of Thunderstore mods from API.
@@ -62,6 +63,8 @@ export default class SplashMixin extends Vue {
             this.isOffline = true;
             this.heroTitle = 'Failed to get mods from Thunderstore';
             this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+        } finally {
+            this.getRequestItem('ThunderstoreDownload').setProgress(100);
         }
 
         if (response) {
