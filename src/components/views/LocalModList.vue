@@ -123,19 +123,19 @@
         <slot name="above-list"></slot>
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
-                   @start="drag=canShowSortIcons(); $emit('sort-start')"
+                   @start="drag=canShowSortIcons; $emit('sort-start')"
                    @end="drag=false; $emit('sort-end')"
                    :force-fallback="true"
                    :scroll-sensitivity="100">
             <expandable-card
-                v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${getProfileName()}-${index}-${cardExpanded}`"
+                v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${profileName}-${index}-${cardExpanded}`"
                 @moveUp="moveUp(key)"
                 @moveDown="moveDown(key)"
                 :image="key.icon"
                 :id="index"
                 :description="key.description"
                 :funkyMode="funkyMode"
-                :showSort="canShowSortIcons()"
+                :showSort="canShowSortIcons"
                 :expandedByDefault="cardExpanded"
                 :enabled="key.isEnabled()">
                 <template v-slot:title>
@@ -311,6 +311,17 @@ import SearchUtils from '../../utils/SearchUtils';
                 }
                 this.filterModList();
             })
+        }
+
+        get canShowSortIcons() {
+            return this.sortDirection === SortDirection.STANDARD
+                && this.sortOrder === SortNaming.CUSTOM
+                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
+                && this.searchQuery.length === 0;
+        }
+
+        get profileName() {
+            return this.contextProfile!.getProfileName();
         }
 
         @Watch("sortOrder")
@@ -634,17 +645,6 @@ import SearchUtils from '../../utils/SearchUtils';
 
         getSortDirectionOptions() {
             return Object.values(SortDirection);
-        }
-
-        canShowSortIcons() {
-            return this.sortDirection === SortDirection.STANDARD
-                && this.sortOrder === SortNaming.CUSTOM
-                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
-                && this.searchQuery.length === 0;
-        }
-
-        getProfileName() {
-            return this.contextProfile!.getProfileName();
         }
 
         async created() {
