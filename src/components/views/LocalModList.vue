@@ -329,10 +329,6 @@ import SearchUtils from '../../utils/SearchUtils';
         }
 
         @Watch('modifiableModList')
-        modListUpdated() {
-            this.filterModList();
-        }
-
         @Watch('searchQuery')
         filterModList() {
             if (this.searchQuery.trim() === '') {
