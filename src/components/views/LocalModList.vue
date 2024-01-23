@@ -37,88 +37,33 @@
             </div>
         </div>
 
-        <Modal v-show="showingDependencyList" v-if="selectedManifestMod !== null"
-               @close-modal="showingDependencyList = null" :open="showingDependencyList">
-            <template v-slot:title>
-                <p v-if="dependencyListDisplayType === 'disable'" class='card-header-title'>Disabling
-                    {{selectedManifestMod.getName()}}
-                </p>
-                <p v-if="dependencyListDisplayType === 'uninstall'" class='card-header-title'>Uninstalling
-                    {{selectedManifestMod.getName()}}
-                </p>
-                <p v-if="dependencyListDisplayType === 'view'" class='card-header-title'>Mods associated with
-                    {{selectedManifestMod.getName()}}
-                </p>
-            </template>
-            <template v-slot:body>
-                <div v-if="dependencyListDisplayType === 'disable'" class='notification is-warning'>
-                    <p>Other mods depend on this mod. Select <strong>Disable all</strong> to disable dependent mods which may cause errors.</p>
-                </div>
-                <div v-if="dependencyListDisplayType === 'uninstall'" class='notification is-warning'>
-                    <p>Other mods depend on this mod. Select <strong>Uninstall all</strong> to uninstall dependent mods which may cause errors.</p>
-                </div>
-                <p v-if="dependencyListDisplayType === 'disable'">Mods to be disabled:</p>
-                <p v-if="dependencyListDisplayType === 'uninstall'">Mods to be uninstalled:</p>
-                <br v-if="dependencyListDisplayType !== 'view'"/>
-                <div v-if="dependencyListDisplayType !== 'view'">
-                    <ul class="list">
-                        <li class="list-item">{{selectedManifestMod.getName()}}</li>
-                        <li class="list-item" v-for='(key, index) in getDependantList(selectedManifestMod)'
-                            :key='`dependant-${index}`'>
-                            {{key.getName()}}
-                        </li>
-                    </ul>
-                </div>
-                <div v-if="dependencyListDisplayType === 'view'">
-                    <div v-if="getDependencyList(selectedManifestMod).size > 0">
-                        <h3 class="subtitle is-5">Dependencies</h3>
-                        <ul class="list">
-                            <li class="list-item" v-for='(key, index) in getDependencyList(selectedManifestMod)'
-                                :key='`dependency-${index}`'>
-                                {{key.getName()}}
-                            </li>
-                        </ul>
-                    </div>
-                    <br v-if="getDependencyList(selectedManifestMod).size > 0"/>
-                    <div v-if="getDependantList(selectedManifestMod).size > 0">
-                        <h3 class="subtitle is-5">Dependants</h3>
-                        <ul class="list">
-                            <li class="list-item" v-for='(key, index) in getDependantList(selectedManifestMod)'
-                                :key='`dependant-${index}`'>
-                                {{key.getName()}}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </template>
-            <template v-slot:footer>
-                <button v-if="dependencyListDisplayType === 'disable'" class="button is-info"
-                        @click="disableModWithDependents(selectedManifestMod)">
-                    Disable all (recommended)
-                </button>
-                <button v-if="dependencyListDisplayType === 'disable'" class="button"
-                        @click="disableModExcludeDependents(selectedManifestMod)">
-                    Disable {{selectedManifestMod.getName()}} only
-                </button>
-                <button v-if="dependencyListDisplayType === 'uninstall'" class="button is-info"
-                        :disabled="modBeingUninstalled !== null"
-                        @click="uninstallModWithDependents(selectedManifestMod)">
-                    Uninstall all (recommended)
-                </button>
-                <button v-if="dependencyListDisplayType === 'uninstall'" class="button"
-                        :disabled="modBeingUninstalled !== null"
-                        @click="uninstallModExcludeDependents(selectedManifestMod)">
-                    Uninstall {{selectedManifestMod.getName()}} only
-                </button>
-                <span v-if="modBeingUninstalled" class="tag is-warning margin-top--1rem margin-left">
-                    Uninstalling {{ modBeingUninstalled }}
-                </span>
-                <button v-if="dependencyListDisplayType === 'view'" class="button is-info"
-                        @click="selectedManifestMod = null">
-                    Done
-                </button>
-            </template>
-        </Modal>
+        <DisableModModal
+            v-if="dependencyListDisplayType === 'disable' && !!selectedManifestMod && showingDependencyList"
+            :on-close="() => { showingDependencyList = false; }"
+            :mod="selectedManifestMod"
+            :dependency-list="getDependencyList(selectedManifestMod)"
+            :dependants-list="getDependantList(selectedManifestMod)"
+            :mod-being-disabled="modBeingDisabled"
+            :on-disable-include-dependents ="disableModWithDependents"
+            :on-disable-exclude-dependents="disableModExcludeDependents"
+        />
+        <UninstallModModal
+            v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
+            :on-close="() => { showingDependencyList = false; }"
+            :mod="selectedManifestMod"
+            :dependency-list="getDependencyList(selectedManifestMod)"
+            :dependants-list="getDependantList(selectedManifestMod)"
+            :mod-being-uninstalled="modBeingUninstalled"
+            :on-uninstall-include-dependents="uninstallModWithDependents"
+            :on-uninstall-exclude-dependents="uninstallModExcludeDependents"
+        />
+        <AssociatedModsModal
+            v-if="dependencyListDisplayType === 'view' && !!selectedManifestMod && showingDependencyList"
+            :on-close="() => { showingDependencyList = false; }"
+            :mod="selectedManifestMod"
+            :dependency-list="getDependencyList(selectedManifestMod)"
+            :dependants-list="getDependantList(selectedManifestMod)"
+        />
 
         <slot name="above-list"></slot>
 
@@ -250,6 +195,9 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import Draggable from 'vuedraggable';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import SearchUtils from '../../utils/SearchUtils';
+import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
+import DisableModModal from './LocalModList/DisableModModal.vue';
+import UninstallModModal from './LocalModList/UninstallModModal.vue';
 
 @Component({
         components: {
@@ -258,7 +206,10 @@ import SearchUtils from '../../utils/SearchUtils';
             Link,
             ExpandableCard,
             Modal,
-            Draggable
+            Draggable,
+            AssociatedModsModal,
+            DisableModModal,
+            UninstallModModal,
         }
     })
     export default class LocalModList extends Vue {
@@ -282,6 +233,7 @@ import SearchUtils from '../../utils/SearchUtils';
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
         private modBeingUninstalled: string | null = null;
+        private modBeingDisabled: string | null = null;
 
         // Filtering
         private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
@@ -459,14 +411,18 @@ import SearchUtils from '../../utils/SearchUtils';
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             }
             this.selectedManifestMod = null;
+            this.modBeingDisabled = null;
         }
 
         async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
+            this.modBeingDisabled = null;
             for (let mod of mods) {
+                this.modBeingDisabled = mod.getName();
                 const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
                 if (disableErr instanceof R2Error) {
                     // Failed to disable
                     this.showingDependencyList = false;
+                    this.modBeingDisabled = null;
                     this.$emit('error', disableErr);
                     return disableErr;
                 }
@@ -477,9 +433,11 @@ import SearchUtils from '../../utils/SearchUtils';
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
                 this.showingDependencyList = false;
+                this.modBeingDisabled = null;
                 this.$emit('error', updatedList);
                 return updatedList;
             }
+            this.modBeingDisabled = null;
             await this.updateModListAfterChange(updatedList);
         }
 
@@ -497,6 +455,7 @@ import SearchUtils from '../../utils/SearchUtils';
             let lastSuccess: ManifestV2[] | null = null;
             try {
                 for (const mod of modsToUninstall) {
+                    this.modBeingUninstalled = mod.getName();
                     const result = await this.performUninstallMod(mod, false);
                     if (result instanceof R2Error) {
                         this.$emit('error', result);
