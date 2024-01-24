@@ -329,15 +329,13 @@ import SearchUtils from '../../utils/SearchUtils';
         }
 
         @Watch('modifiableModList')
-        modListUpdated() {
-            this.filterModList();
-        }
-
         @Watch('searchQuery')
         filterModList() {
             if (this.searchQuery.trim() === '') {
-                this.searchableModList = [...(this.modifiableModList || [])];
+                this.searchableModList = [...this.modifiableModList];
+                return;
             }
+
             const searchKeys = SearchUtils.makeKeys(this.searchQuery);
             this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
                 return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
