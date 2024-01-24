@@ -17,7 +17,7 @@ You might run into an error in r2modman whenever closing a game after it being o
 ### How do I add a non-launcher game?
 To add a non-launcher game, simply select it in the game selection menu, select other, select your profile, go to settings, and then point the "Change (Game Name Here) directory" setting to your game directory.
 ### How do I download it?
-To download it, go to releases and download the applicible executable for your operating system. If you're on Windows, it will be the exe files. If you're on MacOS, you download the zip with Mac in its name and maybe the dmg file, I don't really know anything about MacOS. If you're on MacOS, you download either an AppImage, Pacman, tar.gz, rpm, or deb. The one download depends on your distrubtion and what it is derived from.
+To download it, go to releases and download the applicible executable for your operating system. If you're on Windows, it will be the exe files. If you're on MacOS, you download the zip with Mac in its name and maybe the dmg file, I don't really know anything about MacOS. If you're on Linux, you download either an AppImage, Pacman, tar.gz, rpm, or deb. The one download depends on your distrubtion and what it is derived from.
 ### Who do I report an issue to?
 Most likely the original r2modman. Apart from the readme and the GitHub actions workflow file, the only file I amended was the file that handles the game list.
 ### My game isn't supported!
