@@ -6,6 +6,7 @@ import ModFilterModule from './modules/ModFilterModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreDownloaderProvider from "../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 Vue.use(Vuex);
@@ -81,6 +82,14 @@ export const store = {
         },
         setDeprecatedMods(state: State) {
             state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
+        }
+    },
+    getters: {
+        localModsWithUpdates(state: State) {
+            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
+                state.localModList,
+                state.thunderstoreModList
+            );
         }
     },
     modules: {
