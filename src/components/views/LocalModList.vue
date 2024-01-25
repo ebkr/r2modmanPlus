@@ -418,9 +418,10 @@ import UninstallModModal from './LocalModList/UninstallModModal.vue';
                 const err: Error = e as Error;
                 this.$emit("error", err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+            } finally {
+                this.selectedManifestMod = null;
+                this.modBeingDisabled = null;
             }
-            this.selectedManifestMod = null;
-            this.modBeingDisabled = null;
         }
 
         async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
