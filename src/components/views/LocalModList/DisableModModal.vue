@@ -37,27 +37,30 @@ export default class DisableModModal extends Vue {
 <template>
     <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <p class='card-header-title'>Disabling
-                {{mod.getName()}}
-            </p>
+            <p class="modal-card-title">Disabling {{mod.getName()}}</p>
         </template>
         <template v-slot:body>
-            <div class='notification is-warning'>
-                <p>
-                    Other mods depend on this mod. Select <strong>Disable all</strong>
-                    to disable dependent mods, otherwise they may cause errors.
-                </p>
-            </div>
-            <p>Mods to be disabled:</p>
-            <br/>
-            <div>
-                <ul class="list">
-                    <li class="list-item">{{mod.getName()}}</li>
-                    <li class="list-item" v-for='(key, index) in dependantsList'
-                        :key='`dependant-${index}`'>
-                        {{key.getName()}}
-                    </li>
-                </ul>
+            <div class="max-height-100 is-flex is-flex-direction-column">
+                <div class='notification is-warning'>
+                    <p>
+                        Other mods depend on this mod. Select <strong>Disable all</strong>
+                        to disable dependent mods, otherwise they may cause errors.
+                    </p>
+                </div>
+                <h3 class="subtitle mb-3">Mods to be disabled</h3>
+                <div class="is-flex-shrink-1 overflow-auto code-snippet">
+                    <ul class="list">
+                        <li class="list-item">{{mod.getName()}}</li>
+                        <li class="list-item" v-for='(key, index) in dependantsList'
+                            :key='`dependant-${index}`'>
+                            {{key.getName()}}
+                        </li>
+                    </ul>
+                </div>
+                <div v-if="isLocked" class="mt-3">
+                    <h3 class="subtitle mb-3">Disabling {{modBeingDisabled}}</h3>
+                    <progress class="progress is-small is-info"/>
+                </div>
             </div>
         </template>
         <template v-slot:footer>
@@ -71,9 +74,6 @@ export default class DisableModModal extends Vue {
                     @click="onDisableExcludeDependents(mod)">
                 Disable {{mod.getName()}} only
             </button>
-            <span v-if="modBeingDisabled" class="tag is-warning margin-top--1rem margin-left">
-                Disabling {{ modBeingDisabled }}
-            </span>
         </template>
     </ModalCard>
 </template>

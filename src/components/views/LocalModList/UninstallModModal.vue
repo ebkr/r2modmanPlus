@@ -37,27 +37,30 @@ export default class UninstallModModal extends Vue {
 <template>
     <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <p class='card-header-title'>
-                Uninstalling {{mod.getName()}}
-            </p>
+            <p class='modal-card-title'>Uninstalling {{mod.getName()}}</p>
         </template>
         <template v-slot:body>
-            <div class='notification is-warning'>
-                <p>
-                    Other mods depend on this mod. Select <strong>Uninstall all</strong>
-                    to uninstall dependent mods, otherwise they may cause errors.
-                </p>
-            </div>
-            <p>Mods to be uninstalled:</p>
-            <br/>
-            <div>
-                <ul class="list">
-                    <li class="list-item">{{mod.getName()}}</li>
-                    <li class="list-item" v-for='(key, index) in dependantsList'
-                        :key='`dependant-${index}`'>
-                        {{key.getName()}}
-                    </li>
-                </ul>
+            <div class="max-height-100 is-flex is-flex-direction-column">
+                <div class='notification is-warning'>
+                    <p>
+                        Other mods depend on this mod. Select <strong>Uninstall all</strong>
+                        to uninstall dependent mods, otherwise they may cause errors.
+                    </p>
+                </div>
+                <h3 class="subtitle mb-3">Mods to be uninstalled</h3>
+                <div class="is-flex-shrink-1 overflow-auto code-snippet">
+                    <ul class="list">
+                        <li class="list-item">{{mod.getName()}}</li>
+                        <li class="list-item" v-for='(key, index) in dependantsList'
+                            :key='`dependant-${index}`'>
+                            {{key.getName()}}
+                        </li>
+                    </ul>
+                </div>
+                <div v-if="isLocked" class="mt-3">
+                    <h3 class="subtitle mb-3">Uninstalling {{modBeingUninstalled}}</h3>
+                    <progress class="progress is-small is-info"/>
+                </div>
             </div>
         </template>
         <template v-slot:footer>
@@ -71,9 +74,6 @@ export default class UninstallModModal extends Vue {
                     @click="onUninstallExcludeDependents(mod)">
                 Uninstall {{mod.getName()}} only
             </button>
-            <span v-if="modBeingUninstalled" class="tag is-warning margin-top--1rem margin-left">
-                Uninstalling {{ modBeingUninstalled }}
-            </span>
         </template>
     </ModalCard>
 </template>
