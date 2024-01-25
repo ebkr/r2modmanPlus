@@ -353,18 +353,14 @@ import UninstallModModal from './LocalModList/UninstallModModal.vue';
         }
 
         getDisabledDependencies(vueMod: any): ManifestV2[] {
-            const mod: Mod = new Mod().fromReactive(vueMod);
-            const installedMods = [...this.modifiableModList];
+            const dependencies = new Mod()
+                .fromReactive(vueMod)
+                .getDependencies()
+                .map((x) => x.toLowerCase().substring(0, x.lastIndexOf('-') + 1));
 
-            const installedDependencies = mod.getDependencies().filter((dependency: string) => {
-                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-"));
-            })
-                .filter(value => installedMods.find(installed => value.toLowerCase().startsWith(installed.getName().toLowerCase() + "-")))
-                .map(value => installedMods.find(installed => value.toLowerCase().startsWith(installed.getName().toLowerCase() + "-")));
-
-            const safeInstalledDependencies = installedDependencies as ManifestV2[];
-
-            return safeInstalledDependencies.filter(value => !value.isEnabled());
+            return this.modifiableModList.filter(
+                (mod) => !mod.isEnabled() && dependencies.includes(mod.getName().toLowerCase() + '-')
+            );
         }
 
         getDependantList(mod: ManifestV2): Set<ManifestV2> {
