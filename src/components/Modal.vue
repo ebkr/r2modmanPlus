@@ -24,6 +24,10 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 
 @Component
 export default class Modal extends Vue {
+    /*
+    Prefer using the ModalCard component for future modals as it uses
+    the correct bulma classes for modal cards, which this one does not!
+     */
 
     @Prop({default: false, type: Boolean})
     open!: boolean;

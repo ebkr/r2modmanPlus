@@ -48,6 +48,11 @@ $card-header-color: var(--card-header-color, $scheme-text-strong);
 $card-color: var(--card-color, $scheme-text);
 $card-footer-border-top: 1px solid var(--card-footer-border-top, $scheme-border);
 
+$modal-card-body-background-color: var(--modal-card-body-background-color, $scheme-background);
+$modal-card-head-background-color: var(--modal-card-head-background-color, $scheme-background);
+$modal-card-head-border-bottom: 1px solid var(--modal-card-head-border-bottom, $scheme-border);
+$modal-card-foot-border-top: 1px solid var(--modal-card-foot-border-top, $scheme-border);
+
 $menu-item-color: var(--menu-item-color, $scheme-text);
 $menu-item-hover-background-color: var(--menu-item-hover-background-color, #f5f5f5);
 $menu-item-hover-color: var(--menu-item-hover-color, $scheme-text-strong);

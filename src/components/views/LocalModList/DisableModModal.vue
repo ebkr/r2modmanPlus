@@ -1,10 +1,10 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Modal } from '../../all';
+import { ModalCard } from '../../all';
 import ManifestV2 from '../../../model/ManifestV2';
 
 @Component({
-    components: {Modal}
+    components: {ModalCard}
 })
 export default class DisableModModal extends Vue {
 
@@ -28,11 +28,15 @@ export default class DisableModModal extends Vue {
 
     @Prop({required: true, type: Function})
     readonly onDisableExcludeDependents!: (mod: ManifestV2) => void;
+
+    get isLocked(): boolean {
+        return this.modBeingDisabled !== null;
+    }
 }
 </script>
 <template>
-    <Modal :open="true" @close-modal="onClose">
-        <template v-slot:title>
+    <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
+        <template v-slot:header>
             <p class='card-header-title'>Disabling
                 {{mod.getName()}}
             </p>
@@ -58,12 +62,12 @@ export default class DisableModModal extends Vue {
         </template>
         <template v-slot:footer>
             <button class="button is-info"
-                    :disabled="modBeingDisabled !== null"
+                    :disabled="isLocked"
                     @click="onDisableIncludeDependents(mod)">
                 Disable all (recommended)
             </button>
             <button class="button"
-                    :disabled="modBeingDisabled !== null"
+                    :disabled="isLocked"
                     @click="onDisableExcludeDependents(mod)">
                 Disable {{mod.getName()}} only
             </button>
@@ -71,7 +75,7 @@ export default class DisableModModal extends Vue {
                 Disabling {{ modBeingDisabled }}
             </span>
         </template>
-    </Modal>
+    </ModalCard>
 </template>
 
 <style scoped lang="scss">

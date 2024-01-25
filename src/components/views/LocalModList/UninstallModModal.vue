@@ -1,10 +1,10 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Modal } from '../../all';
+import { ModalCard } from '../../all';
 import ManifestV2 from '../../../model/ManifestV2';
 
 @Component({
-    components: {Modal}
+    components: {ModalCard}
 })
 export default class UninstallModModal extends Vue {
 
@@ -28,11 +28,15 @@ export default class UninstallModModal extends Vue {
 
     @Prop({required: true, type: Function})
     readonly onUninstallExcludeDependents!: (mod: ManifestV2) => void;
+
+    get isLocked(): boolean {
+        return this.modBeingUninstalled !== null;
+    }
 }
 </script>
 <template>
-    <Modal :open="true" @close-modal="onClose">
-        <template v-slot:title>
+    <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
+        <template v-slot:header>
             <p class='card-header-title'>
                 Uninstalling {{mod.getName()}}
             </p>
@@ -58,12 +62,12 @@ export default class UninstallModModal extends Vue {
         </template>
         <template v-slot:footer>
             <button class="button is-info"
-                    :disabled="modBeingUninstalled !== null"
+                    :disabled="isLocked"
                     @click="onUninstallIncludeDependents(mod)">
                 Uninstall all (recommended)
             </button>
             <button class="button"
-                    :disabled="modBeingUninstalled !== null"
+                    :disabled="isLocked"
                     @click="onUninstallExcludeDependents(mod)">
                 Uninstall {{mod.getName()}} only
             </button>
@@ -71,7 +75,7 @@ export default class UninstallModModal extends Vue {
                 Uninstalling {{ modBeingUninstalled }}
             </span>
         </template>
-    </Modal>
+    </ModalCard>
 </template>
 
 <style scoped lang="scss">

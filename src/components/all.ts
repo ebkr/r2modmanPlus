@@ -2,6 +2,7 @@ import Hero from './Hero.vue';
 import Progress from './Progress.vue';
 import ExpandableCard from './ExpandableCard.vue';
 import Modal from './Modal.vue';
+import ModalCard from './ModalCard.vue';
 import Link from './Link.vue';
 
 export {
@@ -9,5 +10,6 @@ export {
     Progress,
     Link,
     ExpandableCard,
-    Modal
+    Modal,
+    ModalCard,
 }

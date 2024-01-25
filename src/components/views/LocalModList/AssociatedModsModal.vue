@@ -1,10 +1,10 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Modal } from '../../all';
+import { ModalCard } from '../../all';
 import ManifestV2 from '../../../model/ManifestV2';
 
 @Component({
-    components: {Modal}
+    components: {ModalCard}
 })
 export default class AssociatedModsModal extends Vue {
 
@@ -22,8 +22,8 @@ export default class AssociatedModsModal extends Vue {
 }
 </script>
 <template>
-    <Modal :open="true" @close-modal="onClose">
-        <template v-slot:title>
+    <ModalCard :is-active="true" @close-modal="onClose">
+        <template v-slot:header>
             <p class='card-header-title'>
                 Mods associated with {{mod.getName()}}
             </p>
@@ -54,7 +54,7 @@ export default class AssociatedModsModal extends Vue {
                 Done
             </button>
         </template>
-    </Modal>
+    </ModalCard>
 </template>
 
 <style scoped lang="scss">
