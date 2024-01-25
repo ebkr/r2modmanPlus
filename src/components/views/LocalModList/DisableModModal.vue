@@ -58,10 +58,12 @@ export default class DisableModModal extends Vue {
         </template>
         <template v-slot:footer>
             <button class="button is-info"
+                    :disabled="modBeingDisabled !== null"
                     @click="onDisableIncludeDependents(mod)">
                 Disable all (recommended)
             </button>
             <button class="button"
+                    :disabled="modBeingDisabled !== null"
                     @click="onDisableExcludeDependents(mod)">
                 Disable {{mod.getName()}} only
             </button>
