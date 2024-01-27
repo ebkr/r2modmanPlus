@@ -429,9 +429,10 @@ export default class Profiles extends Vue {
         return sanitize(nameToSanitize);
     }
 
-    setProfileAndContinue() {
-        settings.setProfile(Profile.getActiveProfile().getProfileName());
-        this.$router.push({name: 'manager.installed'});
+    async setProfileAndContinue() {
+        await this.$store.dispatch('updateModList', []);
+        await settings.setProfile(Profile.getActiveProfile().getProfileName());
+        await this.$router.push({name: 'manager.installed'});
     }
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
