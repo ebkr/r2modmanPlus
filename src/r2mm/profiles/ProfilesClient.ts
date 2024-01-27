@@ -6,45 +6,60 @@ const getProfileUrl = (profileImportCode: string): string => {
     return `https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`;
 }
 
-async function createProfile(payload: string): Promise<AxiosResponse<{ key: string }>> {
-    try {
-        return await Axios.post(
-            "https://thunderstore.io/api/experimental/legacyprofile/create/",
-            payload,
-            {
-                headers: { 'Content-Type': 'application/octet-stream' }
+function formatApiError<T>(e: T, genericTitle: string): R2Error | T {
+    if (Axios.isAxiosError(e) && e.response) {
+        if (e.response.status == 429) {
+            let message = e.message;
+            try {
+                message = e.response.data.detail || e.message;
+            } catch {
             }
-        );
-    } catch (e: any) {
-        if (Axios.isAxiosError(e) && e.response) {
-            if (e.response.status == 429) {
-                let message = e.message;
-                try {
-                    message = e.response.data.detail || e.message;
-                } catch {
-                }
-                throw new R2Error(
-                    "Too many exports in a short period of time",
-                    message,
-                    "Wait for a minute and try again"
-                );
-            } else {
-                throw new R2Error(
-                    "Failed to upload profile",
-                    e.message,
-                    `${e.response.status}`
-                );
-            }
+            return new R2Error(
+                "Too many attempts in a short period of time",
+                message,
+                "You were rate limited by the server, wait for a while and try again."
+            );
+        } else {
+            return new R2Error(
+                genericTitle,
+                e.message,
+                `${e.response.status}`
+            );
         }
-        throw e;
+    }
+    return e;
+}
+
+async function handleApiErrors<I, J>(
+    apiCall: Promise<AxiosResponse<I, J>>,
+    errorTitle: string,
+): Promise<AxiosResponse<I, J>> {
+    try {
+        const response = await apiCall;
+        if (Axios.isAxiosError(response)) {
+            throw response;
+        }
+        return response;
+    } catch (e: any) {
+        throw formatApiError(e, errorTitle);
     }
 }
 
-async function getProfile(profileImportCode: string): Promise<AxiosResponse<string>> {
+function createProfile(payload: string): Promise<AxiosResponse<{ key: string }>> {
+    return handleApiErrors(Axios.post(
+        "https://thunderstore.io/api/experimental/legacyprofile/create/",
+        payload,
+        {
+            headers: { 'Content-Type': 'application/octet-stream' }
+        }
+    ), "Failed to upload profile");
+}
+
+function getProfile(profileImportCode: string): Promise<AxiosResponse<string>> {
     const url = CdnProvider.addCdnQueryParameter(
         getProfileUrl(profileImportCode)
     );
-    return await Axios.get(url);
+    return handleApiErrors(Axios.get(url), "Failed to download profile");
 }
 
 export const ProfileApiClient = {
