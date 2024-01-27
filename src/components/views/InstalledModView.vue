@@ -60,10 +60,7 @@ export default class InstalledModView extends Vue {
     }
 
     get numberOfModsWithUpdates(): number {
-        return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
-            this.$store.state.localModList,
-            this.$store.state.thunderstoreModList
-        ).length;
+        return this.$store.getters.localModsWithUpdates.length;
     }
 };
 </script>

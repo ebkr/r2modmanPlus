@@ -81,7 +81,7 @@
                         <p>The following mods will be downloaded and installed:</p>
                         <br/>
                         <ul class="list">
-                            <li class="list-item" v-for='(key, index) in getListOfModsToUpdate()'
+                            <li class="list-item" v-for='(key, index) in $store.getters.localModsWithUpdates'
                                 :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
                                 {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
                             </li>
@@ -203,10 +203,6 @@ let assignId = 0;
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
-        }
-
-        get localModList(): ManifestV2[] {
-            return this.$store.state.localModList || [];
         }
 
         @Watch('$store.state.modals.downloadModModalMod')
@@ -373,10 +369,6 @@ let assignId = 0;
                     });
                 });
             }, 1);
-        }
-
-        getListOfModsToUpdate(): ThunderstoreCombo[] {
-            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.localModList, this.thunderstorePackages);
         }
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {

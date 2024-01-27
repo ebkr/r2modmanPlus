@@ -247,7 +247,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
                 async () => {
-                    const outdatedMods = ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(this.localModList, this.$store.state.thunderstoreModList);
+                    const outdatedMods = this.$store.getters.localModsWithUpdates;
                     if (outdatedMods.length === 1) {
                         return "1 mod has an update available";
                     }
@@ -412,6 +412,5 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         doesLogFileExist() {
             return this.logOutput.exists ? 'Log file exists' : 'Log file does not exist';
         }
-
     }
 </script>
