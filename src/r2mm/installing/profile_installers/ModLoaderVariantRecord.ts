@@ -9,7 +9,7 @@ import { PackageLoader } from '../../../model/installing/PackageLoader';
  * As things are now, consider this implementation legacy but a necessity until a more data-oriented method is
  * implemented.
  */
-const MODLOADER_PACKAGES = [
+export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("bbepis-BepInExPack", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("xiaoxiao921-BepInExPack", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("xiaoye97-BepInEx", "BepInExPack", PackageLoader.BEPINEX),

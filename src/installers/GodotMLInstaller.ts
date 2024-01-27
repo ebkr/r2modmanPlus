@@ -1,6 +1,4 @@
-import { PackageInstaller } from "./PackageInstaller";
-import ModLoaderPackageMapping from "../model/installing/ModLoaderPackageMapping";
-import Profile from "../model/Profile";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
 
@@ -8,8 +6,10 @@ export class GodotMLInstaller extends PackageInstaller {
     /**
      * Handles installation of GodotML
      */
-    async install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        const copyFrom = path.join(mlLocation, "addons", "mod_loader");
+    async install(args: InstallArgs) {
+        const { packagePath, profile } = args;
+
+        const copyFrom = path.join(packagePath, "addons", "mod_loader");
         const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
         const fs = FsProvider.instance;
 

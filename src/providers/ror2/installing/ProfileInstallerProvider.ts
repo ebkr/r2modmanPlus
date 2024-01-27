@@ -81,13 +81,4 @@ export default abstract class ProfileInstallerProvider {
      * @param tree
      */
     abstract resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void>;
-
-    /**
-     * Custom install method for handling BepInEx installations.
-     * @param bieLocation
-     * @param bepInExVariant
-     * @param profile
-     */
-    abstract installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null>;
-
 }

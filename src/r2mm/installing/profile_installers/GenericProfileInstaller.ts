@@ -16,9 +16,10 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { GetInstallerIdForLoader, PackageLoader } from '../../../model/installing/PackageLoader';
+import { GetInstallerIdForLoader } from '../../../model/installing/PackageLoader';
 import ZipProvider from "../../../providers/generic/zip/ZipProvider";
 import { PackageInstallers } from "../../../installers/registry";
+import { InstallArgs } from "../../../installers/PackageInstaller";
 
 
 
@@ -146,22 +147,29 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const activeGame = GameManager.activeGame;
         const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         const variant = bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase());
-        if (variant !== undefined) {
-            return this.installModLoader(cachedLocationOfMod, variant, profile);
+
+        const args: InstallArgs = {
+            mod: mod,
+            profile: profile,
+            packagePath: cachedLocationOfMod,
         }
-        return this.installForManifestV2(mod, profile, cachedLocationOfMod);
+
+        if (variant !== undefined) {
+            return this.installModLoader(variant, args);
+        } else {
+            return this.installForManifestV2(mod, profile, cachedLocationOfMod);
+        }
     }
 
-
-    async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
-        const installerId = GetInstallerIdForLoader(modLoaderMapping.loaderType);
+    async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
+        const installerId = GetInstallerIdForLoader(mapping.loaderType);
         if (installerId) {
-            await PackageInstallers[installerId].install(bieLocation, modLoaderMapping, profile);
+            await PackageInstallers[installerId].install(args);
             return Promise.resolve(null);
         } else {
             return new R2Error(
                 "Installer not found",
-                `Failed to find an appropriate installer for the package ${modLoaderMapping.packageName}`
+                `Failed to find an appropriate installer for the package ${mapping.packageName}`
             );
         }
     }

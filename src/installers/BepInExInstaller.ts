@@ -1,8 +1,8 @@
-import { PackageInstaller } from "./PackageInstaller";
-import ModLoaderPackageMapping from "../model/installing/ModLoaderPackageMapping";
-import Profile from "../model/Profile";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
+import { MODLOADER_PACKAGES } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
+import { PackageLoader } from "../model/installing/PackageLoader";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
@@ -10,12 +10,24 @@ export class BepInExInstaller extends PackageInstaller {
     /**
      * Handles installation of BepInEx
      */
-    async install(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
+    async install(args: InstallArgs) {
+        const {
+            mod,
+            packagePath,
+            profile,
+        } = args;
+
+        const mapping = MODLOADER_PACKAGES.find((entry) =>
+            entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
+            entry.loaderType == PackageLoader.BEPINEX,
+        );
+        const mappingRoot = mapping ? mapping.rootFolder : "";
+
         let bepInExRoot: string;
-        if (modLoaderMapping.rootFolder.trim().length > 0) {
-            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
+        if (mappingRoot.trim().length > 0) {
+            bepInExRoot = path.join(packagePath, mappingRoot);
         } else {
-            bepInExRoot = path.join(bieLocation);
+            bepInExRoot = path.join(packagePath);
         }
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
             if (!basePackageFiles.includes(item.toLowerCase())) {
