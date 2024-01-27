@@ -16,11 +16,9 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { PackageLoader } from '../../../model/installing/PackageLoader';
+import { GetInstallerIdForLoader, PackageLoader } from '../../../model/installing/PackageLoader';
 import ZipProvider from "../../../providers/generic/zip/ZipProvider";
-import { BepInExInstaller} from "../../../installers/BepInExInstaller";
-import { MelonLoaderInstaller } from "../../../installers/MelonLoaderInstaller";
-import { GodotMLInstaller } from "../../../installers/GodotMLInstaller";
+import { PackageInstallers } from "../../../installers/registry";
 
 
 
@@ -156,13 +154,16 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
 
     async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
-        switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.MELON_LOADER: await (new MelonLoaderInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.GODOT_ML: await (new GodotMLInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.NORTHSTAR: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
+        const installerId = GetInstallerIdForLoader(modLoaderMapping.loaderType);
+        if (installerId) {
+            await PackageInstallers[installerId].install(bieLocation, modLoaderMapping, profile);
+            return Promise.resolve(null);
+        } else {
+            return new R2Error(
+                "Installer not found",
+                `Failed to find an appropriate installer for the package ${modLoaderMapping.packageName}`
+            );
         }
-        return Promise.resolve(null);
     }
 
     private async buildInstallForRuleSubtype(location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<Map<RuleSubtype, string[]>> {
