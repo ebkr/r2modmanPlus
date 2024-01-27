@@ -128,12 +128,19 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return files;
     }
 
-    async installForManifestV2(mod: ManifestV2, profile: Profile, location: string): Promise<R2Error | null> {
-        const files: FileTree | R2Error = await FileTree.buildFromLocation(location);
+    async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
+        const { mod, profile, packagePath } = args;
+        const files: FileTree | R2Error = await FileTree.buildFromLocation(packagePath);
         if (files instanceof R2Error) {
             return files;
         }
-        const result = await this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
+        const result = await this.resolveBepInExTree(
+            profile,
+            packagePath,
+            path.basename(packagePath),
+            mod,
+            files,
+        );
         if (result instanceof R2Error) {
             return result;
         }
@@ -157,7 +164,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         if (variant !== undefined) {
             return this.installModLoader(variant, args);
         } else {
-            return this.installForManifestV2(mod, profile, cachedLocationOfMod);
+            return this.installForManifestV2(args);
         }
     }
 
