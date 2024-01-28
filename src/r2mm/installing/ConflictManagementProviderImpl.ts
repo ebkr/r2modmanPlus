@@ -54,7 +54,10 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
             }
             const modState: ModFileTracker = yaml.parse(stateFileContents);
             modState.files.forEach(([key, value]) => {
-                if (mod.isEnabled()) {
+                // HACK: Never reset UE4SS-settings.ini, ever. Seriously. It should always be enabled.
+                if (value.toLocaleLowerCase() == "ue4ss-settings.ini") {
+                    overallState.set(value, mod.getName());
+                } else if (mod.isEnabled()) {
                     overallState.set(value, mod.getName());
                 } else {
                     overallState.set(value + ".manager.disabled", mod.getName());
@@ -80,6 +83,15 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
                 for (const [key, value] of modFiles.files) {
                     if (value === file) {
                         await FileUtils.ensureDirectory(path.dirname(path.join(profile.getPathOfProfile(), file)));
+
+                        // HACK: Check if UE4SS-settings.ini exists and, if it doesn't, add it. If it does exist, DONT TOUCH.
+                        if (file.toLocaleLowerCase() == "ue4ss-settings.ini") {
+                            if (!await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file))) {
+                                await FsProvider.instance.copyFile(key, path.join(profile.getPathOfProfile(), file));
+                            }
+
+                            break;
+                        }
                         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file))) {
                             await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), file));
                         }

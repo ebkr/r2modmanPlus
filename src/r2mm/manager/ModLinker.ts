@@ -94,7 +94,6 @@ export default class ModLinker {
                                 // exist at the very top of the profile folder.
                                 if (game.packageLoader == PackageLoader.SHIMLOADER) {
                                     gameDirFilePath = path.join(installDirectory, game.dataFolderName, "Binaries", "Win64", file);
-                                    console.log("new gameDirFilePath: " + gameDirFilePath);
                                 }
 
                                 if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {

@@ -66,7 +66,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("SunkenlandModding-BepInExPack_Sunkenland", "BepInExPack_Sunkenland", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx_Wormtown-BepInExPack", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("0xFFF7-votv_shimloader", "", PackageLoader.SHIMLOADER),
-    new ModLoaderPackageMapping("metherul-unreal_shimloader", "", PackageLoader.SHIMLOADER),
+    new ModLoaderPackageMapping("Thunderstore-unreal_shimloader", "", PackageLoader.SHIMLOADER),
 ];
 
 

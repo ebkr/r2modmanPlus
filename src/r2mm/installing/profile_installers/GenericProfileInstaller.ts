@@ -68,6 +68,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
+                    // HACK: We want UE4SS-settings.ini to be persistent, regardless of what we're enabling or disabling.
+                    if (value.toLocaleLowerCase() == "ue4ss-settings.ini") {
+                        continue;
+                    }
+
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
                         if (mode === ModMode.DISABLED) {
                             if (await FsProvider.instance.exists(path.join(location, value))) {
