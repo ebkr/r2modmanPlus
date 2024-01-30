@@ -68,8 +68,8 @@
         <slot name="above-list"></slot>
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
-                   @start="drag=canShowSortIcons; $emit('sort-start')"
-                   @end="drag=false; $emit('sort-end')"
+                   @start="drag=canShowSortIcons"
+                   @end="drag=false"
                    :force-fallback="true"
                    :scroll-sensitivity="100">
             <local-mod-card
@@ -234,26 +234,6 @@ import LocalModCard from './LocalModList/LocalModCard.vue';
             }
 
             this.filterModList();
-        }
-
-        async moveUp(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryUp(mod, this.contextProfile!);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            await this.updateModListAfterChange(updatedList);
-        }
-
-        async moveDown(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            const updatedList = await ProfileModList.shiftModEntryDown(mod, this.contextProfile!);
-            if (updatedList instanceof R2Error) {
-                this.$emit('error', updatedList);
-                return;
-            }
-            await this.updateModListAfterChange(updatedList);
         }
 
         getMissingDependencies(vueMod: any): string[] {
