@@ -2,7 +2,7 @@ import { BepInExInstaller } from "./BepInExInstaller";
 import { GodotMLInstaller } from "./GodotMLInstaller";
 import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
 import { PackageInstaller } from "./PackageInstaller";
-import { InstallRuleInstaller } from "src/installers/InstallRuleInstaller";
+import { InstallRuleInstaller } from "./InstallRuleInstaller";
 
 
 const _PackageInstallers = {

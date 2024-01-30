@@ -1,4 +1,4 @@
-import { PackageInstallerId, PackageInstallers } from "src/installers/registry";
+import { PackageInstallerId, PackageInstallers } from "../../installers/registry";
 
 export enum PackageLoader {
     BEPINEX,
