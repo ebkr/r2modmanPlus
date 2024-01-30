@@ -72,95 +72,21 @@
                    @end="drag=false; $emit('sort-end')"
                    :force-fallback="true"
                    :scroll-sensitivity="100">
-            <expandable-card
-                v-for='(key, index) in draggableList' :key="`local-${key.getName()}-${profileName}-${index}-${cardExpanded}`"
-                @moveUp="moveUp(key)"
-                @moveDown="moveDown(key)"
-                :image="key.icon"
-                :id="index"
-                :description="key.description"
-                :funkyMode="funkyMode"
-                :showSort="canShowSortIcons"
+            <local-mod-card
+                v-for='(mod, index) in draggableList'
+                :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
+                :mod="mod"
+                @disableMod="disableModRequireConfirmation"
+                @enableMod="enableMod"
+                @uninstallMod="uninstallModRequireConfirmation"
+                @updateMod="updateMod"
+                @viewDependencyList="viewDependencyList"
+                @downloadDependency="downloadDependency"
+                :disabledDependencies="getDisabledDependencies(mod)"
+                :missingDependencies="getMissingDependencies(mod)"
                 :expandedByDefault="cardExpanded"
-                :enabled="key.isEnabled()">
-                <template v-slot:title>
-                    <span class="non-selectable">
-                        <span v-if="key.isDeprecated()"
-                              class="tag is-danger margin-right margin-right--half-width"
-                              v-tooltip.right="'This mod is deprecated and could be broken'">
-                            Deprecated
-                        </span>
-                        <span v-if="!key.isEnabled()"
-                              class="tag is-warning margin-right margin-right--half-width"
-                              v-tooltip.right="'This mod will not be used in-game'">
-                            Disabled
-                        </span>
-                        <span class="card-title selectable">
-                            <component :is="key.isEnabled() ? 'span' : 'strike'" class="selectable">
-                                {{key.getDisplayName()}}
-                                <span class="selectable card-byline">
-                                    v{{key.getVersionNumber()}}
-                                </span>
-                                <span :class="`card-byline ${key.isEnabled() && 'selectable'}`">
-                                    by {{key.getAuthorName()}}
-                                </span>
-                            </component>
-                        </span>
-                    </span>
-                </template>
-                <template v-slot:other-icons>
-                    <!-- Show update and missing dependency icons -->
-                    <span class='card-header-icon' v-if="getThunderstoreModFromMod(key) && getThunderstoreModFromMod(key).getDonationLink()">
-                        <Link :url="getThunderstoreModFromMod(key).getDonationLink()" target="external" tag="span">
-                            <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
-                        </Link>
-                    </span>
-                    <span class='card-header-icon'
-                          @click.prevent.stop="updateMod(key)"
-                          v-if="!isLatest(key)">
-                        <i class='fas fa-cloud-upload-alt' v-tooltip.left="'An update is available'"></i>
-                    </span>
-                    <span class='card-header-icon'
-                          v-if="getDisabledDependencies(key).length > 0 || getMissingDependencies(key).length > 0">
-                        <i class='fas fa-exclamation-circle' v-tooltip.left="`There is an issue with the dependencies for this mod`"></i>
-                    </span>
-                    <span class='card-header-icon'
-                          @click.prevent.stop="() => key.isEnabled() ? disableModRequireConfirmation(key) : enableMod(key)">
-                        <div class="field">
-                          <input id="switchExample" type="checkbox" name="switchExample" :class='`switch is-small  ${key.isEnabled() ? "switch is-info" : ""}`' :checked="key.isEnabled()">
-                          <label for="switchExample" v-tooltip.left="key.isEnabled() ? 'Disable' : 'Enable'"></label>
-                        </div>
-                    </span>
-                </template>
-                <a class='card-footer-item'
-                   @click="uninstallModRequireConfirmation(key)">Uninstall</a>
-                <template>
-                    <a class='card-footer-item' @click="disableModRequireConfirmation(key)"
-                       v-if="key.enabled">Disable</a>
-                    <a class='card-footer-item' @click="enableMod(key)" v-else>Enable</a>
-                </template>
-                <a class='card-footer-item' @click="viewDependencyList(key)">Associated</a>
-                <Link :url="key.getWebsiteUrl()"
-                      :target="'external'"
-                      class="card-footer-item">
-                        Website
-                        <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
-                </Link>
-                <a class='card-footer-item' v-if="!isLatest(key)" @click="updateMod(key)">Update</a>
-                <a class='card-footer-item' v-if="getMissingDependencies(key).length > 0"
-                   @click="downloadDependency(getMissingDependencies(key)[0])">
-                    Download dependency
-                </a>
-                <a class='card-footer-item' v-if="getDisabledDependencies(key).length > 0"
-                   @click="enableMod(getDisabledDependencies(key)[0])">
-                    Enable {{getDisabledDependencies(key)[0].getDisplayName()}}
-                </a>
-                <template v-if="getThunderstoreModFromMod(key) !== undefined">
-                    <template v-if="getThunderstoreModFromMod(key).getDonationLink() !== undefined">
-                        <DonateButton :mod="getThunderstoreModFromMod(key)"/>
-                    </template>
-                </template>
-            </expandable-card>
+                :showSort="canShowSortIcons"
+                :funkyMode="funkyMode" />
         </draggable>
 
         <slot name="below-list"></slot>
@@ -183,8 +109,6 @@ import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileIns
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import DownloadModModal from './DownloadModModal.vue';
-import { ExpandableCard, Link, Modal } from '../all';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
@@ -193,23 +117,19 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
-import DonateButton from '../../components/buttons/DonateButton.vue';
 import SearchUtils from '../../utils/SearchUtils';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
+import LocalModCard from './LocalModList/LocalModCard.vue';
 
 @Component({
         components: {
-            DonateButton,
-            DownloadModModal,
-            Link,
-            ExpandableCard,
-            Modal,
             Draggable,
             AssociatedModsModal,
             DisableModModal,
             UninstallModModal,
+            LocalModCard,
         }
     })
     export default class LocalModList extends Vue {
@@ -305,10 +225,6 @@ import UninstallModModal from './LocalModList/UninstallModModal.vue';
             });
         }
 
-        getThunderstoreModFromMod(mod: ManifestV2) {
-            return ModBridge.getCachedThunderstoreModFromMod(mod);
-        }
-
         async updateModListAfterChange(updatedList: ManifestV2[]) {
             await this.$store.dispatch("updateModList", updatedList);
 
@@ -338,10 +254,6 @@ import UninstallModModal from './LocalModList/UninstallModModal.vue';
                 return;
             }
             await this.updateModListAfterChange(updatedList);
-        }
-
-        isLatest(mod: ManifestV2): boolean {
-            return ModBridge.isCachedLatestVersion(mod);
         }
 
         getMissingDependencies(vueMod: any): string[] {
