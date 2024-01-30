@@ -58,7 +58,7 @@
 				</button>
 			</template>
 		</modal>
-        <modal v-show="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
+        <modal v-if="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
             <template v-slot:title>
                 <p class='card-header-title'>Dependency string list</p>
             </template>
