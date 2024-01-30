@@ -157,7 +157,7 @@ async function installSubDirTracked(profile: Profile, rule: ManagedRule, install
         sources.push(...contents);
     }
 
-    addToStateFile(mod, relocations, profile);
+    await addToStateFile(mod, relocations, profile);
 }
 
 async function buildInstallForRuleSubtype(
@@ -311,6 +311,7 @@ export class InstallRuleInstaller extends PackageInstaller {
                 case 'NONE': await installUntracked(profile, managedRule, files, mod); break;
                 case 'SUBDIR_NO_FLATTEN': await installSubDirNoFlatten(profile, managedRule, files, mod); break;
                 case 'PACKAGE_ZIP': await installPackageZip(profile, managedRule, files, mod); break;
+                case 'SUBDIR_TRACKED': await installSubDirTracked(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);

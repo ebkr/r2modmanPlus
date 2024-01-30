@@ -17,6 +17,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.MELON_LOADER: return "melonloader";
         case PackageLoader.GODOT_ML: return "godotml";
         case PackageLoader.NORTHSTAR: return "bepinex";
+        case PackageLoader.SHIMLOADER: return "shimloader";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
