@@ -262,48 +262,6 @@ export default class ProfileModList {
         }
     }
 
-    public static async shiftModEntryUp(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
-        let list: ManifestV2[] | R2Error = await this.getModList(profile);
-        if (list instanceof R2Error) {
-            return list;
-        }
-        const index = list.findIndex((stored: ManifestV2) => stored.getName() === mod.getName())
-        if (index === 0) {
-            return list;
-        } else {
-            list = list.filter((stored: ManifestV2) => stored.getName() !== mod.getName());
-            const start = list.slice(0, index - 1);
-            const end = list.slice(index - 1);
-            list = [...start, mod, ...end];
-        }
-        const saveErr = await this.saveModList(profile, list);
-        if (saveErr instanceof R2Error) {
-            return saveErr;
-        }
-        return this.getModList(profile);
-    }
-
-    public static async shiftModEntryDown(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
-        let list: ManifestV2[] | R2Error = await this.getModList(profile);
-        if (list instanceof R2Error) {
-            return list;
-        }
-        const index = list.findIndex((stored: ManifestV2) => stored.getName() === mod.getName())
-        if (index === list.length) {
-            return list;
-        } else {
-            list = list.filter((stored: ManifestV2) => stored.getName() !== mod.getName());
-            const start = list.slice(0, index + 1);
-            const end = list.slice(index + 1);
-            list = [...start, mod, ...end];
-        }
-        const saveErr = await this.saveModList(profile, list);
-        if (saveErr instanceof R2Error) {
-            return saveErr;
-        }
-        return this.getModList(profile);
-    }
-
     public static getDisabledModCount(modList: ManifestV2[]): number {
         return modList.filter(value => !value.isEnabled()).length;
     }
