@@ -62,15 +62,4 @@ export default abstract class ProfileInstallerProvider {
      * @param location
      */
     abstract getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]>;
-
-    /**
-     * Handles the installation of all mods excluding BepInEx.
-     * Iterates through the BepInExTree provided to move files to their correct locations.
-     *
-     * @param location
-     * @param folderName
-     * @param mod
-     * @param tree
-     */
-    abstract resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void>;
 }
