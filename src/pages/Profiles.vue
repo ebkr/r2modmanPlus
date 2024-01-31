@@ -479,7 +479,7 @@ export default class Profiles extends Vue {
 
     async importProfileUsingCode() {
         try {
-            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode);
+            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
             await this.importProfileHandler([filepath]);
         } catch (e: any) {
             this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
