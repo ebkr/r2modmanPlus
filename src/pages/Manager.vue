@@ -454,8 +454,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 
 		showLaunchParameters() {
 			if (this.contextProfile !== null) {
-				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(async instructions => {
-					this.doorstopTarget = instructions.moddedParameters;
+				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(instructions => {
 					this.vanillaLaunchArgs = instructions.vanillaParameters;
 				});
 
