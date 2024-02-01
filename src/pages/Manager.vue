@@ -211,20 +211,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             return this.$store.state.thunderstoreModList || [];
         }
 
-		get localModList() : ManifestV2[] {
-		    if (this.contextProfile !== null) {
-                GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile!).then(async instructions => {
-                    this.doorstopTarget = instructions.moddedParameters;
-                    this.vanillaLaunchArgs = instructions.vanillaParameters;
-                });
-                GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
-                    if (target instanceof R2Error) {
-                        this.doorstopTarget = "";
-                    } else {
-                        this.doorstopTarget = target;
-                    }
-                });
-            }
+		get localModList(): ManifestV2[] {
 			return this.$store.state.localModList || [];
 		}
 
@@ -466,6 +453,20 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		showLaunchParameters() {
+			if (this.contextProfile !== null) {
+				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(instructions => {
+					this.vanillaLaunchArgs = instructions.vanillaParameters;
+				});
+
+				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile).then(target => {
+					if (target instanceof R2Error) {
+						this.doorstopTarget = "";
+					} else {
+						this.doorstopTarget = target;
+					}
+				});
+			}
+
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
 		}
