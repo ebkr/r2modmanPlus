@@ -1,47 +1,6 @@
 <template>
     <div>
-
-        <div class='inherit-background-colour sticky-top sticky-top--search non-selectable'>
-            <div class='is-shadowless is-square'>
-                <div class='no-padding-left card-header-title'>
-
-                    <div class="input-group input-group--flex margin-right">
-                        <label for="local-search" class="non-selectable">Search</label>
-                        <DeferredInput
-                            v-model="searchQuery"
-                            id="local-search"
-                            class="input margin-right"
-                            type="text"
-                            placeholder="Search for an installed mod"
-                        />
-                    </div>
-
-                    <div class="input-group margin-right">
-                        <label for="local-sort-order" class="non-selectable">Sort</label>
-                        <select id="local-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
-                            <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
-                                {{key}}
-                            </option>
-                        </select>
-                        <select id="local-sort-direction" class="select select--content-spacing" v-model="sortDirection">
-                            <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
-                                {{key}}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="local-deprecated-position" class="non-selectable">Disabled</label>
-                        <select id="local-deprecated-position" class="select select--content-spacing" v-model="sortDisabledPosition">
-                            <option v-for="(key, index) in getDeprecatedFilterOptions()" :key="`${index}-deprecated-position-option`">
-                                {{key}}
-                            </option>
-                        </select>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        <SearchAndSort />
 
         <DisableModModal
             v-if="dependencyListDisplayType === 'disable' && !!selectedManifestMod && showingDependencyList"
@@ -115,9 +74,6 @@ import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileIns
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { SortDirection } from '../../model/real_enums/sort/SortDirection';
-import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
@@ -126,7 +82,7 @@ import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
 import LocalModCard from './LocalModList/LocalModCard.vue';
-import { DeferredInput } from '../all';
+import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
 @Component({
         components: {
@@ -135,7 +91,7 @@ import { DeferredInput } from '../all';
             DisableModModal,
             UninstallModModal,
             LocalModCard,
-            DeferredInput,
+            SearchAndSort,
         }
     })
     export default class LocalModList extends Vue {
@@ -179,41 +135,6 @@ import { DeferredInput } from '../all';
 
         get profileName() {
             return this.contextProfile!.getProfileName();
-        }
-
-        get sortOrder() {
-            return this.$store.state.profile.order;
-        }
-
-        set sortOrder(value: SortNaming) {
-            this.$store.commit('profile/setOrder', value);
-            this.settings.setInstalledSortBy(value);
-        }
-
-        get sortDirection() {
-            return this.$store.state.profile.direction;
-        }
-
-        set sortDirection(value: SortDirection) {
-            this.$store.commit('profile/setDirection', value);
-            this.settings.setInstalledSortDirection(value);
-        }
-
-        get sortDisabledPosition() {
-            return this.$store.state.profile.disabledPosition;
-        }
-
-        set sortDisabledPosition(value: SortLocalDisabledMods) {
-            this.$store.commit('profile/setDisabledPosition', value);
-            this.settings.setInstalledDisablePosition(value);
-        }
-
-        get searchQuery() {
-            return this.$store.state.profile.searchQuery;
-        }
-
-        set searchQuery(value: string) {
-            this.$store.commit('profile/setSearchQuery', value)
         }
 
         async updateModListAfterChange(updatedList: ManifestV2[]) {
@@ -469,29 +390,10 @@ import { DeferredInput } from '../all';
             this.$store.commit("openDownloadModModal", mod);
         }
 
-        getDeprecatedFilterOptions() {
-            return Object.values(SortLocalDisabledMods);
-        }
-
-        getSortOrderOptions() {
-            return Object.values(SortNaming);
-        }
-
-        getSortDirectionOptions() {
-            return Object.values(SortDirection);
-        }
-
         async created() {
             this.activeGame = GameManager.activeGame;
             this.contextProfile = Profile.getActiveProfile();
             this.settings = await ManagerSettings.getSingleton(this.activeGame);
-
-            this.$store.commit('profile/initialize', [
-                this.settings.getInstalledSortBy(),
-                this.settings.getInstalledSortDirection(),
-                this.settings.getInstalledDisablePosition()
-            ]);
-
             this.cardExpanded = this.settings.getContext().global.expandedCards;
             this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
