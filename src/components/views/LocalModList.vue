@@ -8,7 +8,7 @@
                     <div class="input-group input-group--flex margin-right">
                         <label for="local-search" class="non-selectable">Search</label>
                         <DeferredInput
-                            @changed="(value) => searchQuery = value"
+                            @changed="(value) => $store.commit('profile/setSearchQuery', value)"
                             id="local-search"
                             class="input margin-right"
                             type="text"
@@ -74,7 +74,7 @@
         <slot name="above-list"></slot>
 
         <draggable v-model='draggableList' group="local-mods" handle=".handle"
-                   @start="drag=canShowSortIcons"
+                   @start="drag=$store.getters['profile/canSortMods']"
                    @end="drag=false"
                    :force-fallback="true"
                    :scroll-sensitivity="100">
@@ -91,7 +91,7 @@
                 :disabledDependencies="getDisabledDependencies(mod)"
                 :missingDependencies="getMissingDependencies(mod)"
                 :expandedByDefault="cardExpanded"
-                :showSort="canShowSortIcons"
+                :showSort="$store.getters['profile/canSortMods']"
                 :funkyMode="funkyMode" />
         </draggable>
 
@@ -102,7 +102,7 @@
 
 <script lang="ts">
 
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
@@ -122,7 +122,6 @@ import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
-import SearchUtils from '../../utils/SearchUtils';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
@@ -140,7 +139,7 @@ import { DeferredInput } from '../all';
         }
     })
     export default class LocalModList extends Vue {
-
+        private activeGame: Game | null = null;
         settings: ManagerSettings = new ManagerSettings();
 
         private cardExpanded: boolean = false;
@@ -154,22 +153,17 @@ import { DeferredInput } from '../all';
             return this.$store.state.thunderstoreModList || [];
         }
 
-        private searchableModList: ManifestV2[] = [];
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
         private modBeingUninstalled: string | null = null;
         private modBeingDisabled: string | null = null;
 
-        // Filtering
-        private searchQuery: string = '';
-        private activeGame: Game | null = null;
-
         // Context
         private contextProfile: Profile | null = null;
 
         get draggableList() {
-            return [...this.searchableModList]
+            return this.$store.getters['profile/visibleModList'];
         }
 
         set draggableList(newList: ManifestV2[]) {
@@ -179,20 +173,8 @@ import { DeferredInput } from '../all';
                     this.emitError(result);
                     return;
                 }
-                this.$store.dispatch("updateModList", newList);
-                const err = await ConflictManagementProvider.instance.resolveConflicts(newList, this.contextProfile!);
-                if (err instanceof R2Error) {
-                    this.$emit('error', err);
-                }
-                this.filterModList();
+                this.updateModListAfterChange(newList);
             })
-        }
-
-        get canShowSortIcons() {
-            return this.$store.state.profile.direction === SortDirection.STANDARD
-                && this.$store.state.profile.order === SortNaming.CUSTOM
-                && this.$store.state.profile.disabledPosition === SortLocalDisabledMods.CUSTOM
-                && this.searchQuery.length === 0;
         }
 
         get profileName() {
@@ -226,20 +208,6 @@ import { DeferredInput } from '../all';
             this.settings.setInstalledDisablePosition(value);
         }
 
-        @Watch('modifiableModList')
-        @Watch('searchQuery')
-        filterModList() {
-            if (this.searchQuery.trim() === '') {
-                this.searchableModList = [...this.modifiableModList];
-                return;
-            }
-
-            const searchKeys = SearchUtils.makeKeys(this.searchQuery);
-            this.searchableModList = this.modifiableModList.filter((x: ManifestV2) => {
-                return SearchUtils.isSearched(searchKeys, x.getName(), x.getDescription());
-            });
-        }
-
         async updateModListAfterChange(updatedList: ManifestV2[]) {
             await this.$store.dispatch("updateModList", updatedList);
 
@@ -247,8 +215,6 @@ import { DeferredInput } from '../all';
             if (err instanceof R2Error) {
                 this.$emit('error', err);
             }
-
-            this.filterModList();
         }
 
         getMissingDependencies(vueMod: any): string[] {
@@ -517,8 +483,6 @@ import { DeferredInput } from '../all';
                 this.settings.getInstalledSortDirection(),
                 this.settings.getInstalledDisablePosition()
             ]);
-
-            this.filterModList();
 
             this.cardExpanded = this.settings.getContext().global.expandedCards;
             this.funkyMode = this.settings.getContext().global.funkyModeEnabled;

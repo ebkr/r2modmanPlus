@@ -6,11 +6,13 @@ import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import ModListSort from '../../r2mm/mods/ModListSort';
+import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
     order?: SortNaming;
     direction?: SortDirection;
     disabledPosition?: SortLocalDisabledMods;
+    searchQuery: string;
 }
 
 /**
@@ -23,6 +25,7 @@ export default {
         order: undefined,
         direction: undefined,
         disabledPosition: undefined,
+        searchQuery: '',
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -39,6 +42,26 @@ export default {
                 state.disabledPosition,
                 state.order
             );
+        },
+
+        visibleModList(state, getters, rootState): ManifestV2[] {
+            const mods: ManifestV2[] = getters.orderedModList;
+
+            if (!state.searchQuery) {
+                return mods;
+            }
+
+            const searchKeys = SearchUtils.makeKeys(state.searchQuery);
+            return mods.filter(
+                (mod) => SearchUtils.isSearched(searchKeys, mod.getName(), mod.getDescription())
+            );
+        },
+
+        canSortMods(state): boolean {
+            return state.order === SortNaming.CUSTOM
+                && state.direction === SortDirection.STANDARD
+                && state.disabledPosition === SortLocalDisabledMods.CUSTOM
+                && state.searchQuery.length === 0;
         },
     },
 
@@ -62,6 +85,10 @@ export default {
 
         setDisabledPosition(state: State, value: SortLocalDisabledMods) {
             state.disabledPosition = value;
+        },
+
+        setSearchQuery(state: State, value: string) {
+            state.searchQuery = value.trim();
         },
     },
 }
