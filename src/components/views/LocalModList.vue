@@ -115,7 +115,6 @@ import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileIns
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import ModListSort from '../../r2mm/mods/ModListSort';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
@@ -148,8 +147,7 @@ import { DeferredInput } from '../all';
         private funkyMode: boolean = false;
 
         get modifiableModList(): ManifestV2[] {
-            return ModListSort.sortLocalModList(this.$store.state.localModList, this.sortDirection,
-                this.sortDisabledPosition, this.sortOrder);
+            return this.$store.getters['profile/orderedModList'];
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
@@ -164,9 +162,6 @@ import { DeferredInput } from '../all';
         private modBeingDisabled: string | null = null;
 
         // Filtering
-        private sortDisabledPosition: SortLocalDisabledMods = this.settings.getInstalledDisablePosition();
-        private sortOrder: SortNaming = this.settings.getInstalledSortBy();
-        private sortDirection: SortDirection = this.settings.getInstalledSortDirection();
         private searchQuery: string = '';
         private activeGame: Game | null = null;
 
@@ -194,9 +189,9 @@ import { DeferredInput } from '../all';
         }
 
         get canShowSortIcons() {
-            return this.sortDirection === SortDirection.STANDARD
-                && this.sortOrder === SortNaming.CUSTOM
-                && this.sortDisabledPosition === SortLocalDisabledMods.CUSTOM
+            return this.$store.state.profile.direction === SortDirection.STANDARD
+                && this.$store.state.profile.order === SortNaming.CUSTOM
+                && this.$store.state.profile.disabledPosition === SortLocalDisabledMods.CUSTOM
                 && this.searchQuery.length === 0;
         }
 
@@ -204,19 +199,31 @@ import { DeferredInput } from '../all';
             return this.contextProfile!.getProfileName();
         }
 
-        @Watch("sortOrder")
-        sortOrderChanged(newValue: string) {
-            this.settings.setInstalledSortBy(newValue);
+        get sortOrder() {
+            return this.$store.state.profile.order;
         }
 
-        @Watch("sortDirection")
-        sortDirectionChanged(newValue: string) {
-            this.settings.setInstalledSortDirection(newValue);
+        set sortOrder(value: SortNaming) {
+            this.$store.commit('profile/setOrder', value);
+            this.settings.setInstalledSortBy(value);
         }
 
-        @Watch("sortDisabledPosition")
-        sortDisabledPositionChanged(newValue: string) {
-            this.settings.setInstalledDisablePosition(newValue);
+        get sortDirection() {
+            return this.$store.state.profile.direction;
+        }
+
+        set sortDirection(value: SortDirection) {
+            this.$store.commit('profile/setDirection', value);
+            this.settings.setInstalledSortDirection(value);
+        }
+
+        get sortDisabledPosition() {
+            return this.$store.state.profile.disabledPosition;
+        }
+
+        set sortDisabledPosition(value: SortLocalDisabledMods) {
+            this.$store.commit('profile/setDisabledPosition', value);
+            this.settings.setInstalledDisablePosition(value);
         }
 
         @Watch('modifiableModList')
@@ -502,8 +509,15 @@ import { DeferredInput } from '../all';
 
         async created() {
             this.activeGame = GameManager.activeGame;
-            this.settings = await ManagerSettings.getSingleton(this.activeGame);
             this.contextProfile = Profile.getActiveProfile();
+            this.settings = await ManagerSettings.getSingleton(this.activeGame);
+
+            this.$store.commit('profile/initialize', [
+                this.settings.getInstalledSortBy(),
+                this.settings.getInstalledSortDirection(),
+                this.settings.getInstalledDisablePosition()
+            ]);
+
             this.filterModList();
 
             this.cardExpanded = this.settings.getContext().global.expandedCards;
