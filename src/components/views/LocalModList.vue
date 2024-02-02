@@ -7,7 +7,13 @@
 
                     <div class="input-group input-group--flex margin-right">
                         <label for="local-search" class="non-selectable">Search</label>
-                        <input id="local-search" v-model='searchQuery' class="input margin-right" type="text" placeholder="Search for an installed mod"/>
+                        <DeferredInput
+                            @changed="(value) => searchQuery = value"
+                            id="local-search"
+                            class="input margin-right"
+                            type="text"
+                            placeholder="Search for an installed mod"
+                        />
                     </div>
 
                     <div class="input-group margin-right">
@@ -122,6 +128,7 @@ import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
 import LocalModCard from './LocalModList/LocalModCard.vue';
+import { DeferredInput } from '../all';
 
 @Component({
         components: {
@@ -130,6 +137,7 @@ import LocalModCard from './LocalModList/LocalModCard.vue';
             DisableModModal,
             UninstallModModal,
             LocalModCard,
+            DeferredInput,
         }
     })
     export default class LocalModList extends Vue {
