@@ -101,10 +101,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         private cardExpanded: boolean = false;
         private funkyMode: boolean = false;
 
-        get modifiableModList(): ManifestV2[] {
-            return this.$store.getters['profile/orderedModList'];
-        }
-
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
         }
@@ -150,7 +146,9 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             const mod: Mod = new Mod().fromReactive(vueMod);
             return mod.getDependencies().filter((dependency: string) => {
                 // Include in filter if mod isn't found.
-                return this.modifiableModList.find((localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")) === undefined;
+                return this.$store.state.localModList.find(
+                    (localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")
+                ) === undefined;
             });
         }
 
@@ -160,17 +158,17 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 .getDependencies()
                 .map((x) => x.toLowerCase().substring(0, x.lastIndexOf('-') + 1));
 
-            return this.modifiableModList.filter(
-                (mod) => !mod.isEnabled() && dependencies.includes(mod.getName().toLowerCase() + '-')
+            return this.$store.state.localModList.filter(
+                (mod: ManifestV2) => !mod.isEnabled() && dependencies.includes(mod.getName().toLowerCase() + '-')
             );
         }
 
         getDependantList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependantList(mod, this.modifiableModList);
+            return Dependants.getDependantList(mod, this.$store.state.localModList);
         }
 
         getDependencyList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependencyList(mod, this.modifiableModList);
+            return Dependants.getDependencyList(mod, this.$store.state.localModList);
         }
 
         async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<ManifestV2[] | R2Error> {
@@ -196,7 +194,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
         async disableModWithDependents(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            await this.disableMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+            await this.disableMods([...this.getDependantList(mod), mod]);
         }
 
         async disableModExcludeDependents(vueMod: any) {
@@ -251,7 +249,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
         async uninstallModWithDependents(vueMod: any) {
             let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
-            await this.uninstallMods([...Dependants.getDependantList(mod, this.modifiableModList), mod]);
+            await this.uninstallMods([...this.getDependantList(mod), mod]);
         }
 
         async uninstallModExcludeDependents(vueMod: any) {
@@ -327,7 +325,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         async enableMod(vueMod: any) {
             const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
             try {
-                const result = await this.performEnable([...Dependants.getDependencyList(mod, this.modifiableModList), mod]);
+                const result = await this.performEnable([...this.getDependencyList(mod), mod]);
                 if (result instanceof R2Error) {
                     throw result;
                 }
