@@ -500,30 +500,46 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
         async setAllModsEnabled(enabled: boolean) {
-            for (const mod of this.localModList) {
-                let profileErr: R2Error | void;
-                if (enabled) {
-                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                } else {
-                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                }
-                if (profileErr instanceof R2Error) {
-                    this.showError(profileErr);
-                    continue;
-                }
-                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
-                    if (enabled) {
-                        updatingMod.enable();
-                    } else {
-                        updatingMod.disable();
+            let lastSuccessfulUpdate: ManifestV2[] = [];
+
+            try {
+                for (const mod of this.localModList) {
+                    if (mod.isEnabled() === enabled) {
+                        continue;
                     }
-                });
-                if (update instanceof R2Error) {
-                    this.showError(update);
-                    continue;
+
+                    let profileErr: R2Error | void;
+                    if (enabled) {
+                        profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
+                    } else {
+                        profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
+                    }
+                    if (profileErr instanceof R2Error) {
+                        this.showError(profileErr);
+                        continue;
+                    }
+                    const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
+                        if (enabled) {
+                            updatingMod.enable();
+                        } else {
+                            updatingMod.disable();
+                        }
+                    });
+                    if (update instanceof R2Error) {
+                        this.showError(update);
+                    } else {
+                        lastSuccessfulUpdate = update;
+                    }
                 }
-                await this.$store.dispatch("updateModList", update);
+            } catch (e) {
+                const name = `Error ${enabled ? "enabling" : "disabling"} mods`;
+                this.showError(R2Error.fromThrownValue(e, name));
+            } finally {
+                if (lastSuccessfulUpdate.length) {
+                    await this.$store.dispatch("updateModList", lastSuccessfulUpdate);
+                }
             }
+
             await this.$router.push({name: "manager.installed"});
         }
 
