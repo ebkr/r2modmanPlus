@@ -29,31 +29,27 @@ export default {
     }),
 
     getters: <GetterTree<State, RootState>>{
-        orderedModList(state, _getters, rootState): ManifestV2[] {
+        visibleModList(state, _getters, rootState): ManifestV2[] {
+            let mods = [...rootState.localModList];
+
+            if (state.searchQuery) {
+                const searchKeys = SearchUtils.makeKeys(state.searchQuery);
+                mods = mods.filter(
+                    (mod) => SearchUtils.isSearched(searchKeys, mod.getName(), mod.getDescription())
+                );
+            }
+
             // Theoretically sorters can be undefined to avoid having to
             // mix ManagerSettings singleton to VueX store.
             if (!state.order || !state.direction || !state.disabledPosition) {
-                return [...rootState.localModList];
-            }
-
-            return ModListSort.sortLocalModList(
-                rootState.localModList,
-                state.direction,
-                state.disabledPosition,
-                state.order
-            );
-        },
-
-        visibleModList(state, getters, rootState): ManifestV2[] {
-            const mods: ManifestV2[] = getters.orderedModList;
-
-            if (!state.searchQuery) {
                 return mods;
             }
 
-            const searchKeys = SearchUtils.makeKeys(state.searchQuery);
-            return mods.filter(
-                (mod) => SearchUtils.isSearched(searchKeys, mod.getName(), mod.getDescription())
+            return ModListSort.sortLocalModList(
+                mods,
+                state.direction,
+                state.disabledPosition,
+                state.order
             );
         },
 
