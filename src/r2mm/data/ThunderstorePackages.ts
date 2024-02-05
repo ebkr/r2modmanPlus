@@ -3,12 +3,14 @@ import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import ModBridge from '../mods/ModBridge';
+import ThunderstoreVersion from 'src/model/ThunderstoreVersion';
 
 export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
     public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
     public static EXCLUSIONS: string[] = [];
+    public static LATEST_VERSIONS: Map<String, ThunderstoreVersion> = new Map();
 
     /**
      * Fetch latest V1 API data and apply to {PACKAGES}
@@ -36,6 +38,14 @@ export default class ThunderstorePackages {
             map.set(pkg.getFullName(), pkg);
             return map;
         }, new Map<String, ThunderstoreMod>());
+
+        ThunderstorePackages.LATEST_VERSIONS = ThunderstorePackages.PACKAGES.reduce((map, pkg) => {
+            var latestVersion = pkg.getVersions().sort((a, b) => a.getVersionNumber().compareToDescending(b.getVersionNumber()))[0];
+            if (latestVersion != undefined) {
+                map.set(pkg.getFullName(), latestVersion);
+            }
+            return map;
+        }, new Map<String, ThunderstoreVersion>());
     }
 
     public static getDeprecatedPackageMap(): Map<string, boolean> {

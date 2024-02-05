@@ -93,35 +93,23 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
-        var depMap: Map<string, ThunderstoreCombo> = new Map();
-        const dependencies: ThunderstoreCombo[] = [];
-        mods.forEach(value => {
-            const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
-            if (tsMod !== undefined) {
-                this.buildDependencySetUsingLatest(tsMod.getVersions()![0], allMods, dependencies);
-                const combo = new ThunderstoreCombo();
-                combo.setMod(tsMod);
-                combo.setVersion(tsMod.getVersions()![0])
-                dependencies.push(combo);
-            }
-        });
 
-        // Keep array unique in case scenario happens where dependency X is picked up before X install listing.
-        dependencies.forEach(value => depMap.set(value.getMod().getFullName(), value));
+        const latestVersionMap = ThunderstorePackages.LATEST_VERSIONS;
 
-        dependencies.forEach(value => {
-            depMap.set(value.getMod().getFullName(), value);
-        });
-
-        return Array.from(depMap.values()).filter(value => {
-            const result = mods.find(value1 => {
-                return value1.getName() === value.getMod().getFullName();
-            });
-            if (result !== undefined) {
-                return !result.getVersionNumber().isEqualTo(value.getVersion().getVersionNumber());
+        return mods.filter(value => {
+            if (latestVersionMap.has(value.getName())) {
+                const latestVersion = latestVersionMap.get(value.getName())!;
+                return latestVersion.getVersionNumber().isNewerThan(value.getVersionNumber());
             }
             return false;
-        });
+        })
+            .map(value => {
+                const combo = new ThunderstoreCombo()
+                combo.setMod(ModBridge.getThunderstoreModFromMod(value, allMods)!)
+                combo.setVersion(latestVersionMap.get(value.getName())!);
+                console.log("Combo:", combo)
+                return combo;
+            });
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
