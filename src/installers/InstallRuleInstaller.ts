@@ -172,7 +172,7 @@ async function buildInstallForRuleSubtype(
 }
 
 
-async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
+export async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
     await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), "_state"));
     let existing: Map<string, string> = new Map();
     if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {

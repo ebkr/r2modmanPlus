@@ -13,6 +13,7 @@ import StateTracker from 'src/model/installing/StateTracker';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import GameManager from 'src/model/game/GameManager';
 import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import { addToStateFile } from '../../../../../src/installers/InstallRuleInstaller';
 
 let sandbox = Sinon.createSandbox();
 let mlProfileInstaller: GenericProfileInstaller;
@@ -51,7 +52,7 @@ describe("State testing", () => {
             fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state")).returns(Promise.resolve(true));
             fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(false));
 
-            await mlProfileInstaller.addToStateFile(
+            await addToStateFile(
                 fakeMod,
                 fileMap,
                 profile
