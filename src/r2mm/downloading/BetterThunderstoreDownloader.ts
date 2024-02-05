@@ -107,9 +107,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 const combo = new ThunderstoreCombo()
                 combo.setMod(ModBridge.getThunderstoreModFromMod(value, allMods)!)
                 combo.setVersion(latestVersionMap.get(value.getName())!);
-                console.log("Combo:", combo)
                 return combo;
             });
+
+        // TODO - Iterate dependencies of mods requiring update to find missing dependencies to install
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
