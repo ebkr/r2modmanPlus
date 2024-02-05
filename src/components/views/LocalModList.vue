@@ -8,7 +8,7 @@
                     <div class="input-group input-group--flex margin-right">
                         <label for="local-search" class="non-selectable">Search</label>
                         <DeferredInput
-                            @changed="(value) => $store.commit('profile/setSearchQuery', value)"
+                            v-model="searchQuery"
                             id="local-search"
                             class="input margin-right"
                             type="text"
@@ -206,6 +206,14 @@ import { DeferredInput } from '../all';
         set sortDisabledPosition(value: SortLocalDisabledMods) {
             this.$store.commit('profile/setDisabledPosition', value);
             this.settings.setInstalledDisablePosition(value);
+        }
+
+        get searchQuery() {
+            return this.$store.state.profile.searchQuery;
+        }
+
+        set searchQuery(value: string) {
+            this.$store.commit('profile/setSearchQuery', value)
         }
 
         async updateModListAfterChange(updatedList: ManifestV2[]) {

@@ -6,7 +6,7 @@
                     <div class="input-group input-group--flex margin-right">
                         <label for="thunderstore-search-filter">Search</label>
                         <DeferredInput
-                            @changed="(value) => thunderstoreSearchFilter = value"
+                            v-model="thunderstoreSearchFilter"
                             id="thunderstore-search-filter"
                             class="input"
                             type="text"
