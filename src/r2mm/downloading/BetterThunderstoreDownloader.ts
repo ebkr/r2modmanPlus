@@ -109,8 +109,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 combo.setVersion(latestVersionMap.get(value.getName())!);
                 return combo;
             });
-
-        // TODO - Iterate dependencies of mods requiring update to find missing dependencies to install
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
