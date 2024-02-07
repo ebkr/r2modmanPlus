@@ -47,8 +47,6 @@
                 @updateMod="updateMod"
                 @viewDependencyList="viewDependencyList"
                 @downloadDependency="downloadDependency"
-                :disabledDependencies="getDisabledDependencies(mod)"
-                :missingDependencies="getMissingDependencies(mod)"
                 :expandedByDefault="cardExpanded"
                 :showSort="$store.getters['profile/canSortMods']"
                 :funkyMode="funkyMode" />
@@ -139,25 +137,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (err instanceof R2Error) {
                 this.$emit('error', err);
             }
-        }
-
-        getMissingDependencies(mod: ManifestV2): string[] {
-            return mod.getDependencies().filter((dependency: string) => {
-                // Include in filter if mod isn't found.
-                return this.$store.state.localModList.find(
-                    (localMod: ManifestV2) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")
-                ) === undefined;
-            });
-        }
-
-        getDisabledDependencies(mod: ManifestV2): ManifestV2[] {
-            const dependencies = mod
-                .getDependencies()
-                .map((x) => x.toLowerCase().substring(0, x.lastIndexOf('-') + 1));
-
-            return this.$store.state.localModList.filter(
-                (mod: ManifestV2) => !mod.isEnabled() && dependencies.includes(mod.getName().toLowerCase() + '-')
-            );
         }
 
         getDependantList(mod: ManifestV2): Set<ManifestV2> {

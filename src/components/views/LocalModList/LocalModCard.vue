@@ -18,12 +18,6 @@ export default class LocalModCard extends Vue {
     readonly mod!: ManifestV2;
 
     @Prop({required: true})
-    readonly disabledDependencies!: ManifestV2[];
-
-    @Prop({required: true})
-    readonly missingDependencies!: string[];
-
-    @Prop({required: true})
     readonly expandedByDefault!: boolean;
 
     @Prop({required: true})
@@ -32,12 +26,35 @@ export default class LocalModCard extends Vue {
     @Prop({required: true})
     readonly funkyMode!: boolean;
 
+    get disabledDependencies() {
+        const dependencies = this.mod
+            .getDependencies()
+            .map((x) => x.toLowerCase().substring(0, x.lastIndexOf('-') + 1));
+
+        return this.localModList.filter(
+            (mod) => !mod.isEnabled() && dependencies.includes(mod.getName().toLowerCase() + '-')
+        );
+    }
+
     get donationLink() {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
     }
 
     get isLatestVersion() {
         return ModBridge.isCachedLatestVersion(this.mod);
+    }
+
+    get localModList(): ManifestV2[] {
+        return this.$store.state.localModList;
+    }
+
+    get missingDependencies() {
+        return this.mod.getDependencies().filter((dependency: string) => {
+            // Include in filter if mod isn't found.
+            return this.localModList.find(
+                (localMod) => dependency.toLowerCase().startsWith(localMod.getName().toLowerCase() + "-")
+            ) === undefined;
+        });
     }
 
     get tsMod() {
