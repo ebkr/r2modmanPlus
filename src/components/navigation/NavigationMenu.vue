@@ -5,6 +5,15 @@
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <ul class="menu-list">
                     <li>
+                        <a href="#" @click="changeGame()"><i class="fas fa-gamepad icon--margin-right"/>Change game</a>
+                    </li>
+                    <li>
+                        <a href="#" @click="changeProfile()"><i class="far fa-address-card icon--margin-right"/>Change profile</a>
+                    </li>
+                </ul>
+                <p class="menu-label">Start</p>
+                <ul class="menu-list">
+                    <li>
                         <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                     </li>
                     <li>
@@ -66,6 +75,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import {
@@ -118,7 +128,15 @@ export default class NavigationMenu extends Vue {
                 throw error;
             }
         }
+    }
 
+    async changeGame() {
+        await ManagerSettings.resetDefaults();
+        await this.$router.push({name: 'index'});
+    }
+
+    async changeProfile() {
+        await this.$router.push({name: "splash"});
     }
 
     created() {
