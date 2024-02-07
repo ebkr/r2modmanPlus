@@ -9,13 +9,12 @@ export default class ShimloaderGameInstructions extends GameInstructionGenerator
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         const shimloader = path.join(profile.getPathOfProfile(), "shimloader");
 
-        const luaDir = path.join(shimloader, "lua");
+        const luaDir = path.join(shimloader, "mod");
         const pakDir = path.join(shimloader, "pak");
         const cfgDir = path.join(shimloader, "cfg");
 
         return {
-            moddedParameters: `--lua-dir "${luaDir}" --pak-dir "${pakDir}" --cfg-dir "${cfgDir}"`,
+            moddedParameters: `--mod-dir "${luaDir}" --pak-dir "${pakDir}" --cfg-dir "${cfgDir}"`,
             vanillaParameters: `--disable-mods`
         }
     }
-}

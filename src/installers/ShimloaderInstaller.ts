@@ -33,7 +33,7 @@ export class ShimloaderInstaller extends PackageInstaller {
         for (const subFile of ue4ssTree.getRecursiveFiles()) {
             const relSrc = path.relative(path.join(packagePath, "UE4SS/Mods"), subFile);
 
-            targets.push([path.join("UE4SS/Mods", relSrc), path.join("shimloader/lua", relSrc)]);
+            targets.push([path.join("UE4SS/Mods", relSrc), path.join("shimloader/mod", relSrc)]);
         }
 
         for (const targetPath of targets) {

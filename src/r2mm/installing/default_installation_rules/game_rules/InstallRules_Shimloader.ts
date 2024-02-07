@@ -9,10 +9,17 @@ export function buildShimloaderRules(gameName: GAME_NAME, extraRules?: RuleSubty
         relativeFileExclusions: ["manifest.json", "README.md", "icon.png", "LICENCE"],
         rules: [
             {
-                route: path.join("shimloader/lua"),
+                route: path.join("shimloader/mod"),
                 defaultFileExtensions: [".lua"],
                 trackingMethod: "SUBDIR_TRACKED",
-                subRoutes: []
+                subRoutes: [
+                    {
+                        route: "dll",
+                        defaultFileExtensions: [".dll"],
+                        trackingMethod: "SUBDIR_TRACKED",
+                        subRoutes: [],
+                    }
+                ]
             },
             {
                 route: path.join("shimloader/pak"),
