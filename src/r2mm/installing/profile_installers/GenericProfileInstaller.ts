@@ -16,96 +16,23 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { PackageLoader } from '../../../model/installing/PackageLoader';
+import { GetInstallerIdForLoader } from '../../../model/installing/PackageLoader';
 import ZipProvider from "../../../providers/generic/zip/ZipProvider";
-
-const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
-
-
-
-abstract class PackageInstaller {
-    abstract install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<void>;
-    // abstract uninstall(): Promise<void>;  // TODO: Implement
-}
-
-
-// TODO: Implement
-// class InstallRuleInstaller extends PackageInstaller {
-//     /**
-//      * The default installer that handles the game-specific install rules
-//      */
-// }
-
-
-class BepInExInstaller extends PackageInstaller {
-    /**
-     * Handles installation of BepInEx
-     */
-    async install(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        let bepInExRoot: string;
-        if (modLoaderMapping.rootFolder.trim().length > 0) {
-            bepInExRoot = path.join(bieLocation, modLoaderMapping.rootFolder);
-        } else {
-            bepInExRoot = path.join(bieLocation);
-        }
-        for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
-            if (!basePackageFiles.includes(item.toLowerCase())) {
-                if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-                } else {
-                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
-                }
-            }
-        }
-    }
-}
-
-
-class MelonLoaderInstaller extends PackageInstaller {
-    /**
-     * Handles installation of MelonLoader
-     */
-    async install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        for (const item of (await FsProvider.instance.readdir(mlLocation))) {
-            if (!basePackageFiles.includes(item.toLowerCase())) {
-                if ((await FsProvider.instance.stat(path.join(mlLocation, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
-                } else {
-                    await FsProvider.instance.copyFolder(path.join(mlLocation, item), path.join(profile.getPathOfProfile(), item));
-                }
-            }
-        }
-    }
-}
-
-
-class GodotMLInstaller extends PackageInstaller {
-    /**
-     * Handles installation of GodotML
-     */
-    async install(mlLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile) {
-        const copyFrom = path.join(mlLocation, "addons", "mod_loader");
-        const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
-        const fs = FsProvider.instance;
-
-        if (await fs.exists(copyFrom)) {
-            if (!await fs.exists(copyTo)) {
-                await fs.mkdirs(copyTo);
-            }
-            await fs.copyFolder(copyFrom, copyTo);
-        }
-    }
-}
+import { PackageInstallers } from "../../../installers/registry";
+import { InstallArgs } from "../../../installers/PackageInstaller";
+import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
-    private rule: CoreRuleType;
+    private readonly rule: CoreRuleType;
+    private readonly legacyInstaller: InstallRuleInstaller;
 
     constructor() {
         super();
         this.rule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
+        this.legacyInstaller = new InstallRuleInstaller(this.rule);
     }
 
     private async applyModModeForSubdir(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
@@ -204,16 +131,13 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return files;
     }
 
-    async installForManifestV2(mod: ManifestV2, profile: Profile, location: string): Promise<R2Error | null> {
-        const files: FileTree | R2Error = await FileTree.buildFromLocation(location);
-        if (files instanceof R2Error) {
-            return files;
+    async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
+        try {
+            await this.legacyInstaller.install(args);
+            return null;
+        } catch (e) {
+            return R2Error.fromThrownValue(e);
         }
-        const result = await this.resolveBepInExTree(profile, location, path.basename(location), mod, files);
-        if (result instanceof R2Error) {
-            return result;
-        }
-        return null;
     }
 
     async installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
@@ -223,134 +147,31 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const activeGame = GameManager.activeGame;
         const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         const variant = bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase());
+
+        const args: InstallArgs = {
+            mod: mod,
+            profile: profile,
+            packagePath: cachedLocationOfMod,
+        }
+
         if (variant !== undefined) {
-            return this.installModLoader(cachedLocationOfMod, variant, profile);
-        }
-        return this.installForManifestV2(mod, profile, cachedLocationOfMod);
-    }
-
-
-    async installModLoader(bieLocation: string, modLoaderMapping: ModLoaderPackageMapping, profile: Profile): Promise<R2Error | null> {
-        switch (modLoaderMapping.loaderType) {
-            case PackageLoader.BEPINEX: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.MELON_LOADER: await (new MelonLoaderInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.GODOT_ML: await (new GodotMLInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-            case PackageLoader.NORTHSTAR: await (new BepInExInstaller()).install(bieLocation, modLoaderMapping, profile); break;
-        }
-        return Promise.resolve(null);
-    }
-
-    private async buildInstallForRuleSubtype(location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<Map<RuleSubtype, string[]>> {
-        const flatRules = InstallationRules.getAllManagedPaths(this.rule.rules);
-        const installationIntent = new Map<RuleSubtype, string[]>();
-        for (const file of tree.getFiles()) {
-            // Find matching rule for file based on extension name.
-            // If a matching extension name is longer (EG: .plugin.dll vs .dll) then assume the longer one is the correct match.
-            let matchingRule: ManagedRule | undefined;
-            try {
-                matchingRule = flatRules.filter(value => value.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase())))
-                    .reduce((previousValue, currentValue) => {
-                        const extA = previousValue.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase()));
-                        const extB = currentValue.extensions.find(ext => file.toLowerCase().endsWith(ext.toLowerCase()));
-                        if (extA!.length > extB!.length) {
-                            return previousValue;
-                        }
-                        return currentValue;
-                    });
-            } catch (e) {
-                // No matching rule
-                matchingRule = flatRules.find(value => value.isDefaultLocation)!;
-            }
-            if (matchingRule === undefined) {
-                continue;
-            }
-            const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, this.rule);
-            const updatedArray = installationIntent.get(subType) || [];
-            updatedArray.push(file);
-            installationIntent.set(subType, updatedArray);
-        }
-        for (const file of tree.getDirectories()) {
-            // Only expect one (for now).
-            // If multiple then will need to implement a way to reverse search folder path.
-            let matchingRule: ManagedRule | undefined = flatRules.find(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
-            if (matchingRule === undefined) {
-                const nested = await this.buildInstallForRuleSubtype(path.join(location, file.getDirectoryName()), folderName, mod, file);
-                for (let [rule, files] of nested.entries()) {
-                    const arr = installationIntent.get(rule) || [];
-                    arr.push(...files);
-                    installationIntent.set(rule, arr);
-                }
-            } else {
-                const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, this.rule);
-                const arr = installationIntent.get(subType) || [];
-                arr.push(file.getTarget());
-                installationIntent.set(subType, arr);
-            }
-        }
-        return installationIntent;
-    }
-
-    private async installSubDir(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-        const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
-        await FileUtils.ensureDirectory(subDir);
-        for (const source of installSources) {
-            if ((await FsProvider.instance.lstat(source)).isFile()) {
-                const dest = path.join(subDir, path.basename(source));
-                await FsProvider.instance.copyFile(source, dest);
-            } else {
-                for (const content of (await FsProvider.instance.readdir(source))) {
-                    const cacheContentLocation = path.join(source, content);
-                    const contentDest = path.join(subDir, content);
-                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
-                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
-                    } else {
-                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
-                    }
-                }
-            }
+            return this.installModLoader(variant, args);
+        } else {
+            return this.installForManifestV2(args);
         }
     }
 
-    private async installSubDirNoFlatten(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-        const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
-        await FileUtils.ensureDirectory(subDir);
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        for (const source of installSources) {
-            const relativePath = path.relative(cachedLocationOfMod, source);
-            if ((await FsProvider.instance.lstat(source)).isFile()) {
-                const dest = path.join(subDir, relativePath);
-                await FileUtils.ensureDirectory(path.dirname(dest));
-                await FsProvider.instance.copyFile(source, dest);
-            } else {
-                for (const content of (await FsProvider.instance.readdir(source))) {
-                    const cacheContentLocation = path.join(source, content);
-                    const contentDest = path.join(subDir, content);
-                    await FileUtils.ensureDirectory(path.dirname(contentDest));
-                    if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
-                        await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
-                    } else {
-                        await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
-                    }
-                }
-            }
+    async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
+        const installerId = GetInstallerIdForLoader(mapping.loaderType);
+        if (installerId) {
+            await PackageInstallers[installerId].install(args);
+            return Promise.resolve(null);
+        } else {
+            return new R2Error(
+                "Installer not found",
+                `Failed to find an appropriate installer for the package ${mapping.packageName}`
+            );
         }
-    }
-
-    private async installPackageZip(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-        /*
-            This install method repackages the entire mod as-is and places it to the
-            destination route. Essentially the same as SUBDIR_NO_FLATTEN, but as a
-            zip instead of a directory. The zip name will be the mod ID.
-         */
-        const destDir = path.join(profile.getPathOfProfile(), rule.route);
-        await FileUtils.ensureDirectory(destDir);
-        const destination = path.join(destDir, `${mod.getName()}.ts.zip`);
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        const builder = ZipProvider.instance.zipBuilder();
-        await builder.addFolder("", cachedLocationOfMod);
-        await builder.createZip(destination);
     }
 
     private async uninstallPackageZip(mod: ManifestV2, profile: Profile) {
@@ -369,66 +190,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
 
         await recursiveDelete(profile.getPathOfProfile(), `${mod.getName()}.ts.zip`);
-    }
-
-    private async installState(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-        const fileRelocations = new Map<string, string>();
-        for (const source of installSources) {
-            if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.basename(source.toLowerCase()))) {
-                if ((await FsProvider.instance.lstat(source)).isFile()) {
-                    fileRelocations.set(source, path.join(rule.route, path.basename(source)));
-                } else {
-                    const tree = await FileTree.buildFromLocation(source);
-                    if (tree instanceof R2Error) {
-                        throw tree;
-                    }
-                    for (const subFile of tree.getRecursiveFiles()) {
-                        if (!(this.rule.relativeFileExclusions || []).find(value => value.toLowerCase() === path.relative(source, subFile))) {
-                            fileRelocations.set(subFile, path.join(rule.route, path.relative(source, subFile)));
-                        }
-                    }
-                }
-            }
-        }
-        for (let [source, relative] of fileRelocations.entries()) {
-            await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), path.dirname(relative)));
-            await FsProvider.instance.copyFile(source, path.join(profile.getPathOfProfile(), relative));
-        }
-        await this.addToStateFile(mod, fileRelocations, profile);
-    }
-
-    // Functionally identical to the install method of subdir, minus the subdirectory.
-    private async installUntracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-        const ruleDir = path.join(profile.getPathOfProfile(), rule.route);
-        await FileUtils.ensureDirectory(ruleDir);
-        for (const source of installSources) {
-            if ((await FsProvider.instance.lstat(source)).isFile()) {
-                await FsProvider.instance.copyFile(source, path.join(ruleDir, path.basename(source)));
-            } else {
-                for (const content of (await FsProvider.instance.readdir(source))) {
-                    if ((await FsProvider.instance.lstat(path.join(source, content))).isFile()) {
-                        await FsProvider.instance.copyFile(path.join(source, content), path.join(ruleDir, content));
-                    } else {
-                        await FsProvider.instance.copyFolder(path.join(source, content), path.join(ruleDir, content));
-                    }
-                }
-            }
-        }
-    }
-
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
-        const installationIntent = await this.buildInstallForRuleSubtype(location, folderName, mod, tree);
-        for (let [rule, files] of installationIntent.entries()) {
-            const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-            switch (rule.trackingMethod) {
-                case 'STATE': await this.installState(profile, managedRule, files, mod); break;
-                case 'SUBDIR': await this.installSubDir(profile, managedRule, files, mod); break;
-                case 'NONE': await this.installUntracked(profile, managedRule, files, mod); break;
-                case 'SUBDIR_NO_FLATTEN': await this.installSubDirNoFlatten(profile, managedRule, files, mod); break;
-                case 'PACKAGE_ZIP': await this.installPackageZip(profile, managedRule, files, mod); break;
-            }
-        }
-        return Promise.resolve(undefined);
     }
 
     private async uninstallSubDir(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
@@ -514,24 +275,4 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
         return null;
     }
-
-    public async addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
-        await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), "_state"));
-        let existing: Map<string, string> = new Map();
-        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
-            const read = await FsProvider.instance.readFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
-            const tracker = (yaml.parse(read.toString()) as ModFileTracker);
-            existing = new Map(tracker.files);
-        }
-        files.forEach((value, key) => {
-            existing.set(key, value);
-        })
-        const mft: ModFileTracker = {
-            modName: mod.getName(),
-            files: Array.from(existing.entries())
-        }
-        await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
-        await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
-    }
-
 }
