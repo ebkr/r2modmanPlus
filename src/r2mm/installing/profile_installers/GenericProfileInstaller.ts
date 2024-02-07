@@ -16,9 +16,9 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { GetInstallerIdForLoader } from '../../../model/installing/PackageLoader';
+import { GetInstallerIdForLoader, GetInstallerIdForPlugin } from '../../../model/installing/PackageLoader';
 import ZipProvider from "../../../providers/generic/zip/ZipProvider";
-import { PackageInstallers } from "../../../installers/registry";
+import { PackageInstallerId, PackageInstallers } from "../../../installers/registry";
 import { InstallArgs } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 
@@ -160,9 +160,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         if (variant !== undefined) {
             return this.installModLoader(variant, args);
-        } else {
-            return this.installForManifestV2(args);
         }
+
+        const pluginInstaller = GetInstallerIdForPlugin(activeGame.packageLoader);
+
+        if (pluginInstaller !== null) {
+            await PackageInstallers[pluginInstaller as PackageInstallerId].install(args);
+            return Promise.resolve(null);
+        }
+
+        // Revert to legacy install behavior.
+        return this.installForManifestV2(args);
     }
 
     async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {

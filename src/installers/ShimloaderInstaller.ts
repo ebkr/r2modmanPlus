@@ -4,6 +4,9 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
 import FileUtils from "src/utils/FileUtils";
 import R2Error from "src/model/errors/R2Error";
+import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import InstallationRules from "src/r2mm/installing/InstallationRules";
+import GameManager from "src/model/game/GameManager";
 
 export class ShimloaderInstaller extends PackageInstaller {
     /**
@@ -51,5 +54,14 @@ export class ShimloaderInstaller extends PackageInstaller {
         if (!await fs.exists(configDir)) {
             await fs.mkdirs(configDir);
         }
+    }
+}
+
+export class ShimloaderPluginInstaller extends PackageInstaller {
+    async install(args: InstallArgs) {
+        const rule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
+
+        const legacyInstaller = new InstallRuleInstaller(rule);
+        await legacyInstaller.install(args);
     }
 }
