@@ -18,3 +18,4 @@ export default class ShimloaderGameInstructions extends GameInstructionGenerator
             vanillaParameters: `--disable-mods`
         }
     }
+}
