@@ -2,11 +2,11 @@ import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
-import FileUtils from "src/utils/FileUtils";
-import R2Error from "src/model/errors/R2Error";
+import FileUtils from "../utils/FileUtils";
+import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
-import InstallationRules from "src/r2mm/installing/InstallationRules";
-import GameManager from "src/model/game/GameManager";
+import InstallationRules from "../r2mm/installing/InstallationRules";
+import GameManager from "../model/game/GameManager";
 
 export class ShimloaderInstaller extends PackageInstaller {
     /**
