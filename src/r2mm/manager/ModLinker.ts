@@ -77,9 +77,20 @@ export default class ModLinker {
         }
     }
 
-    private static getRootFilesDestination(game: Game, installDirectory: string): string {
+    private static getRootFilesDestination(game: Game, filename: string, installDirectory: string): string | null {
+        const lowercased = filename.toLowerCase();
+        if (lowercased == "mods.yml") {
+            return null;
+        }
+
         if (game.packageLoader == PackageLoader.SHIMLOADER) {
-            return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
+            if (["ue4ss.dll", "dwmapi.dll"].indexOf(lowercased) > -1) {
+                return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
+            }
+            if (lowercased == "ue4ss-settings.ini") {
+                return installDirectory;
+            }
+            return null;
         } else {
             return installDirectory;
         }
@@ -93,9 +104,11 @@ export default class ModLinker {
             try {
                 for (const file of profileFiles) {
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
-                        if (file.toLowerCase() !== 'mods.yml') {
+                        if (true) { // Silly; keeping diffs small in this commit
                             try {
-                                const targetDir = ModLinker.getRootFilesDestination(game, installDirectory);
+                                const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
+                                if (targetDir === null) continue;
+
                                 const gameDirFilePath = path.join(targetDir, file);
                                 const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
 
