@@ -4,7 +4,7 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
-import { InstallRuleInstaller, addToStateFile } from "./InstallRuleInstaller";
+import { InstallRuleInstaller } from "./InstallRuleInstaller";
 
 export class ShimloaderInstaller extends PackageInstaller {
     /**
@@ -52,8 +52,6 @@ export class ShimloaderInstaller extends PackageInstaller {
         if (!await fs.exists(configDir)) {
             await fs.mkdirs(configDir);
         }
-
-        await addToStateFile(mod, fileRelocations, profile);
     }
 }
 
