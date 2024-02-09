@@ -1,13 +1,8 @@
 <template>
     <div>
         <SearchAndSort />
+        <DisableModModal @error="emitError" />
 
-        <DisableModModal
-            @error="emitError"
-            :mod-being-disabled="modBeingDisabled"
-            :on-disable-include-dependents ="disableModWithDependents"
-            :on-disable-exclude-dependents="disableModExcludeDependents"
-        />
         <UninstallModModal
             v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
@@ -102,7 +97,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
         private modBeingUninstalled: string | null = null;
-        private modBeingDisabled: string | null = null;
 
         // Context
         private contextProfile: Profile | null = null;
@@ -164,40 +158,11 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             return modList;
         }
 
-        async disableModWithDependents(mod: ManifestV2) {
-            await this.disableMods([...this.getDependantList(mod), mod]);
-        }
-
-        async disableModExcludeDependents(mod: ManifestV2) {
-            await this.disableMods([mod]);
-        }
-
-        async disableMods(modsToDisable: ManifestV2[]) {
-            try {
-                const result = await this.performDisable(modsToDisable);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit("error", err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            } finally {
-                this.$store.commit('closeDisableModModal');
-            }
-        }
-
         async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
-            this.modBeingDisabled = null;
             for (let mod of mods) {
-                this.modBeingDisabled = mod.getName();
                 const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
                 if (disableErr instanceof R2Error) {
                     // Failed to disable
-                    this.showingDependencyList = false;
-                    this.modBeingDisabled = null;
                     this.$emit('error', disableErr);
                     return disableErr;
                 }
@@ -207,12 +172,9 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             });
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
-                this.showingDependencyList = false;
-                this.modBeingDisabled = null;
                 this.$emit('error', updatedList);
                 return updatedList;
             }
-            this.modBeingDisabled = null;
             await this.updateModListAfterChange(updatedList);
         }
 
