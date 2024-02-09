@@ -10,7 +10,7 @@ export type CoreRuleType = {
 
 export type RuleSubtype = {
     route: string,
-    trackingMethod: "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP" | "SUBDIR_TRACKED",
+    trackingMethod: "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP",
     subRoutes: RuleSubtype[],
     defaultFileExtensions: string[],
     isDefaultLocation?: boolean

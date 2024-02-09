@@ -13,9 +13,6 @@ import ConflictManagementProvider from "../providers/generic/installing/Conflict
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 
-const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
-
-
 type InstallRuleArgs = {
     profile: Profile,
     coreRule: CoreRuleType,
@@ -113,56 +110,6 @@ async function installSubDirNoFlatten(profile: Profile, rule: ManagedRule, insta
             }
         }
     }
-}
-
-async function installSubDirTracked(
-    profile: Profile,
-    rule: ManagedRule,
-    installSources: string[],
-    mod: ManifestV2
-) {
-    const fs = FsProvider.instance;
-    const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
-    await FileUtils.ensureDirectory(subDir);
-
-    const relocations = new Map<string, string>();
-
-    const makeProfilePath = (input: string): string => {
-        const match = installSources.find((x) => input.startsWith(x));
-        if (match === undefined) {
-            return input;
-        }
-
-        return path.join(subDir, input.replace(match, ""));
-    }
-
-    const sources = [...installSources];
-    let source: string | undefined;
-
-    while ((source = sources.pop()) !== undefined) {
-        const lstat = await fs.lstat(source);
-
-        if (lstat.isFile()) {
-            const dest = makeProfilePath(source);
-            const destDir = path.dirname(dest);
-
-            if (!(await fs.exists(destDir))) {
-                await fs.mkdirs(destDir);
-            }
-
-            await fs.copyFile(source, dest);
-
-            const profileRel = dest.replace(profile.getPathOfProfile(), "").substring(1);
-            relocations.set(source, profileRel);
-        } else {
-            const contents = (await fs.readdir(source)).map(
-                (x) => path.join(source as string, x)
-            );
-            sources.push(...contents);
-        }
-    }
-
-    await addToStateFile(mod, relocations, profile);
 }
 
 async function buildInstallForRuleSubtype(
@@ -316,7 +263,6 @@ export class InstallRuleInstaller extends PackageInstaller {
                 case 'NONE': await installUntracked(profile, managedRule, files, mod); break;
                 case 'SUBDIR_NO_FLATTEN': await installSubDirNoFlatten(profile, managedRule, files, mod); break;
                 case 'PACKAGE_ZIP': await installPackageZip(profile, managedRule, files, mod); break;
-                case 'SUBDIR_TRACKED': await installSubDirTracked(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
