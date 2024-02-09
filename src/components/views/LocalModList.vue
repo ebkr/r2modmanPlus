@@ -32,7 +32,7 @@
                 v-for='(mod, index) in draggableList'
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
-                @disableMod="disableModRequireConfirmation"
+                @error="emitError"
                 @enableMod="enableMod"
                 @uninstallMod="uninstallModRequireConfirmation"
                 @updateMod="updateMod"
@@ -158,26 +158,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             return modList;
         }
 
-        async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
-            for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                if (disableErr instanceof R2Error) {
-                    // Failed to disable
-                    this.$emit('error', disableErr);
-                    return disableErr;
-                }
-            }
-            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
-                updatingMod.disable();
-            });
-            if (updatedList instanceof R2Error) {
-                // Failed to update mod list.
-                this.$emit('error', updatedList);
-                return updatedList;
-            }
-            await this.updateModListAfterChange(updatedList);
-        }
-
         async uninstallModWithDependents(mod: ManifestV2) {
             await this.uninstallMods([...this.getDependantList(mod), mod]);
         }
@@ -232,16 +212,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
             }
-        }
-
-        disableModRequireConfirmation(mod: ManifestV2) {
-            for (const value of this.getDependantList(mod)) {
-                if (value.isEnabled()) {
-                    this.$store.commit('openDisableModModal', mod);
-                    return;
-                }
-            }
-            this.performDisable([mod]);
         }
 
         viewDependencyList(mod: ManifestV2) {
