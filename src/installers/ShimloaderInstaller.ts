@@ -63,7 +63,7 @@ export class ShimloaderPluginInstaller extends PackageInstaller {
         relativeFileExclusions: ["manifest.json", "README.md", "icon.png", "LICENCE"],
         rules: [
             {
-                route: path.join("shimloader/mod"),
+                route: path.join("shimloader", "mod"),
                 defaultFileExtensions: [".lua"],
                 trackingMethod: "SUBDIR_TRACKED",
                 subRoutes: [
@@ -76,13 +76,13 @@ export class ShimloaderPluginInstaller extends PackageInstaller {
                 ]
             },
             {
-                route: path.join("shimloader/pak"),
+                route: path.join("shimloader", "pak"),
                 defaultFileExtensions: [".pak"],
                 trackingMethod: "SUBDIR_TRACKED",
                 subRoutes: [],
             },
             {
-                route: path.join("shimloader/cfg"),
+                route: path.join("shimloader", "cfg"),
                 defaultFileExtensions: [".cfg"],
                 trackingMethod: "NONE",
                 subRoutes: [],

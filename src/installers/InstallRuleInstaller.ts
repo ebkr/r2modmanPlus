@@ -115,14 +115,19 @@ async function installSubDirNoFlatten(profile: Profile, rule: ManagedRule, insta
     }
 }
 
-async function installSubDirTracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installSubDirTracked(
+    profile: Profile,
+    rule: ManagedRule,
+    installSources: string[],
+    mod: ManifestV2
+) {
     const fs = FsProvider.instance;
     const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
     await FileUtils.ensureDirectory(subDir);
 
     const relocations = new Map<string, string>();
 
-    let makeProfilePath = (input: string): string => {
+    const makeProfilePath = (input: string): string => {
         const match = installSources.find((x) => input.startsWith(x));
         if (match === undefined) {
             return input;
@@ -145,16 +150,16 @@ async function installSubDirTracked(profile: Profile, rule: ManagedRule, install
                 await fs.mkdirs(destDir);
             }
 
-            fs.copyFile(source, dest);
-            
+            await fs.copyFile(source, dest);
+
             const profileRel = dest.replace(profile.getPathOfProfile(), "").substring(1);
             relocations.set(source, profileRel);
-
-            continue;
+        } else {
+            const contents = (await fs.readdir(source)).map(
+                (x) => path.join(source as string, x)
+            );
+            sources.push(...contents);
         }
-
-        const contents = (await fs.readdir(source)).map((x) => path.join(source as string, x));
-        sources.push(...contents);
     }
 
     await addToStateFile(mod, relocations, profile);
