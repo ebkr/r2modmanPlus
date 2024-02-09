@@ -15,7 +15,7 @@ export default class ShimloaderGameInstructions extends GameInstructionGenerator
 
         return {
             moddedParameters: `--mod-dir "${luaDir}" --pak-dir "${pakDir}" --cfg-dir "${cfgDir}"`,
-            vanillaParameters: `--disable-mods`
+            vanillaParameters: ""
         }
     }
 }
