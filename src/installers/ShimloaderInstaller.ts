@@ -5,8 +5,6 @@ import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller, addToStateFile } from "./InstallRuleInstaller";
-import InstallationRules from "../r2mm/installing/InstallationRules";
-import GameManager from "../model/game/GameManager";
 
 export class ShimloaderInstaller extends PackageInstaller {
     /**
@@ -60,10 +58,39 @@ export class ShimloaderInstaller extends PackageInstaller {
 }
 
 export class ShimloaderPluginInstaller extends PackageInstaller {
-    async install(args: InstallArgs) {
-        const rule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
+    readonly installer = new InstallRuleInstaller({
+        gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
+        relativeFileExclusions: ["manifest.json", "README.md", "icon.png", "LICENCE"],
+        rules: [
+            {
+                route: path.join("shimloader/mod"),
+                defaultFileExtensions: [".lua"],
+                trackingMethod: "SUBDIR_TRACKED",
+                subRoutes: [
+                    {
+                        route: "dll",
+                        defaultFileExtensions: [".dll"],
+                        trackingMethod: "SUBDIR_TRACKED",
+                        subRoutes: [],
+                    }
+                ]
+            },
+            {
+                route: path.join("shimloader/pak"),
+                defaultFileExtensions: [".pak"],
+                trackingMethod: "SUBDIR_TRACKED",
+                subRoutes: [],
+            },
+            {
+                route: path.join("shimloader/cfg"),
+                defaultFileExtensions: [".cfg"],
+                trackingMethod: "NONE",
+                subRoutes: [],
+            }
+        ]
+    });
 
-        const legacyInstaller = new InstallRuleInstaller(rule);
-        await legacyInstaller.install(args);
+    async install(args: InstallArgs) {
+        await this.installer.install(args);
     }
 }

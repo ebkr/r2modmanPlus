@@ -77,6 +77,14 @@ export default class ModLinker {
         }
     }
 
+    private static getRootFilesDestination(game: Game, installDirectory: string): string {
+        if (game.packageLoader == PackageLoader.SHIMLOADER) {
+            return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
+        } else {
+            return installDirectory;
+        }
+    }
+
     private static async performLink(profile: Profile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
@@ -87,14 +95,9 @@ export default class ModLinker {
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
                         if (file.toLowerCase() !== 'mods.yml') {
                             try {
-                                var gameDirFilePath = path.join(installDirectory, file);
+                                const targetDir = ModLinker.getRootFilesDestination(game, installDirectory);
+                                const gameDirFilePath = path.join(targetDir, file);
                                 const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
-
-                                // HACK: This forces r2mm to install shimloader and ue4ss into the correct directory, even if they
-                                // exist at the very top of the profile folder.
-                                if (game.packageLoader == PackageLoader.SHIMLOADER) {
-                                    gameDirFilePath = path.join(installDirectory, game.dataFolderName, "Binaries", "Win64", file);
-                                }
 
                                 if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
                                     await fs.copyFile(profileDirFilePath, gameDirFilePath);
