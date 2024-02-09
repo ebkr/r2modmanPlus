@@ -104,28 +104,26 @@ export default class ModLinker {
             try {
                 for (const file of profileFiles) {
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
-                        if (true) { // Silly; keeping diffs small in this commit
-                            try {
-                                const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
-                                if (targetDir === null) continue;
+                        try {
+                            const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
+                            if (targetDir === null) continue;
 
-                                const gameDirFilePath = path.join(targetDir, file);
-                                const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
+                            const gameDirFilePath = path.join(targetDir, file);
+                            const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
 
-                                if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
-                                    await fs.copyFile(profileDirFilePath, gameDirFilePath);
-                                    const profileDirFileStat = await fs.stat(profileDirFilePath);
-                                    await fs.setModifiedTime(gameDirFilePath, profileDirFileStat.mtime);
-                                }
-                                newLinkedFiles.push(gameDirFilePath);
-                            } catch (e) {
-                                const err: Error = e as Error;
-                                throw new FileWriteError(
-                                    `Couldn't copy file ${file} to ${game.displayName} directory`,
-                                    err.message,
-                                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
-                                )
+                            if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
+                                await fs.copyFile(profileDirFilePath, gameDirFilePath);
+                                const profileDirFileStat = await fs.stat(profileDirFilePath);
+                                await fs.setModifiedTime(gameDirFilePath, profileDirFileStat.mtime);
                             }
+                            newLinkedFiles.push(gameDirFilePath);
+                        } catch (e) {
+                            const err: Error = e as Error;
+                            throw new FileWriteError(
+                                `Couldn't copy file ${file} to ${game.displayName} directory`,
+                                err.message,
+                                `Try running ${ManagerInformation.APP_NAME} as an administrator`
+                            )
                         }
                     } else {
                         if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
