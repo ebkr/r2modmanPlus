@@ -98,13 +98,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 }
             }
         } catch (e) {
-            if (e instanceof R2Error) {
-                return e;
-            } else {
-                // @ts-ignore
-                const err: Error = e;
-                return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
-            }
+            return R2Error.fromThrownValue(e, `Error installing mod: ${mod.getName()}`);
         }
     }
 
@@ -261,12 +255,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch (e) {
-                const err: Error = e as Error;
-                return new R2Error(
-                    "Failed to remove files",
-                    err.message,
-                    'Is the game still running? If so, close it and try again.'
-                );
+                const name = 'Failed to remove files';
+                const solution = 'Is the game still running? If so, close it and try again.';
+                return R2Error.fromThrownValue(e, name, solution);
             }
         }
         return Promise.resolve(null);
