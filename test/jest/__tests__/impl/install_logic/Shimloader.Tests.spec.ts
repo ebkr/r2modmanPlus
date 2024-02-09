@@ -12,6 +12,7 @@ import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/Gene
 import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
+import R2Error from 'src/model/errors/R2Error';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -63,6 +64,9 @@ describe('Installer Tests', () => {
                 "mod/dll/mod.dll": `shimloader/mod/${name}/dll/mod.dll`,
                 "cfg/package.cfg": `shimloader/cfg/package.cfg`,
             };
+            const expectedAfterUninstall = [
+                "shimloader/cfg/package.cfg",
+            ];
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
             await fs.mkdirs(cachePkgRoot);
 
@@ -92,10 +96,32 @@ describe('Installer Tests', () => {
                 }
                 return result;
             }
-            console.log(JSON.stringify(await getTree(profilePath), null, 2));
 
             for (const destPath of Object.values(sourceToExpectedDestination)) {
-                expect(await fs.exists(path.join(profilePath, destPath))).toBeTruthy();
+                const fullPath = path.join(profilePath, destPath);
+                const result = await fs.exists(fullPath);
+                if (!result) {
+                    console.log(`Expected ${fullPath} to exist but it did't! All files:`);
+                    console.log(JSON.stringify(await getTree(profilePath), null, 2));
+                }
+                expect(result).toBeTruthy();
+            }
+
+            const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
+            expect(result instanceof R2Error).toBeFalsy();
+
+            for (const destPath of Object.values(sourceToExpectedDestination)) {
+                const fullPath = path.join(profilePath, destPath);
+                const result = await fs.exists(fullPath);
+                if (result) {
+                    console.log(`Expected ${fullPath} to NOT exist but IT DOES! All files:`);
+                    console.log(JSON.stringify(await getTree(profilePath), null, 2));
+                }
+                if (expectedAfterUninstall.indexOf(destPath) > -1) {
+                    expect(result).toBeTruthy();
+                } else {
+                    expect(result).toBeFalsy();
+                }
             }
         });
     });

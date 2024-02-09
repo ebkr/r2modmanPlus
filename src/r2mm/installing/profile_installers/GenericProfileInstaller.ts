@@ -227,8 +227,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 );
             }
         }
-        const bepInExLocation: string = path.join(profile.getPathOfProfile(), 'BepInEx');
-        if (await fs.exists(bepInExLocation)) {
+
+        // BepInEx & shimloader plugin uninstall logic
+        // TODO: Move to work through the installer interface
+        const profilePath = profile.getPathOfProfile();
+        const searchLocations = ["BepInEx", "shimloader"];
+        for (const searchLocation of searchLocations) {
+            const bepInExLocation: string = path.join(profilePath, searchLocation);
+            if (!(await fs.exists(bepInExLocation))) {
+                continue
+            }
+
             try {
                 for (const file of (await fs.readdir(bepInExLocation))) {
                     if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
