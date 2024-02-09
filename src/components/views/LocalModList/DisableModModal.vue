@@ -2,6 +2,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { ModalCard } from '../../all';
 import ManifestV2 from '../../../model/ManifestV2';
+import Dependants from '../../../r2mm/mods/Dependants';
 
 @Component({
     components: {ModalCard}
@@ -10,12 +11,6 @@ export default class DisableModModal extends Vue {
 
     @Prop({required: true})
     readonly mod!: ManifestV2;
-
-    @Prop({required: true})
-    readonly dependencyList!: Set<ManifestV2>;
-
-    @Prop({required: true})
-    readonly dependantsList!: Set<ManifestV2>;
 
     @Prop({required: true})
     readonly modBeingDisabled!: string | null;
@@ -28,6 +23,10 @@ export default class DisableModModal extends Vue {
 
     @Prop({required: true, type: Function})
     readonly onDisableExcludeDependents!: (mod: ManifestV2) => void;
+
+    get dependants() {
+        return Dependants.getDependantList(this.mod, this.$store.state.localModList);
+    }
 
     get isLocked(): boolean {
         return this.modBeingDisabled !== null;
@@ -51,9 +50,9 @@ export default class DisableModModal extends Vue {
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
-                        <li class="list-item" v-for='(key, index) in dependantsList'
-                            :key='`dependant-${index}`'>
-                            {{key.getName()}}
+                        <li class="list-item" v-for='(mod) in dependants'
+                            :key='`dependant-${mod.getName()}`'>
+                            {{mod.getName()}}
                         </li>
                     </ul>
                 </div>

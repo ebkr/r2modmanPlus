@@ -6,8 +6,6 @@
             v-if="dependencyListDisplayType === 'disable' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
             :mod="selectedManifestMod"
-            :dependency-list="getDependencyList(selectedManifestMod)"
-            :dependants-list="getDependantList(selectedManifestMod)"
             :mod-being-disabled="modBeingDisabled"
             :on-disable-include-dependents ="disableModWithDependents"
             :on-disable-exclude-dependents="disableModExcludeDependents"
