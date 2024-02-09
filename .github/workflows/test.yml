@@ -1,0 +1,38 @@
+name: Build
+
+on: [push]
+
+jobs:
+    build:
+        name: Test on ${{ matrix.platform }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - kind: linux
+                      os: ubuntu-latest
+                      platform: linux
+                    - kind: windows
+                      os: windows-latest
+                      platform: win
+                    - kind: mac
+                      os: macos-11
+                      platform: osx
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Node
+              uses: actions/setup-node@v3
+              with:
+                  # The talk on the street says this might be a good version for building.
+                  node-version: 14.20.1
+                  cache: yarn
+
+            - name: Install Yarn dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Run tests
+              run: >
+                  node test/folder-structure-testing/populator.mjs &&
+                  yarn run test:unit:ci
