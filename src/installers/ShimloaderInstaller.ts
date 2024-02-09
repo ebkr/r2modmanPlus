@@ -60,30 +60,23 @@ export class ShimloaderInstaller extends PackageInstaller {
 export class ShimloaderPluginInstaller extends PackageInstaller {
     readonly installer = new InstallRuleInstaller({
         gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
-        relativeFileExclusions: ["manifest.json", "README.md", "icon.png", "LICENCE"],
         rules: [
             {
                 route: path.join("shimloader", "mod"),
-                defaultFileExtensions: [".lua"],
-                trackingMethod: "SUBDIR_TRACKED",
-                subRoutes: [
-                    {
-                        route: "dll",
-                        defaultFileExtensions: [".dll"],
-                        trackingMethod: "SUBDIR_TRACKED",
-                        subRoutes: [],
-                    }
-                ]
+                isDefaultLocation: true,
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: [],
             },
             {
                 route: path.join("shimloader", "pak"),
-                defaultFileExtensions: [".pak"],
-                trackingMethod: "SUBDIR_TRACKED",
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
                 subRoutes: [],
             },
             {
                 route: path.join("shimloader", "cfg"),
-                defaultFileExtensions: [".cfg"],
+                defaultFileExtensions: [],
                 trackingMethod: "NONE",
                 subRoutes: [],
             }

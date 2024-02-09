@@ -54,10 +54,9 @@ describe('Installer Tests', () => {
             const name = pkg.getName();
 
             const sourceToExpectedDestination = {
-                // TODO: Enable once implemented
-                // "README.md": `shimloader/mod/${name}/README.md`,
-                // "manifest.json": `shimloader/mod/${name}/manifest.json`,
-                // "icon.png": `shimloader/mod/${name}/icon.png`,
+                "README.md": `shimloader/mod/${name}/README.md`,
+                "manifest.json": `shimloader/mod/${name}/manifest.json`,
+                "icon.png": `shimloader/mod/${name}/icon.png`,
                 "pak/blueprint.pak": `shimloader/pak/${name}/blueprint.pak`,
                 "mod/scripts/main.lua": `shimloader/mod/${name}/scripts/main.lua`,
                 "mod/scripts/other.lua": `shimloader/mod/${name}/scripts/other.lua`,
