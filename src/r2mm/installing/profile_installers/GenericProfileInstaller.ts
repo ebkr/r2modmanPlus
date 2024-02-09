@@ -263,45 +263,20 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private async uninstallState(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        const fs = FsProvider.instance;
-        const profileDir = profile.getPathOfProfile();
-        const stateFilePath = path.join(profileDir, "_state", `${mod.getName()}-state.yml`);
-
-        if (!await fs.exists(stateFilePath)) {
-            return Promise.resolve(null);
-        }
-
-        const read = await fs.readFile(stateFilePath);
-        const tracker = (yaml.parse(read.toString()) as ModFileTracker);
-
-        const sortedFileTargets = tracker
-            .files
-            .map(x => path.join(profileDir, x[1]))
-            .sort(x => (x.match("/\\/g") || []).length)
-            .reverse();
-
-        for (const installFile of sortedFileTargets) {
-            if (!fs.exists(installFile)) {
-                continue;
-            }
-
-            await fs.unlink(installFile);
-
-            // Remove empty directories, starting at the target file's parent and stopping
-            // at the profile directory.
-            var iterDir = path.dirname(installFile);
-
-            while (iterDir != profileDir && fs.exists(iterDir)) {
-                if ((await fs.readdir(iterDir)).length != 0) {
-                    break;
+        const stateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+        if (await FsProvider.instance.exists(stateFilePath)) {
+            const read = await FsProvider.instance.readFile(stateFilePath);
+            const tracker = (yaml.parse(read.toString()) as ModFileTracker);
+            for (const [cacheFile, installFile] of tracker.files) {
+                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), installFile))) {
+                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), installFile));
+                    if ((await FsProvider.instance.readdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)))).length === 0) {
+                        await FsProvider.instance.rmdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)));
+                    }
                 }
-
-                await fs.rmdir(iterDir);
-                iterDir = path.dirname(iterDir);
             }
+            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
         }
-
-        await fs.unlink(stateFilePath);
         return Promise.resolve(null);
     }
 
