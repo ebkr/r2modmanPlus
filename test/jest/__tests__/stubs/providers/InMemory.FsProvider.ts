@@ -50,7 +50,7 @@ export default class InMemoryFsProvider extends FsProvider {
             }
         })
         if (type !== undefined && found!.type !== type) {
-            throw new Error("Types not matching");
+            throw new Error(`Types not matching, searched for ${type} but found ${found?.type} at path ${typePath}`);
         }
         if (found === undefined) {
             throw new Error("File type not found");
@@ -175,10 +175,10 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
     async rmdir(dir: string): Promise<void> {
-        const found = this.findFileType(path.dirname(dir), "DIR");
+        const found = this.findFileType(dir, "DIR");
         const parent = this.findFileType(path.dirname(dir), "DIR");
         if ((found.nodes || []).length > 0) {
-            throw new Error("Directory is not empty");
+            throw new Error(`Directory is not empty, found ${JSON.stringify(found.nodes, null, 2)}`);
         }
         parent.nodes = (parent.nodes || []).filter(value => value.name !== found.name);
     }
@@ -188,7 +188,7 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
     async unlink(file: string): Promise<void> {
-        const found = this.findFileType(path.dirname(file), "FILE");
+        const found = this.findFileType(file, "FILE");
         const parent = this.findFileType(path.dirname(file), "DIR");
         parent.nodes = (parent.nodes || []).filter(value => value.name !== found.name);
     }

@@ -77,6 +77,25 @@ export default class ModLinker {
         }
     }
 
+    private static getRootFilesDestination(game: Game, filename: string, installDirectory: string): string | null {
+        const lowercased = filename.toLowerCase();
+        if (lowercased == "mods.yml") {
+            return null;
+        }
+
+        if (game.packageLoader == PackageLoader.SHIMLOADER) {
+            if (["ue4ss.dll", "dwmapi.dll"].indexOf(lowercased) > -1) {
+                return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
+            }
+            if (lowercased == "ue4ss-settings.ini") {
+                return installDirectory;
+            }
+            return null;
+        } else {
+            return installDirectory;
+        }
+    }
+
     private static async performLink(profile: Profile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
@@ -85,28 +104,36 @@ export default class ModLinker {
             try {
                 for (const file of profileFiles) {
                     if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
-                        if (file.toLowerCase() !== 'mods.yml') {
-                            try {
-                                const gameDirFilePath = path.join(installDirectory, file);
-                                const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
-                                if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
-                                    await fs.copyFile(profileDirFilePath, gameDirFilePath);
-                                    const profileDirFileStat = await fs.stat(profileDirFilePath);
-                                    await fs.setModifiedTime(gameDirFilePath, profileDirFileStat.mtime);
-                                }
-                                newLinkedFiles.push(gameDirFilePath);
-                            } catch (e) {
-                                const err: Error = e as Error;
-                                throw new FileWriteError(
-                                    `Couldn't copy file ${file} to ${game.displayName} directory`,
-                                    err.message,
-                                    `Try running ${ManagerInformation.APP_NAME} as an administrator`
-                                )
+                        try {
+                            const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
+                            if (targetDir === null) continue;
+
+                            const gameDirFilePath = path.join(targetDir, file);
+                            const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
+
+                            if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
+                                await fs.copyFile(profileDirFilePath, gameDirFilePath);
+                                const profileDirFileStat = await fs.stat(profileDirFilePath);
+                                await fs.setModifiedTime(gameDirFilePath, profileDirFileStat.mtime);
                             }
+                            newLinkedFiles.push(gameDirFilePath);
+                        } catch (e) {
+                            const err: Error = e as Error;
+                            throw new FileWriteError(
+                                `Couldn't copy file ${file} to ${game.displayName} directory`,
+                                err.message,
+                                `Try running ${ManagerInformation.APP_NAME} as an administrator`
+                            )
                         }
                     } else {
                         if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
-                            if (!["bepinex", "bepinex_server", "mods", "melonloader", "plugins", "userdata", "_state", "userlibs", "qmods"].includes(file.toLowerCase())) {
+                            const exclusionsList = [
+                                "bepinex", "bepinex_server", "mods",
+                                "melonloader", "plugins", "userdata",
+                                "_state", "userlibs", "qmods", "shimloader"
+                            ];
+
+                            if (!exclusionsList.includes(file.toLowerCase())) {
                                 const fileProfileFolderPath = path.join(profile.getPathOfProfile(), file);
                                 const fileTree = await FileTree.buildFromLocation(fileProfileFolderPath);
                                 if (fileTree instanceof R2Error) {

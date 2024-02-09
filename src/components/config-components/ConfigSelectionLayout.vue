@@ -127,6 +127,14 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
                 }
             }
+
+            // HACK: Force the UE4SS-settings.ini file for shimloader mod installs to be visible.
+            const ue4ssSettingsPath = tree.getFiles().find(x => x.toLowerCase().endsWith("ue4ss-settings.ini"));
+            if (ue4ssSettingsPath) {
+                const lstat = await fs.lstat(ue4ssSettingsPath);
+                this.configFiles.push(new ConfigFile("UE4SS-settings.ini", ue4ssSettingsPath, lstat.mtime));
+            }
+
             this.shownConfigFiles = [...this.configFiles];
         }
 

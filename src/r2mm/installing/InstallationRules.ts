@@ -52,27 +52,15 @@ export default class InstallationRules {
     public static getAllManagedPaths(rules: RuleSubtype[], pathBuilder?: string): ManagedRule[] {
         const paths: ManagedRule[] = [];
         rules.forEach(value => {
-            if (pathBuilder === undefined) {
-                paths.push({
-                    route: value.route,
-                    trackingMethod: value.trackingMethod,
-                    extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false,
-                    ref: value
-                });
-            } else {
-                paths.push({
-                    route: path.join(pathBuilder, value.route),
-                    trackingMethod: value.trackingMethod,
-                    extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false,
-                    ref: value
-                });
-            }
-            let subPath = pathBuilder === undefined ? value.route : path.join(pathBuilder, value.route);
-            this.getAllManagedPaths(value.subRoutes, subPath).forEach(value1 => {
-                paths.push(value1);
+            const route = !pathBuilder ? value.route : path.join(pathBuilder, value.route);
+            paths.push({
+                route: route,
+                trackingMethod: value.trackingMethod,
+                extensions: value.defaultFileExtensions,
+                isDefaultLocation: value.isDefaultLocation || false,
+                ref: value
             });
+            this.getAllManagedPaths(value.subRoutes, route).forEach(x => paths.push(x));
         });
         return paths;
     }

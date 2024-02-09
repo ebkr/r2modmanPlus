@@ -13,9 +13,6 @@ import ConflictManagementProvider from "../providers/generic/installing/Conflict
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 
-const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
-
-
 type InstallRuleArgs = {
     profile: Profile,
     coreRule: CoreRuleType,

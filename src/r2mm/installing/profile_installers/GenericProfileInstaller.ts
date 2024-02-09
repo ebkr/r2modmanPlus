@@ -16,12 +16,11 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { GetInstallerIdForLoader } from '../../../model/installing/PackageLoader';
+import { GetInstallerIdForLoader, GetInstallerIdForPlugin } from '../../../model/installing/PackageLoader';
 import ZipProvider from "../../../providers/generic/zip/ZipProvider";
-import { PackageInstallers } from "../../../installers/registry";
+import { PackageInstallerId, PackageInstallers } from "../../../installers/registry";
 import { InstallArgs } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
-
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -156,9 +155,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         if (variant !== undefined) {
             return this.installModLoader(variant, args);
-        } else {
-            return this.installForManifestV2(args);
         }
+
+        const pluginInstaller = GetInstallerIdForPlugin(activeGame.packageLoader);
+
+        if (pluginInstaller !== null) {
+            await PackageInstallers[pluginInstaller].install(args);
+            return Promise.resolve(null);
+        }
+
+        // Revert to legacy install behavior.
+        return this.installForManifestV2(args);
     }
 
     async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
@@ -215,8 +222,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 );
             }
         }
-        const bepInExLocation: string = path.join(profile.getPathOfProfile(), 'BepInEx');
-        if (await fs.exists(bepInExLocation)) {
+
+        // BepInEx & shimloader plugin uninstall logic
+        // TODO: Move to work through the installer interface
+        const profilePath = profile.getPathOfProfile();
+        const searchLocations = ["BepInEx", "shimloader"];
+        for (const searchLocation of searchLocations) {
+            const bepInExLocation: string = path.join(profilePath, searchLocation);
+            if (!(await fs.exists(bepInExLocation))) {
+                continue
+            }
+
             try {
                 for (const file of (await fs.readdir(bepInExLocation))) {
                     if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
