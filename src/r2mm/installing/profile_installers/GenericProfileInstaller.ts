@@ -88,14 +88,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        if (mode === ModMode.DISABLED) {
-                            if (await FsProvider.instance.exists(path.join(location, value))) {
-                                await FsProvider.instance.unlink(path.join(location, value));
-                            }
-                        } else {
-                            if (await FsProvider.instance.exists(path.join(location, value))) {
-                                await FsProvider.instance.unlink(path.join(location, value));
-                            }
+                        if (await FsProvider.instance.exists(path.join(location, value))) {
+                            await FsProvider.instance.unlink(path.join(location, value));
+                        }
+                        if (mode === ModMode.ENABLED) {
                             await FsProvider.instance.copyFile(key, path.join(location, value));
                         }
                     }
