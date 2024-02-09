@@ -306,8 +306,10 @@ export default class GameManager {
         new Game("Cult of the Lamb", "COTL", "COTL",
             "Cult of the Lamb", ["Cult Of The Lamb.exe"], "Cult Of The Lamb_Data",
             "https://thunderstore.io/c/cult-of-the-lamb/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1313140")], "Cotl.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cotl"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1313140"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ], "Cotl.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cotl"]),
 
         new Game("Chrono Ark", "ChronoArk", "ChronoArk",
             path.join("Chrono Ark", "x64", "Master"), ["ChronoArk.exe"], "ChronoArk_Data",
