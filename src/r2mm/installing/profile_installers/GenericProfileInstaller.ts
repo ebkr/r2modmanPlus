@@ -223,12 +223,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const err: Error = e as Error;
-                return new FileWriteError(
-                    'Failed to delete BepInEx file from profile root',
-                    err.message,
-                    'Is the game still running?'
-                );
+                const name = 'Failed to delete BepInEx file from profile root';
+                const solution = 'Is the game still running?';
+                return FileWriteError.fromThrownValue(e, name, solution);
             }
         }
 
