@@ -3,9 +3,7 @@
         <SearchAndSort />
 
         <DisableModModal
-            v-if="dependencyListDisplayType === 'disable' && !!selectedManifestMod && showingDependencyList"
-            :on-close="() => { showingDependencyList = false; }"
-            :mod="selectedManifestMod"
+            @error="emitError"
             :mod-being-disabled="modBeingDisabled"
             :on-disable-include-dependents ="disableModWithDependents"
             :on-disable-exclude-dependents="disableModExcludeDependents"
@@ -187,8 +185,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 this.$emit("error", err);
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
             } finally {
-                this.selectedManifestMod = null;
-                this.modBeingDisabled = null;
+                this.$store.commit('closeDisableModModal');
             }
         }
 
@@ -277,10 +274,10 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
         disableModRequireConfirmation(mod: ManifestV2) {
             for (const value of this.getDependantList(mod)) {
-               if (value.isEnabled()) {
-                   this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
-                   return;
-               }
+                if (value.isEnabled()) {
+                    this.$store.commit('openDisableModModal', mod);
+                    return;
+                }
             }
             this.performDisable([mod]);
         }
