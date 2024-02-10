@@ -216,7 +216,7 @@ async function installState(args: InstallRuleArgs) {
 }
 
 export class InstallRuleInstaller extends PackageInstaller {
-    private readonly rule: CoreRuleType;
+    public readonly rule: CoreRuleType;
 
     constructor(rules: CoreRuleType) {
         super();
