@@ -11,5 +11,6 @@ export type InstallArgs = {
 
 export abstract class PackageInstaller {
     abstract install(args: InstallArgs): Promise<void>;
+    // abstract disable(args: InstallArgs): Promise<void>; // TODO: Implement
     // abstract uninstall(): Promise<void>;  // TODO: Implement
 }
