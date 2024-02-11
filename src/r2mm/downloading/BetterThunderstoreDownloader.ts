@@ -93,22 +93,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
-
-        const latestVersionMap = ThunderstorePackages.LATEST_VERSIONS;
-
-        return mods.filter(value => {
-            if (latestVersionMap.has(value.getName())) {
-                const latestVersion = latestVersionMap.get(value.getName())!;
-                return latestVersion.getVersionNumber().isNewerThan(value.getVersionNumber());
-            }
-            return false;
-        })
-            .map(value => {
-                const combo = new ThunderstoreCombo()
-                combo.setMod(ModBridge.getThunderstoreModFromMod(value, allMods)!)
-                combo.setVersion(latestVersionMap.get(value.getName())!);
+        return mods.filter(mod => !ModBridge.isCachedLatestVersion(mod))
+            .map(mod => ModBridge.getCachedThunderstoreModFromMod(mod))
+            .filter(value => value != undefined)
+            .map(mod => {
+                const latestVersion = mod!.getVersions().sort((a, b) => a.getVersionNumber().compareToDescending(b.getVersionNumber()))[0];
+                const combo = new ThunderstoreCombo();
+                combo.setMod(mod!);
+                combo.setVersion(latestVersion);
                 return combo;
-            });
+            })
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
