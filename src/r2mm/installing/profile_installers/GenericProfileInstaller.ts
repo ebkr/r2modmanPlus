@@ -88,27 +88,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        if (mode === ModMode.DISABLED) {
-                            if (await FsProvider.instance.exists(path.join(location, value))) {
-                                await FsProvider.instance.unlink(path.join(location, value));
-                            }
-                        } else {
-                            if (await FsProvider.instance.exists(path.join(location, value))) {
-                                await FsProvider.instance.unlink(path.join(location, value));
-                            }
+                        if (await FsProvider.instance.exists(path.join(location, value))) {
+                            await FsProvider.instance.unlink(path.join(location, value));
+                        }
+                        if (mode === ModMode.ENABLED) {
                             await FsProvider.instance.copyFile(key, path.join(location, value));
                         }
                     }
                 }
             }
         } catch (e) {
-            if (e instanceof R2Error) {
-                return e;
-            } else {
-                // @ts-ignore
-                const err: Error = e;
-                return new R2Error(`Error installing mod: ${mod.getName()}`, err.message, null);
-            }
+            return R2Error.fromThrownValue(e, `Error installing mod: ${mod.getName()}`);
         }
     }
 
@@ -233,12 +223,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const err: Error = e as Error;
-                return new FileWriteError(
-                    'Failed to delete BepInEx file from profile root',
-                    err.message,
-                    'Is the game still running?'
-                );
+                const name = 'Failed to delete BepInEx file from profile root';
+                const solution = 'Is the game still running?';
+                return FileWriteError.fromThrownValue(e, name, solution);
             }
         }
 
@@ -265,12 +252,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch (e) {
-                const err: Error = e as Error;
-                return new R2Error(
-                    "Failed to remove files",
-                    err.message,
-                    'Is the game still running? If so, close it and try again.'
-                );
+                const name = 'Failed to remove files';
+                const solution = 'Is the game still running? If so, close it and try again.';
+                return R2Error.fromThrownValue(e, name, solution);
             }
         }
         return Promise.resolve(null);
