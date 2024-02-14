@@ -93,35 +93,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
-        var depMap: Map<string, ThunderstoreCombo> = new Map();
-        const dependencies: ThunderstoreCombo[] = [];
-        mods.forEach(value => {
-            const tsMod = ModBridge.getThunderstoreModFromMod(value, allMods);
-            if (tsMod !== undefined) {
-                this.buildDependencySetUsingLatest(tsMod.getVersions()![0], allMods, dependencies);
+        return mods.filter(mod => !ModBridge.isCachedLatestVersion(mod))
+            .map(mod => ModBridge.getCachedThunderstoreModFromMod(mod))
+            .filter(value => value != undefined)
+            .map(mod => {
+                const latestVersion = mod!.getVersions().sort((a, b) => a.getVersionNumber().compareToDescending(b.getVersionNumber()))[0];
                 const combo = new ThunderstoreCombo();
-                combo.setMod(tsMod);
-                combo.setVersion(tsMod.getVersions()![0])
-                dependencies.push(combo);
-            }
-        });
-
-        // Keep array unique in case scenario happens where dependency X is picked up before X install listing.
-        dependencies.forEach(value => depMap.set(value.getMod().getFullName(), value));
-
-        dependencies.forEach(value => {
-            depMap.set(value.getMod().getFullName(), value);
-        });
-
-        return Array.from(depMap.values()).filter(value => {
-            const result = mods.find(value1 => {
-                return value1.getName() === value.getMod().getFullName();
-            });
-            if (result !== undefined) {
-                return !result.getVersionNumber().isEqualTo(value.getVersion().getVersionNumber());
-            }
-            return false;
-        });
+                combo.setMod(mod!);
+                combo.setVersion(latestVersion);
+                return combo;
+            })
     }
 
     public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
