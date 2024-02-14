@@ -250,7 +250,7 @@ let assignId = 0;
                 this.$emit('error', localMods);
                 return;
             }
-            const outdatedMods = localMods.filter(mod => !ModBridge.isLatestVersion(mod));
+            const outdatedMods = localMods.filter(mod => !ModBridge.isCachedLatestVersion(mod));
             const currentAssignId = assignId++;
             const progressObject = {
                 progress: 0,
