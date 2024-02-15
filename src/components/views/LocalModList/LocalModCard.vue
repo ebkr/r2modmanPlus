@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import ManifestV2 from '../../../model/ManifestV2';
@@ -18,12 +18,6 @@ export default class LocalModCard extends Vue {
     readonly mod!: ManifestV2;
 
     @Prop({required: true})
-    readonly disabledDependencies!: ManifestV2[];
-
-    @Prop({required: true})
-    readonly missingDependencies!: string[];
-
-    @Prop({required: true})
     readonly expandedByDefault!: boolean;
 
     @Prop({required: true})
@@ -31,6 +25,9 @@ export default class LocalModCard extends Vue {
 
     @Prop({required: true})
     readonly funkyMode!: boolean;
+
+    disabledDependencies: ManifestV2[] = [];
+    missingDependencies: string[] = [];
 
     get donationLink() {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
@@ -40,8 +37,40 @@ export default class LocalModCard extends Vue {
         return ModBridge.isCachedLatestVersion(this.mod);
     }
 
+    get localModList(): ManifestV2[] {
+        return this.$store.state.localModList;
+    }
+
     get tsMod() {
         return ModBridge.getCachedThunderstoreModFromMod(this.mod);
+    }
+
+    @Watch("localModList")
+    updateDependencies() {
+        if (this.mod.getDependencies().length === 0) {
+            return;
+        }
+
+        const dependencies = this.mod.getDependencies();
+        const dependencyNames = dependencies.map(dependencyStringToModName);
+        const foundDependencies: ManifestV2[] = [];
+
+        for (const mod of this.localModList) {
+            if (foundDependencies.length === dependencyNames.length) {
+                break;
+            }
+
+            if (dependencyNames.includes(mod.getName())) {
+                foundDependencies.push(mod);
+            }
+        }
+
+        const foundNames = foundDependencies.map((mod) => mod.getName());
+
+        this.disabledDependencies = foundDependencies.filter((d) => !d.isEnabled());
+        this.missingDependencies = dependencies.filter(
+            (d) => !foundNames.includes(dependencyStringToModName(d))
+        );
     }
 
     disableMod() {
@@ -67,6 +96,14 @@ export default class LocalModCard extends Vue {
     viewDependencyList() {
         this.$emit('viewDependencyList', this.mod);
     }
+
+    created() {
+        this.updateDependencies();
+    }
+}
+
+function dependencyStringToModName(x: string) {
+    return x.substring(0, x.lastIndexOf('-'));
 }
 </script>
 
