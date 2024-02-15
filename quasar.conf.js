@@ -58,6 +58,11 @@ module.exports = configure(function(/* ctx */) {
                     provider: 'github'
                 }
             },
+            linux: {
+                publish: {
+                    provider: 'github'
+                }
+            },
 
             // transpile: false,
 
