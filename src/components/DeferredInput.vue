@@ -1,19 +1,22 @@
 <script lang="ts">
 import debounce from 'lodash.debounce';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Model, Prop, Vue, Watch } from 'vue-property-decorator';
 
 @Component({})
 export default class DeferredInput extends Vue {
+    @Model('change')
+    readonly value!: string;
+
     @Prop({type: Number, required: false, default: 250})
     readonly delay!: number;
 
-    internalValue = '';
+    internalValue = this.value;
 
     @Watch('internalValue')
     onInternalValueChange = debounce(this.emitChange, this.delay);
 
     emitChange() {
-        this.$emit('changed', this.internalValue);
+        this.$emit('change', this.internalValue);
     }
 }
 </script>

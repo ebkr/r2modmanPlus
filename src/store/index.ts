@@ -3,6 +3,7 @@ import Vuex, { ActionContext } from 'vuex';
 
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
+import ProfileModule from './modules/ProfileModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
@@ -95,6 +96,7 @@ export const store = {
     modules: {
         modals: ModalsModule,
         modFilters: ModFilterModule,
+        profile: ProfileModule,
     },
 
     // enable strict mode (adds overhead!)

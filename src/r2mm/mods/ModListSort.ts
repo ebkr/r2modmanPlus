@@ -5,14 +5,6 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 
 export default class ModListSort {
 
-    /**
-     * Apply sort filters to a local mod list.
-     * @param modList
-     * @param sortDirection
-     * @param deprecatedFilter
-     * @param deprecatedPosition
-     * @param sortNaming
-     */
     public static sortLocalModList(modList: ManifestV2[], sortDirection: SortDirection,
                                    disabledModPosition: SortLocalDisabledMods, sortNaming: SortNaming): ManifestV2[] {
 
