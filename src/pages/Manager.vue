@@ -572,7 +572,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             });
         }
 
-        handleSettingsCallbacks(invokedSetting: any) {
+        async handleSettingsCallbacks(invokedSetting: any) {
 		    switch(invokedSetting) {
 		        case "BrowseDataFolder":
 		            this.browseDataFolder();
@@ -628,7 +628,11 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     this.setAllModsEnabled(true);
                     break;
                 case "DisableAll":
-                    this.setAllModsEnabled(false);
+                    await this.$store.dispatch(
+                        "profile/disableModsFromActiveProfile",
+                        {mods: this.$store.state.localModList}
+                    );
+                    await this.$router.push({name: "manager.installed"});
                     break;
                 case "UpdateAllMods":
                     this.$store.commit("openUpdateAllModsModal");
