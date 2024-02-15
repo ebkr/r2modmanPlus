@@ -32,6 +32,8 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     private incompatibilities: string[] = [];
     private optionalDependencies: string[] = [];
 
+    private dateUpdated: Date = new Date();
+
     private versionNumber: VersionNumber = new VersionNumber('0.0.0');
 
     private enabled: boolean = true;
@@ -59,6 +61,9 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setIncompatibilities(data.Incompatibilities);
         this.setOptionalDependencies(data.OptionalDependencies);
         this.setVersionNumber(new VersionNumber(data.Version));
+        if (typeof data.getDateUpdated === 'function') {
+            this.setDateUpdated(data.getDateUpdated());
+        }  
         return this;
     }
 
@@ -106,6 +111,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setVersionNumber(version.getVersionNumber());
         this.setWebsiteUrl(mod.getPackageUrl());
         this.setGameVersion('0');
+        this.setDateUpdated(mod.getDateUpdated());
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         return this;
     }
@@ -128,6 +134,9 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         const versionNumber = reactive.versionNumber;
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
         this.setGameVersion(reactive.gameVersion);
+        if (typeof reactive.getDateUpdated === 'function') { 
+            this.setDateUpdated(reactive.getDateUpdated());
+        }                                                    
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         if (!reactive.enabled) {
             this.disable();
@@ -279,5 +288,13 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
     public setIcon(iconUri: string) {
         this.icon = iconUri;
+    }
+
+    public getDateUpdated(): Date {
+        return this.dateUpdated;
+    }
+
+    public setDateUpdated(dateUpdated_in: Date) {
+        this.dateUpdated = dateUpdated_in;
     }
 }
