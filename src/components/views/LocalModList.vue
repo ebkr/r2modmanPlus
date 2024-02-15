@@ -461,9 +461,8 @@ import { DeferredInput } from '../all';
 
         updateMod(vueMod: any) {
             this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
-            const mod = ModBridge.getThunderstoreModFromMod(
-                this.selectedManifestMod,
-                this.thunderstorePackages
+            const mod = ModBridge.getCachedThunderstoreModFromMod(
+                this.selectedManifestMod
             );
             if (mod instanceof ThunderstoreMod) {
                 this.$store.commit("openDownloadModModal", mod);

@@ -24,10 +24,16 @@ export default class ModBridge {
         return matchingMod.getVersions().reduce(reduceToNewestVersion);
     }
 
+    /**
+     * @deprecated Please use {@link ModBridge.getCachedThunderstoreModFromMod} instead.
+     */
     public static getThunderstoreModFromMod(mod: ManifestV2, modList: ThunderstoreMod[]): ThunderstoreMod | undefined {
         return modList.find((tsMod: ThunderstoreMod) => tsMod.getFullName() === mod.getName());
     }
 
+    /**
+     * @deprecated Please use {@link ModBridge.isCachedLatestVersion} instead.
+     */
     public static isLatestVersion(vueMod: any): boolean {
         const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
         const latestVersion: ThunderstoreVersion | void = ModBridge.getLatestVersion(mod, ThunderstorePackages.PACKAGES);
@@ -41,7 +47,7 @@ export default class ModBridge {
         const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
         if (ModBridge.CACHE[cacheKey] === undefined) {
-            const tsMod = ThunderstorePackages.PACKAGES.find((tsMod) => tsMod.getFullName() === mod.getName());
+            const tsMod = ThunderstorePackages.PACKAGES_MAP.get(mod.getName());
 
             if (tsMod === undefined) {
                 ModBridge.CACHE[cacheKey] = { tsMod: undefined, isLatest: true };
