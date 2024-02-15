@@ -155,7 +155,7 @@ import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
             const newLine = new ConfigLine(oldLine.value, oldLine.comments, oldLine.allowedValues);
             newLine.commentsExpanded = !oldLine.commentsExpanded;
             this.dumpedConfigVariables[key][variable] = newLine;
-            this.dumpedConfigVariables = JSON.parse(JSON.stringify(this.dumpedConfigVariables));
+            this.dumpedConfigVariables = { ...this.dumpedConfigVariables };
         }
 
         setConfigLineValue(line: ConfigLine, value: number) {
