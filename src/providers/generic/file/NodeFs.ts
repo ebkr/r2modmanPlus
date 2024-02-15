@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import StatInterface from './StatInterface';
 import * as path from 'path';
 import Lock from 'async-lock';
+import { Readable } from 'stream';
 
 export default class NodeFs extends FsProvider {
 
@@ -150,6 +151,43 @@ export default class NodeFs extends FsProvider {
                     reject(e);
                 }
             }).catch(reject);
+        });
+    }
+
+    async truncate(path: string, length: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    await fs.promises.truncate(path, length);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    /**
+     *  https://nodejs.org/api/fs.html#fs_filehandle_createreadstream_options
+     *  we make the callback inside here because we want it to be before the file closes, and we can't do that with a Promise.then
+     * 
+     *  @param path path to the file being read
+     *  @param chunk_size size in bytes to read at one time
+     *  @param callback read handler to be executed on each chunk before the promise resolves
+     */
+    async createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                try {
+                    const stream = fs.createReadStream(path, {
+                        highWaterMark: chunk_size
+                    });
+                    await callback(stream);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
         });
     }
 }

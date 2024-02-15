@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import ProviderUtils from '../ProviderUtils';
 import StatInterface from './StatInterface';
 
@@ -31,5 +32,7 @@ export default abstract class FsProvider {
     public abstract copyFolder(from: string, to: string): Promise<void>;
     public abstract base64FromZip(path: string): Promise<string>;
     public abstract setModifiedTime(path: string, time: Date): Promise<void>;
+    public abstract truncate(path: string, length: number): Promise<void>;
+    public abstract createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void>;
 
 }

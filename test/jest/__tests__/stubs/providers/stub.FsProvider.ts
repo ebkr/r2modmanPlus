@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import StatInterface from '../../../../../src/providers/generic/file/StatInterface';
 
@@ -64,6 +65,13 @@ export default class StubFsProvider extends FsProvider {
     }
 
     async setModifiedTime(path: string, time: Date): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
+
+    async truncate(path: string, length: number): Promise<void> {
+        throw new Error("Stub access must be mocked or spied");
+    }
+    async createReadStream(path: string, chunk_size: number, callback: (arg0: Readable) => Promise<void>): Promise<void> {
         throw new Error("Stub access must be mocked or spied");
     }
 }
