@@ -1,3 +1,17 @@
+### 3.1.47
+- Significant performance improvements
+- Games added:
+  - Palworld
+  - Voices of the Void
+  - GOG support for Cult of the Lamb
+  - EGS support for 20 Minutes Till Dawn
+- General QoL improvements
+
+_Contributions:_
+- _anttimaki_
+- _Lordmau5_
+- _IngoHHacks_
+
 ### 3.1.46
 - Games added:
   - Sailwind
