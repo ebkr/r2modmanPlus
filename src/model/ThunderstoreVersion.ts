@@ -1,10 +1,16 @@
-import Mod from './Mod';
 import VersionNumber from './VersionNumber';
 import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import CdnProvider from '../providers/generic/connection/CdnProvider';
 
-export default class ThunderstoreVersion extends Mod implements ReactiveObjectConverterInterface {
+export default class ThunderstoreVersion implements ReactiveObjectConverterInterface {
 
+    private name: string = '';
+    private versionNumber: VersionNumber = new VersionNumber('0.0.0');
+    private dependencies: string[] = [];
+    private fullName: string = '';
+    private description: string = ''
+    private icon: string = ''
+    private enabled: boolean = true;
     private downloads: number = 0;
     private downloadUrl: string = '';
 
@@ -21,10 +27,76 @@ export default class ThunderstoreVersion extends Mod implements ReactiveObjectCo
     }
 
     public fromReactive(reactive: any): ThunderstoreVersion {
-        super.fromReactive(reactive);
+        this.setName(reactive.name);
+        this.setVersionNumber(new VersionNumber('0.0.0').fromReactive(reactive.versionNumber));
+        this.setDependencies(reactive.dependencies);
+        this.setFullName(reactive.fullName);
+        this.setDescription(reactive.description);
+        this.setIcon(reactive.icon);
+        this.enabled = reactive.enabled;
         this.setDownloadCount(reactive.downloadCount);
         this.setDownloadUrl(reactive.downloadUrl);
         return this;
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public setName(name: string) {
+        this.name = name;
+    }
+
+    public getVersionNumber(): VersionNumber {
+        return this.versionNumber;
+    }
+
+    public setVersionNumber(versionNumber: VersionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+    public getDependencies(): string[] {
+        return this.dependencies;
+    }
+
+    public setDependencies(dependencies: string[]) {
+        this.dependencies = dependencies;
+    }
+
+    public getFullName(): string {
+        return this.fullName;
+    }
+
+    public setFullName(name: string) {
+        this.fullName = name;
+    }
+
+    public getDescription(): string {
+        return this.description;
+    }
+
+    public setDescription(description: string) {
+        this.description = description;
+    }
+
+    public getIcon(): string {
+        return this.icon;
+    }
+
+    public setIcon(icon: string) {
+        this.icon = icon;
+    }
+
+    public isEnabled(): boolean {
+        return this.enabled;
+    }
+
+    public enable() {
+        this.enabled = true;
+    }
+
+    public disable() {
+        this.enabled = false;
     }
 
     public getDownloadCount(): number {

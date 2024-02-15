@@ -67,7 +67,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModBridge from '../../r2mm/mods/ModBridge';
-import Mod from '../../model/Mod';
 import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
 import Dependants from '../../r2mm/mods/Dependants';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
@@ -142,8 +141,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             }
         }
 
-        getMissingDependencies(vueMod: any): string[] {
-            const mod: Mod = new Mod().fromReactive(vueMod);
+        getMissingDependencies(mod: ManifestV2): string[] {
             return mod.getDependencies().filter((dependency: string) => {
                 // Include in filter if mod isn't found.
                 return this.$store.state.localModList.find(
@@ -152,9 +150,8 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             });
         }
 
-        getDisabledDependencies(vueMod: any): ManifestV2[] {
-            const dependencies = new Mod()
-                .fromReactive(vueMod)
+        getDisabledDependencies(mod: ManifestV2): ManifestV2[] {
+            const dependencies = mod
                 .getDependencies()
                 .map((x) => x.toLowerCase().substring(0, x.lastIndexOf('-') + 1));
 
@@ -192,13 +189,11 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             return modList;
         }
 
-        async disableModWithDependents(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        async disableModWithDependents(mod: ManifestV2) {
             await this.disableMods([...this.getDependantList(mod), mod]);
         }
 
-        async disableModExcludeDependents(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        async disableModExcludeDependents(mod: ManifestV2) {
             await this.disableMods([mod]);
         }
 
@@ -247,13 +242,11 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             await this.updateModListAfterChange(updatedList);
         }
 
-        async uninstallModWithDependents(vueMod: any) {
-            let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        async uninstallModWithDependents(mod: ManifestV2) {
             await this.uninstallMods([...this.getDependantList(mod), mod]);
         }
 
-        async uninstallModExcludeDependents(vueMod: any) {
-            let mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        async uninstallModExcludeDependents(mod: ManifestV2) {
             await this.uninstallMods([mod]);
         }
 
@@ -291,14 +284,13 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             await this.updateModListAfterChange(result);
         }
 
-        showDependencyList(vueMod: any, displayType: string) {
-            this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
+        showDependencyList(mod: ManifestV2, displayType: string) {
+            this.selectedManifestMod = mod;
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
         }
 
-        uninstallModRequireConfirmation(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        uninstallModRequireConfirmation(mod: ManifestV2) {
             if (this.getDependantList(mod).size === 0) {
                 this.performUninstallMod(mod);
             } else {
@@ -306,8 +298,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             }
         }
 
-        disableModRequireConfirmation(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        disableModRequireConfirmation(mod: ManifestV2) {
             for (const value of this.getDependantList(mod)) {
                if (value.isEnabled()) {
                    this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
@@ -317,13 +308,11 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             this.performDisable([mod]);
         }
 
-        viewDependencyList(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        viewDependencyList(mod: ManifestV2) {
             this.showDependencyList(mod, DependencyListDisplayType.VIEW);
         }
 
-        async enableMod(vueMod: any) {
-            const mod: ManifestV2 = new ManifestV2().fromReactive(vueMod);
+        async enableMod(mod: ManifestV2) {
             try {
                 const result = await this.performEnable([...this.getDependencyList(mod), mod]);
                 if (result instanceof R2Error) {
@@ -359,23 +348,22 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             await this.updateModListAfterChange(updatedList);
         }
 
-        updateMod(vueMod: any) {
-            this.selectedManifestMod = new ManifestV2().fromReactive(vueMod);
-            const mod = ModBridge.getCachedThunderstoreModFromMod(
-                this.selectedManifestMod
-            );
-            if (mod instanceof ThunderstoreMod) {
-                this.$store.commit("openDownloadModModal", mod);
+        updateMod(mod: ManifestV2) {
+            this.selectedManifestMod = mod;
+            const tsMod = ModBridge.getCachedThunderstoreModFromMod(mod);
+
+            if (tsMod instanceof ThunderstoreMod) {
+                this.$store.commit("openDownloadModModal", tsMod);
             } else {
                 this.$store.commit("closeDownloadModModal");
             }
         }
 
         downloadDependency(missingDependency: string) {
-            const mod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
-                (tsMod: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(tsMod.getFullName().toLowerCase() + "-")
+            const tsMod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
+                (m: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(m.getFullName().toLowerCase() + "-")
             );
-            if (mod === undefined) {
+            if (tsMod === undefined) {
                 this.$store.commit("closeDownloadModModal");
                 const error = new R2Error(
                     `${missingDependency} could not be found`,
@@ -385,7 +373,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 this.$emit('error', error);
                 return;
             }
-            this.$store.commit("openDownloadModModal", mod);
+            this.$store.commit("openDownloadModModal", tsMod);
         }
 
         async created() {
