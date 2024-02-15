@@ -58,7 +58,7 @@
 				</button>
 			</template>
 		</modal>
-        <modal v-show="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
+        <modal v-if="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
             <template v-slot:title>
                 <p class='card-header-title'>Dependency string list</p>
             </template>
@@ -211,20 +211,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             return this.$store.state.thunderstoreModList || [];
         }
 
-		get localModList() : ManifestV2[] {
-		    if (this.contextProfile !== null) {
-                GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile!).then(async instructions => {
-                    this.doorstopTarget = instructions.moddedParameters;
-                    this.vanillaLaunchArgs = instructions.vanillaParameters;
-                });
-                GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile!).then(target => {
-                    if (target instanceof R2Error) {
-                        this.doorstopTarget = "";
-                    } else {
-                        this.doorstopTarget = target;
-                    }
-                });
-            }
+		get localModList(): ManifestV2[] {
 			return this.$store.state.localModList || [];
 		}
 
@@ -466,6 +453,20 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		showLaunchParameters() {
+			if (this.contextProfile !== null) {
+				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(instructions => {
+					this.vanillaLaunchArgs = instructions.vanillaParameters;
+				});
+
+				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile).then(target => {
+					if (target instanceof R2Error) {
+						this.doorstopTarget = "";
+					} else {
+						this.doorstopTarget = target;
+					}
+				});
+			}
+
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
 		}
@@ -499,30 +500,46 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
         async setAllModsEnabled(enabled: boolean) {
-            for (const mod of this.localModList) {
-                let profileErr: R2Error | void;
-                if (enabled) {
-                    profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                } else {
-                    profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                }
-                if (profileErr instanceof R2Error) {
-                    this.showError(profileErr);
-                    continue;
-                }
-                const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
-                    if (enabled) {
-                        updatingMod.enable();
-                    } else {
-                        updatingMod.disable();
+            let lastSuccessfulUpdate: ManifestV2[] = [];
+
+            try {
+                for (const mod of this.localModList) {
+                    if (mod.isEnabled() === enabled) {
+                        continue;
                     }
-                });
-                if (update instanceof R2Error) {
-                    this.showError(update);
-                    continue;
+
+                    let profileErr: R2Error | void;
+                    if (enabled) {
+                        profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
+                    } else {
+                        profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
+                    }
+                    if (profileErr instanceof R2Error) {
+                        this.showError(profileErr);
+                        continue;
+                    }
+                    const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
+                        if (enabled) {
+                            updatingMod.enable();
+                        } else {
+                            updatingMod.disable();
+                        }
+                    });
+                    if (update instanceof R2Error) {
+                        this.showError(update);
+                    } else {
+                        lastSuccessfulUpdate = update;
+                    }
                 }
-                await this.$store.dispatch("updateModList", update);
+            } catch (e) {
+                const name = `Error ${enabled ? "enabling" : "disabling"} mods`;
+                this.showError(R2Error.fromThrownValue(e, name));
+            } finally {
+                if (lastSuccessfulUpdate.length) {
+                    await this.$store.dispatch("updateModList", lastSuccessfulUpdate);
+                }
             }
+
             await this.$router.push({name: "manager.installed"});
         }
 

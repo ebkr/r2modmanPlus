@@ -5,7 +5,7 @@
                 <div class="no-padding-left card-header-title">
                     <div class="input-group input-group--flex margin-right">
                         <label for="thunderstore-search-filter">Search</label>
-                        <input
+                        <DeferredInput
                             v-model="thunderstoreSearchFilter"
                             id="thunderstore-search-filter"
                             class="input"
@@ -79,12 +79,13 @@ import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
 import ArrayUtils from '../../utils/ArrayUtils';
-import debounce from 'lodash.debounce';
 import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
+import { DeferredInput } from "../all";
 
 @Component({
     components: {
+        DeferredInput,
         OnlineModList: OnlineModListProvider.provider,
         PaginationButtons,
     }
@@ -129,8 +130,6 @@ export default class OnlineModView extends Vue {
     }
 
     @Watch("thunderstoreSearchFilter")
-    onThunderstoreFilterUpdate = debounce(this.performThunderstoreFilterUpdate, 150);
-
     performThunderstoreFilterUpdate() {
         this.pageNumber = 1;
         this.filterThunderstoreModList();

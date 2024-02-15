@@ -12,7 +12,7 @@
               <div class="card-content">
                 <p>This profile will store its own mods independently from other profiles.</p>
                 <br/>
-                <input class="input" v-model="newProfileName" />
+                <input class="input" v-model="newProfileName" ref="profileNameInput" />
                 <br/><br/>
                 <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
                     Profile name required
@@ -86,7 +86,7 @@
             <button class="button is-info"
               @click="importProfile(); showImportModal = false;">From file</button>
             <button class="button is-primary"
-              @click="profileImportCode = ''; showImportModal = false; showCodeModal = true;">From code</button>
+              @click="showImportModal = false; openProfileCodeModal();">From code</button>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
             <p class="card-header-title">Enter the profile code</p>
           </header>
           <div class="card-content">
-            <input type="text" class="input" v-model="profileImportCode" />
+            <input type="text" class="input" v-model="profileImportCode" ref="profileCodeInput" />
             <br />
             <br />
             <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
@@ -243,6 +243,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Ref } from 'vue-property-decorator';
 import { Hero, Progress } from '../components/all';
 import sanitize from 'sanitize-filename';
 import ZipProvider from '../providers/generic/zip/ZipProvider';
@@ -284,6 +285,9 @@ let fs: FsProvider;
     }
 })
 export default class Profiles extends Vue {
+    @Ref() readonly profileCodeInput: HTMLInputElement | undefined;
+    @Ref() readonly profileNameInput: HTMLInputElement | undefined;
+
     private profileList: string[] = ['Default'];
 
     private selectedProfile: string = '';
@@ -338,6 +342,11 @@ export default class Profiles extends Vue {
         this.newProfileName = this.selectedProfile;
         this.addingProfileType = "Rename";
         this.renamingProfile = true;
+        this.$nextTick(() => {
+            if (this.profileNameInput) {
+                this.profileNameInput.focus();
+            }
+        });
     }
 
     async performRename(newName: string) {
@@ -359,6 +368,11 @@ export default class Profiles extends Vue {
         this.newProfileName = nameOverride || '';
         this.addingProfile = true;
         this.addingProfileType = type;
+        this.$nextTick(() => {
+            if (this.profileNameInput) {
+                this.profileNameInput.focus();
+            }
+        });
     }
 
     createProfile(profile: string) {
@@ -429,9 +443,10 @@ export default class Profiles extends Vue {
         return sanitize(nameToSanitize);
     }
 
-    setProfileAndContinue() {
-        settings.setProfile(Profile.getActiveProfile().getProfileName());
-        this.$router.push({name: 'manager.installed'});
+    async setProfileAndContinue() {
+        await this.$store.dispatch('updateModList', []);
+        await settings.setProfile(Profile.getActiveProfile().getProfileName());
+        await this.$router.push({name: 'manager.installed'});
     }
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
@@ -477,9 +492,19 @@ export default class Profiles extends Vue {
         });
     }
 
+    openProfileCodeModal() {
+        this.profileImportCode = '';
+        this.showCodeModal = true;
+        this.$nextTick(() => {
+            if (this.profileCodeInput) {
+                this.profileCodeInput.focus();
+            }
+        });
+    }
+
     async importProfileUsingCode() {
         try {
-            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode);
+            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
             await this.importProfileHandler([filepath]);
         } catch (e: any) {
             this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
