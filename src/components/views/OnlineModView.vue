@@ -15,30 +15,32 @@
                     </div>
                     <div class="input-group margin-right">
                         <label for="thunderstore-sort">Sort</label>
-                        <select v-model="sortingStyleModel"
-                                id="thunderstore-sort"
-                                class="select select--content-spacing margin-right margin-right--half-width"
-                        >
-                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-                        </select>
-                        <select v-model="sortingDirectionModel"
-                                class="select select--content-spacing"
-                                :disabled="sortingStyleModel === 'Default'"
-                        >
-                            <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group input-group--flex">
-                            <label for="thunderstore-category-filter">Additional filters</label>
-                            <button
-                                id="thunderstore-category-filter"
-                                class="button"
-                                @click="$store.commit('openCategoryFilterModal')"
+                        <div class="sort-container"> <!-- This div wraps the selector and the icon -->
+                            <select v-model="sortingStyleModel"
+                                    id="thunderstore-sort"
+                                    class="select select--content-spacing margin-right--half-width"
+                                    @change="sortThunderstoreModList"
                             >
-                                Filter categories
-                            </button>
+                                <option v-for="(key) in getSortOptions()" :key="key">{{ key }}</option>
+                            </select>
+                            <div class="icon-container"> <!-- New div to center the icon vertically -->
+                                <i :class="['fas', 'fa-caret-up', 'sorting-icon', { 'rotated': sortingDirectionModel === 'REVERSE' }]"
+                                @click="toggleSortingDirection"
+                                class="icon--margin-right"
+                                :style="{ cursor: sortingStyleModel !== 'Default' ? 'pointer' : 'not-allowed' }"
+                                ></i>
+                            </div>
                         </div>
+                    </div>
+                    <div class="input-group category-filter-container">
+                        <label for="thunderstore-category-filter">Filters</label>
+                        <button
+                            id="thunderstore-category-filter"
+                            class="button category-filter"
+                            @click="$store.commit('openCategoryFilterModal')"
+                        >
+                            <i class="fas fa-filter" />
+                        </button>
                     </div>
                 </div>
             </div>
@@ -135,6 +137,13 @@ export default class OnlineModView extends Vue {
         this.filterThunderstoreModList();
     }
 
+    @Watch('sortingDirectionModel')
+    onSortingDirectionChanged(newVal: string, oldVal: string) {
+        if (newVal !== oldVal && this.sortingStyleModel !== 'Default') {
+            this.sortThunderstoreModList();
+        }
+    }
+
     @Watch("$store.state.modFilters.allowNsfw")
     @Watch("$store.state.modFilters.categoryFilterMode")
     @Watch("$store.state.modFilters.selectedCategories")
@@ -177,32 +186,40 @@ export default class OnlineModView extends Vue {
     @Watch("sortingStyleModel")
     @Watch("thunderstoreModList")
     sortThunderstoreModList() {
-        const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
+        const sortAscending = this.sortingDirectionModel !== 'STANDARD';
         const sortedList = [...this.thunderstoreModList];
         sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
-            let result: boolean;
+            // Initialize result with a default value
+            let result = 0;
+
             switch (this.sortingStyleModel) {
                 case SortingStyle.LAST_UPDATED:
-                    result = sortDescending ? a.getDateUpdated() < b.getDateUpdated() : a.getDateUpdated() > b.getDateUpdated();
-                    break;
-                case SortingStyle.ALPHABETICAL:
-                    result = sortDescending ? a.getName().localeCompare(b.getName()) > 0 : a.getName().localeCompare(b.getName()) < 0;
+                    // Make sure you have Date objects before calling getTime
+                    const dateA = a.getDateUpdated() instanceof Date ? a.getDateUpdated() : new Date(a.getDateUpdated());
+                    const dateB = b.getDateUpdated() instanceof Date ? b.getDateUpdated() : new Date(b.getDateUpdated());
+                    result = (sortAscending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime());
                     break;
                 case SortingStyle.DOWNLOADS:
-                    result = sortDescending ? a.getDownloadCount() < b.getDownloadCount() : a.getDownloadCount() > b.getDownloadCount();
+                    // Make sure you have numbers before comparing
+                    const downloadsA = Number(a.getDownloadCount());
+                    const downloadsB = Number(b.getDownloadCount());
+                    result = (sortAscending ? downloadsA - downloadsB : downloadsB - downloadsA);
                     break;
                 case SortingStyle.RATING:
-                    result = sortDescending ? a.getRating() < b.getRating() : a.getRating() > b.getRating();
+                    // Make sure you have numbers before comparing
+                    const ratingA = Number(a.getRating());
+                    const ratingB = Number(b.getRating());
+                    result = (sortAscending ? ratingA - ratingB : ratingB - ratingA);
                     break;
-                case SortingStyle.DEFAULT:
-                    result = true;
+                case SortingStyle.ALPHABETICAL:
+                    result = a.getName().localeCompare(b.getName()) * (sortAscending ? -1 : 1);
                     break;
-                default:
-                    result = true;
-                    break;
+                // No need for a default case if all cases are covered
             }
-            return result ? 1 : -1;
+
+            return result;
         });
+
         this.sortedThunderstoreModList = sortedList;
         this.filterThunderstoreModList();
     }
@@ -217,7 +234,17 @@ export default class OnlineModView extends Vue {
     }
 
     async created() {
+        this.sortingDirectionModel = 'STANDARD'; // Ensuring the default sort is standard when component is created
         this.sortThunderstoreModList();
+    }
+
+    toggleSortingDirection() {
+    if (this.sortingStyleModel !== 'Default') {
+        this.sortingDirectionModel = this.sortingDirectionModel === 'STANDARD' ? 'REVERSE' : 'STANDARD';
+        // Adding a key to force Vue to re-render the icon
+        this.$forceUpdate(); // This will force the entire component to update, which can be helpful if Vue is not reactive enough
+        this.sortThunderstoreModList();
+    }
     }
 };
 </script>

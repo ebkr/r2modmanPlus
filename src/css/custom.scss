@@ -481,3 +481,37 @@ code {
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.15);
 }
+
+.category-filter:focus {
+    color: #fff;
+}
+
+.category-filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.category-filter {
+    align-self: flex-end; /* This aligns the button to the right */
+    margin-left: auto; /* This also pushes the button to the right */
+}
+
+.sort-container {
+    display: flex;
+    align-items: center; /* This centers the selector and the icon vertically */
+}
+
+.icon-container {
+    display: flex;
+    align-items: center; /* This centers the icon within the div */
+    margin-left: 0.5em;
+}
+
+.sorting-icon {
+    transition: transform 0.3s ease;
+}
+
+.rotated {
+    transform: rotate(180deg);
+}

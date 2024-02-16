@@ -15,6 +15,10 @@ import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 export default class SearchAndSort extends Vue {
     settings = new ManagerSettings();
 
+    toggleSortingDirection() {
+        this.direction = this.direction === SortDirection.STANDARD ? SortDirection.REVERSE : SortDirection.STANDARD;
+    }
+
     get order() {
         return this.$store.state.profile.order;
     }
@@ -96,22 +100,19 @@ export default class SearchAndSort extends Vue {
 
                 <div class="input-group margin-right">
                     <label for="local-sort-order" class="non-selectable">Sort</label>
-                    <select
-                        v-model="order"
-                        id="local-sort-order"
-                        class="select select--content-spacing margin-right margin-right--half-width">
-                        <option v-for="(option) in orderOptions" :key="`order-option-${option}`">
-                            {{option}}
-                        </option>
-                    </select>
-                    <select
-                        v-model="direction"
-                        id="local-sort-direction"
-                        class="select select--content-spacing">
-                        <option v-for="(option) in directionOptions" :key="`direction-option-${option}`">
-                            {{option}}
-                        </option>
-                    </select>
+                    <div class="sort-container"> <!-- This div wraps the selector and the icon -->
+                        <select
+                            v-model="order"
+                            id="local-sort-order"
+                            class="select select--content-spacing margin-right margin-right--half-width">
+                            <option v-for="(option) in orderOptions" :key="`order-option-${option}`">
+                                {{ option }}
+                            </option>
+                        </select>
+                        <div class="icon-container" @click="toggleSortingDirection" :style="{ cursor: 'pointer' }"> <!-- New div to center the icon vertically -->
+                            <i :class="['fas', 'fa-caret-up', 'sorting-icon', { 'rotated': direction === 'Reverse' }]" class="icon--margin-right"></i>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="input-group">
