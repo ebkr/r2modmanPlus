@@ -175,7 +175,7 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <!-- Show bottom button row -->
-        <a @click="uninstallMod()" class='card-footer-item'>
+        <a @click="uninstallMod()" class='card-footer-item is-danger'>
             Uninstall
         </a>
 

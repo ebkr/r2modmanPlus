@@ -64,7 +64,7 @@ export default class UninstallModModal extends Vue {
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info"
+            <button class="button is-warning"
                     :disabled="isLocked"
                     @click="onUninstallIncludeDependents(mod)">
                 Uninstall all (recommended)

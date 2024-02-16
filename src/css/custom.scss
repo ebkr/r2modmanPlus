@@ -174,13 +174,30 @@ select {
         border-radius: 4px;
     }
 
+    &.is-danger::before {
+        border: 1px solid $danger; // Set default border color to $danger for .is-danger items
+    }
+
     &:hover, &:active, &:focus {
         color: #ffffff;
         &::before {
-            background-color: $scheme-primary;
+            background-color: $scheme-primary; // Default interaction background color
             border: 0;
         }
     }
+
+    &.is-danger:hover, &.is-danger:active, &.is-danger:focus {
+        color: #ffffff; // Text color remains white for readability
+        &::before {
+            background-color: $danger; // Background color for danger state interactions
+            border: 0; // Removes the border on interaction states
+        }
+    }
+}
+
+.card-footer-item.is-danger, .card-footer-item.is-danger::before {
+    color: inherit; /* Takes the color from the parent element */
+    background-color: initial; /* Resets to the default value, which might not be necessary for color but can be used for other properties */
 }
 
 .card-byline, .card-timestamp {
