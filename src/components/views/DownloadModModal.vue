@@ -247,7 +247,7 @@ let assignId = 0;
             const localMods = await ProfileModList.getModList(this.contextProfile!);
             if (localMods instanceof R2Error) {
                 this.downloadingMod = false;
-                this.$emit('error', localMods);
+                this.$store.commit('error/handleError', localMods);
                 return;
             }
             const outdatedMods = localMods.filter(mod => !ModBridge.isCachedLatestVersion(mod));
@@ -270,7 +270,7 @@ let assignId = 0;
                         const existing = DownloadModModal.allVersions[assignIndex]
                         existing[1].failed = true;
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                        this.$emit('error', err);
+                        this.$store.commit('error/handleError', err);
                         return;
                     }
                 } else if (status === StatusEnum.PENDING) {
@@ -302,7 +302,7 @@ let assignId = 0;
                         await this.$store.dispatch('updateModList', modList);
                         const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                         if (err instanceof R2Error) {
-                            this.$emit('error', err);
+                            this.$store.commit('error/handleError', err);
                         }
                     }
                 });
@@ -331,7 +331,7 @@ let assignId = 0;
                             const existing = DownloadModModal.allVersions[assignIndex]
                             existing[1].failed = true;
                             this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            this.$emit('error', err);
+                            this.$store.commit('error/handleError', err);
                             return;
                         }
                     } else if (status === StatusEnum.PENDING) {
@@ -363,7 +363,7 @@ let assignId = 0;
                             await this.$store.dispatch('updateModList', modList);
                             const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                             if (err instanceof R2Error) {
-                                this.$emit('error', err);
+                                this.$store.commit('error/handleError', err);
                             }
                         }
                     });

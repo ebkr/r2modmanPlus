@@ -46,7 +46,6 @@
         <OnlineModList
             :local-mod-list="localModList"
             :paged-mod-list="pagedThunderstoreModList"
-            @error="$emit('error', $event)"
         />
         <div class="in-mod-list" v-if="getPaginationSize() > 1">
             <p class="notification margin-right">

@@ -6,31 +6,14 @@ import R2Error from '../../model/errors/R2Error';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
 export default class UtilityMixin extends Vue {
-    private errorMessage: string = '';
-    private errorStack: string = '';
-    private errorSolution: string = '';
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
     private tsRefreshFailed = false;
-
-    showError(error: R2Error) {
-        this.errorMessage = error.name;
-        this.errorStack = error.message;
-        this.errorSolution = error.solution;
-        LoggerProvider.instance.Log(LogSeverity.ERROR, `[${error.name}]: ${error.message}`);
-    }
-
-    closeErrorModal() {
-        this.errorMessage = '';
-        this.errorStack = '';
-        this.errorSolution = '';
-    }
 
     hookProfileModListRefresh() {
         setInterval(this.refreshProfileModList, this.REFRESH_INTERVAL);
@@ -101,7 +84,7 @@ export default class UtilityMixin extends Vue {
             await CdnProvider.checkCdnConnection();
         } catch (error: unknown) {
             if (error instanceof R2Error) {
-                this.showError(error);
+                this.$store.commit('error/handleError', error);
             } else {
                 console.error(error);
             }

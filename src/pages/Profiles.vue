@@ -156,18 +156,6 @@
         </div>
       </div>
     </div>
-    <!-- Error modal -->
-    <div id="errorModal" :class="['modal', {'is-active':(errorMessage !== '')}]">
-      <div class="modal-background" v-on:click="errorMessage = ''"></div>
-      <div class="modal-content">
-        <div class="notification is-danger">
-          <h3 class="title">Error</h3>
-          <h5 class="title is-5">{{errorMessage}}</h5>
-          <p>{{errorStack}}</p>
-        </div>
-      </div>
-      <button class="modal-close is-large" aria-label="close" v-on:click="errorMessage = ''"></button>
-    </div>
 
     <!-- Importing file modal -->
     <div :class="['modal', {'is-active': showFileSelectionHang}]">
@@ -313,16 +301,8 @@ export default class Profiles extends Vue {
 
     private activeGame!: Game;
 
-    errorMessage: string = '';
-    errorStack: string = '';
-
     get appName(): string {
         return ManagerInformation.APP_NAME;
-    }
-
-    showError(error: R2Error) {
-        this.errorMessage = error.name;
-        this.errorStack = error.message;
     }
 
     doesProfileExist(nameToCheck: string): boolean {
@@ -409,10 +389,8 @@ export default class Profiles extends Vue {
             await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
             await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
-            const err: Error = e as Error;
-            this.showError(
-                new R2Error('Error whilst deleting profile', err.message, null)
-            );
+            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
+            this.$store.commit('error/handleError', err);
         }
         if (
             Profile.getActiveProfile()
@@ -456,7 +434,7 @@ export default class Profiles extends Vue {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;
                 if (err instanceof R2Error) {
-                    this.showError(err);
+                    this.$store.commit('error/handleError', err);
                 }
             } else if (status == StatusEnum.PENDING) {
                 this.percentageImported = Math.floor(progress);
@@ -469,7 +447,7 @@ export default class Profiles extends Vue {
                 }
                 const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
                 if (installResult instanceof R2Error) {
-                    this.showError(installResult);
+                    this.$store.commit('error/handleError', installResult);
                     keepIterating = false;
                     this.importingProfile = false;
                     return;
@@ -507,7 +485,8 @@ export default class Profiles extends Vue {
             const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
             await this.importProfileHandler([filepath]);
         } catch (e: any) {
-            this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
+            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+            this.$store.commit('error/handleError', err);
         }
     }
 
@@ -622,9 +601,8 @@ export default class Profiles extends Vue {
                 }) as EventListener), {once: true});
             }
         } catch (e) {
-            const err = new R2Error("Failed to import profile", (e as Error).message, null);
-            this.showError(err);
-            return;
+            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+            this.$store.commit('error/handleError', err);
         }
     }
 
