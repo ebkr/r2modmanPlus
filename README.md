@@ -49,6 +49,8 @@ You can choose to update, enable/disable or even uninstall mods with a simple cl
 ##### Note
 - Temporary workaround to force Proton on Linux systems
     - Place a `.forceproton` file in the game directory whilst a solution is in development
+- Running with Steam flatpak
+    - Give Steam access to the configured r2modman's data folder (default is ~/.config/r2modmanPlus-local) through [Flatseal](https://flathub.org/apps/com.github.tchx84.Flatseal) or command line: `flatpak override --user com.valvesoftware.Steam --filesystem=~/.config/r2modmanPlus-local`
 
 ### Updating
 r2modman will automatically download any available updates whilst you use it.
