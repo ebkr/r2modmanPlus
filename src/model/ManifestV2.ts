@@ -269,7 +269,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     }
 
     public isDeprecated(): boolean {
-        const tsMod = ModBridge.getThunderstoreModFromMod(this, ThunderstorePackages.PACKAGES);
+        const tsMod = ModBridge.getCachedThunderstoreModFromMod(this);
         return tsMod !== undefined ? tsMod.isDeprecated() : false;
     }
 

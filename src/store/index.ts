@@ -3,9 +3,11 @@ import Vuex, { ActionContext } from 'vuex';
 
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
+import ProfileModule from './modules/ProfileModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
+import ThunderstoreDownloaderProvider from "../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 Vue.use(Vuex);
@@ -83,9 +85,18 @@ export const store = {
             state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
         }
     },
+    getters: {
+        localModsWithUpdates(state: State) {
+            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
+                state.localModList,
+                state.thunderstoreModList
+            );
+        }
+    },
     modules: {
         modals: ModalsModule,
         modFilters: ModFilterModule,
+        profile: ProfileModule,
     },
 
     // enable strict mode (adds overhead!)

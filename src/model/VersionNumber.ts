@@ -25,12 +25,12 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
                 } else {
                     throw Error(`VersionNumber: Number found was NaN. Received: ${splitNumbers}`);
                 }
-            })
+            });
             // If successful, assign values.
             this.major = numberArray[0];
             this.minor = numberArray[1];
             this.patch = numberArray[2];
-        } catch(e) {
+        } catch (e) {
             // If an error was thrown, log reason.
             return new VersionNumber('0.0.0');
         }
@@ -63,5 +63,21 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
         const minorCompare = Math.sign(this.minor - version.minor);
         const patchCompare = Math.sign(this.patch - version.patch);
         return (majorCompare === 0 && minorCompare === 0 && patchCompare === 0);
+    }
+
+    public isEqualOrNewerThan(version: VersionNumber): boolean {
+        return this.isEqualTo(version) || this.isNewerThan(version);
+    }
+
+    public compareToDescending(version: VersionNumber): number {
+        var majorCompare = version.major - this.major;
+        var minorCompare = version.minor - this.minor;
+        var patchCompare = version.patch - this.patch;
+
+        return majorCompare == 0
+            ? minorCompare == 0
+                ? patchCompare
+                : minorCompare
+            : majorCompare;
     }
 }

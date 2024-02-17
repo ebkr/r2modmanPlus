@@ -56,6 +56,15 @@ export default class UtilityMixin extends Vue {
     }
 
     async refreshThunderstoreModList() {
+        // Don't do background update on index route since the game
+        // isn't really chosen yet, nor in the splash screen since it
+        // proactively updates the package list.
+        const exemptRoutes = ["index", "splash"];
+
+        if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
+            return;
+        }
+
         const response = await ThunderstorePackages.update(GameManager.activeGame);
         await ApiCacheUtils.storeLastRequest(response.data);
         await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);

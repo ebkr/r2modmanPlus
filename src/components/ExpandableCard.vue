@@ -79,10 +79,6 @@
             this.visible = !this.visible;
         }
 
-        emitMove(direction: string) {
-            this.$emit("move" + direction);
-        }
-
         async created() {
             this.visible = this.expandedByDefault;
         }

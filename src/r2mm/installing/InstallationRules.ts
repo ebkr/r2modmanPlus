@@ -1,6 +1,7 @@
 import GameManager from '../../model/game/GameManager';
 import * as path from 'path';
 import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
+import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
 
 export type CoreRuleType = {
     gameName: GAME_NAME,
@@ -39,7 +40,9 @@ export default class InstallationRules {
     public static validate() {
         GameManager.gameList.forEach(value => {
             if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
-                throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
+                if (GetInstallerIdForPlugin(value.packageLoader) === null) {
+                    throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
+                }
             }
         })
     }
@@ -52,27 +55,15 @@ export default class InstallationRules {
     public static getAllManagedPaths(rules: RuleSubtype[], pathBuilder?: string): ManagedRule[] {
         const paths: ManagedRule[] = [];
         rules.forEach(value => {
-            if (pathBuilder === undefined) {
-                paths.push({
-                    route: value.route,
-                    trackingMethod: value.trackingMethod,
-                    extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false,
-                    ref: value
-                });
-            } else {
-                paths.push({
-                    route: path.join(pathBuilder, value.route),
-                    trackingMethod: value.trackingMethod,
-                    extensions: value.defaultFileExtensions,
-                    isDefaultLocation: value.isDefaultLocation || false,
-                    ref: value
-                });
-            }
-            let subPath = pathBuilder === undefined ? value.route : path.join(pathBuilder, value.route);
-            this.getAllManagedPaths(value.subRoutes, subPath).forEach(value1 => {
-                paths.push(value1);
+            const route = !pathBuilder ? value.route : path.join(pathBuilder, value.route);
+            paths.push({
+                route: route,
+                trackingMethod: value.trackingMethod,
+                extensions: value.defaultFileExtensions,
+                isDefaultLocation: value.isDefaultLocation || false,
+                ref: value
             });
+            this.getAllManagedPaths(value.subRoutes, route).forEach(x => paths.push(x));
         });
         return paths;
     }

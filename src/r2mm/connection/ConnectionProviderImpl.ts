@@ -6,6 +6,7 @@ import GameManager from '../../model/game/GameManager';
 import ConnectionProvider, { DownloadProgressed } from '../../providers/generic/connection/ConnectionProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import { sleep } from '../../utils/Common';
+import { makeLongRunningGetRequest } from '../../utils/HttpUtils';
 
 export default class ConnectionProviderImpl extends ConnectionProvider {
 
@@ -37,14 +38,10 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
     }
 
     private async getPackagesFromRemote(game: Game, downloadProgressed?: DownloadProgressed) {
-        const response = await axios.get(game.thunderstoreUrl, {
-            onDownloadProgress: progress => {
-                if (downloadProgressed !== undefined) {
-                    downloadProgressed((progress.loaded / progress.total) * 100);
-                }
-            },
-            timeout: 30000
-        });
+        const response = await makeLongRunningGetRequest(
+            game.thunderstoreUrl,
+            {downloadProgressed}
+        )
 
         if (isApiResonse(response)) {
             return response as ApiResponse;

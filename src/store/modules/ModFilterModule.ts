@@ -10,6 +10,9 @@ interface State {
     showDeprecatedPackages: boolean;
 }
 
+/**
+ * State for OnlineModList, i.e. list for all the mods available on Thunderstore.
+ */
 export default {
     namespaced: true,
 

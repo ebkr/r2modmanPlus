@@ -15,14 +15,15 @@ export default class R2Error extends Error {
 
     public static fromThrownValue(
         error: R2Error | Error | unknown,
-        defaultName: string = "An unhandled error occurred",
+        name: string = "An unhandled error occurred",
+        solution: string | null = null,
     ): R2Error {
         if (error instanceof R2Error) {
             return error
         } else if (error instanceof Error) {
-            return new R2Error(defaultName, error.message);
+            return new R2Error(name, error.message, solution);
         } else {
-            return new R2Error(defaultName, `${error}`);
+            return new R2Error(name, `${error}`, solution);
         }
     }
 }
