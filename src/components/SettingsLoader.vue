@@ -173,14 +173,12 @@ export default class SettingsLoader extends Vue {
 }
 
 const getDefaultGame = () => {
-    const defaultGame = GameManager.unsetGame();
-
-    // Don't trust the non-null asserted typing of .unsetGame().
-    if (defaultGame === undefined) {
-        throw new Error("GameManager.unsetGame() returned undefined");
+    // Don't trust the non-null asserted typing of GameManager.defaultGame.
+    if (GameManager.defaultGame === undefined) {
+        throw new Error("GameManager.defaultGame returned undefined");
     }
 
-    return defaultGame;
+    return GameManager.defaultGame;
 };
 
 </script>

@@ -586,12 +586,17 @@ export default class GameManager {
         return this._activeGame;
     }
 
-    static get gameList(): Game[] {
-        return [...this._gameList];
-    }
-
     static set activeGame(game: Game) {
         this._activeGame = game;
+    }
+
+    // Used for loading game specific settings before game is selected.
+    static get defaultGame(): Game {
+        return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+    }
+
+    static get gameList(): Game[] {
+        return [...this._gameList];
     }
 
     public static async activate(game: Game, platform: StorePlatform) {
@@ -599,11 +604,6 @@ export default class GameManager {
         this._activeGame.setActivePlatformByStore(platform);
         PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);
         await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-    }
-
-    // Return RiskOfRain2 game as base startup to be used for settings load.
-    public static unsetGame(): Game {
-        return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
     }
 
     public static findByFolderName(name?: string|null) {
