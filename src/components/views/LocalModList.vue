@@ -121,7 +121,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
 
         async updateModListAfterChange(updatedList: ManifestV2[]) {
-            await this.$store.dispatch("updateModList", updatedList);
+            await this.$store.dispatch('profile/updateModList', updatedList);
 
             const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             if (err instanceof R2Error) {
@@ -130,11 +130,11 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
 
         getDependantList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependantList(mod, this.$store.state.localModList);
+            return Dependants.getDependantList(mod, this.$store.state.profile.modList);
         }
 
         getDependencyList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependencyList(mod, this.$store.state.localModList);
+            return Dependants.getDependencyList(mod, this.$store.state.profile.modList);
         }
 
         async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<ManifestV2[] | R2Error> {

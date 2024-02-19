@@ -51,7 +51,7 @@ export default class UtilityMixin extends Vue {
         const modList = await ProfileModList.getModList(profile);
 
         if (!(modList instanceof R2Error)) {
-            this.$store.dispatch("updateModList", modList);
+            await this.$store.dispatch("profile/updateModList", modList);
         }
     }
 

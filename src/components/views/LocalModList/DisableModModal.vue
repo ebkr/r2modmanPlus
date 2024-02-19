@@ -14,7 +14,7 @@ export default class DisableModModal extends Vue {
     modBeingDisabled: string | null = null;
 
     get dependants() {
-        return Dependants.getDependantList(this.mod, this.$store.state.localModList);
+        return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
     }
 
     get isLocked(): boolean {

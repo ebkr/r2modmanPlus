@@ -102,7 +102,7 @@ export default class OnlineModView extends Vue {
     thunderstoreSearchFilter = "";
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get thunderstoreModList(): ThunderstoreMod[] {

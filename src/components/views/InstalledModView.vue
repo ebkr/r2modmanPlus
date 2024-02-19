@@ -56,11 +56,11 @@ export default class InstalledModView extends Vue {
     }
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get numberOfModsWithUpdates(): number {
-        return this.$store.getters.localModsWithUpdates.length;
+        return this.$store.getters['profile/modsWithUpdates'].length;
     }
 };
 </script>

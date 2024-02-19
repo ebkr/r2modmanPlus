@@ -81,7 +81,7 @@
                         <p>The following mods will be downloaded and installed:</p>
                         <br/>
                         <ul class="list">
-                            <li class="list-item" v-for='(key, index) in $store.getters.localModsWithUpdates'
+                            <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
                                 :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
                                 {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
                             </li>
@@ -299,7 +299,7 @@ let assignId = 0;
                     this.downloadingMod = false;
                     const modList = await ProfileModList.getModList(this.contextProfile!);
                     if (!(modList instanceof R2Error)) {
-                        await this.$store.dispatch('updateModList', modList);
+                        await this.$store.dispatch('profile/updateModList', modList);
                         const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                         if (err instanceof R2Error) {
                             this.$emit('error', err);
@@ -360,7 +360,7 @@ let assignId = 0;
                         this.downloadingMod = false;
                         const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('updateModList', modList);
+                            await this.$store.dispatch('profile/updateModList', modList);
                             const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                             if (err instanceof R2Error) {
                                 this.$emit('error', err);
