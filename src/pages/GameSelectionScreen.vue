@@ -287,6 +287,7 @@ export default class GameSelectionScreen extends Vue {
         const settings = await ManagerSettings.getSingleton(this.selectedGame);
         await settings.setLastSelectedGame(this.selectedGame);
         await GameManager.activate(this.selectedGame, this.selectedPlatform);
+        await this.$store.dispatch("setActiveGame", this.selectedGame);
 
         await this.$router.push({name: "splash"});
     }
