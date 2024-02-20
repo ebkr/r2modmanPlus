@@ -11,6 +11,7 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import SearchUtils from '../../utils/SearchUtils';
@@ -78,15 +79,6 @@ export default {
     },
 
     mutations: {
-        initialize(
-            state: State,
-            values: [SortNaming, SortDirection, SortLocalDisabledMods]
-        ) {
-            state.order = values[0];
-            state.direction = values[1];
-            state.disabledPosition = values[2];
-        },
-
         // Avoid calling this directly, prefer updateModList action to
         // ensure TSMM specific code gets called.
         setModList(state: State, list: ManifestV2[]) {
@@ -184,8 +176,30 @@ export default {
             }
         },
 
+        async loadOrderingSettings({commit, rootGetters}) {
+            const settings: ManagerSettings = rootGetters['settings'];
+            commit('setOrder', settings.getInstalledSortBy());
+            commit('setDirection', settings.getInstalledSortDirection());
+            commit('setDisabledPosition', settings.getInstalledDisablePosition());
+        },
+
+        async updateDirection({commit, rootGetters}, value: SortDirection) {
+            commit('setDirection', value);
+            rootGetters['settings'].setInstalledSortDirection(value);
+        },
+
+        async updateDisabledPosition({commit, rootGetters}, value: SortLocalDisabledMods) {
+            commit('setDisabledPosition', value);
+            rootGetters['settings'].setInstalledDisablePosition(value);
+        },
+
         async updateModList({commit}, modList: ManifestV2[]) {
             commit('setModList', modList);
+        },
+
+        async updateOrder({commit, rootGetters}, value: SortNaming) {
+            commit('setOrder', value);
+            rootGetters['settings'].setInstalledSortBy(value);
         },
     },
 }

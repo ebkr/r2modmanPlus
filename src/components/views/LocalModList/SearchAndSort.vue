@@ -1,11 +1,9 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { DeferredInput } from '../../all';
-import GameManager from '../../../model/game/GameManager';
 import { SortDirection } from '../../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../../model/real_enums/sort/SortNaming';
-import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 
 @Component({
     components: {
@@ -13,15 +11,12 @@ import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
     }
 })
 export default class SearchAndSort extends Vue {
-    settings = new ManagerSettings();
-
     get order() {
         return this.$store.state.profile.order;
     }
 
     set order(value: SortNaming) {
-        this.$store.commit('profile/setOrder', value);
-        this.settings.setInstalledSortBy(value);
+        this.$store.dispatch('profile/updateOrder', value);
     }
 
     get direction() {
@@ -29,8 +24,7 @@ export default class SearchAndSort extends Vue {
     }
 
     set direction(value: SortDirection) {
-        this.$store.commit('profile/setDirection', value);
-        this.settings.setInstalledSortDirection(value);
+        this.$store.dispatch('profile/updateDirection', value);
     }
 
     get disabledPosition() {
@@ -38,8 +32,7 @@ export default class SearchAndSort extends Vue {
     }
 
     set disabledPosition(value: SortLocalDisabledMods) {
-        this.$store.commit('profile/setDisabledPosition', value);
-        this.settings.setInstalledDisablePosition(value);
+        this.$store.dispatch('profile/updateDisabledPosition', value);
     }
 
     get search() {
@@ -62,14 +55,8 @@ export default class SearchAndSort extends Vue {
         return Object.values(SortLocalDisabledMods);
     }
 
-    async created() {
-        this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-
-        this.$store.commit('profile/initialize', [
-            this.settings.getInstalledSortBy(),
-            this.settings.getInstalledSortDirection(),
-            this.settings.getInstalledDisablePosition()
-        ]);
+    async beforeCreate() {
+        await this.$store.dispatch('profile/loadOrderingSettings');
     }
 
     async destroyed() {
