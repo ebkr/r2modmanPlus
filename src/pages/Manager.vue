@@ -644,8 +644,20 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             }
         }
 
-        beforeCreate() {
+        async beforeCreate() {
             this.activeGame = GameManager.activeGame;
+
+            // Used by SearchAndSort, but need to be called here to
+            // ensure the settings are loaded before LocalModList
+            // accesses visibleModList from Vuex store.
+            await this.$store.dispatch('profile/loadOrderingSettings');
+
+            // Reset the mod list to prevent the previous profile's list
+            // flashing on the screen while a new profile's list is loaded.
+            await this.$store.dispatch('profile/updateModList', []);
+
+            // Used by OnlineModView, called here for consistency.
+            this.$store.commit('modFilters/reset');
         }
 
 		async created() {
@@ -659,7 +671,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
                 this.$emit('error', newModList);
 			}
-			this.$store.commit("modFilters/reset");
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);

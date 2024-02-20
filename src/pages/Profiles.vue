@@ -444,7 +444,6 @@ export default class Profiles extends Vue {
     }
 
     async setProfileAndContinue() {
-        await this.$store.dispatch('profile/updateModList', []);
         await settings.setProfile(Profile.getActiveProfile().getProfileName());
         await this.$router.push({name: 'manager.installed'});
     }

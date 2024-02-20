@@ -55,10 +55,6 @@ export default class SearchAndSort extends Vue {
         return Object.values(SortLocalDisabledMods);
     }
 
-    async beforeCreate() {
-        await this.$store.dispatch('profile/loadOrderingSettings');
-    }
-
     async destroyed() {
         this.$store.commit('profile/setSearchQuery', '');
     }

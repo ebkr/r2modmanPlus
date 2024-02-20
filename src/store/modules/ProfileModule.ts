@@ -56,9 +56,8 @@ export default {
                 );
             }
 
-            // Theoretically sorters can be undefined to avoid having to
-            // mix ManagerSettings singleton to VueX store.
             if (!state.order || !state.direction || !state.disabledPosition) {
+                console.warn("Called profile/visibleModList before settings were loaded. Did you forget to call loadOrderingSettings action?");
                 return mods;
             }
 
