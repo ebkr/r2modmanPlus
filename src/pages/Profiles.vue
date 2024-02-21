@@ -375,9 +375,6 @@ export default class Profiles extends Vue {
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
-        if (this.addingProfile) {
-            document.dispatchEvent(new CustomEvent("created-profile", {detail: ''}));
-        }
     }
 
     removeProfile() {
