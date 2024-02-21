@@ -278,6 +278,8 @@ export default class Profiles extends Vue {
 
     private profileList: string[] = ['Default'];
 
+    // The profile currently selected from the profileList, which may or
+    // may not be the "active profile" stored in Profile.ts and Vuex.
     private selectedProfile: string = '';
 
     private addingProfile: boolean = false;
@@ -338,12 +340,15 @@ export default class Profiles extends Vue {
         await this.updateProfileList();
     }
 
-    selectProfile(profile: string) {
-        new Profile(profile);
+    // User selected a profile from the list of existing profile.
+    // This does not mean the "Select profile" button was pressed yet.
+    async selectProfile(profile: string) {
         this.selectedProfile = profile;
-        settings.setProfile(profile);
+        await this.$store.dispatch('profile/updateActiveProfile', profile);
     }
 
+    // Open modal for entering a name for a new profile. Triggered
+    // either through user action or profile importing via file or code.
     newProfile(type: string, nameOverride: string | undefined) {
         this.newProfileName = nameOverride || '';
         this.addingProfile = true;
@@ -355,18 +360,21 @@ export default class Profiles extends Vue {
         });
     }
 
+    // User confirmed creation of a new profile with a name that didn't exist before.
+    // The profile can be either empty or populated via importing.
     createProfile(profile: string) {
         const safeName = this.makeProfileNameSafe(profile);
         if (safeName === '') {
             return;
         }
-        new Profile(safeName);
+        this.$store.commit('profile/setActiveProfile', safeName);
         this.profileList.push(safeName);
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
+    // User confirmed updating an existing profile via importing.
     updateProfile() {
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.selectedProfile}));
@@ -401,11 +409,8 @@ export default class Profiles extends Vue {
                 }
             }
         }
-        new Profile('Default');
+        await this.$store.dispatch('profile/updateActiveProfile', 'Default');
         this.selectedProfile = Profile.getActiveProfile().getProfileName();
-
-        const settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
 
         this.closeRemoveProfileModal();
     }
@@ -534,7 +539,7 @@ export default class Profiles extends Vue {
                                 await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
                                 await fs.rmdir(path.join(Profile.getDirectory(), profileName));
                             }
-                            new Profile(profileName);
+                            this.$store.commit('profile/setActiveProfile', profileName);
                         }
                         if (parsed.getMods().length > 0) {
                             this.importingProfile = true;
@@ -566,7 +571,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        new Profile(event.detail);
+                                        this.$store.commit('profile/setActiveProfile', event.detail);
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -656,8 +661,7 @@ export default class Profiles extends Vue {
         settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.load();
 
-        this.selectedProfile = settings.getContext().gameSpecific.lastSelectedProfile;
-        new Profile(this.selectedProfile);
+        this.selectedProfile = await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
