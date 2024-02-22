@@ -1,17 +1,8 @@
 <template>
     <div>
         <SearchAndSort />
+        <DisableModModal @error="emitError" />
 
-        <DisableModModal
-            v-if="dependencyListDisplayType === 'disable' && !!selectedManifestMod && showingDependencyList"
-            :on-close="() => { showingDependencyList = false; }"
-            :mod="selectedManifestMod"
-            :dependency-list="getDependencyList(selectedManifestMod)"
-            :dependants-list="getDependantList(selectedManifestMod)"
-            :mod-being-disabled="modBeingDisabled"
-            :on-disable-include-dependents ="disableModWithDependents"
-            :on-disable-exclude-dependents="disableModExcludeDependents"
-        />
         <UninstallModModal
             v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
@@ -41,7 +32,7 @@
                 v-for='(mod, index) in draggableList'
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
-                @disableMod="disableModRequireConfirmation"
+                @error="emitError"
                 @enableMod="enableMod"
                 @uninstallMod="uninstallModRequireConfirmation"
                 @updateMod="updateMod"
@@ -106,7 +97,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
         private modBeingUninstalled: string | null = null;
-        private modBeingDisabled: string | null = null;
 
         // Context
         private contextProfile: Profile | null = null;
@@ -168,59 +158,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             return modList;
         }
 
-        async disableModWithDependents(mod: ManifestV2) {
-            await this.disableMods([...this.getDependantList(mod), mod]);
-        }
-
-        async disableModExcludeDependents(mod: ManifestV2) {
-            await this.disableMods([mod]);
-        }
-
-        async disableMods(modsToDisable: ManifestV2[]) {
-            try {
-                const result = await this.performDisable(modsToDisable);
-                if (result instanceof R2Error) {
-                    this.$emit('error', result);
-                    return;
-                }
-            } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit("error", err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            } finally {
-                this.selectedManifestMod = null;
-                this.modBeingDisabled = null;
-            }
-        }
-
-        async performDisable(mods: ManifestV2[]): Promise<R2Error | void> {
-            this.modBeingDisabled = null;
-            for (let mod of mods) {
-                this.modBeingDisabled = mod.getName();
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                if (disableErr instanceof R2Error) {
-                    // Failed to disable
-                    this.showingDependencyList = false;
-                    this.modBeingDisabled = null;
-                    this.$emit('error', disableErr);
-                    return disableErr;
-                }
-            }
-            const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
-                updatingMod.disable();
-            });
-            if (updatedList instanceof R2Error) {
-                // Failed to update mod list.
-                this.showingDependencyList = false;
-                this.modBeingDisabled = null;
-                this.$emit('error', updatedList);
-                return updatedList;
-            }
-            this.modBeingDisabled = null;
-            await this.updateModListAfterChange(updatedList);
-        }
-
         async uninstallModWithDependents(mod: ManifestV2) {
             await this.uninstallMods([...this.getDependantList(mod), mod]);
         }
@@ -275,16 +212,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             } else {
                 this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
             }
-        }
-
-        disableModRequireConfirmation(mod: ManifestV2) {
-            for (const value of this.getDependantList(mod)) {
-               if (value.isEnabled()) {
-                   this.showDependencyList(mod, DependencyListDisplayType.DISABLE);
-                   return;
-               }
-            }
-            this.performDisable([mod]);
         }
 
         viewDependencyList(mod: ManifestV2) {
