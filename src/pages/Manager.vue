@@ -499,32 +499,21 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             }
 		}
 
-        async setAllModsEnabled(enabled: boolean) {
+        async setAllModsEnabled() {
             let lastSuccessfulUpdate: ManifestV2[] = [];
 
             try {
                 for (const mod of this.localModList) {
-                    if (mod.isEnabled() === enabled) {
+                    if (mod.isEnabled()) {
                         continue;
                     }
 
-                    let profileErr: R2Error | void;
-                    if (enabled) {
-                        profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                    } else {
-                        profileErr = await ProfileInstallerProvider.instance.disableMod(mod, this.contextProfile!);
-                    }
+                    const profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
                     if (profileErr instanceof R2Error) {
                         this.showError(profileErr);
                         continue;
                     }
-                    const update: ManifestV2[] | R2Error = await ProfileModList.updateMod(mod, this.contextProfile!, async (updatingMod: ManifestV2) => {
-                        if (enabled) {
-                            updatingMod.enable();
-                        } else {
-                            updatingMod.disable();
-                        }
-                    });
+                    const update = await ProfileModList.updateMod(mod, this.contextProfile!, async (mod) => mod.enable());
                     if (update instanceof R2Error) {
                         this.showError(update);
                     } else {
@@ -532,8 +521,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     }
                 }
             } catch (e) {
-                const name = `Error ${enabled ? "enabling" : "disabling"} mods`;
-                this.showError(R2Error.fromThrownValue(e, name));
+                this.showError(R2Error.fromThrownValue(e, "Error enabling mods"));
             } finally {
                 if (lastSuccessfulUpdate.length) {
                     await this.$store.dispatch("updateModList", lastSuccessfulUpdate);
@@ -572,7 +560,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             });
         }
 
-        handleSettingsCallbacks(invokedSetting: any) {
+        async handleSettingsCallbacks(invokedSetting: any) {
 		    switch(invokedSetting) {
 		        case "BrowseDataFolder":
 		            this.browseDataFolder();
@@ -625,10 +613,14 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     this.settings = (() => this.settings)();
                     break;
                 case "EnableAll":
-                    this.setAllModsEnabled(true);
+                    await this.setAllModsEnabled();
                     break;
                 case "DisableAll":
-                    this.setAllModsEnabled(false);
+                    await this.$store.dispatch(
+                        "profile/disableModsFromActiveProfile",
+                        {mods: this.$store.state.localModList}
+                    );
+                    await this.$router.push({name: "manager.installed"});
                     break;
                 case "UpdateAllMods":
                     this.$store.commit("openUpdateAllModsModal");
