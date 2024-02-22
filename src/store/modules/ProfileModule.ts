@@ -57,6 +57,10 @@ export default {
             return new Profile('Default');
         },
 
+        activeProfileName(_state, getters) {
+            return getters.activeProfile.getProfileName();
+        },
+
         modsWithUpdates(state, _getters, rootState): ThunderstoreCombo[] {
             return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
                 state.modList,

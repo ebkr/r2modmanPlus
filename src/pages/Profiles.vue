@@ -44,7 +44,7 @@
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
                   <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button class="button is-info" v-else @click="updateProfile(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
               </template>
               <template v-if="renamingProfile">
                   <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="selectProfile(profileName)">
+                  <a @click="selectedProfile = profileName">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -278,10 +278,6 @@ export default class Profiles extends Vue {
 
     private profileList: string[] = ['Default'];
 
-    // The profile currently selected from the profileList, which may or
-    // may not be the "active profile" stored in Profile.ts and Vuex.
-    private selectedProfile: string = '';
-
     private addingProfile: boolean = false;
     private newProfileName: string = '';
     private addingProfileType: string = 'Create';
@@ -302,6 +298,14 @@ export default class Profiles extends Vue {
     private renamingProfile: boolean = false;
 
     private activeGame!: Game;
+
+    get selectedProfile(): string {
+        return this.$store.getters['profile/activeProfileName'];
+    }
+
+    set selectedProfile(profileName: string) {
+        this.$store.dispatch('profile/updateActiveProfile', profileName);
+    }
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
@@ -338,13 +342,7 @@ export default class Profiles extends Vue {
         );
         this.closeNewProfileModal();
         await this.updateProfileList();
-    }
-
-    // User selected a profile from the list of existing profile.
-    // This does not mean the "Select profile" button was pressed yet.
-    async selectProfile(profile: string) {
-        this.selectedProfile = profile;
-        await this.$store.dispatch('profile/updateActiveProfile', profile);
+        this.selectedProfile = newName;
     }
 
     // Open modal for entering a name for a new profile. Triggered
@@ -367,9 +365,8 @@ export default class Profiles extends Vue {
         if (safeName === '') {
             return;
         }
-        this.$store.commit('profile/setActiveProfile', safeName);
         this.profileList.push(safeName);
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
+        this.selectedProfile = safeName;
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
@@ -409,9 +406,7 @@ export default class Profiles extends Vue {
                 }
             }
         }
-        await this.$store.dispatch('profile/updateActiveProfile', 'Default');
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
-
+        this.selectedProfile = 'Default';
         this.closeRemoveProfileModal();
     }
 
@@ -428,7 +423,6 @@ export default class Profiles extends Vue {
         // flashing on the screen while a new profile's list is loaded.
         await this.$store.dispatch('profile/updateModList', []);
 
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
         await this.$router.push({name: 'manager.installed'});
     }
 
@@ -539,6 +533,8 @@ export default class Profiles extends Vue {
                                 await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
                                 await fs.rmdir(path.join(Profile.getDirectory(), profileName));
                             }
+                            // Use commit instead of dispatch so _profile_update is not
+                            // saved to persistent storage if something goes wrong.
                             this.$store.commit('profile/setActiveProfile', profileName);
                         }
                         if (parsed.getMods().length > 0) {
@@ -571,7 +567,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        this.$store.commit('profile/setActiveProfile', event.detail);
+                                        this.selectedProfile = event.detail;
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -654,14 +650,13 @@ export default class Profiles extends Vue {
     }
 
     async created() {
-
         this.activeGame = GameManager.activeGame;
 
         fs = FsProvider.instance;
         settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.load();
 
-        this.selectedProfile = await this.$store.dispatch('profile/loadLastSelectedProfile');
+        await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
