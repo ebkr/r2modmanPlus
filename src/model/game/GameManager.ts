@@ -569,7 +569,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
         new Game(
             "Voices of the Void", "VotV", "VotV",
-            "", ["VotV-Win64-Shipping.exe"], "VotV",
+            "", ["VotV.exe"], "VotV",
             "https://thunderstore.io/c/voices-of-the-void/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.OTHER)], "VotV.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["votv"]),
