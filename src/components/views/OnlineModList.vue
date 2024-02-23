@@ -91,7 +91,7 @@ export default class OnlineModList extends Vue {
     private funkyMode: boolean = false;
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get deprecationMap(): Map<string, boolean> {

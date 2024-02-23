@@ -5,9 +5,7 @@ import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
 import { FolderMigration } from '../migrations/FolderMigration';
-import ManifestV2 from '../model/ManifestV2';
 import ThunderstoreMod from '../model/ThunderstoreMod';
-import ThunderstoreDownloaderProvider from "../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 Vue.use(Vuex);
@@ -17,7 +15,6 @@ export interface State {
     deprecatedMods: Map<string, boolean>;
     dismissedUpdateAll: boolean;
     isMigrationChecked: boolean;
-    localModList: ManifestV2[];
     thunderstoreModList: ThunderstoreMod[];
 }
 
@@ -30,7 +27,6 @@ type Context = ActionContext<State, State>;
 
 export const store = {
     state: {
-        localModList: [],
         thunderstoreModList: [],
         dismissedUpdateAll: false,
         isMigrationChecked: false,
@@ -38,9 +34,6 @@ export const store = {
         deprecatedMods: new Map<string, boolean>(),
     },
     actions: {
-        updateModList({ commit }: Context, modList: ManifestV2[]) {
-            commit('setLocalModList', modList);
-        },
         updateThunderstoreModList({ commit }: Context, modList: ThunderstoreMod[]) {
             commit('setThunderstoreModList', modList);
             commit('setDeprecatedMods', modList);
@@ -66,9 +59,6 @@ export const store = {
         }
     },
     mutations: {
-        setLocalModList(state: State, list: ManifestV2[]) {
-            state.localModList = list;
-        },
         setThunderstoreModList(state: State, list: ThunderstoreMod[]) {
             state.thunderstoreModList = list;
         },
@@ -85,14 +75,7 @@ export const store = {
             state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
         }
     },
-    getters: {
-        localModsWithUpdates(state: State) {
-            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
-                state.localModList,
-                state.thunderstoreModList
-            );
-        }
-    },
+    getters: {},
     modules: {
         modals: ModalsModule,
         modFilters: ModFilterModule,

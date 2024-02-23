@@ -40,7 +40,7 @@ export default class LocalModCard extends Vue {
     }
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get tsMod() {
@@ -76,7 +76,7 @@ export default class LocalModCard extends Vue {
     }
 
     async disableMod() {
-        const dependants = Dependants.getDependantList(this.mod, this.$store.state.localModList);
+        const dependants = Dependants.getDependantList(this.mod, this.localModList);
 
         for (const mod of dependants) {
             if (mod.isEnabled()) {

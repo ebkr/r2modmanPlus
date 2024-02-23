@@ -297,7 +297,7 @@ export default class LocalFileImportModal extends Vue {
                 this.showError(updatedModListResult);
                 return;
             }
-            await this.$store.dispatch("updateModList", updatedModListResult);
+            await this.$store.dispatch("profile/updateModList", updatedModListResult);
             this.emitClose();
         });
 

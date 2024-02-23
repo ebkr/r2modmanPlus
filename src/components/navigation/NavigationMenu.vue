@@ -91,7 +91,7 @@ export default class NavigationMenu extends Vue {
     }
 
     get localModCount(): number {
-        return (this.$store.state.localModList || []).length;
+        return this.$store.state.profile.modList.length;
     }
 
     getTagLinkClasses(routeNames: string[]) {

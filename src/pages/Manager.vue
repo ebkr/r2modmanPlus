@@ -212,7 +212,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         }
 
 		get localModList(): ManifestV2[] {
-			return this.$store.state.localModList || [];
+			return this.$store.state.profile.modList;
 		}
 
 		showError(error: R2Error) {
@@ -524,7 +524,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                 this.showError(R2Error.fromThrownValue(e, "Error enabling mods"));
             } finally {
                 if (lastSuccessfulUpdate.length) {
-                    await this.$store.dispatch("updateModList", lastSuccessfulUpdate);
+                    await this.$store.dispatch('profile/updateModList', lastSuccessfulUpdate);
                 }
             }
 
@@ -618,7 +618,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                 case "DisableAll":
                     await this.$store.dispatch(
                         "profile/disableModsFromActiveProfile",
-                        {mods: this.$store.state.localModList}
+                        {mods: this.localModList}
                     );
                     await this.$router.push({name: "manager.installed"});
                     break;
@@ -635,9 +635,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     CacheUtil.clean();
                     break;
                 case "RefreshedThunderstorePackages":
-                    ProfileModList.getModList(this.contextProfile!).then(value => {
+                    ProfileModList.getModList(this.contextProfile!).then(async value => {
                         if (!(value instanceof R2Error)) {
-                            this.$store.dispatch("updateModList", value);
+                            await this.$store.dispatch("profile/updateModList", value);
                         }
                     });
                     break;
@@ -654,7 +654,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
 			if (!(newModList instanceof R2Error)) {
-				await this.$store.dispatch("updateModList", newModList);
+				await this.$store.dispatch('profile/updateModList', newModList);
 			} else {
                 LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `Failed to retrieve local mod list\n-> ${newModList.message}`);
                 this.$emit('error', newModList);
@@ -672,7 +672,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     .then(async value => {
                         const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('updateModList', modList);
+                            await this.$store.dispatch('profile/updateModList', modList);
                         } else {
                             this.showError(modList);
                         }

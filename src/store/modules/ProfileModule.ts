@@ -7,13 +7,16 @@ import Profile from "../../model/Profile";
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
+    modList: ManifestV2[];
     order?: SortNaming;
     direction?: SortDirection;
     disabledPosition?: SortLocalDisabledMods;
@@ -27,6 +30,7 @@ export default {
     namespaced: true,
 
     state: (): State => ({
+        modList: [],
         order: undefined,
         direction: undefined,
         disabledPosition: undefined,
@@ -34,8 +38,15 @@ export default {
     }),
 
     getters: <GetterTree<State, RootState>>{
+        modsWithUpdates(state, _getters, rootState): ThunderstoreCombo[] {
+            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
+                state.modList,
+                rootState.thunderstoreModList
+            );
+        },
+
         visibleModList(state, _getters, rootState): ManifestV2[] {
-            let mods = [...rootState.localModList];
+            let mods = [...state.modList];
 
             if (state.searchQuery) {
                 const searchKeys = SearchUtils.makeKeys(state.searchQuery);
@@ -74,6 +85,12 @@ export default {
             state.order = values[0];
             state.direction = values[1];
             state.disabledPosition = values[2];
+        },
+
+        // Avoid calling this directly, prefer updateModList action to
+        // ensure TSMM specific code gets called.
+        setModList(state: State, list: ManifestV2[]) {
+            state.modList = list;
         },
 
         setOrder(state: State, value: SortNaming) {
@@ -141,7 +158,7 @@ export default {
                     }
                 }
 
-                // Update mod list status to mods.yml and Vuex.
+                // Update mod list status to mods.yml.
                 const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.disable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
@@ -149,8 +166,9 @@ export default {
                     lastSuccessfulUpdate = updatedList;
                 }
             } finally {
+                // Update mod list stored in Vuex.
                 if (lastSuccessfulUpdate !== undefined) {
-                    dispatch('updateModList', lastSuccessfulUpdate, {root: true});
+                    dispatch('updateModList', lastSuccessfulUpdate);
                 }
             }
 
@@ -164,6 +182,10 @@ export default {
                     throw err;
                 }
             }
+        },
+
+        async updateModList({commit}, modList: ManifestV2[]) {
+            commit('setModList', modList);
         },
     },
 }
