@@ -9,6 +9,7 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import { exec } from 'child_process';
+import path from "path";
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -38,10 +39,15 @@ export default class DirectGameRunner extends GameRunnerProvider {
                 return resolve(gameDir);
             }
 
-            gameDir = await FsProvider.instance.realpath(gameDir);
+            let gameExecutable = null;
+            for (const exeItem of game.exeName) {
+                const absExePath = path.join(gameDir, exeItem);
+                const stat = await FsProvider.instance.lstat(absExePath);
 
-            const gameExecutable = (await FsProvider.instance.readdir(gameDir))
-                .filter((x: string) => game.exeName.includes(x))[0];
+                if (stat.isFile()) {
+                    gameExecutable = absExePath;
+                }
+            }
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 

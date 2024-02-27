@@ -127,10 +127,13 @@ export default class ModLinker {
                         }
                     } else {
                         if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
+                            // SHIMLOADER: shimloader
+                            // NICKEL: modlibrary, modsaves
                             const exclusionsList = [
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
-                                "_state", "userlibs", "qmods", "shimloader"
+                                "_state", "userlibs", "qmods", "shimloader",
+                                "modlibrary", "modsaves",
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {
