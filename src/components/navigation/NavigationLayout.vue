@@ -22,7 +22,7 @@ import GameManager from '../../model/game/GameManager';
     components: {GameRunningModal, NavigationMenu}
 })
 export default class NavigationLayout extends Vue {
-    activeGame = GameManager.unsetGame();
+    activeGame = GameManager.defaultGame;
 
     created() {
         this.activeGame = GameManager.activeGame;
