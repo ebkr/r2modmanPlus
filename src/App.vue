@@ -1,25 +1,7 @@
 <template>
     <div>
-
-        <router-view @error="showError" v-if="visible"/>
-
-        <div id='errorModal' :class="['modal', 'z-top', {'is-active':(errorMessage !== '')}]">
-            <div class="modal-background" @click="closeErrorModal()"></div>
-            <div class='modal-content'>
-                <div class='notification is-danger'>
-                    <h3 class='title'>Error</h3>
-                    <h5 class="title is-5">{{errorMessage}}</h5>
-                    <p>{{errorStack}}</p>
-                    <div v-if="errorSolution !== ''">
-                        <br/>
-                        <h5 class="title is-5">Suggestion</h5>
-                        <p>{{errorSolution}}</p>
-                    </div>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeErrorModal()"></button>
-        </div>
-
+        <router-view v-if="visible"/>
+        <ErrorModal />
     </div>
 </template>
 
@@ -64,8 +46,13 @@ import GenericProfileInstaller from './r2mm/installing/profile_installers/Generi
 import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
 import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
+import ErrorModal from './components/modals/ErrorModal.vue';
 
-@Component
+@Component({
+    components: {
+        ErrorModal,
+    }
+})
 export default class App extends mixins(UtilityMixin) {
     private settings: ManagerSettings | null = null;
     private visible: boolean = false;

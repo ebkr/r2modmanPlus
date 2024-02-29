@@ -277,7 +277,7 @@ export default class GameSelectionScreen extends Vue {
             ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
         } catch (error) {
             if (error instanceof R2Error) {
-                this.$emit("error", error);
+                this.$store.commit('error/handleError', error);
                 return;
             }
 

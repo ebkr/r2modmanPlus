@@ -1,10 +1,10 @@
 <template>
     <div id="content" class="columns">
         <div class="column non-selectable is-one-quarter">
-            <NavigationMenu @error="$emit('error', $event)" />
+            <NavigationMenu />
         </div>
         <div class="column">
-            <router-view @error="$emit('error', $event)" />
+            <router-view />
         </div>
         <GameRunningModal :activeGame="activeGame" />
     </div>

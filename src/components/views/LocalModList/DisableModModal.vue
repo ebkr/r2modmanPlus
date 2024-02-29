@@ -53,9 +53,10 @@ export default class DisableModModal extends Vue {
                 { mods, onProgress }
             );
         } catch (e) {
-            const err: Error = e as Error;
-            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
-            this.$emit('error', e);
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
         } finally {
             this.onClose();
             this.modBeingDisabled = null;

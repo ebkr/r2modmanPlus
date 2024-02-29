@@ -1,7 +1,7 @@
 <template>
     <div>
         <SearchAndSort />
-        <DisableModModal @error="emitError" />
+        <DisableModModal />
 
         <UninstallModModal
             v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
@@ -32,7 +32,6 @@
                 v-for='(mod, index) in draggableList'
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
-                @error="emitError"
                 @enableMod="enableMod"
                 @uninstallMod="uninstallModRequireConfirmation"
                 @updateMod="updateMod"
@@ -59,7 +58,7 @@ import ModBridge from '../../r2mm/mods/ModBridge';
 import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
 import Dependants from '../../r2mm/mods/Dependants';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
+import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import GameManager from '../../model/game/GameManager';
@@ -109,7 +108,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             ProfileModList.requestLock(async () => {
                 const result = await ProfileModList.saveModList(this.contextProfile!, newList);
                 if (result instanceof R2Error) {
-                    this.emitError(result);
+                    this.$store.commit('error/handleError', result);
                     return;
                 }
                 this.updateModListAfterChange(newList);
@@ -125,7 +124,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
             const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             if (err instanceof R2Error) {
-                this.$emit('error', err);
+                this.$store.commit('error/handleError', err);
             }
         }
 
@@ -142,14 +141,14 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
                 this.showingDependencyList = false;
-                this.$emit('error', uninstallError);
+                this.$store.commit('error/handleError', uninstallError);
                 return uninstallError;
             }
             const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
                 this.showingDependencyList = false;
-                this.$emit('error', modList);
+                this.$store.commit('error/handleError', modList);
                 return modList;
             }
             if (updateModList) {
@@ -173,7 +172,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                     this.modBeingUninstalled = mod.getName();
                     const result = await this.performUninstallMod(mod, false);
                     if (result instanceof R2Error) {
-                        this.$emit('error', result);
+                        this.$store.commit('error/handleError', result);
                         this.modBeingUninstalled = null;
                         return;
                     } else {
@@ -181,10 +180,10 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                     }
                 }
             } catch (e) {
-                // Failed to uninstall mod.
-                const err: Error = e as Error;
-                this.$emit('error', err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                this.$store.commit('error/handleError', {
+                    error: R2Error.fromThrownValue(e),
+                    severity: LogSeverity.ACTION_STOPPED
+                });
             } finally {
                 this.modBeingUninstalled = null;
                 if (lastSuccess) {
@@ -194,7 +193,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             this.selectedManifestMod = null;
             const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
             if (result instanceof R2Error) {
-                this.$emit('error', result);
+                this.$store.commit('error/handleError', result);
                 return;
             }
             await this.updateModListAfterChange(result);
@@ -225,21 +224,21 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                     throw result;
                 }
             } catch (e) {
-                // Failed to disable mod.
-                const err: Error = e as Error;
-                this.$emit('error', err);
-                LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+                this.$store.commit('error/handleError', {
+                    error: R2Error.fromThrownValue(e),
+                    severity: LogSeverity.ACTION_STOPPED
+                });
             }
         }
 
         async performEnable(mods: ManifestV2[]): Promise<R2Error | void> {
             for (let mod of mods) {
-                const disableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                if (disableErr instanceof R2Error) {
+                const enableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
+                if (enableErr instanceof R2Error) {
                     // Failed to disable
                     this.showingDependencyList = false;
-                    this.$emit('error', disableErr);
-                    return disableErr;
+                    this.$store.commit('error/handleError', enableErr);
+                    return enableErr;
                 }
             }
             const updatedList = await ProfileModList.updateMods(mods, this.contextProfile!, (updatingMod: ManifestV2) => {
@@ -248,7 +247,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (updatedList instanceof R2Error) {
                 // Failed to update mod list.
                 this.showingDependencyList = false;
-                this.$emit('error', updatedList);
+                this.$store.commit('error/handleError', updatedList);
                 return updatedList;
             }
             await this.updateModListAfterChange(updatedList);
@@ -276,7 +275,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                     'You may be offline, or the mod was removed from Thunderstore.',
                     'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
                 );
-                this.$emit('error', error);
+                this.$store.commit('error/handleError', error);
                 return;
             }
             this.$store.commit("openDownloadModModal", tsMod);
@@ -289,11 +288,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             this.cardExpanded = this.settings.getContext().global.expandedCards;
             this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
-
-        emitError(error: R2Error) {
-            this.$emit('error', error);
-        }
-
     }
 
 </script>

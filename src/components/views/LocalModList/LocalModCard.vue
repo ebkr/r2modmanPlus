@@ -2,8 +2,9 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
+import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
-import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
+import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import ModBridge from '../../../r2mm/mods/ModBridge';
 
@@ -91,9 +92,10 @@ export default class LocalModCard extends Vue {
                 { mods: [this.mod] }
             );
         } catch (e) {
-            this.$emit('error', e);
-            const err: Error = e as Error;
-            LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, `${err.name}\n-> ${err.message}`);
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
         }
     }
 

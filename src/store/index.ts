@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex, { ActionContext } from 'vuex';
 
+import ErrorModule from './modules/ErrorModule';
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
@@ -77,6 +78,7 @@ export const store = {
     },
     getters: {},
     modules: {
+        error: ErrorModule,
         modals: ModalsModule,
         modFilters: ModFilterModule,
         profile: ProfileModule,
