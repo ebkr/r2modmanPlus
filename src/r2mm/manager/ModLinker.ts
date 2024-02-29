@@ -84,11 +84,8 @@ export default class ModLinker {
         }
 
         if (game.packageLoader == PackageLoader.SHIMLOADER) {
-            if (["ue4ss.dll", "dwmapi.dll"].indexOf(lowercased) > -1) {
+            if (["ue4ss.dll", "dwmapi.dll", "ue4ss-settings.ini"].indexOf(lowercased) > -1) {
                 return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
-            }
-            if (lowercased == "ue4ss-settings.ini") {
-                return installDirectory;
             }
             return null;
         } else {
