@@ -8,6 +8,7 @@ import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstru
 import { GodotMLGameInstructions } from "../../launching/instructions/instructions/loader/GodotMLGameInstructions";
 import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
+import SplotchGameInstructions from './instructions/loader/SplotchGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -23,7 +24,8 @@ export default class GameInstructions {
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
         [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
-        [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()]
+        [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
+        [PackageLoader.SPLOTCH, new SplotchGameInstructions()],
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {

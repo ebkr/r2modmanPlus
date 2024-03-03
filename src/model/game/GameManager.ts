@@ -579,7 +579,14 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+ 
+        new Game(
+            "Bopl Battle", "BoplBattle", "BoplBattle",
+            "Bopl Battle", ["BoplBattle.exe"], "BoplBattle_Data",
+            "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1686940")], "BoplBattle.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SPLOTCH, ["bb"])
     ];
 
     static get activeGame(): Game {

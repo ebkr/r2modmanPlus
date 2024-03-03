@@ -5,6 +5,7 @@ import { GodotMLInstaller } from "./GodotMLInstaller";
 import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 import { ShimloaderInstaller, ShimloaderPluginInstaller, ShimloaderLinker } from "./ShimloaderInstaller";
+import { SplotchInstaller, SplotchPluginInstaller, SplotchLinker } from "./SplotchInstaller";
 
 
 const _PackageInstallers = {
@@ -14,10 +15,13 @@ const _PackageInstallers = {
     "melonloader": new MelonLoaderInstaller(),
     "shimloader": new ShimloaderInstaller(),
     "shimloader-plugin": new ShimloaderPluginInstaller(),
+    "splotch": new SplotchInstaller(),
+    "splotch-plugin": new SplotchPluginInstaller(),
 }
 
 const _ProfileLinkers = {
     "shimloader-linker": new ShimloaderLinker(),
+    "splotch-linker": new SplotchLinker(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;
