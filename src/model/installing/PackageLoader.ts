@@ -1,4 +1,4 @@
-import { PackageInstallerId, PackageInstallers } from "../../installers/registry";
+import { PackageInstallerId, PackageInstallers, ProfileLinkerId } from "../../installers/registry";
 import Game from "../game/Game";
 
 export enum PackageLoader {
@@ -26,6 +26,13 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
 export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstallerId | null {
     switch (loader) {
         case PackageLoader.SHIMLOADER: return "shimloader-plugin";
+    }
+
+    return null;
+}
+
+export function GetLinkerIdForLoader(loader: PackageLoader): ProfileLinkerId | null {
+    switch (loader) {
     }
 
     return null;

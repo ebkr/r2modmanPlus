@@ -1,7 +1,8 @@
+import { PackageInstaller } from "./PackageInstaller";
+import { ProfileLinker } from "./ProfileLinker";
 import { BepInExInstaller } from "./BepInExInstaller";
 import { GodotMLInstaller } from "./GodotMLInstaller";
 import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
-import { PackageInstaller } from "./PackageInstaller";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 import { ShimloaderInstaller, ShimloaderPluginInstaller } from "./ShimloaderInstaller";
 
@@ -15,5 +16,11 @@ const _PackageInstallers = {
     "shimloader-plugin": new ShimloaderPluginInstaller(),
 }
 
+const _ProfileLinkers = {
+}
+
 export type PackageInstallerId = keyof typeof _PackageInstallers;
 export const PackageInstallers: {[key in PackageInstallerId]: PackageInstaller} = _PackageInstallers;
+
+export type ProfileLinkerId = keyof typeof _ProfileLinkers;
+export const ProfileLinkers: {[key in ProfileLinkerId]: ProfileLinker} = _ProfileLinkers;
