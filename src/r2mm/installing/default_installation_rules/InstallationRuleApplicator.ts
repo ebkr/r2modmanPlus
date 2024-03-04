@@ -19,6 +19,7 @@ import {
 import {
     buildMelonLoaderRules
 } from "../default_installation_rules/game_rules/InstallRules_MelonLoader";
+import { buildLovelyRules } from './game_rules/InstallRules_Lovely';
 
 export default class InstallationRuleApplicator {
 
