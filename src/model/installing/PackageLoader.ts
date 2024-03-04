@@ -33,6 +33,7 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
 
 export function GetLinkerIdForLoader(loader: PackageLoader): ProfileLinkerId | null {
     switch (loader) {
+        case PackageLoader.SHIMLOADER: return "shimloader-linker";
     }
 
     return null;

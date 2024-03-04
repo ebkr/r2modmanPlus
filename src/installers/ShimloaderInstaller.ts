@@ -5,6 +5,9 @@ import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import { ProfileLinker } from "./ProfileLinker";
+import Profile from "../model/Profile";
+import Game from "../model/game/Game";
 
 export class ShimloaderInstaller extends PackageInstaller {
     /**
@@ -83,5 +86,32 @@ export class ShimloaderPluginInstaller extends PackageInstaller {
 
     async install(args: InstallArgs) {
         await this.installer.install(args);
+    }
+}
+
+export class ShimloaderLinker extends ProfileLinker {
+    async perform(profile: Profile, game: Game, gameDir: string): Promise<string[]> {
+        const fs = FsProvider.instance;
+        const profilePath = profile.getPathOfProfile();
+        const tracked = [];
+        const targets = [
+            "dwmapi.dll",
+            "ue4ss.dll",
+            "UE4SS-settings.ini",
+        ];
+
+        for (const target of targets) {
+            let absSrc = path.join(profilePath, target);
+            let absDest = path.join(gameDir, game.dataFolderName, "Binaries", "Win64", target);
+
+            if (await fs.exists(absDest)) {
+                await fs.unlink(absDest);
+            }
+
+            fs.copyFile(absSrc, absDest);
+            tracked.push(absDest);
+        }
+
+        return tracked;
     }
 }

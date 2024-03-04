@@ -41,7 +41,7 @@ export default class ModLinker {
         }
 
         const linker = ProfileLinkers[linkerId];
-        return linker.perform(profile, gameDirectory);
+        return linker.perform(profile, game, gameDirectory);
     }
 
     /**
