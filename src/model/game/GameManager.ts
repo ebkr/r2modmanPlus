@@ -569,6 +569,7 @@ export default class GameManager {
             "https://thunderstore.io/c/sailwind/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1764530")], "Sailwind.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
         new Game(
             "Voices of the Void", "VotV", "VotV",
             "", ["VotV.exe"], "VotV",
@@ -594,6 +595,12 @@ export default class GameManager {
             "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Balatro", "Balatro", "Balatro",
+            "Balatro", ["Balatro.exe"], "Balatro_Data",
+            "https://thunderstore.io/c/balatro/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2379780")], "Balatro.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.LOVELY, []),
     ];
 
     static get activeGame(): Game {

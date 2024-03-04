@@ -8,6 +8,7 @@ export enum PackageLoader {
     GODOT_ML,
     ANCIENT_DUNGEON_VR,
     SHIMLOADER,
+    LOVELY,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {
@@ -19,6 +20,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.GODOT_ML: return "godotml";
         case PackageLoader.NORTHSTAR: return "bepinex";
         case PackageLoader.SHIMLOADER: return "shimloader";
+        case PackageLoader.LOVELY: return "lovely";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
