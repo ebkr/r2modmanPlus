@@ -1,23 +1,16 @@
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 
 @Component({
     components: {ModalCard}
 })
 export default class UninstallModModal extends Vue {
-
-    @Prop({required: true})
-    readonly modBeingUninstalled!: string | null;
-
-    @Prop({required: true, type: Function})
-    readonly onUninstallIncludeDependents!: (mod: ManifestV2) => void;
-
-    @Prop({required: true, type: Function})
-    readonly onUninstallExcludeDependents!: (mod: ManifestV2) => void;
+    modBeingUninstalled: string | null = null;
 
     get dependants() {
         return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
@@ -40,6 +33,32 @@ export default class UninstallModModal extends Vue {
             );
         }
         return this.$store.state.modals.uninstallModModalMod;
+    }
+
+    async uninstallModIncludingDependants() {
+        await this.uninstallMods([...this.dependants, this.mod]);
+    }
+
+    async uninstallModExcludingDependants() {
+        await this.uninstallMods([this.mod]);
+    }
+
+    private async uninstallMods(mods: ManifestV2[]) {
+        const onProgress = (mod: ManifestV2) => this.modBeingUninstalled = mod.getName();
+        try {
+            await this.$store.dispatch(
+                'profile/uninstallModsFromActiveProfile',
+                { mods, onProgress }
+            );
+        } catch (e) {
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
+        } finally {
+            this.onClose();
+            this.modBeingUninstalled = null;
+        }
     }
 
     onClose() {
@@ -79,12 +98,12 @@ export default class UninstallModModal extends Vue {
         <template v-slot:footer>
             <button class="button is-info"
                     :disabled="isLocked"
-                    @click="onUninstallIncludeDependents(mod)">
+                    @click="uninstallModIncludingDependants">
                 Uninstall all (recommended)
             </button>
             <button class="button"
                     :disabled="isLocked"
-                    @click="onUninstallExcludeDependents(mod)">
+                    @click="uninstallModExcludingDependants">
                 Uninstall {{mod.getName()}} only
             </button>
         </template>

@@ -2,12 +2,8 @@
     <div>
         <SearchAndSort />
         <DisableModModal />
+        <UninstallModModal />
 
-        <UninstallModModal
-            :mod-being-uninstalled="modBeingUninstalled"
-            :on-uninstall-include-dependents="uninstallModWithDependents"
-            :on-uninstall-exclude-dependents="uninstallModExcludeDependents"
-        />
         <AssociatedModsModal
             v-if="dependencyListDisplayType === 'view' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
@@ -90,7 +86,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         private showingDependencyList: boolean = false;
         private selectedManifestMod: ManifestV2 | null = null;
         private dependencyListDisplayType: string = 'view';
-        private modBeingUninstalled: string | null = null;
 
         // Context
         private contextProfile: Profile | null = null;
@@ -135,14 +130,12 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
             if (uninstallError instanceof R2Error) {
                 // Uninstall failed
-                this.showingDependencyList = false;
                 this.$store.commit('error/handleError', uninstallError);
                 return uninstallError;
             }
             const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
             if (modList instanceof R2Error) {
                 // Failed to remove mod from local list.
-                this.showingDependencyList = false;
                 this.$store.commit('error/handleError', modList);
                 return modList;
             }
@@ -150,49 +143,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 await this.updateModListAfterChange(modList);
             }
             return modList;
-        }
-
-        async uninstallModWithDependents(mod: ManifestV2) {
-            await this.uninstallMods([...this.getDependantList(mod), mod]);
-        }
-
-        async uninstallModExcludeDependents(mod: ManifestV2) {
-            await this.uninstallMods([mod]);
-        }
-
-        async uninstallMods(modsToUninstall: ManifestV2[]) {
-            let lastSuccess: ManifestV2[] | null = null;
-            try {
-                for (const mod of modsToUninstall) {
-                    this.modBeingUninstalled = mod.getName();
-                    const result = await this.performUninstallMod(mod, false);
-                    if (result instanceof R2Error) {
-                        this.$store.commit('error/handleError', result);
-                        this.modBeingUninstalled = null;
-                        return;
-                    } else {
-                        lastSuccess = result;
-                    }
-                }
-            } catch (e) {
-                this.$store.commit('error/handleError', {
-                    error: R2Error.fromThrownValue(e),
-                    severity: LogSeverity.ACTION_STOPPED
-                });
-            } finally {
-                this.modBeingUninstalled = null;
-                if (lastSuccess) {
-                    await this.updateModListAfterChange(lastSuccess);
-                }
-                this.$store.commit('closeUninstallModModal');
-            }
-            this.selectedManifestMod = null;
-            const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
-            if (result instanceof R2Error) {
-                this.$store.commit('error/handleError', result);
-                return;
-            }
-            await this.updateModListAfterChange(result);
         }
 
         showDependencyList(mod: ManifestV2, displayType: string) {
