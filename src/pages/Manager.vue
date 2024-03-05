@@ -638,10 +638,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             // accesses visibleModList from Vuex store.
             await this.$store.dispatch('profile/loadOrderingSettings');
 
-            // Reset the mod list to prevent the previous profile's list
-            // flashing on the screen while a new profile's list is loaded.
-            await this.$store.dispatch('profile/updateModList', []);
-
             // Used by OnlineModView, called here for consistency.
             this.$store.commit('modFilters/reset');
         }

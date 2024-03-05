@@ -23,4 +23,20 @@ export default class FileUtils {
         return Promise.resolve();
     }
 
+    public static humanReadableSize(bytes: number) {
+        // NumberFormat renders GBs as BBs ("billion bytes") when using "byte" unit type.
+        if (bytes > 999999999 && bytes < 1000000000000) {
+            return `${(bytes / 1000000000).toLocaleString(undefined, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+            })} GB`;
+        }
+
+        return Intl.NumberFormat("en", {
+            notation: "compact",
+            style: "unit",
+            unit: "byte",
+            unitDisplay: "narrow",
+        }).format(bytes);
+    };
 }
