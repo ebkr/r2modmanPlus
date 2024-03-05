@@ -422,6 +422,10 @@ export default class Profiles extends Vue {
     }
 
     async setProfileAndContinue() {
+        // Reset the mod list to prevent the previous profile's list
+        // flashing on the screen while a new profile's list is loaded.
+        await this.$store.dispatch('profile/updateModList', []);
+
         await settings.setProfile(Profile.getActiveProfile().getProfileName());
         await this.$router.push({name: 'manager.installed'});
     }
