@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { ModalCard } from '../../all';
+import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
 import Dependants from '../../../r2mm/mods/Dependants';
 
@@ -10,13 +11,7 @@ import Dependants from '../../../r2mm/mods/Dependants';
 export default class UninstallModModal extends Vue {
 
     @Prop({required: true})
-    readonly mod!: ManifestV2;
-
-    @Prop({required: true})
     readonly modBeingUninstalled!: string | null;
-
-    @Prop({required: true, type: Function})
-    readonly onClose!: () => void;
 
     @Prop({required: true, type: Function})
     readonly onUninstallIncludeDependents!: (mod: ManifestV2) => void;
@@ -31,10 +26,29 @@ export default class UninstallModModal extends Vue {
     get isLocked(): boolean {
         return this.modBeingUninstalled !== null;
     }
+
+    get isOpen(): boolean {
+        return this.$store.state.modals.isUninstallModModalOpen
+            && this.$store.state.modals.uninstallModModalMod !== null;
+    }
+
+    get mod(): ManifestV2 {
+        if (this.$store.state.modals.uninstallModModalMod === null) {
+            throw new R2Error(
+                'Error while opening UninstallModModal',
+                'Mod not provided'
+            );
+        }
+        return this.$store.state.modals.uninstallModModalMod;
+    }
+
+    onClose() {
+        this.$store.commit('closeUninstallModModal');
+    }
 }
 </script>
 <template>
-    <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
+    <ModalCard v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
             <p class='modal-card-title'>Uninstalling {{mod.getName()}}</p>
         </template>

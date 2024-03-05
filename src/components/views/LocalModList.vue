@@ -4,9 +4,6 @@
         <DisableModModal />
 
         <UninstallModModal
-            v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
-            :on-close="() => { showingDependencyList = false; }"
-            :mod="selectedManifestMod"
             :mod-being-uninstalled="modBeingUninstalled"
             :on-uninstall-include-dependents="uninstallModWithDependents"
             :on-uninstall-exclude-dependents="uninstallModExcludeDependents"
@@ -187,6 +184,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 if (lastSuccess) {
                     await this.updateModListAfterChange(lastSuccess);
                 }
+                this.$store.commit('closeUninstallModModal');
             }
             this.selectedManifestMod = null;
             const result: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
@@ -207,7 +205,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (this.getDependantList(mod).size === 0) {
                 this.performUninstallMod(mod);
             } else {
-                this.showDependencyList(mod, DependencyListDisplayType.UNINSTALL);
+                this.$store.commit('openUninstallModModal', mod);
             }
         }
 
