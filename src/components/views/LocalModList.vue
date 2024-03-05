@@ -7,8 +7,6 @@
             v-if="dependencyListDisplayType === 'uninstall' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
             :mod="selectedManifestMod"
-            :dependency-list="getDependencyList(selectedManifestMod)"
-            :dependants-list="getDependantList(selectedManifestMod)"
             :mod-being-uninstalled="modBeingUninstalled"
             :on-uninstall-include-dependents="uninstallModWithDependents"
             :on-uninstall-exclude-dependents="uninstallModExcludeDependents"
