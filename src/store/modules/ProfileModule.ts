@@ -17,6 +17,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
+    activeProfile: Profile | null;
     modList: ManifestV2[];
     order?: SortNaming;
     direction?: SortDirection;
@@ -31,6 +32,7 @@ export default {
     namespaced: true,
 
     state: (): State => ({
+        activeProfile: null,
         modList: [],
         order: undefined,
         direction: undefined,
@@ -39,6 +41,26 @@ export default {
     }),
 
     getters: <GetterTree<State, RootState>>{
+        activeProfile(state) {
+            if (state.activeProfile !== null) {
+                return state.activeProfile;
+            }
+
+            console.warn("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
+            const profile = Profile.getActiveProfile();
+
+            if (profile !== undefined) {
+                return profile;
+            }
+
+            console.warn("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
+            return new Profile('Default');
+        },
+
+        activeProfileName(_state, getters) {
+            return getters.activeProfile.getProfileName();
+        },
+
         modsWithUpdates(state, _getters, rootState): ThunderstoreCombo[] {
             return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
                 state.modList,
@@ -78,6 +100,15 @@ export default {
     },
 
     mutations: {
+        // Use updateActiveProfile action to ensure the persistent
+        // settings are updated.
+        setActiveProfile(state: State, profileName: string) {
+            // Stores the active profile in Profile.ts.
+            const profile = new Profile(profileName);
+
+            state.activeProfile = profile;
+        },
+
         // Avoid calling this directly, prefer updateModList action to
         // ensure TSMM specific code gets called.
         setModList(state: State, list: ManifestV2[]) {
@@ -175,11 +206,22 @@ export default {
             }
         },
 
+        async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
+            const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;
+            commit('setActiveProfile', profileName);
+            return profileName;
+        },
+
         async loadOrderingSettings({commit, rootGetters}) {
             const settings: ManagerSettings = rootGetters['settings'];
             commit('setOrder', settings.getInstalledSortBy());
             commit('setDirection', settings.getInstalledSortDirection());
             commit('setDisabledPosition', settings.getInstalledDisablePosition());
+        },
+
+        async updateActiveProfile({commit, rootGetters}, profileName: string) {
+            commit('setActiveProfile', profileName);
+            rootGetters['settings'].setProfile(profileName);
         },
 
         async updateDirection({commit, rootGetters}, value: SortDirection) {

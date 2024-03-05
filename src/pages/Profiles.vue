@@ -44,7 +44,7 @@
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
                   <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button class="button is-info" v-else @click="updateProfile(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
               </template>
               <template v-if="renamingProfile">
                   <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="selectProfile(profileName)">
+                  <a @click="selectedProfile = profileName">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -278,8 +278,6 @@ export default class Profiles extends Vue {
 
     private profileList: string[] = ['Default'];
 
-    private selectedProfile: string = '';
-
     private addingProfile: boolean = false;
     private newProfileName: string = '';
     private addingProfileType: string = 'Create';
@@ -300,6 +298,14 @@ export default class Profiles extends Vue {
     private renamingProfile: boolean = false;
 
     private activeGame!: Game;
+
+    get selectedProfile(): string {
+        return this.$store.getters['profile/activeProfileName'];
+    }
+
+    set selectedProfile(profileName: string) {
+        this.$store.dispatch('profile/updateActiveProfile', profileName);
+    }
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
@@ -336,14 +342,11 @@ export default class Profiles extends Vue {
         );
         this.closeNewProfileModal();
         await this.updateProfileList();
+        this.selectedProfile = newName;
     }
 
-    selectProfile(profile: string) {
-        new Profile(profile);
-        this.selectedProfile = profile;
-        settings.setProfile(profile);
-    }
-
+    // Open modal for entering a name for a new profile. Triggered
+    // either through user action or profile importing via file or code.
     newProfile(type: string, nameOverride: string | undefined) {
         this.newProfileName = nameOverride || '';
         this.addingProfile = true;
@@ -355,18 +358,20 @@ export default class Profiles extends Vue {
         });
     }
 
+    // User confirmed creation of a new profile with a name that didn't exist before.
+    // The profile can be either empty or populated via importing.
     createProfile(profile: string) {
         const safeName = this.makeProfileNameSafe(profile);
         if (safeName === '') {
             return;
         }
-        new Profile(safeName);
         this.profileList.push(safeName);
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
+        this.selectedProfile = safeName;
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
+    // User confirmed updating an existing profile via importing.
     updateProfile() {
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.selectedProfile}));
@@ -375,9 +380,6 @@ export default class Profiles extends Vue {
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
-        if (this.addingProfile) {
-            document.dispatchEvent(new CustomEvent("created-profile", {detail: ''}));
-        }
     }
 
     removeProfile() {
@@ -404,12 +406,7 @@ export default class Profiles extends Vue {
                 }
             }
         }
-        new Profile('Default');
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
-
-        const settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
-
+        this.selectedProfile = 'Default';
         this.closeRemoveProfileModal();
     }
 
@@ -426,7 +423,6 @@ export default class Profiles extends Vue {
         // flashing on the screen while a new profile's list is loaded.
         await this.$store.dispatch('profile/updateModList', []);
 
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
         await this.$router.push({name: 'manager.installed'});
     }
 
@@ -537,7 +533,9 @@ export default class Profiles extends Vue {
                                 await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
                                 await fs.rmdir(path.join(Profile.getDirectory(), profileName));
                             }
-                            new Profile(profileName);
+                            // Use commit instead of dispatch so _profile_update is not
+                            // saved to persistent storage if something goes wrong.
+                            this.$store.commit('profile/setActiveProfile', profileName);
                         }
                         if (parsed.getMods().length > 0) {
                             this.importingProfile = true;
@@ -569,7 +567,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        new Profile(event.detail);
+                                        this.selectedProfile = event.detail;
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -652,15 +650,13 @@ export default class Profiles extends Vue {
     }
 
     async created() {
-
         this.activeGame = GameManager.activeGame;
 
         fs = FsProvider.instance;
         settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.load();
 
-        this.selectedProfile = settings.getContext().gameSpecific.lastSelectedProfile;
-        new Profile(this.selectedProfile);
+        await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
