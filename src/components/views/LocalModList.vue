@@ -8,8 +8,6 @@
             v-if="dependencyListDisplayType === 'view' && !!selectedManifestMod && showingDependencyList"
             :on-close="() => { showingDependencyList = false; }"
             :mod="selectedManifestMod"
-            :dependency-list="getDependencyList(selectedManifestMod)"
-            :dependants-list="getDependantList(selectedManifestMod)"
         />
 
         <slot name="above-list"></slot>
@@ -115,10 +113,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (err instanceof R2Error) {
                 this.$store.commit('error/handleError', err);
             }
-        }
-
-        getDependantList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependantList(mod, this.$store.state.profile.modList);
         }
 
         getDependencyList(mod: ManifestV2): Set<ManifestV2> {
