@@ -1,4 +1,4 @@
-import { PackageInstallerId, PackageInstallers } from "../../installers/registry";
+import { PackageInstallerId, PackageInstallers, ProfileLinkerId } from "../../installers/registry";
 import Game from "../game/Game";
 
 export enum PackageLoader {
@@ -8,6 +8,7 @@ export enum PackageLoader {
     GODOT_ML,
     ANCIENT_DUNGEON_VR,
     SHIMLOADER,
+    SPLOTCH,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {
@@ -19,6 +20,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.GODOT_ML: return "godotml";
         case PackageLoader.NORTHSTAR: return "bepinex";
         case PackageLoader.SHIMLOADER: return "shimloader";
+        case PackageLoader.SPLOTCH: return "splotch";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
@@ -26,6 +28,16 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
 export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstallerId | null {
     switch (loader) {
         case PackageLoader.SHIMLOADER: return "shimloader-plugin";
+        case PackageLoader.SPLOTCH: return "splotch-plugin";
+    }
+
+    return null;
+}
+
+export function GetLinkerIdForLoader(loader: PackageLoader): ProfileLinkerId | null {
+    switch (loader) {
+        case PackageLoader.SHIMLOADER: return "shimloader-linker";
+        case PackageLoader.SPLOTCH: return "splotch-linker";
     }
 
     return null;

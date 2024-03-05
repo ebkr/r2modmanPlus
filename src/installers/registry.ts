@@ -1,9 +1,11 @@
+import { PackageInstaller } from "./PackageInstaller";
+import { ProfileLinker } from "./ProfileLinker";
 import { BepInExInstaller } from "./BepInExInstaller";
 import { GodotMLInstaller } from "./GodotMLInstaller";
 import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
-import { PackageInstaller } from "./PackageInstaller";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
-import { ShimloaderInstaller, ShimloaderPluginInstaller } from "./ShimloaderInstaller";
+import { ShimloaderInstaller, ShimloaderPluginInstaller, ShimloaderLinker } from "./ShimloaderInstaller";
+import { SplotchInstaller, SplotchPluginInstaller, SplotchLinker } from "./SplotchInstaller";
 
 
 const _PackageInstallers = {
@@ -13,7 +15,17 @@ const _PackageInstallers = {
     "melonloader": new MelonLoaderInstaller(),
     "shimloader": new ShimloaderInstaller(),
     "shimloader-plugin": new ShimloaderPluginInstaller(),
+    "splotch": new SplotchInstaller(),
+    "splotch-plugin": new SplotchPluginInstaller(),
+}
+
+const _ProfileLinkers = {
+    "shimloader-linker": new ShimloaderLinker(),
+    "splotch-linker": new SplotchLinker(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;
 export const PackageInstallers: {[key in PackageInstallerId]: PackageInstaller} = _PackageInstallers;
+
+export type ProfileLinkerId = keyof typeof _ProfileLinkers;
+export const ProfileLinkers: {[key in ProfileLinkerId]: ProfileLinker} = _ProfileLinkers;
