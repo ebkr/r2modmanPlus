@@ -24,7 +24,6 @@
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
                 @enableMod="enableMod"
-                @uninstallMod="uninstallModRequireConfirmation"
                 @updateMod="updateMod"
                 @viewDependencyList="viewDependencyList"
                 @downloadDependency="downloadDependency"
@@ -126,37 +125,10 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             return Dependants.getDependencyList(mod, this.$store.state.profile.modList);
         }
 
-        async performUninstallMod(mod: ManifestV2, updateModList=true): Promise<ManifestV2[] | R2Error> {
-            const uninstallError: R2Error | null = await ProfileInstallerProvider.instance.uninstallMod(mod, this.contextProfile!);
-            if (uninstallError instanceof R2Error) {
-                // Uninstall failed
-                this.$store.commit('error/handleError', uninstallError);
-                return uninstallError;
-            }
-            const modList: ManifestV2[] | R2Error = await ProfileModList.removeMod(mod, this.contextProfile!);
-            if (modList instanceof R2Error) {
-                // Failed to remove mod from local list.
-                this.$store.commit('error/handleError', modList);
-                return modList;
-            }
-            if (updateModList) {
-                await this.updateModListAfterChange(modList);
-            }
-            return modList;
-        }
-
         showDependencyList(mod: ManifestV2, displayType: string) {
             this.selectedManifestMod = mod;
             this.dependencyListDisplayType = displayType;
             this.showingDependencyList = true;
-        }
-
-        uninstallModRequireConfirmation(mod: ManifestV2) {
-            if (this.getDependantList(mod).size === 0) {
-                this.performUninstallMod(mod);
-            } else {
-                this.$store.commit('openUninstallModModal', mod);
-            }
         }
 
         viewDependencyList(mod: ManifestV2) {
