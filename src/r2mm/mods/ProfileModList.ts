@@ -251,7 +251,12 @@ export default class ProfileModList {
         if (exportBuilder instanceof R2Error) {
             return exportBuilder;
         } else {
-            await exportBuilder.createZip(exportPath);
+            try {
+                await exportBuilder.createZip(exportPath);
+            } catch (e) {
+                return R2Error.fromThrownValue(e);
+            }
+
             const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportPath));
             try {
                 const storageResponse = await ProfileApiClient.createProfile(profileBuffer);
