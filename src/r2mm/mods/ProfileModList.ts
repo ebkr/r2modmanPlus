@@ -252,7 +252,11 @@ export default class ProfileModList {
         if (exportBuilder instanceof R2Error) {
             return exportBuilder;
         } else {
-            await exportBuilder.createZip(exportPath);
+            try {
+                await exportBuilder.createZip(exportPath);
+            } catch (e) {
+                return R2Error.fromThrownValue(e);
+            }
 
             const zipStats = await fs.lstat(exportPath);
             if (zipStats.size > this.MAX_EXPORT_AS_CODE_SIZE) {
