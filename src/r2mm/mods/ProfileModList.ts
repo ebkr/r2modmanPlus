@@ -27,6 +27,7 @@ import { ProfileApiClient } from '../profiles/ProfilesClient';
 export default class ProfileModList {
 
     public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml", ".ini"];
+    public static readonly MAX_EXPORT_AS_CODE_SIZE = 20000000; // 20MB
 
     private static lock = new AsyncLock();
 
@@ -252,6 +253,21 @@ export default class ProfileModList {
             return exportBuilder;
         } else {
             await exportBuilder.createZip(exportPath);
+
+            const zipStats = await fs.lstat(exportPath);
+            if (zipStats.size > this.MAX_EXPORT_AS_CODE_SIZE) {
+                const zipSize = FileUtils.humanReadableSize(zipStats.size);
+                const maxSize = FileUtils.humanReadableSize(this.MAX_EXPORT_AS_CODE_SIZE);
+                const fileTypes = this.SUPPORTED_CONFIG_FILE_EXTENSIONS.join(', ');
+                const configFolder = path.join(profile.getPathOfProfile(), 'BepInEx', 'config');
+                return new R2Error(
+                    'The profile is too large to be exported as a code',
+                    `Exported profile size is ${zipSize} while the maximum supported size is ${maxSize}.
+                     Exported profile includes ${fileTypes} files and all the contents of ${configFolder}`,
+                    'You can still try exporting the profile as a file from the settings view.'
+                );
+            }
+
             const profileBuffer = '#r2modman\n' + (await fs.base64FromZip(exportPath));
             try {
                 const storageResponse = await ProfileApiClient.createProfile(profileBuffer);
