@@ -1,6 +1,7 @@
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { ModalCard } from '../../all';
+import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
 import Dependants from '../../../r2mm/mods/Dependants';
 
@@ -9,12 +10,6 @@ import Dependants from '../../../r2mm/mods/Dependants';
 })
 export default class AssociatedModsModal extends Vue {
 
-    @Prop({required: true})
-    readonly mod!: ManifestV2;
-
-    @Prop({required: true, type: Function})
-    readonly onClose!: () => void;
-
     get dependants(): Set<ManifestV2> {
         return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
     }
@@ -22,10 +17,29 @@ export default class AssociatedModsModal extends Vue {
     get dependencies(): Set<ManifestV2> {
         return Dependants.getDependencyList(this.mod, this.$store.state.profile.modList);
     }
+
+    get isOpen(): boolean {
+        return this.$store.state.modals.isAssociatedModsModOpen
+            && this.$store.state.modals.associatedModsModalMod !== null;
+    }
+
+    get mod(): ManifestV2 {
+        if (this.$store.state.modals.associatedModsModalMod === null) {
+            throw new R2Error(
+                'Error while opening AssociatedModsModal',
+                'Mod not provided'
+            );
+        }
+        return this.$store.state.modals.associatedModsModalMod;
+    }
+
+    onClose() {
+        this.$store.commit('closeAssociatedModsModal');
+    }
 }
 </script>
 <template>
-    <ModalCard :is-active="true" @close-modal="onClose">
+    <ModalCard v-if="isOpen" :is-active="true" @close-modal="onClose">
         <template v-slot:header>
             <p class='card-header-title'>
                 Mods associated with {{mod.getName()}}

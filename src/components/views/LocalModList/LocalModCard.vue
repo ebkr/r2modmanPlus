@@ -132,8 +132,8 @@ export default class LocalModCard extends Vue {
         this.$emit('downloadDependency', dependency);
     }
 
-    viewDependencyList() {
-        this.$emit('viewDependencyList', this.mod);
+    viewAssociatedMods() {
+        this.$store.commit('openAssociatedModsModal', this.mod);
     }
 
     created() {
@@ -225,7 +225,7 @@ function dependencyStringToModName(x: string) {
             Enable
         </a>
 
-        <a @click="viewDependencyList()" class='card-footer-item'>
+        <a @click="viewAssociatedMods()" class='card-footer-item'>
             Associated
         </a>
 

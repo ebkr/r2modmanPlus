@@ -2,8 +2,10 @@ import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 
 interface State {
+    associatedModsModalMod: ManifestV2 | null;
     disableModModalMod: ManifestV2 | null;
     downloadModModalMod: ThunderstoreMod | null;
+    isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
     isDisableModModalOpen: boolean;
     isDownloadModModalOpen: boolean;
@@ -14,8 +16,10 @@ interface State {
 
 export default {
     state: (): State => ({
+        associatedModsModalMod: null,
         disableModModalMod: null,
         downloadModModalMod: null,
+        isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
         isDisableModModalOpen: false,
         isDownloadModModalOpen: false,
@@ -25,6 +29,11 @@ export default {
     }),
 
     mutations: {
+        closeAssociatedModsModal: function(state: State): void {
+            state.isAssociatedModsModOpen = false;
+            state.associatedModsModalMod = null;
+        },
+
         closeCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = false;
         },
@@ -46,6 +55,11 @@ export default {
         closeUninstallModModal: function(state: State): void {
             state.isUninstallModModalOpen = false;
             state.uninstallModModalMod = null;
+        },
+
+        openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
+            state.associatedModsModalMod = mod;
+            state.isAssociatedModsModOpen = true;
         },
 
         openCategoryFilterModal: function(state: State): void {
