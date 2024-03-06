@@ -57,6 +57,18 @@ export default {
             return new Profile('Default');
         },
 
+        activeProfileOrThrow(state): Profile {
+            // Sanity check before attempting to alter the profile state.
+            if (state.activeProfile === null) {
+                throw new R2Error(
+                    'No active profile found',
+                    'Unable to modify mod list state when active profile is not set.'
+                )
+            }
+
+            return state.activeProfile;
+        },
+
         activeProfileName(_state, getters) {
             return getters.activeProfile.getProfileName();
         },
@@ -134,23 +146,13 @@ export default {
 
     actions: <ActionTree<State, RootState>>{
         async disableModsFromActiveProfile(
-            {dispatch},
+            {dispatch, getters},
             params: {
                 mods: ManifestV2[],
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
-            // TODO: manage active profile in Vuex.
-            const profile = Profile.getActiveProfile();
-
-            // Sanity check.
-            if (profile === undefined) {
-                throw new R2Error(
-                    'No active profile found',
-                    'Unable to disable mods when active profile is not set.'
-                )
-            }
-
+            const profile = getters.activeProfileOrThrow;
             await dispatch('disableModsFromProfile', {...params, profile});
         },
 
