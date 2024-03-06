@@ -16,7 +16,6 @@
                 v-for='(mod, index) in draggableList'
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
-                @downloadDependency="downloadDependency"
                 :expandedByDefault="cardExpanded"
                 :showSort="$store.getters['profile/canSortMods']"
                 :funkyMode="funkyMode" />
@@ -35,7 +34,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import Profile from '../../model/Profile';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
@@ -63,10 +61,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         private cardExpanded: boolean = false;
         private funkyMode: boolean = false;
 
-        get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList || [];
-        }
-
         get draggableList() {
             return this.$store.getters['profile/visibleModList'];
         }
@@ -93,23 +87,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             if (err instanceof R2Error) {
                 this.$store.commit('error/handleError', err);
             }
-        }
-
-        downloadDependency(missingDependency: string) {
-            const tsMod: ThunderstoreMod | undefined = this.thunderstorePackages.find(
-                (m: ThunderstoreMod) => missingDependency.toLowerCase().startsWith(m.getFullName().toLowerCase() + "-")
-            );
-            if (tsMod === undefined) {
-                this.$store.commit("closeDownloadModModal");
-                const error = new R2Error(
-                    `${missingDependency} could not be found`,
-                    'You may be offline, or the mod was removed from Thunderstore.',
-                    'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
-                );
-                this.$store.commit('error/handleError', error);
-                return;
-            }
-            this.$store.commit("openDownloadModModal", tsMod);
         }
 
         async created() {

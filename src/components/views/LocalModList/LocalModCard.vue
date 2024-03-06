@@ -4,6 +4,7 @@ import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import ModBridge from '../../../r2mm/mods/ModBridge';
@@ -142,8 +143,21 @@ export default class LocalModCard extends Vue {
         }
     }
 
-    downloadDependency(dependency: string) {
-        this.$emit('downloadDependency', dependency);
+    downloadDependency(dependencyString: string) {
+        const packages: ThunderstoreMod[] = this.$store.state.thunderstoreModList;
+        const lowerCaseName = dependencyStringToModName(dependencyString).toLowerCase();
+        const dependency = packages.find((m) => m.getFullName().toLowerCase() === lowerCaseName);
+
+        if (dependency === undefined) {
+            const error = new R2Error(
+                `${dependencyString} could not be found`,
+                'You may be offline, or the mod was removed from Thunderstore.',
+                'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
+            );
+            this.$store.commit('error/handleError', error);
+            return;
+        }
+        this.$store.commit('openDownloadModModal', dependency);
     }
 
     viewAssociatedMods() {
