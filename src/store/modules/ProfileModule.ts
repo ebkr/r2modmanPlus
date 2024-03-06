@@ -200,6 +200,60 @@ export default {
             await dispatch('resolveConflicts', lastSuccessfulUpdate);
         },
 
+        async enableModsOnActiveProfile(
+            {dispatch, getters},
+            params: {
+                mods: ManifestV2[],
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const profile = getters.activeProfileOrThrow;
+            await dispatch('enableModsOnProfile', {...params, profile});
+        },
+
+        async enableModsOnProfile(
+            {dispatch},
+            params: {
+                mods: ManifestV2[],
+                profile: Profile,
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const {mods, profile, onProgress} = params;
+            let lastSuccessfulUpdate: ManifestV2[] | undefined;
+
+            try {
+                // Enable mods on disk.
+                for (const mod of mods) {
+                    onProgress && onProgress(mod);
+
+                    if (mod.isEnabled()) {
+                        continue;
+                    }
+
+                    const err = await ProfileInstallerProvider.instance.enableMod(mod, profile);
+                    if (err instanceof R2Error) {
+                        throw err;
+                    }
+                }
+
+                // Update mod list status to mods.yml.
+                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.enable());
+                if (updatedList instanceof R2Error) {
+                    throw updatedList;
+                } else {
+                    lastSuccessfulUpdate = updatedList;
+                }
+            } finally {
+                // Update mod list stored in Vuex.
+                if (lastSuccessfulUpdate !== undefined) {
+                    await dispatch('updateModList', lastSuccessfulUpdate);
+                }
+            }
+
+            await dispatch('resolveConflicts', lastSuccessfulUpdate);
+        },
+
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;
             commit('setActiveProfile', profileName);
@@ -212,6 +266,7 @@ export default {
             commit('setDirection', settings.getInstalledSortDirection());
             commit('setDisabledPosition', settings.getInstalledDisablePosition());
         },
+
         async resolveConflicts(
             {},
             params: {
