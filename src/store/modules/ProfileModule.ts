@@ -18,6 +18,8 @@ import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
     activeProfile: Profile | null;
+    expandedByDefault: boolean;
+    funkyMode: boolean;
     modList: ManifestV2[];
     order?: SortNaming;
     direction?: SortDirection;
@@ -33,6 +35,8 @@ export default {
 
     state: (): State => ({
         activeProfile: null,
+        expandedByDefault: false,
+        funkyMode: false,
         modList: [],
         order: undefined,
         direction: undefined,
@@ -119,6 +123,14 @@ export default {
             const profile = new Profile(profileName);
 
             state.activeProfile = profile;
+        },
+
+        setExpandedByDefault(state: State, value: boolean) {
+            state.expandedByDefault = value;
+        },
+
+        setFunkyMode(state: State, value: boolean) {
+            state.funkyMode = value;
         },
 
         // Avoid calling this directly, prefer updateModList action to
@@ -258,6 +270,12 @@ export default {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;
             commit('setActiveProfile', profileName);
             return profileName;
+        },
+
+        async loadModCardSettings({commit, rootGetters}) {
+            const settings: ManagerSettings = rootGetters['settings'];
+            commit('setExpandedByDefault', settings.getContext().global.expandedCards);
+            commit('setFunkyMode', settings.getContext().global.funkyModeEnabled);
         },
 
         async loadOrderingSettings({commit, rootGetters}) {

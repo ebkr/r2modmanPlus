@@ -21,15 +21,6 @@ export default class LocalModCard extends Vue {
     @Prop({required: true})
     readonly mod!: ManifestV2;
 
-    @Prop({required: true})
-    readonly expandedByDefault!: boolean;
-
-    @Prop({required: true})
-    readonly showSort!: boolean;
-
-    @Prop({required: true})
-    readonly funkyMode!: boolean;
-
     disabledDependencies: ManifestV2[] = [];
     missingDependencies: string[] = [];
 
@@ -178,11 +169,9 @@ function dependencyStringToModName(x: string) {
     <expandable-card
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
-        :expandedByDefault="expandedByDefault"
-        :funkyMode="funkyMode"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
         :image="mod.getIcon()"
-        :showSort="showSort">
+        :allowSorting="true">
 
         <template v-slot:title>
             <span class="non-selectable">

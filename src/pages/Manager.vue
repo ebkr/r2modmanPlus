@@ -139,7 +139,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { ExpandableCard, Hero, Link, Modal, Progress } from '../components/all';
+import { Hero, Link, Modal, Progress } from '../components/all';
 
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
@@ -182,7 +182,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             DownloadModModal,
 			'hero': Hero,
 			'progress-bar': Progress,
-			'ExpandableCard': ExpandableCard,
 			'link-component': Link,
 			'modal': Modal,
 		}

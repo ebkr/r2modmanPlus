@@ -14,11 +14,8 @@
                    :scroll-sensitivity="100">
             <local-mod-card
                 v-for='(mod, index) in draggableList'
-                :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
-                :mod="mod"
-                :expandedByDefault="cardExpanded"
-                :showSort="$store.getters['profile/canSortMods']"
-                :funkyMode="funkyMode" />
+                :key="`local-${mod.getName()}-${profileName}-${index}`"
+                :mod="mod" />
         </draggable>
 
         <slot name="below-list"></slot>
@@ -32,10 +29,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
-import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import Profile from '../../model/Profile';
-import GameManager from '../../model/game/GameManager';
-import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import Draggable from 'vuedraggable';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
@@ -55,11 +49,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
     })
     export default class LocalModList extends Vue {
-        private activeGame: Game | null = null;
         private contextProfile: Profile | null = null;
-        settings: ManagerSettings = new ManagerSettings();
-        private cardExpanded: boolean = false;
-        private funkyMode: boolean = false;
 
         get draggableList() {
             return this.$store.getters['profile/visibleModList'];
@@ -90,11 +80,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
 
         async created() {
-            this.activeGame = GameManager.activeGame;
             this.contextProfile = Profile.getActiveProfile();
-            this.settings = await ManagerSettings.getSingleton(this.activeGame);
-            this.cardExpanded = this.settings.getContext().global.expandedCards;
-            this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
         }
     }
 

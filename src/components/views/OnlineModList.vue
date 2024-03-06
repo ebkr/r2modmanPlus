@@ -4,9 +4,7 @@
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="getImageUrl(key)"
             :id="index"
-            :description="key.getVersions()[0].getDescription()"
-            :funkyMode="funkyMode"
-            :expandedByDefault="cardExpanded">
+            :description="key.getVersions()[0].getDescription()">
             <template v-slot:title>
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
