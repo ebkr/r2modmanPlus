@@ -137,7 +137,9 @@ export default class LocalModCard extends Vue {
     }
 
     updateMod() {
-        this.$emit('updateMod', this.mod);
+        if (this.tsMod !== undefined) {
+            this.$store.commit('openDownloadModModal', this.tsMod);
+        }
     }
 
     downloadDependency(dependency: string) {

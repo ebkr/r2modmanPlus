@@ -16,7 +16,6 @@
                 v-for='(mod, index) in draggableList'
                 :key="`local-${mod.getName()}-${profileName}-${index}-${cardExpanded}`"
                 :mod="mod"
-                @updateMod="updateMod"
                 @downloadDependency="downloadDependency"
                 :expandedByDefault="cardExpanded"
                 :showSort="$store.getters['profile/canSortMods']"
@@ -35,7 +34,6 @@ import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-import ModBridge from '../../r2mm/mods/ModBridge';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import GameManager from '../../model/game/GameManager';
@@ -94,16 +92,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             const err = await ConflictManagementProvider.instance.resolveConflicts(updatedList, this.contextProfile!);
             if (err instanceof R2Error) {
                 this.$store.commit('error/handleError', err);
-            }
-        }
-
-        updateMod(mod: ManifestV2) {
-            const tsMod = ModBridge.getCachedThunderstoreModFromMod(mod);
-
-            if (tsMod instanceof ThunderstoreMod) {
-                this.$store.commit("openDownloadModModal", tsMod);
-            } else {
-                this.$store.commit("closeDownloadModModal");
             }
         }
 
