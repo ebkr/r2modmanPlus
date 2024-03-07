@@ -54,19 +54,15 @@ import ErrorModal from './components/modals/ErrorModal.vue';
     }
 })
 export default class App extends mixins(UtilityMixin) {
-    private settings: ManagerSettings | null = null;
     private visible: boolean = false;
 
     async created() {
-        // Use as default game for settings load.
-        GameManager.activeGame = GameManager.defaultGame;
+        // Load settings using the default game before the actual game is selected.
+        const settings: ManagerSettings = await this.$store.dispatch('setActiveGame', GameManager.defaultGame);
 
         this.hookThunderstoreModListRefresh();
         this.hookProfileModListRefresh();
         await this.checkCdnConnection();
-
-        const settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-        this.settings = settings;
 
         InstallationRuleApplicator.apply();
         InstallationRules.validate();

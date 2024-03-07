@@ -68,9 +68,19 @@ export const store = {
                 commit('setMigrationChecked');
             }
         },
-        async setActiveGame({commit}: Context, game: Game) {
+        async setActiveGame({commit}: Context, game: Game): Promise<ManagerSettings> {
+            // Some parts of the code base reads the active game from
+            // this static class attribute for now. Ideally we wouldn't
+            // need to track it on two separate places.
+            GameManager.activeGame = game;
             commit('setActiveGame', game);
-            commit('setSettings', await ManagerSettings.getSingleton(game));
+
+            // Return settings for the new active game. This comes handy
+            // when accessing settings before user has selected the game
+            // as the settings-getter might throw a sanity check error.
+            const settings = await ManagerSettings.getSingleton(game);
+            commit('setSettings', settings);
+            return settings;
         }
     },
     mutations: {
@@ -97,7 +107,7 @@ export const store = {
         }
     },
     getters: {
-        settings(state: State) {
+        settings(state: State): ManagerSettings {
             if (state._settings === null) {
                 throw new R2Error(
                     'Accessing unset settings from Vuex store',
