@@ -61,7 +61,6 @@ export default class App extends mixins(UtilityMixin) {
         const settings: ManagerSettings = await this.$store.dispatch('setActiveGame', GameManager.defaultGame);
 
         this.hookThunderstoreModListRefresh();
-        this.hookProfileModListRefresh();
         await this.checkCdnConnection();
 
         InstallationRuleApplicator.apply();

@@ -5,7 +5,6 @@ import Component from 'vue-class-component';
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
-import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
@@ -13,27 +12,8 @@ export default class UtilityMixin extends Vue {
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
     private tsRefreshFailed = false;
 
-    hookProfileModListRefresh() {
-        setInterval(this.refreshProfileModList, this.REFRESH_INTERVAL);
-    }
-
     hookThunderstoreModListRefresh() {
         setInterval(this.tryRefreshThunderstoreModList, this.REFRESH_INTERVAL);
-    }
-
-    async refreshProfileModList() {
-        const profile = this.$store.state.profile.activeProfile;
-
-        // Profile is not selected until proceeding from profile selection screen.
-        if (profile === null) {
-            return;
-        }
-
-        const modList = await ProfileModList.getModList(profile);
-
-        if (!(modList instanceof R2Error)) {
-            await this.$store.dispatch("profile/updateModList", modList);
-        }
     }
 
     async refreshThunderstoreModList() {
@@ -49,6 +29,7 @@ export default class UtilityMixin extends Vue {
         const response = await ThunderstorePackages.update(this.$store.state.activeGame);
         await ApiCacheUtils.storeLastRequest(response.data);
         await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+        await this.$store.dispatch("profile/tryLoadModListFromDisk");
     }
 
     /**
