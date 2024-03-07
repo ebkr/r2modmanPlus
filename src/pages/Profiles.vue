@@ -261,7 +261,6 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 
-let settings: ManagerSettings;
 let fs: FsProvider;
 
 @Component({
@@ -647,9 +646,7 @@ export default class Profiles extends Vue {
 
     async created() {
         fs = FsProvider.instance;
-        settings = await ManagerSettings.getSingleton(this.$store.state.activeGame);
-        await settings.load();
-
+        const settings = await this.$store.getters.settings;
         await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
