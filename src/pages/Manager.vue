@@ -144,7 +144,6 @@ import { Hero, Link, Modal, Progress } from '../components/all';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import ProfileModList from '../r2mm/mods/ProfileModList';
-import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
 import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
 
@@ -481,38 +480,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             }
 		}
 
-        async setAllModsEnabled() {
-            let lastSuccessfulUpdate: ManifestV2[] = [];
-
-            try {
-                for (const mod of this.localModList) {
-                    if (mod.isEnabled()) {
-                        continue;
-                    }
-
-                    const profileErr = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
-                    if (profileErr instanceof R2Error) {
-                        this.$store.commit('error/handleError', profileErr);
-                        continue;
-                    }
-                    const update = await ProfileModList.updateMod(mod, this.contextProfile!, async (mod) => mod.enable());
-                    if (update instanceof R2Error) {
-                        this.$store.commit('error/handleError', update);
-                    } else {
-                        lastSuccessfulUpdate = update;
-                    }
-                }
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e, "Error enabling mods"));
-            } finally {
-                if (lastSuccessfulUpdate.length) {
-                    await this.$store.dispatch('profile/updateModList', lastSuccessfulUpdate);
-                }
-            }
-
-            await this.$router.push({name: "manager.installed"});
-        }
-
         changeDataFolder() {
             const fs = FsProvider.instance;
             const dir: string = PathResolver.ROOT;
@@ -598,7 +565,11 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     this.settings = (() => this.settings)();
                     break;
                 case "EnableAll":
-                    await this.setAllModsEnabled();
+                    await this.$store.dispatch(
+                        "profile/enableModsOnActiveProfile",
+                        {mods: this.localModList}
+                    );
+                    await this.$router.push({name: "manager.installed"});
                     break;
                 case "DisableAll":
                     await this.$store.dispatch(
