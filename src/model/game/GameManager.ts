@@ -492,8 +492,10 @@ export default class GameManager {
             "Bomb Rush Cyberfunk", "BombRushCyberfunk", "BombRushCyberfunk",
             "BombRushCyberfunk", ["Bomb Rush Cyberfunk.exe"], "Bomb Rush Cyberfunk_Data",
             "https://thunderstore.io/c/bomb-rush-cyberfunk/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1353230")], "BombRushCyberfunk.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1353230"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "TeamReptile.BombRushCyberfunk")
+            ], "BombRushCyberfunk.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
 
         new Game(
             "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend",
