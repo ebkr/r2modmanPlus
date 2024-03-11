@@ -579,7 +579,13 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+
+        new Game("Cobalt Core", "CobaltCore", "CobaltCore",
+            "Cobalt Core", [path.join("Nickel", "Nickel.exe")], "",
+            "https://thunderstore.io/c/cobalt-core/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "2179850")], "CobaltCore.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NICKEL, ["cc"]),
     ];
 
     static get activeGame(): Game {
