@@ -4,6 +4,7 @@ import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 
 
@@ -58,7 +59,8 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        updateMods({commit}, modList: ThunderstoreMod[]) {
+        async updateMods({commit, rootState}) {
+            const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
             commit('updateDeprecated');
         }

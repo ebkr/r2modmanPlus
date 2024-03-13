@@ -3,11 +3,13 @@ import Game from '../../model/game/Game';
 import ApiResponse from '../../model/api/ApiResponse';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import ModBridge from '../mods/ModBridge';
+import * as PackageDb from '../manager/PackageDexieStore';
 
 export default class ThunderstorePackages {
 
     public static PACKAGES: ThunderstoreMod[] = [];
     public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
+    // TODO: would IndexedDB or Vuex be more suitable place for exclusions?
     public static EXCLUSIONS: string[] = [];
 
     /**
@@ -16,7 +18,7 @@ export default class ThunderstorePackages {
     public static async update(game: Game) {
         this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
         const response = await ConnectionProvider.instance.getPackages(game);
-        this.handlePackageApiResponse(response);
+        await this.handlePackageApiResponse(game.internalFolderName, response);
 
         return response;
     }
@@ -25,7 +27,16 @@ export default class ThunderstorePackages {
      * Transform {response.data} to ThunderstoreMod list and map.
      * @param response api/v1/package data.
      */
-    public static handlePackageApiResponse(response: ApiResponse) {
+    public static async handlePackageApiResponse(gameName: string, response: ApiResponse) {
+        const packages = response.data
+            .filter((p) => !ThunderstorePackages.EXCLUSIONS.includes(p["full_name"]));
+
+        // TODO: see if this can be hooked into the progress bar in Splash screen.
+        await PackageDb.updateFromApiResponse(gameName, packages);
+
+        // The stuff below will become obsolete once the mod list is
+        // accessed from Vuex, but it's needed for now to not break
+        // existing code.
         ThunderstorePackages.PACKAGES = response.data
             .map(ThunderstoreMod.parseFromThunderstoreData)
             .filter((mod) => !ThunderstorePackages.EXCLUSIONS.includes(mod.getFullName()));
