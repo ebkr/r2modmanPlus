@@ -24,20 +24,8 @@ export default {
     }),
 
     getters: <GetterTree<State, RootState>>{
-        allCategories (_state, _getters, rootState) {
-            const categories = Array.from(
-                new Set(
-                    rootState.thunderstoreModList
-                        .map((mod) => mod.getCategories())
-                        .flat()
-                )
-            );
-            categories.sort();
-            return categories;
-        },
-
-        unselectedCategories (state, getters) {
-            const categories: string[] = getters.allCategories;
+        unselectedCategories (state, _getters, _rootState, rootGetters) {
+            const categories: string[] = rootGetters['tsMods/categories'];
             return categories.filter((c: string) => !state.selectedCategories.includes(c));
         }
     },

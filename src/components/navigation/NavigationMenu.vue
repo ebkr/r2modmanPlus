@@ -83,7 +83,7 @@ export default class NavigationMenu extends Vue {
     private LaunchMode = LaunchMode;
 
     get thunderstoreModCount() {
-        let mods: ThunderstoreMod[] = this.$store.state.thunderstoreModList || [];
+        let mods: ThunderstoreMod[] = this.$store.state.tsMods.mods;
 
         return this.$store.state.modFilters.showDeprecatedPackages
           ? mods.length

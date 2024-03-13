@@ -76,7 +76,7 @@ export default class SplashMixin extends Vue {
 
         if (response) {
             ThunderstorePackages.handlePackageApiResponse(response);
-            await this.$store.dispatch('updateThunderstoreModList', ThunderstorePackages.PACKAGES);
+            await this.$store.dispatch('tsMods/updateMods', ThunderstorePackages.PACKAGES);
             await this.moveToNextScreen();
         } else {
             this.heroTitle = 'Failed to get mods from Thunderstore and cache';
