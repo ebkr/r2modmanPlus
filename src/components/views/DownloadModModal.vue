@@ -109,7 +109,6 @@ import StatusEnum from '../../model/enums/StatusEnum';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
-import ModBridge from '../../r2mm/mods/ModBridge';
 import Profile from '../../model/Profile';
 import { Progress } from '../all';
 import Game from '../../model/game/Game';
@@ -242,19 +241,15 @@ let assignId = 0;
             this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 
+        // TODO: rethink how this method and provider's downloadLatestOfAll()
+        // access the active game, local mod list and TS mod list.
         async downloadLatest() {
             this.closeModal();
-            const localMods = await ProfileModList.getModList(this.contextProfile!);
-            if (localMods instanceof R2Error) {
-                this.downloadingMod = false;
-                this.$store.commit('error/handleError', localMods);
-                return;
-            }
-            const outdatedMods = localMods.filter(mod => !ModBridge.isCachedLatestVersion(mod));
+            const modsWithUpdates: ThunderstoreCombo[] = this.$store.getters['profile/modsWithUpdates'];
             const currentAssignId = assignId++;
             const progressObject = {
                 progress: 0,
-                initialMods: outdatedMods.map(value => `${value.getName()} (${value.getVersionNumber().toString()})`),
+                initialMods: modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().toString()})`),
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
@@ -262,7 +257,7 @@ let assignId = 0;
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, outdatedMods, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, modsWithUpdates, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                 const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
@@ -277,7 +272,7 @@ let assignId = 0;
                     const obj = {
                         progress: progress,
                         modName: modName,
-                        initialMods: outdatedMods.map(value => `${value.getName()} (${value.getVersionNumber().toString()})`),
+                        initialMods: modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`),
                         assignId: currentAssignId,
                         failed: false,
                     }

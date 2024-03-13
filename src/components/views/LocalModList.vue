@@ -54,7 +54,6 @@ import ManifestV2 from '../../model/ManifestV2';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-import ModBridge from '../../r2mm/mods/ModBridge';
 import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
 import Dependants from '../../r2mm/mods/Dependants';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
@@ -255,7 +254,7 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
         updateMod(mod: ManifestV2) {
             this.selectedManifestMod = mod;
-            const tsMod = ModBridge.getCachedThunderstoreModFromMod(mod);
+            const tsMod = this.$store.getters['tsMods/tsMod'](mod);
 
             if (tsMod instanceof ThunderstoreMod) {
                 this.$store.commit("openDownloadModModal", tsMod);

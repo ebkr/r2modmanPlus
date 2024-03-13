@@ -46,22 +46,15 @@ export default abstract class ThunderstoreDownloaderProvider {
     public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
 
     /**
-     * Allows a list of mods passed in to be converted to the latest version of their equivalent upload.
-     *
-     * @param mods
-     * @param allMods
-     */
-    public abstract getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[];
-
-    /**
      * A top-level method to download the latest version of all mods passed in, including their dependencies.
      *
-     * @param mods              An array of ManifestV2 objects to be updated.
+     * @param game              Currently selected game
+     * @param modsWithUpdate    An array of ThunderstoreCombo objects to be updated.
      * @param allMods           An array of all mods available from the Thunderstore API.
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public abstract downloadLatestOfAll(game: Game, modsWithUpdate: ThunderstoreCombo[], allMods: ThunderstoreMod[],
                                callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
