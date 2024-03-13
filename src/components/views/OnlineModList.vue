@@ -92,7 +92,7 @@ export default class OnlineModList extends Vue {
     }
 
     get deprecationMap(): Map<string, boolean> {
-        return this.$store.state.deprecatedMods;
+        return this.$store.state.tsMods.deprecated;
     }
 
     isModDeprecated(key: any) {

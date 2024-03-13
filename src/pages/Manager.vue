@@ -205,7 +205,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         private contextProfile: Profile | null = null;
 
 		get thunderstoreModList(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList || [];
+            return this.$store.state.tsMods.mods;
         }
 
 		get localModList(): ManifestV2[] {
