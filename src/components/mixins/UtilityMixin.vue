@@ -28,7 +28,7 @@ export default class UtilityMixin extends Vue {
 
         const response = await ThunderstorePackages.update(this.$store.state.activeGame);
         await ApiCacheUtils.storeLastRequest(response.data);
-        await this.$store.dispatch("tsMods/updateMods", ThunderstorePackages.PACKAGES);
+        await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
     }
 
