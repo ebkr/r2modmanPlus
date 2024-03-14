@@ -4,9 +4,9 @@ import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
-import ModBridge from '../../../r2mm/mods/ModBridge';
 
 @Component({
     components: {
@@ -36,16 +36,20 @@ export default class LocalModCard extends Vue {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
     }
 
+    get isDeprecated() {
+        return this.tsMod ? this.tsMod.isDeprecated() : false;
+    }
+
     get isLatestVersion() {
-        return ModBridge.isCachedLatestVersion(this.mod);
+        return this.$store.getters['tsMods/isLatestVersion'](this.mod);
     }
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
     }
 
-    get tsMod() {
-        return ModBridge.getCachedThunderstoreModFromMod(this.mod);
+    get tsMod(): ThunderstoreMod | undefined {
+        return this.$store.getters['tsMods/tsMod'](this.mod);
     }
 
     @Watch("localModList")
@@ -141,7 +145,7 @@ function dependencyStringToModName(x: string) {
 
         <template v-slot:title>
             <span class="non-selectable">
-                <span v-if="mod.isDeprecated()"
+                <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
                     v-tooltip.right="'This mod is deprecated and could be broken'">
                     Deprecated

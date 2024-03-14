@@ -67,6 +67,8 @@ export default class SplashMixin extends Vue {
             this.getRequestItem('ThunderstoreDownload').setProgress(100);
         }
 
+        // TODO: since the mod list is stored in IndexedDB storing it
+        // also on a file servers no purpose, clean this up.
         if (response) {
             ApiCacheUtils.storeLastRequest(response.data);
         } else {
@@ -75,8 +77,8 @@ export default class SplashMixin extends Vue {
         }
 
         if (response) {
-            ThunderstorePackages.handlePackageApiResponse(response);
-            await this.$store.dispatch('tsMods/updateMods', ThunderstorePackages.PACKAGES);
+            await ThunderstorePackages.handlePackageApiResponse(this.activeGame.internalFolderName, response);
+            await this.$store.dispatch('tsMods/updateMods');
             await this.moveToNextScreen();
         } else {
             this.heroTitle = 'Failed to get mods from Thunderstore and cache';
@@ -85,7 +87,6 @@ export default class SplashMixin extends Vue {
     }
 
     async continueOffline() {
-        ThunderstorePackages.PACKAGES = [];
         await this.moveToNextScreen();
     }
 
