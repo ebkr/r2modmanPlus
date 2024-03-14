@@ -4,7 +4,7 @@ import { MelonLoaderInstaller } from "./MelonLoaderInstaller";
 import { PackageInstaller } from "./PackageInstaller";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 import { ShimloaderInstaller, ShimloaderPluginInstaller } from "./ShimloaderInstaller";
-import { LovelyInstaller } from "./LovelyInstaller";
+import { LovelyInstaller, LovelyPluginInstaller } from "./LovelyInstaller";
 
 
 const _PackageInstallers = {
@@ -15,6 +15,7 @@ const _PackageInstallers = {
     "shimloader": new ShimloaderInstaller(),
     "shimloader-plugin": new ShimloaderPluginInstaller(),
     "lovely": new LovelyInstaller(),
+    "lovely-plugin": new LovelyPluginInstaller(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;
