@@ -579,7 +579,43 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+
+        new Game("Slipstream: Rogue Space", "SlipstreamRogueSpace", "SlipstreamRogueSpace",
+            "Slipstream Rogue Space", ["Slipstream_Win.exe"], "Slipstream_Win_Data",
+            "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        // new Game("Gunner, HEAT, PC!", "GHPC", "GHPC",
+        //     "GHPC", ["GHPC.exe"], "GHPC_Data",
+        //     "https://thunderstore.io/c/ghpc/api/v1/package/", EXCLUSIONS,
+        //     [new StorePlatformMetadata(StorePlatform.STEAM, "1705180")], "GHPC.png",
+        //     GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Below The Stone", "BelowTheStone", "BelowTheStone",
+            "Below The Stone", ["Below The Stone.exe"], "Below The Stone_Data",
+            "https://thunderstore.io/c/below-the-stone/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1170230")], "BelowTheStone.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Wildmender", "Wildmender", "Wildmender",
+            "Wildmender", ["Wildmender_win64.exe"], "Wildmender_win64_Data",
+            "https://thunderstore.io/c/wildmender/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1599330")], "Wildmender.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("GearBlocks", "GearBlocks", "GearBlocks",
+            "GearBlocks", ["GearBlocks.exe"], "GearBlocks_Data",
+            "https://thunderstore.io/c/gearblocks/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1305080")], "GearBlocks.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [])
+
+        // new Game("LIZARDS MUST DIE", "LizardsMustDie", "LizardsMustDie",
+        //     "LIZARDS MUST DIE", ["LizardsMustDie.exe"], "LizardsMustDie_Data",
+        //     "https://thunderstore.io/c/lizards-must-die/api/v1/package/", EXCLUSIONS,
+        //     [new StorePlatformMetadata(StorePlatform.STEAM, "2532550")], "LizardsMustDie.png",
+        //     GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {

@@ -161,6 +161,12 @@ const VARIANTS = {
     MeepleStation: MODLOADER_PACKAGES,
     VoidCrew: MODLOADER_PACKAGES,
     Sailwind: MODLOADER_PACKAGES,
+    SlipstreamRogueSpace: MODLOADER_PACKAGES,
+    // GHPC: MODLOADER_PACKAGES,
+    BelowTheStone: MODLOADER_PACKAGES,
+    Wildmender: MODLOADER_PACKAGES,
+    GearBlocks: MODLOADER_PACKAGES,
+    // LizardsMustDie: MODLOADER_PACKAGES,
     VotV: MODLOADER_PACKAGES,
     Palworld: MODLOADER_PACKAGES,
 };

@@ -119,6 +119,12 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("MeepleStation"),
             buildBepInExRules("VoidCrew"),
             buildBepInExRules("Sailwind"),
+            buildBepInExRules("SlipstreamRogueSpace"),
+            // buildBepInExRules("GHPC"),
+            buildBepInExRules("BelowTheStone"),
+            buildBepInExRules("Wildmender"),
+            buildBepInExRules("GearBlocks"),
+            // buildBepInExRules("LizardsMustDie"),
         ]
     }
 }
