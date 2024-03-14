@@ -7,31 +7,6 @@ import R2Error from "../model/errors/R2Error";
 import path from "path";
 
 export class LovelyInstaller extends PackageInstaller {
-    readonly installer = new InstallRuleInstaller({
-        gameName: "Balatro",
-        rules: [
-            {
-                route: path.join("shimloader", "mod"),
-                isDefaultLocation: true,
-                defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
-                subRoutes: [],
-            },
-            {
-                route: path.join("shimloader", "pak"),
-                defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
-                subRoutes: [],
-            },
-            {
-                route: path.join("shimloader", "cfg"),
-                defaultFileExtensions: [],
-                trackingMethod: "NONE",
-                subRoutes: [],
-            }
-        ]
-    });
-
     async install(args: InstallArgs) {
         const {
             mod,
@@ -43,19 +18,20 @@ export class LovelyInstaller extends PackageInstaller {
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
+        // Assuming this is the lovely-injector package.
         const targets = [
-            "dwmapi.dll",
-            "mods/lovely/config.toml"
+            ["dwmapi.dll", "dwmapi.dll"],
+            ["lovely/config.toml", "mods/lovely/config.toml"]
         ];
 
         for (const target of targets) {
-            const absSrc = path.join(packagePath, target);
-            const absDest = path.join(profilePath, target);
+            const absSrc = path.join(packagePath, target[0]);
+            const absDest = path.join(profilePath, target[1]);
 
-            await FileUtils.ensureDirectory(absDest);
+            await FileUtils.ensureDirectory(path.dirname(absDest));
             await fs.copyFile(absSrc, absDest);
 
-            fileRelocations.set(absSrc, target);
+            fileRelocations.set(absSrc, target[1]);
         }
 
         await addToStateFile(mod, fileRelocations, profile);
@@ -63,19 +39,6 @@ export class LovelyInstaller extends PackageInstaller {
 }
 
 export class LovelyPluginInstaller extends PackageInstaller {
-    readonly installer = new InstallRuleInstaller({
-        gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
-        rules: [
-            {
-                route: [],
-                isDefaultLocation: true,
-                defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
-                subRoutes: [],
-            },
-        ]
-    });
-
     async install(args: InstallArgs) {
         const {
             mod,
@@ -97,10 +60,16 @@ export class LovelyPluginInstaller extends PackageInstaller {
         const srcFiles = srcTree.getRecursiveFiles();
         for (const srcFile of srcFiles) {
             const relFile = srcFile.replace(packagePath, "");
-            await FileUtils.ensureDirectory(path.basename(srcFile));
-            await fs.copyFile(srcFile, path.join(profilePath, relFile));
+            const destFile = path.join(profilePath, installDir, relFile);
 
-            fileRelocations.set(srcFile, relFile);
+            console.log(`destFile: ${destFile}`);
+
+            await FileUtils.ensureDirectory(path.dirname(destFile));
+            await fs.copyFile(srcFile, destFile);
+
+            fileRelocations.set(srcFile, path.join(installDir, relFile));
         }
+
+        await addToStateFile(mod, fileRelocations, profile);
     }
 }

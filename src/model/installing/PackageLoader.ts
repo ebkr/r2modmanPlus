@@ -28,6 +28,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
 export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstallerId | null {
     switch (loader) {
         case PackageLoader.SHIMLOADER: return "shimloader-plugin";
+        case PackageLoader.LOVELY: return "lovely-plugin";
     }
 
     return null;
