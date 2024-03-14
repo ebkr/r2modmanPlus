@@ -18,12 +18,19 @@ export class LovelyInstaller extends PackageInstaller {
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
-        // Assuming this is the lovely-injector package.
-        const targets = [
-            ["dwmapi.dll", "dwmapi.dll"],
-            ["lovely/config.toml", "mods/lovely/config.toml"]
-        ];
+        // Manually copy over dwmapi.dll
+        const dwmSrc = path.join(packagePath, "dwmapi.dll");
+        const dwmDest = path.join(profilePath, "dwmapi.dll");
+        await fs.copyFile(dwmSrc, dwmDest);
+        fileRelocations.set(dwmSrc, "dwmapi.dll");
 
+        // Files within the lovely subdirectory need to be recursively copied into the destination.
+        const lovelyTree = await FileTree.buildFromLocation(path.join(packagePath, "lovely"));
+        if (lovelyTree instanceof R2Error) {
+            throw lovelyTree;
+        }
+
+        const targets = lovelyTree.getRecursiveFiles().map((x) => x.replace(packagePath, "")).map((x) => [x, path.join("mods", x)]);
         for (const target of targets) {
             const absSrc = path.join(packagePath, target[0]);
             const absDest = path.join(profilePath, target[1]);
@@ -61,8 +68,6 @@ export class LovelyPluginInstaller extends PackageInstaller {
         for (const srcFile of srcFiles) {
             const relFile = srcFile.replace(packagePath, "");
             const destFile = path.join(profilePath, installDir, relFile);
-
-            console.log(`destFile: ${destFile}`);
 
             await FileUtils.ensureDirectory(path.dirname(destFile));
             await fs.copyFile(srcFile, destFile);
