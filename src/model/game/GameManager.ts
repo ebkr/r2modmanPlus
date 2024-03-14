@@ -579,7 +579,13 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+
+        new Game("Plasma", "Plasma", "Plasma",
+            "Plasma", ["Plasma.exe"], "Plasma_Data",
+            "https://thunderstore.io/c/plasma/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1409160")], "Plasma.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
