@@ -5,8 +5,6 @@ import ConnectionProvider from '../../providers/generic/connection/ConnectionPro
 import * as PackageDb from '../manager/PackageDexieStore';
 
 export default class ThunderstorePackages {
-
-    public static PACKAGES_MAP: Map<String, ThunderstoreMod> = new Map();
     // TODO: would IndexedDB or Vuex be more suitable place for exclusions?
     public static EXCLUSIONS: string[] = [];
 
@@ -34,16 +32,15 @@ export default class ThunderstorePackages {
     }
 
     public static getDeprecatedPackageMap(packages: ThunderstoreMod[]): Map<string, boolean> {
-        ThunderstorePackages.PACKAGES_MAP = packages.reduce((map, pkg) => {
+        const packageMap = packages.reduce((map, pkg) => {
             map.set(pkg.getFullName(), pkg);
             return map;
         }, new Map<String, ThunderstoreMod>());
-
         const deprecationMap = new Map<string, boolean>();
         const currentChain = new Set<string>();
 
         packages.forEach(pkg => {
-            this._populateDeprecatedPackageMapForModChain(pkg, deprecationMap, currentChain);
+            this._populateDeprecatedPackageMapForModChain(pkg, packageMap, deprecationMap, currentChain);
         });
 
         return deprecationMap;
@@ -60,6 +57,7 @@ export default class ThunderstorePackages {
      */
     public static _populateDeprecatedPackageMapForModChain(
         mod: ThunderstoreMod,
+        packageMap: Map<String, ThunderstoreMod>,
         deprecationMap: Map<string, boolean>,
         currentChain: Set<string>
     ): boolean {
@@ -82,12 +80,12 @@ export default class ThunderstorePackages {
             if (currentChain.has(dependencyName)) {
                 continue;
             }
-            const dependency = this.PACKAGES_MAP.get(dependencyName);
+            const dependency = packageMap.get(dependencyName);
 
             // Package isn't available on Thunderstore, so we can't tell
             // if it's deprecated or not. This will also include deps of
             // packages uploaded into wrong community since the
-            // PACKAGES_MAP contains only packages from this community.
+            // packageMap contains only packages from this community.
             // Based on manual testing with real data, caching these to
             // deprecationMap doesn't seem to improve overall performance.
             if (dependency === undefined) {
@@ -98,7 +96,7 @@ export default class ThunderstorePackages {
             // investigation to avoid infinite recursive loops.
             currentChain.add(mod.getFullName());
             const dependencyDeprecated = this._populateDeprecatedPackageMapForModChain(
-                dependency, deprecationMap, currentChain
+                dependency, packageMap, deprecationMap, currentChain
             );
             currentChain.delete(mod.getFullName());
             deprecationMap.set(dependencyName, dependencyDeprecated);
