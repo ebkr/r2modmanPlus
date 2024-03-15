@@ -67,7 +67,6 @@ import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
 import {
     LaunchMode,
     launch,
@@ -83,11 +82,9 @@ export default class NavigationMenu extends Vue {
     private LaunchMode = LaunchMode;
 
     get thunderstoreModCount() {
-        let mods: ThunderstoreMod[] = this.$store.state.tsMods.mods;
-
         return this.$store.state.modFilters.showDeprecatedPackages
-          ? mods.length
-          : mods.filter((m) => !m.isDeprecated()).length;
+          ? this.$store.state.tsMods.mods.length
+          : this.$store.getters['tsMods/undeprecatedModCount'];
     }
 
     get localModCount(): number {
