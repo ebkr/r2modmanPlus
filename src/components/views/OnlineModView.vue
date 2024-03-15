@@ -105,7 +105,7 @@ export default class OnlineModView extends Vue {
     }
 
     get thunderstoreModList(): ThunderstoreMod[] {
-        return this.$store.state.thunderstoreModList;
+        return this.$store.state.tsMods.mods;
     }
 
     getPaginationSize() {
@@ -174,7 +174,7 @@ export default class OnlineModView extends Vue {
 
     @Watch("sortingDirectionModel")
     @Watch("sortingStyleModel")
-    @Watch("thunderstoreModList")
+    @Watch("tsMods.mods")
     sortThunderstoreModList() {
         const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];
