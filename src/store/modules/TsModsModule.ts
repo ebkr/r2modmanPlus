@@ -4,6 +4,7 @@ import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
 
@@ -15,6 +16,7 @@ interface CachedMod {
 interface State {
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
+    exclusions?: string[];
     mods: ThunderstoreMod[];
 }
 
@@ -30,6 +32,8 @@ export const TsModsModule = {
     state: (): State => ({
         cache: new Map<string, CachedMod>(),
         deprecated: new Map<string, boolean>(),
+        /*** Packages available through API that should be ignored by the manager */
+        exclusions: [],
         /*** All mods available through API for the current active game */
         mods: [],
     }),
@@ -73,6 +77,15 @@ export const TsModsModule = {
             return categories;
         },
 
+        /*** Remove packages on exclusion list from the given API response */
+        filterExcluded: (state) => <T extends {full_name: string}>(apiResponse: T[]): T[] => {
+            if (state.exclusions === undefined) {
+                throw new Error('filterExcluded called before populating exclusions');
+            }
+
+            return apiResponse.filter((pkg) => !state.exclusions!.includes(pkg.full_name));
+        },
+
         /*** Is the version of a mod defined by ManifestV2 the newest version? */
         isLatestVersion: (_state, getters) => (mod: ManifestV2): boolean => {
             return getters.cachedMod(mod).isLatest;
@@ -109,12 +122,20 @@ export const TsModsModule = {
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
         },
+        setExclusions(state, payload: string[]) {
+            state.exclusions = payload;
+        },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = ThunderstorePackages.getDeprecatedPackageMap(allMods);
         }
     },
 
     actions: <ActionTree<State, RootState>>{
+        async updateExclusions({commit}) {
+            const exclusions = await ConnectionProvider.instance.getExclusions();
+            commit('setExclusions', exclusions);
+        },
+
         async updateMods({commit, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
             commit('setMods', modList);

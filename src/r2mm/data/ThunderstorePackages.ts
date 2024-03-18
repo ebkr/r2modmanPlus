@@ -1,35 +1,6 @@
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import Game from '../../model/game/Game';
-import ApiResponse from '../../model/api/ApiResponse';
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import * as PackageDb from '../manager/PackageDexieStore';
 
 export default class ThunderstorePackages {
-    // TODO: would IndexedDB or Vuex be more suitable place for exclusions?
-    public static EXCLUSIONS: string[] = [];
-
-    /**
-     * Fetch latest V1 API data and apply to {PACKAGES}
-     */
-    public static async update(game: Game) {
-        this.EXCLUSIONS = await ConnectionProvider.instance.getExclusions();
-        const response = await ConnectionProvider.instance.getPackages(game);
-        await this.handlePackageApiResponse(game.internalFolderName, response);
-
-        return response;
-    }
-
-    /**
-     * Transform {response.data} to ThunderstoreMod list and map.
-     * @param response api/v1/package data.
-     */
-    public static async handlePackageApiResponse(gameName: string, response: ApiResponse) {
-        const packages = response.data
-            .filter((p) => !ThunderstorePackages.EXCLUSIONS.includes(p["full_name"]));
-
-        // TODO: see if this can be hooked into the progress bar in Splash screen.
-        await PackageDb.updateFromApiResponse(gameName, packages);
-    }
 
     public static getDeprecatedPackageMap(packages: ThunderstoreMod[]): Map<string, boolean> {
         const packageMap = packages.reduce((map, pkg) => {
