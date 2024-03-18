@@ -155,7 +155,9 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
         }
         if (!showDeprecatedPackages) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(
+                mod => !this.$store.state.tsMods.deprecated.get(mod.getFullName())
+            );
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
