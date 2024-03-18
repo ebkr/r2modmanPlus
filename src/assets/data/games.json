@@ -146,7 +146,7 @@
         "internalFolderName": "AGAINST",
         "dataFolderName": "AGAINST_Data",
         "settingsIdentifier": "AGAINST",
-        "packageIndex": "https://against.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/against/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "AGAINST_steam",
         "exeNames": [
@@ -357,7 +357,7 @@
         "internalFolderName": "SubnauticaBZ",
         "dataFolderName": "SubnauticaZero_Data",
         "settingsIdentifier": "SubnauticaBZ",
-        "packageIndex": "https://belowzero.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/belowzero/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "SubnauticaZero",
         "exeNames": [
@@ -583,7 +583,7 @@
         "internalFolderName": "BONEWORKS",
         "dataFolderName": "BONEWORKS_Data",
         "settingsIdentifier": "BONEWORKS",
-        "packageIndex": "https://boneworks.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/boneworks/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "BONEWORKS\\BONEWORKS",
         "exeNames": [
@@ -738,7 +738,7 @@
         "internalFolderName": "CatsAreLiquidABP",
         "dataFolderName": "CaL-ABP-Windows_Data",
         "settingsIdentifier": "CatsAreLiquidABP",
-        "packageIndex": "https://cats-are-liquid.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/cats-are-liquid/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Cats are Liquid - A Better Place",
         "exeNames": [
@@ -868,7 +868,7 @@
         "internalFolderName": "CoreKeeper",
         "dataFolderName": "CoreKeeper_Data",
         "settingsIdentifier": "CoreKeeper",
-        "packageIndex": "https://core-keeper.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/core-keeper/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Core Keeper",
         "exeNames": [
@@ -1000,7 +1000,7 @@
         "internalFolderName": "DysonSphereProgram",
         "dataFolderName": "DSPGAME_Data",
         "settingsIdentifier": "DysonSphereProgram",
-        "packageIndex": "https://dsp.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/dsp/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Dyson Sphere Program",
         "exeNames": [
@@ -1139,7 +1139,7 @@
         "internalFolderName": "ForTheKing",
         "dataFolderName": "FTK_Data",
         "settingsIdentifier": "ForTheKing",
-        "packageIndex": "https://for-the-king.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/for-the-king/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "For The King",
         "exeNames": [
@@ -1270,7 +1270,7 @@
         "internalFolderName": "GTFO",
         "dataFolderName": "GTFO_Data",
         "settingsIdentifier": "GTFO",
-        "packageIndex": "https://gtfo.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/gtfo/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "GTFO",
         "exeNames": [
@@ -1342,7 +1342,7 @@
         "internalFolderName": "H3VR",
         "dataFolderName": "h3vr_Data",
         "settingsIdentifier": "H3VR",
-        "packageIndex": "https://h3vr.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/h3vr/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "H3VR",
         "exeNames": [
@@ -1499,7 +1499,7 @@
         "internalFolderName": "HOTDS",
         "dataFolderName": "dyingsun_Data",
         "settingsIdentifier": "HOTDS",
-        "packageIndex": "https://hotds.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/hotds/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "DyingSun",
         "exeNames": [
@@ -1566,7 +1566,7 @@
         "internalFolderName": "Inscryption",
         "dataFolderName": "Inscryption_Data",
         "settingsIdentifier": "Inscryption",
-        "packageIndex": "https://inscryption.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/inscryption/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Inscryption",
         "exeNames": [
@@ -1630,7 +1630,7 @@
         "internalFolderName": "LethalLeagueBlaze",
         "dataFolderName": "LLBlaze_Data",
         "settingsIdentifier": "LethalLeagueBlaze",
-        "packageIndex": "https://lethal-league-blaze.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/lethal-league-blaze/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "LLBlaze",
         "exeNames": [
@@ -1697,7 +1697,7 @@
         "internalFolderName": "Mechanica",
         "dataFolderName": "Mechanica_Data",
         "settingsIdentifier": "Mechanica",
-        "packageIndex": "https://mechanica.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/mechanica/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Mechanica",
         "exeNames": [
@@ -1761,7 +1761,7 @@
         "internalFolderName": "Muck",
         "dataFolderName": "Muck_Data",
         "settingsIdentifier": "Muck",
-        "packageIndex": "https://muck.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/muck/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Muck",
         "exeNames": [
@@ -1826,7 +1826,7 @@
         "internalFolderName": "NASB",
         "dataFolderName": "Nickelodeon All-Star Brawl_Data",
         "settingsIdentifier": "NASB",
-        "packageIndex": "https://nasb.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/nasb/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Nickelodeon All-Star Brawl",
         "exeNames": [
@@ -1912,7 +1912,7 @@
         "internalFolderName": "NearlyDead",
         "dataFolderName": "Nearly Dead_Data",
         "settingsIdentifier": "NearlyDead",
-        "packageIndex": "https://nearly-dead.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/nearly-dead/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Nearly Dead",
         "exeNames": [
@@ -1980,7 +1980,7 @@
         "internalFolderName": "Titanfall2",
         "dataFolderName": "",
         "settingsIdentifier": "Titanfall2",
-        "packageIndex": "https://northstar.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/northstar/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Titanfall2",
         "exeNames": [
@@ -2034,7 +2034,7 @@
         "internalFolderName": "OutwardDe",
         "dataFolderName": "Outward Definitive Edition_Data",
         "settingsIdentifier": "OutwardDe",
-        "packageIndex": "https://outward.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/outward/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Outward/Outward_Defed",
         "exeNames": [
@@ -2165,7 +2165,7 @@
         "internalFolderName": "PotionCraft",
         "dataFolderName": "Potion Craft_Data",
         "settingsIdentifier": "PotionCraft",
-        "packageIndex": "https://potion-craft.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/potion-craft/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Potion Craft",
         "exeNames": [
@@ -2421,7 +2421,7 @@
         "internalFolderName": "RogueTower",
         "dataFolderName": "Rogue Tower_Data",
         "settingsIdentifier": "RogueTower",
-        "packageIndex": "https://rogue-tower.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/rogue-tower/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Rogue Tower",
         "exeNames": [
@@ -2485,7 +2485,7 @@
         "internalFolderName": "ROUNDS",
         "dataFolderName": "Rounds_Data",
         "settingsIdentifier": "ROUNDS",
-        "packageIndex": "https://rounds.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/rounds/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "ROUNDS",
         "exeNames": [
@@ -2617,7 +2617,7 @@
         "internalFolderName": "Starsand",
         "dataFolderName": "Starsand_Data",
         "settingsIdentifier": "Starsand",
-        "packageIndex": "https://starsand.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/starsand/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Starsand",
         "exeNames": [
@@ -2689,7 +2689,7 @@
         "internalFolderName": "Subnautica",
         "dataFolderName": "Subnautica_Data",
         "settingsIdentifier": "Subnautica",
-        "packageIndex": "https://subnautica.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/subnautica/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Subnautica",
         "exeNames": [
@@ -2766,7 +2766,7 @@
         "internalFolderName": "TaleSpire",
         "dataFolderName": "TaleSpire_Data",
         "settingsIdentifier": "TaleSpire",
-        "packageIndex": "https://talespire.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/talespire/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "TaleSpire",
         "exeNames": [
@@ -2837,7 +2837,7 @@
         "internalFolderName": "Timberborn",
         "dataFolderName": "Timberborn_Data",
         "settingsIdentifier": "Timberborn",
-        "packageIndex": "https://timberborn.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/timberborn/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Timberborn",
         "exeNames": [
@@ -2913,7 +2913,7 @@
         "internalFolderName": "TABS",
         "dataFolderName": "TotallyAccurateBattleSimulator_Data",
         "settingsIdentifier": "TotallyAccurateBattleSimulator",
-        "packageIndex": "https://totally-accurate-battle-simulator.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/totally-accurate-battle-simulator/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Totally Accurate Battle Simulator",
         "exeNames": [
@@ -3105,7 +3105,7 @@
         "internalFolderName": "Valheim",
         "dataFolderName": "valheim_server_Data",
         "settingsIdentifier": "ValheimServer",
-        "packageIndex": "https://valheim.thunderstore.io/api/v1/package/",
+        "packageIndex": "https://thunderstore.io/c/valheim/api/v1/package/",
         "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
         "steamFolderName": "Valheim dedicated server",
         "exeNames": [

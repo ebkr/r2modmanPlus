@@ -39,7 +39,7 @@ export default class GameManager {
 
         new Game('Dyson Sphere Program', 'DysonSphereProgram', 'DysonSphereProgram',
             'Dyson Sphere Program', ['DSPGAME.exe'], 'DSPGAME_Data',
-            'https://dsp.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/dsp/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "GameraGame.DysonSphereProgram")
@@ -47,7 +47,7 @@ export default class GameManager {
 
         new Game('Valheim', 'Valheim', 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
-            'https://valheim.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/valheim/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "892970"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "CoffeeStainStudios.Valheim")
@@ -55,20 +55,20 @@ export default class GameManager {
 
         new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
             'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
-            'https://valheim.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/valheim/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "896660")
             ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
 
         new Game('GTFO', 'GTFO', 'GTFO',
             'GTFO', ['GTFO.exe'], 'GTFO_Data',
-            'https://gtfo.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/gtfo/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "493520")], "GTFO.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('Outward', 'Outward', 'Outward',
             'Outward', ['Outward.exe'], 'Outward_Data',
-            'https://outward.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/outward/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
@@ -77,7 +77,7 @@ export default class GameManager {
 
         new Game('Outward Definitive', 'OutwardDe', 'OutwardDe',
             'Outward/Outward_Defed', ['Outward Definitive Edition.exe'], 'Outward Definitive Edition_Data',
-            'https://outward.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/outward/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1758860"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "f07a51af8ac845ea96f792fb485e04a3"),
@@ -86,55 +86,55 @@ export default class GameManager {
 
         new Game('TaleSpire', 'TaleSpire', 'TaleSpire',
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
-            'https://talespire.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/talespire/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "720620")], "TaleSpire.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TS"]),
 
         new Game("H3VR", "H3VR", "H3VR",
             "H3VR", ["h3vr.exe"], "h3vr_Data",
-            "https://h3vr.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/h3vr/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "450540")], "H3VR.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Hot Dogs, Horseshoes & Hand Grenades", "Hot Dogs, Horseshoes and Hand Grenades"]),
 
         new Game("ROUNDS", "ROUNDS", "ROUNDS",
             "ROUNDS", ["Rounds.exe"], "Rounds_Data",
-            "https://rounds.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/rounds/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1557740")], "ROUNDS.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("Mechanica", "Mechanica", "Mechanica",
             "Mechanica", ["Mechanica.exe"], "Mechanica_Data",
-            "https://mechanica.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/mechanica/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1226990")], "Mechanica.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("Muck", "Muck", "Muck",
             "Muck", ["Muck.exe", "Muck.x86_64"], "Muck_Data",
-            "https://muck.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/muck/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1625450")], "Muck.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("BONEWORKS", "BONEWORKS", "BONEWORKS",
             path.join("BONEWORKS", "BONEWORKS"), ["BONEWORKS.exe", "Boneworks_Oculus_Windows64.exe"], "BONEWORKS_Data",
-            "https://boneworks.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/boneworks/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "823500"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "BONEWORKS.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.MELON_LOADER, ["BW"]),
 
         new Game("Lethal League Blaze", "LethalLeagueBlaze", "LethalLeagueBlaze",
             "LLBlaze", ["LLBlaze.exe", "LLBlaze.x86_64", "LLBlaze.x86", "LLBlaze.app"], "LLBlaze_Data",
-            "https://lethal-league-blaze.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/lethal-league-blaze/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "553310")], "LethalLeagueBlaze.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["LLB"]),
 
         new Game("Timberborn", "Timberborn", "Timberborn",
             "Timberborn", ["Timberborn.exe"], "Timberborn_Data",
-            "https://timberborn.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/timberborn/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1062090"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "972a4ca2631e43b4ba7bc3b7586ad8c4"), new StorePlatformMetadata(StorePlatform.OTHER)], "Timberborn.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TB"]),
 
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
             "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe"], "TotallyAccurateBattleSimulator_Data",
-            "https://totally-accurate-battle-simulator.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/totally-accurate-battle-simulator/api/v1/package/", EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "508440"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish"),
@@ -144,25 +144,25 @@ export default class GameManager {
 
         new Game("Nickelodeon All‑Star Brawl", "NASB", "NASB",
             "Nickelodeon All-Star Brawl", ["Nickelodeon All-Star Brawl.exe"], "Nickelodeon All-Star Brawl_Data",
-            "https://nasb.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/nasb/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1414850")], "NASB.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Nickelodeon All-Star Brawl", "NASB"]),
 
         new Game("Inscryption", "Inscryption", "Inscryption",
             "Inscryption", ["Inscryption.exe"], "Inscryption_Data",
-            "https://inscryption.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/inscryption/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1092790"), new StorePlatformMetadata(StorePlatform.OTHER)], "Inscryption.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("Starsand", "Starsand", "Starsand",
             "Starsand", ["Starsand.exe"], "Starsand_Data",
-            "https://starsand.thunderstore.io/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/starsand/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1380220"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "a774278c0813447c96a76b053cbf73ff")], "Starsand.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game('Cats are Liquid - A Better Place', 'CatsAreLiquidABP', 'CatsAreLiquidABP',
             'Cats are Liquid - A Better Place', ['CaL-ABP-Windows.exe', "CaL-ABP-Linux.x86_64", 'CaL-ABP-macOS.app'], 'CaL-ABP-Windows_Data',
-            'https://cats-are-liquid.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/cats-are-liquid/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1188080"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
@@ -172,45 +172,45 @@ export default class GameManager {
 
         new Game('Potion Craft', 'PotionCraft', 'PotionCraft',
             'Potion Craft', ['Potion Craft.exe'], 'Potion Craft_Data',
-            'https://potion-craft.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/potion-craft/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1210320")], 'PotionCraft.jpg',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
             ['pc']),
 
         new Game('Nearly Dead', 'NearlyDead', 'NearlyDead',
             'Nearly Dead', ['Nearly Dead.exe'], 'Nearly Dead_Data',
-            'https://nearly-dead.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/nearly-dead/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1268900")], 'NearlyDead.png',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
             ['nd']),
 
         new Game('AGAINST', 'AGAINST', 'AGAINST',
             'AGAINST_steam', ['AGAINST.exe'], "AGAINST_Data",
-            'https://against.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/against/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1584840")], "AGAINST.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game('Rogue Tower', 'RogueTower', 'RogueTower',
             'Rogue Tower', ['Rogue Tower.exe'], "Rogue Tower_Data",
-            'https://rogue-tower.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/rogue-tower/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1843760")], "RogueTower.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt']),
 
         new Game('House of the Dying Sun', 'HOTDS', 'HOTDS',
             'DyingSun', ['dyingsun.exe'], 'dyingsun_Data',
-            'https://hotds.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/hotds/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, '283160')], "HOTDS.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds']),
 
         new Game('For The King', 'ForTheKing', 'ForTheKing',
             'For The King', ['FTK.exe'], 'FTK_Data',
-            'https://for-the-king.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/for-the-king/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "527230"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Discus")], "ForTheKing.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ftk"]),
 
         new Game('Subnautica', 'Subnautica', 'Subnautica',
             'Subnautica', ['Subnautica.exe'], 'Subnautica_Data',
-            'https://subnautica.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/subnautica/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "264710"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar"),
@@ -219,7 +219,7 @@ export default class GameManager {
 
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
-            'https://belowzero.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/belowzero/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
@@ -227,13 +227,13 @@ export default class GameManager {
 
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
-            'https://core-keeper.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/core-keeper/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
 
         new Game("Titanfall 2", "Titanfall2", "Titanfall2",
             "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
-            'https://northstar.thunderstore.io/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/northstar/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
 
