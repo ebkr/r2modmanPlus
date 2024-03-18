@@ -1,6 +1,6 @@
-import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ThunderstoreMod from '../model/ThunderstoreMod';
 
-export default class ThunderstorePackages {
+export class Deprecations {
 
     public static getDeprecatedPackageMap(packages: ThunderstoreMod[]): Map<string, boolean> {
         const packageMap = packages.reduce((map, pkg) => {

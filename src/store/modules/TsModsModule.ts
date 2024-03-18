@@ -6,7 +6,7 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+import { Deprecations } from '../../utils/Deprecations';
 
 interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -126,7 +126,7 @@ export const TsModsModule = {
             state.exclusions = payload;
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
-            state.deprecated = ThunderstorePackages.getDeprecatedPackageMap(allMods);
+            state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
         }
     },
 
