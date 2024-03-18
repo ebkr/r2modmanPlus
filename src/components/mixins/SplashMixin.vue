@@ -6,7 +6,7 @@ import ApiResponse from '../../model/api/ApiResponse';
 import GameManager from '../../model/game/GameManager';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
@@ -43,7 +43,7 @@ export default class SplashMixin extends Vue {
             this.getRequestItem('ExclusionsList').setProgress(progress);
         };
 
-        ThunderstorePackages.EXCLUSIONS = await ConnectionProvider.instance.getExclusions(showProgress);
+        await this.$store.dispatch('tsMods/updateExclusions');
         this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
@@ -77,7 +77,8 @@ export default class SplashMixin extends Vue {
         }
 
         if (response) {
-            await ThunderstorePackages.handlePackageApiResponse(this.activeGame.internalFolderName, response);
+            const packages = this.$store.getters['tsMods/filterExcluded'](response.data);
+            await PackageDb.updateFromApiResponse(this.activeGame.internalFolderName, packages);
             await this.$store.dispatch('tsMods/updateMods');
             await this.moveToNextScreen();
         } else {
