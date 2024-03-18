@@ -219,7 +219,7 @@ export default class GameManager {
 
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
-            'https://thunderstore.io/c/belowzero/api/v1/package/', EXCLUSIONS,
+            'https://thunderstore.io/c/subnautica-below-zero/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
