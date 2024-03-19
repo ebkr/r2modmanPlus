@@ -7,7 +7,6 @@ import GameManager from '../../model/game/GameManager';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
 export default class SplashMixin extends Vue {
@@ -60,30 +59,32 @@ export default class SplashMixin extends Vue {
         try {
             response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
         } catch (e) {
-            this.isOffline = true;
-            this.heroTitle = 'Failed to get mods from Thunderstore';
-            this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+            // No-op
         } finally {
             this.getRequestItem('ThunderstoreDownload').setProgress(100);
         }
 
-        // TODO: since the mod list is stored in IndexedDB storing it
-        // also on a file servers no purpose, clean this up.
         if (response) {
-            ApiCacheUtils.storeLastRequest(response.data);
-        } else {
-            const cachedResponse = await ApiCacheUtils.getLastRequest();
-            response = cachedResponse ? { data: cachedResponse.payload } : undefined;
-        }
+            this.heroTitle = 'Received mod list from Thunderstore';
+            this.loadingText = 'Caching the mod list locally';
 
-        if (response) {
             const packages = this.$store.getters['tsMods/filterExcluded'](response.data);
             await PackageDb.updateFromApiResponse(this.activeGame.internalFolderName, packages);
-            await this.$store.dispatch('tsMods/updateMods');
-            await this.moveToNextScreen();
+
+            this.loadingText = 'Processing the mod list';
         } else {
+            this.heroTitle = 'Failed to get mods from Thunderstore';
+            this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+        }
+
+        await this.$store.dispatch('tsMods/updateMods');
+
+        if (this.$store.state.tsMods.modsLastUpdated === undefined) {
             this.heroTitle = 'Failed to get mods from Thunderstore and cache';
             this.loadingText = 'You may be offline or Thunderstore is unavailabe. However, you may still use the manager offline.';
+            this.isOffline = true;
+        } else {
+            await this.moveToNextScreen();
         }
     }
 
