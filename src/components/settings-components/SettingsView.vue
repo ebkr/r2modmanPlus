@@ -60,11 +60,9 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { Hero } from '../all';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ManifestV2 from '../../model/ManifestV2';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
 import UtilityMixin from '../mixins/UtilityMixin.vue';
 
@@ -296,15 +294,12 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 async () => {
                         if (this.downloadingThunderstoreModList) {
                             return "Checking for new releases";
-                        } else {
-                            if (this.$store.state.apiConnectionError.length > 0) {
-                                return "Error getting new mods: " + this.$store.state.apiConnectionError;
-                            } else {
-                                const lastRequest = await ApiCacheUtils.getLastRequestCached();
-                                if (lastRequest !== undefined) {
-                                    return "Cache date: " + moment(new Date(lastRequest.time)).format("MMMM Do YYYY, h:mm:ss a");
-                                }
-                            }
+                        }
+                        if (this.$store.state.apiConnectionError.length > 0) {
+                            return "Error getting new mods: " + this.$store.state.apiConnectionError;
+                        }
+                        if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
+                            return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
                         }
                         return "No API information available";
                     },
