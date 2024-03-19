@@ -1,12 +1,12 @@
 import ThunderstoreMod from "../../../../src/model/ThunderstoreMod";
 import ThunderstoreVersion from "../../../../src/model/ThunderstoreVersion";
-import ThunderstorePackages from "../../../../src/r2mm/data/ThunderstorePackages";
+import { Deprecations } from "../../../../src/utils/Deprecations";
 
-describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
+describe("Deprecations.getDeprecatedPackageMap", () => {
     let spyedPopulator: jest.SpyInstance;
 
     beforeEach(() => {
-        spyedPopulator = jest.spyOn(ThunderstorePackages, '_populateDeprecatedPackageMapForModChain');
+        spyedPopulator = jest.spyOn(Deprecations, '_populateDeprecatedPackageMapForModChain');
     });
 
     afterEach(() => {
@@ -21,7 +21,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('TeamC-Mod1')
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         expect(actual.size).toBe(4);
         expect(actual.get('TeamA-Mod1')).toStrictEqual(false);
@@ -38,7 +38,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('TeamC-Mod1')
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         expect(actual.size).toBe(4);
         expect(actual.get('TeamA-Mod1')).toStrictEqual(true);
@@ -53,7 +53,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('Degrec-Alfie_Other_Knee', false, ['Degrec-Alfie_Knee']),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         expect(actual.size).toBe(2);
         expect(actual.get('Degrec-Alfie_Knee')).toStrictEqual(false);
@@ -67,7 +67,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('Loop1-Mod3', false, ['Loop1-Mod1']),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         expect(actual.size).toBe(3);
         expect(actual.get('Loop1-Mod1')).toStrictEqual(false);
@@ -83,7 +83,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('Loop2-Mod4', false, ['Loop2-Mod2']),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         expect(actual.size).toBe(4);
         expect(actual.get('Loop2-Mod1')).toStrictEqual(true);
@@ -102,7 +102,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('X-ChainBottom'),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         // Each mod causes one call due to for-loop (6 calls).
         // Root1 causes three recursive calls down the chain (total 9 calls).
@@ -129,7 +129,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('X-Root3', false, ['X-ChainTop']),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         // Each mod causes one call due to for-loop (6 calls).
         // Excluding ChainBottom, each mod should recursively call their
@@ -154,7 +154,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('X-ChainBottom'),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         // Each mod causes one call due to for-loop (6 calls).
         // Each root mod recursively calls X-ChainTop, but the chain is
@@ -180,7 +180,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('X-Root3', false, ['X-ChainTop']),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         // Each mod causes one call due to for-loop (6 calls).
         // Each mod recursively calls it's direct dependency, except for
@@ -202,7 +202,7 @@ describe("ThunderstorePackages.getDeprecatedPackageMap", () => {
             createStubMod('Known-Mod2'),
         ];
 
-        const actual = ThunderstorePackages.getDeprecatedPackageMap(mods);
+        const actual = Deprecations.getDeprecatedPackageMap(mods);
 
         // Both known mods cause one call due to for-loop (2 calls).
         // Known-Mod1 causes 1 recursive call (total 3 calls).

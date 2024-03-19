@@ -3,7 +3,6 @@ import PathResolver from '../r2mm/manager/PathResolver';
 import * as path from 'path';
 import ApiData from '../model/api/ApiData';
 import FileUtils from './FileUtils';
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 export default class ApiCacheUtils {
 
@@ -23,9 +22,6 @@ export default class ApiCacheUtils {
                 try {
                     const lastCacheContent = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"))).toString();
                     const apiData = JSON.parse(lastCacheContent) as ApiData;
-                    if (ThunderstorePackages.EXCLUSIONS.length > 0) {
-                        apiData.exclusions = ThunderstorePackages.EXCLUSIONS
-                    }
                     this.CACHED_REQUEST = apiData;
                     return apiData;
                 } catch (e) {
@@ -41,8 +37,7 @@ export default class ApiCacheUtils {
             await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
             const apiData: ApiData = {
                 time: new Date(),
-                payload: data,
-                exclusions: ThunderstorePackages.EXCLUSIONS
+                payload: data
             }
             this.CACHED_REQUEST = apiData;
             await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, "last_api_request.json"), JSON.stringify(apiData));
