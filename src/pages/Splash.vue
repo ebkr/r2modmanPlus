@@ -159,7 +159,8 @@ export default class Splash extends mixins(SplashMixin) {
     requests = [
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
-        new RequestItem('ExclusionsList', 0)
+        new RequestItem('ExclusionsList', 0),
+        new RequestItem('CacheOperations', 0)
     ];
 
     // Ensure that r2modman isn't outdated.
@@ -194,9 +195,7 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     retryConnection() {
-        this.getRequestItem('UpdateCheck').setProgress(0);
-        this.getRequestItem('ExclusionsList').setProgress(0);
-        this.getRequestItem('ThunderstoreDownload').setProgress(0);
+        this.resetRequestProgresses();
         this.isOffline = false;
         this.checkForUpdates();
     }
