@@ -84,9 +84,24 @@ export async function updateFromApiResponse(community: string, packages: any[]) 
             await db.packages.bulkDelete(oldIds);
         }
     );
-};
+}
 
 export async function getPackagesAsThunderstoreMods(community: string) {
     const packages = await db.packages.where({community}).toArray();
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
+}
+
+// TODO: Dexie v3 doesn't support combining .where() and .orderBy() in a
+// way that would utilize the DB indexes. The current implementation
+// bypasses this by assuming that outside the updateFromApiResponse
+// transaction, all the packages have the same date_fetched value.
+// Moving to Dexie v4 might improve things, but if that doesn't turn out
+// to be true, filter or order the result set on JS side instead.
+export async function getLastPackageListUpdateTime(community: string) {
+    const fetched = await db.packages
+        .where('[community+date_fetched]')
+        .between([community, Dexie.minKey], [community, Dexie.maxKey])
+        .first();
+
+    return fetched ? fetched.date_fetched : undefined;
 }
