@@ -38,12 +38,16 @@ interface DexiePackage {
 
 class PackageDexieStore extends Dexie {
     packages!: Table<DexiePackage, string>;
+    updateTimes!: Table<{community: string, updated: Date}, string>;
 
     constructor() {
         super('tsPackages');
 
         this.version(1).stores({
             packages: '[community+full_name]'
+        });
+        this.version(2).stores({
+            updateTimes: 'community'
         });
     }
 }
@@ -56,17 +60,23 @@ export async function updateFromApiResponse(community: string, packages: any[]) 
 
     await db.transaction(
         'rw',
-        db.packages,
+        db.packages, db.updateTimes,
         async () => {
             // .bulkDelete is faster than calling .delete() on the collection directly.
             const oldIds = await db.packages.where({community}).primaryKeys();
             await db.packages.bulkDelete(oldIds);
             await db.packages.bulkAdd(newPackages)
+            await db.updateTimes.put({community, updated: new Date()});
         }
     );
-};
+}
 
 export async function getPackagesAsThunderstoreMods(community: string) {
     const packages = await db.packages.where({community}).toArray();
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
+}
+
+export async function getLastPackageListUpdateTime(community: string) {
+    const updateTime = await db.updateTimes.get({community});
+    return updateTime ? updateTime.updated : undefined;
 }
