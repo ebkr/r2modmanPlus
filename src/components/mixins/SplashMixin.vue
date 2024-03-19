@@ -41,7 +41,8 @@ export default class SplashMixin extends Vue {
             this.getRequestItem('ExclusionsList').setProgress(progress);
         };
 
-        await this.$store.dispatch('tsMods/updateExclusions');
+        await this.$store.dispatch('tsMods/updateExclusions', showProgress);
+
         this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
