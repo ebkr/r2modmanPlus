@@ -6,7 +6,6 @@ import ApiResponse from '../../model/api/ApiResponse';
 import GameManager from '../../model/game/GameManager';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 @Component
 export default class SplashMixin extends Vue {
@@ -68,8 +67,7 @@ export default class SplashMixin extends Vue {
             this.heroTitle = 'Received mod list from Thunderstore';
             this.loadingText = 'Caching the mod list locally';
 
-            const packages = this.$store.getters['tsMods/filterExcluded'](response.data);
-            await PackageDb.updateFromApiResponse(this.activeGame.internalFolderName, packages);
+            await this.$store.dispatch('tsMods/updatePersistentCache', response.data);
 
             this.loadingText = 'Processing the mod list';
         } else {
