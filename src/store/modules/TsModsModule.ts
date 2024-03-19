@@ -128,8 +128,11 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async updateExclusions({commit}) {
-            const exclusions = await ConnectionProvider.instance.getExclusions();
+        async updateExclusions(
+            {commit},
+            progressCallback?: (progress: number) => void
+        ) {
+            const exclusions = await ConnectionProvider.instance.getExclusions(progressCallback);
             commit('setExclusions', exclusions);
         },
 
