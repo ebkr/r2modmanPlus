@@ -22,6 +22,7 @@ interface State {
     direction?: SortDirection;
     disabledPosition?: SortLocalDisabledMods;
     searchQuery: string;
+    dismissedUpdateAll: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ export default {
         direction: undefined,
         disabledPosition: undefined,
         searchQuery: '',
+        dismissedUpdateAll: false,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -103,6 +105,10 @@ export default {
             const profile = new Profile(profileName);
 
             state.activeProfile = profile;
+        },
+
+        dismissUpdateAll(state: State) {
+            state.dismissedUpdateAll = true;
         },
 
         // Avoid calling this directly, prefer updateModList action to
