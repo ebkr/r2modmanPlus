@@ -16,7 +16,6 @@ Vue.use(Vuex);
 
 export interface State {
     activeGame: Game;
-    dismissedUpdateAll: boolean;
     isMigrationChecked: boolean;
     _settings: ManagerSettings | null;
 }
@@ -31,16 +30,12 @@ type Context = ActionContext<State, State>;
 export const store = {
     state: {
         activeGame: GameManager.defaultGame,
-        dismissedUpdateAll: false,
         isMigrationChecked: false,
 
         // Access through getters to ensure the settings are loaded.
         _settings: null,
     },
     actions: {
-        dismissUpdateAll({commit}: Context) {
-            commit('dismissUpdateAll');
-        },
         async checkMigrations({commit, state}: Context) {
             if (state.isMigrationChecked) {
                 return;
@@ -72,9 +67,6 @@ export const store = {
     mutations: {
         setActiveGame(state: State, game: Game) {
             state.activeGame = game;
-        },
-        dismissUpdateAll(state: State) {
-            state.dismissedUpdateAll = true;
         },
         setMigrationChecked(state: State) {
             state.isMigrationChecked = true;

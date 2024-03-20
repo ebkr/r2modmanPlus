@@ -24,6 +24,7 @@ interface State {
     direction?: SortDirection;
     disabledPosition?: SortLocalDisabledMods;
     searchQuery: string;
+    dismissedUpdateAll: boolean;
 }
 
 /**
@@ -41,6 +42,7 @@ export default {
         direction: undefined,
         disabledPosition: undefined,
         searchQuery: '',
+        dismissedUpdateAll: false,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -112,6 +114,10 @@ export default {
     },
 
     mutations: {
+        dismissUpdateAll(state: State) {
+            state.dismissedUpdateAll = true;
+        },
+
         // Use updateActiveProfile action to ensure the persistent
         // settings are updated.
         setActiveProfile(state: State, profileName: string) {
