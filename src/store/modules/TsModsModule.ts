@@ -15,6 +15,7 @@ interface CachedMod {
 
 interface State {
     cache: Map<string, CachedMod>;
+    connectionError: string;
     deprecated: Map<string, boolean>;
     exclusions?: string[];
     mods: ThunderstoreMod[];
@@ -32,6 +33,8 @@ export const TsModsModule = {
 
     state: (): State => ({
         cache: new Map<string, CachedMod>(),
+        /*** Error shown on UI after manual mod list refresh fails */
+        connectionError: '',
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: [],
@@ -112,6 +115,14 @@ export const TsModsModule = {
     mutations: <MutationTree<State>>{
         clearModCache(state) {
             state.cache.clear();
+        },
+        setConnectionError(state, error: string|unknown) {
+            if (typeof error === 'string') {
+                state.connectionError = error;
+            } else {
+                const msg = error instanceof Error ? error.message : "Unknown error";
+                state.connectionError = msg;
+            }
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
