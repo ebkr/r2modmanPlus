@@ -295,8 +295,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                         if (this.downloadingThunderstoreModList) {
                             return "Checking for new releases";
                         }
-                        if (this.$store.state.apiConnectionError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.apiConnectionError;
+                        if (this.$store.state.tsMods.connectionError.length > 0) {
+                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
@@ -307,13 +307,12 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 async () => {
                     if (!this.downloadingThunderstoreModList) {
                         this.downloadingThunderstoreModList = true;
-                        await this.$store.dispatch("updateApiConnectionError", "");
+                        this.$store.commit("tsMods/setConnectionError", "");
 
                         try {
                             await this.refreshThunderstoreModList();
                         } catch (e) {
-                            const err = e instanceof Error ? e.message : "Unknown error";
-                            await this.$store.dispatch("updateApiConnectionError", err);
+                            this.$store.commit("tsMods/setConnectionError", e);
                         } finally {
                             this.downloadingThunderstoreModList = false;
                         }
