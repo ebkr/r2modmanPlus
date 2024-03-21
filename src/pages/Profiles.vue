@@ -202,7 +202,7 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a class="button is-info" @click="setProfileAndContinue()">Select profile</a>
+                      <a class="button is-info" @click="moveToNextScreen()">Select profile</a>
                     </div>
                       <div class="level-item">
                           <a class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
@@ -303,8 +303,18 @@ export default class Profiles extends Vue {
         return this.$store.getters['profile/activeProfileName'];
     }
 
-    async setSelectedProfile(profileName: string) {
-        await this.$store.dispatch('profile/updateActiveProfile', profileName);
+    async setSelectedProfile(profileName: string, prewarmCache = true) {
+        try {
+            await this.$store.dispatch('profile/updateActiveProfile', profileName);
+
+            if (prewarmCache) {
+                await this.$store.dispatch('profile/updateModListFromFile');
+                await this.$store.dispatch('tsMods/prewarmCache');
+            }
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
+            this.$store.commit('error/handleError', err);
+        }
     }
 
     get appName(): string {
@@ -342,7 +352,7 @@ export default class Profiles extends Vue {
         );
         this.closeNewProfileModal();
         await this.updateProfileList();
-        await this.setSelectedProfile(newName);
+        await this.setSelectedProfile(newName, false);
     }
 
     // Open modal for entering a name for a new profile. Triggered
@@ -418,11 +428,7 @@ export default class Profiles extends Vue {
         return sanitize(nameToSanitize);
     }
 
-    async setProfileAndContinue() {
-        // Reset the mod list to prevent the previous profile's list
-        // flashing on the screen while a new profile's list is loaded.
-        await this.$store.dispatch('profile/updateModList', []);
-
+    async moveToNextScreen() {
         await this.$router.push({name: 'manager.installed'});
     }
 
@@ -656,7 +662,17 @@ export default class Profiles extends Vue {
         settings = await ManagerSettings.getSingleton(this.activeGame);
         await settings.load();
 
-        await this.$store.dispatch('profile/loadLastSelectedProfile');
+        const lastProfileName = await this.$store.dispatch('profile/loadLastSelectedProfile');
+
+        // If the view was entered via game selection, the mod list was updated
+        // and the cache cleared. The profile is already set in the Vuex store
+        // but we want to trigger the cache prewarming. Always doing this for
+        // empty profiles is deemed a fair tradeoff. On the other hand there's
+        // no point to trigger this when returning from the manager view and the
+        // mods are already cached.
+        if (this.$store.state.tsMods.cache.size === 0) {
+            await this.setSelectedProfile(lastProfileName);
+        }
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
