@@ -186,7 +186,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="selectedProfile = profileName">
+                  <a @click="setSelectedProfile(profileName)">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -298,8 +298,8 @@ export default class Profiles extends Vue {
         return this.$store.getters['profile/activeProfileName'];
     }
 
-    set selectedProfile(profileName: string) {
-        this.$store.dispatch('profile/updateActiveProfile', profileName);
+    async setSelectedProfile(profileName: string) {
+        await this.$store.dispatch('profile/updateActiveProfile', profileName);
     }
 
     get appName(): string {
@@ -337,7 +337,7 @@ export default class Profiles extends Vue {
         );
         this.closeNewProfileModal();
         await this.updateProfileList();
-        this.selectedProfile = newName;
+        await this.setSelectedProfile(newName);
     }
 
     // Open modal for entering a name for a new profile. Triggered
@@ -355,13 +355,13 @@ export default class Profiles extends Vue {
 
     // User confirmed creation of a new profile with a name that didn't exist before.
     // The profile can be either empty or populated via importing.
-    createProfile(profile: string) {
+    async createProfile(profile: string) {
         const safeName = this.makeProfileNameSafe(profile);
         if (safeName === '') {
             return;
         }
         this.profileList.push(safeName);
-        this.selectedProfile = safeName;
+        await this.setSelectedProfile(safeName);
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
@@ -401,7 +401,7 @@ export default class Profiles extends Vue {
                 }
             }
         }
-        this.selectedProfile = 'Default';
+        await this.setSelectedProfile('Default');
         this.closeRemoveProfileModal();
     }
 
@@ -562,7 +562,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        this.selectedProfile = event.detail;
+                                        await this.setSelectedProfile(event.detail);
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
