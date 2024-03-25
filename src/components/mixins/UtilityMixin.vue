@@ -50,6 +50,7 @@ export default class UtilityMixin extends Vue {
         const response = await ConnectionProvider.instance.getPackages(GameManager.activeGame);
         await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
         await this.$store.dispatch("tsMods/updateMods");
+        await this.$store.dispatch('tsMods/prewarmCache');
     }
 
     /**

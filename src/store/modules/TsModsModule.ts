@@ -139,6 +139,11 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
+        async prewarmCache({getters, rootGetters}) {
+            const profileMods: ManifestV2[] = rootGetters['profile/modList'];
+            profileMods.forEach(getters['cachedMod']);
+        },
+
         async updateExclusions(
             {commit},
             progressCallback?: (progress: number) => void
