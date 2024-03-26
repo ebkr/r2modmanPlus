@@ -178,8 +178,9 @@ let assignId = 0;
                                 try {
                                     await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
                                 } catch (e) {
-                                    const err: Error = e as Error;
-                                    return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
+                                    return reject(
+                                        R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
+                                    );
                                 }
                             }
                             const modList = await ProfileModList.getModList(profile);
@@ -336,8 +337,10 @@ let assignId = 0;
                     try {
                         await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
                     } catch (e) {
-                        const err: Error = e as Error;
-                        return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
+                        this.downloadingMod = false;
+                        const err = R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
+                        this.$store.commit('error/handleError', err);
+                        return;
                     }
                 }
                 this.downloadingMod = false;
