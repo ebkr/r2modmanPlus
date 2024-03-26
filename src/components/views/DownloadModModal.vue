@@ -285,27 +285,7 @@ let assignId = 0;
                     }
                     this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
                 }
-            }, async (downloadedMods: ThunderstoreCombo[]) => {
-                ProfileModList.requestLock(async () => {
-                    for (const combo of downloadedMods) {
-                        try {
-                            await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
-                        } catch (e) {
-                            const err: Error = e as Error;
-                            return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
-                        }
-                    }
-                    this.downloadingMod = false;
-                    const modList = await ProfileModList.getModList(this.profile);
-                    if (!(modList instanceof R2Error)) {
-                        await this.$store.dispatch('profile/updateModList', modList);
-                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
-                        if (err instanceof R2Error) {
-                            this.$store.commit('error/handleError', err);
-                        }
-                    }
-                });
-            });
+            }, this.downloadCompletedCallback);
         }
 
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
@@ -346,28 +326,30 @@ let assignId = 0;
                         }
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
                     }
-                }, async (downloadedMods: ThunderstoreCombo[]) => {
-                    ProfileModList.requestLock(async () => {
-                        for (const combo of downloadedMods) {
-                            try {
-                                await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
-                            } catch (e) {
-                                const err: Error = e as Error;
-                                return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
-                            }
-                        }
-                        this.downloadingMod = false;
-                        const modList = await ProfileModList.getModList(this.profile);
-                        if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('profile/updateModList', modList);
-                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
-                            if (err instanceof R2Error) {
-                                this.$store.commit('error/handleError', err);
-                            }
-                        }
-                    });
-                });
+                }, this.downloadCompletedCallback);
             }, 1);
+        }
+
+        async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
+            ProfileModList.requestLock(async () => {
+                for (const combo of downloadedMods) {
+                    try {
+                        await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
+                    } catch (e) {
+                        const err: Error = e as Error;
+                        return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
+                    }
+                }
+                this.downloadingMod = false;
+                const modList = await ProfileModList.getModList(this.profile);
+                if (!(modList instanceof R2Error)) {
+                    await this.$store.dispatch('profile/updateModList', modList);
+                    const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
+                    if (err instanceof R2Error) {
+                        this.$store.commit('error/handleError', err);
+                    }
+                }
+            });
         }
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
