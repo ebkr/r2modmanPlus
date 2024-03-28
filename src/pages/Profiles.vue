@@ -259,11 +259,8 @@ import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import GameManager from '../model/game/GameManager';
-import Game from '../model/game/Game';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 
-let settings: ManagerSettings;
 let fs: FsProvider;
 
 @Component({
@@ -296,8 +293,6 @@ export default class Profiles extends Vue {
     private listenerId: number = 0;
 
     private renamingProfile: boolean = false;
-
-    private activeGame!: Game;
 
     get selectedProfile(): string {
         return this.$store.getters['profile/activeProfileName'];
@@ -428,7 +423,7 @@ export default class Profiles extends Vue {
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
         this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.activeGame, modList,
+        ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.$store.state.activeGame, modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;
@@ -650,17 +645,13 @@ export default class Profiles extends Vue {
     }
 
     async created() {
-        this.activeGame = GameManager.activeGame;
-
         fs = FsProvider.instance;
-        settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.load();
-
+        const settings = await this.$store.getters.settings;
         await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
-            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
+            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.$store.state.activeGame);
             if (!(result instanceof R2Error)) {
                 await settings.setGameDirectory(result);
             }
