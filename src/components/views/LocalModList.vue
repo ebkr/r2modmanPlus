@@ -3,14 +3,7 @@
         <SearchAndSort />
         <DisableModModal />
         <UninstallModModal />
-
-        <AssociatedModsModal
-            v-if="dependencyListDisplayType === 'view' && !!selectedManifestMod && showingDependencyList"
-            :on-close="() => { showingDependencyList = false; }"
-            :mod="selectedManifestMod"
-            :dependency-list="getDependencyList(selectedManifestMod)"
-            :dependants-list="getDependantList(selectedManifestMod)"
-        />
+        <AssociatedModsModal />
 
         <slot name="above-list"></slot>
 
@@ -25,7 +18,6 @@
                 :mod="mod"
                 @enableMod="enableMod"
                 @updateMod="updateMod"
-                @viewDependencyList="viewDependencyList"
                 @downloadDependency="downloadDependency"
                 :expandedByDefault="cardExpanded"
                 :showSort="$store.getters['profile/canSortMods']"
@@ -45,7 +37,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModBridge from '../../r2mm/mods/ModBridge';
-import DependencyListDisplayType from '../../model/enums/DependencyListDisplayType';
 import Dependants from '../../r2mm/mods/Dependants';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
@@ -73,21 +64,14 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
     })
     export default class LocalModList extends Vue {
         private activeGame: Game | null = null;
+        private contextProfile: Profile | null = null;
         settings: ManagerSettings = new ManagerSettings();
-
         private cardExpanded: boolean = false;
         private funkyMode: boolean = false;
 
         get thunderstorePackages(): ThunderstoreMod[] {
             return this.$store.state.thunderstoreModList || [];
         }
-
-        private showingDependencyList: boolean = false;
-        private selectedManifestMod: ManifestV2 | null = null;
-        private dependencyListDisplayType: string = 'view';
-
-        // Context
-        private contextProfile: Profile | null = null;
 
         get draggableList() {
             return this.$store.getters['profile/visibleModList'];
@@ -117,22 +101,8 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             }
         }
 
-        getDependantList(mod: ManifestV2): Set<ManifestV2> {
-            return Dependants.getDependantList(mod, this.$store.state.profile.modList);
-        }
-
         getDependencyList(mod: ManifestV2): Set<ManifestV2> {
             return Dependants.getDependencyList(mod, this.$store.state.profile.modList);
-        }
-
-        showDependencyList(mod: ManifestV2, displayType: string) {
-            this.selectedManifestMod = mod;
-            this.dependencyListDisplayType = displayType;
-            this.showingDependencyList = true;
-        }
-
-        viewDependencyList(mod: ManifestV2) {
-            this.showDependencyList(mod, DependencyListDisplayType.VIEW);
         }
 
         async enableMod(mod: ManifestV2) {
@@ -153,8 +123,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
             for (let mod of mods) {
                 const enableErr: R2Error | void = await ProfileInstallerProvider.instance.enableMod(mod, this.contextProfile!);
                 if (enableErr instanceof R2Error) {
-                    // Failed to disable
-                    this.showingDependencyList = false;
                     this.$store.commit('error/handleError', enableErr);
                     return enableErr;
                 }
@@ -163,8 +131,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
                 updatingMod.enable();
             });
             if (updatedList instanceof R2Error) {
-                // Failed to update mod list.
-                this.showingDependencyList = false;
                 this.$store.commit('error/handleError', updatedList);
                 return updatedList;
             }
@@ -172,7 +138,6 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
 
         updateMod(mod: ManifestV2) {
-            this.selectedManifestMod = mod;
             const tsMod = ModBridge.getCachedThunderstoreModFromMod(mod);
 
             if (tsMod instanceof ThunderstoreMod) {
