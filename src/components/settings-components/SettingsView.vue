@@ -316,7 +316,6 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
 
                         try {
                             await this.refreshThunderstoreModList();
-                            this.emitInvoke("RefreshedThunderstorePackages");
                         } catch (e) {
                             const err = e instanceof Error ? e.message : "Unknown error";
                             await this.$store.dispatch("updateApiConnectionError", err);

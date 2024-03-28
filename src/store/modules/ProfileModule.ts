@@ -320,6 +320,20 @@ export default {
             });
         },
 
+        // This will be called by background processes and will fail silently
+        // if problems are encountered.
+        async tryLoadModListFromDisk({dispatch, state}) {
+            if (state.activeProfile === null) {
+                return;
+            }
+
+            const modList = await ProfileModList.getModList(state.activeProfile);
+
+            if (!(modList instanceof R2Error)) {
+                await dispatch('updateModList', modList);
+            }
+        },
+
         async uninstallModsFromActiveProfile(
             {dispatch, getters},
             params: {
