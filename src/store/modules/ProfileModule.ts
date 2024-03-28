@@ -300,6 +300,26 @@ export default {
             if (err instanceof R2Error) throw err;
         },
 
+        async saveModListToDisk(
+            {dispatch},
+            params: {
+                mods: ManifestV2[],
+                profile: Profile,
+            }
+        ) {
+            const {mods, profile} = params;
+
+            ProfileModList.requestLock(async () => {
+                const err = await ProfileModList.saveModList(profile, mods);
+                if (err instanceof R2Error) {
+                    throw err;
+                }
+
+                await dispatch('updateModList', mods);
+                await dispatch('resolveConflicts', params);
+            });
+        },
+
         async uninstallModsFromActiveProfile(
             {dispatch, getters},
             params: {
