@@ -4,6 +4,7 @@ import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import ModBridge from '../../../r2mm/mods/ModBridge';
@@ -19,15 +20,6 @@ export default class LocalModCard extends Vue {
 
     @Prop({required: true})
     readonly mod!: ManifestV2;
-
-    @Prop({required: true})
-    readonly expandedByDefault!: boolean;
-
-    @Prop({required: true})
-    readonly showSort!: boolean;
-
-    @Prop({required: true})
-    readonly funkyMode!: boolean;
 
     disabledDependencies: ManifestV2[] = [];
     missingDependencies: string[] = [];
@@ -99,8 +91,20 @@ export default class LocalModCard extends Vue {
         }
     }
 
-    enableMod(mod: ManifestV2) {
-        this.$emit('enableMod', mod);
+    async enableMod(mod: ManifestV2) {
+        const dependencies = Dependants.getDependencyList(mod, this.localModList);
+
+        try {
+            await this.$store.dispatch(
+                'profile/enableModsOnActiveProfile',
+                { mods: [...dependencies, mod] }
+            );
+        } catch (e) {
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
+        }
     }
 
     async uninstallMod() {
@@ -125,11 +129,26 @@ export default class LocalModCard extends Vue {
     }
 
     updateMod() {
-        this.$emit('updateMod', this.mod);
+        if (this.tsMod !== undefined) {
+            this.$store.commit('openDownloadModModal', this.tsMod);
+        }
     }
 
-    downloadDependency(dependency: string) {
-        this.$emit('downloadDependency', dependency);
+    downloadDependency(dependencyString: string) {
+        const packages: ThunderstoreMod[] = this.$store.state.thunderstoreModList;
+        const lowerCaseName = dependencyStringToModName(dependencyString).toLowerCase();
+        const dependency = packages.find((m) => m.getFullName().toLowerCase() === lowerCaseName);
+
+        if (dependency === undefined) {
+            const error = new R2Error(
+                `${dependencyString} could not be found`,
+                'You may be offline, or the mod was removed from Thunderstore.',
+                'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
+            );
+            this.$store.commit('error/handleError', error);
+            return;
+        }
+        this.$store.commit('openDownloadModModal', dependency);
     }
 
     viewAssociatedMods() {
@@ -150,11 +169,9 @@ function dependencyStringToModName(x: string) {
     <expandable-card
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
-        :expandedByDefault="expandedByDefault"
-        :funkyMode="funkyMode"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
         :image="mod.getIcon()"
-        :showSort="showSort">
+        :allowSorting="true">
 
         <template v-slot:title>
             <span class="non-selectable">

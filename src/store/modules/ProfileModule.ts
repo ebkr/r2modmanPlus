@@ -18,6 +18,8 @@ import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
     activeProfile: Profile | null;
+    expandedByDefault: boolean;
+    funkyMode: boolean;
     modList: ManifestV2[];
     order?: SortNaming;
     direction?: SortDirection;
@@ -33,6 +35,8 @@ export default {
 
     state: (): State => ({
         activeProfile: null,
+        expandedByDefault: false,
+        funkyMode: false,
         modList: [],
         order: undefined,
         direction: undefined,
@@ -121,6 +125,14 @@ export default {
             state.activeProfile = profile;
         },
 
+        setExpandedByDefault(state: State, value: boolean) {
+            state.expandedByDefault = value;
+        },
+
+        setFunkyMode(state: State, value: boolean) {
+            state.funkyMode = value;
+        },
+
         // Avoid calling this directly, prefer updateModList action to
         // ensure TSMM specific code gets called.
         setModList(state: State, list: ManifestV2[]) {
@@ -200,10 +212,70 @@ export default {
             await dispatch('resolveConflicts', lastSuccessfulUpdate);
         },
 
+        async enableModsOnActiveProfile(
+            {dispatch, getters},
+            params: {
+                mods: ManifestV2[],
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const profile = getters.activeProfileOrThrow;
+            await dispatch('enableModsOnProfile', {...params, profile});
+        },
+
+        async enableModsOnProfile(
+            {dispatch},
+            params: {
+                mods: ManifestV2[],
+                profile: Profile,
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const {mods, profile, onProgress} = params;
+            let lastSuccessfulUpdate: ManifestV2[] | undefined;
+
+            try {
+                // Enable mods on disk.
+                for (const mod of mods) {
+                    onProgress && onProgress(mod);
+
+                    if (mod.isEnabled()) {
+                        continue;
+                    }
+
+                    const err = await ProfileInstallerProvider.instance.enableMod(mod, profile);
+                    if (err instanceof R2Error) {
+                        throw err;
+                    }
+                }
+
+                // Update mod list status to mods.yml.
+                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.enable());
+                if (updatedList instanceof R2Error) {
+                    throw updatedList;
+                } else {
+                    lastSuccessfulUpdate = updatedList;
+                }
+            } finally {
+                // Update mod list stored in Vuex.
+                if (lastSuccessfulUpdate !== undefined) {
+                    await dispatch('updateModList', lastSuccessfulUpdate);
+                }
+            }
+
+            await dispatch('resolveConflicts', lastSuccessfulUpdate);
+        },
+
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;
             commit('setActiveProfile', profileName);
             return profileName;
+        },
+
+        async loadModCardSettings({commit, rootGetters}) {
+            const settings: ManagerSettings = rootGetters['settings'];
+            commit('setExpandedByDefault', settings.getContext().global.expandedCards);
+            commit('setFunkyMode', settings.getContext().global.funkyModeEnabled);
         },
 
         async loadOrderingSettings({commit, rootGetters}) {
@@ -212,6 +284,7 @@ export default {
             commit('setDirection', settings.getInstalledSortDirection());
             commit('setDisabledPosition', settings.getInstalledDisablePosition());
         },
+
         async resolveConflicts(
             {},
             params: {
