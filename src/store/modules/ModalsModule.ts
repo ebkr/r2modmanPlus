@@ -8,6 +8,8 @@ interface State {
     isDisableModModalOpen: boolean;
     isDownloadModModalOpen: boolean;
     isGameRunningModalOpen: boolean;
+    isUninstallModModalOpen: boolean;
+    uninstallModModalMod: ManifestV2 | null;
 }
 
 export default {
@@ -18,6 +20,8 @@ export default {
         isDisableModModalOpen: false,
         isDownloadModModalOpen: false,
         isGameRunningModalOpen: false,
+        isUninstallModModalOpen: false,
+        uninstallModModalMod: null,
     }),
 
     mutations: {
@@ -39,6 +43,11 @@ export default {
             state.isGameRunningModalOpen = false;
         },
 
+        closeUninstallModModal: function(state: State): void {
+            state.isUninstallModModalOpen = false;
+            state.uninstallModModalMod = null;
+        },
+
         openCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = true;
         },
@@ -55,6 +64,11 @@ export default {
 
         openGameRunningModal: function(state: State): void {
             state.isGameRunningModalOpen = true;
+        },
+
+        openUninstallModModal: function(state: State, mod: ManifestV2): void {
+            state.uninstallModModalMod = mod;
+            state.isUninstallModModalOpen = true;
         },
 
         openUpdateAllModsModal: function(state: State): void {

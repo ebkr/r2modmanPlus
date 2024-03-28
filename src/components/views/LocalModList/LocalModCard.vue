@@ -103,8 +103,25 @@ export default class LocalModCard extends Vue {
         this.$emit('enableMod', mod);
     }
 
-    uninstallMod() {
-        this.$emit('uninstallMod', this.mod);
+    async uninstallMod() {
+        const dependants = Dependants.getDependantList(this.mod, this.localModList);
+
+        if (dependants.size > 0) {
+            this.$store.commit('openUninstallModModal', this.mod);
+            return;
+        }
+
+        try {
+            await this.$store.dispatch(
+                'profile/uninstallModsFromActiveProfile',
+                { mods: [this.mod] }
+            );
+        } catch (e) {
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
+        }
     }
 
     updateMod() {

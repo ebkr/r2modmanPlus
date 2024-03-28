@@ -57,6 +57,18 @@ export default {
             return new Profile('Default');
         },
 
+        activeProfileOrThrow(state): Profile {
+            // Sanity check before attempting to alter the profile state.
+            if (state.activeProfile === null) {
+                throw new R2Error(
+                    'No active profile found',
+                    'Unable to modify mod list state when active profile is not set.'
+                )
+            }
+
+            return state.activeProfile;
+        },
+
         activeProfileName(_state, getters) {
             return getters.activeProfile.getProfileName();
         },
@@ -134,23 +146,13 @@ export default {
 
     actions: <ActionTree<State, RootState>>{
         async disableModsFromActiveProfile(
-            {dispatch},
+            {dispatch, getters},
             params: {
                 mods: ManifestV2[],
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
-            // TODO: manage active profile in Vuex.
-            const profile = Profile.getActiveProfile();
-
-            // Sanity check.
-            if (profile === undefined) {
-                throw new R2Error(
-                    'No active profile found',
-                    'Unable to disable mods when active profile is not set.'
-                )
-            }
-
+            const profile = getters.activeProfileOrThrow;
             await dispatch('disableModsFromProfile', {...params, profile});
         },
 
@@ -190,20 +192,12 @@ export default {
             } finally {
                 // Update mod list stored in Vuex.
                 if (lastSuccessfulUpdate !== undefined) {
-                    dispatch('updateModList', lastSuccessfulUpdate);
+                    await dispatch('updateModList', lastSuccessfulUpdate);
                 }
             }
 
             // IDK but sounds important.
-            if (lastSuccessfulUpdate !== undefined) {
-                const err = await ConflictManagementProvider.instance.resolveConflicts(
-                    lastSuccessfulUpdate,
-                    profile
-                );
-                if (err instanceof R2Error) {
-                    throw err;
-                }
-            }
+            await dispatch('resolveConflicts', lastSuccessfulUpdate);
         },
 
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
@@ -217,6 +211,72 @@ export default {
             commit('setOrder', settings.getInstalledSortBy());
             commit('setDirection', settings.getInstalledSortDirection());
             commit('setDisabledPosition', settings.getInstalledDisablePosition());
+        },
+        async resolveConflicts(
+            {},
+            params: {
+                mods: ManifestV2[] | undefined,
+                profile: Profile,
+            }
+        ) {
+            const {mods, profile} = params;
+            if (mods === undefined) return;
+
+            const err = await ConflictManagementProvider.instance.resolveConflicts(mods, profile);
+
+            if (err instanceof R2Error) throw err;
+        },
+
+        async uninstallModsFromActiveProfile(
+            {dispatch, getters},
+            params: {
+                mods: ManifestV2[],
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const profile = getters.activeProfileOrThrow;
+            await dispatch('uninstallModsFromProfile', {...params, profile});
+        },
+
+        async uninstallModsFromProfile(
+            {dispatch},
+            params: {
+                mods: ManifestV2[],
+                profile: Profile,
+                onProgress?: (mod: ManifestV2) => void,
+            }
+        ) {
+            const {mods, profile, onProgress} = params;
+            let lastSuccessfulUpdate: ManifestV2[] | undefined;
+
+            try {
+                for (const mod of mods) {
+                    onProgress && onProgress(mod);
+
+                    // Remove mods from disk.
+                    const err = await ProfileInstallerProvider.instance.uninstallMod(mod, profile);
+                    if (err instanceof R2Error) {
+                        throw err;
+                    }
+
+                    // Update mod list status to mods.yml.
+                    // TODO: can performance be improved by implementing
+                    // a .removeMods(mods, profile) and calling it once outside the loop?
+                    const updatedList = await ProfileModList.removeMod(mod, profile);
+                    if (updatedList instanceof R2Error) {
+                        throw updatedList;
+                    } else {
+                        lastSuccessfulUpdate = updatedList;
+                    }
+                }
+            } finally {
+                // Update mod list stored in Vuex.
+                if (lastSuccessfulUpdate !== undefined) {
+                    await dispatch('updateModList', lastSuccessfulUpdate);
+                }
+            }
+
+            await dispatch('resolveConflicts', lastSuccessfulUpdate);
         },
 
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
