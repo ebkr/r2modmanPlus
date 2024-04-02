@@ -120,6 +120,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("VoidCrew"),
             buildBepInExRules("Sailwind"),
             buildBepInExRules("Plasma"),
+            buildBepInExRules("ContentWarning"),
         ]
     }
 }
