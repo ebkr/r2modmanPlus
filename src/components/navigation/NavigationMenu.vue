@@ -3,6 +3,12 @@
         <div class="sticky-top sticky-top--no-shadow sticky-top--no-padding">
             <aside class="menu">
                 <p class="menu-label">{{ activeGame.displayName }}</p>
+                <div class='notification'>
+                    <div class="container">
+                        <i class='fas fa-long-arrow-alt-left margin-right' />
+                        <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                    </div>
+                </div>
                 <ul class="menu-list">
                     <li>
                         <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
@@ -68,6 +74,7 @@ import Game from '../../model/game/Game';
 import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings'
 import {
     LaunchMode,
     launch,
@@ -119,6 +126,11 @@ export default class NavigationMenu extends Vue {
     created() {
         this.activeGame = GameManager.activeGame;
         this.contextProfile = Profile.getActiveProfile();
+    }
+
+    private async backToGameSelection() {
+        await ManagerSettings.resetDefaults();
+        await this.$router.push({name: "index"});
     }
 }
 
