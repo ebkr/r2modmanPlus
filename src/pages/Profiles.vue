@@ -539,25 +539,27 @@ export default class Profiles extends Vue {
                                     if (files[0].endsWith('.r2z')) {
                                         const entries = await ZipProvider.instance.getEntries(files[0]);
                                         for (const entry of entries) {
-                                            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName,
-                                                        'BepInEx'
+                                            if (!entry.entryName.endsWith('.dll')) {
+                                                if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName,
+                                                            'BepInEx'
+                                                        )
+                                                    );
+                                                } else if (entry.entryName.toLowerCase() !== "export.r2x") {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName
+                                                        )
                                                     )
-                                                );
-                                            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName
-                                                    )
-                                                )
+                                                }
                                             }
                                         }
                                     }
