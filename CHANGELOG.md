@@ -1,3 +1,18 @@
+### 3.1.48
+- Games added:
+  - Content Warning
+  - Plasma
+  - MS store support for Bomb Rush Cyberfunk
+- Profile code exports now have a size restriction
+- Fixes for Voices of the Void
+- Other general fixes/improvements
+
+_Contributions:_
+- _anttimaki_
+- _cspotcode_
+- _Oksamies_
+- _ethangreen-dev_
+
 ### 3.1.47
 - Significant performance improvements
 - Games added:
