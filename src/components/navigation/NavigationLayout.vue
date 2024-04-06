@@ -1,10 +1,10 @@
 <template>
     <div id="content" class="columns">
         <div class="column non-selectable is-one-quarter">
-            <NavigationMenu @error="$emit('error', $event)" />
+            <NavigationMenu />
         </div>
         <div class="column">
-            <router-view @error="$emit('error', $event)" />
+            <router-view />
         </div>
         <GameRunningModal :activeGame="activeGame" />
     </div>
@@ -22,7 +22,7 @@ import GameManager from '../../model/game/GameManager';
     components: {GameRunningModal, NavigationMenu}
 })
 export default class NavigationLayout extends Vue {
-    activeGame = GameManager.unsetGame();
+    activeGame = GameManager.defaultGame;
 
     created() {
         this.activeGame = GameManager.activeGame;

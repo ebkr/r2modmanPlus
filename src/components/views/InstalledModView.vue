@@ -16,8 +16,7 @@
             </div>
         </div>
         <template v-else-if="localModList.length > 0">
-            <LocalModList
-                @error="$emit('error', $event)">
+            <LocalModList>
                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
                     <div class="margin-bottom">
                         <div class="notification is-warning margin-right">
@@ -42,7 +41,6 @@ import Component from "vue-class-component";
 
 import ManifestV2 from "../../model/ManifestV2";
 import LocalModListProvider from "../../providers/components/loaders/LocalModListProvider";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 
 @Component({
     components: {
@@ -56,11 +54,11 @@ export default class InstalledModView extends Vue {
     }
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get numberOfModsWithUpdates(): number {
-        return this.$store.getters.localModsWithUpdates.length;
+        return this.$store.getters['profile/modsWithUpdates'].length;
     }
 };
 </script>

@@ -145,9 +145,9 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 this.configFiles = this.configFiles.filter(value => value.getName() !== file.getName());
                 this.textChanged();
             } catch (e) {
-                this.$emit("error", new R2Error(
+                this.$store.commit("error/handleError", R2Error.fromThrownValue(
+                    e,
                     "Failed to delete config file",
-                    (e as Error).message,
                     `Try running ${ManagerInformation.APP_NAME} as an administrator.`
                 ));
             }

@@ -289,15 +289,15 @@ export default class LocalFileImportModal extends Vue {
 
         const installCallback = (async (success: boolean, error: any | null) => {
             if (!success && error !== null) {
-                this.showError(error);
+                this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
                 return;
             }
             const updatedModListResult = await ProfileModList.getModList(this.contextProfile!);
             if (updatedModListResult instanceof R2Error) {
-                this.showError(updatedModListResult);
+                this.$store.commit("error/handleError", updatedModListResult);
                 return;
             }
-            await this.$store.dispatch("updateModList", updatedModListResult);
+            await this.$store.dispatch("profile/updateModList", updatedModListResult);
             this.emitClose();
         });
 
@@ -306,10 +306,6 @@ export default class LocalFileImportModal extends Vue {
         } else {
             LocalModInstallerProvider.instance.placeFileInCache(this.contextProfile!, this.fileToImport, this.resultingManifest, installCallback);
         }
-    }
-
-    private showError(err: R2Error) {
-        this.$emit("error", err);
     }
 
     created() {

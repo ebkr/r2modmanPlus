@@ -492,8 +492,10 @@ export default class GameManager {
             "Bomb Rush Cyberfunk", "BombRushCyberfunk", "BombRushCyberfunk",
             "BombRushCyberfunk", ["Bomb Rush Cyberfunk.exe"], "Bomb Rush Cyberfunk_Data",
             "https://thunderstore.io/c/bomb-rush-cyberfunk/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1353230")], "BombRushCyberfunk.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1353230"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "TeamReptile.BombRushCyberfunk")
+            ], "BombRushCyberfunk.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
 
         new Game(
             "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend", "TouhouLostBranchOfLegend",
@@ -569,7 +571,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
         new Game(
             "Voices of the Void", "VotV", "VotV",
-            "", ["VotV-Win64-Shipping.exe"], "VotV",
+            "", ["VotV.exe"], "VotV",
             "https://thunderstore.io/c/voices-of-the-void/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.OTHER)], "VotV.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["votv"]),
@@ -579,19 +581,36 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+
+        new Game("Plasma", "Plasma", "Plasma",
+            "Plasma", ["Plasma.exe"], "Plasma_Data",
+            "https://thunderstore.io/c/plasma/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1409160")], "Plasma.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+            new Game("Content Warning", "ContentWarning", "ContentWarning",
+            "Content Warning", ["Content Warning.exe"], "ContentWarning_Data",
+            "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
         return this._activeGame;
     }
 
-    static get gameList(): Game[] {
-        return [...this._gameList];
-    }
-
     static set activeGame(game: Game) {
         this._activeGame = game;
+    }
+
+    // Used for loading game specific settings before game is selected.
+    static get defaultGame(): Game {
+        return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
+    }
+
+    static get gameList(): Game[] {
+        return [...this._gameList];
     }
 
     public static async activate(game: Game, platform: StorePlatform) {
@@ -599,11 +618,6 @@ export default class GameManager {
         this._activeGame.setActivePlatformByStore(platform);
         PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);
         await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
-    }
-
-    // Return RiskOfRain2 game as base startup to be used for settings load.
-    public static unsetGame(): Game {
-        return this._gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
     }
 
     public static findByFolderName(name?: string|null) {

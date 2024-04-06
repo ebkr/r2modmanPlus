@@ -87,7 +87,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         private activeGame!: Game;
 
         get localModList(): ManifestV2[] {
-            return this.$store.state.localModList || [];
+            return this.$store.state.profile.modList;
         }
 
         get appName(): string {
@@ -247,7 +247,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
                 async () => {
-                    const outdatedMods = this.$store.getters.localModsWithUpdates;
+                    const outdatedMods = this.$store.getters['profile/modsWithUpdates'];
                     if (outdatedMods.length === 1) {
                         return "1 mod has an update available";
                     }
@@ -316,7 +316,6 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
 
                         try {
                             await this.refreshThunderstoreModList();
-                            this.emitInvoke("RefreshedThunderstorePackages");
                         } catch (e) {
                             const err = e instanceof Error ? e.message : "Unknown error";
                             await this.$store.dispatch("updateApiConnectionError", err);

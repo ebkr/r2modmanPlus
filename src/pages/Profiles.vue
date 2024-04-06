@@ -44,7 +44,7 @@
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
                   <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button class="button is-info" v-else @click="updateProfile(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
               </template>
               <template v-if="renamingProfile">
                   <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
@@ -156,18 +156,6 @@
         </div>
       </div>
     </div>
-    <!-- Error modal -->
-    <div id="errorModal" :class="['modal', {'is-active':(errorMessage !== '')}]">
-      <div class="modal-background" v-on:click="errorMessage = ''"></div>
-      <div class="modal-content">
-        <div class="notification is-danger">
-          <h3 class="title">Error</h3>
-          <h5 class="title is-5">{{errorMessage}}</h5>
-          <p>{{errorStack}}</p>
-        </div>
-      </div>
-      <button class="modal-close is-large" aria-label="close" v-on:click="errorMessage = ''"></button>
-    </div>
 
     <!-- Importing file modal -->
     <div :class="['modal', {'is-active': showFileSelectionHang}]">
@@ -198,7 +186,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="selectProfile(profileName)">
+                  <a @click="selectedProfile = profileName">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -271,11 +259,8 @@ import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import GameManager from '../model/game/GameManager';
-import Game from '../model/game/Game';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 
-let settings: ManagerSettings;
 let fs: FsProvider;
 
 @Component({
@@ -289,8 +274,6 @@ export default class Profiles extends Vue {
     @Ref() readonly profileNameInput: HTMLInputElement | undefined;
 
     private profileList: string[] = ['Default'];
-
-    private selectedProfile: string = '';
 
     private addingProfile: boolean = false;
     private newProfileName: string = '';
@@ -311,18 +294,16 @@ export default class Profiles extends Vue {
 
     private renamingProfile: boolean = false;
 
-    private activeGame!: Game;
+    get selectedProfile(): string {
+        return this.$store.getters['profile/activeProfileName'];
+    }
 
-    errorMessage: string = '';
-    errorStack: string = '';
+    set selectedProfile(profileName: string) {
+        this.$store.dispatch('profile/updateActiveProfile', profileName);
+    }
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
-    }
-
-    showError(error: R2Error) {
-        this.errorMessage = error.name;
-        this.errorStack = error.message;
     }
 
     doesProfileExist(nameToCheck: string): boolean {
@@ -356,14 +337,11 @@ export default class Profiles extends Vue {
         );
         this.closeNewProfileModal();
         await this.updateProfileList();
+        this.selectedProfile = newName;
     }
 
-    selectProfile(profile: string) {
-        new Profile(profile);
-        this.selectedProfile = profile;
-        settings.setProfile(profile);
-    }
-
+    // Open modal for entering a name for a new profile. Triggered
+    // either through user action or profile importing via file or code.
     newProfile(type: string, nameOverride: string | undefined) {
         this.newProfileName = nameOverride || '';
         this.addingProfile = true;
@@ -375,18 +353,20 @@ export default class Profiles extends Vue {
         });
     }
 
+    // User confirmed creation of a new profile with a name that didn't exist before.
+    // The profile can be either empty or populated via importing.
     createProfile(profile: string) {
         const safeName = this.makeProfileNameSafe(profile);
         if (safeName === '') {
             return;
         }
-        new Profile(safeName);
         this.profileList.push(safeName);
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
+        this.selectedProfile = safeName;
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
 
+    // User confirmed updating an existing profile via importing.
     updateProfile() {
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.selectedProfile}));
@@ -395,9 +375,6 @@ export default class Profiles extends Vue {
     closeNewProfileModal() {
         this.addingProfile = false;
         this.renamingProfile = false;
-        if (this.addingProfile) {
-            document.dispatchEvent(new CustomEvent("created-profile", {detail: ''}));
-        }
     }
 
     removeProfile() {
@@ -409,10 +386,8 @@ export default class Profiles extends Vue {
             await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
             await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
         } catch (e) {
-            const err: Error = e as Error;
-            this.showError(
-                new R2Error('Error whilst deleting profile', err.message, null)
-            );
+            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
+            this.$store.commit('error/handleError', err);
         }
         if (
             Profile.getActiveProfile()
@@ -426,12 +401,7 @@ export default class Profiles extends Vue {
                 }
             }
         }
-        new Profile('Default');
-        this.selectedProfile = Profile.getActiveProfile().getProfileName();
-
-        const settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
-
+        this.selectedProfile = 'Default';
         this.closeRemoveProfileModal();
     }
 
@@ -444,19 +414,21 @@ export default class Profiles extends Vue {
     }
 
     async setProfileAndContinue() {
-        await this.$store.dispatch('updateModList', []);
-        await settings.setProfile(Profile.getActiveProfile().getProfileName());
+        // Reset the mod list to prevent the previous profile's list
+        // flashing on the screen while a new profile's list is loaded.
+        await this.$store.dispatch('profile/updateModList', []);
+
         await this.$router.push({name: 'manager.installed'});
     }
 
     downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
         this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.activeGame, modList,
+        ThunderstoreDownloaderProvider.instance.downloadImportedMods(this.$store.state.activeGame, modList,
         (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status == StatusEnum.FAILURE) {
                 this.importingProfile = false;
                 if (err instanceof R2Error) {
-                    this.showError(err);
+                    this.$store.commit('error/handleError', err);
                 }
             } else if (status == StatusEnum.PENDING) {
                 this.percentageImported = Math.floor(progress);
@@ -469,7 +441,7 @@ export default class Profiles extends Vue {
                 }
                 const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
                 if (installResult instanceof R2Error) {
-                    this.showError(installResult);
+                    this.$store.commit('error/handleError', installResult);
                     keepIterating = false;
                     this.importingProfile = false;
                     return;
@@ -507,7 +479,8 @@ export default class Profiles extends Vue {
             const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
             await this.importProfileHandler([filepath]);
         } catch (e: any) {
-            this.showError(R2Error.fromThrownValue(e, "Failed to import profile"));
+            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+            this.$store.commit('error/handleError', err);
         }
     }
 
@@ -555,7 +528,9 @@ export default class Profiles extends Vue {
                                 await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
                                 await fs.rmdir(path.join(Profile.getDirectory(), profileName));
                             }
-                            new Profile(profileName);
+                            // Use commit instead of dispatch so _profile_update is not
+                            // saved to persistent storage if something goes wrong.
+                            this.$store.commit('profile/setActiveProfile', profileName);
                         }
                         if (parsed.getMods().length > 0) {
                             this.importingProfile = true;
@@ -587,7 +562,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        new Profile(event.detail);
+                                        this.selectedProfile = event.detail;
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -622,9 +597,8 @@ export default class Profiles extends Vue {
                 }) as EventListener), {once: true});
             }
         } catch (e) {
-            const err = new R2Error("Failed to import profile", (e as Error).message, null);
-            this.showError(err);
-            return;
+            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+            this.$store.commit('error/handleError', err);
         }
     }
 
@@ -671,19 +645,13 @@ export default class Profiles extends Vue {
     }
 
     async created() {
-
-        this.activeGame = GameManager.activeGame;
-
         fs = FsProvider.instance;
-        settings = await ManagerSettings.getSingleton(this.activeGame);
-        await settings.load();
-
-        this.selectedProfile = settings.getContext().gameSpecific.lastSelectedProfile;
-        new Profile(this.selectedProfile);
+        const settings = await this.$store.getters.settings;
+        await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {
-            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
+            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.$store.state.activeGame);
             if (!(result instanceof R2Error)) {
                 await settings.setGameDirectory(result);
             }

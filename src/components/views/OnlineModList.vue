@@ -4,9 +4,7 @@
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="getImageUrl(key)"
             :id="index"
-            :description="key.getVersions()[0].getDescription()"
-            :funkyMode="funkyMode"
-            :expandedByDefault="cardExpanded">
+            :description="key.getVersions()[0].getDescription()">
             <template v-slot:title>
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
@@ -68,7 +66,6 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
-import R2Error from '../../model/errors/R2Error';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
@@ -91,7 +88,7 @@ export default class OnlineModList extends Vue {
     private funkyMode: boolean = false;
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get deprecationMap(): Map<string, boolean> {
@@ -127,10 +124,6 @@ export default class OnlineModList extends Vue {
         return CdnProvider.replaceCdnHost(
             tsMod.getVersions()[0].getIcon()
         );
-    }
-
-    emitError(error: R2Error) {
-        this.$emit('error', error);
     }
 
     async created() {

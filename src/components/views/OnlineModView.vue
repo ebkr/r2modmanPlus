@@ -46,7 +46,6 @@
         <OnlineModList
             :local-mod-list="localModList"
             :paged-mod-list="pagedThunderstoreModList"
-            @error="$emit('error', $event)"
         />
         <div class="in-mod-list" v-if="getPaginationSize() > 1">
             <p class="notification margin-right">
@@ -102,7 +101,7 @@ export default class OnlineModView extends Vue {
     thunderstoreSearchFilter = "";
 
     get localModList(): ManifestV2[] {
-        return this.$store.state.localModList;
+        return this.$store.state.profile.modList;
     }
 
     get thunderstoreModList(): ThunderstoreMod[] {
