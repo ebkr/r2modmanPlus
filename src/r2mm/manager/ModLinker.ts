@@ -11,7 +11,8 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
-import { PackageLoader } from "../../model/installing/PackageLoader";
+import { GetLinkerIdForLoader, PackageLoader } from "../../model/installing/PackageLoader";
+import { ProfileLinkers } from '../../installers/registry';
 
 export default class ModLinker {
 
@@ -32,7 +33,15 @@ export default class ModLinker {
         if (gameDirectory instanceof R2Error) {
             return gameDirectory;
         }
-        return this.performLink(profile, game, gameDirectory);
+
+        const linkerId = GetLinkerIdForLoader(game.packageLoader);
+        if (linkerId == null) {
+            // Default to this behavior if there's no linker associated with this loader.
+            return this.performLink(profile, game, gameDirectory);
+        }
+
+        const linker = ProfileLinkers[linkerId];
+        return linker.perform(profile, game, gameDirectory);
     }
 
     /**
