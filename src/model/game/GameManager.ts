@@ -520,7 +520,7 @@ export default class GameManager {
             "Atomicrops", ["Atomicrops.exe"], "Atomicrops_Data",
             "https://thunderstore.io/c/atomicrops/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "757320")], "Atomicrops.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ac"]),
 
         new Game("Erenshor", "Erenshor", "Erenshor",
             "Erenshor", ["Erenshor.exe"], "Erenshor_Data",
@@ -532,7 +532,7 @@ export default class GameManager {
             "Last Train Outta' Wormtown", ["Last Train Out Of WormTown.exe"], "Last Train Out Of WormTown_Data",
             "https://thunderstore.io/c/last-train-outta-wormtown/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2318480")], "LastTrainOuttaWormtown.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ltow"]),
 
         new Game("DREDGE", "Dredge", "Dredge",
             "DREDGE", ["DREDGE.exe"], "DREDGE_Data",
@@ -544,25 +544,25 @@ export default class GameManager {
             "Cities Skylines II", ["Cities2.exe"], "CitiesSkylines2_Data",
             "https://thunderstore.io/c/cities-skylines-ii/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "949230"), new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "ParadoxInteractive.CitiesSkylinesII-PCEdition")], "CitiesSkylines2.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs2"]),
 
         new Game("Lethal Company", "LethalCompany", "LethalCompany",
             "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
             "https://thunderstore.io/c/lethal-company/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lc"]),
 
         new Game("Meeple Station", "MeepleStation", "MeepleStation",
             "Meeple Station", ["Meeple Station.exe"], "MeepleStation_Data",
             "https://thunderstore.io/c/meeple-station/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "900010")], "MeepleStation.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ms"]),
 
         new Game("Void Crew", "VoidCrew", "VoidCrew",
             "Void Crew", ["Void Crew.exe"], "VoidCrew_Data",
             "https://thunderstore.io/c/void-crew/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1063420")], "VoidCrew.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["vc"]),
 
         new Game("Sailwind", "Sailwind", "Sailwind",
             "Sailwind", ["Sailwind.exe"], "Sailwind_Data",
@@ -593,7 +593,7 @@ export default class GameManager {
             "Content Warning", ["Content Warning.exe"], "ContentWarning_Data",
             "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cw"]),
     ];
 
     static get activeGame(): Game {
