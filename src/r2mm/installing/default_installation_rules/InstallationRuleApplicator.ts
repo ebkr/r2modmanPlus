@@ -119,6 +119,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("MeepleStation"),
             buildBepInExRules("VoidCrew"),
             buildBepInExRules("Sailwind"),
+            buildBepInExRules("Plasma"),
+            buildBepInExRules("ContentWarning"),
         ]
     }
 }

@@ -7,10 +7,10 @@ import GameManager from '../../../../../src/model/game/GameManager';
 export default class SettingsRedirectGameDirectoryResolver extends GameDirectoryResolverProvider {
 
     async getSteamDirectory(): Promise<string | R2Error> {
-        return (await ManagerSettings.getSingleton(GameManager.unsetGame())).getContext().global.steamDirectory!;
+        return (await ManagerSettings.getSingleton(GameManager.defaultGame)).getContext().global.steamDirectory!;
     }
 
     async getDirectory(game: Game): Promise<string | R2Error> {
-        return (await ManagerSettings.getSingleton(GameManager.unsetGame())).getContext().gameSpecific.gameDirectory!;
+        return (await ManagerSettings.getSingleton(GameManager.defaultGame)).getContext().gameSpecific.gameDirectory!;
     }
 }

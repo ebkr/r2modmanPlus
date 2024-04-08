@@ -1,41 +1,76 @@
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { ModalCard } from '../../all';
+import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
+import Dependants from '../../../r2mm/mods/Dependants';
 
 @Component({
     components: {ModalCard}
 })
 export default class DisableModModal extends Vue {
 
-    @Prop({required: true})
-    readonly mod!: ManifestV2;
+    modBeingDisabled: string | null = null;
 
-    @Prop({required: true})
-    readonly dependencyList!: Set<ManifestV2>;
-
-    @Prop({required: true})
-    readonly dependantsList!: Set<ManifestV2>;
-
-    @Prop({required: true})
-    readonly modBeingDisabled!: string | null;
-
-    @Prop({required: true, type: Function})
-    readonly onClose!: () => void;
-
-    @Prop({required: true, type: Function})
-    readonly onDisableIncludeDependents!: (mod: ManifestV2) => void;
-
-    @Prop({required: true, type: Function})
-    readonly onDisableExcludeDependents!: (mod: ManifestV2) => void;
+    get dependants() {
+        return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
+    }
 
     get isLocked(): boolean {
         return this.modBeingDisabled !== null;
     }
+
+    get isOpen(): boolean {
+        return this.$store.state.modals.isDisableModModalOpen
+            && this.$store.state.modals.disableModModalMod !== null;
+    }
+
+    get mod(): ManifestV2 {
+        if (this.$store.state.modals.disableModModalMod === null) {
+            throw new R2Error(
+                'Error while opening DisableModModal',
+                'Mod not provided'
+            );
+        }
+        return this.$store.state.modals.disableModModalMod;
+    }
+
+    async disableModIncludingDependants() {
+        await this.disableMods([...this.dependants, this.mod]);
+    }
+
+    async disableModExcludingDependants() {
+        await this.disableMods([this.mod]);
+    }
+
+    private async disableMods(mods: ManifestV2[]) {
+        const onProgress = (mod: ManifestV2) => this.modBeingDisabled = mod.getName();
+
+        try {
+            await this.$store.dispatch(
+                'profile/disableModsFromActiveProfile',
+                { mods, onProgress }
+            );
+        } catch (e) {
+            this.$store.commit('error/handleError', {
+                error: R2Error.fromThrownValue(e),
+                severity: LogSeverity.ACTION_STOPPED
+            });
+        } finally {
+            this.onClose();
+            this.modBeingDisabled = null;
+        }
+    }
+
+    onClose() {
+        this.$store.commit('closeDisableModModal');
+    }
 }
 </script>
+
 <template>
-    <ModalCard :is-active="true" :can-close="!isLocked" @close-modal="onClose">
+    <ModalCard v-if="isOpen" :is-active="isOpen" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
             <p class="modal-card-title">Disabling {{mod.getName()}}</p>
         </template>
@@ -51,9 +86,9 @@ export default class DisableModModal extends Vue {
                 <div class="is-flex-shrink-1 overflow-auto code-snippet">
                     <ul class="list">
                         <li class="list-item">{{mod.getName()}}</li>
-                        <li class="list-item" v-for='(key, index) in dependantsList'
-                            :key='`dependant-${index}`'>
-                            {{key.getName()}}
+                        <li class="list-item" v-for='(mod) in dependants'
+                            :key='`dependant-${mod.getName()}`'>
+                            {{mod.getName()}}
                         </li>
                     </ul>
                 </div>
@@ -66,12 +101,12 @@ export default class DisableModModal extends Vue {
         <template v-slot:footer>
             <button class="button is-info"
                     :disabled="isLocked"
-                    @click="onDisableIncludeDependents(mod)">
+                    @click="disableModIncludingDependants">
                 Disable all (recommended)
             </button>
             <button class="button"
                     :disabled="isLocked"
-                    @click="onDisableExcludeDependents(mod)">
+                    @click="disableModExcludingDependants">
                 Disable {{mod.getName()}} only
             </button>
         </template>

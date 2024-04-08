@@ -277,7 +277,7 @@ export default class GameSelectionScreen extends Vue {
             ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
         } catch (error) {
             if (error instanceof R2Error) {
-                this.$emit("error", error);
+                this.$store.commit('error/handleError', error);
                 return;
             }
 
@@ -287,6 +287,7 @@ export default class GameSelectionScreen extends Vue {
         const settings = await ManagerSettings.getSingleton(this.selectedGame);
         await settings.setLastSelectedGame(this.selectedGame);
         await GameManager.activate(this.selectedGame, this.selectedPlatform);
+        await this.$store.dispatch("setActiveGame", this.selectedGame);
 
         await this.$router.push({name: "splash"});
     }
@@ -325,7 +326,7 @@ export default class GameSelectionScreen extends Vue {
         await this.$store.dispatch('checkMigrations');
         this.runningMigration = false;
 
-        this.settings = await ManagerSettings.getSingleton(GameManager.unsetGame());
+        this.settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
         const globalSettings = this.settings.getContext().global;
         this.favourites = globalSettings.favouriteGames || [];
         this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;

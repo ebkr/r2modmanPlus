@@ -81,7 +81,7 @@
                         <p>The following mods will be downloaded and installed:</p>
                         <br/>
                         <ul class="list">
-                            <li class="list-item" v-for='(key, index) in $store.getters.localModsWithUpdates'
+                            <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
                                 :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
                                 {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
                             </li>
@@ -247,7 +247,7 @@ let assignId = 0;
             const localMods = await ProfileModList.getModList(this.contextProfile!);
             if (localMods instanceof R2Error) {
                 this.downloadingMod = false;
-                this.$emit('error', localMods);
+                this.$store.commit('error/handleError', localMods);
                 return;
             }
             const outdatedMods = localMods.filter(mod => !ModBridge.isCachedLatestVersion(mod));
@@ -270,7 +270,7 @@ let assignId = 0;
                         const existing = DownloadModModal.allVersions[assignIndex]
                         existing[1].failed = true;
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                        this.$emit('error', err);
+                        this.$store.commit('error/handleError', err);
                         return;
                     }
                 } else if (status === StatusEnum.PENDING) {
@@ -299,10 +299,10 @@ let assignId = 0;
                     this.downloadingMod = false;
                     const modList = await ProfileModList.getModList(this.contextProfile!);
                     if (!(modList instanceof R2Error)) {
-                        await this.$store.dispatch('updateModList', modList);
+                        await this.$store.dispatch('profile/updateModList', modList);
                         const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                         if (err instanceof R2Error) {
-                            this.$emit('error', err);
+                            this.$store.commit('error/handleError', err);
                         }
                     }
                 });
@@ -331,7 +331,7 @@ let assignId = 0;
                             const existing = DownloadModModal.allVersions[assignIndex]
                             existing[1].failed = true;
                             this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            this.$emit('error', err);
+                            this.$store.commit('error/handleError', err);
                             return;
                         }
                     } else if (status === StatusEnum.PENDING) {
@@ -360,10 +360,10 @@ let assignId = 0;
                         this.downloadingMod = false;
                         const modList = await ProfileModList.getModList(this.contextProfile!);
                         if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('updateModList', modList);
+                            await this.$store.dispatch('profile/updateModList', modList);
                             const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
                             if (err instanceof R2Error) {
-                                this.$emit('error', err);
+                                this.$store.commit('error/handleError', err);
                             }
                         }
                     });

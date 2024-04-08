@@ -91,7 +91,7 @@ export default class NavigationMenu extends Vue {
     }
 
     get localModCount(): number {
-        return (this.$store.state.localModList || []).length;
+        return this.$store.state.profile.modList.length;
     }
 
     getTagLinkClasses(routeNames: string[]) {
@@ -111,14 +111,9 @@ export default class NavigationMenu extends Vue {
             this.$store.commit("openGameRunningModal");
             await launch(this.activeGame, this.contextProfile!, mode);
         } catch (error) {
-            if (error instanceof R2Error) {
-                this.$store.commit("closeGameRunningModal");
-                this.$emit("error", error);
-            } else {
-                throw error;
-            }
+            this.$store.commit("closeGameRunningModal");
+            this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
         }
-
     }
 
     created() {
