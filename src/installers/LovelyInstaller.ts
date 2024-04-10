@@ -18,11 +18,11 @@ export class LovelyInstaller extends PackageInstaller {
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
-        // Manually copy over dwmapi.dll
-        const dwmSrc = path.join(packagePath, "dwmapi.dll");
-        const dwmDest = path.join(profilePath, "dwmapi.dll");
+        // Manually copy over version.dll
+        const dwmSrc = path.join(packagePath, "version.dll");
+        const dwmDest = path.join(profilePath, "version.dll");
         await fs.copyFile(dwmSrc, dwmDest);
-        fileRelocations.set(dwmSrc, "dwmapi.dll");
+        fileRelocations.set(dwmSrc, "version.dll");
 
         // Files within the lovely subdirectory need to be recursively copied into the destination.
         const lovelyTree = await FileTree.buildFromLocation(path.join(packagePath, "lovely"));
