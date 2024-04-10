@@ -49,6 +49,11 @@ export const store = {
                 commit('setMigrationChecked');
             }
         },
+
+        async resetActiveGame({dispatch}: Context): Promise<ManagerSettings> {
+            return await dispatch('setActiveGame', GameManager.defaultGame);
+        },
+
         async setActiveGame({commit}: Context, game: Game): Promise<ManagerSettings> {
             // Some parts of the code base reads the active game from
             // this static class attribute for now. Ideally we wouldn't
