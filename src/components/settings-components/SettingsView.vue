@@ -53,7 +53,6 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
-import Profile from '../../model/Profile';
 import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
 import VersionNumber from '../../model/VersionNumber';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
@@ -136,7 +135,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Browse profile folder',
                 'Open the folder where mods are stored for the current profile.',
                 async () => {
-                    return Profile.getActiveProfile().getPathOfProfile();
+                    return this.$store.getters['profile/activeProfile'].getPathOfProfile();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')
@@ -200,7 +199,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Change profile',
                 'Change the mod profile.',
                 async () => {
-                    return `Current profile: ${Profile.getActiveProfile().getProfileName()}`
+                    return `Current profile: ${this.$store.getters['profile/activeProfile'].getProfileName()}`
                 },
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')

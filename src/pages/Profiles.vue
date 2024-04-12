@@ -294,6 +294,10 @@ export default class Profiles extends Vue {
 
     private renamingProfile: boolean = false;
 
+    get activeProfile(): Profile {
+        return this.$store.getters['profile/activeProfile'];
+    }
+
     get selectedProfile(): string {
         return this.$store.getters['profile/activeProfileName'];
     }
@@ -393,19 +397,19 @@ export default class Profiles extends Vue {
 
     async removeProfileAfterConfirmation() {
         try {
-            await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
-            await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
+            await FileUtils.emptyDirectory(this.activeProfile.getPathOfProfile());
+            await fs.rmdir(this.activeProfile.getPathOfProfile());
         } catch (e) {
             const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
             this.$store.commit('error/handleError', err);
         }
         if (
-            Profile.getActiveProfile()
+            this.activeProfile
                 .getProfileName()
                 .toLowerCase() !== 'default'
         ) {
             for (let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
-                if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
+                if (this.profileList[profileIteration] === this.activeProfile.getProfileName()) {
                     this.profileList.splice(profileIteration, 1);
                     break;
                 }
@@ -454,10 +458,10 @@ export default class Profiles extends Vue {
                 }
                 for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                        await ProfileModList.updateMod(installResult, Profile.getActiveProfile(), async modToDisable => {
+                        await ProfileModList.updateMod(installResult, this.activeProfile, async modToDisable => {
                             // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
                             modToDisable.enable();
-                            await ProfileInstallerProvider.instance.disableMod(modToDisable, Profile.getActiveProfile());
+                            await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);
                             modToDisable.disable();
                         });
                     }
@@ -625,9 +629,9 @@ export default class Profiles extends Vue {
 
     async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, Profile.getActiveProfile());
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
         if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, Profile.getActiveProfile());
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
             if (newModList instanceof R2Error) {
                 return newModList;
             }
@@ -640,7 +644,7 @@ export default class Profiles extends Vue {
 
     async updateProfileList() {
         this.profileList = ["Default"];
-        const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
+        const profilesDirectory: string = this.activeProfile.getDirectory();
         await fs.readdir(profilesDirectory).then(dirContents => {
             dirContents.forEach(async (file: string) => {
                 if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
