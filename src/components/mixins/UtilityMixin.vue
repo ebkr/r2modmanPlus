@@ -3,7 +3,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
-import GameManager from '../../model/game/GameManager';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
@@ -26,7 +25,7 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
-        const response = await ConnectionProvider.instance.getPackages(GameManager.activeGame);
+        const response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame);
         await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
         await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");

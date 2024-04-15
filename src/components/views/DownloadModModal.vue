@@ -112,7 +112,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import Profile from '../../model/Profile';
 import { Progress } from '../all';
 import Game from '../../model/game/Game';
-import GameManager from '../../model/game/GameManager';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 
 let assignId = 0;
@@ -132,8 +131,13 @@ let assignId = 0;
 
         static allVersions: [number, any][] = [];
 
-        private activeGame!: Game;
-        private contextProfile: Profile | null = null;
+        get activeGame(): Game {
+            return this.$store.state.activeGame;
+        }
+
+        get profile(): Profile {
+            return this.$store.getters['profile/activeProfile'];
+        }
 
         public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]): Promise<void> {
             return new Promise((resolve, reject) => {
@@ -212,7 +216,7 @@ let assignId = 0;
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
 
-                const modListResult = await ProfileModList.getModList(this.contextProfile!);
+                const modListResult = await ProfileModList.getModList(this.profile);
                 if (!(modListResult instanceof R2Error)) {
                     const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
                     if (manifestMod !== undefined) {
@@ -285,17 +289,17 @@ let assignId = 0;
                 ProfileModList.requestLock(async () => {
                     for (const combo of downloadedMods) {
                         try {
-                            await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
+                            await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
                         } catch (e) {
                             const err: Error = e as Error;
                             return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                         }
                     }
                     this.downloadingMod = false;
-                    const modList = await ProfileModList.getModList(this.contextProfile!);
+                    const modList = await ProfileModList.getModList(this.profile);
                     if (!(modList instanceof R2Error)) {
                         await this.$store.dispatch('profile/updateModList', modList);
-                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
                         if (err instanceof R2Error) {
                             this.$store.commit('error/handleError', err);
                         }
@@ -318,7 +322,7 @@ let assignId = 0;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.contextProfile!, tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.profile, tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                     if (status === StatusEnum.FAILURE) {
                         if (err !== null) {
@@ -346,17 +350,17 @@ let assignId = 0;
                     ProfileModList.requestLock(async () => {
                         for (const combo of downloadedMods) {
                             try {
-                                await DownloadModModal.installModAfterDownload(this.contextProfile!, combo.getMod(), combo.getVersion());
+                                await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
                             } catch (e) {
                                 const err: Error = e as Error;
                                 return new R2Error(`Failed to install mod [${combo.getMod().getFullName()}]`, err.message, null);
                             }
                         }
                         this.downloadingMod = false;
-                        const modList = await ProfileModList.getModList(this.contextProfile!);
+                        const modList = await ProfileModList.getModList(this.profile);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('profile/updateModList', modList);
-                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.contextProfile!);
+                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
                             if (err instanceof R2Error) {
                                 this.$store.commit('error/handleError', err);
                             }
@@ -408,12 +412,6 @@ let assignId = 0;
                 return resolve();
             });
         }
-
-        created() {
-            this.activeGame = GameManager.activeGame;
-            this.contextProfile = Profile.getActiveProfile();
-        }
-
     }
 
 </script>

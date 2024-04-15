@@ -166,7 +166,6 @@ import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
-import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
@@ -186,7 +185,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 	})
 	export default class Manager extends Vue {
-		settings: ManagerSettings = new ManagerSettings();
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
@@ -201,8 +199,17 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         doorstopTarget: string = "";
         vanillaLaunchArgs: string = "";
 
-        private activeGame!: Game;
-        private contextProfile: Profile | null = null;
+        get activeGame(): Game {
+            return this.$store.state.activeGame;
+        }
+
+        get settings(): ManagerSettings {
+            return this.$store.getters['settings'];
+        };
+
+        get profile(): Profile {
+            return this.$store.getters['profile/activeProfile'];
+        };
 
 		get thunderstoreModList(): ThunderstoreMod[] {
             return this.$store.state.tsMods.mods;
@@ -358,14 +365,14 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModListToFile(this.contextProfile!);
+			const exportErr = await ProfileModList.exportModListToFile(this.profile);
 			if (exportErr instanceof R2Error) {
 				this.$store.commit('error/handleError', exportErr);
 			}
 		}
 
 		async exportProfileAsCode() {
-			const exportErr = await ProfileModList.exportModListAsCode(this.contextProfile!, (code: string, err: R2Error | null) => {
+			const exportErr = await ProfileModList.exportModListAsCode(this.profile, (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.$store.commit('error/handleError', err);
 				} else {
@@ -383,7 +390,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink('file://' + this.contextProfile!.getPathOfProfile());
+            LinkProvider.instance.openLink('file://' + this.profile.getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -434,19 +441,17 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		showLaunchParameters() {
-			if (this.contextProfile !== null) {
-				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(instructions => {
-					this.vanillaLaunchArgs = instructions.vanillaParameters;
-				});
+			GameInstructions.getInstructionsForGame(this.activeGame, this.profile).then(instructions => {
+				this.vanillaLaunchArgs = instructions.vanillaParameters;
+			});
 
-				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile).then(target => {
-					if (target instanceof R2Error) {
-						this.doorstopTarget = "";
-					} else {
-						this.doorstopTarget = target;
-					}
-				});
-			}
+			GameRunnerProvider.instance.getGameArguments(this.activeGame, this.profile).then(target => {
+				if (target instanceof R2Error) {
+					this.doorstopTarget = "";
+				} else {
+					this.doorstopTarget = target;
+				}
+			});
 
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
@@ -466,10 +471,10 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             let logOutputPath = "";
             switch (this.activeGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
+                    logOutputPath = path.join(this.profile.getPathOfProfile(), "BepInEx", "LogOutput.log");
                     break;
                 case PackageLoader.MELON_LOADER:
-                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "MelonLoader", "Latest.log");
+                    logOutputPath = path.join(this.profile.getPathOfProfile(), "MelonLoader", "Latest.log");
                     break;
             }
             const text = (await fs.readFile(logOutputPath)).toString();
@@ -562,7 +567,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     break;
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.getContext().global.expandedCards);
-                    this.settings = (() => this.settings)();
                     break;
                 case "EnableAll":
                     await this.$store.dispatch(
@@ -594,8 +598,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         }
 
         async beforeCreate() {
-            this.activeGame = GameManager.activeGame;
-
             // Used by SearchAndSort, but need to be called here to
             // ensure the settings are loaded before LocalModList
             // accesses visibleModList from Vuex store.
@@ -606,8 +608,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         }
 
 		async created() {
-		    this.settings = await ManagerSettings.getSingleton(this.activeGame);
-		    this.contextProfile = Profile.getActiveProfile();
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
@@ -619,9 +619,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.activeGame, this.contextProfile!, combo, this.thunderstoreModList)
+                DownloadModModal.downloadSpecific(this.activeGame, this.profile, combo, this.thunderstoreModList)
                     .then(async value => {
-                        const modList = await ProfileModList.getModList(this.contextProfile!);
+                        const modList = await ProfileModList.getModList(this.profile);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('profile/updateModList', modList);
                         } else {

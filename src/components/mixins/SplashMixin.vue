@@ -3,13 +3,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import ApiResponse from '../../model/api/ApiResponse';
-import GameManager from '../../model/game/GameManager';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 @Component
 export default class SplashMixin extends Vue {
-    activeGame = GameManager.activeGame;
     heroTitle = '';
     heroType: string = 'is-info';
     isOffline = false;
@@ -61,7 +59,7 @@ export default class SplashMixin extends Vue {
         };
 
         try {
-            response = await ConnectionProvider.instance.getPackages(this.activeGame, showProgress, 3);
+            response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame, showProgress, 3);
         } catch (e) {
             // No-op
         } finally {

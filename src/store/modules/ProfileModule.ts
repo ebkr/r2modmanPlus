@@ -51,14 +51,14 @@ export default {
                 return state.activeProfile;
             }
 
-            console.warn("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
+            console.debug("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
             const profile = Profile.getActiveProfile();
 
             if (profile !== undefined) {
                 return profile;
             }
 
-            console.warn("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
+            console.debug("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
             return new Profile('Default');
         },
 

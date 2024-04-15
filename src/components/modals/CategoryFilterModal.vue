@@ -91,15 +91,11 @@ import { Component, Vue } from "vue-property-decorator";
 
 import { Modal } from '../../components/all';
 import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
-import GameManager from '../../model/game/GameManager';
-import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 
 @Component({
     components: { Modal }
 })
 export default class CategoryFilterModal extends Vue {
-    settings: ManagerSettings = new ManagerSettings();
-
     get allowNsfw(): boolean {
         return this.$store.state.modFilters.allowNsfw;
     }
@@ -132,12 +128,8 @@ export default class CategoryFilterModal extends Vue {
         this.$store.commit("closeCategoryFilterModal");
     }
 
-    async created() {
-        this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
-    }
-
     get isDarkTheme(): boolean {
-        return this.settings.getContext().global.darkTheme;
+        return this.$store.getters["settings"].getContext().global.darkTheme;
     }
 
     get isOpen(): boolean {
