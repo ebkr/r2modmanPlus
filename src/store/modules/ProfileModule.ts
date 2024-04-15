@@ -78,6 +78,11 @@ export default {
             return getters.activeProfile.getProfileName();
         },
 
+        // For easier access from other Vuex submodules.
+        modList(state) {
+            return state.modList;
+        },
+
         modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreCombo[] {
             return rootGetters['tsMods/modsWithUpdates'](state.modList);
         },
@@ -405,6 +410,18 @@ export default {
 
         async updateModList({commit}, modList: ManifestV2[]) {
             commit('setModList', modList);
+        },
+
+        /*** Read profiles mod list from mods.yml in profile directory. */
+        async updateModListFromFile({dispatch, getters}) {
+            const profile: Profile = getters['activeProfile'];
+            const mods = await ProfileModList.getModList(profile);
+
+            if (mods instanceof R2Error) {
+                throw mods;
+            }
+
+            await dispatch('updateModList', mods);
         },
 
         async updateOrder({commit, rootGetters}, value: SortNaming) {

@@ -30,6 +30,7 @@ export default class UtilityMixin extends Vue {
         await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
         await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
+        await this.$store.dispatch("tsMods/prewarmCache");
     }
 
     /**

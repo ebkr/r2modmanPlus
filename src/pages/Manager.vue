@@ -609,16 +609,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		    this.settings = await ManagerSettings.getSingleton(this.activeGame);
 		    this.contextProfile = Profile.getActiveProfile();
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
-			if (!(newModList instanceof R2Error)) {
-				await this.$store.dispatch('profile/updateModList', newModList);
-			} else {
-				this.$store.commit('error/handleError', {
-					error: newModList,
-					severity: LogSeverity.ACTION_STOPPED,
-					logMessage: `Failed to retrieve local mod list\n-> ${newModList.message}`
-				});
-			}
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
