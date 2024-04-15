@@ -365,6 +365,14 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		async exportProfile() {
+			if (!this.localModList.length) {
+				const err = new R2Error(
+					'Profile is empty',
+					'The profile must contain at least one mod to export it as a file.'
+				);
+				this.$store.commit('error/handleError', err);
+				return;
+			}
 			const exportErr = await ProfileModList.exportModListToFile(this.profile);
 			if (exportErr instanceof R2Error) {
 				this.$store.commit('error/handleError', exportErr);
@@ -372,6 +380,14 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		async exportProfileAsCode() {
+			if (!this.localModList.length) {
+				const err = new R2Error(
+					'Profile is empty',
+					'The profile must contain at least one mod to export it as a code.'
+				);
+				this.$store.commit('error/handleError', err);
+				return;
+			}
 			const exportErr = await ProfileModList.exportModListAsCode(this.profile, (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.$store.commit('error/handleError', err);
