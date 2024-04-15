@@ -16,7 +16,6 @@ import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProv
 export default class TestSetup {
 
     private static preSetUp() {
-        ThunderstorePackages.PACKAGES = [];
         ThunderstorePackages.EXCLUSIONS = [];
     }
 

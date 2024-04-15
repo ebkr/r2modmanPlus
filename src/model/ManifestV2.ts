@@ -10,8 +10,6 @@ import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import * as path from 'path';
 import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
-import ModBridge from '../r2mm/mods/ModBridge';
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
@@ -266,11 +264,6 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
     public isEnabled(): boolean {
         return this.enabled;
-    }
-
-    public isDeprecated(): boolean {
-        const tsMod = ModBridge.getCachedThunderstoreModFromMod(this);
-        return tsMod !== undefined ? tsMod.isDeprecated() : false;
     }
 
     public getIcon(): string {
