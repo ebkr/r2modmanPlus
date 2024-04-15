@@ -45,42 +45,49 @@ export class Deprecations {
             return true;
         }
 
-        for (const dependencyNameAndVersion of mod.getLatestVersion().getDependencies()) {
-            const dependencyName = dependencyNameAndVersion.substring(0, dependencyNameAndVersion.lastIndexOf('-'));
-
-            if (currentChain.has(dependencyName)) {
-                continue;
-            }
-            const dependency = packageMap.get(dependencyName);
-
-            // Package isn't available on Thunderstore, so we can't tell
-            // if it's deprecated or not. This will also include deps of
-            // packages uploaded into wrong community since the
-            // packageMap contains only packages from this community.
-            // Based on manual testing with real data, caching these to
-            // deprecationMap doesn't seem to improve overall performance.
-            if (dependency === undefined) {
-                continue;
-            }
-
-            // Keep track of the dependency chain currently under
-            // investigation to avoid infinite recursive loops.
-            currentChain.add(mod.getFullName());
-            const dependencyDeprecated = this._populateDeprecatedPackageMapForModChain(
-                dependency, packageMap, deprecationMap, currentChain
-            );
-            currentChain.delete(mod.getFullName());
-            deprecationMap.set(dependencyName, dependencyDeprecated);
-
-            // Eject early on the first deprecated dependency for performance.
-            if (dependencyDeprecated) {
-                deprecationMap.set(mod.getFullName(), true);
-                return true;
-            }
-        }
-
-        // Package is not depreceated by itself nor due to dependencies.
+        // TODO: it was deemed that just fixing this function would be a
+        // breaking change. We need to make changes to UI before the fix
+        // can go live. Once ready, remove the two lines below and
+        // uncomment the rest.
         deprecationMap.set(mod.getFullName(), false);
         return false;
+
+        // for (const dependencyNameAndVersion of mod.getLatestVersion().getDependencies()) {
+        //     const dependencyName = dependencyNameAndVersion.substring(0, dependencyNameAndVersion.lastIndexOf('-'));
+
+        //     if (currentChain.has(dependencyName)) {
+        //         continue;
+        //     }
+        //     const dependency = packageMap.get(dependencyName);
+
+        //     // Package isn't available on Thunderstore, so we can't tell
+        //     // if it's deprecated or not. This will also include deps of
+        //     // packages uploaded into wrong community since the
+        //     // packageMap contains only packages from this community.
+        //     // Based on manual testing with real data, caching these to
+        //     // deprecationMap doesn't seem to improve overall performance.
+        //     if (dependency === undefined) {
+        //         continue;
+        //     }
+
+        //     // Keep track of the dependency chain currently under
+        //     // investigation to avoid infinite recursive loops.
+        //     currentChain.add(mod.getFullName());
+        //     const dependencyDeprecated = this._populateDeprecatedPackageMapForModChain(
+        //         dependency, packageMap, deprecationMap, currentChain
+        //     );
+        //     currentChain.delete(mod.getFullName());
+        //     deprecationMap.set(dependencyName, dependencyDeprecated);
+
+        //     // Eject early on the first deprecated dependency for performance.
+        //     if (dependencyDeprecated) {
+        //         deprecationMap.set(mod.getFullName(), true);
+        //         return true;
+        //     }
+        // }
+
+        // // Package is not depreceated by itself nor due to dependencies.
+        // deprecationMap.set(mod.getFullName(), false);
+        // return false;
     }
 }
