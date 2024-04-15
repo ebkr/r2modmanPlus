@@ -28,7 +28,7 @@ export default class LocalModCard extends Vue {
     }
 
     get isDeprecated() {
-        return this.tsMod ? this.tsMod.isDeprecated() : false;
+        return this.$store.state.tsMods.deprecated.get(this.mod.getName()) || false;
     }
 
     get isLatestVersion() {
