@@ -32,6 +32,10 @@ export default class SplashMixin extends Vue {
         return this.requests.reduce((x, y) => x.merge(y));
     }
 
+    resetRequestProgresses() {
+        this.requests.forEach((request) => request.setProgress(0));
+    }
+
     // Get the list of game-specific packages to exclude.
     async getExclusions() {
         this.loadingText = 'Connecting to GitHub repository';
@@ -41,7 +45,8 @@ export default class SplashMixin extends Vue {
             this.getRequestItem('ExclusionsList').setProgress(progress);
         };
 
-        await this.$store.dispatch('tsMods/updateExclusions');
+        await this.$store.dispatch('tsMods/updateExclusions', showProgress);
+
         this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
@@ -75,7 +80,9 @@ export default class SplashMixin extends Vue {
             this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
         }
 
+        this.getRequestItem('CacheOperations').setProgress(50);
         await this.$store.dispatch('tsMods/updateMods');
+        this.getRequestItem('CacheOperations').setProgress(100);
 
         if (this.$store.state.tsMods.modsLastUpdated === undefined) {
             this.heroTitle = 'Failed to get mods from Thunderstore and cache';
