@@ -16,8 +16,6 @@ Vue.use(Vuex);
 
 export interface State {
     activeGame: Game;
-    apiConnectionError: string;
-    dismissedUpdateAll: boolean;
     isMigrationChecked: boolean;
     _settings: ManagerSettings | null;
 }
@@ -32,20 +30,12 @@ type Context = ActionContext<State, State>;
 export const store = {
     state: {
         activeGame: GameManager.defaultGame,
-        dismissedUpdateAll: false,
         isMigrationChecked: false,
-        apiConnectionError: "",
 
         // Access through getters to ensure the settings are loaded.
         _settings: null,
     },
     actions: {
-        dismissUpdateAll({commit}: Context) {
-            commit('dismissUpdateAll');
-        },
-        updateApiConnectionError({commit}: Context, err: string) {
-            commit('setApiConnectionError', err);
-        },
         async checkMigrations({commit, state}: Context) {
             if (state.isMigrationChecked) {
                 return;
@@ -78,14 +68,8 @@ export const store = {
         setActiveGame(state: State, game: Game) {
             state.activeGame = game;
         },
-        dismissUpdateAll(state: State) {
-            state.dismissedUpdateAll = true;
-        },
         setMigrationChecked(state: State) {
             state.isMigrationChecked = true;
-        },
-        setApiConnectionError(state: State, err: string) {
-            state.apiConnectionError = err;
         },
         setSettings(state: State, settings: ManagerSettings) {
             state._settings = settings;
