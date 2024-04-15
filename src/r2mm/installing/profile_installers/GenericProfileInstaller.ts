@@ -66,12 +66,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                             return tree;
                         }
                         for (const value of tree.getRecursiveFiles()) {
-                            if (mode === ModMode.DISABLED && mod.isEnabled()) {
+                            if (mode === ModMode.DISABLED && mod.isEnabled() && !value.toLowerCase().endsWith(".old")) {
                                 await FsProvider.instance.rename(value, `${value}.old`);
-                            } else if (mode === ModMode.ENABLED && !mod.isEnabled()) {
-                                if (value.toLowerCase().endsWith(".old")) {
-                                    await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
-                                }
+                            } else if (mode === ModMode.ENABLED && !mod.isEnabled() && value.toLowerCase().endsWith(".old")) {
+                                await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
                             }
                         }
                     }

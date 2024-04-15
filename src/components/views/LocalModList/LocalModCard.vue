@@ -22,6 +22,7 @@ export default class LocalModCard extends Vue {
 
     disabledDependencies: ManifestV2[] = [];
     missingDependencies: string[] = [];
+    disableChangePending = false;
 
     get donationLink() {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
@@ -72,11 +73,17 @@ export default class LocalModCard extends Vue {
     }
 
     async disableMod() {
+        if (this.disableChangePending) {
+            return;
+        }
+
+        this.disableChangePending = true;
         const dependants = Dependants.getDependantList(this.mod, this.localModList);
 
         for (const mod of dependants) {
             if (mod.isEnabled()) {
                 this.$store.commit('openDisableModModal', this.mod);
+                this.disableChangePending = false;
                 return;
             }
         }
@@ -92,9 +99,16 @@ export default class LocalModCard extends Vue {
                 severity: LogSeverity.ACTION_STOPPED
             });
         }
+
+        this.disableChangePending = false;
     }
 
     async enableMod(mod: ManifestV2) {
+        if (this.disableChangePending) {
+            return;
+        }
+
+        this.disableChangePending = true;
         const dependencies = Dependants.getDependencyList(mod, this.localModList);
 
         try {
@@ -108,6 +122,8 @@ export default class LocalModCard extends Vue {
                 severity: LogSeverity.ACTION_STOPPED
             });
         }
+
+        this.disableChangePending = false;
     }
 
     async uninstallMod() {
@@ -223,12 +239,12 @@ function dependencyStringToModName(x: string) {
             <span @click.prevent.stop="() => mod.isEnabled() ? disableMod() : enableMod(mod)"
                 class='card-header-icon'>
                 <div class="field">
-                    <input id="switchExample"
+                    <input :id="`switch-${mod.getName()}`"
                         type="checkbox"
-                        name="switchExample"
                         :class='`switch is-small  ${mod.isEnabled() ? "switch is-info" : ""}`'
                         :checked="mod.isEnabled()" />
-                    <label for="switchExample" v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
+                    <label :for="`switch-${mod.getName()}`"
+                        v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
                 </div>
             </span>
         </template>
