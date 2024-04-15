@@ -80,15 +80,6 @@ export const TsModsModule = {
             return categories;
         },
 
-        /*** Remove packages on exclusion list from the given API response */
-        filterExcluded: (state) => <T extends {full_name: string}>(apiResponse: T[]): T[] => {
-            if (state.exclusions === undefined) {
-                throw new Error('filterExcluded called before populating exclusions');
-            }
-
-            return apiResponse.filter((pkg) => !state.exclusions!.includes(pkg.full_name));
-        },
-
         /*** Is the version of a mod defined by ManifestV2 the newest version? */
         isLatestVersion: (_state, getters) => (mod: ManifestV2): boolean => {
             return getters.cachedMod(mod).isLatest;
@@ -149,6 +140,20 @@ export const TsModsModule = {
             commit('setModsLastUpdated', updated);
             commit('updateDeprecated', modList);
             commit('clearModCache');
+        },
+
+        /*** Save a mod list received from the Thunderstore API to IndexedDB */
+        async updatePersistentCache(
+            {dispatch, rootState, state},
+            packages: {full_name: string}[]
+        ) {
+            if (state.exclusions === undefined) {
+                await dispatch('updateExclusions');
+            }
+
+            const filtered = packages.filter((pkg) => !state.exclusions!.includes(pkg.full_name));
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.updateFromApiResponse(community, filtered);
         }
     }
 }

@@ -6,8 +6,6 @@ import R2Error from '../../model/errors/R2Error';
 import GameManager from '../../model/game/GameManager';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -28,11 +26,8 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
-        await this.$store.dispatch('tsMods/updateExclusions');
         const response = await ConnectionProvider.instance.getPackages(GameManager.activeGame);
-        await ApiCacheUtils.storeLastRequest(response.data);
-        const packages = this.$store.getters['tsMods/filterExcluded'](response.data);
-        await PackageDb.updateFromApiResponse(GameManager.activeGame.internalFolderName, packages);
+        await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
         await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
     }
