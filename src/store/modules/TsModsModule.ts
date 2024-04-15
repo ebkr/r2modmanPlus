@@ -18,6 +18,7 @@ interface State {
     deprecated: Map<string, boolean>;
     exclusions?: string[];
     mods: ThunderstoreMod[];
+    modsLastUpdated?: Date;
 }
 
 /**
@@ -36,6 +37,8 @@ export const TsModsModule = {
         exclusions: [],
         /*** All mods available through API for the current active game */
         mods: [],
+        /*** When was the mod list last refreshed from the API? */
+        modsLastUpdated: undefined
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -122,6 +125,9 @@ export const TsModsModule = {
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
         },
+        setModsLastUpdated(state, payload: Date|undefined) {
+            state.modsLastUpdated = payload;
+        },
         setExclusions(state, payload: string[]) {
             state.exclusions = payload;
         },
@@ -138,7 +144,9 @@ export const TsModsModule = {
 
         async updateMods({commit, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
+            commit('setModsLastUpdated', updated);
             commit('updateDeprecated', modList);
             commit('clearModCache');
         }
