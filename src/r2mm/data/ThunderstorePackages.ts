@@ -47,6 +47,9 @@ export default class ThunderstorePackages {
     }
 
     /**
+     * TODO: This doesn't really do what the dosctring below says:
+     *       deprecated dependencies do NOT mark the dependant deprecated.
+     *
      * "Smart" package deprecation determination by keeping track of previously determine dependencies.
      * This ensures that we hit as few iterations as possible to speed up calculation time.
      *

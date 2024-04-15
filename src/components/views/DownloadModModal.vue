@@ -202,7 +202,7 @@ let assignId = 0;
         }
 
         get thunderstorePackages(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList || [];
+            return this.$store.state.tsMods.mods;
         }
 
         @Watch('$store.state.modals.downloadModModalMod')

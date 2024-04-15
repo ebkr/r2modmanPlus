@@ -9,7 +9,6 @@ import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisa
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModListSort from '../../r2mm/mods/ModListSort';
@@ -77,11 +76,8 @@ export default {
             return getters.activeProfile.getProfileName();
         },
 
-        modsWithUpdates(state, _getters, rootState): ThunderstoreCombo[] {
-            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
-                state.modList,
-                rootState.thunderstoreModList
-            );
+        modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreCombo[] {
+            return rootGetters['tsMods/modsWithUpdates'](state.modList);
         },
 
         visibleModList(state, _getters, rootState): ManifestV2[] {
