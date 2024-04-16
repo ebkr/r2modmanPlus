@@ -32,7 +32,7 @@
                     </div>
                     <p>Select a profile below:</p>
                     <br/>
-                    <select class="select" v-model="selectedProfile">
+                    <select class="select" @change="profileSelectOnChange">
                         <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
                     </select>
                 </div>
@@ -313,6 +313,12 @@ export default class Profiles extends Vue {
         } catch (e) {
             const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
             this.$store.commit('error/handleError', err);
+        }
+    }
+
+    async profileSelectOnChange(event: Event) {
+        if (event.target instanceof HTMLSelectElement) {
+            await this.setSelectedProfile(event.target.value, false);
         }
     }
 
