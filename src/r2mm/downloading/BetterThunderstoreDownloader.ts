@@ -187,7 +187,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async downloadImportedMods(game: Game, modList: ExportMod[],
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
-        const tsMods = await PackageDb.getPackagesAsThunderstoreMods(game.internalFolderName);
+        const tsMods = await PackageDb.getPackagesByNames(
+            game.internalFolderName,
+            modList.map((m) => m.getName())
+        );
         const comboList: ThunderstoreCombo[] = [];
         for (const importMod of modList) {
             for (const mod of tsMods) {
