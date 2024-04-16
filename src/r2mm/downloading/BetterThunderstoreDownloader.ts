@@ -204,6 +204,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
         }
 
+        if (comboList.length === 0) {
+            const err = new R2Error(
+                'No importable mods found',
+                'None of the mods or versions listed in the shared profile are available on Thunderstore.',
+                'Make sure the shared profile is meant for the currently selected game.'
+            );
+            callback(0, '', StatusEnum.FAILURE, err);
+            return;
+        }
+
         const settings = await ManagerSettings.getSingleton(game);
 
         let downloadCount = 0;
