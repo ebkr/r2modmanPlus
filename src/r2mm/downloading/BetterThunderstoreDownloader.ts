@@ -191,21 +191,20 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             game.internalFolderName,
             modList.map((m) => m.getName())
         );
-        const comboList: ThunderstoreCombo[] = [];
-        for (const importMod of modList) {
-            for (const mod of tsMods) {
-                if (mod.getFullName() == importMod.getName()) {
-                    mod.getVersions().forEach(version => {
-                        if (version.getVersionNumber().isEqualTo(importMod.getVersionNumber())) {
-                            const combo = new ThunderstoreCombo();
-                            combo.setMod(mod);
-                            combo.setVersion(version);
-                            comboList.push(combo);
-                        }
-                    });
-                }
+
+        const comboList = tsMods.map((mod) => {
+            const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
+            const version = targetMod
+                ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
+                : undefined;
+
+            if (version) {
+                const combo = new ThunderstoreCombo();
+                combo.setMod(mod);
+                combo.setVersion(version);
+                return combo;
             }
-        }
+        }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
 
         if (comboList.length === 0) {
             const err = new R2Error(
