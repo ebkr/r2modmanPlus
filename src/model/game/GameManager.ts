@@ -605,7 +605,7 @@ export default class GameManager {
         new Game(
             "Bopl Battle", "BoplBattle", "BoplBattle",
             "Bopl Battle", ["BoplBattle.exe"], "BoplBattle_Data",
-            "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
+            "https://thunderstore.io/c/bopl-battle/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1686940")], "BoplBattle.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bb"])
     ];
