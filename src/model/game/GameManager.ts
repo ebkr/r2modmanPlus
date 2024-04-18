@@ -601,6 +601,13 @@ export default class GameManager {
             "https://thunderstore.io/c/balatro/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2379780")], "Balatro.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.LOVELY, []),
+
+        new Game(
+            "Bopl Battle", "BoplBattle", "BoplBattle",
+            "Bopl Battle", ["BoplBattle.exe"], "BoplBattle_Data",
+            "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1686940")], "BoplBattle.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bb"])
     ];
 
     static get activeGame(): Game {
