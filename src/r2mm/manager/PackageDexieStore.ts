@@ -37,6 +37,7 @@ interface DexiePackage {
     // Extra fields not included in the API response
     community: string;
     date_fetched: Date; // When the entry was fetched from the API
+    default_order: number; // Entry's index when received from the API
 }
 
 class PackageDexieStore extends Dexie {
@@ -56,7 +57,11 @@ const db = new PackageDexieStore();
 // TODO: user type guards to validate (part of) the data before operations?
 export async function updateFromApiResponse(community: string, packages: any[]) {
     const extra = {community, date_fetched: new Date()};
-    const newPackages: DexiePackage[] = packages.map((pkg) => ({...pkg, ...extra}));
+    const newPackages: DexiePackage[] = packages.map((pkg, i) => ({
+        ...pkg,
+        ...extra,
+        default_order: i
+    }));
 
     await db.transaction(
         'rw',
@@ -87,7 +92,7 @@ export async function updateFromApiResponse(community: string, packages: any[]) 
 }
 
 export async function getPackagesAsThunderstoreMods(community: string) {
-    const packages = await db.packages.where({community}).toArray();
+    const packages = await db.packages.where({community}).sortBy('default_order');
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
 }
 
