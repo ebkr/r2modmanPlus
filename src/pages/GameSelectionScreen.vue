@@ -289,7 +289,13 @@ export default class GameSelectionScreen extends Vue {
         await GameManager.activate(this.selectedGame, this.selectedPlatform);
         await this.$store.dispatch("setActiveGame", this.selectedGame);
 
-        await this.$router.push({name: "splash"});
+        try {
+            await this.$router.push({name: "splash"});
+        } catch (error) {
+            if (!(error instanceof Error) || error.name !== "NavigationDuplicated") {
+                throw error;
+            }
+        }
     }
 
     private async proceedDefault() {
