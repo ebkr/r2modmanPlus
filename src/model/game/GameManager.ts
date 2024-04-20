@@ -607,7 +607,7 @@ export default class GameManager {
             "Bopl Battle", ["BoplBattle.exe"], "BoplBattle_Data",
             "https://thunderstore.io/c/bopl-battle/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1686940")], "BoplBattle.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bb"])
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bb"]),
 
         new Game("Vertigo 2", "Vertigo2", "Vertigo2",
             "Vertigo 2", ["vertigo2.exe"], "vertigo2_Data",
@@ -630,7 +630,7 @@ export default class GameManager {
         new Game("Castle Story", "CastleStory", "CastleStory",
             "Castle Story", ["Castle Story.exe"], "Castle Story_Data",
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "227860")], "CastleStory.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
