@@ -121,6 +121,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Sailwind"),
             buildBepInExRules("Plasma"),
             buildBepInExRules("ContentWarning"),
+            buildBepInExRules("BoplBattle"),
         ]
     }
 }
