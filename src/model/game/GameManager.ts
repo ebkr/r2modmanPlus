@@ -601,6 +601,37 @@ export default class GameManager {
             "https://thunderstore.io/c/balatro/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2379780")], "Balatro.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.LOVELY, []),
+
+        new Game(
+            "Bopl Battle", "BoplBattle", "BoplBattle",
+            "Bopl Battle", ["BoplBattle.exe"], "BoplBattle_Data",
+            "https://thunderstore.io/c/bopl-battle/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1686940")], "BoplBattle.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bb"]),
+
+        new Game("Vertigo 2", "Vertigo2", "Vertigo2",
+            "Vertigo 2", ["vertigo2.exe"], "vertigo2_Data",
+            "https://thunderstore.io/c/vertigo-2/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "843390")], "Vertigo2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Against the Storm", "AgainstTheStorm", "AgainstTheStorm",
+            "Against the Storm", ["Against the Storm.exe"], "Against the Storm_Data",
+            "https://thunderstore.io/c/against-the-storm/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1336490")], "AgainstTheStorm.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Lycans", "Lycans", "Lycans",
+            "Lycans", ["Lycans.exe"], "Lycans_Data",
+            "https://thunderstore.io/c/lycans/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2596100")], "Lycans.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Castle Story", "CastleStory", "CastleStory",
+            "Castle Story", ["Castle Story.exe"], "Castle Story_Data",
+            "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
