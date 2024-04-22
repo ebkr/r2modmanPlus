@@ -205,7 +205,8 @@ export default class Splash extends mixins(SplashMixin) {
 
     private async ensureWrapperInGameFolder() {
         const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
-        console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
+        const activeGame: Game = this.$store.state.activeGame;
+        console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
         try {
             await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
             const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
