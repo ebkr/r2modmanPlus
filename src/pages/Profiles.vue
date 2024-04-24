@@ -32,7 +32,7 @@
                     </div>
                     <p>Select a profile below:</p>
                     <br/>
-                    <select class="select" v-model="selectedProfile">
+                    <select class="select" @change="profileSelectOnChange">
                         <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
                     </select>
                 </div>
@@ -316,6 +316,12 @@ export default class Profiles extends Vue {
         }
     }
 
+    async profileSelectOnChange(event: Event) {
+        if (event.target instanceof HTMLSelectElement) {
+            await this.setSelectedProfile(event.target.value, false);
+        }
+    }
+
     get appName(): string {
         return ManagerInformation.APP_NAME;
     }
@@ -501,7 +507,7 @@ export default class Profiles extends Vue {
         }
         let read = '';
         if (files[0].endsWith('.r2x')) {
-            read = await fs.readFile(files[0]).toString();
+            read = (await fs.readFile(files[0])).toString();
         } else if (files[0].endsWith('.r2z')) {
             const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
             if (result === null) {
@@ -572,7 +578,7 @@ export default class Profiles extends Vue {
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        await this.setSelectedProfile(event.detail);
+                                        await this.setSelectedProfile(event.detail, false);
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -581,6 +587,7 @@ export default class Profiles extends Vue {
                                         await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
                                         await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
                                     }
+                                    await this.setSelectedProfile(event.detail);
                                 });
                             }, 100);
                         }
@@ -593,7 +600,7 @@ export default class Profiles extends Vue {
 
     async importAlternativeManagerProfile(file: string) {
         try {
-            const fileString = await fs.readFile(file).toString();
+            const fileString = (await fs.readFile(file)).toString();
             const jsonContent = JSON.parse(fileString.trim());
             const ror2Itf = jsonContent as Itf_RoR2MM;
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {

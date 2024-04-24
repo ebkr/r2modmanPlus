@@ -187,21 +187,33 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async downloadImportedMods(game: Game, modList: ExportMod[],
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
-        const tsMods = await PackageDb.getPackagesAsThunderstoreMods(game.internalFolderName);
-        const comboList: ThunderstoreCombo[] = [];
-        for (const importMod of modList) {
-            for (const mod of tsMods) {
-                if (mod.getFullName() == importMod.getName()) {
-                    mod.getVersions().forEach(version => {
-                        if (version.getVersionNumber().isEqualTo(importMod.getVersionNumber())) {
-                            const combo = new ThunderstoreCombo();
-                            combo.setMod(mod);
-                            combo.setVersion(version);
-                            comboList.push(combo);
-                        }
-                    });
-                }
+        const tsMods = await PackageDb.getPackagesByNames(
+            game.internalFolderName,
+            modList.map((m) => m.getName())
+        );
+
+        const comboList = tsMods.map((mod) => {
+            const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
+            const version = targetMod
+                ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
+                : undefined;
+
+            if (version) {
+                const combo = new ThunderstoreCombo();
+                combo.setMod(mod);
+                combo.setVersion(version);
+                return combo;
             }
+        }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
+
+        if (comboList.length === 0) {
+            const err = new R2Error(
+                'No importable mods found',
+                'None of the mods or versions listed in the shared profile are available on Thunderstore.',
+                'Make sure the shared profile is meant for the currently selected game.'
+            );
+            callback(0, '', StatusEnum.FAILURE, err);
+            return;
         }
 
         const settings = await ManagerSettings.getSingleton(game);

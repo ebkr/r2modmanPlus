@@ -96,6 +96,14 @@ export async function getPackagesAsThunderstoreMods(community: string) {
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
 }
 
+export async function getPackagesByNames(community: string, packageNames: string[]) {
+    const keys = packageNames.map((p): [string, string] => [community, p]);
+
+    // Dexie's anyOfIgnoreCase doesn't support compound indexes.
+    const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
+    return packages.map(ThunderstoreMod.parseFromThunderstoreData);
+}
+
 // TODO: Dexie v3 doesn't support combining .where() and .orderBy() in a
 // way that would utilize the DB indexes. The current implementation
 // bypasses this by assuming that outside the updateFromApiResponse
