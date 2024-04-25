@@ -54,7 +54,7 @@
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                No mods with that name found
+                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
             </p>
         </div>
         <br/>
