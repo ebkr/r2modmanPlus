@@ -16,15 +16,6 @@ export default class UtilityMixin extends Vue {
     }
 
     async refreshThunderstoreModList() {
-        // Don't do background update on index route since the game
-        // isn't really chosen yet, nor in the splash screen since it
-        // proactively updates the package list.
-        const exemptRoutes = ["index", "splash"];
-
-        if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
-            return;
-        }
-
         const response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame);
         await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
         await this.$store.dispatch("tsMods/updateMods");
@@ -39,6 +30,15 @@ export default class UtilityMixin extends Vue {
      * failure to see how this affects the number of reported errors.
      */
     private async tryRefreshThunderstoreModList() {
+        // Don't do background update on index route since the game
+        // isn't really chosen yet, nor in the splash screen since it
+        // proactively updates the package list.
+        const exemptRoutes = ["index", "splash"];
+
+        if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
+            return;
+        }
+
         try {
             await this.refreshThunderstoreModList();
         } catch (e) {
