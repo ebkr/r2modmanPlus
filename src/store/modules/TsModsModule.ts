@@ -18,6 +18,7 @@ interface State {
     connectionError: string;
     deprecated: Map<string, boolean>;
     exclusions?: string[];
+    isBackgroundUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
 }
@@ -38,6 +39,8 @@ export const TsModsModule = {
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: [],
+        /*** Mod list is automatically and periodically updated in the background */
+        isBackgroundUpdateInProgress: false,
         /*** All mods available through API for the current active game */
         mods: [],
         /*** When was the mod list last refreshed from the API? */
@@ -116,6 +119,9 @@ export const TsModsModule = {
         clearModCache(state) {
             state.cache.clear();
         },
+        finishBackgroundUpdate(state) {
+            state.isBackgroundUpdateInProgress = false;
+        },
         setConnectionError(state, error: string|unknown) {
             if (typeof error === 'string') {
                 state.connectionError = error;
@@ -132,6 +138,9 @@ export const TsModsModule = {
         },
         setExclusions(state, payload: string[]) {
             state.exclusions = payload;
+        },
+        startBackgroundUpdate(state) {
+            state.isBackgroundUpdateInProgress = true;
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);

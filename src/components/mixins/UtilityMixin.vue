@@ -39,7 +39,12 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
+        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+            return;
+        }
+
         try {
+            this.$store.commit("tsMods/startBackgroundUpdate");
             await this.refreshThunderstoreModList();
         } catch (e) {
             if (this.tsRefreshFailed) {
@@ -49,6 +54,8 @@ export default class UtilityMixin extends Vue {
 
             this.tsRefreshFailed = true;
             return;
+        } finally {
+            this.$store.commit("tsMods/finishBackgroundUpdate");
         }
 
         this.tsRefreshFailed = false;
