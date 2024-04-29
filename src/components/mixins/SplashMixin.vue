@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import ApiResponse from '../../model/api/ApiResponse';
+import R2Error from '../../model/errors/R2Error';
 import RequestItem from '../../model/requests/RequestItem';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
@@ -48,7 +49,7 @@ export default class SplashMixin extends Vue {
         this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
-    // Get the list of Thunderstore mods from API.
+    // Get the list of Thunderstore mods from API or local cache.
     async getThunderstoreMods() {
         this.loadingText = 'Connecting to Thunderstore';
         let response: ApiResponse|undefined = undefined;
@@ -61,33 +62,51 @@ export default class SplashMixin extends Vue {
         try {
             response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame, showProgress, 3);
         } catch (e) {
-            // No-op
+            console.error('SplashMixin failed to fetch mod list from API.', e);
         } finally {
             this.getRequestItem('ThunderstoreDownload').setProgress(100);
         }
 
         if (response) {
-            this.heroTitle = 'Received mod list from Thunderstore';
-            this.loadingText = 'Caching the mod list locally';
+            this.loadingText = 'Storing the mod list into local cache';
 
-            await this.$store.dispatch('tsMods/updatePersistentCache', response.data);
+            try {
+                await this.$store.dispatch('tsMods/updatePersistentCache', response.data);
+            } catch (e) {
+                console.error('SplashMixin failed to cache mod list locally.', e);
+            }
 
             this.loadingText = 'Processing the mod list';
         } else {
-            this.heroTitle = 'Failed to get mods from Thunderstore';
-            this.loadingText = 'You may be offline or Thunderstore is unavailabe. Checking cache.';
+            this.loadingText = 'Processing the mod list from cache';
         }
 
         this.getRequestItem('CacheOperations').setProgress(50);
-        await this.$store.dispatch('tsMods/updateMods');
-        this.getRequestItem('CacheOperations').setProgress(100);
+        let isModListLoaded = false;
 
-        if (this.$store.state.tsMods.modsLastUpdated === undefined) {
-            this.heroTitle = 'Failed to get mods from Thunderstore and cache';
-            this.loadingText = 'You may be offline or Thunderstore is unavailabe. However, you may still use the manager offline.';
-            this.isOffline = true;
-        } else {
+        try {
+            await this.$store.dispatch('tsMods/updateMods');
+            isModListLoaded = true;
+        } catch (e) {
+            this.$store.commit(
+                'error/handleError',
+                R2Error.fromThrownValue(e, `${this.loadingText} failed`)
+            );
+        } finally {
+            this.getRequestItem('CacheOperations').setProgress(100);
+        }
+
+        // To proceed, the loading of the mod list should result in a non-empty list.
+        // Empty list is allowed if that's actually what the API returned.
+        if (
+            isModListLoaded &&
+            (this.$store.state.tsMods.mods.length || (response && !response.data.length))
+        ) {
             await this.moveToNextScreen();
+        } else {
+            this.heroTitle = 'Failed to get the list of online mods';
+            this.loadingText = 'You may still use the manager offline, but some features might be unavailable.';
+            this.isOffline = true;
         }
     }
 
