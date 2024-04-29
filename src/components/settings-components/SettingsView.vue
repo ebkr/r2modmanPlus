@@ -78,7 +78,6 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
-        private downloadingThunderstoreModList: boolean = false;
 
         get activeGame(): Game {
             return this.$store.state.activeGame;
@@ -299,7 +298,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.downloadingThunderstoreModList) {
+                        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
                             return "Checking for new releases";
                         }
                         if (this.$store.state.tsMods.connectionError.length > 0) {
@@ -312,17 +311,19 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                     },
                 'fa-exchange-alt',
                 async () => {
-                    if (!this.downloadingThunderstoreModList) {
-                        this.downloadingThunderstoreModList = true;
-                        this.$store.commit("tsMods/setConnectionError", "");
+                    if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+                        return;
+                    }
 
-                        try {
-                            await this.refreshThunderstoreModList();
-                        } catch (e) {
-                            this.$store.commit("tsMods/setConnectionError", e);
-                        } finally {
-                            this.downloadingThunderstoreModList = false;
-                        }
+                    this.$store.commit("tsMods/startBackgroundUpdate");
+                    this.$store.commit("tsMods/setConnectionError", "");
+
+                    try {
+                        await this.refreshThunderstoreModList();
+                    } catch (e) {
+                        this.$store.commit("tsMods/setConnectionError", e);
+                    } finally {
+                        this.$store.commit("tsMods/finishBackgroundUpdate");
                     }
                 }
             ),
