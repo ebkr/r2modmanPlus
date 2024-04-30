@@ -518,9 +518,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     const isDefaultDataDirectory = files[0] === PathResolver.APPDATA_DIR;
 
                     if (hasOverrideFile || !directoryHasContents || isDefaultDataDirectory) {
-                        await this.settings.setDataDirectory(files[0]);
                         // Write dataDirectoryOverrideFile to allow re-selection of directory if changed at a later point.
                         await fs.writeFile(path.join(files[0], dataDirectoryOverrideFile), "");
+                        await this.settings.setDataDirectory(files[0]);
                         InteractionProvider.instance.restartApp();
                     } else {
                         this.$store.commit('error/handleError', new R2Error(
@@ -530,6 +530,11 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                         ));
                     }
                 }
+            }).catch((err) => {
+                this.$store.commit(
+                    "error/handleError",
+                    R2Error.fromThrownValue(err, "Failed to change Data Folder")
+                );
             });
         }
 
