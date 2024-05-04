@@ -9,6 +9,7 @@ import { GodotMLGameInstructions } from "../../launching/instructions/instructio
 import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
+import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -26,6 +27,7 @@ export default class GameInstructions {
         [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
+        [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {

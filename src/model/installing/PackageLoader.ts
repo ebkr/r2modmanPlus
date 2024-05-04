@@ -9,6 +9,7 @@ export enum PackageLoader {
     ANCIENT_DUNGEON_VR,
     SHIMLOADER,
     LOVELY,
+    RETURN_OF_MODDING,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {
@@ -21,6 +22,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.NORTHSTAR: return "bepinex";
         case PackageLoader.SHIMLOADER: return "shimloader";
         case PackageLoader.LOVELY: return "lovely";
+        case PackageLoader.RETURN_OF_MODDING: return "returnofmodding";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
