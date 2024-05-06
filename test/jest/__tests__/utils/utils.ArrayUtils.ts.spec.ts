@@ -1,7 +1,5 @@
 import { chunk } from "../../../../src/utils/ArrayUtils";
 
-type ParametrizedTest = {original: any[], expected: any[][]};
-
 describe("ArrayUtils.chunk", () => {
     it("Validates chunkSize parameter", () => {
         const expected = new Error("chunk requires positive integer as chunkSize");
