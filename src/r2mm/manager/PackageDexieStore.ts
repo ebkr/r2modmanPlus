@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
 
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import * as ArrayUtils from '../../utils/ArrayUtils';
 
 interface DexieVersion {
     full_name: string;
@@ -57,11 +58,14 @@ const db = new PackageDexieStore();
 // TODO: user type guards to validate (part of) the data before operations?
 export async function updateFromApiResponse(community: string, packages: any[]) {
     const extra = {community, date_fetched: new Date()};
-    const newPackages: DexiePackage[] = packages.map((pkg, i) => ({
-        ...pkg,
-        ...extra,
-        default_order: i
-    }));
+    const newPackageChunks: DexiePackage[][] = ArrayUtils.chunk(
+        packages.map((pkg, i) => ({
+            ...pkg,
+            ...extra,
+            default_order: i
+        })),
+        5000
+    );
 
     await db.transaction(
         'rw',
@@ -76,7 +80,9 @@ export async function updateFromApiResponse(community: string, packages: any[]) 
             // for big lists since the small ones are fast enough anyway, and
             // this approach also works better with the plans to use pagination
             // when fetching the package list in the future.
-            await db.packages.bulkPut(newPackages);
+            await Promise.all(
+                newPackageChunks.map((chunk) => db.packages.bulkPut(chunk))
+            );
 
             // Find packages that were no longer returned by the API and delete them.
             // .bulkDelete is faster than calling .delete() on the Collection
