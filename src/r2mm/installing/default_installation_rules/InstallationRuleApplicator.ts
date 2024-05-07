@@ -126,6 +126,9 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("AgainstTheStorm"),
             buildBepInExRules("Lycans"),
             buildBepInExRules("CastleStory"),
+            buildBepInExRules("Phasmophobia"),
+            buildBepInExRules("Magicraft"),
+            buildBepInExRules("AnotherCrabsTreasure"),
         ]
     }
 }

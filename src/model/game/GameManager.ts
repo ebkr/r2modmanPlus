@@ -632,6 +632,24 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Phasmophobia", "Phasmophobia", "Phasmophobia",
+            "Phasmophobia", ["Phasmophobia.exe"], "Phasmophobia_Data",
+            "https://thunderstore.io/c/phasmophobia/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "739630")], "Phasmophobia.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Magicraft", "Magicraft", "Magicraft",
+            "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
+            "https://thunderstore.io/c/magicraft/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2103140")], "Magicraft.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+
+        new Game("Another Crab's Treasure", "AnotherCrabsTreasure", "AnotherCrabsTreasure",
+            "AnotherCrabsTreasure", ["AnotherCrabsTreasure.exe"], "AnotherCrabsTreasure_Data",
+            "https://thunderstore.io/c/another-crabs-treasure/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1887840")], "AnotherCrabsTreasure.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
