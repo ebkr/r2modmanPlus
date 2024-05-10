@@ -1,5 +1,6 @@
 <template>
   <div>
+    <DeleteProfileModal />
     <!-- Create modal -->
     <div :class="['modal', {'is-active':(addingProfile !== false || renamingProfile !== false)}]">
       <div class="modal-background" @click="closeNewProfileModal()"></div>
@@ -118,29 +119,6 @@
       </div>
       <button class="modal-close is-large" aria-label="close" @click="showCodeModal = false;"></button>
     </div>
-    <!-- Delete modal -->
-    <div :class="['modal', {'is-active':(removingProfile !== false)}]">
-      <div class="modal-background" @click="closeRemoveProfileModal()"></div>
-      <div class="modal-content">
-        <div class="card">
-          <header class="card-header">
-            <p class="card-header-title">Delete profile</p>
-          </header>
-          <div class="card-content">
-            <p>This will remove all mods, and their config files, installed within this profile.</p>
-            <p>If this was an accident, click either the darkened area, or the cross inside located in the top right.</p>
-            <p>Are you sure you'd like to delete this profile?</p>
-          </div>
-          <div class="card-footer">
-            <button
-              class="button is-danger"
-              @click="removeProfileAfterConfirmation()"
-            >Delete profile</button>
-          </div>
-        </div>
-      </div>
-      <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
-    </div>
     <!-- Import modal -->
     <div :class="['modal', {'is-active':(importingProfile !== false)}]">
       <div class="modal-background"></div>
@@ -216,7 +194,7 @@
                       <a class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
                     </div>
                     <div class="level-item">
-                      <a class="button is-danger" @click="removeProfile()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
                     </div>
                   </nav>
                 </div>
@@ -260,26 +238,25 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
+import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
 
 let fs: FsProvider;
 
 @Component({
     components: {
         hero: Hero,
-        'progress-bar': Progress
-    }
+        'progress-bar': Progress,
+        DeleteProfileModal,
+    },
 })
 export default class Profiles extends Vue {
     @Ref() readonly profileCodeInput: HTMLInputElement | undefined;
     @Ref() readonly profileNameInput: HTMLInputElement | undefined;
 
-    private profileList: string[] = ['Default'];
-
     private addingProfile: boolean = false;
     private newProfileName: string = '';
     private addingProfileType: string = 'Create';
 
-    private removingProfile: boolean = false;
     private importingProfile: boolean = false;
     private percentageImported: number = 0;
 
@@ -300,6 +277,10 @@ export default class Profiles extends Vue {
 
     get selectedProfile(): string {
         return this.$store.getters['profile/activeProfileName'];
+    }
+
+    get profileList(): string[] {
+        return this.$store.state.profiles.profileList;
     }
 
     async setSelectedProfile(profileName: string, prewarmCache = true) {
@@ -380,7 +361,7 @@ export default class Profiles extends Vue {
         if (safeName === '') {
             return;
         }
-        this.profileList.push(safeName);
+        this.$store.commit('profiles/pushToProfileList', safeName);
         await this.setSelectedProfile(safeName);
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
@@ -397,36 +378,8 @@ export default class Profiles extends Vue {
         this.renamingProfile = false;
     }
 
-    removeProfile() {
-        this.removingProfile = true;
-    }
-
-    async removeProfileAfterConfirmation() {
-        try {
-            await FileUtils.emptyDirectory(this.activeProfile.getPathOfProfile());
-            await fs.rmdir(this.activeProfile.getPathOfProfile());
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
-            this.$store.commit('error/handleError', err);
-        }
-        if (
-            this.activeProfile
-                .getProfileName()
-                .toLowerCase() !== 'default'
-        ) {
-            for (let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
-                if (this.profileList[profileIteration] === this.activeProfile.getProfileName()) {
-                    this.profileList.splice(profileIteration, 1);
-                    break;
-                }
-            }
-        }
-        await this.setSelectedProfile('Default');
-        this.closeRemoveProfileModal();
-    }
-
-    closeRemoveProfileModal() {
-        this.removingProfile = false;
+    openDeleteProfileModal() {
+        this.$store.commit('openDeleteProfileModal');
     }
 
     makeProfileNameSafe(nameToSanitize: string): string {
@@ -650,12 +603,13 @@ export default class Profiles extends Vue {
     }
 
     async updateProfileList() {
-        this.profileList = ["Default"];
+        let profileList = ["Default"];
         const profilesDirectory: string = this.activeProfile.getDirectory();
         await fs.readdir(profilesDirectory).then(dirContents => {
             dirContents.forEach(async (file: string) => {
                 if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
-                    this.profileList = [...this.profileList, file].sort();
+                    profileList = [...profileList, file].sort();
+                    this.$store.commit('profiles/setProfileList', profileList);
                 }
             });
         }).catch(() => { /* Do nothing */ });
