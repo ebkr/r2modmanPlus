@@ -1,15 +1,15 @@
 <template>
     <div>
-        <Hero title='Settings'
-              :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
+        <Hero :title="$t('settings.view.title')"
+              :subtitle="$t('settings.view.subtitle', {name: appName, version: managerVersionNumber.toString()})"
               heroType='is-info'/>
         <div class="margin-right">
             <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
                 <div class='border-at-bottom'>
                     <div class='card is-shadowless is-square'>
                         <div class='card-header-title'>
-                            <span class="non-selectable margin-right">Search:</span>
-                            <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
+                            <span class="non-selectable margin-right">{{ $t('settings.view.search') }}</span>
+                            <input v-model='search' class="input" type="text" :placeholder="$t('settings.view.searchPH')"/>
                         </div>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
                         <li v-for="(key, index) in tabs" :key="`tab-${key}`"
                             :class="[{'is-active': activeTab === key}]"
                             @click="changeTab(key)">
-                            <a>{{key}}</a>
+                            <a>{{ $t(`settings.view.tabs.${key.toLowerCase()}`) }}</a>
                         </li>
                     </ul>
                 </div>
@@ -98,8 +98,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         private settingsList = [
             new SettingsRow(
                 'Locations',
-                'Browse data folder',
-                'Open the directory where mods are stored for all games and profiles.',
+                this.$t('settings.view.actions[0]'),
+                this.$t('settings.view.descriptions[0]'),
                 async () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
@@ -108,8 +108,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Locations',
-                `Change ${this.activeGame.displayName} directory`,
-                `Change the location of the ${this.activeGame.displayName} directory that ${this.appName} uses.`,
+                this.$t('settings.view.actions[1]', {name: this.activeGame.displayName}),
+                this.$t('settings.view.descriptions[1]', {name: this.activeGame.displayName, appName: this.appName}),
                 async () => {
                     if (this.settings.getContext().gameSpecific.gameDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
@@ -117,7 +117,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                             return directory;
                         }
                     }
-                    return 'Please set manually';
+                    return this.$t('settings.view.returns[0]');
                 },
                 'fa-folder-open',
                 () => {
@@ -131,8 +131,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Locations',
-                'Browse profile folder',
-                'Open the folder where mods are stored for the current profile.',
+                this.$t('settings.view.actions[2]'),
+                this.$t('settings.view.descriptions[2]'),
                 async () => {
                     return this.$store.getters['profile/activeProfile'].getPathOfProfile();
                 },
@@ -141,8 +141,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Locations',
-                'Change data folder directory',
-                'Change the directory where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
+                this.$t('settings.view.actions[3]'),
+                this.$t('settings.view.descriptions[3]'),
                 async () => {
                     return PathResolver.ROOT;
                 },
@@ -151,163 +151,163 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Debugging',
-                'Copy log file contents to clipboard',
-                'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
+                this.$t('settings.view.actions[4]'),
+                this.$t('settings.view.descriptions[4]'),
                 async () => this.doesLogFileExist(),
                 'fa-clipboard',
                 () => this.emitInvoke('CopyLogToClipboard')
             ),
             new SettingsRow(
                 'Debugging',
-                'Toggle download cache',
-                'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
+                this.$t('settings.view.actions[5]'),
+                this.$t('settings.view.descriptions[5]'),
                 async () => {
                     return this.settings.getContext().global.ignoreCache
-                        ? 'Current: cache is disabled'
-                        : 'Current: cache is enabled (recommended)';
+                        ? this.$t('settings.view.values[0]')
+                        : this.$t('settings.view.values[1]');
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleDownloadCache')
             ),
             new SettingsRow(
                 'Debugging',
-                'Run preloader fix',
-                'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
-                async () => `This will delete the ${this.activeGame.dataFolderName}/Managed folder, and verify the files through Steam`,
+                this.$t('settings.view.actions[6]'),
+                this.$t('settings.view.descriptions[6]'),
+                async () => this.$t('settings.view.values[2]', {name: this.activeGame.dataFolderName}),
                 'fa-wrench',
                 () => this.emitInvoke('RunPreloaderFix')
             ),
             new SettingsRow(
                 'Debugging',
-                'Set launch parameters',
-                'Provide custom arguments used to start the game.',
-                async () => 'These commands are used against the Steam executable on game startup',
+                this.$t('settings.view.actions[7]'),
+                this.$t('settings.view.descriptions[7]'),
+                async () => this.$t('settings.view.values[3]'),
                 'fa-wrench',
                 () => this.emitInvoke('SetLaunchParameters')
             ),
             new SettingsRow(
                 'Debugging',
-                'Clean mod cache',
-                'Free extra space caused by cached mods that are not currently in a profile.',
-                async () => 'Check all profiles for unused mods and clear cache',
+                this.$t('settings.view.actions[8]'),
+                this.$t('settings.view.descriptions[8]'),
+                async () => this.$t('settings.view.values[4]'),
                 'fa-trash',
                 () => this.emitInvoke('CleanCache')
             ),
             new SettingsRow(
                 'Profile',
-                'Change profile',
-                'Change the mod profile.',
+                this.$t('settings.view.actions[9]'),
+                this.$t('settings.view.descriptions[9]'),
                 async () => {
-                    return `Current profile: ${this.$store.getters['profile/activeProfile'].getProfileName()}`
+                    return this.$t('settings.view.values[5]', {name: this.$store.getters['profile/activeProfile'].getProfileName()})
                 },
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')
             ),
             new SettingsRow(
                 'Profile',
-                'Enable all mods',
-                'Enable all mods for the current profile',
-                async () => `${this.localModList.length - ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} enabled`,
+                this.$t('settings.view.actions[10]'),
+                this.$t('settings.view.descriptions[10]'),
+                async () => this.$t('settings.view.values[6]', [this.localModList.length - ProfileModList.getDisabledModCount(this.localModList), this.localModList.length]),
                 'fa-file-import',
                 () => this.emitInvoke('EnableAll')
             ),
             new SettingsRow(
                 'Profile',
-                'Disable all mods',
-                'Disable all mods for the current profile',
-                async () => `${ProfileModList.getDisabledModCount(this.localModList)}/${this.localModList.length} disabled`,
+                this.$t('settings.view.actions[11]'),
+                this.$t('settings.view.descriptions[11]'),
+                async () => this.$t('settings.view.values[7]', [ProfileModList.getDisabledModCount(this.localModList), this.localModList.length]),
                 'fa-file-import',
                 () => this.emitInvoke('DisableAll')
             ),
             new SettingsRow(
                 'Profile',
-                'Import local mod',
-                'Install a mod offline from your files.',
-                async () => 'Not all mods can be installed locally',
+                this.$t('settings.view.actions[12]'),
+                this.$t('settings.view.descriptions[12]'),
+                async () => this.$t('settings.view.values[26]'),
                 'fa-file-import',
                 () => this.emitInvoke('ImportLocalMod')
             ),
             new SettingsRow(
                 'Profile',
-                'Export profile as a file',
-                'Export your mod list and configs as a file.',
-                async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
+                this.$t('settings.view.actions[13]'),
+                this.$t('settings.view.descriptions[13]'),
+                async () => this.$t('settings.view.values[8]'),
                 'fa-file-export',
                 () => this.emitInvoke('ExportFile')
             ),
             new SettingsRow(
                 'Profile',
-                'Export profile as a code',
-                'Export your mod list and configs as a code.',
-                async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
+                this.$t('settings.view.actions[14]'),
+                this.$t('settings.view.descriptions[14]'),
+                async () => this.$t('settings.view.values[9]'),
                 'fa-file-export',
                 () => this.emitInvoke('ExportCode')
             ),
             new SettingsRow(
                 'Profile',
-                'Update all mods',
-                'Quickly update every installed mod to their latest versions.',
+                this.$t('settings.view.actions[15]'),
+                this.$t('settings.view.descriptions[15]'),
                 async () => {
                     const outdatedMods = this.$store.getters['profile/modsWithUpdates'];
                     if (outdatedMods.length === 1) {
-                        return "1 mod has an update available";
+                        return this.$t('settings.view.values[10]');
                     }
-                    return `${outdatedMods.length} mods have an update available`;
+                    return this.$t('settings.view.values[11]', [outdatedMods.length]);
                 },
                 'fa-cloud-upload-alt',
                 () => this.emitInvoke('UpdateAllMods')
             ),
             new SettingsRow(
                 'Other',
-                'Toggle funky mode',
-                'Enable/disable funky mode.',
+                this.$t('settings.view.actions[16]'),
+                this.$t('settings.view.descriptions[16]'),
                 async () => {
                     return this.settings.getContext().global.funkyModeEnabled
-                        ? 'Current: enabled'
-                        : 'Current: disabled (default)';
+                        ? this.$t('settings.view.values[12]')
+                        : this.$t('settings.view.values[13]');
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleFunkyMode')
             ),
             new SettingsRow(
                 'Other',
-                'Switch theme',
-                'Switch between light and dark themes.',
+                this.$t('settings.view.actions[17]'),
+                this.$t('settings.view.descriptions[17]'),
                 async () => {
                     return this.settings.getContext().global.darkTheme
-                        ? 'Current: dark theme'
-                        : 'Current: light theme (default)';
+                        ? this.$t('settings.view.values[14]')
+                        : this.$t('settings.view.values[15]');
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchTheme')
             ),
             new SettingsRow(
                 'Other',
-                'Switch card display type',
-                'Switch between expanded or collapsed cards.',
+                this.$t('settings.view.actions[18]'),
+                this.$t('settings.view.descriptions[18]'),
                 async () => {
                     return this.settings.getContext().global.expandedCards
-                        ? 'Current: expanded'
-                        : 'Current: collapsed (default)';
+                        ? this.$t('settings.view.values[16]')
+                        : this.$t('settings.view.values[17]');
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchCard')
             ),
             new SettingsRow(
                 'Other',
-                'Refresh online mod list',
-                'Check for any new mod releases.',
+                this.$t('settings.view.actions[19]'),
+                this.$t('settings.view.descriptions[19]'),
                 async () => {
                         if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
-                            return "Checking for new releases";
+                            return this.$t('settings.view.values[18]');
                         }
                         if (this.$store.state.tsMods.connectionError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
+                            return this.$t('settings.view.values[19]', [this.$store.state.tsMods.connectionError]);
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
-                            return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
+                            return this.$t('settings.view.values[20]', [moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a")]);
                         }
-                        return "No API information available";
+                        return this.$t('settings.view.values[21]');
                     },
                 'fa-exchange-alt',
                 async () => {
@@ -329,8 +329,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
               'Other',
-              'Change game',
-              'Change the current game (restarts the manager)',
+                this.$t('settings.view.actions[20]'),
+                this.$t('settings.view.descriptions[20]'),
               async () => "",
                 'fa-gamepad',
                 async () => {
@@ -340,11 +340,19 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             ),
             new SettingsRow(
                 'Modpacks',
-                'Show dependency strings',
-                'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
-                async () => `Show dependency strings for ${this.localModList.length} mod(s)`,
+                this.$t('settings.view.actions[21]'),
+                this.$t('settings.view.descriptions[21]'),
+                async () => this.$t('settings.view.values[22]', [this.localModList.length]),
                 'fa-file-alt',
                 () => this.emitInvoke('ShowDependencyStrings')
+            ),
+            new SettingsRow(
+                'Other',
+                this.$t('settings.view.actions[23]'),
+                this.$t('settings.view.descriptions[23]'),
+                async () => this.$t(`settings.view.values[27]['${this.settings.getContext().global.displayLanguage}']`),
+                'fa-language',
+                () => this.emitInvoke('SetDisplayLanguage')
             ),
         ];
 
@@ -366,8 +374,8 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 this.settingsList.push(
                     new SettingsRow(
                         'Locations',
-                        'Change Steam directory',
-                        `Change the location of the Steam directory that ${this.appName} uses.`,
+                        this.$t('settings.view.actions[22]'),
+                        this.$t('settings.view.descriptions[22]',{name: this.appName}),
                         async () => {
                             if (this.settings.getContext().global.steamDirectory !== null) {
                                 const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
@@ -375,7 +383,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                                     return directory;
                                 }
                             }
-                            return 'Please set manually';
+                            return this.$t('settings.view.values[23]');
                         },
                         'fa-folder-open',
                         () => this.emitInvoke('ChangeSteamDirectory')
@@ -405,7 +413,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         }
 
         doesLogFileExist() {
-            return this.logOutput.exists ? 'Log file exists' : 'Log file does not exist';
+            return this.logOutput.exists ? this.$t('settings.view.values[24]') : this.$t('settings.view.values[25]');
         }
     }
 </script>

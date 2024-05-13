@@ -2,7 +2,7 @@
     <div>
         <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
         <div class='notification is-warning'>
-            <p>Game updates may break mods. If a new update has been released, please be patient.</p>
+            <p>{{ $t(`pages.splash.notification`) }}</p>
         </div>
         <progress-bar
             v-if="!isOffline"
@@ -12,10 +12,10 @@
         <div class='columns'>
             <div class='column is-one-quarter'>
                 <aside class='menu'>
-                    <p class='menu-label'>Help</p>
+                    <p class='menu-label'>{{ $t(`pages.splash.help`) }}</p>
                     <ul class='menu-list'>
-                        <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
-                        <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
+                        <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">{{ $t(`pages.splash.about`) }}</a></li>
+                        <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">{{ $t(`pages.splash.FAQ`) }}</a></li>
                         <li>
                             <link-component :url="'https://github.com/ebkr/r2modmanPlus'" :target="'external'">
                                 <i class='fab fa-github fa-lg' aria-hidden='true' />
@@ -29,8 +29,8 @@
                     <br />
                     <nav class='level' v-if='isOffline'>
                         <div class='level-item'>
-                            <a class='button is-info margin-right margin-right--half-width' @click='continueOffline()'>Continue offline</a>
-                            <a class='button' @click='retryConnection()'>Try to reconnect</a>
+                            <a class='button is-info margin-right margin-right--half-width' @click='continueOffline()'>{{ $t(`pages.splash.offline`) }}</a>
+                            <a class='button' @click='retryConnection()'>{{ $t(`pages.splash.reconnect`) }}</a>
                         </div>
                         <br /><br />
                     </nav>
@@ -41,7 +41,7 @@
                             <div class='content'>
                                 <div class='container' v-if="view !== 'main'">
                                     <i class='fas fa-long-arrow-alt-left margin-right' />
-                                    <strong><a @click="view = 'main'">Go back</a></strong>
+                                    <strong><a @click="view = 'main'">{{ $t(`pages.splash.back`) }}</a></strong>
                                     <br /><br />
                                 </div>
                                 <div class='container' v-if="view === 'main'">
@@ -49,23 +49,21 @@
                     <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-info-circle' />
                     </span>
-                                        <strong>Did you know?</strong>
+                                        <strong>{{ $t(`pages.splash.know`) }}</strong>
                                     </p>
                                     <ul class='margin-right'>
                                         <li>
-                                            <p>
-                                                You can use the "Install with Mod Manager" button on
-                                                <link-component
-                                                    :url="'https://thunderstore.io'" :target="'external'">Thunderstore
-                                                </link-component>
-                                                with r2modman.
-                                            </p>
+                                            <i18n path="pages.splash.installTip" tag="p">
+                                                <template v-slot:link>
+                                                    <link-component
+                                                        :url="'https://thunderstore.io'" :target="'external'">Thunderstore
+                                                    </link-component>
+                                                </template>
+                                            </i18n>
                                         </li>
                                         <li>
                                             <p>
-                                                You can export the selected profile from the settings screen as either a
-                                                file, or a code.
-                                                This makes it easy to share your mod list with friends!
+                                                {{ $t(`pages.splash.exportProfile`) }}
                                             </p>
                                         </li>
                                     </ul>
@@ -73,12 +71,10 @@
                     <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        <strong>Having trouble?</strong>
+                                        <strong>{{ $t(`pages.splash.trouble`) }}</strong>
                                     </p>
                                     <p>
-                                        Send a screenshot of the error in the Thunderstore modding discord server. Feel
-                                        free to ping me
-                                        if it doesn't get resolved.
+                                        {{ $t(`pages.splash.troubleTip`) }}
                                     </p>
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
@@ -86,10 +82,10 @@
                     <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-address-card' />
                     </span>
-                                        <strong>About r2modman</strong>
+                                        <strong>{{ $t(`pages.splash.r2modman`) }}</strong>
                                     </p>
-                                    <p>It's created by Ebkr, using Quasar.</p>
-                                    <p>Quasar provides the following development tools that r2modman is built upon:</p>
+                                    <p>{{ $t(`pages.splash.created`) }}</p>
+                                    <p>{{ $t(`pages.splash.quasar`) }}</p>
                                     <ul>
                                         <li>Electron</li>
                                         <li>Node</li>
@@ -102,21 +98,19 @@
                     <span class='icon margin-right margin-right--half-width'>
                       <i class='fas fa-question-circle' />
                     </span>
-                                        <strong>FAQ</strong>
+                                        <strong>{{ $t(`pages.splash.FAQ`) }}</strong>
                                     </p>
                                     <ul>
                                         <li>
-                                            <p><strong>How do I get started?</strong></p>
+                                            <p><strong>{{ $t(`pages.splash.questions[0]`) }}</strong></p>
                                             <p>
-                                                Head on over to the online tab, and download BepInEx and R2API.
+                                                {{ $t(`pages.splash.answers[0]`) }}
                                             </p>
                                         </li>
                                         <li>
-                                            <p><strong>Starting the game with mods</strong></p>
+                                            <p><strong>{{ $t(`pages.splash.questions[1]`) }}</strong></p>
                                             <p>
-                                                You have to start the game from within the manager. Starting through
-                                                Steam will not work
-                                                without taking manual steps.
+                                                {{ $t(`pages.splash.answers[1]`) }}
                                             </p>
                                         </li>
                                     </ul>
@@ -153,8 +147,8 @@ import PathResolver from '../r2mm/manager/PathResolver';
     }
 })
 export default class Splash extends mixins(SplashMixin) {
-    heroTitle: string = 'Starting r2modman';
-    loadingText: string = 'Initialising';
+    heroTitle: string = this.$t(`pages.splash.starting`);
+    loadingText: string = this.$t(`pages.splash.initialising`);
     view: string = 'main';
 
     requests = [
@@ -224,7 +218,7 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     async created() {
-        this.loadingText = 'Checking for updates';
+        this.loadingText = this.$t(`pages.splash.checking`);
         setTimeout(this.checkForUpdates, 100);
     }
 }

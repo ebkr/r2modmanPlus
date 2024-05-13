@@ -5,18 +5,18 @@
                 <p class="menu-label">{{ activeGame.displayName }}</p>
                 <ul class="menu-list">
                     <li>
-                        <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                        <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>{{ $t('navigation.menu.modded') }}</a>
                     </li>
                     <li>
-                        <a href="#" @click="launch(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
+                        <a href="#" @click="launch(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>{{ $t('navigation.menu.vanilla') }}</a>
                     </li>
                 </ul>
-                <p class="menu-label">Mods</p>
+                <p class="menu-label">{{ $t('navigation.menu.mods') }}</p>
                 <ul class="menu-list">
                     <li>
                         <router-link :to="{name: 'manager.installed'}" class="tagged-link">
                             <i class="fas fa-folder tagged-link__icon icon--margin-right" />
-                            <span class="tagged-link__content">Installed</span>
+                            <span class="tagged-link__content">{{ $t('navigation.menu.installed') }}</span>
                             <span :class="getTagLinkClasses(['manager.installed'])">{{localModCount}}</span>
                         </router-link>
                     </li>
@@ -24,7 +24,7 @@
                         <router-link :to="{name: 'manager.online'}"
                                      :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
                             <i class="fas fa-globe tagged-link__icon icon--margin-right" />
-                            <span class="tagged-link__content">Online</span>
+                            <span class="tagged-link__content">{{ $t('navigation.menu.online') }}</span>
 
                             <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
                                 <i class="tag fas fa-download is-primary" />
@@ -33,24 +33,24 @@
                         </router-link>
                     </li>
                 </ul>
-                <p class='menu-label'>Other</p>
+                <p class='menu-label'>{{ $t('navigation.menu.other') }}</p>
                 <ul class='menu-list'>
                     <li>
                         <router-link :to="{name: 'config-editor'}">
                             <i class="fas fa-edit icon--margin-right" />
-                            Config editor
+                            {{ $t('navigation.menu.editor') }}
                         </router-link>
                     </li>
                     <li>
                         <router-link :to="{name: 'manager.settings'}">
                             <i class="fas fa-cog icon--margin-right" />
-                            Settings
+                            {{ $t('navigation.menu.settings') }}
                         </router-link>
                     </li>
                     <li>
                         <router-link :to="{name: 'help'}">
                             <i class="fas fa-question-circle icon--margin-right" />
-                            Help
+                            {{ $t('navigation.menu.help') }}
                         </router-link>
                     </li>
                 </ul>

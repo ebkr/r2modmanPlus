@@ -8,39 +8,39 @@
             <template v-slot:title>
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
-                          v-tooltip.right="'Pinned on Thunderstore'">
-                        Pinned
+                          v-tooltip.right="$t('views.onlineList.pinnedTip')">
+                        {{ $t('views.onlineList.pinned') }}
                     </span>
-                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
+                    <span class="selectable">{{key.getName()}} <span class="card-byline">{{ $t('views.onlineList.by') }} {{key.getOwner()}}</span></span>
                 </span>
                 <span v-else-if="isModDeprecated(key)">
                     <span class="tag is-danger margin-right margin-right--half-width"
-                          v-tooltip.right="'This mod is potentially broken'">
-                        Deprecated
+                          v-tooltip.right="$t('views.onlineList.potentiallyBroken')">
+                        {{ $t('views.onlineList.deprecated') }}
                     </span>
-                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
+                    <strike class="selectable">{{key.getName()}} <span class="card-byline">{{ $t('views.onlineList.by') }} {{key.getOwner()}}</span></strike>
                 </span>
                 <span v-else class='selectable'>
-                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
+                    {{key.getName()}} <span class="card-byline">{{ $t('views.onlineList.by') }} {{key.getOwner()}}</span>
                 </span>
             </template>
             <template v-slot:other-icons>
                 <span class='card-header-icon' v-if="key.getDonationLink()">
                     <Link :url="key.getDonationLink()" target="external" tag="span">
-                        <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
+                        <i class='fas fa-heart' v-tooltip.left="$t('views.onlineList.donateTip')"></i>
                     </Link>
                 </span>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key)">
-                    <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
+                    <i class='fas fa-check' v-tooltip.left="$t('views.onlineList.installedTip')"></i>
                 </span>
             </template>
             <template v-slot:description>
-                <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
-                <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
+                <p class='card-timestamp'><strong>{{ $t('views.onlineList.lastUpdated') }}</strong> {{getReadableDate(key.getDateUpdated())}}</p>
+                <p class='card-timestamp'><strong>{{ $t('views.onlineList.categories') }}</strong> {{getReadableCategories(key)}}</p>
             </template>
-            <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
+            <a class='card-footer-item' @click='showDownloadModal(key)'>{{ $t('views.onlineList.download') }}</a>
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
-                Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
+                {{ $t('views.onlineList.website') }} <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </Link>
             <template v-if="key.getDonationLink() !== undefined">
                 <DonateButton :mod="key"/>

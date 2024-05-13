@@ -1,86 +1,88 @@
 <template>
     <div>
-        <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="is-info"/>
+        <Hero :title="$t('pages.help.title')" :subtitle="$t('pages.help.subtitle')" hero-type="is-info"/>
         <div
             class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
             <ul>
                 <li v-for="(key, index) in tabs" :key="`tab-${key}`"
                     :class="[{'is-active': activeTab === key}]"
                     @click="changeTab(key)">
-                    <a>{{key}}</a>
+                    <a>{{ $t(`pages.help.tabs["${key.toLowerCase()}"]`) }}</a>
                 </li>
             </ul>
         </div>
         <div class="container margin-right">
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
-                <h2 class="title is-5">Getting started with installing mods</h2>
+                <h2 class="title is-5">{{ $t(`pages.help.startTitle`) }}</h2>
                 <p>
-                    Go to the "Online" tab, find a mod, and hit download.
-                    It'll also download the dependencies saving you time.
+                    {{ $t(`pages.help.startInfo`) }}
                 </p>
-                <p>Once you've installed the mods you'd like, just click <strong>Start modded</strong> in the top left.</p>
+                <i18n path="pages.help.startTip" tag="p">
+                    <template v-slot:strong>
+                        <strong>{{ $t('pages.help.strong') }}</strong>
+                    </template>
+                </i18n>
                 <hr/>
-                <h2 class='title is-5'>Slow game with mods / stuttering?</h2>
-                <p>
-                    This is likely due to a mod throwing errors.
-                    One solution is to attempt to disable half of your mods and check to see if the issue persists.
-                    <br/>
-                    If the issue still remains then disable another half. Continue doing this until the issue is
-                    solved.
-                    <br/><br/>
-                    In the case of stuttering there may be optimization mods to help with this.
-                </p>
+                <h2 class='title is-5'>{{ $t(`pages.help.slowTitle`) }}</h2>
+                <i18n path="pages.help.slowInfo" tag="p">
+                    <template v-slot:br>
+                        <br/>
+                    </template>
+                </i18n>
                 <hr/>
-                <h2 class='title is-5'>Dedicated servers</h2>
+                <h2 class='title is-5'>{{ $t(`pages.help.dedicatedTitle`) }}</h2>
                 <p>
-                    Dedicated servers aren't directly supported through the manager however a solution is to instead
-                    copy the contents of your profile folder into your dedicated server folder yourself.
+                    {{ $t(`pages.help.dedicatedInfo`) }}
                 </p>
                 <hr/>
-                <h2 class='title is-5'>Launching the game from outside the mod manager</h2>
-                <p>
-                    By design your experience by starting the game through Steam will be vanilla (un-modded).
-                    <br/><br/>
-                    You will need to place the corresponding argument in your platform's relevant launch parameter area.
-                    <br/>
-                    For Steam, this would be located in the game's properties.
-                    <br/><br/>
-                    Your current argument would be:
-                    <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
-                    <code v-else>These parameters will be available after installing BepInEx.</code>
-                </p>
+                <h2 class='title is-5'>{{ $t(`pages.help.launchingTitle`) }}</h2>
+                <i18n path="pages.help.launchingInfo" tag="p">
+                    <template v-slot:br>
+                        <br/>
+                    </template>
+                    <template v-slot:code>
+                        <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
+                        <code v-else>{{ $t(`pages.help.codeElse`) }}</code>
+                    </template>
+                </i18n>
             </div>
             <div ref="Game won't start" v-if="activeTab === `Game won't start`">
-                <h2 class='title is-5'>A red box appears when I try to start the game</h2>
-                <p>Read the suggestion at the bottom of the red box.</p>
+                <h2 class='title is-5'>{{ $t(`pages.help.failStartTitle1`) }}</h2>
+                <p>{{ $t(`pages.help.failStartTip1`) }}</p>
                 <hr/>
-                <h2 class='title is-5'>I'm taken to the Steam store page</h2>
-                <p>That's because you don't legally own the game. The manager only supports legal copies.</p>
+                <h2 class='title is-5'>{{ $t(`pages.help.failStartTitle2`) }}</h2>
+                <p>{{ $t(`pages.help.failStartTip2`) }}</p>
                 <hr/>
-                <h2 class='title is-5'>A text window appears and closes immediately.</h2>
-                <p>Try running the preloader fix on the Settings screen.</p>
-                <p>If it persists, force exit Steam and start modded with Steam closed.</p>
+                <h2 class='title is-5'>{{ $t(`pages.help.failStartTitle3`) }}</h2>
+                <p>{{ $t(`pages.help.failStartTip3`) }}</p>
+                <p>{{ $t(`pages.help.failStartTip4`) }}</p>
             </div>
             <div ref="Mods not appearing" v-if="activeTab === 'Mods not appearing'">
-                <h2 class='title is-5'>Potential solutions</h2>
-                <p>The most common issues are solved by following the instructions exactly as listed
-                    <Link target="external" url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
-                        here
-                    </Link>
-                </p>
+                <h2 class='title is-5'>{{ $t(`pages.help.modsTitle`) }}</h2>
+                <i18n path="pages.help.modsInfo" tag="p">
+                    <template v-slot:link>
+                        <Link target="external" url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
+                            {{ $t(`pages.help.here`) }}
+                        </Link>
+                    </template>
+                </i18n>
             </div>
             <div ref="Updating" v-if="activeTab === 'Updating'">
-                <h2 class='title is-5'>Auto-updates</h2>
-                <p>The manager updates automatically on close assuming an update is available.</p>
-                <p>Updates are downloaded in the background.</p>
-                <p>You may receive a prompt to run <i>old_uninstaller</i> as an admin. This is the updater.</p>
-                <p>If a problem occurs with an update, download and run the latest installer.</p>
+                <h2 class='title is-5'>{{ $t(`pages.help.updatingTitle1`) }}</h2>
+                <p>{{ $t(`pages.help.updatingTip1`) }}</p>
+                <p>{{ $t(`pages.help.updatingTip2`) }}</p>
+                <i18n path="pages.help.updatingTip3" tag="p">
+                    <template v-slot:i>
+                        <i>{{ $t(`pages.help.old`) }}</i>
+                    </template>
+                </i18n>
+<!--                <p>You may receive a prompt to run <i>old_uninstaller</i> as an admin. This is the updater.</p>-->
+                <p>{{ $t(`pages.help.updatingTip4`) }}</p>
                 <hr/>
-                <h2 class='title is-5'>I don't want updates</h2>
+                <h2 class='title is-5'>{{ $t(`pages.help.updatingTitle2`) }}</h2>
                 <p>
-                    On GitHub there is a portable version that doesn't auto update. You are however prompted that an
-                    update is available.
+                    {{ $t(`pages.help.updatingTip5`) }}
                 </p>
             </div>
         </div>

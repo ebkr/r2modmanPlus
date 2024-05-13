@@ -4,8 +4,8 @@
             <div class="modal-background" @click="downloadingMod = false;"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{downloadObject.modName}}</h3>
-                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
+                    <h3 class='title'>{{ $t('views.download.downloading', {name: downloadObject.modName}) }}</h3>
+                    <p>{{ $t('views.download.progress', {progress: Math.floor(downloadObject.progress)}) }}</p>
                     <Progress
                         :max='100'
                         :value='downloadObject.progress'
@@ -20,13 +20,13 @@
             <div class="modal-content">
                 <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title' v-if="thunderstoreMod !== null">Select a version of
-                            {{thunderstoreMod.getName()}} to download
+                        <p class='card-header-title' v-if="thunderstoreMod !== null">
+                            {{ $t('views.download.selectVersion', {name: thunderstoreMod.getName()}) }}
                         </p>
                     </header>
                     <div class='card-content'>
-                        <p>It's recommended to select the latest version of all mods.</p>
-                        <p>Using outdated versions may cause problems.</p>
+                        <p>{{ $t('views.download.recommended') }}</p>
+                        <p>{{ $t('views.download.outdated') }}</p>
                         <br/>
                         <div class="columns is-vcentered">
                             <template v-if="currentVersion !== null">
@@ -50,19 +50,20 @@
                             </div>
                             <div class="column is-narrow">
                                 <span class="tag is-dark" v-if='selectedVersion === null'>
-                                    You need to select a version
+                                   {{ $t('views.download.need') }}
                                 </span>
                                 <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
-                                    {{selectedVersion}} is the latest version
+                                    {{ $t('views.download.latestVersion', {version: selectedVersion}) }}
                                 </span>
                                 <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>
-                                    {{selectedVersion}} is an outdated version
+                                    {{ $t('views.download.outdatedVersion', {version: selectedVersion}) }}
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies
+                        <button class="button is-info" @click="downloadThunderstoreMod()">
+                            {{ $t('views.download.dependencies') }}
                         </button>
                     </div>
                 </div>
@@ -73,22 +74,22 @@
             <div class="modal-content">
                 <div class='card'>
                     <header class="card-header">
-                        <p class='card-header-title'>Update all installed mods</p>
+                        <p class='card-header-title'>{{ $t('views.download.updateAll') }}</p>
                     </header>
                     <div class='card-content'>
-                        <p>All installed mods will be updated to their latest versions.</p>
-                        <p>Any missing dependencies will be installed.</p>
-                        <p>The following mods will be downloaded and installed:</p>
+                        <p>{{ $t('views.download.installed') }}</p>
+                        <p>{{ $t('views.download.missing') }}</p>
+                        <p>{{ $t('views.download.following') }}</p>
                         <br/>
                         <ul class="list">
                             <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
                                 :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
-                                {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
+                                {{ $t('views.download.updatedTo', {name: key.getVersion().getName(), number: key.getVersion().getVersionNumber().toString()}) }}
                             </li>
                         </ul>
                     </div>
                     <div class='card-footer'>
-                        <button class="button is-info" @click="downloadLatest()">Update all</button>
+                        <button class="button is-info" @click="downloadLatest()">{{ $t('views.download.update') }}</button>
                     </div>
                 </div>
             </div>

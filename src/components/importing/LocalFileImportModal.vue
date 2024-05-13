@@ -2,22 +2,22 @@
     <div>
         <Modal :show-close="true" @close-modal="emitClose" :open="visible">
             <template slot="title">
-                <p class='card-header-title'>Import mod from file</p>
+                <p class='card-header-title'>{{ $t('importing.title') }}</p>
             </template>
             <template slot="footer" v-if="fileToImport === null">
-                <button class="button is-info" @click="selectFile">Select file</button>
+                <button class="button is-info" @click="selectFile">{{ $t('importing.select') }}</button>
             </template>
             <template slot="footer" v-else-if="fileToImport !== null">
-                <button class="button is-info" @click="importFile">Import local mod</button>
+                <button class="button is-info" @click="importFile">{{ $t('importing.import') }}</button>
             </template>
 
             <template slot="body" v-if="fileToImport === null">
                 <template v-if="!waitingForSelection">
-                    <p>Please select a zip or DLL to be imported.</p>
-                    <p>Zip files that contain a manifest file will have the some information pre-filled. If a manifest is not available, this will have to be entered manually.</p>
+                    <p>{{ $t('importing.tip') }}</p>
+                    <p>{{ $t('importing.desc') }}</p>
                 </template>
                 <template v-else>
-                    <p>Waiting for file. This may take a minute.</p>
+                    <p>{{ $t('importing.waiting') }}</p>
                 </template>
             </template>
 
@@ -26,33 +26,33 @@
                     <p>{{ validationMessage }}</p>
                 </div>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-name" class="non-selectable">Mod name</label>
-                    <input id="mod-name" ref="mod-name" class="input margin-right" type="text" v-model="modName" placeholder="Enter the name of the mod"/>
+                    <label for="mod-name" class="non-selectable">{{ $t('importing.name') }}</label>
+                    <input id="mod-name" ref="mod-name" class="input margin-right" type="text" v-model="modName" :placeholder="$t('importing.namePH')"/>
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Author</label>
-                    <input id="mod-author" ref="mod-author" class="input margin-right" type="text" v-model="modAuthor" placeholder="Enter the author name"/>
+                    <label for="mod-author" class="non-selectable">{{ $t('importing.author') }}</label>
+                    <input id="mod-author" ref="mod-author" class="input margin-right" type="text" v-model="modAuthor" :placeholder="$t('importing.authorPH')"/>
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Description (optional)</label>
-                    <input id="mod-description" ref="mod-description" class="input margin-right" type="text" v-model="modDescription" placeholder="Enter a description"/>
+                    <label for="mod-description" class="non-selectable">{{ $t('importing.modDesc') }}</label>
+                    <input id="mod-description" ref="mod-description" class="input margin-right" type="text" v-model="modDescription" :placeholder="$t('importing.modDescPH')"/>
                 </div>
                 <hr/>
-                <h3 class="title is-6">Version</h3>
+                <h3 class="title is-6">{{ $t('importing.version') }}</h3>
                 <div class="input-group input-group--flex margin-right non-selectable">
                     <div class="is-flex">
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-major">Major</label>
+                            <label for="mod-version-major">{{ $t('importing.major') }}</label>
                             <input id="mod-version-major" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMajor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-minor">Minor</label>
+                            <label for="mod-version-minor">{{ $t('importing.minor') }}</label>
                             <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMinor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div>
-                            <label for="mod-version-patch">Patch</label>
+                            <label for="mod-version-patch">{{ $t('importing.patch') }}</label>
                             <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="number" v-model="modVersionPatch" min="0" step="1" placeholder="0"/>
                         </div>
                     </div>
@@ -107,8 +107,8 @@ export default class LocalFileImportModal extends Vue {
     private async selectFile() {
         this.waitingForSelection = true;
         InteractionProvider.instance.selectFile({
-            buttonLabel: "Select file",
-            title: "Import local mod from file",
+            buttonLabel: this.$t('importing.selectFileButtonLabel'),
+            title: this.$t('importing.selectFileTitle'),
             filters: []
         }).then(value => {
             if (value.length > 0) {
@@ -250,10 +250,10 @@ export default class LocalFileImportModal extends Vue {
 
         switch (0) {
             case this.modName.trim().length:
-                this.validationMessage = "The mod name must not be empty.";
+                this.validationMessage = this.$t('importing.modNameVM');
                 return;
             case this.modAuthor.trim().length:
-                this.validationMessage = "The mod author must not be empty.";
+                this.validationMessage = this.$t('importing.modAuthorVM');
                 return;
         }
 
@@ -261,27 +261,27 @@ export default class LocalFileImportModal extends Vue {
             case Number(this.modVersionMajor):
             case Number(this.modVersionMinor):
             case Number(this.modVersionPatch):
-                this.validationMessage = "Major, minor, and patch must all be numbers.";
+                this.validationMessage = this.$t('importing.versionVMAll');
                 return;
         }
 
         if (this.modVersionMajor < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            this.validationMessage = this.$t('importing.versionVM');
             return;
         }
         if (this.modVersionMinor < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            this.validationMessage = this.$t('importing.versionVM');
             return;
         }
         if (this.modVersionPatch < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+            this.validationMessage = this.$t('importing.versionVM');
             return;
         }
 
         const profile: Profile|null = this.$store.state.profile.activeProfile;
 
         if (profile === null) {
-            this.validationMessage = "Profile is not selected";
+            this.validationMessage = this.$t('importing.profileVM');
             return;
         }
 

@@ -67,44 +67,44 @@ export default class SearchAndSort extends Vue {
             <div class="no-padding-left card-header-title">
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="local-search" class="non-selectable">Search</label>
+                    <label for="local-search" class="non-selectable">{{ $t('views.search.search') }}</label>
                     <DeferredInput
                         v-model="search"
                         id="local-search"
                         class="input margin-right"
                         type="text"
-                        placeholder="Search for an installed mod"
+                        :placeholder="$t('views.search.searchPH')"
                     />
                 </div>
 
                 <div class="input-group margin-right">
-                    <label for="local-sort-order" class="non-selectable">Sort</label>
+                    <label for="local-sort-order" class="non-selectable">{{ $t('views.search.sort') }}</label>
                     <select
                         v-model="order"
                         id="local-sort-order"
                         class="select select--content-spacing margin-right margin-right--half-width">
-                        <option v-for="(option) in orderOptions" :key="`order-option-${option}`">
-                            {{option}}
+                        <option v-for="(option) in orderOptions" :key="`order-option-${option}`" :value="option">
+                            {{ $t(`views.search.orderOptions.${option}`)}}
                         </option>
                     </select>
                     <select
                         v-model="direction"
                         id="local-sort-direction"
                         class="select select--content-spacing">
-                        <option v-for="(option) in directionOptions" :key="`direction-option-${option}`">
-                            {{option}}
+                        <option v-for="(option) in directionOptions" :key="`direction-option-${option}`" :value="option">
+                            {{ $t(`views.search.directionOptions.${option}`)}}
                         </option>
                     </select>
                 </div>
 
                 <div class="input-group">
-                    <label for="local-deprecated-position" class="non-selectable">Disabled</label>
+                    <label for="local-deprecated-position" class="non-selectable">{{ $t('views.search.disabled') }}</label>
                     <select
                         v-model="disabledPosition"
                         id="local-deprecated-position"
                         class="select select--content-spacing">
-                        <option v-for="(option) in disabledOptions" :key="`disabled-option-${option}`">
-                            {{option}}
+                        <option v-for="(option) in disabledOptions" :key="`disabled-option-${option}`" :value="option">
+                            {{ $t(`views.search.disabledOptions.${option}`)}}
                         </option>
                     </select>
                 </div>
