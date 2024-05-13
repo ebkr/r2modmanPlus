@@ -361,7 +361,7 @@ export default class Profiles extends Vue {
         if (safeName === '') {
             return;
         }
-        this.$store.commit('profiles/pushToProfileList', safeName);
+        this.$store.commit('profiles/setProfileList', [...this.profileList, safeName].sort());
         await this.setSelectedProfile(safeName);
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
@@ -603,16 +603,21 @@ export default class Profiles extends Vue {
     }
 
     async updateProfileList() {
-        let profileList = ["Default"];
         const profilesDirectory: string = this.activeProfile.getDirectory();
-        await fs.readdir(profilesDirectory).then(dirContents => {
-            dirContents.forEach(async (file: string) => {
-                if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
-                    profileList = [...profileList, file].sort();
-                    this.$store.commit('profiles/setProfileList', profileList);
-                }
+
+        try {
+            const profilesDirectoryContents = await fs.readdir(profilesDirectory);
+            let promises = profilesDirectoryContents.map(async function(file) {
+                return ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
+                    ? file : undefined;
             });
-        }).catch(() => { /* Do nothing */ });
+            Promise.all(promises).then((profileList) => {
+                this.$store.commit('profiles/setProfileList', ["Default", ...profileList.filter(file => file)].sort());
+            })
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
+            this.$store.commit('error/handleError', err);
+        }
     }
 
     async created() {

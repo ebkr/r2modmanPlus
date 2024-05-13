@@ -5,7 +5,7 @@ import ErrorModule from './modules/ErrorModule';
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
-import ProfilesModule from './modules/ProfilesModule';
+import { ProfilesModule } from './modules/ProfilesModule';
 import { TsModsModule } from './modules/TsModsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import Game from '../model/game/Game';

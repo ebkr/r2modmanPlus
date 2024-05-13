@@ -1,11 +1,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { ModalCard } from "../all";
-import FileUtils from "../../utils/FileUtils";
 import R2Error from "../../model/errors/R2Error";
-import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
-
 
 let fs: FsProvider;
 
@@ -13,13 +10,8 @@ let fs: FsProvider;
     components: {ModalCard}
 })
 export default class DeleteProfileModal extends Vue {
-
     async created() {
         fs = FsProvider.instance;
-    }
-
-    get activeProfile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
     }
 
     get isOpen(): boolean {
@@ -34,27 +26,13 @@ export default class DeleteProfileModal extends Vue {
         this.$store.commit('closeDeleteProfileModal');
     }
 
-    async removeProfileAfterConfirmation() {
+    async removeProfile() {
         try {
-            await FileUtils.emptyDirectory(this.activeProfile.getPathOfProfile());
-            await fs.rmdir(this.activeProfile.getPathOfProfile());
+            await this.$store.dispatch('profiles/removeSelectedProfile');
         } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
+            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile with DeleteProfileModal');
             this.$store.commit('error/handleError', err);
         }
-        if (
-            this.activeProfile
-                .getProfileName()
-                .toLowerCase() !== 'default'
-        ) {
-            for (let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
-                if (this.profileList[profileIteration] === this.activeProfile.getProfileName()) {
-                    this.$store.commit('profiles/spliceProfileList', profileIteration);
-                    break;
-                }
-            }
-        }
-        await this.$store.dispatch('profile/updateActiveProfile', 'Default');
         this.closeDeleteProfileModal();
     }
 }
@@ -74,7 +52,7 @@ export default class DeleteProfileModal extends Vue {
         <template v-slot:footer>
             <button
                 class="button is-danger"
-                @click="removeProfileAfterConfirmation()"
+                @click="removeProfile()"
             >Delete profile</button>
         </template>
 
