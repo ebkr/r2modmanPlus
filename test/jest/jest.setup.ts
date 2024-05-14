@@ -1,3 +1,4 @@
+import { config } from "@vue/test-utils"
 // No console.log() / setTimeout
 // console.log = jest.fn(() => { throw new Error('Do not use console.log() in production') })
 jest.setTimeout(1000);
@@ -19,7 +20,7 @@ Object.defineProperty(chai.Assertion.prototype, 'not', {
     Object.assign(this, this.assignedNot)
     return originalNot.apply(this)
   },
-  set(newNot) { 
+  set(newNot) {
     this.assignedNot = newNot
     return newNot
   }
@@ -51,3 +52,7 @@ Object.keys(originalExpect).forEach(key => (global.expect[key] = originalExpect[
 setTimeout(() => {
   // do nothing
 }, 1);
+
+config.mocks = {
+  $t : (tKey: string): string => tKey // just return translation key
+};
