@@ -636,7 +636,7 @@ export default class GameManager {
         new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1337520")], "RiskofRainReturns.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
     ];
 
