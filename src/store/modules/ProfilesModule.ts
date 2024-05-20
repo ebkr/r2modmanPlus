@@ -4,6 +4,7 @@ import { ActionTree } from "vuex";
 import { State as RootState } from "../../store";
 import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
+import path from "path";
 
 interface State {
     profileList: string[];
@@ -36,7 +37,7 @@ export const ProfilesModule = {
                 throw R2Error.fromThrownValue(e, 'Error whilst deleting profile from disk');
             }
 
-            state.profileList = state.profileList.filter((p: string) => p !== profileName ||p === 'Default')
+            state.profileList = state.profileList.filter((p: string) => p !== profileName || p === 'Default')
             await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: true });
         },
 
@@ -48,5 +49,34 @@ export const ProfilesModule = {
                 await dispatch('tsMods/prewarmCache', null, { root: true });
             }
         },
+
+        async renameProfile({commit, rootGetters, state, dispatch}, params: { newName: string }) {
+            const activeProfile: Profile = rootGetters['profile/activeProfile'];
+            const oldName = activeProfile.getProfileName();
+
+            try {
+                await FsProvider.instance.rename(
+                    path.join(Profile.getDirectory(), oldName),
+                    path.join(Profile.getDirectory(), params.newName)
+                );
+            } catch (e) {
+                throw R2Error.fromThrownValue(e, 'Error whilst renaming a profile on disk');
+            }
+            await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: false });
+            await dispatch('updateProfileList');
+        },
+
+        async updateProfileList({commit, rootGetters}) {
+            const profilesDirectory: string = rootGetters['profile/activeProfile'].getDirectory();
+
+            let profilesDirectoryContents = await FsProvider.instance.readdir(profilesDirectory);
+            let promises = profilesDirectoryContents.map(async function(file) {
+                return ((await FsProvider.instance.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
+                    ? file : undefined;
+            });
+            Promise.all(promises).then((profileList) => {
+                commit('setProfileList', ["Default", ...profileList.filter(file => file)].sort());
+            })
+        }
     },
 }
