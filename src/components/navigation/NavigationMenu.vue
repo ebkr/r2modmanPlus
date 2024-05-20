@@ -54,6 +54,20 @@
                         </router-link>
                     </li>
                 </ul>
+                <p class='menu-label menu-label--with-actions'>
+                    Quick actions
+                    <router-link :to="{name: 'manager.quickActions'}">
+                        <button class="button" :class="getTagLinkClasses(['manager.quickActions'])">Edit</button>
+                    </router-link>
+                </p>
+                <ul class="menu-list">
+                    <li v-for="(action, index) in activeQuickActions" :key="`${action.name()}-${index}`">
+                        <a href="#">
+                            <i :class="`fas ${action.icon()} icon--margin-right`" />
+                            {{ action.displayName() }}
+                        </a>
+                    </li>
+                </ul>
                 <slot></slot>
             </aside>
         </div>
@@ -75,6 +89,7 @@ import {
     setGameDirIfUnset,
     throwIfNoGameDir
  } from '../../utils/LaunchUtils';
+import { quickAction, QuickAction } from 'src/r2mm/quick_actions/QuickActionProvider';
 
 @Component
 export default class NavigationMenu extends Vue {
@@ -92,6 +107,12 @@ export default class NavigationMenu extends Vue {
 
     get localModCount(): number {
         return this.$store.state.profile.modList.length;
+    }
+
+    get activeQuickActions(): QuickAction[] {
+        console.log('Settings:', this.$store.getters['settings'])
+        return this.$store.getters['settings'].getContext().global.quickActions
+            .map((name: string) => quickAction().getQuickAction(name))
     }
 
     getTagLinkClasses(routeNames: string[]) {

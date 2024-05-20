@@ -12,6 +12,10 @@ import R2Error from '../model/errors/R2Error';
 import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import { setQuickActionProvider } from '../r2mm/quick_actions/QuickActionProvider';
+import { QuickActionsProviderImpl } from '../r2mm/quick_actions/QuickActionsProviderImpl';
+
+setQuickActionProvider(() => new QuickActionsProviderImpl())
 
 Vue.use(Vuex);
 

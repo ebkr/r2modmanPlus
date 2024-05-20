@@ -8,6 +8,7 @@ import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisa
 import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import { quickAction } from '../quick_actions/QuickActionProvider';
 
 export const SETTINGS_DB_NAME = "settings";
 
@@ -34,7 +35,7 @@ export default class SettingsDexieStore extends Dexie {
 
         // Add all games to store. Borked v2-3 locally
         // Increment per game or change to settings.
-        this.version(68).stores(store);
+        this.version(69).stores(store);
 
         this.activeGame = game;
         this.global = this.table("value");
@@ -46,9 +47,13 @@ export default class SettingsDexieStore extends Dexie {
             if (result.length > 0) {
                 const globalEntry = result[result.length - 1];
                 const parsed = JSON.parse(globalEntry.settings);
-                if ((parsed as ManagerSettingsInterfaceGlobal_V2).version) {
+                const globalSettings = (parsed as ManagerSettingsInterfaceGlobal_V2);
+                if (globalSettings.version) {
+                    if (globalSettings.quickActions === undefined) {
+                        globalSettings.quickActions = quickAction().getDefaultQuickActions().map(value => value.name())
+                    }
                     // Is modern (at least V2).
-                    return parsed;
+                    return globalSettings;
                 } else {
                     // Is legacy.
                     const legacyToV2 = this.mapLegacyToV2(parsed, this.activeGame);
@@ -113,7 +118,8 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
+                quickActions: quickAction().getDefaultQuickActions().map(value => value.name())
             },
             gameSpecific: {
                 version: 2,
@@ -159,7 +165,8 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
+                quickActions: quickAction().getDefaultQuickActions().map(value => value.name()),
             },
             gameSpecific: {
                 version: 2,
@@ -217,6 +224,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     defaultGame: string | undefined;
     defaultStore: StorePlatform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
+    quickActions: string[] | undefined;
 }
 
 /**

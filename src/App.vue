@@ -47,6 +47,8 @@ import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
 import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
+import { setQuickActionProvider } from './r2mm/quick_actions/QuickActionProvider';
+import { QuickActionsProviderImpl } from './r2mm/quick_actions/QuickActionsProviderImpl';
 
 @Component({
     components: {
@@ -102,7 +104,6 @@ export default class App extends mixins(UtilityMixin) {
     }
 
     beforeCreate() {
-
         ConnectionProvider.provide(() => new ConnectionProviderImpl());
         FsProvider.provide(() => new NodeFs());
 
