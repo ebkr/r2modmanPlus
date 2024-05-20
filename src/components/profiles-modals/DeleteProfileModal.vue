@@ -2,18 +2,11 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
-import FsProvider from "../../providers/generic/file/FsProvider";
-
-let fs: FsProvider;
 
 @Component({
     components: {ModalCard}
 })
 export default class DeleteProfileModal extends Vue {
-    async created() {
-        fs = FsProvider.instance;
-    }
-
     get isOpen(): boolean {
         return this.$store.state.modals.isDeleteProfileModalOpen;
     }
