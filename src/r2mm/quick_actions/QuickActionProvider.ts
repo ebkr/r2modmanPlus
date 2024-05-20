@@ -1,3 +1,5 @@
+import { Vue } from 'vue-property-decorator';
+
 let provider: () => QuickActionProvider;
 
 export function setQuickActionProvider(quickActionProvider: () => QuickActionProvider) {
@@ -15,6 +17,7 @@ export type QuickAction = {
     name: () => string;
     displayName: () => string;
     icon: () => string;
+    onClick: (eventBus: Vue) => void;
 }
 
 export interface QuickActionProvider {

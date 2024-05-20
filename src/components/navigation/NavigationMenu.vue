@@ -62,7 +62,7 @@
                 </p>
                 <ul class="menu-list">
                     <li v-for="(action, index) in activeQuickActions" :key="`${action.name()}-${index}`">
-                        <a href="#">
+                        <a href="#" @click="() => action.onClick(eventBus)">
                             <i :class="`fas ${action.icon()} icon--margin-right`" />
                             {{ action.displayName() }}
                         </a>
@@ -80,12 +80,19 @@ import { Component, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import Profile from '../../model/Profile';
-import { launch, LaunchMode, linkProfileFiles, setGameDirIfUnset, throwIfNoGameDir } from '../../utils/LaunchUtils';
+import {
+    LaunchMode,
+    launch,
+    linkProfileFiles,
+    setGameDirIfUnset,
+    throwIfNoGameDir
+ } from '../../utils/LaunchUtils';
 import { quickAction, QuickAction } from 'src/r2mm/quick_actions/QuickActionProvider';
 
 @Component
 export default class NavigationMenu extends Vue {
     private LaunchMode = LaunchMode;
+    private eventBus!: Vue;
 
     get activeGame(): Game {
       return this.$store.state.activeGame;
@@ -106,7 +113,6 @@ export default class NavigationMenu extends Vue {
     }
 
     get activeQuickActions(): QuickAction[] {
-        console.log('Settings:', this.$store.getters['settings'])
         return this.$store.getters['settings'].getContext().global.quickActions
             .map((name: string) => quickAction().getQuickAction(name))
     }
@@ -114,6 +120,19 @@ export default class NavigationMenu extends Vue {
     getTagLinkClasses(routeNames: string[]) {
         const base = ["tag", "tagged-link__tag"];
         return routeNames.includes(this.$route.name || "") ? base : [...base, "is-link"];
+    }
+
+    handleChangeRouteEvent(route: string) {
+        this.$router.push({name: route});
+    }
+
+    created() {
+        this.eventBus = new Vue();
+        this.eventBus.$on("change-route", this.handleChangeRouteEvent);
+    }
+
+    beforeDestroy() {
+        this.eventBus.$off();
     }
 
     async launch(mode: LaunchMode) {

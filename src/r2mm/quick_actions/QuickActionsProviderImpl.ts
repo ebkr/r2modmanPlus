@@ -1,4 +1,5 @@
 import { QuickAction, QuickActionProvider } from './QuickActionProvider';
+import { Vue } from 'vue-property-decorator';
 
 export class QuickActionsProviderImpl implements QuickActionProvider {
 
@@ -33,7 +34,10 @@ const CHANGE_GAME_ACTION = {
         return "Change game"
     },
     icon: () => {
-        return "";
+        return "fa-gamepad";
+    },
+    onClick: (eventBus: Vue) => {
+        eventBus.$emit("change-route", "index");
     }
 };
 
@@ -45,7 +49,10 @@ const CHANGE_PROFILE_ACTION = {
         return "Change profile"
     },
     icon: () => {
-        return "";
+        return "fa-file-import";
+    },
+    onClick: (eventBus: Vue) => {
+        eventBus.$emit("change-route", "profiles")
     }
 };
 
@@ -57,7 +64,10 @@ const EXPORT_PROFILE_FILE_ACTION = {
         return "Export profile as file"
     },
     icon: () => {
-        return "";
+        return "fa-file-export";
+    },
+    onClick: (eventBus: Vue) => {
+
     }
 };
 
@@ -69,6 +79,9 @@ const EXPORT_PROFILE_CODE_ACTION = {
         return "Export profile as code"
     },
     icon: () => {
-        return "";
+        return "fa-file-export";
+    },
+    onClick: (eventBus: Vue) => {
+
     }
 };
