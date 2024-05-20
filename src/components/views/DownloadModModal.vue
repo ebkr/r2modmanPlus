@@ -52,6 +52,9 @@
                                 <span class="tag is-dark" v-if='selectedVersion === null'>
                                     You need to select a version
                                 </span>
+                                <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
+                                    {{selectedVersion}} is the recommended version
+                                </span>
                                 <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
                                     {{selectedVersion}} is the latest version
                                 </span>
@@ -113,6 +116,7 @@ import Profile from '../../model/Profile';
 import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
 interface DownloadProgress {
     assignId: number;
@@ -132,6 +136,7 @@ let assignId = 0;
     export default class DownloadModModal extends Vue {
 
         versionNumbers: string[] = [];
+        recommendedVersion: string | null = null;
         downloadObject: DownloadProgress | null = null;
         downloadingMod: boolean = false;
         selectedVersion: string | null = null;
@@ -224,6 +229,25 @@ let assignId = 0;
                 this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
+
+                const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
+                    .find(value => value.packageName === this.thunderstoreMod!.getFullName());
+
+                if (foundRecommendedVersion === undefined || foundRecommendedVersion.recommendedVersion === undefined) {
+                    this.recommendedVersion = null;
+                    this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
+                } else {
+                    this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
+
+                    // Bind to recommended version or fall back to latest
+                    const thunderstoreRecommendedVersion = this.thunderstoreMod.getVersions()
+                        .find(value => value.getVersionNumber().isEqualTo(foundRecommendedVersion.recommendedVersion!));
+                    if (thunderstoreRecommendedVersion !== undefined) {
+                        this.selectedVersion = thunderstoreRecommendedVersion.getVersionNumber().toString();
+                    } else {
+                        this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString()
+                    }
+                }
 
                 const modListResult = await ProfileModList.getModList(this.profile);
                 if (!(modListResult instanceof R2Error)) {
