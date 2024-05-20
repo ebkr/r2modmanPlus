@@ -8,7 +8,7 @@ const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
 export class NorthstarInstaller extends PackageInstaller {
     /**
-     * Handles installation of BepInEx
+     * Handles installation of Northstar
      */
     async install(args: InstallArgs) {
         const {
