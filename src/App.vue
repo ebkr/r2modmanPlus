@@ -36,7 +36,6 @@ import ZipProvider from './providers/generic/zip/ZipProvider';
 import AdmZipProvider from './providers/generic/zip/AdmZipProvider';
 import ManagerSettingsMigration from './r2mm/manager/ManagerSettingsMigration';
 import BindLoaderImpl from './providers/components/loaders/bind_impls/BindLoaderImpl';
-import GameManager from './model/game/GameManager';
 import PlatformInterceptorProvider from './providers/generic/game/platform_interceptor/PlatformInterceptorProvider';
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
@@ -60,7 +59,7 @@ export default class App extends mixins(UtilityMixin) {
 
     async created() {
         // Load settings using the default game before the actual game is selected.
-        const settings: ManagerSettings = await this.$store.dispatch('setActiveGame', GameManager.defaultGame);
+        const settings: ManagerSettings = await this.$store.dispatch('resetActiveGame');
 
         this.hookThunderstoreModListRefresh();
         await this.checkCdnConnection();

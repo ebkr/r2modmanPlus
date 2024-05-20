@@ -5,12 +5,11 @@ import ErrorModule from './modules/ErrorModule';
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
+import { TsModsModule } from './modules/TsModsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import R2Error from '../model/errors/R2Error';
-import ThunderstoreMod from '../model/ThunderstoreMod';
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { setQuickActionProvider } from '../r2mm/quick_actions/QuickActionProvider';
 import { QuickActionsProviderImpl } from '../r2mm/quick_actions/QuickActionsProviderImpl';
@@ -21,11 +20,7 @@ Vue.use(Vuex);
 
 export interface State {
     activeGame: Game;
-    apiConnectionError: string;
-    deprecatedMods: Map<string, boolean>;
-    dismissedUpdateAll: boolean;
     isMigrationChecked: boolean;
-    thunderstoreModList: ThunderstoreMod[];
     _settings: ManagerSettings | null;
 }
 
@@ -39,26 +34,12 @@ type Context = ActionContext<State, State>;
 export const store = {
     state: {
         activeGame: GameManager.defaultGame,
-        thunderstoreModList: [],
-        dismissedUpdateAll: false,
         isMigrationChecked: false,
-        apiConnectionError: "",
-        deprecatedMods: new Map<string, boolean>(),
 
         // Access through getters to ensure the settings are loaded.
         _settings: null,
     },
     actions: {
-        updateThunderstoreModList({ commit }: Context, modList: ThunderstoreMod[]) {
-            commit('setThunderstoreModList', modList);
-            commit('setDeprecatedMods', modList);
-        },
-        dismissUpdateAll({commit}: Context) {
-            commit('dismissUpdateAll');
-        },
-        updateApiConnectionError({commit}: Context, err: string) {
-            commit('setApiConnectionError', err);
-        },
         async checkMigrations({commit, state}: Context) {
             if (state.isMigrationChecked) {
                 return;
@@ -72,6 +53,11 @@ export const store = {
                 commit('setMigrationChecked');
             }
         },
+
+        async resetActiveGame({dispatch}: Context): Promise<ManagerSettings> {
+            return await dispatch('setActiveGame', GameManager.defaultGame);
+        },
+
         async setActiveGame({commit}: Context, game: Game): Promise<ManagerSettings> {
             // Some parts of the code base reads the active game from
             // this static class attribute for now. Ideally we wouldn't
@@ -91,20 +77,8 @@ export const store = {
         setActiveGame(state: State, game: Game) {
             state.activeGame = game;
         },
-        setThunderstoreModList(state: State, list: ThunderstoreMod[]) {
-            state.thunderstoreModList = list;
-        },
-        dismissUpdateAll(state: State) {
-            state.dismissedUpdateAll = true;
-        },
         setMigrationChecked(state: State) {
             state.isMigrationChecked = true;
-        },
-        setApiConnectionError(state: State, err: string) {
-            state.apiConnectionError = err;
-        },
-        setDeprecatedMods(state: State) {
-            state.deprecatedMods = ThunderstorePackages.getDeprecatedPackageMap();
         },
         setSettings(state: State, settings: ManagerSettings) {
             state._settings = settings;
@@ -134,6 +108,7 @@ export const store = {
         modals: ModalsModule,
         modFilters: ModFilterModule,
         profile: ProfileModule,
+        tsMods: TsModsModule,
     },
 
     // enable strict mode (adds overhead!)

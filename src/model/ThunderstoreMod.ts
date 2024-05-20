@@ -76,6 +76,10 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.versions = versions;
     }
 
+    public getLatestVersion(): ThunderstoreVersion {
+        return this.getVersions().reduce(reduceToNewestVersion);
+    }
+
     public getRating(): number {
         return this.rating;
     }
@@ -172,3 +176,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.donationLink = url;
     }
 }
+
+function reduceToNewestVersion(v1: ThunderstoreVersion, v2: ThunderstoreVersion) {
+    return v1.getVersionNumber().isNewerThan(v2.getVersionNumber()) ? v1 : v2;
+};

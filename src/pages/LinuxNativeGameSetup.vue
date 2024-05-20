@@ -20,7 +20,6 @@
 import PathResolver from '../r2mm/manager/PathResolver';
 import { Component, Vue } from 'vue-property-decorator';
 import { Hero } from '../components/all';
-import GameManager from '../model/game/GameManager';
 import * as path from 'path';
 
 @Component({
@@ -32,7 +31,7 @@ export default class LinuxFirstTimeSetup extends Vue {
 
 	data() {
 		return {
-			activeGame: GameManager.activeGame.displayName,
+			activeGame: this.$store.state.activeGame.displayName,
 			launchArgs: `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}"`
 		}
 	}

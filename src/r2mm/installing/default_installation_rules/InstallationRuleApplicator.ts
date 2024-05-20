@@ -121,6 +121,11 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Sailwind"),
             buildBepInExRules("Plasma"),
             buildBepInExRules("ContentWarning"),
+            buildBepInExRules("BoplBattle"),
+            buildBepInExRules("Vertigo2"),
+            buildBepInExRules("AgainstTheStorm"),
+            buildBepInExRules("Lycans"),
+            buildBepInExRules("CastleStory"),
         ]
     }
 }

@@ -4,8 +4,7 @@ import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import ThunderstorePackages from '../../r2mm/data/ThunderstorePackages';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
+import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -17,19 +16,11 @@ export default class UtilityMixin extends Vue {
     }
 
     async refreshThunderstoreModList() {
-        // Don't do background update on index route since the game
-        // isn't really chosen yet, nor in the splash screen since it
-        // proactively updates the package list.
-        const exemptRoutes = ["index", "splash"];
-
-        if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
-            return;
-        }
-
-        const response = await ThunderstorePackages.update(this.$store.state.activeGame);
-        await ApiCacheUtils.storeLastRequest(response.data);
-        await this.$store.dispatch("updateThunderstoreModList", ThunderstorePackages.PACKAGES);
+        const response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame);
+        await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
+        await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
+        await this.$store.dispatch("tsMods/prewarmCache");
     }
 
     /**
@@ -39,7 +30,21 @@ export default class UtilityMixin extends Vue {
      * failure to see how this affects the number of reported errors.
      */
     private async tryRefreshThunderstoreModList() {
+        // Don't do background update on index route since the game
+        // isn't really chosen yet, nor in the splash screen since it
+        // proactively updates the package list.
+        const exemptRoutes = ["index", "splash"];
+
+        if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
+            return;
+        }
+
+        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+            return;
+        }
+
         try {
+            this.$store.commit("tsMods/startBackgroundUpdate");
             await this.refreshThunderstoreModList();
         } catch (e) {
             if (this.tsRefreshFailed) {
@@ -49,6 +54,8 @@ export default class UtilityMixin extends Vue {
 
             this.tsRefreshFailed = true;
             return;
+        } finally {
+            this.$store.commit("tsMods/finishBackgroundUpdate");
         }
 
         this.tsRefreshFailed = false;
