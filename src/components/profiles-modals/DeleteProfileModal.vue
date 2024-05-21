@@ -23,7 +23,7 @@ export default class DeleteProfileModal extends Vue {
         try {
             await this.$store.dispatch('profiles/removeSelectedProfile');
         } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile with DeleteProfileModal');
+            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
             this.$store.commit('error/handleError', err);
         }
         this.closeDeleteProfileModal();

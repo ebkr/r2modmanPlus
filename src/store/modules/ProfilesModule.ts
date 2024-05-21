@@ -36,9 +36,16 @@ export const ProfilesModule = {
                 throw R2Error.fromThrownValue(e, 'Error whilst deleting profile from disk');
             }
 
-            if (profileName.toLowerCase() !== 'default') {
-                state.profileList = state.profileList.filter((p: string) => p !== profileName)
-                await dispatch('profile/updateActiveProfile', 'Default', { root: true });
+            state.profileList = state.profileList.filter((p: string) => p !== profileName ||p === 'Default')
+            await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: true });
+        },
+
+        async setSelectedProfile({rootGetters, state, dispatch}, params: { profileName: string, prewarmCache: boolean }) {
+            await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
+
+            if (params.prewarmCache) {
+                await dispatch('profile/updateModListFromFile', null, { root: true });
+                await dispatch('tsMods/prewarmCache', null, { root: true });
             }
         },
     },
