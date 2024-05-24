@@ -78,7 +78,7 @@
                                     <ul class="text-center">
                                         <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
                                             :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
+                                            <a @click="changeTab(key)">{{ $t(`pages.gameSelection.instanceTypes.${key}`) }}</a>
                                         </li>
                                     </ul>
                                 </div>

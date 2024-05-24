@@ -476,6 +476,10 @@ export default {
         },
         profiles: {
             adding: '{0} a profile',
+            addingProfileType:{
+                "Create": "Create",
+                "Rename": "Rename"
+            },
             renaming: 'This profile will store its own mods independently from other profiles.',
             required: 'Profile name required',
             available: '"{0}" is available',

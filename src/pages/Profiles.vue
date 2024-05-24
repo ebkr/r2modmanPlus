@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{ $t(`pages.profiles.adding`, [addingProfileType]) }}</p>
+            <p class="card-header-title">{{ $t(`pages.profiles.adding`, [$t(`pages.profiles.addingProfileType['${addingProfileType}']`)]) }}</p>
           </header>
             <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null) || renamingProfile">
               <div class="card-content">
