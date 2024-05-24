@@ -619,7 +619,7 @@ export default class GameManager {
             "Against the Storm", ["Against the Storm.exe"], "Against the Storm_Data",
             "https://thunderstore.io/c/against-the-storm/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1336490")], "AgainstTheStorm.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ats"]),
 
         new Game("Lycans", "Lycans", "Lycans",
             "Lycans", ["Lycans.exe"], "Lycans_Data",
@@ -631,7 +631,7 @@ export default class GameManager {
             "Castle Story", ["Castle Story.exe"], "Castle Story_Data",
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs"]),
     ];
 
     static get activeGame(): Game {
