@@ -97,9 +97,6 @@ export default class LocalFileImportModal extends Vue {
 
     private resultingManifest = new ManifestV2();
 
-    private contextProfile: Profile | null = null;
-
-
     @Watch("visible")
     private visiblityChanged() {
         this.fileToImport = null;
@@ -281,6 +278,13 @@ export default class LocalFileImportModal extends Vue {
             return;
         }
 
+        const profile: Profile|null = this.$store.state.profile.activeProfile;
+
+        if (profile === null) {
+            this.validationMessage = "Profile is not selected";
+            return;
+        }
+
         this.resultingManifest.setName(`${this.modAuthor.trim()}-${this.modName.trim()}`);
         this.resultingManifest.setDisplayName(this.modName.trim());
         this.resultingManifest.setVersionNumber(new VersionNumber(`${this.modVersionMajor}.${this.modVersionMinor}.${this.modVersionPatch}`));
@@ -292,7 +296,7 @@ export default class LocalFileImportModal extends Vue {
                 this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
                 return;
             }
-            const updatedModListResult = await ProfileModList.getModList(this.contextProfile!);
+            const updatedModListResult = await ProfileModList.getModList(profile);
             if (updatedModListResult instanceof R2Error) {
                 this.$store.commit("error/handleError", updatedModListResult);
                 return;
@@ -302,14 +306,10 @@ export default class LocalFileImportModal extends Vue {
         });
 
         if (this.fileToImport.endsWith(".zip")) {
-            LocalModInstallerProvider.instance.extractToCacheWithManifestData(this.contextProfile!, this.fileToImport, this.resultingManifest, installCallback);
+            LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest, installCallback);
         } else {
-            LocalModInstallerProvider.instance.placeFileInCache(this.contextProfile!, this.fileToImport, this.resultingManifest, installCallback);
+            LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest, installCallback);
         }
-    }
-
-    created() {
-        this.contextProfile = Profile.getActiveProfile();
     }
 
 }

@@ -54,7 +54,7 @@
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                No mods with that name found
+                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
             </p>
         </div>
         <br/>
@@ -77,7 +77,6 @@ import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
-import ArrayUtils from '../../utils/ArrayUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
@@ -105,7 +104,7 @@ export default class OnlineModView extends Vue {
     }
 
     get thunderstoreModList(): ThunderstoreMod[] {
-        return this.$store.state.thunderstoreModList;
+        return this.$store.state.tsMods.mods;
     }
 
     getPaginationSize() {
@@ -155,17 +154,19 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
         }
         if (!showDeprecatedPackages) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.isDeprecated());
+            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(
+                mod => !this.$store.state.tsMods.deprecated.get(mod.getFullName())
+            );
         }
         if (filterCategories.length > 0) {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
                 switch(categoryFilterMode) {
                     case CategoryFilterMode.OR:
-                        return ArrayUtils.includesSome(x.getCategories(), filterCategories);
+                        return filterCategories.some((category: string) => x.getCategories().includes(category));
                     case CategoryFilterMode.AND:
-                        return ArrayUtils.includesAll(x.getCategories(), filterCategories);
+                        return filterCategories.every((category: string) => x.getCategories().includes(category));
                     case CategoryFilterMode.EXCLUDE:
-                        return !ArrayUtils.includesSome(x.getCategories(), filterCategories);
+                        return !filterCategories.some((category: string) => x.getCategories().includes(category));
                 }
             })
         }
@@ -174,7 +175,7 @@ export default class OnlineModView extends Vue {
 
     @Watch("sortingDirectionModel")
     @Watch("sortingStyleModel")
-    @Watch("thunderstoreModList")
+    @Watch("tsMods.mods")
     sortThunderstoreModList() {
         const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];

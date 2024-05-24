@@ -90,12 +90,9 @@
 <script lang="ts">
 
     import { Component, Vue } from 'vue-property-decorator';
-    import Profile from '../model/Profile';
     import {Hero, Link} from '../components/all';
     import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
     import R2Error from '../model/errors/R2Error';
-    import Game from '../model/game/Game';
-    import GameManager from '../model/game/GameManager';
 
     @Component({
         components: {
@@ -107,22 +104,16 @@
         private activeTab = 'General';
         private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
         private doorstopTarget = "";
-        private activeGame!: Game;
 
         changeTab(key: string) {
             this.activeTab = key;
         }
 
-        getActiveProfile(): Profile {
-            return Profile.getActiveProfile();
-        }
-
-        created() {
-            this.activeGame = GameManager.activeGame;
-        }
-
         mounted() {
-            GameRunnerProvider.instance.getGameArguments(this.activeGame, Profile.getActiveProfile()).then(target => {
+            GameRunnerProvider.instance.getGameArguments(
+                this.$store.state.activeGame,
+                this.$store.getters['profile/activeProfile']
+            ).then(target => {
                 if (target instanceof R2Error) {
                     this.doorstopTarget = "";
                 } else {

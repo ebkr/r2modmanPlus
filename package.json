@@ -38,7 +38,7 @@
         "bulma-steps": "^2.2.1",
         "bulma-switch": "^2.0.0",
         "core-js": "^3.6.5",
-        "dexie": "^3.0.3",
+        "dexie": "^3.2.7",
         "dot-prop": "^5.2.0",
         "electron-updater": "4.2.5",
         "elliptic": "^6.5.4",

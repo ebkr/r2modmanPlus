@@ -11,11 +11,9 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import Profile from '../../model/Profile';
-import ThunderstorePackages from '../data/ThunderstorePackages';
 import ExportMod from '../../model/exports/ExportMod';
 import ManagerSettings from '../manager/ManagerSettings';
-import ManifestV2 from '../../model/ManifestV2';
-import ModBridge from '../mods/ModBridge';
+import * as PackageDb from '../manager/PackageDexieStore';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
@@ -92,26 +90,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public getLatestOfAllToUpdate(mods: ManifestV2[], allMods: ThunderstoreMod[]): ThunderstoreCombo[] {
-        return mods.filter(mod => !ModBridge.isCachedLatestVersion(mod))
-            .map(mod => ModBridge.getCachedThunderstoreModFromMod(mod))
-            .filter(value => value != undefined)
-            .map(mod => {
-                const latestVersion = mod!.getVersions().sort((a, b) => a.getVersionNumber().compareToDescending(b.getVersionNumber()))[0];
-                const combo = new ThunderstoreCombo();
-                combo.setMod(mod!);
-                combo.setVersion(latestVersion);
-                return combo;
-            })
-    }
-
-    public async downloadLatestOfAll(game: Game, mods: ManifestV2[], allMods: ThunderstoreMod[],
+    public async downloadLatestOfAll(game: Game, modsWithUpdates: ThunderstoreCombo[], allMods: ThunderstoreMod[],
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
-        const dependenciesToUpdate: ThunderstoreCombo[] = this.getLatestOfAllToUpdate(mods, allMods);
-        const dependencies: ThunderstoreCombo[] = [...dependenciesToUpdate];
-        dependenciesToUpdate.forEach(value => {
+        const dependencies: ThunderstoreCombo[] = [...modsWithUpdates];
+        modsWithUpdates.forEach(value => {
             this.buildDependencySetUsingLatest(value.getVersion(), allMods, dependencies);
         });
 
@@ -203,21 +187,33 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async downloadImportedMods(game: Game, modList: ExportMod[],
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
-        const tsMods: ThunderstoreMod[] = ThunderstorePackages.PACKAGES;
-        const comboList: ThunderstoreCombo[] = [];
-        for (const importMod of modList) {
-            for (const mod of tsMods) {
-                if (mod.getFullName() == importMod.getName()) {
-                    mod.getVersions().forEach(version => {
-                        if (version.getVersionNumber().isEqualTo(importMod.getVersionNumber())) {
-                            const combo = new ThunderstoreCombo();
-                            combo.setMod(mod);
-                            combo.setVersion(version);
-                            comboList.push(combo);
-                        }
-                    });
-                }
+        const tsMods = await PackageDb.getPackagesByNames(
+            game.internalFolderName,
+            modList.map((m) => m.getName())
+        );
+
+        const comboList = tsMods.map((mod) => {
+            const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
+            const version = targetMod
+                ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
+                : undefined;
+
+            if (version) {
+                const combo = new ThunderstoreCombo();
+                combo.setMod(mod);
+                combo.setVersion(version);
+                return combo;
             }
+        }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
+
+        if (comboList.length === 0) {
+            const err = new R2Error(
+                'No importable mods found',
+                'None of the mods or versions listed in the shared profile are available on Thunderstore.',
+                'Make sure the shared profile is meant for the currently selected game.'
+            );
+            callback(0, '', StatusEnum.FAILURE, err);
+            return;
         }
 
         const settings = await ManagerSettings.getSingleton(game);

@@ -6,7 +6,7 @@
         <div class="column">
             <router-view />
         </div>
-        <GameRunningModal :activeGame="activeGame" />
+        <GameRunningModal :activeGame="$store.state.activeGame" />
     </div>
 </template>
 
@@ -16,17 +16,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import NavigationMenu from './NavigationMenu.vue';
 import GameRunningModal from '../modals/GameRunningModal.vue';
-import GameManager from '../../model/game/GameManager';
 
 @Component({
     components: {GameRunningModal, NavigationMenu}
 })
-export default class NavigationLayout extends Vue {
-    activeGame = GameManager.defaultGame;
-
-    created() {
-        this.activeGame = GameManager.activeGame;
-    }
-}
+export default class NavigationLayout extends Vue {}
 
 </script>

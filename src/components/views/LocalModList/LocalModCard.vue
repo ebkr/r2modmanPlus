@@ -7,7 +7,6 @@ import ManifestV2 from '../../../model/ManifestV2';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
-import ModBridge from '../../../r2mm/mods/ModBridge';
 
 @Component({
     components: {
@@ -23,21 +22,26 @@ export default class LocalModCard extends Vue {
 
     disabledDependencies: ManifestV2[] = [];
     missingDependencies: string[] = [];
+    disableChangePending = false;
 
     get donationLink() {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
     }
 
+    get isDeprecated() {
+        return this.$store.state.tsMods.deprecated.get(this.mod.getName()) || false;
+    }
+
     get isLatestVersion() {
-        return ModBridge.isCachedLatestVersion(this.mod);
+        return this.$store.getters['tsMods/isLatestVersion'](this.mod);
     }
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
     }
 
-    get tsMod() {
-        return ModBridge.getCachedThunderstoreModFromMod(this.mod);
+    get tsMod(): ThunderstoreMod | undefined {
+        return this.$store.getters['tsMods/tsMod'](this.mod);
     }
 
     @Watch("localModList")
@@ -69,11 +73,17 @@ export default class LocalModCard extends Vue {
     }
 
     async disableMod() {
+        if (this.disableChangePending) {
+            return;
+        }
+
+        this.disableChangePending = true;
         const dependants = Dependants.getDependantList(this.mod, this.localModList);
 
         for (const mod of dependants) {
             if (mod.isEnabled()) {
                 this.$store.commit('openDisableModModal', this.mod);
+                this.disableChangePending = false;
                 return;
             }
         }
@@ -89,9 +99,16 @@ export default class LocalModCard extends Vue {
                 severity: LogSeverity.ACTION_STOPPED
             });
         }
+
+        this.disableChangePending = false;
     }
 
     async enableMod(mod: ManifestV2) {
+        if (this.disableChangePending) {
+            return;
+        }
+
+        this.disableChangePending = true;
         const dependencies = Dependants.getDependencyList(mod, this.localModList);
 
         try {
@@ -105,6 +122,8 @@ export default class LocalModCard extends Vue {
                 severity: LogSeverity.ACTION_STOPPED
             });
         }
+
+        this.disableChangePending = false;
     }
 
     async uninstallMod() {
@@ -175,7 +194,7 @@ function dependencyStringToModName(x: string) {
 
         <template v-slot:title>
             <span class="non-selectable">
-                <span v-if="mod.isDeprecated()"
+                <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
                     v-tooltip.right="'This mod is deprecated and could be broken'">
                     Deprecated
@@ -220,12 +239,12 @@ function dependencyStringToModName(x: string) {
             <span @click.prevent.stop="() => mod.isEnabled() ? disableMod() : enableMod(mod)"
                 class='card-header-icon'>
                 <div class="field">
-                    <input id="switchExample"
+                    <input :id="`switch-${mod.getName()}`"
                         type="checkbox"
-                        name="switchExample"
                         :class='`switch is-small  ${mod.isEnabled() ? "switch is-info" : ""}`'
                         :checked="mod.isEnabled()" />
-                    <label for="switchExample" v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
+                    <label :for="`switch-${mod.getName()}`"
+                        v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
                 </div>
             </span>
         </template>

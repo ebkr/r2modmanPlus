@@ -1,11 +1,15 @@
-export default class ArrayUtils<T> {
-
-    public static includesAll<T>(orig: T[], search: T[]): boolean {
-        return orig.filter(value => search.includes(value)).length === search.length;
+// Split array to multiple arrays of given size.
+export function chunk<T>(original: T[], chunkSize: number): T[][] {
+    if (chunkSize <= 0 || !Number.isInteger(chunkSize)) {
+        throw new Error('chunk requires positive integer as chunkSize');
     }
 
-    public static includesSome<T>(orig: T[], search: T[]): boolean {
-        return orig.filter(value => search.includes(value)).length > 0;
+    const result: T[][] = [];
+    const len = original.length;
+
+    for (let i = 0; i < len; i += chunkSize) {
+        result.push(original.slice(i, i + chunkSize));
     }
 
+    return result;
 }

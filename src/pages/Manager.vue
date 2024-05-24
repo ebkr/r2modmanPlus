@@ -166,7 +166,6 @@ import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
-import GameManager from '../model/game/GameManager';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
@@ -186,7 +185,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 	})
 	export default class Manager extends Vue {
-		settings: ManagerSettings = new ManagerSettings();
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
@@ -201,11 +199,20 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         doorstopTarget: string = "";
         vanillaLaunchArgs: string = "";
 
-        private activeGame!: Game;
-        private contextProfile: Profile | null = null;
+        get activeGame(): Game {
+            return this.$store.state.activeGame;
+        }
+
+        get settings(): ManagerSettings {
+            return this.$store.getters['settings'];
+        };
+
+        get profile(): Profile {
+            return this.$store.getters['profile/activeProfile'];
+        };
 
 		get thunderstoreModList(): ThunderstoreMod[] {
-            return this.$store.state.thunderstoreModList || [];
+            return this.$store.state.tsMods.mods;
         }
 
 		get localModList(): ManifestV2[] {
@@ -358,14 +365,30 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		async exportProfile() {
-			const exportErr = await ProfileModList.exportModListToFile(this.contextProfile!);
+			if (!this.localModList.length) {
+				const err = new R2Error(
+					'Profile is empty',
+					'The profile must contain at least one mod to export it as a file.'
+				);
+				this.$store.commit('error/handleError', err);
+				return;
+			}
+			const exportErr = await ProfileModList.exportModListToFile(this.profile);
 			if (exportErr instanceof R2Error) {
 				this.$store.commit('error/handleError', exportErr);
 			}
 		}
 
 		async exportProfileAsCode() {
-			const exportErr = await ProfileModList.exportModListAsCode(this.contextProfile!, (code: string, err: R2Error | null) => {
+			if (!this.localModList.length) {
+				const err = new R2Error(
+					'Profile is empty',
+					'The profile must contain at least one mod to export it as a code.'
+				);
+				this.$store.commit('error/handleError', err);
+				return;
+			}
+			const exportErr = await ProfileModList.exportModListAsCode(this.profile, (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.$store.commit('error/handleError', err);
 				} else {
@@ -383,7 +406,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink('file://' + this.contextProfile!.getPathOfProfile());
+            LinkProvider.instance.openLink('file://' + this.profile.getPathOfProfile());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -434,19 +457,17 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 		}
 
 		showLaunchParameters() {
-			if (this.contextProfile !== null) {
-				GameInstructions.getInstructionsForGame(this.activeGame, this.contextProfile).then(instructions => {
-					this.vanillaLaunchArgs = instructions.vanillaParameters;
-				});
+			GameInstructions.getInstructionsForGame(this.activeGame, this.profile).then(instructions => {
+				this.vanillaLaunchArgs = instructions.vanillaParameters;
+			});
 
-				GameRunnerProvider.instance.getGameArguments(this.activeGame, this.contextProfile).then(target => {
-					if (target instanceof R2Error) {
-						this.doorstopTarget = "";
-					} else {
-						this.doorstopTarget = target;
-					}
-				});
-			}
+			GameRunnerProvider.instance.getGameArguments(this.activeGame, this.profile).then(target => {
+				if (target instanceof R2Error) {
+					this.doorstopTarget = "";
+				} else {
+					this.doorstopTarget = target;
+				}
+			});
 
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			this.showLaunchParameterModal = true;
@@ -466,10 +487,10 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             let logOutputPath = "";
             switch (this.activeGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "BepInEx", "LogOutput.log");
+                    logOutputPath = path.join(this.profile.getPathOfProfile(), "BepInEx", "LogOutput.log");
                     break;
                 case PackageLoader.MELON_LOADER:
-                    logOutputPath = path.join(this.contextProfile!.getPathOfProfile(), "MelonLoader", "Latest.log");
+                    logOutputPath = path.join(this.profile.getPathOfProfile(), "MelonLoader", "Latest.log");
                     break;
             }
             const text = (await fs.readFile(logOutputPath)).toString();
@@ -497,9 +518,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     const isDefaultDataDirectory = files[0] === PathResolver.APPDATA_DIR;
 
                     if (hasOverrideFile || !directoryHasContents || isDefaultDataDirectory) {
-                        await this.settings.setDataDirectory(files[0]);
                         // Write dataDirectoryOverrideFile to allow re-selection of directory if changed at a later point.
                         await fs.writeFile(path.join(files[0], dataDirectoryOverrideFile), "");
+                        await this.settings.setDataDirectory(files[0]);
                         InteractionProvider.instance.restartApp();
                     } else {
                         this.$store.commit('error/handleError', new R2Error(
@@ -509,6 +530,11 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                         ));
                     }
                 }
+            }).catch((err) => {
+                this.$store.commit(
+                    "error/handleError",
+                    R2Error.fromThrownValue(err, "Failed to change Data Folder")
+                );
             });
         }
 
@@ -562,7 +588,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     break;
                 case "SwitchCard":
                     this.toggleCardExpanded(!this.settings.getContext().global.expandedCards);
-                    this.settings = (() => this.settings)();
                     break;
                 case "EnableAll":
                     await this.$store.dispatch(
@@ -594,8 +619,6 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         }
 
         async beforeCreate() {
-            this.activeGame = GameManager.activeGame;
-
             // Used by SearchAndSort, but need to be called here to
             // ensure the settings are loaded before LocalModList
             // accesses visibleModList from Vuex store.
@@ -606,19 +629,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
         }
 
 		async created() {
-		    this.settings = await ManagerSettings.getSingleton(this.activeGame);
-		    this.contextProfile = Profile.getActiveProfile();
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			const newModList: ManifestV2[] | R2Error = await ProfileModList.getModList(this.contextProfile!);
-			if (!(newModList instanceof R2Error)) {
-				await this.$store.dispatch('profile/updateModList', newModList);
-			} else {
-				this.$store.commit('error/handleError', {
-					error: newModList,
-					severity: LogSeverity.ACTION_STOPPED,
-					logMessage: `Failed to retrieve local mod list\n-> ${newModList.message}`
-				});
-			}
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
@@ -629,9 +640,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.activeGame, this.contextProfile!, combo, this.thunderstoreModList)
+                DownloadModModal.downloadSpecific(this.activeGame, this.profile, combo, this.thunderstoreModList)
                     .then(async value => {
-                        const modList = await ProfileModList.getModList(this.contextProfile!);
+                        const modList = await ProfileModList.getModList(this.profile);
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('profile/updateModList', modList);
                         } else {
