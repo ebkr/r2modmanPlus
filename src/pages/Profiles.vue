@@ -39,16 +39,16 @@
             </template>
           <div class="card-footer">
               <template v-if="addingProfile && (importUpdateSelection === 'IMPORT' || importUpdateSelection === null)">
-                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-                  <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+                  <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
+                  <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
-                  <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
+                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
               </template>
               <template v-if="renamingProfile">
-                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
-                  <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+                  <button id="modal-rename-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
+                  <button id="modal-rename-profile" class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
               </template>
           </div>
         </div>
@@ -64,9 +64,9 @@
                     <p class="card-header-title">Are you going to be updating an existing profile or creating a new one?</p>
                 </header>
                 <div class="card-footer">
-                    <button class="button is-info"
+                    <button id="modal-import-new-profile" class="button is-info"
                             @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'IMPORT'">Import new profile</button>
-                    <button class="button is-primary"
+                    <button id="modal-update-existing-profile" class="button is-primary"
                             @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'UPDATE'">Update existing profile</button>
                 </div>
             </div>
@@ -83,9 +83,9 @@
             <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
           </header>
           <div class="card-footer">
-            <button class="button is-info"
+            <button id="modal-import-profile-file" class="button is-info"
               @click="importProfile(); showImportModal = false;">From file</button>
-            <button class="button is-primary"
+            <button id="modal-import-profile-code" class="button is-primary"
               @click="showImportModal = false; openProfileCodeModal();">From code</button>
           </div>
         </div>
@@ -109,10 +109,11 @@
           </div>
           <div class="card-footer">
             <button
+              id="modal-import-profile-from-code-invalid"
               class="button is-danger"
               v-if="profileImportCode === ''"
             >Fix issues before importing</button>
-            <button class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>Import</button>
+            <button id="modal-import-profile-from-code" class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>Import</button>
           </div>
         </div>
       </div>
@@ -133,6 +134,7 @@
           </div>
           <div class="card-footer">
             <button
+              id="modal-delete-profile"
               class="button is-danger"
               @click="removeProfileAfterConfirmation()"
             >Delete profile</button>
@@ -202,21 +204,21 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a class="button is-info" @click="moveToNextScreen()">Select profile</a>
+                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
                     </div>
                       <div class="level-item">
-                          <a class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
-                          <a class="button" @click="renameProfile()" v-else>Rename</a>
+                          <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
+                          <a id="rename-profile" class="button" @click="renameProfile()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
-                      <a class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
+                      <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
                     </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                      <a class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
+                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
                     </div>
                     <div class="level-item">
-                      <a class="button is-danger" @click="removeProfile()">Delete</a>
+                      <a id="delete-profile" class="button is-danger" @click="removeProfile()">Delete</a>
                     </div>
                   </nav>
                 </div>

@@ -77,7 +77,6 @@ import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import OnlineModListProvider from '../../providers/components/loaders/OnlineModListProvider';
-import ArrayUtils from '../../utils/ArrayUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
@@ -163,11 +162,11 @@ export default class OnlineModView extends Vue {
             this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
                 switch(categoryFilterMode) {
                     case CategoryFilterMode.OR:
-                        return ArrayUtils.includesSome(x.getCategories(), filterCategories);
+                        return filterCategories.some((category: string) => x.getCategories().includes(category));
                     case CategoryFilterMode.AND:
-                        return ArrayUtils.includesAll(x.getCategories(), filterCategories);
+                        return filterCategories.every((category: string) => x.getCategories().includes(category));
                     case CategoryFilterMode.EXCLUDE:
-                        return !ArrayUtils.includesSome(x.getCategories(), filterCategories);
+                        return !filterCategories.some((category: string) => x.getCategories().includes(category));
                 }
             })
         }
