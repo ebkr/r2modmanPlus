@@ -208,8 +208,7 @@ export default {
                 '请手动设置',
                 '日志文件存在',
                 '日志文件不存在',
-                '不是所有模组都可以本地安装',
-                { 'en-us': 'English', 'zh-cn': '简体中文' }
+                '不是所有模组都可以本地安装'
             ],
             returns: [
                 '请手动设置'
@@ -287,6 +286,7 @@ export default {
             recommended: '建议选择所有模组的最新版本。',
             outdated: '使用过时版本可能会导致问题。',
             need: '您需要选择一个版本',
+            recommendedVersion: '{version} 是推荐的版本',
             latestVersion: '{version} 是最新版本',
             outdatedVersion: '{version} 是过时版本',
             dependencies: '下载时包含依赖',
@@ -469,8 +469,8 @@ export default {
         profiles: {
             adding: '正在{0}档案',
             addingProfileType:{
-                "Create":"创建",
-                "Rename":"重命名"
+                'Create': '创建',
+                'Rename': '重命名'
             },
             renaming: '此档案将独立于其他档案存储其自己的模组。',
             required: '需要档案名称',

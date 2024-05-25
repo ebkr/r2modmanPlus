@@ -63,6 +63,7 @@ import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
 import UtilityMixin from '../mixins/UtilityMixin.vue';
+import Languages from 'src/model/enums/Languages';
 
 @Component({
         components: {
@@ -350,7 +351,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Other',
                 this.$t('settings.view.actions[23]'),
                 this.$t('settings.view.descriptions[23]'),
-                async () => this.$t(`settings.view.values[27]['${this.settings.getContext().global.displayLanguage}']`),
+                async () => Languages[this.$i18n.locale],
                 'fa-language',
                 () => this.emitInvoke('SetDisplayLanguage')
             ),

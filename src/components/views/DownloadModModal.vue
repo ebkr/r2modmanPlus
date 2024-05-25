@@ -53,7 +53,7 @@
                                    {{ $t('views.download.need') }}
                                 </span>
                                 <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
-                                    {{selectedVersion}} is the recommended version
+                                    {{ $t('views.download.recommendedVersion', {version: selectedVersion}) }}
                                 </span>
                                 <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
                                     {{ $t('views.download.latestVersion', {version: selectedVersion}) }}

@@ -210,8 +210,7 @@ export default {
                 'Please set manually',
                 'Log file exists',
                 'Log file does not exist',
-                'Not all mods can be installed locally',
-                { 'en-us': 'English', 'zh-cn': '简体中文' }
+                'Not all mods can be installed locally'
             ],
             returns: [
                 'Please set manually'
@@ -290,6 +289,7 @@ export default {
             recommended: 'It\'s recommended to select the latest version of all mods.',
             outdated: 'Using outdated versions may cause problems.',
             need: 'You need to select a version',
+            recommendedVersion: '{version} is the recommended version',
             latestVersion: '{version} is the latest version',
             outdatedVersion: '{version} is an outdated version',
             dependencies: 'Download with dependencies',
@@ -477,8 +477,8 @@ export default {
         profiles: {
             adding: '{0} a profile',
             addingProfileType:{
-                "Create": "Create",
-                "Rename": "Rename"
+                'Create': 'Create',
+                'Rename': 'Rename'
             },
             renaming: 'This profile will store its own mods independently from other profiles.',
             required: 'Profile name required',

@@ -195,7 +195,7 @@ import LocalFileImportModal from '../components/importing/LocalFileImportModal.v
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
-import Language from 'src/model/enums/Language';
+import Languages from 'src/model/enums/Languages';
 
 @Component({
 		components: {
@@ -246,7 +246,7 @@ import Language from 'src/model/enums/Language';
 		}
 
         get languageOption(){
-            return Language;
+            return Languages;
         }
 
 		closePreloaderFixModal() {

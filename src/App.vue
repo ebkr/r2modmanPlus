@@ -60,8 +60,8 @@ export default class App extends mixins(UtilityMixin) {
         const settings: ManagerSettings = await this.$store.dispatch('resetActiveGame');
 
         // set display language from settings
-        if(settings.getContext().global.displayLanguage === undefined){
-            settings.getContext().global.displayLanguage = this.$i18n.locale;
+        if(typeof settings.getContext().global.displayLanguage === 'undefined'){
+            settings.setDisplayLanguage(this.$i18n.locale);
         }else{
             this.$i18n.locale = settings.getContext().global.displayLanguage;
         }
