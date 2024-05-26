@@ -1,12 +1,12 @@
 import { GetterTree } from 'vuex';
 
 import { State as RootState } from '../index';
-import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 
 interface State {
     allowNsfw: boolean;
-    categoryFilterMode: CategoryFilterMode;
-    selectedCategories: string[];
+    selectedCategoriesCompareOne: string[];
+    selectedCategoriesCompareAll: string[];
+    selectedCategoriesToExclude: string[];
     showDeprecatedPackages: boolean;
 }
 
@@ -18,39 +18,52 @@ export default {
 
     state: (): State => ({
         allowNsfw: false,
-        categoryFilterMode: CategoryFilterMode.OR,
-        selectedCategories: [],
+        selectedCategoriesCompareOne: [],
+        selectedCategoriesCompareAll: [],
+        selectedCategoriesToExclude: [],
         showDeprecatedPackages: false
     }),
 
     getters: <GetterTree<State, RootState>>{
         unselectedCategories (state, _getters, _rootState, rootGetters) {
             const categories: string[] = rootGetters['tsMods/categories'];
-            return categories.filter((c: string) => !state.selectedCategories.includes(c));
+            const selectedCategories = [
+                ...state.selectedCategoriesCompareOne,
+                ...state.selectedCategoriesCompareAll,
+                ...state.selectedCategoriesToExclude
+            ]
+            return categories.filter((c: string) => !selectedCategories.includes(c));
         }
     },
 
     mutations: {
         reset: function(state: State) {
             state.allowNsfw = false;
-            state.categoryFilterMode = CategoryFilterMode.OR;
-            state.selectedCategories = [];
+            state.selectedCategoriesCompareOne = [];
+            state.selectedCategoriesCompareAll = [];
+            state.selectedCategoriesToExclude = [];
         },
 
-        selectCategory: function(state: State, category: string) {
-            state.selectedCategories = [...state.selectedCategories, category];
+        selectCategoryToCompareOne: function(state: State, category: string) {
+            state.selectedCategoriesCompareOne = [...state.selectedCategoriesCompareOne, category];
+        },
+
+        selectCategoryToCompareAll: function(state: State, category: string) {
+            state.selectedCategoriesCompareAll = [...state.selectedCategoriesCompareAll, category];
+        },
+
+        selectCategoryToExclude: function(state: State, category: string) {
+            state.selectedCategoriesToExclude = [...state.selectedCategoriesToExclude, category];
         },
 
         setAllowNsfw: function(state: State, value: boolean) {
             state.allowNsfw = value;
         },
 
-        setCategoryFilterMode: function(state: State, value: CategoryFilterMode) {
-            state.categoryFilterMode = value;
-        },
-
         unselectCategory: function(state: State, category: string) {
-            state.selectedCategories = state.selectedCategories.filter((c) => c !== category);
+            state.selectedCategoriesCompareOne = state.selectedCategoriesCompareOne.filter((c) => c !== category);
+            state.selectedCategoriesCompareAll = state.selectedCategoriesCompareAll.filter((c) => c !== category);
+            state.selectedCategoriesToExclude = state.selectedCategoriesToExclude.filter((c) => c !== category);
         },
 
         setShowDeprecatedPackages: function(state: State, value: boolean) {
