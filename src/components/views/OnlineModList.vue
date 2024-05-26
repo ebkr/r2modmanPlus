@@ -67,6 +67,7 @@ import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
+import { valueToReadableDate } from '../../utils/DateUtils';
 
 @Component({
     components: {
@@ -112,8 +113,7 @@ export default class OnlineModList extends Vue {
     }
 
     getReadableDate(date: Date): string {
-        const dateObject: Date = new Date(date);
-        return `${dateObject.toDateString()}, ${dateObject.toLocaleTimeString()}`
+        return valueToReadableDate(date);
     }
 
     getReadableCategories(tsMod: ThunderstoreMod) {

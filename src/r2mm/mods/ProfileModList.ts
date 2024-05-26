@@ -51,16 +51,18 @@ export default class ProfileModList {
                     if (
                         MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]
                             .find(x => x.packageName === mod.getName()) !== undefined
-                    ) // BepInEx is not a plugin, and the only place where we can get its icon is from the cache
+                    ) {
+                        // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache
                         iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png");
-                    else
+                    } else {
                         iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png");
+                    }
 
-                    if (await fs.exists(iconPath))
+                    if (await fs.exists(iconPath)) {
                         mod.setIcon(iconPath);
-                    else
+                    } else {
                         mod.setIcon(fallbackPath);
-
+                    }
                     value[modIndex] = mod;
                 }
                 return value;
@@ -111,6 +113,7 @@ export default class ProfileModList {
     }
 
     public static async addMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+        mod.setInstalledAtTime(Number(new Date())); // Set InstalledAt to current epoch millis
         let currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             currentModList = [];
@@ -121,6 +124,7 @@ export default class ProfileModList {
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
+        // Reinsert mod in list at same position if previously found
         if (modIndex >= 0) {
             currentModList.splice(modIndex, 0, mod);
         } else {
@@ -130,7 +134,6 @@ export default class ProfileModList {
         if (saveError !== null) {
             return saveError;
         }
-        // Return mod list, or R2 error. We don't care at this point as this is handled elsewhere.
         return this.getModList(profile);
     }
 
