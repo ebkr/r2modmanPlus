@@ -28,7 +28,7 @@
                         <p class="subtitle is-italic is-bold is-6 is-marginless">
                             <template v-if="getCommentDisplay(line.comments).split('\n').length > 4">
                                 <span class="pre selectable" v-if="!line.commentsExpanded">{{getCommentDisplayShort(line.comments)}}</span>
-                                <span class="pre selectable" v-else="!line.commentsExpanded">{{getCommentDisplay(line.comments)}}</span>
+                                <span class="pre selectable" v-else>{{getCommentDisplay(line.comments)}}</span>
                                 <a @click="toggleEntryExpansion(key, variable)">
                                     <span v-if="!line.commentsExpanded">Show more</span>
                                     <span v-else>Show less</span>
@@ -38,7 +38,7 @@
                         </p>
                         <br/>
                         <div class='settings-input-container'>
-                            <template v-if='line.hasRange()'>
+                            <template v-if='line.hasRange'>
                                 <input
                                     type="range"
                                     class="slider is-fullwidth is-circle is-small"
