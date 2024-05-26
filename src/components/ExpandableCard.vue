@@ -28,7 +28,6 @@
                     <div class='content'>
                         <p ref="description">{{description}}</p>
                         <slot name='description'></slot>
-                        <slot name='metadata'></slot>
                     </div>
                 </div>
                 <footer class='card-footer card-footer-borderless' v-show='visible' ref="footer">

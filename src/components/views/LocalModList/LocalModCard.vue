@@ -224,7 +224,7 @@ function dependencyStringToModName(x: string) {
             </span>
         </template>
 
-        <template v-slot:metadata>
+        <template v-slot:description>
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
         </template>
 
