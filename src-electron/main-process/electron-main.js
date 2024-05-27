@@ -7,6 +7,10 @@ import * as fs from 'fs';
 
 app.allowRendererProcessReuse = true;
 
+if (process.platform === "linux") {
+    app.commandLine.appendSwitch('--no-sandbox')
+}
+
 try {
     if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
         require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'));
