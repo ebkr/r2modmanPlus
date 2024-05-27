@@ -129,6 +129,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("CastleStory"),
             buildReturnOfModdingRules("RiskofRainReturns"),
             buildBepInExRules("Magicraft"),
+            buildBepInExRules("AnotherCrabsTreasure"),
         ]
     }
 }
