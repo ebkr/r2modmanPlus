@@ -558,24 +558,36 @@ export default class Profiles extends Vue {
                                         const entries = await ZipProvider.instance.getEntries(files[0]);
                                         for (const entry of entries) {
                                             if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName,
-                                                        'BepInEx'
-                                                    )
-                                                );
+                                                try {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName,
+                                                            'BepInEx'
+                                                        )
+                                                    );
+                                                } catch (e) {
+                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
+                                                    this.$store.commit('error/handleError', err);
+                                                    return;
+                                                }
                                             } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName
+                                                try {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName
+                                                        )
                                                     )
-                                                )
+                                                } catch (e) {
+                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
+                                                    this.$store.commit('error/handleError', err);
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
