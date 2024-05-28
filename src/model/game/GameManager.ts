@@ -23,7 +23,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "632360"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "4b3dcc5723454a47a9112d8fe8fd5f5c"),
             ], "RiskOfRain2.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ROR2"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ROR2", "雨中冒险2"]),
 
         new Game('Thunderstore Dev', 'ThunderstoreDev', 'ThunderstoreBeta',
             'Risk of Rain 2', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
@@ -35,7 +35,7 @@ export default class GameManager {
             'Risk of Rain 2 Dedicated Server', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
             'https://thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1180760")], "RiskOfRain2.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["ROR2"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["ROR2", "雨中冒险2"]),
 
         new Game('Dyson Sphere Program', 'DysonSphereProgram', 'DysonSphereProgram',
             'Dyson Sphere Program', ['DSPGAME.exe'], 'DSPGAME_Data',
@@ -43,7 +43,7 @@ export default class GameManager {
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "GameraGame.DysonSphereProgram")
-            ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
+            ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP", "戴森球计划"]),
 
         new Game('Valheim', 'Valheim', 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
@@ -51,14 +51,14 @@ export default class GameManager {
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "892970"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "CoffeeStainStudios.Valheim")
-            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["英灵殿"]),
 
         new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
             'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
             'https://valheim.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "896660")
-            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
+            ], "Valheim.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["英灵殿"]),
 
         new Game('GTFO', 'GTFO', 'GTFO',
             'GTFO', ['GTFO.exe'], 'GTFO_Data',
@@ -73,7 +73,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "794260"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Viola"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
-            ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            ], "Outward.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["物质世界"]),
 
         new Game('Outward Definitive', 'OutwardDe', 'OutwardDe',
             'Outward/Outward_Defed', ['Outward Definitive Edition.exe'], 'Outward Definitive Edition_Data',
@@ -82,7 +82,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "1758860"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "f07a51af8ac845ea96f792fb485e04a3"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
-            ], "OutwardDe.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            ], "OutwardDe.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["物质世界:决定版"]),
 
         new Game('TaleSpire', 'TaleSpire', 'TaleSpire',
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
@@ -124,13 +124,13 @@ export default class GameManager {
             "LLBlaze", ["LLBlaze.exe", "LLBlaze.x86_64", "LLBlaze.x86", "LLBlaze.app"], "LLBlaze_Data",
             "https://lethal-league-blaze.thunderstore.io/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "553310")], "LethalLeagueBlaze.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["LLB"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["LLB", "致命联盟:火焰"]),
 
         new Game("Timberborn", "Timberborn", "Timberborn",
             "Timberborn", ["Timberborn.exe"], "Timberborn_Data",
             "https://timberborn.thunderstore.io/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1062090"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "972a4ca2631e43b4ba7bc3b7586ad8c4"), new StorePlatformMetadata(StorePlatform.OTHER)], "Timberborn.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TB"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TB", "海狸浮生记"]),
 
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
             "Totally Accurate Battle Simulator", ["TotallyAccurateBattleSimulator.exe"], "TotallyAccurateBattleSimulator_Data",
@@ -140,7 +140,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Driftfish"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "LandfallGames.TotallyAccurateBattleSimulator")
             ], "TotallyAccurateBattleSimulator.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Totally Accurate Battle Simulator"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["Totally Accurate Battle Simulator", "全面战争"]),
 
         new Game("Nickelodeon All‑Star Brawl", "NASB", "NASB",
             "Nickelodeon All-Star Brawl", ["Nickelodeon All-Star Brawl.exe"], "Nickelodeon All-Star Brawl_Data",
@@ -152,13 +152,13 @@ export default class GameManager {
             "Inscryption", ["Inscryption.exe"], "Inscryption_Data",
             "https://inscryption.thunderstore.io/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1092790"), new StorePlatformMetadata(StorePlatform.OTHER)], "Inscryption.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["邪恶冥刻"]),
 
         new Game("Starsand", "Starsand", "Starsand",
             "Starsand", ["Starsand.exe"], "Starsand_Data",
             "https://starsand.thunderstore.io/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1380220"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "a774278c0813447c96a76b053cbf73ff")], "Starsand.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["星辰沙海"]),
 
         new Game('Cats are Liquid - A Better Place', 'CatsAreLiquidABP', 'CatsAreLiquidABP',
             'Cats are Liquid - A Better Place', ['CaL-ABP-Windows.exe', "CaL-ABP-Linux.x86_64", 'CaL-ABP-macOS.app'], 'CaL-ABP-Windows_Data',
@@ -167,7 +167,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "1188080"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "CatsAreLiquidABP.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
-            ['calabp', 'cal', 'abp']),
+            ['calabp', 'cal', 'abp', " 猫是液体"]),
 
 
         new Game('Potion Craft', 'PotionCraft', 'PotionCraft',
@@ -175,14 +175,14 @@ export default class GameManager {
             'https://potion-craft.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1210320")], 'PotionCraft.jpg',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
-            ['pc']),
+            ['pc', "药水工艺"]),
 
         new Game('Nearly Dead', 'NearlyDead', 'NearlyDead',
             'Nearly Dead', ['Nearly Dead.exe'], 'Nearly Dead_Data',
             'https://nearly-dead.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1268900")], 'NearlyDead.png',
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX,
-            ['nd']),
+            ['nd', "快死了"]),
 
         new Game('AGAINST', 'AGAINST', 'AGAINST',
             'AGAINST_steam', ['AGAINST.exe'], "AGAINST_Data",
@@ -194,19 +194,19 @@ export default class GameManager {
             'Rogue Tower', ['Rogue Tower.exe'], "Rogue Tower_Data",
             'https://rogue-tower.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1843760")], "RogueTower.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt']),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['rt', "巨塔"]),
 
         new Game('House of the Dying Sun', 'HOTDS', 'HOTDS',
             'DyingSun', ['dyingsun.exe'], 'dyingsun_Data',
             'https://hotds.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, '283160')], "HOTDS.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds']),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ['hotds', "垂死的太阳"]),
 
         new Game('For The King', 'ForTheKing', 'ForTheKing',
             'For The King', ['FTK.exe'], 'FTK_Data',
             'https://for-the-king.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "527230"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Discus")], "ForTheKing.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ftk"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ftk", "为了吾王"]),
 
         new Game('Subnautica', 'Subnautica', 'Subnautica',
             'Subnautica', ['Subnautica.exe'], 'Subnautica_Data',
@@ -215,7 +215,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.STEAM, "264710"),
                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Jaguar"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.GAMEPREVIEWSubnautica"),
-            ], "Subnautica.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
+            ], "Subnautica.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["深海迷航"]),
 
         new Game('Subnautica: Below Zero', 'SubnauticaBZ', 'SubnauticaBZ',
             'SubnauticaZero', ['SubnauticaZero.exe'], 'SubnauticaZero_Data',
@@ -223,19 +223,19 @@ export default class GameManager {
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, '848450'),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "UnknownWorldsEntertainmen.SubnauticaBelowZero"),
-            ], 'SubnauticaBelowZero.png', GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz"]),
+            ], 'SubnauticaBelowZero.png', GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bz", "sbz", "s:bz", "深海迷航"]),
 
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
             'https://core-keeper.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck", "地心守护者"]),
 
         new Game("Titanfall 2", "Titanfall2", "Titanfall2",
             "Titanfall2", ["NorthstarLauncher.exe", "Titanfall2.exe"], "",
             'https://northstar.thunderstore.io/api/v1/package/', EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "1237970"), new StorePlatformMetadata(StorePlatform.ORIGIN, "")], "Titanfall2.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NORTHSTAR, ["northstar", "ns", "tf2", "tf|2", "泰坦陨落"]),
 
         new Game("Peglin", "Peglin", "Peglin",
             "Peglin", ["Peglin.exe"], "Peglin_Data",
@@ -504,7 +504,7 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
 
-         new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
+        new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
             "Wizard With A Gun", ['wizardwithagun.exe'], "wizardwithagun_Data",
             "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1150530")], "WizardWithAGun.jpg",
@@ -550,7 +550,7 @@ export default class GameManager {
             "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
             "https://thunderstore.io/c/lethal-company/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lc"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lc", "致命公司"]),
 
         new Game("Meeple Station", "MeepleStation", "MeepleStation",
             "Meeple Station", ["Meeple Station.exe"], "MeepleStation_Data",
@@ -582,7 +582,7 @@ export default class GameManager {
             "Palworld", ["Palworld.exe"], "Pal",
             "https://thunderstore.io/c/palworld/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1623730")], "Palworld.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["palworld", "幻兽帕鲁"]),
 
         new Game("Plasma", "Plasma", "Plasma",
             "Plasma", ["Plasma.exe"], "Plasma_Data",
@@ -590,11 +590,11 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1409160")], "Plasma.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
-            new Game("Content Warning", "ContentWarning", "ContentWarning",
+        new Game("Content Warning", "ContentWarning", "ContentWarning",
             "Content Warning", ["Content Warning.exe"], "ContentWarning_Data",
             "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cw"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cw", "内容警告"]),
 
         new Game("Balatro", "Balatro", "Balatro",
             "Balatro", ["Balatro.exe"], "Balatro_Data",
