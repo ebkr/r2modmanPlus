@@ -55,7 +55,7 @@
                 <template v-if="doorstopTarget.length > 0">
                     <p>
                         <button class="button" @click="copyDoorstopTargetToClipboard" v-if="!copyingDoorstopText">
-                            <i class="fas fa-clipboard" v-tooltip.left="'Drag to reorder'"></i>
+                            <i class="fas fa-clipboard"></i>
                             <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
                         </button>
                         <button class="button is-loading" v-else>Copy launch arguments</button>
