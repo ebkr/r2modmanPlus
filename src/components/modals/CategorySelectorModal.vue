@@ -11,19 +11,15 @@
                 </option>
             </select>
         </div>
-        <div class="field has-addons" v-if="selectedCategories.length > 0">
-            <div class="control" v-for="(key, index) in selectedCategories" :key="`${key}-${index}`">
-                <span class="block margin-right">
-                    <a href="#" @click="emitDeselected(key)">
-                        <span class="tags has-addons">
-                            <span class="tag">{{ key }}</span>
-                            <span class="tag is-danger">
-                                <i class="fas fa-times"></i>
-                            </span>
-                        </span>
-                    </a>
-                </span>
-            </div>
+        <div class="tags has-addons" v-if="selectedCategories.length > 0">
+            <span class="margin-right" v-for="(key, index) in selectedCategories" :key="`${key}-${index}`">
+                <a href="#" @click="emitDeselected(key)">
+                    <div class="tag has-addons">
+                        <span>{{ key }}</span>
+                    </div>
+                    <span class="tag is-delete is-danger">&nbsp;</span>
+                </a>
+            </span>
         </div>
         <div class="field has-addons" v-else>
             <span class="tags">
