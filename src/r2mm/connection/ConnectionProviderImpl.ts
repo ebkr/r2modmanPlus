@@ -37,6 +37,7 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
         return this.cleanExclusions(response.data as string);
     }
 
+    // Deprecated since ConnectionProviderImpl.getPackages is deprecated.
     private async getPackagesFromRemote(game: Game, downloadProgressed?: DownloadProgressed) {
         const response = await makeLongRunningGetRequest(
             game.thunderstoreUrl,
@@ -90,6 +91,7 @@ export default class ConnectionProviderImpl extends ConnectionProvider {
     }
 
     /**
+     * Deprecated: use TsModsModule.fetchPackageListChunks instead.
      * Return packages for given game from Thunderstore API
      */
     public async getPackages(game: Game, downloadProgressed?: DownloadProgressed, retries = 0): Promise<ApiResponse> {

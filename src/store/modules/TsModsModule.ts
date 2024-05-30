@@ -6,7 +6,10 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
+import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
+import { fetchAndProcessBlobFile } from '../../utils/HttpUtils';
 
 interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -21,6 +24,16 @@ interface State {
     isBackgroundUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
+}
+
+type ProgressCallback = (progress: number) => void;
+type PackageListChunk = {full_name: string}[];
+type ChunkedPackageList = PackageListChunk[];
+
+function isPackageListChunk(value: unknown): value is PackageListChunk {
+    return Array.isArray(value) && (
+        !value.length || typeof value[0].full_name === "string"
+    );
 }
 
 /**
@@ -156,6 +169,53 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
+        async _fetchPackageListIndex({}): Promise<string[]> {
+            // TODO: update GameManager to contain new API endpoint (or read from elsewhere?)
+            const indexUrl = `http://thunderstore.localhost/c/riskofrain2/api/v1/package-listing-index/`;
+            const chunkIndex: string[] = await retry(() => fetchAndProcessBlobFile(indexUrl));
+
+            if (!isStringArray(chunkIndex)) {
+                throw new Error('Received invalid chunk index from API');
+            }
+            if (isEmptyArray(chunkIndex)) {
+                throw new Error('Received empty chunk index from API');
+            }
+
+            return chunkIndex;
+        },
+
+        async fetchPackageListChunks(
+            {dispatch},
+            progressCallback?: ProgressCallback
+        ): Promise<ChunkedPackageList> {
+            const chunkIndex: string[] = await dispatch('_fetchPackageListIndex');
+
+            // Count index as a chunk for progress bar purposes.
+            const chunkCount = chunkIndex.length + 1;
+            let completed = 1;
+            const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
+            updateProgress();
+
+            // Download chunks serially to avoid slow connections timing
+            // out due to concurrent requests competing for the bandwidth.
+            const chunks = [];
+            for (const [i, chunkUrl] of chunkIndex.entries()) {
+                const chunk = await retry(() => fetchAndProcessBlobFile(chunkUrl))
+
+                if (chunkIndex.length > 1 && isEmptyArray(chunkIndex)) {
+                    throw new Error(`Chunk #${i} in multichunk response was empty`);
+                } else if (!isPackageListChunk(chunk)) {
+                    throw new Error(`Chunk #${i} was invalid format`);
+                }
+
+                chunks.push(chunk);
+                completed++;
+                updateProgress();
+            }
+
+            return chunks;
+        },
+
         async prewarmCache({getters, rootGetters}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
             profileMods.forEach(getters['cachedMod']);
@@ -163,7 +223,7 @@ export const TsModsModule = {
 
         async updateExclusions(
             {commit},
-            progressCallback?: (progress: number) => void
+            progressCallback?: ProgressCallback
         ) {
             const exclusions = await ConnectionProvider.instance.getExclusions(progressCallback);
             commit('setExclusions', exclusions);
@@ -181,13 +241,15 @@ export const TsModsModule = {
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
         async updatePersistentCache(
             {dispatch, rootState, state},
-            packages: {full_name: string}[]
+            packages: ChunkedPackageList
         ) {
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
             }
 
-            const filtered = packages.filter((pkg) => !state.exclusions!.includes(pkg.full_name));
+            const filtered = packages.map((chunk) => chunk.filter(
+                (pkg) => !state.exclusions!.includes(pkg.full_name)
+            ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
         }
