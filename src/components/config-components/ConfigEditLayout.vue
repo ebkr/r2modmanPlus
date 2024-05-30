@@ -2,16 +2,16 @@
     <div>
         <Hero
             :title="configFile.getName()"
-            subtitle="Editing config file"
+            :subtitle="$t('config.edit.subtitle')"
             hero-type="is-info"
         />
         <br/>
         <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width" @click="save">{{ $t('config.edit.save') }}</button>
+            <button class="button is-danger" @click="cancel">{{ $t('config.edit.cancel') }}</button>
         </div>
         <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="margin-right non-selectable">
-            <h3 class='subtitle is-3'>Sections</h3>
+            <h3 class='subtitle is-3'>{{ $t('config.edit.sections') }}</h3>
             <ul>
                 <li v-for="(value, key) in dumpedConfigVariables" :key="`${key}-${value.toString()}-tab`">
                     <a :href="`#${key}`">{{ key }}</a>
@@ -28,10 +28,10 @@
                         <p class="subtitle is-italic is-bold is-6 is-marginless">
                             <template v-if="getCommentDisplay(line.comments).split('\n').length > 4">
                                 <span class="pre selectable" v-if="!line.commentsExpanded">{{getCommentDisplayShort(line.comments)}}</span>
-                                <span class="pre selectable" v-else="!line.commentsExpanded">{{getCommentDisplay(line.comments)}}</span>
+                                <span class="pre selectable" v-else>{{getCommentDisplay(line.comments)}}</span>
                                 <a @click="toggleEntryExpansion(key, variable)">
-                                    <span v-if="!line.commentsExpanded">Show more</span>
-                                    <span v-else>Show less</span>
+                                    <span v-if="!line.commentsExpanded">{{ $t('config.edit.more') }}</span>
+                                    <span v-else>{{ $t('config.edit.less') }}</span>
                                 </a>
                             </template>
                             <span class="pre" v-else>{{getCommentDisplay(line.comments)}}</span>

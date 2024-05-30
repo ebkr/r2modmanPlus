@@ -4,39 +4,40 @@
             <div class="is-shadowless is-square">
                 <div class="no-padding-left card-header-title">
                     <div class="input-group input-group--flex margin-right">
-                        <label for="thunderstore-search-filter">Search</label>
+                        <label for="thunderstore-search-filter">{{ $t('views.onlineView.search') }}</label>
                         <DeferredInput
                             v-model="thunderstoreSearchFilter"
                             id="thunderstore-search-filter"
                             class="input"
                             type="text"
-                            placeholder="Search for a mod"
+                            :placeholder="$t('views.onlineView.searchPH')"
                         />
                     </div>
                     <div class="input-group margin-right">
-                        <label for="thunderstore-sort">Sort</label>
+                        <label for="thunderstore-sort">{{ $t('views.onlineView.sort') }}</label>
                         <select v-model="sortingStyleModel"
                                 id="thunderstore-sort"
                                 class="select select--content-spacing margin-right margin-right--half-width"
                         >
-                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
+                            <option v-for="(key) in getSortOptions()" v-bind:key="key" :value="key">{{ $t(`views.onlineView.sortOptions.${key}`) }}</option>
                         </select>
                         <select v-model="sortingDirectionModel"
                                 class="select select--content-spacing"
                                 :disabled="sortingStyleModel === 'Default'"
                         >
-                            <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
+                            <option v-for="(key) in getSortDirections()" v-bind:key="key" :value="key">{{ $t(`views.onlineView.sortDirections.${key}`) }}</option>
                         </select>
                     </div>
                     <div class="input-group">
                         <div class="input-group input-group--flex">
-                            <label for="thunderstore-category-filter">Additional filters</label>
+                            <label for="thunderstore-category-filter">{{ $t(`views.onlineView.additional`) }}</label>
                             <button
                                 id="thunderstore-category-filter"
                                 class="button"
                                 @click="$store.commit('openCategoryFilterModal')"
                             >
-                                Filter categories
+                                {{ $t(`views.onlineView.filterCategories`) }}
+
                             </button>
                         </div>
                     </div>
@@ -49,12 +50,12 @@
         />
         <div class="in-mod-list" v-if="getPaginationSize() > 1">
             <p class="notification margin-right">
-                Use the numbers below to change page
+                {{ $t(`views.onlineView.pageNotification`) }}
             </p>
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                {{ thunderstoreModList.length ? $t(`views.onlineView.noMod`): $t(`views.onlineView.notAvailable`) }}
             </p>
         </div>
         <br/>

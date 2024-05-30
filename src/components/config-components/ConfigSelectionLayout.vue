@@ -1,14 +1,14 @@
 <template>
     <div>
         <Hero
-            title="Config editor"
-            subtitle="Select a configuration file to edit"
+            :title="$t('config.selection.title')"
+            :subtitle="$t('config.selection.subtitle')"
             hero-type="is-info"
         />
         <div class="notification is-warning is-square">
             <div class="container">
                 <p>
-                    Configuration files are generated after launching the game, with the mod installed, at least once.
+                    {{ $t('config.selection.notification') }}
                 </p>
             </div>
         </div>
@@ -16,20 +16,20 @@
             <div class='no-padding-left card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="local-search" class="non-selectable">Search</label>
-                    <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for config files"/>
+                    <label for="local-search" class="non-selectable">{{ $t('config.selection.search') }}</label>
+                    <input id="local-search" v-model='filterText' class="input margin-right" type="text" :placeholder="$t('config.selection.searchPH')"/>
                 </div>
 
                 <div class="input-group margin-right">
-                    <label for="config-sort-order" class="non-selectable">Sort</label>
+                    <label for="config-sort-order" class="non-selectable">{{ $t('config.selection.sort') }}</label>
                     <select id="config-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
-                        <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
-                            {{key}}
+                        <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`" :value="key">
+                            {{ $t(`config.selection.SortConfigFile.${key}`) }}
                         </option>
                     </select>
                     <select id="config-sort-direction" class="select select--content-spacing" v-model="sortDirection">
-                        <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
-                            {{key}}
+                        <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`" :value="key">
+                            {{ $t(`config.selection.SortDirection.${key}`) }}
                         </option>
                     </select>
                 </div>
@@ -44,9 +44,9 @@
                     <template v-slot:title>
                         <span>{{file.getName()}}</span>
                     </template>
-                    <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
-                    <a class='card-footer-item' @click="openConfig(file)">Open File</a>
-                    <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
+                    <a class='card-footer-item' @click="editConfig(file)">{{ $t('config.selection.edit') }}</a>
+                    <a class='card-footer-item' @click="openConfig(file)">{{ $t('config.selection.open') }}</a>
+                    <a class='card-footer-item' @click="deleteConfig(file)">{{ $t('config.selection.delete') }}</a>
                 </ExpandableCard>
             </div>
         </div>
@@ -146,8 +146,8 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             } catch (e) {
                 this.$store.commit("error/handleError", R2Error.fromThrownValue(
                     e,
-                    "Failed to delete config file",
-                    `Try running ${ManagerInformation.APP_NAME} as an administrator.`
+                    this.$t('config.selection.failed'),
+                    this.$t('config.selection.try',{ appName: ManagerInformation.APP_NAME })
                 ));
             }
         }

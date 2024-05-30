@@ -14,12 +14,12 @@
                         <slot name='other-icons'></slot>
                         <!-- Allow movement of mod order -->
                         <a v-if='showSort' class='card-header-icon handle'>
-                            <i class="fas fa-grip-vertical" v-tooltip.left="'Drag to reorder'"></i>
+                            <i class="fas fa-grip-vertical" v-tooltip.left="$t(`card.tip1`)"></i>
                         </a>
                         <a class='card-header-icon'>
                             <span class='icon'>
-                                <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible' v-tooltip.left="'Expand'"></i>
-                                <i class='fas fa-angle-down' aria-hidden='true' v-if='visible' v-tooltip.left="'Collapse'"></i>
+                                <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible' v-tooltip.left="$t(`card.tip2`)"></i>
+                                <i class='fas fa-angle-down' aria-hidden='true' v-if='visible' v-tooltip.left="$t(`card.tip3`)"></i>
                             </span>
                         </a>
                     </header>
