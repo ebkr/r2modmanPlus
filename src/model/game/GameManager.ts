@@ -632,6 +632,13 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs"]),
+
+        new Game(
+            "Panicore", "Panicore", "Panicore",
+            "Panicore", ["Panicore.exe"], "Panicore",
+            "https://thunderstore.io/c/panicore/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
     ];
 
     static get activeGame(): Game {
