@@ -22,6 +22,14 @@ export default class CdnProvider {
     private static axios = getAxiosWithTimeouts(5000, 5000);
     private static preferredCdn = "";
 
+    public static get current() {
+        const i = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        return {
+            label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
+            url: CdnProvider.preferredCdn
+        };
+    }
+
     public static async checkCdnConnection() {
         const headers = {
             "Cache-Control": "no-cache",
@@ -59,5 +67,15 @@ export default class CdnProvider {
         return CdnProvider.preferredCdn
             ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn}`)
             : url;
+    }
+
+    public static togglePreferredCdn() {
+        let currentIndex = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+
+        if (currentIndex === -1) {
+            currentIndex = 0;
+        }
+
+        CdnProvider.preferredCdn = CDNS[currentIndex + 1] || CDNS[0];
     }
 }
