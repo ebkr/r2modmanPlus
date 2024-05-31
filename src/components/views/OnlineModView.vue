@@ -70,8 +70,6 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import { Vue, Watch } from 'vue-property-decorator';
-
-import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
 import SortingDirection from '../../model/enums/SortingDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
@@ -134,42 +132,50 @@ export default class OnlineModView extends Vue {
     }
 
     @Watch("$store.state.modFilters.allowNsfw")
-    @Watch("$store.state.modFilters.categoryFilterMode")
-    @Watch("$store.state.modFilters.selectedCategories")
+    @Watch("$store.state.modFilters.selectedCategoriesCompareOne")
+    @Watch("$store.state.modFilters.selectedCategoriesCompareAll")
+    @Watch("$store.state.modFilters.selectedCategoriesToExclude")
     @Watch("$store.state.modFilters.showDeprecatedPackages")
     filterThunderstoreModList() {
         const allowNsfw = this.$store.state.modFilters.allowNsfw;
-        const categoryFilterMode = this.$store.state.modFilters.categoryFilterMode;
-        const filterCategories = this.$store.state.modFilters.selectedCategories;
+        const filterCategoriesToCompareOne = this.$store.state.modFilters.selectedCategoriesCompareOne;
+        const filterCategoriesToCompareAll = this.$store.state.modFilters.selectedCategoriesCompareAll;
+        const filterCategoriesToExclude = this.$store.state.modFilters.selectedCategoriesToExclude;
         const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
 
-        this.searchableThunderstoreModList = this.sortedThunderstoreModList;
+        let searchableList = this.sortedThunderstoreModList;
         const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
         if (searchKeys.length > 0) {
-            this.searchableThunderstoreModList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+            searchableList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
                 return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getVersions()[0].getDescription())
             });
         }
         if (!allowNsfw) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(mod => !mod.getNsfwFlag());
+            searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
         }
         if (!showDeprecatedPackages) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter(
+            searchableList = searchableList.filter(
                 mod => !this.$store.state.tsMods.deprecated.get(mod.getFullName())
             );
         }
-        if (filterCategories.length > 0) {
-            this.searchableThunderstoreModList = this.searchableThunderstoreModList.filter((x: ThunderstoreMod) => {
-                switch(categoryFilterMode) {
-                    case CategoryFilterMode.OR:
-                        return filterCategories.some((category: string) => x.getCategories().includes(category));
-                    case CategoryFilterMode.AND:
-                        return filterCategories.every((category: string) => x.getCategories().includes(category));
-                    case CategoryFilterMode.EXCLUDE:
-                        return !filterCategories.some((category: string) => x.getCategories().includes(category));
-                }
-            })
+
+        // Category filters
+        if (filterCategoriesToExclude.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                !filterCategoriesToExclude.some((category: string) => x.getCategories().includes(category)))
         }
+        if (filterCategoriesToCompareOne.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                filterCategoriesToCompareOne.some((category: string) => x.getCategories().includes(category)))
+        }
+        if (filterCategoriesToCompareAll.length > 0) {
+            searchableList = searchableList.filter((x: ThunderstoreMod) =>
+                filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
+        }
+
+        this.searchableThunderstoreModList = [...searchableList];
+
+        // Update results
         this.changePage();
     }
 

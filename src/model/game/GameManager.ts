@@ -547,7 +547,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs2", "都市：天际线2"]),
 
         new Game("Lethal Company", "LethalCompany", "LethalCompany",
-            "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
+            "Lethal Company", ["Lethal Company.exe"], "Lethal Company_Data",
             "https://thunderstore.io/c/lethal-company/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lc", "致命公司"]),
@@ -632,6 +632,13 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs", "城堡故事"]),
+
+        new Game(
+            "Panicore", "Panicore", "Panicore",
+            "Panicore", ["Panicore.exe"], "Panicore",
+            "https://thunderstore.io/c/panicore/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore", "恐慌"]),
     ];
 
     static get activeGame(): Game {
