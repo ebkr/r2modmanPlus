@@ -52,6 +52,8 @@ export default class ModListSort {
                 return a.getDisplayName().localeCompare(b.getDisplayName());
             case SortNaming.AUTHOR:
                 return a.getAuthorName().localeCompare(b.getAuthorName());
+            case SortNaming.INSTALL_DATE:
+                return b.getInstalledAtTime() - a.getInstalledAtTime();
             case SortNaming.CUSTOM:
                 return 0;
         }
