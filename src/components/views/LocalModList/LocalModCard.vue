@@ -7,6 +7,7 @@ import ManifestV2 from '../../../model/ManifestV2';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { valueToReadableDate } from '../../../utils/DateUtils';
 
 @Component({
     components: {
@@ -177,6 +178,11 @@ export default class LocalModCard extends Vue {
     created() {
         this.updateDependencies();
     }
+
+    // Need to wrap util call in method to allow access from Vue context
+    getReadableDate(value: number): string {
+        return valueToReadableDate(value);
+    }
 }
 
 function dependencyStringToModName(x: string) {
@@ -216,6 +222,10 @@ function dependencyStringToModName(x: string) {
                     </component>
                 </span>
             </span>
+        </template>
+
+        <template v-slot:description>
+            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
         </template>
 
         <template v-slot:other-icons>

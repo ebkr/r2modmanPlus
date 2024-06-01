@@ -547,7 +547,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs2"]),
 
         new Game("Lethal Company", "LethalCompany", "LethalCompany",
-            "Lethal Company", ["Lethal Company.exe"], "LethalCompany_Data",
+            "Lethal Company", ["Lethal Company.exe"], "Lethal Company_Data",
             "https://thunderstore.io/c/lethal-company/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1966720")], "LethalCompany.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lc"]),
@@ -591,7 +591,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
             new Game("Content Warning", "ContentWarning", "ContentWarning",
-            "Content Warning", ["Content Warning.exe"], "ContentWarning_Data",
+            "Content Warning", ["Content Warning.exe"], "Content Warning_Data",
             "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cw"]),
@@ -632,6 +632,13 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs"]),
+      
+        new Game(
+            "Panicore", "Panicore", "Panicore",
+            "Panicore", ["Panicore.exe"], "Panicore",
+            "https://thunderstore.io/c/panicore/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
 
         new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",

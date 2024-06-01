@@ -11,7 +11,7 @@
                 </li>
             </ul>
         </div>
-        <div class="container margin-right">
+        <div class="margin-right">
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
                 <h2 class="title is-5">Getting started with installing mods</h2>
@@ -49,7 +49,19 @@
                     Your current argument would be:
                     <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
                     <code v-else>These parameters will be available after installing BepInEx.</code>
+                    <br/>
                 </p>
+                <br/>
+                <template v-if="doorstopTarget.length > 0">
+                    <p>
+                        <button class="button" @click="copyDoorstopTargetToClipboard" v-if="!copyingDoorstopText">
+                            <i class="fas fa-clipboard"></i>
+                            <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
+                        </button>
+                        <button class="button is-loading" v-else>Copy launch arguments</button>
+                    </p>
+                    <br/>
+                </template>
             </div>
             <div ref="Game won't start" v-if="activeTab === `Game won't start`">
                 <h2 class='title is-5'>A red box appears when I try to start the game</h2>
@@ -88,39 +100,50 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import {Hero, Link} from '../components/all';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import R2Error from '../model/errors/R2Error';
+import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
-    import { Component, Vue } from 'vue-property-decorator';
-    import {Hero, Link} from '../components/all';
-    import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
-    import R2Error from '../model/errors/R2Error';
-
-    @Component({
-        components: {
-            Link,
-            Hero
-        }
-    })
-    export default class Help extends Vue {
-        private activeTab = 'General';
-        private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
-        private doorstopTarget = "";
-
-        changeTab(key: string) {
-            this.activeTab = key;
-        }
-
-        mounted() {
-            GameRunnerProvider.instance.getGameArguments(
-                this.$store.state.activeGame,
-                this.$store.getters['profile/activeProfile']
-            ).then(target => {
-                if (target instanceof R2Error) {
-                    this.doorstopTarget = "";
-                } else {
-                    this.doorstopTarget = target;
-                }
-            });
-        }
-
+@Component({
+    components: {
+        Link,
+        Hero
     }
+})
+export default class Help extends Vue {
+    private activeTab = 'General';
+    private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
+    private doorstopTarget = "";
+    private copyingDoorstopText = false;
+
+    changeTab(key: string) {
+        this.activeTab = key;
+    }
+
+    copyDoorstopTargetToClipboard() {
+        InteractionProvider.instance.copyToClipboard(this.doorstopTarget);
+        this.copyingDoorstopText = true;
+        setTimeout(this.stopShowingCopy, 400);
+    }
+
+    stopShowingCopy() {
+        this.copyingDoorstopText = false;
+    }
+
+    mounted() {
+        GameRunnerProvider.instance.getGameArguments(
+            this.$store.state.activeGame,
+            this.$store.getters['profile/activeProfile']
+        ).then(target => {
+            if (target instanceof R2Error) {
+                this.doorstopTarget = "";
+            } else {
+                this.doorstopTarget = target;
+            }
+        });
+    }
+
+}
 </script>
