@@ -223,7 +223,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                 }
             } catch(e) {
                 const name = `Failed to delete mod loader file (Path: ${filePath}) from profile root`;
-                const solution = `Is the game still running? Also make sure you're running the mod manager with sufficient privileges for it to delete the file.`;
+                const solution = `The file may still be in use by the game or you may lack sufficient file privileges`;
                 return FileWriteError.fromThrownValue(e, name, solution);
             }
         }
