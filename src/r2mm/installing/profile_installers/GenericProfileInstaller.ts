@@ -227,10 +227,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             }
         }
 
-        // BepInEx & shimloader plugin uninstall logic
+        // BepInEx & shimloader & ReturnOfModding plugin uninstall logic
         // TODO: Move to work through the installer interface
         const profilePath = profile.getPathOfProfile();
-        const searchLocations = ["BepInEx", "shimloader"];
+        const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding"];
         for (const searchLocation of searchLocations) {
             const bepInExLocation: string = path.join(profilePath, searchLocation);
             if (!(await fs.exists(bepInExLocation))) {
