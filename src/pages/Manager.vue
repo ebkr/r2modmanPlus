@@ -492,6 +492,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                 case PackageLoader.MELON_LOADER:
                     logOutputPath = path.join(this.profile.getPathOfProfile(), "MelonLoader", "Latest.log");
                     break;
+				case PackageLoader.RETURN_OF_MODDING:
+                    logOutputPath = path.join(this.profile.getPathOfProfile(), "ReturnOfModding", "LogOutput.log");
+                    break;
             }
             const text = (await fs.readFile(logOutputPath)).toString();
             if (text.length >= 1992) {
