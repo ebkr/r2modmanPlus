@@ -632,13 +632,19 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs"]),
-
+      
         new Game(
             "Panicore", "Panicore", "Panicore",
             "Panicore", ["Panicore.exe"], "Panicore",
             "https://thunderstore.io/c/panicore/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
+
+        new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
+            "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
+            "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
     ];
 
     static get activeGame(): Game {

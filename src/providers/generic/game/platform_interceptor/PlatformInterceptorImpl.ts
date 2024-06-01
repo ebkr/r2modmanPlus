@@ -65,6 +65,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.GODOT_ML]: runners,
         [PackageLoader.SHIMLOADER]: runners,
         [PackageLoader.LOVELY]: runners,
+        [PackageLoader.RETURN_OF_MODDING]: runners,
     }
 }
 

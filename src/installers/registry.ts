@@ -5,6 +5,7 @@ import { PackageInstaller } from './PackageInstaller';
 import { ShimloaderInstaller, ShimloaderPluginInstaller } from './ShimloaderInstaller';
 import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
+import { ReturnOfModdingInstaller } from './ReturnOfModdingInstaller';
 
 
 const _PackageInstallers = {
@@ -17,6 +18,7 @@ const _PackageInstallers = {
     "shimloader-plugin": new ShimloaderPluginInstaller(),
     "lovely": new LovelyInstaller(),
     "lovely-plugin": new LovelyPluginInstaller(),
+    "returnofmodding": new ReturnOfModdingInstaller(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;
