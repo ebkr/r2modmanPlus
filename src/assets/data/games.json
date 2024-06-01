@@ -1397,6 +1397,58 @@
         "relativeFileExclusions": []
       }
     },
+    "hades-ii": {
+      "label": "hades-ii",
+      "meta": {
+        "displayName": "Hades II",
+        "iconUrl": "HadesII.jpg"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1145350"
+        }
+      ],
+      "r2modman": {
+        "internalFolderName": "HadesII",
+        "dataFolderName": "",
+        "settingsIdentifier": "HadesII",
+        "packageIndex": "https://thunderstore.io/c/hades-ii/api/v1/package/",
+        "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+        "steamFolderName": "Hades II/Ship",
+        "exeNames": [
+          "Hades2.exe"
+        ],
+        "gameInstancetype": "game",
+        "gameSelectionDisplayMode": "visible",
+        "modLoaderPackages": [
+          {
+            "packageId": "Hell2Modding-Hell2Modding",
+            "rootFolder": "ReturnOfModdingPack",
+            "loader": "returnofmodding"
+          }
+        ],
+        "installRules": [
+          {
+            "route": "ReturnOfModding/plugins",
+            "trackingMethod": "subdir",
+            "defaultFileExtensions": [
+              ".lua"
+            ],
+            "isDefaultLocation": true
+          },
+          {
+            "route": "ReturnOfModding/plugins_data",
+            "trackingMethod": "subdir"
+          },
+          {
+            "route": "ReturnOfModding/config",
+            "trackingMethod": "subdir"
+          }
+        ],
+        "relativeFileExclusions": []
+      }
+    },
     "hard-bullet": {
       "uuid": "2bc64650-f8fa-424a-9ee2-53bef8041681",
       "label": "hard-bullet",

@@ -645,6 +645,12 @@ export default class GameManager {
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+
+        new Game("Hades II", "HadesII", "HadesII",
+            "Hades II/Ship", ["Hades2.exe"], "",
+            "https://thunderstore.io/c/hades-ii/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "HadesII.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
     ];
 
     static get activeGame(): Game {
