@@ -645,6 +645,12 @@ export default class GameManager {
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+
+        new Game("Back to the Dawn", "BacktotheDawn", "BacktotheDawn",
+            "MetalHeadGames", ["Back To The Dawn.exe"], "Back To The Dawn_Data",
+            "https://thunderstore.io/c/back-to-the-dawn/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1735700")], "BackToTheDawn.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bttd"]),
     ];
 
     static get activeGame(): Game {

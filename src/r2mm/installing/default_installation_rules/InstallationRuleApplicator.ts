@@ -128,6 +128,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Lycans"),
             buildBepInExRules("CastleStory"),
             buildReturnOfModdingRules("RiskofRainReturns"),
+            buildBepInExRules("BacktotheDawn"),
         ]
     }
 }
