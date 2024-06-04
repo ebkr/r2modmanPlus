@@ -591,7 +591,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Content Warning", "ContentWarning", "ContentWarning",
-            "Content Warning", ["Content Warning.exe"], "ContentWarning_Data",
+            "Content Warning", ["Content Warning.exe"], "Content Warning_Data",
             "https://thunderstore.io/c/content-warning/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2881650")], "ContentWarning.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cw", "内容警告"]),
@@ -638,7 +638,7 @@ export default class GameManager {
             "Panicore", ["Panicore.exe"], "Panicore",
             "https://thunderstore.io/c/panicore/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore", "恐慌"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
 
         new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
