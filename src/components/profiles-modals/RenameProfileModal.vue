@@ -13,7 +13,14 @@ export default class RenameProfileModal extends Vue {
 
     @Watch('$store.state.profile.activeProfile')
     activeProfileChanged(newProfile: Profile, oldProfile: Profile|null) {
-        if (oldProfile === null || oldProfile.getProfileName() === this.newProfileName) {
+        if (
+            // Modal was just created and has no value yet, use any available.
+            this.newProfileName === "" ||
+            // Profile was not previously selected, use the new active profile.
+            oldProfile === null ||
+            // Avoid losing user's changes when the profile unexpectedly changes.
+            oldProfile.getProfileName() === this.newProfileName
+        ) {
             this.newProfileName = newProfile.getProfileName();
         }
     }
