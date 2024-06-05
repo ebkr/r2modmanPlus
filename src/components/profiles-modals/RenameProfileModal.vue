@@ -84,7 +84,12 @@ export default class RenameProfileModal extends Vue {
         <template v-slot:body>
             <p>This profile will store its own mods independently from other profiles.</p>
 
-            <input class="input" v-model="newProfileName" ref="nameInput" />
+            <input
+                class="input"
+                v-model="newProfileName"
+                @keyup.enter="!doesProfileExist(newProfileName) && performRename(newProfileName)"
+                ref="nameInput"
+            />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
                 Profile name required
@@ -97,7 +102,7 @@ export default class RenameProfileModal extends Vue {
             </span>
         </template>
         <template v-slot:footer>
-            <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
+            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
             <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
         </template>
 
