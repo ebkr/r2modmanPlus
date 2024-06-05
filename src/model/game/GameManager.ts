@@ -663,6 +663,12 @@ export default class GameManager {
             "https://thunderstore.io/c/gladio-mori/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2908480")], "GladioMori.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gm"]),
+
+        new Game("Slipstream: Rogue Space", "SlipstreamRogueSpace", "SlipstreamRogueSpace",
+            "Slipstream Rogue Space", ["Slipstream_Win.exe"], "Slipstream_Win_Data",
+            "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["srs"]),
     ];
 
     static get activeGame(): Game {

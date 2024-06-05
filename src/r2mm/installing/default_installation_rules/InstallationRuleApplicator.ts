@@ -131,6 +131,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Magicraft"),
             buildBepInExRules("AnotherCrabsTreasure"),
             buildBepInExRules("GladioMori"),
+            buildBepInExRules("SlipstreamRogueSpace"),
         ]
     }
 }
