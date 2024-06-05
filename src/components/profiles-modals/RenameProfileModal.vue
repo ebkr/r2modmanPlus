@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Vue, Component, Ref, Watch } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import sanitize from 'sanitize-filename';
 import R2Error from "../../model/errors/R2Error";
@@ -9,6 +9,7 @@ import Profile from "../../model/Profile";
     components: {ModalCard}
 })
 export default class RenameProfileModal extends Vue {
+    @Ref() readonly nameInput: HTMLInputElement | undefined;
     private newProfileName: string = '';
 
     @Watch('$store.state.profile.activeProfile')
@@ -26,7 +27,17 @@ export default class RenameProfileModal extends Vue {
     }
 
     get isOpen(): boolean {
-        return this.$store.state.modals.isRenameProfileModalOpen;
+        const isOpen_ = this.$store.state.modals.isRenameProfileModalOpen;
+
+        if (isOpen_) {
+            this.$nextTick(() => {
+                if (this.nameInput) {
+                    this.nameInput.focus();
+                }
+            });
+        }
+
+        return isOpen_;
     }
 
     get profileList(): string[] {
@@ -73,7 +84,7 @@ export default class RenameProfileModal extends Vue {
         <template v-slot:body>
             <p>This profile will store its own mods independently from other profiles.</p>
 
-            <input class="input" autofocus v-model="newProfileName" />
+            <input class="input" v-model="newProfileName" ref="nameInput" />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
                 Profile name required
