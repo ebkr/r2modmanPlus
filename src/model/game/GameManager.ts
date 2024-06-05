@@ -645,6 +645,12 @@ export default class GameManager {
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+
+        new Game("Magicraft", "Magicraft", "Magicraft",
+            "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
+            "https://thunderstore.io/c/magicraft/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2103140")], "Magicraft.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {
