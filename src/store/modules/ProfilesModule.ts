@@ -62,7 +62,7 @@ export const ProfilesModule = {
             } catch (e) {
                 throw R2Error.fromThrownValue(e, 'Error whilst renaming a profile on disk');
             }
-            await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: false });
+            await dispatch('setSelectedProfile', { profileName: params.newName, prewarmCache: false });
             await dispatch('updateProfileList');
         },
 
