@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CreateProfileModal />
     <DeleteProfileModal />
     <RenameProfileModal />
     <!-- Create modal -->
@@ -185,7 +186,7 @@
                           <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
-                      <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
+                      <a id="create-profile" class="button" @click="openCreateProfileModal()">Create new</a>
                     </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
@@ -238,11 +239,13 @@ import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryR
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
 import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
+import CreateProfileModal from "../components/profiles-modals/CreateProfileModal.vue";
 
 let fs: FsProvider;
 
 @Component({
     components: {
+        CreateProfileModal,
         hero: Hero,
         'progress-bar': Progress,
         DeleteProfileModal,
@@ -352,6 +355,10 @@ export default class Profiles extends Vue {
 
     closeNewProfileModal() {
         this.addingProfile = false;
+    }
+
+    openCreateProfileModal() {
+        this.$store.commit('openCreateProfileModal');
     }
 
     openDeleteProfileModal() {
