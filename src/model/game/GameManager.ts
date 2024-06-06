@@ -504,7 +504,7 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "1140150")], "TouhouLostBranchOfLegend.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["lbol"]),
 
-         new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
+        new Game("Wizard With A Gun", "WizardWithAGun", "WizardWithAGun",
             "Wizard With A Gun", ['wizardwithagun.exe'], "wizardwithagun_Data",
             "https://thunderstore.io/c/wizard-with-a-gun/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1150530")], "WizardWithAGun.jpg",
@@ -632,7 +632,7 @@ export default class GameManager {
             "https://thunderstore.io/c/castle-story/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM_DIRECT, "227860")], "CastleStory.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["cs"]),
-      
+
         new Game(
             "Panicore", "Panicore", "Panicore",
             "Panicore", ["Panicore.exe"], "Panicore",
@@ -645,6 +645,17 @@ export default class GameManager {
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+
+        new Game("Among Us", "AmongUs", "AmongUs",
+            "Among Us", ["Among Us.exe"], "Among Us_Data",
+            "https://thunderstore.io/c/among-us/api/v1/package/", EXCLUSIONS,
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "945360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "among-us"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "Innersloth.AmongUs"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ],
+            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["AU", "au", "太空狼人杀"]),
     ];
 
     static get activeGame(): Game {
