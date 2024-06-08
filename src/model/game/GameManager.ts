@@ -655,7 +655,7 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "Innersloth.AmongUs"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ],
-            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["AU", "au", "太空狼人杀"]),
+            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["AU", "太空狼人杀"]),
     ];
 
     static get activeGame(): Game {
