@@ -3,6 +3,7 @@
     <CreateProfileModal />
     <DeleteProfileModal />
     <RenameProfileModal />
+    <ImportProfileModal />
     <!-- Create modal -->
     <div :class="['modal', {'is-active':(addingProfile !== false)}]">
       <div class="modal-background" @click="closeNewProfileModal()"></div>
@@ -188,9 +189,12 @@
                     <div class="level-item">
                       <a id="create-profile" class="button" @click="openCreateProfileModal()">Create new</a>
                     </div>
+                      <div class="level-item">
+                          <a class="button" @click="openImportProfileModal()">Import / Update</a>
+                      </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
+                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">old Import / Update</a>
                     </div>
                     <div class="level-item">
                         <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
@@ -240,11 +244,13 @@ import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
 import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
 import CreateProfileModal from "../components/profiles-modals/CreateProfileModal.vue";
+import ImportProfileModal from "../components/profiles-modals/ImportProfileModal.vue";
 
 let fs: FsProvider;
 
 @Component({
     components: {
+        ImportProfileModal,
         CreateProfileModal,
         hero: Hero,
         'progress-bar': Progress,
@@ -363,6 +369,10 @@ export default class Profiles extends Vue {
 
     openDeleteProfileModal() {
         this.$store.commit('openDeleteProfileModal');
+    }
+
+    openImportProfileModal() {
+        this.$store.commit('openImportProfileModal');
     }
 
     openRenameProfileModal() {
