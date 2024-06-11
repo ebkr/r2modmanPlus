@@ -640,11 +640,36 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
 
-        new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
-            "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
-            "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskofRainReturns.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr", "雨中冒险：回归"]),
+        // TODO: This is very temporarily disabled to hide the game from TSMM.
+        // new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
+        //     "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
+        //     "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
+        //     [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
+        //     GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr", "雨中冒险：回归"]),
+
+        new Game("Magicraft", "Magicraft", "Magicraft",
+            "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
+            "https://thunderstore.io/c/magicraft/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2103140")], "Magicraft.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["魔法工艺"]),
+
+        new Game("Another Crab's Treasure", "AnotherCrabsTreasure", "AnotherCrabsTreasure",
+            "AnotherCrabsTreasure", ["AnotherCrabsTreasure.exe"], "AnotherCrabsTreasure_Data",
+            "https://thunderstore.io/c/another-crabs-treasure/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1887840")], "AnotherCrabsTreasure.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["act", "蟹蟹寻宝奇遇"]),
+
+        new Game("Gladio Mori", "GladioMori", "GladioMori",
+            "Gladio Mori Demo", ["Gladio Mori.exe"], "Gladio Mori_Data",
+            "https://thunderstore.io/c/gladio-mori/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2908480")], "GladioMori.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gm"]),
+
+        new Game("Slipstream: Rogue Space", "SlipstreamRogueSpace", "SlipstreamRogueSpace",
+            "Slipstream Rogue Space", ["Slipstream_Win.exe"], "Slipstream_Win_Data",
+            "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["srs"]),
     ];
 
     static get activeGame(): Game {
