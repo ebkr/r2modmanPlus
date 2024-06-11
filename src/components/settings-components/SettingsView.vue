@@ -63,7 +63,7 @@ import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
 import UtilityMixin from '../mixins/UtilityMixin.vue';
-import CdnProvider from 'src/providers/generic/connection/CdnProvider';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
         components: {

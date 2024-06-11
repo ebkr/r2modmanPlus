@@ -640,12 +640,12 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "2695940")], "Panicore.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.SHIMLOADER, ["panicore"]),
 
-        // TODO: This is very temporarily disabled to hide the game from TSMM.
-        // new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
-        //     "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
-        //     "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
-        //     [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
-        //     GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr", "雨中冒险：回归"]),
+
+        new Game("Risk of Rain Returns", "RiskofRainReturns", "RiskofRainReturns",
+            "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
+            "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr", "雨中冒险：回归"]),
 
         new Game("Magicraft", "Magicraft", "Magicraft",
             "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
