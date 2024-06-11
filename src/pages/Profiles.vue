@@ -1,15 +1,16 @@
 <template>
   <div>
     <DeleteProfileModal />
+    <RenameProfileModal />
     <!-- Create modal -->
-    <div :class="['modal', {'is-active':(addingProfile !== false || renamingProfile !== false)}]">
+    <div :class="['modal', {'is-active':(addingProfile !== false)}]">
       <div class="modal-background" @click="closeNewProfileModal()"></div>
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">{{addingProfileType}} a profile</p>
           </header>
-            <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null) || renamingProfile">
+            <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null)">
               <div class="card-content">
                 <p>This profile will store its own mods independently from other profiles.</p>
                 <br/>
@@ -46,10 +47,6 @@
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
                   <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
                   <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
-              </template>
-              <template v-if="renamingProfile">
-                  <button id="modal-rename-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
-                  <button id="modal-rename-profile" class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
               </template>
           </div>
         </div>
@@ -185,7 +182,7 @@
                     </div>
                       <div class="level-item">
                           <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
-                          <a id="rename-profile" class="button" @click="renameProfile()" v-else>Rename</a>
+                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
                       <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
@@ -240,6 +237,7 @@ import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
+import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
 
 let fs: FsProvider;
 
@@ -248,6 +246,7 @@ let fs: FsProvider;
         hero: Hero,
         'progress-bar': Progress,
         DeleteProfileModal,
+        RenameProfileModal,
     },
 })
 export default class Profiles extends Vue {
@@ -269,8 +268,6 @@ export default class Profiles extends Vue {
     private showFileSelectionHang: boolean = false;
 
     private listenerId: number = 0;
-
-    private renamingProfile: boolean = false;
 
     get activeProfile(): Profile {
         return this.$store.getters['profile/activeProfile'];
@@ -321,27 +318,6 @@ export default class Profiles extends Vue {
                     profile.toLowerCase() === safe.toLowerCase())) !== undefined;
     }
 
-    renameProfile() {
-        this.newProfileName = this.selectedProfile;
-        this.addingProfileType = "Rename";
-        this.renamingProfile = true;
-        this.$nextTick(() => {
-            if (this.profileNameInput) {
-                this.profileNameInput.focus();
-            }
-        });
-    }
-
-    async performRename(newName: string) {
-        await fs.rename(
-            path.join(Profile.getDirectory(), this.selectedProfile),
-            path.join(Profile.getDirectory(), newName)
-        );
-        this.closeNewProfileModal();
-        await this.updateProfileList();
-        await this.setSelectedProfile(newName, false);
-    }
-
     // Open modal for entering a name for a new profile. Triggered
     // either through user action or profile importing via file or code.
     newProfile(type: string, nameOverride: string | undefined) {
@@ -376,11 +352,14 @@ export default class Profiles extends Vue {
 
     closeNewProfileModal() {
         this.addingProfile = false;
-        this.renamingProfile = false;
     }
 
     openDeleteProfileModal() {
         this.$store.commit('openDeleteProfileModal');
+    }
+
+    openRenameProfileModal() {
+        this.$store.commit('openRenameProfileModal');
     }
 
     makeProfileNameSafe(nameToSanitize: string): string {
@@ -617,7 +596,6 @@ export default class Profiles extends Vue {
 
     async updateProfileList() {
         const profilesDirectory: string = this.activeProfile.getDirectory();
-
         try {
             const profilesDirectoryContents = await fs.readdir(profilesDirectory);
             let promises = profilesDirectoryContents.map(async function(file) {
