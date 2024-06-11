@@ -128,6 +128,10 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Lycans"),
             buildBepInExRules("CastleStory"),
             buildReturnOfModdingRules("RiskofRainReturns"),
+            buildBepInExRules("Magicraft"),
+            buildBepInExRules("AnotherCrabsTreasure"),
+            buildBepInExRules("GladioMori"),
+            buildBepInExRules("SlipstreamRogueSpace"),
             buildBepInExRules("AmongUs"),
         ]
     }
