@@ -8,7 +8,7 @@ const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
 export class ReturnOfModdingInstaller extends PackageInstaller {
     /**
-     * Handles installation of BepInEx
+     * Handles installation of ReturnOfModding mod loader
      */
     async install(args: InstallArgs) {
         const {

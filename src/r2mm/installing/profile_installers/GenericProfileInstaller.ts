@@ -151,8 +151,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
 
         const activeGame = GameManager.activeGame;
-        const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
-        const variant = bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase());
+
+        // Installation logic for mod loaders.
+        const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
+        const variant = modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase());
 
         const args: InstallArgs = {
             mod: mod,
@@ -164,6 +166,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             return this.installModLoader(variant, args);
         }
 
+        // Installation logic for mods for games that use "plugins",
+        //  i.e. the newer approach for defining installation logic.
         const pluginInstaller = GetInstallerIdForPlugin(activeGame.packageLoader);
 
         if (pluginInstaller !== null) {
@@ -209,8 +213,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async uninstallSubDir(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
         const fs = FsProvider.instance;
-        const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
-        if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
+
+        // Uninstallation logic for mod loaders.
+        const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
+        if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
                     const filePath = path.join(profile.getPathOfProfile(), file);
@@ -227,10 +233,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             }
         }
 
-        // BepInEx & shimloader plugin uninstall logic
+        // Uninstallation logic for regular mods.
         // TODO: Move to work through the installer interface
         const profilePath = profile.getPathOfProfile();
-        const searchLocations = ["BepInEx", "shimloader"];
+        const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding"];
         for (const searchLocation of searchLocations) {
             const bepInExLocation: string = path.join(profilePath, searchLocation);
             if (!(await fs.exists(bepInExLocation))) {
