@@ -40,11 +40,7 @@ describe('ReturnOfModding Installer Tests', () => {
             "manifest.json": `ReturnOfModding/plugins/${name}/manifest.json`,
             "icon.png": `ReturnOfModding/plugins/${name}/icon.png`,
             "main.lua": `ReturnOfModding/plugins/${name}/main.lua`,
-            "custom-path-gets-flattened/path.txt": `ReturnOfModding/plugins/${name}/path.txt`,
-
-            // TODO: These are based on the current install rules but the mod loader's
-            // docs aren't clear if they are actually intended to be distributed with
-            // the mods or automatically created by them.
+            "custom-folder/file.txt": `ReturnOfModding/plugins/${name}/custom-folder/file.txt`,
             "plugins_data/data.dat": `ReturnOfModding/plugins_data/${name}/data.dat`,
             "config/config.cfg": `ReturnOfModding/config/${name}/config.cfg`,
         };
