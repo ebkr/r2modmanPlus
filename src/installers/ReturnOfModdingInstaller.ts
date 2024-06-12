@@ -51,19 +51,19 @@ export class ReturnOfModdingPluginInstaller extends PackageInstaller {
                 route: path.join("ReturnOfModding", "plugins"),
                 isDefaultLocation: true,
                 defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
+                trackingMethod: "SUBDIR_NO_FLATTEN",
                 subRoutes: [],
             },
             {
                 route: path.join("ReturnOfModding", "plugins_data"),
                 defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
+                trackingMethod: "SUBDIR_NO_FLATTEN",
                 subRoutes: [],
             },
             {
                 route: path.join("ReturnOfModding", "config"),
                 defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
+                trackingMethod: "SUBDIR_NO_FLATTEN",
                 subRoutes: [],
             }
         ]
