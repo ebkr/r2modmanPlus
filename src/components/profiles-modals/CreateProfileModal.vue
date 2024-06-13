@@ -1,38 +1,23 @@
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
-import sanitize from "sanitize-filename";
+import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 
 @Component({
     components: {ModalCard}
 })
-export default class CreateProfileModal extends Vue {
+export default class CreateProfileModal extends ProfilesMixin {
+
     private newProfileName = '';
+
     get isOpen(): boolean {
         return this.$store.state.modals.isCreateProfileModalOpen;
     }
+
     closeModal() {
         this.newProfileName = '';
         this.$store.commit('closeCreateProfileModal');
-    }
-
-    get profileList(): string[] {
-        return this.$store.state.profiles.profileList;
-    }
-
-    makeProfileNameSafe(nameToSanitize: string): string {
-        return sanitize(nameToSanitize);
-    }
-
-    doesProfileExist(nameToCheck: string): boolean {
-        if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
-            return true;
-        }
-        const safe: string = this.makeProfileNameSafe(nameToCheck);
-        return (this.profileList.some(function (profile: string) {
-            return profile.toLowerCase() === safe.toLowerCase()
-        }));
     }
 
     // User confirmed creation of a new profile with a name that didn't exist before.

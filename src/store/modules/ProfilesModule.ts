@@ -86,6 +86,6 @@ export const ProfilesModule = {
             Promise.all(promises).then((profileList) => {
                 commit('setProfileList', ["Default", ...profileList.filter(file => file)].sort());
             })
-        }
-    },
+        },
+    }
 }
