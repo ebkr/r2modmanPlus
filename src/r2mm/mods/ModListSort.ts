@@ -54,6 +54,8 @@ export default class ModListSort {
                 return a.getAuthorName().localeCompare(b.getAuthorName());
             case SortNaming.CUSTOM:
                 return 0;
+            case SortNaming.LAST_UPDATED:
+                return b.getDateUpdated().toISOString().localeCompare(a.getDateUpdated().toISOString());
         }
     }
 
