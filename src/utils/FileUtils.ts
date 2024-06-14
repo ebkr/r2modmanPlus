@@ -39,4 +39,15 @@ export default class FileUtils {
             unitDisplay: "narrow",
         }).format(bytes);
     };
+
+    public static async recursiveRemoveDirectoryIfExists(dir: string) {
+        const fs = FsProvider.instance;
+
+        if (!(await fs.exists(dir)) || !(await fs.lstat(dir)).isDirectory()) {
+            return;
+        }
+
+        await FileUtils.emptyDirectory(dir);
+        await fs.rmdir(dir);
+    }
 }

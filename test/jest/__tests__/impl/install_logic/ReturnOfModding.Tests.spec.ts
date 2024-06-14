@@ -44,7 +44,9 @@ describe('ReturnOfModding Installer Tests', () => {
             "plugins_data/data.dat": `ReturnOfModding/plugins_data/${name}/data.dat`,
             "config/config.cfg": `ReturnOfModding/config/${name}/config.cfg`,
         };
-        const expectedAfterUninstall: string[] = [];
+        const expectedAfterUninstall: string[] = [
+            `ReturnOfModding/config/${name}/config.cfg`,
+        ];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
