@@ -45,11 +45,12 @@ export class ReturnOfModdingInstaller extends PackageInstallerV2 {
         try {
             // Delete all files except mods.yml from profile root. Ignore directories.
             for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+                if (file.toLowerCase() === 'mods.yml') {
+                    continue;
+                }
                 const filePath = path.join(profile.getPathOfProfile(), file);
                 if ((await fs.lstat(filePath)).isFile()) {
-                    if (file.toLowerCase() !== 'mods.yml') {
-                        await fs.unlink(filePath);
-                    }
+                    await fs.unlink(filePath);
                 }
             }
         } catch(e) {
