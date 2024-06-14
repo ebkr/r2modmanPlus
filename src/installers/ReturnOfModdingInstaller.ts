@@ -15,32 +15,26 @@ const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
  */
 export class ReturnOfModdingInstaller extends PackageInstallerV2 {
     async install(args: InstallArgs) {
-        const {
-            mod,
-            packagePath,
-            profile,
-        } = args;
+        const {mod, packagePath, profile} = args;
 
         const mapping = MODLOADER_PACKAGES.find((entry) =>
             entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
             entry.loaderType == PackageLoader.RETURN_OF_MODDING,
         );
-        const mappingRoot = mapping ? mapping.rootFolder : "";
 
-        let root: string;
-        if (mappingRoot.trim().length > 0) {
-            root = path.join(packagePath, mappingRoot);
-        } else {
-            root = path.join(packagePath);
+        if (mapping === undefined) {
+            throw new Error(`ReturnOfModdingInstaller found no loader for ${mod.getName()}`);
         }
-        for (const item of (await FsProvider.instance.readdir(root))) {
-            if (!basePackageFiles.includes(item.toLowerCase())) {
-                if ((await FsProvider.instance.stat(path.join(root, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(root, item), path.join(profile.getPathOfProfile(), item));
-                } else {
-                    await FsProvider.instance.copyFolder(path.join(root, item), path.join(profile.getPathOfProfile(), item));
-                }
-            }
+
+        const root = path.join(packagePath, mapping.rootFolder);
+        const allContents = await FsProvider.instance.readdir(root);
+        const toCopy = allContents.filter((x) => !basePackageFiles.includes(x));
+
+        for (const fileOrFolder of toCopy) {
+            await FileUtils.copyFileOrFolder(
+                path.join(root, fileOrFolder),
+                path.join(profile.getPathOfProfile(), fileOrFolder)
+            );
         }
     }
 

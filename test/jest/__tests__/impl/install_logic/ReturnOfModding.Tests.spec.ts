@@ -18,7 +18,8 @@ describe('ReturnOfModding Installer Tests', () => {
     test('Installs and uninstalls the package loader', async () => {
         const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
         const sourceToExpectedDestination = {
-            "ReturnOfModdingPack/version.dll": "version.dll",
+            "ReturnOfModdingPack/version.dll": "version.dll",  // RoRR
+            "ReturnOfModdingPack/d3d12.dll": "d3d12.dll",  // Hades 2
         };
         const expectedAfterUninstall: string[] = [];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
