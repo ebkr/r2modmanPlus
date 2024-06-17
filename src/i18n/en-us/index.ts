@@ -79,11 +79,24 @@ export default {
             allowNsfw: 'Allow NSFW (potentially explicit) mods',
             showDeprecated: 'Show deprecated mods',
             apply: 'Apply filters',
-            categoryFilter: {
-                'Mod has at least one of these categories': 'Mod has at least one of these categories',
-                'Mod has all of these categories': 'Mod has all of these categories',
-                'Mod has none of these categories': 'Mod has none of these categories'
-            }
+            categoryOption: 'Select a category',
+            noSelection: 'No categories selected',
+            leastCategories: 'Mods must contain at least one of these categories',
+            allCategories: 'leastOneCategories',
+            noneCategories: 'Mod has none of these categories'
+        },
+        profile: {
+            delete: 'Delete profile',
+            deleteTip1: 'This will remove all mods, and their config files, installed within this profile.',
+            deleteTip2: 'If this was an accident, click either the darkened area, or the cross inside located in the top right.',
+            deleteTip3: 'Are you sure you\'d like to delete this profile?',
+        },
+        rename: {
+            title: 'Rename a profile',
+            rename: 'Rename',
+            available: '"{0}" is available',
+            exist: '"{0}" is either already in use, or contains invalid characters',
+            required: 'Profile name required'
         },
         error: {
             title: 'Error',
@@ -406,6 +419,8 @@ export default {
             dedicatedInfo: 'Dedicated servers aren\'t directly supported through the manager however a solution is to instead copy the contents of your profile folder into your dedicated server folder yourself.',
             launchingTitle: 'Launching the game from outside the mod manager',
             launchingInfo: 'By design your experience by starting the game through Steam will be vanilla (un-modded).{br}{br}You will need to place the corresponding argument in your platform\'s relevant launch parameter area.{br}For Steam, this would be located in the game\'s properties.{br}{br}Your current argument would be:{code}',
+            dedicatedServers: 'Dedicated servers',
+            dedicatedServersInfo: 'Dedicated servers aren\'t directly supported through the manager however a solution is to insteadcopy the contents of your profile folder into your dedicated server folder yourself.',
             codeElse: 'These parameters will be available after installing BepInEx.',
             failStartTitle1: 'A red box appears when I try to start the game',
             failStartTip1: 'Read the suggestion at the bottom of the red box.',
@@ -496,10 +511,6 @@ export default {
             mayImport: 'You may import the profile',
             fixIssues: 'Fix issues before importing',
             import: 'Import',
-            delete: 'Delete profile',
-            deleteTip1: 'This will remove all mods, and their config files, installed within this profile.',
-            deleteTip2: 'If this was an accident, click either the darkened area, or the cross inside located in the top right.',
-            deleteTip3: 'Are you sure you\'d like to delete this profile?',
             imported: '{0}% imported',
             importedTip1: 'This may take a while, as mods are being downloaded.',
             importedTip2: 'Please do not close {0}.',

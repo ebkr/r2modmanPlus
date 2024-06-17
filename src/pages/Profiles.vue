@@ -192,7 +192,7 @@
                       <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">{{ $t(`pages.profiles.IU`) }}</a>
                     </div>
                     <div class="level-item">
-                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">{{ $t(`pages.profiles.removeProfile`) }}</a>
                     </div>
                   </nav>
                 </div>

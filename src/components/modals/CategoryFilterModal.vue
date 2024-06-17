@@ -6,7 +6,7 @@
         <template v-slot:body>
             <div>
                 <CategorySelectorModal
-                    title="Mods must contain at least one of these categories"
+                    title= {{ $t(`modals.filter.leastCategories`) }}
                     :selected-categories="selectedCategoriesCompareOne"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareOneCategory"
@@ -14,7 +14,7 @@
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods must contain all of these categories"
+                    title= {{ $t(`modals.filter.allCategories`) }}
                     :selected-categories="selectedCategoriesCompareAll"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareAllCategory"
@@ -22,7 +22,7 @@
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods cannot contain any of these categories"
+                    title= {{ $t(`modals.filter.noneCategories`) }}
                     :selected-categories="selectedCategoriesToExclude"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectToExcludeCategory"

@@ -37,10 +37,9 @@
                 </p>
                 <hr/>
 
-                <h2 class='title is-5'>Dedicated servers</h2>
+                <h2 class='title is-5'>{{ $t(`pages.help.dedicatedServers`) }}</h2>
                 <p>
-                    Dedicated servers aren't directly supported through the manager however a solution is to instead
-                    copy the contents of your profile folder into your dedicated server folder yourself.
+                    {{ $t(`pages.help.dedicatedServersInfo`) }}
                 </p>
                 <hr/>
                 <h2 class='title is-5'>{{ $t(`pages.help.launchingTitle`) }}</h2>

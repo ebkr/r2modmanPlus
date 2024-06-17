@@ -78,11 +78,24 @@ export default {
             allowNsfw: '允许 NSFW（可能不适宜）的模组',
             showDeprecated: '显示已弃用的模组',
             apply: '应用筛选器',
-            categoryFilter: {
-                'Mod has at least one of these categories':  '模组至少包含这些类别中的一个',
-                'Mod has all of these categories': '模组包含所有这些类别',
-                'Mod has none of these categories': '模组不包含任何这些类别'
-            }
+            categoryOption: '选择分类',
+            noSelection: '未选分类',
+            leastCategories: '模组至少包含这些类别中的一个',
+            allCategories: '模组包含类别',
+            noneCategories: '模组排除类别'
+        },
+        profile: {
+            delete: '删除档案',
+            deleteTip1: '这将移除此档案中安装的所有模组及其配置文件。',
+            deleteTip2: '如果这是意外，请单击变暗区域或右上角的十字。',
+            deleteTip3: '您确定要删除此档案吗？',
+        },
+        rename: {
+            title: '重命名档案',
+            rename: '重命名',
+            available: '“{0}” 可用',
+            exist: '“{0}” 已在使用中，或包含无效字符',
+            required: '需要档案名称'
         },
         error: {
             title: '错误',
@@ -399,6 +412,8 @@ export default {
             dedicatedInfo: '专用服务器并不直接通过管理器支持，但解决方案是将您的配置文件文件夹的内容手动复制到您的专用服务器文件夹中。',
             launchingTitle: '从模组管理器外部启动游戏',
             launchingInfo: '按设计，通过 Steam 启动游戏的体验将是原版的（未模组化）。您需要在平台的相关启动参数区域放置相应的参数。对于 Steam，这将位于游戏的属性中。您的当前参数将是：{code}',
+            dedicatedServers: '专用服务器',
+            dedicatedServersInfo: '管理器不直接支持专用服务器，但可以将配置文件文件夹中的内容复制到专用服务器文件夹中。',
             codeElse: '这些参数将在安装 BepInEx 后可用。',
             failStartTitle1: '尝试启动游戏时出现红色框',
             failStartTip1: '阅读红色框底部的建议。',
@@ -489,10 +504,6 @@ export default {
             mayImport: '您可以导入档案',
             fixIssues: '在导入前修复问题',
             import: '导入',
-            delete: '删除档案',
-            deleteTip1: '这将移除此档案中安装的所有模组及其配置文件。',
-            deleteTip2: '如果这是意外，请单击变暗区域或右上角的十字。',
-            deleteTip3: '您确定要删除此档案吗？',
             imported: '{0}% 已导入',
             importedTip1: '由于正在下载模组，这可能需要一些时间。',
             importedTip2: '请不要关闭 {0}。',

@@ -35,18 +35,18 @@ export default class DeleteProfileModal extends Vue {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
-            <p class="modal-card-title">Delete profile</p>
+            <p class="modal-card-title">{{ $t(`modals.profile.delete`) }}</p>
         </template>
         <template v-slot:body>
-            <p>This will remove all mods, and their config files, installed within this profile.</p>
-            <p>If this was an accident, click either the darkened area, or the cross inside located in the top right.</p>
-            <p>Are you sure you'd like to delete this profile?</p>
+            <p>{{ $t(`modals.profile.deleteTip1`) }}</p>
+            <p>{{ $t(`modals.profile.deleteTip2`) }}</p>
+            <p>{{ $t(`modals.profile.deleteTip3`) }}</p>
         </template>
         <template v-slot:footer>
             <button
                 class="button is-danger"
                 @click="removeProfile()"
-            >Delete profile</button>
+            >{{ $t(`modals.profile.delete`) }}</button>
         </template>
 
     </ModalCard>
