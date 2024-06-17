@@ -57,4 +57,23 @@ describe('ReturnOfModding Installer Tests', () => {
         expect(result instanceof R2Error).toBeFalsy();
         await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
     });
+
+    test('Package uninstall keeps plugins_data if it contains cache', async () => {
+        const pkg = createManifest("HelperFunctions", "Klehrik");
+        const name = pkg.getName();
+        const sourceToExpectedDestination = {
+            "plugins_data/cache/data.dat": `ReturnOfModding/plugins_data/${name}/cache/data.dat`,
+        };
+        const expectedAfterUninstall: string[] = [
+            `ReturnOfModding/plugins_data/${name}/cache/data.dat`,
+        ];
+        await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
+
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await expectFilesToBeCopied(sourceToExpectedDestination);
+
+        const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
+        expect(result instanceof R2Error).toBeFalsy();
+        await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
+    });
 });
