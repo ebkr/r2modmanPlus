@@ -67,6 +67,7 @@ describe('Installer Tests', () => {
             const expectedAfterUninstall = [
                 "shimloader/cfg/package.cfg",
             ];
+
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
             await fs.mkdirs(cachePkgRoot);
 
@@ -112,16 +113,18 @@ describe('Installer Tests', () => {
 
             for (const destPath of Object.values(sourceToExpectedDestination)) {
                 const fullPath = path.join(profilePath, destPath);
-                const result = await fs.exists(fullPath);
-                if (result) {
+                const doesExist = await fs.exists(fullPath);
+                const shouldExist = expectedAfterUninstall.includes(destPath);
+
+                if (doesExist && !shouldExist) {
                     console.log(`Expected ${fullPath} to NOT exist but IT DOES! All files:`);
                     console.log(JSON.stringify(await getTree(profilePath), null, 2));
+                } else if (shouldExist && !doesExist) {
+                    console.log(`Expected ${fullPath} to exist but IT DOESN'T! All files:`);
+                    console.log(JSON.stringify(await getTree(profilePath), null, 2));
                 }
-                if (expectedAfterUninstall.indexOf(destPath) > -1) {
-                    expect(result).toBeTruthy();
-                } else {
-                    expect(result).toBeFalsy();
-                }
+
+                expect(doesExist).toEqual(shouldExist);
             }
         });
     });

@@ -68,6 +68,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("0xFFF7-votv_shimloader", "", PackageLoader.SHIMLOADER),
     new ModLoaderPackageMapping("Thunderstore-unreal_shimloader", "", PackageLoader.SHIMLOADER),
     new ModLoaderPackageMapping("Thunderstore-lovely", "", PackageLoader.LOVELY),
+    new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
 ];
 
 
@@ -172,6 +173,12 @@ const VARIANTS = {
     AgainstTheStorm: MODLOADER_PACKAGES,
     Lycans: MODLOADER_PACKAGES,
     CastleStory: MODLOADER_PACKAGES,
+    Panicore: MODLOADER_PACKAGES,
+    RiskofRainReturns: MODLOADER_PACKAGES,
+    Magicraft: MODLOADER_PACKAGES,
+    AnotherCrabsTreasure: MODLOADER_PACKAGES,
+    GladioMori: MODLOADER_PACKAGES,
+    SlipstreamRogueSpace: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

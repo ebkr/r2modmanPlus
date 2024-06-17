@@ -75,10 +75,6 @@ export default {
     modals: {
         filter: {
             title: '筛选模组分类',
-            categories: '分类',
-            categoryOption: '选择一个分类',
-            selectedCategories: '已选分类：',
-            noSelection: '未选择分类',
             allowNsfw: '允许 NSFW（可能不适宜）的模组',
             showDeprecated: '显示已弃用的模组',
             apply: '应用筛选器',

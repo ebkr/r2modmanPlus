@@ -63,7 +63,7 @@ import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
 import UtilityMixin from '../mixins/UtilityMixin.vue';
-import Languages from 'src/model/enums/Languages';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
         components: {
@@ -193,6 +193,14 @@ import Languages from 'src/model/enums/Languages';
                 async () => this.$t('settings.view.values[4]'),
                 'fa-trash',
                 () => this.emitInvoke('CleanCache')
+            ),
+            new SettingsRow(
+                'Debugging',
+                'Toggle preferred Thunderstore CDN',
+                'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
+                async () => `Current: ${CdnProvider.current.label} (${CdnProvider.current.url})`,
+                'fa-exchange-alt',
+                CdnProvider.togglePreferredCdn
             ),
             new SettingsRow(
                 'Profile',

@@ -127,7 +127,8 @@ export default class ModLinker {
                             const exclusionsList = [
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
-                                "_state", "userlibs", "qmods", "shimloader"
+                                "_state", "userlibs", "qmods", "shimloader",
+                                "returnofmodding"
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {

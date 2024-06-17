@@ -174,6 +174,7 @@ let assignId = 0;
                                 const existing = DownloadModModal.allVersions[assignIndex]
                                 existing[1].failed = true;
                                 DownloadModModal.allVersions[assignIndex] = [currentAssignId, existing[1]];
+                                DownloadModModal.addCdnSolutionToError(err);
                                 return reject(err);
                             }
                         } else if (status === StatusEnum.PENDING) {
@@ -303,6 +304,7 @@ let assignId = 0;
                         const existing = DownloadModModal.allVersions[assignIndex]
                         existing[1].failed = true;
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
+                        DownloadModModal.addCdnSolutionToError(err);
                         this.$store.commit('error/handleError', err);
                         return;
                     }
@@ -344,6 +346,7 @@ let assignId = 0;
                             const existing = DownloadModModal.allVersions[assignIndex]
                             existing[1].failed = true;
                             this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
+                            DownloadModModal.addCdnSolutionToError(err);
                             this.$store.commit('error/handleError', err);
                             return;
                         }
@@ -429,6 +432,15 @@ let assignId = 0;
                 }
                 return resolve();
             });
+        }
+
+        static addCdnSolutionToError(err: R2Error): void {
+            if (
+                err.name.includes("Failed to download mod") ||
+                err.name.includes("System.Net.WebException")
+            ) {
+                err.solution = "Try toggling the preferred Thunderstore CDN in the settings";
+            }
         }
     }
 

@@ -2,14 +2,14 @@ import GameInstructionGenerator from '../GameInstructionGenerator';
 import { GameInstruction } from '../../GameInstructions';
 import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
-import { DynamicGameInstruction } from '../../DynamicGameInstruction';
+import * as path from 'path';
 
-export default class NorthstarGameInstructions extends GameInstructionGenerator {
+export default class ReturnOfModdingGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `-northstar -profile="${DynamicGameInstruction.NORTHSTAR_DIRECTORY}"`,
-            vanillaParameters: `-vanilla`
-        }
+            moddedParameters: `--rom_modding_root_folder "${profile.getPathOfProfile()}"`,
+            vanillaParameters: "--rom_enabled false"
+        };
     }
 }

@@ -4,39 +4,30 @@
             <p class="card-header-title">{{ $t('modals.filter.title') }}</p>
         </template>
         <template v-slot:body>
-            <div class="input-group">
-                <label>{{ $t('modals.filter.categories') }}</label>
-                <select class="select select--content-spacing" @change="selectCategory($event)">
-                    <option selected disabled>
-                        {{ $t('modals.filter.categoryOption') }}
-                    </option>
-                    <option v-for="(key, index) in unselectedCategories" :key="`category--${key}-${index}`">
-                        {{ key }}
-                    </option>
-                </select>
-            </div>
-            <br/>
-            <div class="input-group">
-                <label>{{ $t('modals.filter.selectedCategories') }}</label>
-                <div class="field has-addons" v-if="selectedCategories.length > 0">
-                    <div class="control" v-for="(key, index) in selectedCategories" :key="`${key}-${index}`">
-                        <span class="block margin-right">
-                            <a href="#" @click="unselectCategory(key)">
-                                <span class="tags has-addons">
-                                    <span class="tag">{{ key }}</span>
-                                    <span class="tag is-danger">
-                                        <i class="fas fa-times"></i>
-                                    </span>
-                                </span>
-                            </a>
-                        </span>
-                    </div>
-                </div>
-                <div class="field has-addons" v-else>
-                    <span class="tags">
-                        <span class="tag">{{ $t('modals.filter.noSelection') }}</span>
-                    </span>
-                </div>
+            <div>
+                <CategorySelectorModal
+                    title="Mods must contain at least one of these categories"
+                    :selected-categories="selectedCategoriesCompareOne"
+                    :selectable-categories="unselectedCategories"
+                    @selected-category="selectCompareOneCategory"
+                    @deselected-category="unselectCategory"
+                />
+                <hr/>
+                <CategorySelectorModal
+                    title="Mods must contain all of these categories"
+                    :selected-categories="selectedCategoriesCompareAll"
+                    :selectable-categories="unselectedCategories"
+                    @selected-category="selectCompareAllCategory"
+                    @deselected-category="unselectCategory"
+                />
+                <hr/>
+                <CategorySelectorModal
+                    title="Mods cannot contain any of these categories"
+                    :selected-categories="selectedCategoriesToExclude"
+                    :selectable-categories="unselectedCategories"
+                    @selected-category="selectToExcludeCategory"
+                    @deselected-category="unselectCategory"
+                />
             </div>
             <hr/>
             <div>
@@ -61,22 +52,6 @@
                     <label for="showDeprecatedCheckbox">{{ $t('modals.filter.showDeprecated') }}</label>
                 </div>
             </div>
-            <br/>
-            <div>
-                <div v-for="(key, index) in categoryFilterValues" :key="`cat-filter-${key}-${index}`">
-                    <input
-                        name="categoryFilterCondition"
-                        type="radio"
-                        :id="`cat-filter-${key}-${index}`"
-                        :value=key
-                        :checked="index === 0 ? true : undefined" v-model="categoryFilterMode"
-                    />
-                    <label :for="`cat-filter-${key}-${index}`">
-                        <span class="margin-right margin-right--half-width" />
-                        {{ $t(`modals.filter.categoryFilter['${key}']`) }}
-                    </label>
-                </div>
-            </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
@@ -90,10 +65,10 @@
 import { Component, Vue } from "vue-property-decorator";
 
 import { Modal } from '../../components/all';
-import CategoryFilterMode from '../../model/enums/CategoryFilterMode';
+import CategorySelectorModal from '../../components/modals/CategorySelectorModal.vue';
 
 @Component({
-    components: { Modal }
+    components: { CategorySelectorModal, Modal }
 })
 export default class CategoryFilterModal extends Vue {
     get allowNsfw(): boolean {
@@ -102,18 +77,6 @@ export default class CategoryFilterModal extends Vue {
 
     set allowNsfw(value: boolean) {
         this.$store.commit("modFilters/setAllowNsfw", value);
-    }
-
-    get categoryFilterMode(): CategoryFilterMode {
-        return this.$store.state.modFilters.categoryFilterMode;
-    }
-
-    set categoryFilterMode(value: CategoryFilterMode) {
-        this.$store.commit("modFilters/setCategoryFilterMode", value);
-    }
-
-    get categoryFilterValues() {
-        return Object.values(CategoryFilterMode);
     }
 
     get showDeprecatedPackages(): boolean {
@@ -136,17 +99,43 @@ export default class CategoryFilterModal extends Vue {
         return this.$store.state.modals.isCategoryFilterModalOpen;
     }
 
-    selectCategory(event: Event) {
+    selectCompareOneCategory(event: Event) {
         if (!(event.target instanceof HTMLSelectElement)) {
             return;
         }
 
-        this.$store.commit("modFilters/selectCategory", event.target.value);
+        this.$store.commit("modFilters/selectCategoryToCompareOne", event.target.value);
         event.target.selectedIndex = 0;
     }
 
-    get selectedCategories(): string[] {
-        return this.$store.state.modFilters.selectedCategories;
+    selectCompareAllCategory(event: Event) {
+        if (!(event.target instanceof HTMLSelectElement)) {
+            return;
+        }
+
+        this.$store.commit("modFilters/selectCategoryToCompareAll", event.target.value);
+        event.target.selectedIndex = 0;
+    }
+
+    selectToExcludeCategory(event: Event) {
+        if (!(event.target instanceof HTMLSelectElement)) {
+            return;
+        }
+
+        this.$store.commit("modFilters/selectCategoryToExclude", event.target.value);
+        event.target.selectedIndex = 0;
+    }
+
+    get selectedCategoriesCompareOne(): string[] {
+        return this.$store.state.modFilters.selectedCategoriesCompareOne;
+    }
+
+    get selectedCategoriesCompareAll(): string[] {
+        return this.$store.state.modFilters.selectedCategoriesCompareAll;
+    }
+
+    get selectedCategoriesToExclude(): string[] {
+        return this.$store.state.modFilters.selectedCategoriesToExclude;
     }
 
     unselectCategory(category: string) {

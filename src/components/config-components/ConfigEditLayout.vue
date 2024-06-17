@@ -38,7 +38,7 @@
                         </p>
                         <br/>
                         <div class='settings-input-container'>
-                            <template v-if='line.hasRange()'>
+                            <template v-if='line.hasRange'>
                                 <input
                                     type="range"
                                     class="slider is-fullwidth is-circle is-small"

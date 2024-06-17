@@ -76,10 +76,6 @@ export default {
     modals: {
         filter: {
             title: 'Filter mod categories',
-            categories: 'Categories',
-            categoryOption: 'Select a category',
-            selectedCategories: 'Selected categories:',
-            noSelection: 'No categories selected',
             allowNsfw: 'Allow NSFW (potentially explicit) mods',
             showDeprecated: 'Show deprecated mods',
             apply: 'Apply filters',
@@ -88,7 +84,6 @@ export default {
                 'Mod has all of these categories': 'Mod has all of these categories',
                 'Mod has none of these categories': 'Mod has none of these categories'
             }
-
         },
         error: {
             title: 'Error',
