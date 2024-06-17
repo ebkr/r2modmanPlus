@@ -101,16 +101,39 @@ export class ReturnOfModdingPluginInstaller extends PackageInstallerV2 {
     }
 
     async uninstall(args: InstallArgs): Promise<void> {
+        const fs = FsProvider.instance;
         const {mod, profile} = args;
 
+        // Remove the plugin dir.
+        // Remove the data dir, but keep the cache subdir if it exists.
+        // Leave the config dir alone.
         try {
-            // Persist config dir, remove the rest.
-            await FileUtils.recursiveRemoveDirectoryIfExists(
-                path.join(profile.getPathOfProfile(), this._ROOT, this._PLUGINS, mod.getName())
-            );
-            await FileUtils.recursiveRemoveDirectoryIfExists(
-                path.join(profile.getPathOfProfile(), this._ROOT, this._DATA, mod.getName())
-            );
+            const pluginPath = path.join(profile.getPathOfProfile(), this._ROOT, this._PLUGINS, mod.getName())
+            const dataPath = path.join(profile.getPathOfProfile(), this._ROOT, this._DATA, mod.getName());
+
+            await FileUtils.recursiveRemoveDirectoryIfExists(pluginPath);
+
+            if (await fs.exists(dataPath)) {
+                let hasCache = false;
+
+                for (const file of (await fs.readdir(dataPath))) {
+                    const filePath = path.join(dataPath, file);
+
+                    if ((await fs.lstat(filePath)).isDirectory()) {
+                        if (file.toLowerCase() === "cache") {
+                            hasCache = true;
+                        } else {
+                            await FileUtils.recursiveRemoveDirectoryIfExists(filePath);
+                        }
+                    } else {
+                        await fs.unlink(filePath);
+                    }
+                }
+
+                if (!hasCache) {
+                    await FileUtils.recursiveRemoveDirectoryIfExists(dataPath);
+                }
+            }
         } catch(e) {
             const name = `Failed to delete ${mod.getName()} files from profile`;
             const solution = "Is the game still running?";
