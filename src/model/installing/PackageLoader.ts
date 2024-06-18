@@ -1,5 +1,4 @@
-import { PackageInstallerId, PackageInstallers } from "../../installers/registry";
-import Game from "../game/Game";
+import { PackageInstallerId } from '../../installers/registry';
 
 export enum PackageLoader {
     BEPINEX,
@@ -8,6 +7,8 @@ export enum PackageLoader {
     GODOT_ML,
     ANCIENT_DUNGEON_VR,
     SHIMLOADER,
+    LOVELY,
+    RETURN_OF_MODDING,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {
@@ -17,8 +18,10 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.BEPINEX: return "bepinex";
         case PackageLoader.MELON_LOADER: return "melonloader";
         case PackageLoader.GODOT_ML: return "godotml";
-        case PackageLoader.NORTHSTAR: return "bepinex";
+        case PackageLoader.NORTHSTAR: return "northstar";
         case PackageLoader.SHIMLOADER: return "shimloader";
+        case PackageLoader.LOVELY: return "lovely";
+        case PackageLoader.RETURN_OF_MODDING: return "returnofmodding";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
@@ -26,6 +29,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
 export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstallerId | null {
     switch (loader) {
         case PackageLoader.SHIMLOADER: return "shimloader-plugin";
+        case PackageLoader.LOVELY: return "lovely-plugin";
     }
 
     return null;

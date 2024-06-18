@@ -53,20 +53,17 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
-import Profile from '../../model/Profile';
 import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
 import VersionNumber from '../../model/VersionNumber';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { Hero } from '../all';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ManifestV2 from '../../model/ManifestV2';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import GameManager from '../../model/game/GameManager';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
-import ApiCacheUtils from '../../utils/ApiCacheUtils';
 import moment from 'moment';
 import UtilityMixin from '../mixins/UtilityMixin.vue';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
         components: {
@@ -82,9 +79,14 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
         private search: string = '';
         private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
         private searchableSettings: SettingsRow[] = [];
-        private downloadingThunderstoreModList: boolean = false;
 
-        private activeGame!: Game;
+        get activeGame(): Game {
+            return this.$store.state.activeGame;
+        }
+
+        get settings(): ManagerSettings {
+            return this.$store.getters['settings'];
+        };
 
         get localModList(): ManifestV2[] {
             return this.$store.state.profile.modList;
@@ -110,8 +112,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 `Change ${this.activeGame.displayName} directory`,
                 `Change the location of the ${this.activeGame.displayName} directory that ${this.appName} uses.`,
                 async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    if (settings.getContext().gameSpecific.gameDirectory !== null) {
+                    if (this.settings.getContext().gameSpecific.gameDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
                         if (!(directory instanceof R2Error)) {
                             return directory;
@@ -134,7 +135,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Browse profile folder',
                 'Open the folder where mods are stored for the current profile.',
                 async () => {
-                    return Profile.getActiveProfile().getPathOfProfile();
+                    return this.$store.getters['profile/activeProfile'].getPathOfProfile();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')
@@ -162,8 +163,9 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    return settings.getContext().global.ignoreCache ? 'Current: cache is disabled' : 'Current: cache is enabled (recommended)';
+                    return this.settings.getContext().global.ignoreCache
+                        ? 'Current: cache is disabled'
+                        : 'Current: cache is enabled (recommended)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleDownloadCache')
@@ -193,11 +195,19 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 () => this.emitInvoke('CleanCache')
             ),
             new SettingsRow(
+                'Debugging',
+                'Toggle preferred Thunderstore CDN',
+                'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
+                async () => `Current: ${CdnProvider.current.label} (${CdnProvider.current.url})`,
+                'fa-exchange-alt',
+                CdnProvider.togglePreferredCdn
+            ),
+            new SettingsRow(
                 'Profile',
                 'Change profile',
                 'Change the mod profile.',
                 async () => {
-                    return `Current profile: ${Profile.getActiveProfile().getProfileName()}`
+                    return `Current profile: ${this.$store.getters['profile/activeProfile'].getProfileName()}`
                 },
                 'fa-file-import',
                 () => this.emitInvoke('ChangeProfile')
@@ -261,8 +271,9 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Toggle funky mode',
                 'Enable/disable funky mode.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    return settings.getContext().global.funkyModeEnabled ? 'Current: enabled' : 'Current: disabled (default)';
+                    return this.settings.getContext().global.funkyModeEnabled
+                        ? 'Current: enabled'
+                        : 'Current: disabled (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('ToggleFunkyMode')
@@ -272,8 +283,9 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Switch theme',
                 'Switch between light and dark themes.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    return settings.getContext().global.darkTheme ? 'Current: dark theme' : 'Current: light theme (default)';
+                    return this.settings.getContext().global.darkTheme
+                        ? 'Current: dark theme'
+                        : 'Current: light theme (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchTheme')
@@ -283,8 +295,9 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Switch card display type',
                 'Switch between expanded or collapsed cards.',
                 async () => {
-                    const settings = await ManagerSettings.getSingleton(this.activeGame);
-                    return settings.getContext().global.expandedCards ? 'Current: expanded' : 'Current: collapsed (default)';
+                    return this.settings.getContext().global.expandedCards
+                        ? 'Current: expanded'
+                        : 'Current: collapsed (default)';
                 },
                 'fa-exchange-alt',
                 () => this.emitInvoke('SwitchCard')
@@ -294,34 +307,32 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.downloadingThunderstoreModList) {
+                        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
                             return "Checking for new releases";
-                        } else {
-                            if (this.$store.state.apiConnectionError.length > 0) {
-                                return "Error getting new mods: " + this.$store.state.apiConnectionError;
-                            } else {
-                                const lastRequest = await ApiCacheUtils.getLastRequestCached();
-                                if (lastRequest !== undefined) {
-                                    return "Cache date: " + moment(new Date(lastRequest.time)).format("MMMM Do YYYY, h:mm:ss a");
-                                }
-                            }
+                        }
+                        if (this.$store.state.tsMods.connectionError.length > 0) {
+                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
+                        }
+                        if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
+                            return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
                         }
                         return "No API information available";
                     },
                 'fa-exchange-alt',
                 async () => {
-                    if (!this.downloadingThunderstoreModList) {
-                        this.downloadingThunderstoreModList = true;
-                        await this.$store.dispatch("updateApiConnectionError", "");
+                    if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+                        return;
+                    }
 
-                        try {
-                            await this.refreshThunderstoreModList();
-                        } catch (e) {
-                            const err = e instanceof Error ? e.message : "Unknown error";
-                            await this.$store.dispatch("updateApiConnectionError", err);
-                        } finally {
-                            this.downloadingThunderstoreModList = false;
-                        }
+                    this.$store.commit("tsMods/startBackgroundUpdate");
+                    this.$store.commit("tsMods/setConnectionError", "");
+
+                    try {
+                        await this.refreshThunderstoreModList();
+                    } catch (e) {
+                        this.$store.commit("tsMods/setConnectionError", e);
+                    } finally {
+                        this.$store.commit("tsMods/finishBackgroundUpdate");
                     }
                 }
             ),
@@ -359,11 +370,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                 .sort((a, b) => a.action.localeCompare(b.action));
         }
 
-        beforeCreate() {
-            this.activeGame = GameManager.activeGame;
-        }
-
-        created() {
+        async created() {
             if ([StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(this.activeGame.activePlatform.storePlatform)) {
                 this.settingsList.push(
                     new SettingsRow(
@@ -371,8 +378,7 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
                         'Change Steam directory',
                         `Change the location of the Steam directory that ${this.appName} uses.`,
                         async () => {
-                            const settings = await ManagerSettings.getSingleton(this.activeGame);
-                            if (settings.getContext().global.steamDirectory !== null) {
+                            if (this.settings.getContext().global.steamDirectory !== null) {
                                 const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
                                 if (!(directory instanceof R2Error)) {
                                     return directory;
@@ -387,17 +393,16 @@ import UtilityMixin from '../mixins/UtilityMixin.vue';
             }
             this.settingsList = this.settingsList.sort((a, b) => a.action.localeCompare(b.action));
             this.searchableSettings = this.settingsList;
-            ManagerSettings.getSingleton(GameManager.activeGame).then(async settings => {
-                const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
-                if (!(gameDirectory instanceof R2Error)) {
-                    await settings.setGameDirectory(gameDirectory);
-                }
 
-                const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-                if (!(steamDirectory instanceof R2Error)) {
-                    await settings.setSteamDirectory(steamDirectory);
-                }
-            });
+            const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
+            if (!(gameDirectory instanceof R2Error)) {
+                await this.settings.setGameDirectory(gameDirectory);
+            }
+
+            const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+            if (!(steamDirectory instanceof R2Error)) {
+                await this.settings.setSteamDirectory(steamDirectory);
+            }
         }
 
         changeTab(tab: string) {

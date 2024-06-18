@@ -65,9 +65,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
-import GameManager from '../../model/game/GameManager';
 import Profile from '../../model/Profile';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
 import {
     LaunchMode,
     launch,
@@ -78,16 +76,20 @@ import {
 
 @Component
 export default class NavigationMenu extends Vue {
-    private activeGame!: Game;
-    private contextProfile: Profile | null = null;
     private LaunchMode = LaunchMode;
 
-    get thunderstoreModCount() {
-        let mods: ThunderstoreMod[] = this.$store.state.thunderstoreModList || [];
+    get activeGame(): Game {
+      return this.$store.state.activeGame;
+    }
 
+    get profile(): Profile {
+        return this.$store.getters['profile/activeProfile'];
+    };
+
+    get thunderstoreModCount() {
         return this.$store.state.modFilters.showDeprecatedPackages
-          ? mods.length
-          : mods.filter((m) => !m.isDeprecated()).length;
+          ? this.$store.state.tsMods.mods.length
+          : this.$store.getters['tsMods/undeprecatedModCount'];
     }
 
     get localModCount(): number {
@@ -105,20 +107,15 @@ export default class NavigationMenu extends Vue {
             await throwIfNoGameDir(this.activeGame);
 
             if (mode === LaunchMode.MODDED) {
-                await linkProfileFiles(this.activeGame, this.contextProfile!);
+                await linkProfileFiles(this.activeGame, this.profile);
             }
 
             this.$store.commit("openGameRunningModal");
-            await launch(this.activeGame, this.contextProfile!, mode);
+            await launch(this.activeGame, this.profile, mode);
         } catch (error) {
             this.$store.commit("closeGameRunningModal");
             this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
         }
-    }
-
-    created() {
-        this.activeGame = GameManager.activeGame;
-        this.contextProfile = Profile.getActiveProfile();
     }
 }
 

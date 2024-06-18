@@ -64,6 +64,8 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.ANCIENT_DUNGEON_VR]: runners,
         [PackageLoader.GODOT_ML]: runners,
         [PackageLoader.SHIMLOADER]: runners,
+        [PackageLoader.LOVELY]: runners,
+        [PackageLoader.RETURN_OF_MODDING]: runners,
     }
 }
 

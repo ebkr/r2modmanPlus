@@ -38,6 +38,10 @@ export default class LogOutput {
                 fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
+            case PackageLoader.RETURN_OF_MODDING:
+                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'ReturnOfModding', 'LogOutput.log'))
+                    .then(value => this._exists = value);
+                break;
             case PackageLoader.MELON_LOADER:
             case PackageLoader.NORTHSTAR:
                 fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'MelonLoader', 'Latest.log'))

@@ -57,7 +57,6 @@
 
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import ConfigFile from '../../model/file/ConfigFile';
-import Profile from '../../model/Profile';
 import * as path from 'path';
 import FileTree from '../../model/file/FileTree';
 import R2Error from '../../model/errors/R2Error';
@@ -104,7 +103,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 
         async created() {
             const fs = FsProvider.instance;
-            const configLocation = Profile.getActiveProfile().getPathOfProfile();
+            const configLocation = this.$store.getters['profile/activeProfile'].getPathOfProfile();
             const tree = await FileTree.buildFromLocation(configLocation);
             if (tree instanceof R2Error) {
                 return;

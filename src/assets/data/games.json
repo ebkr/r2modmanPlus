@@ -2340,6 +2340,58 @@
         "relativeFileExclusions": []
       }
     },
+    "risk-of-rain-returns": {
+      "label": "risk-of-rain-returns",
+      "meta": {
+        "displayName": "Risk of Rain Returns",
+        "iconUrl": "RiskOfRainReturns.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1337520"
+        }
+      ],
+      "r2modman": {
+        "internalFolderName": "RiskofRainReturns",
+        "dataFolderName": "",
+        "settingsIdentifier": "RiskofRainReturns",
+        "packageIndex": "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/",
+        "exclusionsUrl": "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
+        "steamFolderName": "Risk of Rain Returns",
+        "exeNames": [
+          "Risk of Rain Returns.exe"
+        ],
+        "gameInstancetype": "game",
+        "gameSelectionDisplayMode": "visible",
+        "modLoaderPackages": [
+          {
+            "packageId": "ReturnOfModding-ReturnOfModding",
+            "rootFolder": "ReturnOfModdingPack",
+            "loader": "returnofmodding"
+          }
+        ],
+        "installRules": [
+          {
+            "route": "ReturnOfModding/plugins",
+            "trackingMethod": "subdir",
+            "defaultFileExtensions": [
+              ".lua"
+            ],
+            "isDefaultLocation": true
+          },
+          {
+            "route": "ReturnOfModding/plugins_data",
+            "trackingMethod": "subdir"
+          },
+          {
+            "route": "ReturnOfModding/config",
+            "trackingMethod": "subdir"
+          }
+        ],
+        "relativeFileExclusions": []
+      }
+    },
     "rogue-genesia": {
       "uuid": "02371030-eb56-4d5d-bed5-fa68446ff6ac",
       "label": "rogue-genesia",

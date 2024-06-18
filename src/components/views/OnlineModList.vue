@@ -61,13 +61,13 @@
 import { Prop, Vue } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import GameManager from '../../model/game/GameManager';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
+import { valueToReadableDate } from '../../utils/DateUtils';
 
 @Component({
     components: {
@@ -82,17 +82,19 @@ export default class OnlineModList extends Vue {
     @Prop()
     pagedModList!: ThunderstoreMod[];
 
-    settings: ManagerSettings = new ManagerSettings();
-
     private cardExpanded: boolean = false;
     private funkyMode: boolean = false;
+
+    get settings(): ManagerSettings {
+        return this.$store.getters["settings"];
+    };
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
     }
 
     get deprecationMap(): Map<string, boolean> {
-        return this.$store.state.deprecatedMods;
+        return this.$store.state.tsMods.deprecated;
     }
 
     isModDeprecated(key: any) {
@@ -111,8 +113,7 @@ export default class OnlineModList extends Vue {
     }
 
     getReadableDate(date: Date): string {
-        const dateObject: Date = new Date(date);
-        return `${dateObject.toDateString()}, ${dateObject.toLocaleTimeString()}`
+        return valueToReadableDate(date);
     }
 
     getReadableCategories(tsMod: ThunderstoreMod) {
@@ -127,7 +128,6 @@ export default class OnlineModList extends Vue {
     }
 
     async created() {
-        this.settings = await ManagerSettings.getSingleton(GameManager.activeGame);
         this.cardExpanded = this.settings.getContext().global.expandedCards;
         this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
     }

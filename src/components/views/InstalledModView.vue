@@ -24,7 +24,7 @@
                                 You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
                                 Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?
                             </span>
-                            <a class="float-right cursor-pointer" @click="$store.dispatch('dismissUpdateAll')">
+                            <a class="float-right cursor-pointer" @click="$store.commit('profile/dismissUpdateAll')">
                                 <i class="fas fa-times" />
                             </a>
                         </div>
@@ -50,7 +50,7 @@ import LocalModListProvider from "../../providers/components/loaders/LocalModLis
 
 export default class InstalledModView extends Vue {
     get dismissedUpdateAll() {
-        return this.$store.state.dismissedUpdateAll;
+        return this.$store.state.profile.dismissedUpdateAll;
     }
 
     get localModList(): ManifestV2[] {
