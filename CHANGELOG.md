@@ -1,3 +1,28 @@
+### 3.1.49
+#### Games added
+  - Gladio Mori
+  - Slipstream: Rogue Space
+  - Panicore
+  - Magicraft
+  - Another Crab's Treasure
+  - Bopl Battle
+  - Vertigo 2
+  - Against the Storm
+  - Lycans
+  - Castle Story
+
+#### General fixes
+- Better online mod filtering
+- Filter local mod list by last updated date
+  - This will only apply to mods updated as of this release
+- Smaller fixes / tweaks
+
+#### BONEWORKS / BONELAB
+- BONEWORKS and BONELAB now have "recommended" mod loader versions to aid the experience
+
+#### Titanfall 2 / Northstar
+- The Northstar mod loader package installs correctly again
+
 ### 3.1.48
 - Games added:
   - Content Warning
