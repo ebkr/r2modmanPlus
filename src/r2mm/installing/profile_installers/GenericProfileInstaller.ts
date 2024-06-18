@@ -21,6 +21,7 @@ import { PackageInstallerId, PackageInstallers } from "../../../installers/regis
 import { InstallArgs, PackageInstallerV2 } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
+import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -45,7 +46,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
         if (installerId) {
             const installer = PackageInstallers[installerId];
-            if (installer instanceof ShimloaderPluginInstaller) {
+            if (
+                installer instanceof ShimloaderPluginInstaller ||
+                installer instanceof ReturnOfModdingPluginInstaller
+            ) {
                 rule = installer.installer.rule;
             }
         }
@@ -54,7 +58,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
 
         const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
-            .filter(value => value.trackingMethod === "SUBDIR");
+            .filter(value => ["SUBDIR", "SUBDIR_NO_FLATTEN"].includes(value.trackingMethod));
 
         for (const dir of subDirPaths) {
             if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {

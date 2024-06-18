@@ -146,3 +146,32 @@ export async function expectFilesToBeRemoved(
         expect(doesExist).toEqual(shouldExist);
     }
 }
+
+export async function createFilesIntoProfile(filePaths: string[]) {
+    const fs = FsProvider.instance;
+    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+
+    for (const filePath of filePaths) {
+        const destPath = path.join(profilePath, ...filePath.split('/'));
+        await fs.mkdirs(path.dirname(destPath));
+        await fs.writeFile(destPath, "");
+        expect(await fs.exists(destPath));
+    }
+}
+
+export async function expectFilesToExistInProfile(filePaths: string[]) {
+    const fs = FsProvider.instance;
+    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+
+    for (const filePath of filePaths) {
+        const fullPath = path.join(profilePath, filePath);
+        const doesExist = await fs.exists(fullPath);
+
+        if (!doesExist) {
+            console.log(`Expected ${fullPath} to exist but it DOES NOT! All files:`);
+            console.log(JSON.stringify(await getTree(profilePath), null, 2));
+        }
+
+        expect(doesExist).toBeTruthy();
+    }
+}
