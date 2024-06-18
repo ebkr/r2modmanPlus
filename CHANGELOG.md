@@ -10,6 +10,7 @@
   - Against the Storm
   - Lycans
   - Castle Story
+  - Balatro
 
 #### General fixes
 - Better online mod filtering
