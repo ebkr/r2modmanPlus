@@ -670,6 +670,12 @@ export default class GameManager {
             "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["srs"]),
+
+        new Game("Back to the Dawn", "BacktotheDawn", "BacktotheDawn",
+            "MetalHeadGames", ["Back To The Dawn.exe"], "Back To The Dawn_Data",
+            "https://thunderstore.io/c/back-to-the-dawn/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1735700")], "BackToTheDawn.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bttd"]),
     ];
 
     static get activeGame(): Game {
