@@ -138,6 +138,7 @@ import Component, { mixins } from 'vue-class-component';
 
 import { Hero, Link, Progress } from '../components/all';
 import SplashMixin from '../components/mixins/SplashMixin.vue';
+import Game from '../model/game/Game';
 import RequestItem from '../model/requests/RequestItem';
 import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
@@ -159,7 +160,8 @@ export default class Splash extends mixins(SplashMixin) {
     requests = [
         new RequestItem('UpdateCheck', 0),
         new RequestItem('ThunderstoreDownload', 0),
-        new RequestItem('ExclusionsList', 0)
+        new RequestItem('ExclusionsList', 0),
+        new RequestItem('CacheOperations', 0)
     ];
 
     // Ensure that r2modman isn't outdated.
@@ -175,10 +177,12 @@ export default class Splash extends mixins(SplashMixin) {
 
     async moveToNextScreen() {
         if (process.platform === 'linux') {
-            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(this.activeGame)) {
+            const activeGame: Game = this.$store.state.activeGame;
+
+            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
                 console.log('Not proton game');
                 await this.ensureWrapperInGameFolder();
-                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(this.activeGame);
+                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
                 console.log(`Launch arguments for this game:`, launchArgs);
                 if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
                     this.$router.push({name: 'linux'});
@@ -194,16 +198,15 @@ export default class Splash extends mixins(SplashMixin) {
     }
 
     retryConnection() {
-        this.getRequestItem('UpdateCheck').setProgress(0);
-        this.getRequestItem('ExclusionsList').setProgress(0);
-        this.getRequestItem('ThunderstoreDownload').setProgress(0);
+        this.resetRequestProgresses();
         this.isOffline = false;
         this.checkForUpdates();
     }
 
     private async ensureWrapperInGameFolder() {
         const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
-        console.log(`Ensuring wrapper for current game ${this.activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
+        const activeGame: Game = this.$store.state.activeGame;
+        console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
         try {
             await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
             const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));

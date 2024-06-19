@@ -34,7 +34,8 @@
   - **ExeName**
     - An array of different executable names (for all platforms). For `StorePlatform` types such as `OTHER` and `STEAM_DIRECT` then the first found executable is used and called when the game is launched.
   - **DataFolderName**
-    - Only relevant for Mono (C#) Unity games. Only used for the `Preloader Fix` in the manager settings.
+    - Required for Unreal games relying on unreal-shimloader.
+    - Relevant for Mono (C#) Unity games, which use it for the `Preloader Fix` in the manager settings.
   - **TsUrl**
     - The Thunderstore API endpoint for the listing.
   - **ExclusionsUrl**

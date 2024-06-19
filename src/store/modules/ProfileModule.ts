@@ -9,7 +9,6 @@ import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisa
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModListSort from '../../r2mm/mods/ModListSort';
@@ -25,6 +24,7 @@ interface State {
     direction?: SortDirection;
     disabledPosition?: SortLocalDisabledMods;
     searchQuery: string;
+    dismissedUpdateAll: boolean;
 }
 
 /**
@@ -42,6 +42,7 @@ export default {
         direction: undefined,
         disabledPosition: undefined,
         searchQuery: '',
+        dismissedUpdateAll: false,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -50,14 +51,14 @@ export default {
                 return state.activeProfile;
             }
 
-            console.warn("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
+            console.debug("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
             const profile = Profile.getActiveProfile();
 
             if (profile !== undefined) {
                 return profile;
             }
 
-            console.warn("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
+            console.debug("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
             return new Profile('Default');
         },
 
@@ -77,11 +78,13 @@ export default {
             return getters.activeProfile.getProfileName();
         },
 
-        modsWithUpdates(state, _getters, rootState): ThunderstoreCombo[] {
-            return ThunderstoreDownloaderProvider.instance.getLatestOfAllToUpdate(
-                state.modList,
-                rootState.thunderstoreModList
-            );
+        // For easier access from other Vuex submodules.
+        modList(state) {
+            return state.modList;
+        },
+
+        modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreCombo[] {
+            return rootGetters['tsMods/modsWithUpdates'](state.modList);
         },
 
         visibleModList(state, _getters, rootState): ManifestV2[] {
@@ -116,6 +119,10 @@ export default {
     },
 
     mutations: {
+        dismissUpdateAll(state: State) {
+            state.dismissedUpdateAll = true;
+        },
+
         // Use updateActiveProfile action to ensure the persistent
         // settings are updated.
         setActiveProfile(state: State, profileName: string) {
@@ -403,6 +410,18 @@ export default {
 
         async updateModList({commit}, modList: ManifestV2[]) {
             commit('setModList', modList);
+        },
+
+        /*** Read profiles mod list from mods.yml in profile directory. */
+        async updateModListFromFile({dispatch, getters}) {
+            const profile: Profile = getters['activeProfile'];
+            const mods = await ProfileModList.getModList(profile);
+
+            if (mods instanceof R2Error) {
+                throw mods;
+            }
+
+            await dispatch('updateModList', mods);
         },
 
         async updateOrder({commit, rootGetters}, value: SortNaming) {

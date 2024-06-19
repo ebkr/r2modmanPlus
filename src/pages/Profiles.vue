@@ -1,14 +1,16 @@
 <template>
   <div>
+    <DeleteProfileModal />
+    <RenameProfileModal />
     <!-- Create modal -->
-    <div :class="['modal', {'is-active':(addingProfile !== false || renamingProfile !== false)}]">
+    <div :class="['modal', {'is-active':(addingProfile !== false)}]">
       <div class="modal-background" @click="closeNewProfileModal()"></div>
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">{{addingProfileType}} a profile</p>
           </header>
-            <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null) || renamingProfile">
+            <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null)">
               <div class="card-content">
                 <p>This profile will store its own mods independently from other profiles.</p>
                 <br/>
@@ -32,23 +34,19 @@
                     </div>
                     <p>Select a profile below:</p>
                     <br/>
-                    <select class="select" v-model="selectedProfile">
+                    <select class="select" @change="profileSelectOnChange">
                         <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
                     </select>
                 </div>
             </template>
           <div class="card-footer">
               <template v-if="addingProfile && (importUpdateSelection === 'IMPORT' || importUpdateSelection === null)">
-                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-                  <button class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+                  <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
+                  <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
-                  <button class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
-              </template>
-              <template v-if="renamingProfile">
-                  <button class="button is-danger" v-if="doesProfileExist(newProfileName)">Rename</button>
-                  <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
+                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
               </template>
           </div>
         </div>
@@ -64,9 +62,9 @@
                     <p class="card-header-title">Are you going to be updating an existing profile or creating a new one?</p>
                 </header>
                 <div class="card-footer">
-                    <button class="button is-info"
+                    <button id="modal-import-new-profile" class="button is-info"
                             @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'IMPORT'">Import new profile</button>
-                    <button class="button is-primary"
+                    <button id="modal-update-existing-profile" class="button is-primary"
                             @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'UPDATE'">Update existing profile</button>
                 </div>
             </div>
@@ -83,9 +81,9 @@
             <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
           </header>
           <div class="card-footer">
-            <button class="button is-info"
+            <button id="modal-import-profile-file" class="button is-info"
               @click="importProfile(); showImportModal = false;">From file</button>
-            <button class="button is-primary"
+            <button id="modal-import-profile-code" class="button is-primary"
               @click="showImportModal = false; openProfileCodeModal();">From code</button>
           </div>
         </div>
@@ -109,37 +107,15 @@
           </div>
           <div class="card-footer">
             <button
+              id="modal-import-profile-from-code-invalid"
               class="button is-danger"
               v-if="profileImportCode === ''"
             >Fix issues before importing</button>
-            <button class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>Import</button>
+            <button id="modal-import-profile-from-code" class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>Import</button>
           </div>
         </div>
       </div>
       <button class="modal-close is-large" aria-label="close" @click="showCodeModal = false;"></button>
-    </div>
-    <!-- Delete modal -->
-    <div :class="['modal', {'is-active':(removingProfile !== false)}]">
-      <div class="modal-background" @click="closeRemoveProfileModal()"></div>
-      <div class="modal-content">
-        <div class="card">
-          <header class="card-header">
-            <p class="card-header-title">Delete profile</p>
-          </header>
-          <div class="card-content">
-            <p>This will remove all mods, and their config files, installed within this profile.</p>
-            <p>If this was an accident, click either the darkened area, or the cross inside located in the top right.</p>
-            <p>Are you sure you'd like to delete this profile?</p>
-          </div>
-          <div class="card-footer">
-            <button
-              class="button is-danger"
-              @click="removeProfileAfterConfirmation()"
-            >Delete profile</button>
-          </div>
-        </div>
-      </div>
-      <button class="modal-close is-large" aria-label="close" @click="closeRemoveProfileModal()"></button>
     </div>
     <!-- Import modal -->
     <div :class="['modal', {'is-active':(importingProfile !== false)}]">
@@ -186,7 +162,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="selectedProfile = profileName">
+                  <a @click="setSelectedProfile(profileName)">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -202,21 +178,21 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a class="button is-info" @click="setProfileAndContinue()">Select profile</a>
+                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
                     </div>
                       <div class="level-item">
-                          <a class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
-                          <a class="button" @click="renameProfile()" v-else>Rename</a>
+                          <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
+                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
-                      <a class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
+                      <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
                     </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                      <a class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
+                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
                     </div>
                     <div class="level-item">
-                      <a class="button is-danger" @click="removeProfile()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
                     </div>
                   </nav>
                 </div>
@@ -260,26 +236,27 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
+import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
+import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
 
 let fs: FsProvider;
 
 @Component({
     components: {
         hero: Hero,
-        'progress-bar': Progress
-    }
+        'progress-bar': Progress,
+        DeleteProfileModal,
+        RenameProfileModal,
+    },
 })
 export default class Profiles extends Vue {
     @Ref() readonly profileCodeInput: HTMLInputElement | undefined;
     @Ref() readonly profileNameInput: HTMLInputElement | undefined;
 
-    private profileList: string[] = ['Default'];
-
     private addingProfile: boolean = false;
     private newProfileName: string = '';
     private addingProfileType: string = 'Create';
 
-    private removingProfile: boolean = false;
     private importingProfile: boolean = false;
     private percentageImported: number = 0;
 
@@ -292,14 +269,36 @@ export default class Profiles extends Vue {
 
     private listenerId: number = 0;
 
-    private renamingProfile: boolean = false;
+    get activeProfile(): Profile {
+        return this.$store.getters['profile/activeProfile'];
+    }
 
     get selectedProfile(): string {
         return this.$store.getters['profile/activeProfileName'];
     }
 
-    set selectedProfile(profileName: string) {
-        this.$store.dispatch('profile/updateActiveProfile', profileName);
+    get profileList(): string[] {
+        return this.$store.state.profiles.profileList;
+    }
+
+    async setSelectedProfile(profileName: string, prewarmCache = true) {
+        try {
+            await this.$store.dispatch('profile/updateActiveProfile', profileName);
+
+            if (prewarmCache) {
+                await this.$store.dispatch('profile/updateModListFromFile');
+                await this.$store.dispatch('tsMods/prewarmCache');
+            }
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
+            this.$store.commit('error/handleError', err);
+        }
+    }
+
+    async profileSelectOnChange(event: Event) {
+        if (event.target instanceof HTMLSelectElement) {
+            await this.setSelectedProfile(event.target.value, false);
+        }
     }
 
     get appName(): string {
@@ -319,27 +318,6 @@ export default class Profiles extends Vue {
                     profile.toLowerCase() === safe.toLowerCase())) !== undefined;
     }
 
-    renameProfile() {
-        this.newProfileName = this.selectedProfile;
-        this.addingProfileType = "Rename";
-        this.renamingProfile = true;
-        this.$nextTick(() => {
-            if (this.profileNameInput) {
-                this.profileNameInput.focus();
-            }
-        });
-    }
-
-    async performRename(newName: string) {
-        await fs.rename(
-            path.join(Profile.getDirectory(), this.selectedProfile),
-            path.join(Profile.getDirectory(), newName)
-        );
-        this.closeNewProfileModal();
-        await this.updateProfileList();
-        this.selectedProfile = newName;
-    }
-
     // Open modal for entering a name for a new profile. Triggered
     // either through user action or profile importing via file or code.
     newProfile(type: string, nameOverride: string | undefined) {
@@ -355,13 +333,13 @@ export default class Profiles extends Vue {
 
     // User confirmed creation of a new profile with a name that didn't exist before.
     // The profile can be either empty or populated via importing.
-    createProfile(profile: string) {
+    async createProfile(profile: string) {
         const safeName = this.makeProfileNameSafe(profile);
         if (safeName === '') {
             return;
         }
-        this.profileList.push(safeName);
-        this.selectedProfile = safeName;
+        this.$store.commit('profiles/setProfileList', [...this.profileList, safeName].sort());
+        await this.setSelectedProfile(safeName);
         this.addingProfile = false;
         document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
     }
@@ -374,50 +352,21 @@ export default class Profiles extends Vue {
 
     closeNewProfileModal() {
         this.addingProfile = false;
-        this.renamingProfile = false;
     }
 
-    removeProfile() {
-        this.removingProfile = true;
+    openDeleteProfileModal() {
+        this.$store.commit('openDeleteProfileModal');
     }
 
-    async removeProfileAfterConfirmation() {
-        try {
-            await FileUtils.emptyDirectory(Profile.getActiveProfile().getPathOfProfile());
-            await fs.rmdir(Profile.getActiveProfile().getPathOfProfile());
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
-            this.$store.commit('error/handleError', err);
-        }
-        if (
-            Profile.getActiveProfile()
-                .getProfileName()
-                .toLowerCase() !== 'default'
-        ) {
-            for (let profileIteration = 0; profileIteration < this.profileList.length; profileIteration++) {
-                if (this.profileList[profileIteration] === Profile.getActiveProfile().getProfileName()) {
-                    this.profileList.splice(profileIteration, 1);
-                    break;
-                }
-            }
-        }
-        this.selectedProfile = 'Default';
-        this.closeRemoveProfileModal();
-    }
-
-    closeRemoveProfileModal() {
-        this.removingProfile = false;
+    openRenameProfileModal() {
+        this.$store.commit('openRenameProfileModal');
     }
 
     makeProfileNameSafe(nameToSanitize: string): string {
         return sanitize(nameToSanitize);
     }
 
-    async setProfileAndContinue() {
-        // Reset the mod list to prevent the previous profile's list
-        // flashing on the screen while a new profile's list is loaded.
-        await this.$store.dispatch('profile/updateModList', []);
-
+    async moveToNextScreen() {
         await this.$router.push({name: 'manager.installed'});
     }
 
@@ -448,10 +397,10 @@ export default class Profiles extends Vue {
                 }
                 for (const imported of modList) {
                     if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                        await ProfileModList.updateMod(installResult, Profile.getActiveProfile(), async modToDisable => {
+                        await ProfileModList.updateMod(installResult, this.activeProfile, async modToDisable => {
                             // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
                             modToDisable.enable();
-                            await ProfileInstallerProvider.instance.disableMod(modToDisable, Profile.getActiveProfile());
+                            await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);
                             modToDisable.disable();
                         });
                     }
@@ -491,7 +440,7 @@ export default class Profiles extends Vue {
         }
         let read = '';
         if (files[0].endsWith('.r2x')) {
-            read = await fs.readFile(files[0]).toString();
+            read = (await fs.readFile(files[0])).toString();
         } else if (files[0].endsWith('.r2z')) {
             const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
             if (result === null) {
@@ -540,29 +489,41 @@ export default class Profiles extends Vue {
                                         const entries = await ZipProvider.instance.getEntries(files[0]);
                                         for (const entry of entries) {
                                             if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName,
-                                                        'BepInEx'
-                                                    )
-                                                );
+                                                try {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName,
+                                                            'BepInEx'
+                                                        )
+                                                    );
+                                                } catch (e) {
+                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
+                                                    this.$store.commit('error/handleError', err);
+                                                    return;
+                                                }
                                             } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                                                await ZipProvider.instance.extractEntryTo(
-                                                    files[0],
-                                                    entry.entryName,
-                                                    path.join(
-                                                        Profile.getDirectory(),
-                                                        profileName
+                                                try {
+                                                    await ZipProvider.instance.extractEntryTo(
+                                                        files[0],
+                                                        entry.entryName,
+                                                        path.join(
+                                                            Profile.getDirectory(),
+                                                            profileName
+                                                        )
                                                     )
-                                                )
+                                                } catch (e) {
+                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
+                                                    this.$store.commit('error/handleError', err);
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
-                                        this.selectedProfile = event.detail;
+                                        await this.setSelectedProfile(event.detail, false);
                                         try {
                                             await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                         } catch (e) {
@@ -571,6 +532,7 @@ export default class Profiles extends Vue {
                                         await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
                                         await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
                                     }
+                                    await this.setSelectedProfile(event.detail);
                                 });
                             }, 100);
                         }
@@ -583,7 +545,7 @@ export default class Profiles extends Vue {
 
     async importAlternativeManagerProfile(file: string) {
         try {
-            const fileString = await fs.readFile(file).toString();
+            const fileString = (await fs.readFile(file)).toString();
             const jsonContent = JSON.parse(fileString.trim());
             const ror2Itf = jsonContent as Itf_RoR2MM;
             if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
@@ -619,9 +581,9 @@ export default class Profiles extends Vue {
 
     async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, Profile.getActiveProfile());
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
         if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, Profile.getActiveProfile());
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
             if (newModList instanceof R2Error) {
                 return newModList;
             }
@@ -633,21 +595,38 @@ export default class Profiles extends Vue {
     }
 
     async updateProfileList() {
-        this.profileList = ["Default"];
-        const profilesDirectory: string = Profile.getActiveProfile().getDirectory();
-        await fs.readdir(profilesDirectory).then(dirContents => {
-            dirContents.forEach(async (file: string) => {
-                if ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update") {
-                    this.profileList = [...this.profileList, file].sort();
-                }
+        const profilesDirectory: string = this.activeProfile.getDirectory();
+        try {
+            const profilesDirectoryContents = await fs.readdir(profilesDirectory);
+            let promises = profilesDirectoryContents.map(async function(file) {
+                return ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
+                    ? file : undefined;
             });
-        }).catch(() => { /* Do nothing */ });
+            Promise.all(promises).then((profileList) => {
+                this.$store.commit('profiles/setProfileList', ["Default", ...profileList.filter(file => file)].sort());
+            })
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
+            this.$store.commit('error/handleError', err);
+        }
     }
 
     async created() {
         fs = FsProvider.instance;
         const settings = await this.$store.getters.settings;
-        await this.$store.dispatch('profile/loadLastSelectedProfile');
+        await settings.load();
+
+        const lastProfileName = await this.$store.dispatch('profile/loadLastSelectedProfile');
+
+        // If the view was entered via game selection, the mod list was updated
+        // and the cache cleared. The profile is already set in the Vuex store
+        // but we want to trigger the cache prewarming. Always doing this for
+        // empty profiles is deemed a fair tradeoff. On the other hand there's
+        // no point to trigger this when returning from the manager view and the
+        // mods are already cached.
+        if (this.$store.state.tsMods.cache.size === 0) {
+            await this.setSelectedProfile(lastProfileName);
+        }
 
         // Set default paths
         if (settings.getContext().gameSpecific.gameDirectory === null) {

@@ -1,5 +1,6 @@
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import { PackageLoader } from '../../../model/installing/PackageLoader';
+import VersionNumber from '../../../model/VersionNumber';
 
 
 /**
@@ -22,7 +23,6 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("BepInEx-BepInExPack_ROUNDS", "BepInExPack_ROUNDS", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("Zinal001-BepInExPack_MECHANICA", "BepInExPack_MECHANICA", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Muck", "BepInExPack_Muck", PackageLoader.BEPINEX),
-    new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_LLBlaze", "BepInExPack_LLBlaze", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Timberborn", "BepInExPack_Timberborn", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_TABS", "BepInExPack_TABS", PackageLoader.BEPINEX),
@@ -67,6 +67,8 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("BepInEx_Wormtown-BepInExPack", "BepInExPack", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("0xFFF7-votv_shimloader", "", PackageLoader.SHIMLOADER),
     new ModLoaderPackageMapping("Thunderstore-unreal_shimloader", "", PackageLoader.SHIMLOADER),
+    new ModLoaderPackageMapping("Thunderstore-lovely", "", PackageLoader.LOVELY),
+    new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
 ];
 
 
@@ -89,7 +91,7 @@ const VARIANTS = {
     ROUNDS: MODLOADER_PACKAGES,
     Mechanica: MODLOADER_PACKAGES,
     Muck: MODLOADER_PACKAGES,
-    BONEWORKS: MODLOADER_PACKAGES,
+    BONEWORKS: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER, new VersionNumber("0.5.4"))],
     LethalLeagueBlaze: MODLOADER_PACKAGES,
     Timberborn: MODLOADER_PACKAGES,
     TABS: MODLOADER_PACKAGES,
@@ -120,7 +122,7 @@ const VARIANTS = {
     Aloft: MODLOADER_PACKAGES,
     COTL: MODLOADER_PACKAGES,
     ChronoArk: MODLOADER_PACKAGES,
-    BONELAB: MODLOADER_PACKAGES,
+    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER, new VersionNumber("0.5.7"))],
     TromboneChamp: MODLOADER_PACKAGES,
     RogueGenesia: MODLOADER_PACKAGES,
     AcrossTheObelisk: MODLOADER_PACKAGES,
@@ -165,6 +167,18 @@ const VARIANTS = {
     Palworld: MODLOADER_PACKAGES,
     Plasma: MODLOADER_PACKAGES,
     ContentWarning: MODLOADER_PACKAGES,
+    Balatro: MODLOADER_PACKAGES,
+    BoplBattle: MODLOADER_PACKAGES,
+    Vertigo2: MODLOADER_PACKAGES,
+    AgainstTheStorm: MODLOADER_PACKAGES,
+    Lycans: MODLOADER_PACKAGES,
+    CastleStory: MODLOADER_PACKAGES,
+    Panicore: MODLOADER_PACKAGES,
+    RiskofRainReturns: MODLOADER_PACKAGES,
+    Magicraft: MODLOADER_PACKAGES,
+    AnotherCrabsTreasure: MODLOADER_PACKAGES,
+    GladioMori: MODLOADER_PACKAGES,
+    SlipstreamRogueSpace: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

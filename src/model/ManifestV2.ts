@@ -10,8 +10,6 @@ import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import * as path from 'path';
 import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
-import ModBridge from '../r2mm/mods/ModBridge';
-import ThunderstorePackages from '../r2mm/data/ThunderstorePackages';
 
 export default class ManifestV2 implements ReactiveObjectConverterInterface {
 
@@ -26,6 +24,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     private networkMode: string = '';
     private packageType: string = '';
     private installMode: string = '';
+    private installedAtTime: number = 0;
 
     private loaders: string[] = [];
     private dependencies: string[] = [];
@@ -33,9 +32,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     private optionalDependencies: string[] = [];
 
     private versionNumber: VersionNumber = new VersionNumber('0.0.0');
-
     private enabled: boolean = true;
-
     private icon: string = '';
 
     // Will create a ManifestV2 object from a given manifest.
@@ -59,6 +56,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setIncompatibilities(data.Incompatibilities);
         this.setOptionalDependencies(data.OptionalDependencies);
         this.setVersionNumber(new VersionNumber(data.Version));
+        this.setInstalledAtTime(data.installedAtTime || 0);
         return this;
     }
 
@@ -129,6 +127,7 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
         this.setGameVersion(reactive.gameVersion);
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
+        this.setInstalledAtTime(reactive.installedAtTime || 0);
         if (!reactive.enabled) {
             this.disable();
         }
@@ -268,16 +267,19 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         return this.enabled;
     }
 
-    public isDeprecated(): boolean {
-        const tsMod = ModBridge.getCachedThunderstoreModFromMod(this);
-        return tsMod !== undefined ? tsMod.isDeprecated() : false;
-    }
-
     public getIcon(): string {
         return this.icon;
     }
 
     public setIcon(iconUri: string) {
         this.icon = iconUri;
+    }
+
+    public getInstalledAtTime(): number {
+        return this.installedAtTime;
+    }
+
+    public setInstalledAtTime(installedAtTime: number) {
+        this.installedAtTime = installedAtTime;
     }
 }
