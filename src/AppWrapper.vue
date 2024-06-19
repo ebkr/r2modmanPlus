@@ -1,6 +1,6 @@
 <template>
     <div id="q-app">
-        <SettingsLoader :logError="logError" :openLink="openLink">
+        <SettingsLoader :logError="logError" :openWebOnlyLink="openWebOnlyLink">
             <App />
         </SettingsLoader>
     </div>
@@ -23,8 +23,8 @@ export default class AppWrapper extends Vue {
         console.error(error.name, error.message, error.stack);
     }
 
-    openLink(url: string) {
-        new LinkImpl().openLink(url);
+    openWebOnlyLink(url: string) {
+        new LinkImpl().openWebOnlyLink(url);
     }
 }
 </script>

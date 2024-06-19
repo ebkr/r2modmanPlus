@@ -2,7 +2,7 @@
     <component  :is="tag" v-if="target === 'file'" @click="selectFile()" class='target-link' data-semantic="file-selection">
         <slot></slot>
     </component>
-    <component  :is="tag" v-else-if="target !== null" @click="openLink()" class='target-link' data-semantic="external-link">
+    <component  :is="tag" v-else-if="target !== null" @click="openWebOnlyLink()" class='target-link' data-semantic="external-link">
         <slot></slot>
     </component>
     <component  :is="tag" class='target-link' v-else-if="target === null" data-semantic="visual-indicator">
@@ -27,8 +27,8 @@ import LinkProvider from '../providers/components/LinkProvider';
         @Prop({default: 'a'})
         tag: string | undefined;
 
-        openLink() {
-            LinkProvider.instance.openLink(this.url!);
+        openWebOnlyLink() {
+            LinkProvider.instance.openWebOnlyLink(this.url!);
         }
 
         selectFile() {
