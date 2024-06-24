@@ -134,6 +134,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("SlipstreamRogueSpace"),
             buildBepInExRules("BacktotheDawn"),
             buildBepInExRules("BelowTheStone"),
+            buildBepInExRules("Gloomwood"),
         ]
     }
 }

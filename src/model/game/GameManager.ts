@@ -681,6 +681,12 @@ export default class GameManager {
             "https://thunderstore.io/c/below-the-stone/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1170230")], "BelowTheStone.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bts"]),
+
+        new Game("Gloomwood", "Gloomwood", "Gloomwood",
+            "Gloomwood", ["Gloomwood.exe"], "Gloomwood_Data",
+            "https://thunderstore.io/c/gloomwood/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1150760")], "Gloomwood.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gw"]),
     ];
 
     static get activeGame(): Game {
