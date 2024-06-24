@@ -687,6 +687,17 @@ export default class GameManager {
             "https://thunderstore.io/c/gloomwood/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1150760")], "Gloomwood.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gw"]),
+
+        new Game("Among Us", "AmongUs", "AmongUs",
+            "Among Us", ["Among Us.exe"], "Among Us_Data",
+            "https://thunderstore.io/c/among-us/api/v1/package/", EXCLUSIONS,
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "945360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "among-us"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "Innersloth.AmongUs"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ],
+            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
     ];
 
     static get activeGame(): Game {
