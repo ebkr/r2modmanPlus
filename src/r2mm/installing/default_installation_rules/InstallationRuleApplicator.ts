@@ -133,6 +133,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("GladioMori"),
             buildBepInExRules("SlipstreamRogueSpace"),
             buildBepInExRules("BacktotheDawn"),
+            buildBepInExRules("BelowTheStone"),
         ]
     }
 }

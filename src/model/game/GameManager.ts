@@ -675,6 +675,12 @@ export default class GameManager {
             "https://thunderstore.io/c/back-to-the-dawn/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1735700")], "BackToTheDawn.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bttd"]),
+
+        new Game("Below the Stone", "BelowTheStone", "BelowTheStone",
+            "Below The Stone", ["Below The Stone.exe"], "Below The Stone_Data",
+            "https://thunderstore.io/c/below-the-stone/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1170230")], "BelowTheStone.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bts"]),
     ];
 
     static get activeGame(): Game {
