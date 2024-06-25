@@ -11,7 +11,7 @@ interface State {
 }
 
 /**
- * State for OnlineModList, i.e. list for all the mods available on Thunderstore.
+ * State for ModFilter, i.e. filters for mod listings.
  */
 export default {
     namespaced: true,

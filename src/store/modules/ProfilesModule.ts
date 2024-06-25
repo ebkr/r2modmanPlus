@@ -23,6 +23,9 @@ export const ProfilesModule = {
         setProfileList(state: State, profileList: string[]) {
             state.profileList = profileList;
         },
+        reset(state: State) {
+            state.profileList = ['Default'];
+        },
     },
     actions: <ActionTree<State, RootState>>{
         async addProfile({rootGetters, state, dispatch}, name: string) {
