@@ -14,6 +14,7 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import SearchUtils from '../../utils/SearchUtils';
+import GameManager from "../../model/game/GameManager";
 
 interface State {
     activeProfile: Profile | null;
@@ -119,6 +120,15 @@ export default {
     },
 
     mutations: {
+        resetLocalState(state: State) {
+            state.modList = [];
+            state.order = undefined;
+            state.direction = undefined;
+            state.disabledPosition = undefined;
+            state.searchQuery = '';
+            state.dismissedUpdateAll = false;
+        },
+
         dismissUpdateAll(state: State) {
             state.dismissedUpdateAll = true;
         },
@@ -290,6 +300,10 @@ export default {
             commit('setOrder', settings.getInstalledSortBy());
             commit('setDirection', settings.getInstalledSortDirection());
             commit('setDisabledPosition', settings.getInstalledDisablePosition());
+        },
+
+        async reset({commit}) {
+            commit('resetLocalState');
         },
 
         async resolveConflicts(

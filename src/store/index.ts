@@ -68,6 +68,11 @@ export const store = {
             const settings = await ManagerSettings.getSingleton(game);
             commit('setSettings', settings);
             return settings;
+        },
+
+        // TODO: Add reset actions for other modules
+        async resetProfileModule({dispatch}: Context) {
+            return await dispatch('profile/reset');
         }
     },
     mutations: {

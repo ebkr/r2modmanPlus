@@ -327,6 +327,7 @@ export default class GameSelectionScreen extends Vue {
         await this.$store.dispatch('checkMigrations');
         this.runningMigration = false;
 
+        await this.$store.dispatch('resetProfileModule');
         this.settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
         const globalSettings = this.settings.getContext().global;
         this.favourites = globalSettings.favouriteGames || [];
