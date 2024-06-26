@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, InstallerCapability, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
@@ -7,6 +7,15 @@ import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 
 export class ShimloaderInstaller extends PackageInstaller {
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     /**
      * Handle installation of unreal-shimloader
      */
@@ -53,9 +62,30 @@ export class ShimloaderInstaller extends PackageInstaller {
             await fs.mkdirs(configDir);
         }
     }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export class ShimloaderPluginInstaller extends PackageInstaller {
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     readonly installer = new InstallRuleInstaller({
         gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
         rules: [
@@ -83,5 +113,17 @@ export class ShimloaderPluginInstaller extends PackageInstaller {
 
     async install(args: InstallArgs) {
         await this.installer.install(args);
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

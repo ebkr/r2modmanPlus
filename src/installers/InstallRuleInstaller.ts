@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, InstallerCapability, PackageInstaller } from "./PackageInstaller";
 import Profile from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
@@ -223,6 +223,15 @@ export class InstallRuleInstaller extends PackageInstaller {
         this.rule = rules;
     }
 
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     /**
      * Handles installation of packages according to the install rules defined
      * for it.
@@ -266,5 +275,17 @@ export class InstallRuleInstaller extends PackageInstaller {
             }
         }
         return Promise.resolve(undefined);
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

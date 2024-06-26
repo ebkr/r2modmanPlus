@@ -1,10 +1,19 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, InstallerCapability, PackageInstaller } from "./PackageInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
 export class MelonLoaderInstaller extends PackageInstaller {
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     /**
      * Handles installation of MelonLoader
      */
@@ -20,5 +29,17 @@ export class MelonLoaderInstaller extends PackageInstaller {
                 }
             }
         }
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

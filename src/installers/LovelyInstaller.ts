@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, InstallerCapability, PackageInstaller } from "./PackageInstaller";
 import { InstallRuleInstaller, addToStateFile } from "./InstallRuleInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
@@ -7,6 +7,15 @@ import R2Error from "../model/errors/R2Error";
 import path from "path";
 
 export class LovelyInstaller extends PackageInstaller {
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     async install(args: InstallArgs) {
         const {
             mod,
@@ -43,9 +52,30 @@ export class LovelyInstaller extends PackageInstaller {
 
         await addToStateFile(mod, fileRelocations, profile);
     }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export class LovelyPluginInstaller extends PackageInstaller {
+     async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     async install(args: InstallArgs) {
         const {
             mod,
@@ -63,7 +93,7 @@ export class LovelyPluginInstaller extends PackageInstaller {
         if (srcTree instanceof R2Error) {
             throw R2Error;
         }
- 
+
         const srcFiles = srcTree.getRecursiveFiles();
         for (const srcFile of srcFiles) {
             const relFile = srcFile.replace(packagePath, "");
@@ -76,5 +106,17 @@ export class LovelyPluginInstaller extends PackageInstaller {
         }
 
         await addToStateFile(mod, fileRelocations, profile);
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

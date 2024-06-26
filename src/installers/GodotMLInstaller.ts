@@ -1,8 +1,17 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, InstallerCapability, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
 
 export class GodotMLInstaller extends PackageInstaller {
+    async capability(): Promise<InstallerCapability> {
+        return {
+            install: true,
+            uninstall: false,
+            enable: false,
+            disable: false,
+        }
+    }
+
     /**
      * Handles installation of GodotML
      */
@@ -19,5 +28,17 @@ export class GodotMLInstaller extends PackageInstaller {
             }
             await fs.copyFolder(copyFrom, copyTo);
         }
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }

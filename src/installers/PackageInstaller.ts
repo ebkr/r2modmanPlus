@@ -8,9 +8,18 @@ export type InstallArgs = {
     packagePath: string;
 };
 
+export class InstallerCapability {
+    install: boolean = false;
+    uninstall: boolean = false;
+    enable: boolean = false;
+    disable: boolean = false;
+}
+
 
 export abstract class PackageInstaller {
+    abstract capability(): Promise<InstallerCapability>;
     abstract install(args: InstallArgs): Promise<void>;
-    // abstract disable(args: InstallArgs): Promise<void>; // TODO: Implement
-    // abstract uninstall(): Promise<void>;  // TODO: Implement
+    abstract uninstall(args: InstallArgs): Promise<void>;
+    abstract enable(args: InstallArgs): Promise<void>;
+    abstract disable(args: InstallArgs): Promise<void>;
 }
