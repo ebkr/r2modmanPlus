@@ -169,9 +169,8 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async _fetchPackageListIndex({}): Promise<string[]> {
-            // TODO: update GameManager to contain new API endpoint (or read from elsewhere?)
-            const indexUrl = `http://thunderstore.localhost/c/riskofrain2/api/v1/package-listing-index/`;
+        async _fetchPackageListIndex({rootState}): Promise<string[]> {
+            const indexUrl = rootState.activeGame.thunderstoreUrl;
             const chunkIndex: string[] = await retry(() => fetchAndProcessBlobFile(indexUrl));
 
             if (!isStringArray(chunkIndex)) {
