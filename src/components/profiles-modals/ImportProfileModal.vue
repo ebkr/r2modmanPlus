@@ -61,7 +61,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     async profileSelectOnChange(event: Event) {
         if (event.target instanceof HTMLSelectElement) {
-            await this.$store.commit('profiles/setSelectedProfile', {profileName: event.target.value, prewarmCache: false});
+            this.activeProfileName = event.target.value;
         }
     }
 
@@ -96,6 +96,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             }],
             buttonLabel: 'Import'
         }).then((value: string[]) => {
+            if(value.length === 0) {
+                this.closeModal();
+            }
             this.importProfileHandler(value);
         })
     }
@@ -208,7 +211,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                                     await this.extractZippedProfileFile(files[0], profileName);
                                 }
                                 if (this.importUpdateSelection === 'UPDATE') {
-                                    await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: false });
+                                    this.activeProfileName = event.detail;
                                     try {
                                         await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
                                     } catch (e) {
@@ -268,6 +271,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // Called from the downloadImportedProfileMods function
     downloadProgressCallback(progress: number, modName: string, status: number, err: R2Error | null) {
         if (status == StatusEnum.FAILURE) {
+            this.closeModal();
             this.isProfileBeingImported = false;
             if (err instanceof R2Error) {
                 this.$store.commit('error/handleError', err);
@@ -348,27 +352,44 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
 </script>
 <template>
-    <ModalCard :is-active="isOpen" @close-modal="closeModal">
-
-        <template v-slot:header v-if="activeStep === 'IMPORT_UPDATE_SELECTION'">
+    <ModalCard v-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
             <p>Are you going to be updating an existing profile or creating a new one?</p>
         </template>
-        <template v-slot:header v-else-if="activeStep === 'FILE_CODE_SELECTION'">
+        <template v-slot:footer>
+            <button id="modal-import-new-profile"
+                    class="button is-info"
+                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'IMPORT'">
+                Import new profile
+            </button>
+            <button id="modal-update-existing-profile"
+                    class="button is-primary"
+                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'UPDATE'">
+                Update existing profile
+            </button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
             <p class="card-header-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</p>
             <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
         </template>
-        <template v-slot:header v-else-if="activeStep === 'IMPORT_CODE'">
+        <template v-slot:footer>
+            <button id="modal-import-profile-file"
+                    class="button is-info"
+                    @click="importProfileFromFile()">From file</button>
+            <button id="modal-import-profile-code"
+                    class="button is-primary"
+                    @click="activeStep = 'IMPORT_CODE'">From code</button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
             <p class="card-header-title">Enter the profile code</p>
         </template>
-        <template v-slot:header v-else-if="isProfileBeingImported !== false">
-            <p>{{percentageImported}}% imported</p>
-        </template>
-        <template v-slot:header v-else-if="activeStep === 'ADDING_PROFILE'">
-            <p v-if="importUpdateSelection === 'IMPORT'" class="card-header-title">Import a profile</p>
-        </template>
-
-
-        <template v-slot:body v-if="activeStep === 'IMPORT_CODE'">
+        <template v-slot:body>
             <input
                 type="text"
                 class="input"
@@ -381,62 +402,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
             <span class="tag is-success" v-else>You may import the profile</span>
         </template>
-        <template v-slot:body v-else-if="isProfileBeingImported !== false">
-            <p>This may take a while, as mods are being downloaded.</p>
-            <p>Please do not close {{appName}}.</p>
-        </template>
-        <template v-slot:body v-else-if="activeStep === 'IMPORT_FILE'">
-            <h3 class="title">Loading file</h3>
-            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
-        </template>
-        <template v-slot:body v-else-if="activeStep === 'ADDING_PROFILE' && importUpdateSelection === 'IMPORT'">
-            <p>This profile will store its own mods independently from other profiles.</p>
-            <br/>
-            <input class="input" v-model="newProfileName" ref="profileNameInput" />
-            <br/><br/>
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
-            </span>
-            <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
-            </span>
-            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
-            </span>
-        </template>
-        <template v-slot:body v-else-if="activeStep === 'ADDING_PROFILE' && importUpdateSelection === 'UPDATE'">
-            <div class="notification is-warning">
-                <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
-            </div>
-            <p>Select a profile below:</p>
-            <br/>
-            <select class="select" @change="profileSelectOnChange">
-                <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
-            </select>
-        </template>
-
-
-        <template v-slot:footer v-if="activeStep === 'IMPORT_UPDATE_SELECTION'">
-            <button id="modal-import-new-profile"
-                    class="button is-info"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'IMPORT'">
-                Import new profile
-            </button>
-            <button id="modal-update-existing-profile"
-                    class="button is-primary"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'UPDATE'">
-                Update existing profile
-            </button>
-        </template>
-        <template v-slot:footer v-else-if="activeStep === 'FILE_CODE_SELECTION'">
-            <button id="modal-import-profile-file"
-                    class="button is-info"
-                    @click="importProfileFromFile()">From file</button>
-            <button id="modal-import-profile-code"
-                    class="button is-primary"
-                    @click="activeStep = 'IMPORT_CODE'">From code</button>
-        </template>
-        <template v-slot:footer v-else-if="activeStep === 'IMPORT_CODE'">
+        <template v-slot:footer>
             <button
                 id="modal-import-profile-from-code-invalid"
                 class="button is-danger"
@@ -451,14 +417,61 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 Import
             </button>
         </template>
-        <template v-slot:footer v-else-if="activeStep === 'ADDING_PROFILE' && importUpdateSelection === 'IMPORT'">
+    </ModalCard>
+
+    <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <p>{{percentageImported}}% imported</p>
+        </template>
+        <template v-slot:body>
+            <p>This may take a while, as mods are being downloaded.</p>
+            <p>Please do not close {{appName}}.</p>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <p v-if="importUpdateSelection === 'IMPORT'" class="card-header-title">Import a profile</p>
+        </template>
+        <template v-slot:body v-if="importUpdateSelection === 'IMPORT'">
+            <p>This profile will store its own mods independently from other profiles.</p>
+            <br/>
+            <input class="input" v-model="newProfileName" ref="profileNameInput" />
+            <br/><br/>
+            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
+                Profile name required
+            </span>
+            <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
+                "{{makeProfileNameSafe(newProfileName)}}" is available
+            </span>
+            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
+                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+            </span>
+        </template>
+        <template v-slot:body v-else-if="importUpdateSelection === 'UPDATE'">
+            <div class="notification is-warning">
+                <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
+            </div>
+            <p>Select a profile below:</p>
+            <br/>
+            <select class="select" :value="activeProfileName" @change="profileSelectOnChange">
+                <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
+            </select>
+        </template>
+        <template v-slot:footer v-if="importUpdateSelection === 'IMPORT'">
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
             <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
         </template>
-        <template v-slot:footer v-else-if="activeStep === 'ADDING_PROFILE' && importUpdateSelection === 'UPDATE'">
+        <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
             <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(activeProfileName)">Update profile: {{ activeProfileName }}</button>
             <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ activeProfileName }}</button>
         </template>
+    </ModalCard>
 
+    <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:body>
+            <h3 class="title">Loading file</h3>
+            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+        </template>
     </ModalCard>
 </template>
