@@ -216,7 +216,7 @@ export default {
             }
 
             // IDK but sounds important.
-            await dispatch('resolveConflicts', lastSuccessfulUpdate);
+            await dispatch('resolveConflicts', params);
         },
 
         async enableModsOnActiveProfile(
@@ -270,7 +270,7 @@ export default {
                 }
             }
 
-            await dispatch('resolveConflicts', lastSuccessfulUpdate);
+            await dispatch('resolveConflicts', params);
         },
 
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
@@ -390,7 +390,7 @@ export default {
                 }
             }
 
-            await dispatch('resolveConflicts', lastSuccessfulUpdate);
+            await dispatch('resolveConflicts', params);
         },
 
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
