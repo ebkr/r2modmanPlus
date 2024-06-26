@@ -15,6 +15,10 @@ export default class ProfilesMixin extends Vue {
         return this.$store.getters['profile/activeProfileName'];
     }
 
+    set activeProfileName(value: string) {
+        this.$store.dispatch('profiles/setSelectedProfile', {profileName: value, prewarmCache: false});
+    }
+
     doesProfileExist(nameToCheck: string): boolean {
         if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
             return true;
