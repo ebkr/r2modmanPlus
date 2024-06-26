@@ -12,6 +12,7 @@ interface State {
     isDisableModModalOpen: boolean;
     isDownloadModModalOpen: boolean;
     isGameRunningModalOpen: boolean;
+    isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
     isUninstallModModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
@@ -29,6 +30,7 @@ export default {
         isDisableModModalOpen: false,
         isDownloadModModalOpen: false,
         isGameRunningModalOpen: false,
+        isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
         isUninstallModModalOpen: false,
         uninstallModModalMod: null,
@@ -64,6 +66,10 @@ export default {
 
         closeGameRunningModal: function(state: State): void {
             state.isGameRunningModalOpen = false;
+        },
+
+        closeImportProfileModal: function(state: State): void {
+            state.isImportProfileModalOpen = false;
         },
 
         closeRenameProfileModal: function(state: State): void {
@@ -104,6 +110,10 @@ export default {
 
         openGameRunningModal: function(state: State): void {
             state.isGameRunningModalOpen = true;
+        },
+
+        openImportProfileModal: function(state: State): void {
+            state.isImportProfileModalOpen = true;
         },
 
         openRenameProfileModal: function(state: State): void {
