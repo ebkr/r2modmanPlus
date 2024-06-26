@@ -101,6 +101,31 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+
+        if (installerId !== null) {
+            const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+            const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+
+            const args: InstallArgs = {
+                mod: mod,
+                profile: profile,
+                packagePath: cachedLocationOfMod,
+            }
+
+            const installer = PackageInstallers[installerId!];
+            const capability = await installer.capability();
+
+            if (mode === ModMode.ENABLED && capability.enable) {
+                return await installer.enable(args);
+            }
+
+            if (mode === ModMode.DISABLED && capability.disable) {
+                return await installer.disable(args);
+            }
+        }
+
+        // The installer wasn't found or does not have the correct capability, fall back to legacy.
         const appliedState = await this.applyModModeForState(mod, tree, profile, location, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;
@@ -277,6 +302,27 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+
+        if (installerId !== null) {
+            const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+            const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+
+            const args: InstallArgs = {
+                mod: mod,
+                profile: profile,
+                packagePath: cachedLocationOfMod,
+            }
+
+            const installer = PackageInstallers[installerId!];
+            const capability = await installer.capability();
+
+            if (capability.uninstall) {
+                await installer.uninstall(args);
+                return null;
+            }
+        }
+
         const uninstallState = await this.uninstallState(mod, profile);
         if (uninstallState instanceof R2Error) {
             return uninstallState;
