@@ -16,16 +16,16 @@ export default class ConfigLine {
         this.range = this.parseRange();
     }
 
-    public hasRange() {
+    public get hasRange() {
         return this.range.length === 2;
     }
 
     public getMinRange() {
-        return this.hasRange() ? this.range[0] : 0;
+        return this.hasRange ? this.range[0] : 0;
     }
 
     public getMaxRange() {
-        return this.hasRange() ? this.range[1] : 0;
+        return this.hasRange ? this.range[1] : 0;
     }
 
     private parseRange(): number[] {
