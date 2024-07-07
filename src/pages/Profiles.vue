@@ -433,6 +433,38 @@ export default class Profiles extends Vue {
         }
     }
 
+    async sanitizeImportEndHeader(file: string) {
+        let headerLoc = -1;
+
+        // zip end header starts with a 4 byte signature
+        const zipEndHeader = Buffer.from([0x50, 0x4b, 0x05, 0x06]);
+    
+        // stream until we find the end header
+        await fs.createReadStream(file, 8192, async (stream) => {
+            for await(const data of stream) {
+                const index = data.lastIndexOf(zipEndHeader);
+                if (index !== -1) {
+                    headerLoc += index;
+                    break;
+                } else {
+                    headerLoc += data.length;
+                }
+            }
+        });
+
+        // ensure exitst
+        if (headerLoc === -1) {
+            throw new R2Error("Failed to find zip end header");
+        }
+
+        // header loc is size, so we must add 1 since it's 0 indexed
+        headerLoc += 1;
+
+        // trim file
+        // zip end header is 22 bytes long
+        await fs.truncate(file, headerLoc + 22);
+    }
+
     async importProfileHandler(files: string[] | null) {
         if (files === null || files.length === 0) {
             this.importingProfile = false;
@@ -442,6 +474,7 @@ export default class Profiles extends Vue {
         if (files[0].endsWith('.r2x')) {
             read = (await fs.readFile(files[0])).toString();
         } else if (files[0].endsWith('.r2z')) {
+            await this.sanitizeImportEndHeader(files[0]);
             const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
             if (result === null) {
                 return;
