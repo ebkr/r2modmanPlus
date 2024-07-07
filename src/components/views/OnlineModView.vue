@@ -54,7 +54,7 @@
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                {{pagedThunderstoreModList.length ? "No mods matching search found": "No mods available"}}
             </p>
         </div>
         <br/>
@@ -100,10 +100,6 @@ export default class OnlineModView extends Vue {
         return this.$store.state.profile.modList;
     }
 
-    get thunderstoreModList(): ThunderstoreMod[] {
-        return this.$store.state.tsMods.mods;
-    }
-
     getPaginationSize() {
         return Math.ceil(this.searchableThunderstoreModList.length / this.pageSize);
     }
@@ -145,7 +141,7 @@ export default class OnlineModView extends Vue {
         const filterCategoriesToExclude = this.$store.state.modFilters.selectedCategoriesToExclude;
         const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
 
-        let searchableList = this.thunderstoreModList;
+        let searchableList = this.$store.state.tsMods.mods;
         const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
         if (searchKeys.length > 0) {
             searchableList = searchableList.filter((x: ThunderstoreMod) => {
