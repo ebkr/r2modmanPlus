@@ -11,7 +11,7 @@ import { StorePlatform } from '../../model/game/StorePlatform';
 export default class PreloaderFixer {
 
     public static async fix(game: Game): Promise<R2Error | void> {
-        if (![StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(game.activePlatform.storePlatform)) {
+        if (![StorePlatform.STEAM, StorePlatform.STEAM_DIRECT, StorePlatform.STEAM_DEMO].includes(game.activePlatform.storePlatform)) {
             return new R2Error(
                 "PreloaderFix is not available on non-Steam platforms.",
                 `The preloader fix deletes the ${path.join(game.dataFolderName, 'Managed')} folder and verifies files. You can do the same manually.`,
