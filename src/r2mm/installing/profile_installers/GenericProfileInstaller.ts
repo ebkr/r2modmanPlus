@@ -211,9 +211,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const fs = FsProvider.instance;
         const bepInExVariant = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         if (bepInExVariant.find(value => value.packageName.toLowerCase() === mod.getName().toLowerCase())) {
+            let filePath = ""
             try {
                 for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
-                    const filePath = path.join(profile.getPathOfProfile(), file);
+                    filePath = path.join(profile.getPathOfProfile(), file);
                     if ((await fs.lstat(filePath)).isFile()) {
                         if (file.toLowerCase() !== 'mods.yml') {
                             await fs.unlink(filePath);
@@ -221,8 +222,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const name = 'Failed to delete BepInEx file from profile root';
-                const solution = 'Is the game still running?';
+                const name = `Failed to delete mod loader file (Path: ${filePath}) from profile root`;
+                const solution = `The file may still be in use by the game or you may lack sufficient file privileges`;
                 return FileWriteError.fromThrownValue(e, name, solution);
             }
         }
