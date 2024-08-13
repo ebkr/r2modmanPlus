@@ -79,10 +79,10 @@ export default class RenameProfileModal extends Vue {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <p class="modal-card-title">Rename a profile</p>
+            <p class="modal-card-title">{{ $t(`modals.rename.title`) }}</p>
         </template>
         <template v-slot:body>
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>{{ $t(`modals.rename.renaming`) }}</p>
 
             <input
                 class="input"
@@ -92,18 +92,18 @@ export default class RenameProfileModal extends Vue {
             />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
+                {{ $t(`modals.rename.required`) }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
+                {{ $t(`modals.rename.available`, [makeProfileNameSafe(newProfileName)])}}
             </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+                {{ $t(`modals.rename.exist`, [makeProfileNameSafe(newProfileName)]) }}
             </span>
         </template>
         <template v-slot:footer>
-            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled> {{ $t(`modals.rename.rename`) }}</button>
+            <button class="button is-info" @click="performRename(newProfileName)" v-else> {{ $t(`modals.rename.rename`) }}</button>
         </template>
 
     </ModalCard>

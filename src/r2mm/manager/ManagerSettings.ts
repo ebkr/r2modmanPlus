@@ -197,4 +197,9 @@ export default class ManagerSettings {
         ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
         await this.save();
     }
+
+    public async setDisplayLanguage(displayLanguage: string) {
+        ManagerSettings.CONTEXT.global.displayLanguage = displayLanguage;
+        await this.save();
+    }
 }

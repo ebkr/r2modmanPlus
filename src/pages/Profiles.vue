@@ -8,31 +8,31 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{addingProfileType}} a profile</p>
+            <p class="card-header-title">{{ $t(`pages.profiles.adding`, [$t(`pages.profiles.addingProfileType['${addingProfileType}']`)]) }}</p>
           </header>
             <template v-if="(addingProfile && importUpdateSelection === 'IMPORT') || (addingProfile && importUpdateSelection === null)">
               <div class="card-content">
-                <p>This profile will store its own mods independently from other profiles.</p>
+                <p>{{ $t(`pages.profiles.renaming`) }}</p>
                 <br/>
                 <input class="input" v-model="newProfileName" ref="profileNameInput" />
                 <br/><br/>
                 <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                    Profile name required
+                    {{ $t(`pages.profiles.required`) }}
                 </span>
                 <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                    "{{makeProfileNameSafe(newProfileName)}}" is available
+                    {{ $t(`pages.profiles.available`, [makeProfileNameSafe(newProfileName)]) }}
                 </span>
                 <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                    "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+                    {{ $t(`pages.profiles.exist`, [makeProfileNameSafe(newProfileName)]) }}
                 </span>
               </div>
             </template>
             <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
                 <div class="card-content">
                     <div class="notification is-warning">
-                        <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
+                        <p>{{ $t(`pages.profiles.updateTip`) }}</p>
                     </div>
-                    <p>Select a profile below:</p>
+                    <p>{{ $t(`pages.profiles.selectProfile`) }}</p>
                     <br/>
                     <select class="select" @change="profileSelectOnChange">
                         <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
@@ -41,12 +41,12 @@
             </template>
           <div class="card-footer">
               <template v-if="addingProfile && (importUpdateSelection === 'IMPORT' || importUpdateSelection === null)">
-                  <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-                  <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+                  <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">{{ $t(`pages.profiles.create`) }}</button>
+                  <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>{{ $t(`pages.profiles.create`) }}</button>
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
-                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
+                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">{{ $t(`pages.profiles.updateProfile`, [selectedProfile]) }}</button>
+                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">{{ $t(`pages.profiles.updateProfile`, [selectedProfile]) }}</button>
               </template>
           </div>
         </div>
@@ -59,13 +59,13 @@
         <div class="modal-content">
             <div class="card">
                 <header class="card-header">
-                    <p class="card-header-title">Are you going to be updating an existing profile or creating a new one?</p>
+                    <p class="card-header-title">{{ $t(`pages.profiles.updating`) }}</p>
                 </header>
                 <div class="card-footer">
                     <button id="modal-import-new-profile" class="button is-info"
-                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'IMPORT'">Import new profile</button>
+                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'IMPORT'">{{ $t(`pages.profiles.importNew`) }}</button>
                     <button id="modal-update-existing-profile" class="button is-primary"
-                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'UPDATE'">Update existing profile</button>
+                            @click="showImportUpdateSelectionModal = false; showImportModal = true; importUpdateSelection = 'UPDATE'">{{ $t(`pages.profiles.updateExisting`) }}</button>
                 </div>
             </div>
         </div>
@@ -77,14 +77,14 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</p>
-            <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
+            <p class="card-header-title" v-if="importUpdateSelection === 'IMPORT'">{{ $t(`pages.profiles.importingProfile`) }}</p>
+            <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">{{ $t(`pages.profiles.updatingProfile`) }}</p>
           </header>
           <div class="card-footer">
             <button id="modal-import-profile-file" class="button is-info"
-              @click="importProfile(); showImportModal = false;">From file</button>
+              @click="importProfile(); showImportModal = false;">{{ $t(`pages.profiles.fromFile`) }}</button>
             <button id="modal-import-profile-code" class="button is-primary"
-              @click="showImportModal = false; openProfileCodeModal();">From code</button>
+              @click="showImportModal = false; openProfileCodeModal();">{{ $t(`pages.profiles.fromCode`) }}</button>
           </div>
         </div>
       </div>
@@ -96,22 +96,22 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">Enter the profile code</p>
+            <p class="card-header-title">{{ $t(`pages.profiles.enterCode`) }}</p>
           </header>
           <div class="card-content">
             <input type="text" class="input" v-model="profileImportCode" ref="profileCodeInput" />
             <br />
             <br />
-            <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
-            <span class="tag is-success" v-else>You may import the profile</span>
+            <span class="tag is-dark" v-if="profileImportCode === ''">{{ $t(`pages.profiles.noCode`) }}</span>
+            <span class="tag is-success" v-else>{{ $t(`pages.profiles.mayImport`) }}</span>
           </div>
           <div class="card-footer">
             <button
               id="modal-import-profile-from-code-invalid"
               class="button is-danger"
               v-if="profileImportCode === ''"
-            >Fix issues before importing</button>
-            <button id="modal-import-profile-from-code" class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>Import</button>
+            >{{ $t(`pages.profiles.fixIssues`) }}</button>
+            <button id="modal-import-profile-from-code" class="button is-info" @click="showCodeModal = false; importProfileUsingCode();" v-else>{{ $t(`pages.profiles.import`) }}</button>
           </div>
         </div>
       </div>
@@ -123,11 +123,11 @@
       <div class="modal-content">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{percentageImported}}% imported</p>
+            <p class="card-header-title">{{ $t(`pages.profiles.imported`, [percentageImported]) }}</p>
           </header>
           <div class="card-content">
-            <p>This may take a while, as mods are being downloaded.</p>
-            <p>Please do not close {{appName}}.</p>
+            <p>{{ $t(`pages.profiles.importedTip1`) }}</p>
+            <p>{{ $t(`pages.profiles.importedTip2`, [appName]) }}</p>
           </div>
         </div>
       </div>
@@ -138,15 +138,15 @@
          <div class="modal-background"></div>
          <div class="modal-content">
              <div class="notification is-info">
-                <h3 class="title">Loading file</h3>
-                 <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+                <h3 class="title">{{ $t(`pages.profiles.loadingFile`) }}</h3>
+                 <p>{{ $t(`pages.profiles.loadingTip`) }}</p>
              </div>
          </div>
     </div>
     <!-- Content -->
     <hero
-      title="Profile selection"
-      subtitle="Profiles help to organise mods easily"
+      :title="$t(`pages.profiles.title`)"
+      :subtitle="$t(`pages.profiles.subtitle`)"
       heroType="is-info"
     />
     <div class="columns">
@@ -158,7 +158,7 @@
                 <div class='notification'>
                     <div class="container">
                         <i class='fas fa-long-arrow-alt-left margin-right' />
-                        <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                        <strong><a @click="backToGameSelection">{{ $t(`pages.profiles.back`) }}</a></strong>
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
@@ -178,21 +178,21 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
+                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">{{ $t(`pages.profiles.select`) }}</a>
                     </div>
                       <div class="level-item">
-                          <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
-                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
+                          <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">{{ $t(`pages.profiles.rename`) }}</a>
+                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>{{ $t(`pages.profiles.rename`) }}</a>
                       </div>
                     <div class="level-item">
-                      <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">Create new</a>
+                      <a id="create-profile" class="button" @click="importUpdateSelection = null; newProfile('Create', undefined)">{{ $t(`pages.profiles.createNew`) }}</a>
                     </div>
                     <div class="level-item">
                       <!-- <a class='button' @click="importProfile()">Import profile</a> -->
-                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">Import / Update</a>
+                      <a id="import-profile" class="button" @click="showImportUpdateSelectionModal = true; importUpdateSelection = null;">{{ $t(`pages.profiles.IU`) }}</a>
                     </div>
                     <div class="level-item">
-                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">{{ $t(`pages.profiles.removeProfile`) }}</a>
                     </div>
                   </nav>
                 </div>

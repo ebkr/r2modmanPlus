@@ -2,10 +2,10 @@
     <div>
         <modal v-show="showPlatformModal === true" :open="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:title>
-                <p class='card-header-title'>Which store manages your game?</p>
+                <p class='card-header-title'>{{ $t(`pages.gameSelection.whichStore`) }}</p>
             </template>
             <template v-slot:body>
-                <p>Select a platform:</p>
+                <p>{{ $t(`pages.gameSelection.platform`) }}</p>
                 <div v-if="selectedGame !== null">
                     <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
                         <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
@@ -15,23 +15,23 @@
             </template>
             <template v-slot:footer>
                 <button class='button is-info' @click='selectPlatform'>
-                    Select platform
+                    {{ $t(`pages.gameSelection.selectPlatform`) }}
                 </button>
             </template>
         </modal>
         <hero
-            :title="`${activeTab} selection`"
+            :title="$t(`pages.gameSelection.selection`, {types: $t(`pages.gameSelection.instanceTypes.${activeTab}`)})"
             :subtitle="
                 activeTab === 'Game'
-                    ? 'Which game are you managing your mods for?'
-                    : 'Which dedicated server are you managing your mods for?'
+                    ? $t(`pages.gameSelection.whichGame`)
+                    : $t(`pages.gameSelection.whichServer`)
             "
             :heroType="activeTab === 'Game' ? 'is-info' : 'is-warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
-                <p>An update to the manager has occurred and needs to do background work.</p>
-                <p>The options to select a game are disabled until the work has completed.</p>
+                <p>{{ $t(`pages.gameSelection.updateOccurred`) }}</p>
+                <p>{{ $t(`pages.gameSelection.untilCompleted`) }}</p>
             </div>
         </div>
         <div class="columns">
@@ -42,18 +42,19 @@
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" :placeholder="$t(`pages.gameSelection.searchPH`)"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="margin-right">
                                 <a class="button is-info"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
-                                    {{ activeTab.toLowerCase() }}</a>
+                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">
+                                    {{ $t(`pages.gameSelection.selectTab`, {types: $t(`pages.gameSelection.instanceTypes.${activeTab}`).toLowerCase()}) }}
+                                </a>
                             </div>
                             <div class="margin-right">
                                 <a class="button"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
+                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">{{ $t(`pages.gameSelection.default`) }}</a>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -63,7 +64,7 @@
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" :placeholder="$t(`pages.gameSelection.searchPH`)"/>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +78,7 @@
                                     <ul class="text-center">
                                         <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
                                             :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
+                                            <a @click="changeTab(key)">{{ $t(`pages.gameSelection.instanceTypes.${key}`) }}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -129,10 +130,11 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select
-                                                                        {{ activeTab.toLowerCase() }}</button>
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">
+                                                                        {{ $t(`pages.gameSelection.selectTab`, {types: $t(`pages.gameSelection.instanceTypes.${activeTab}`).toLowerCase()}) }}
+                                                                    </button>
                                                                     <br/><br/>
-                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
+                                                                    <button class="button" @click="selectDefaultGame(game)">{{ $t(`pages.gameSelection.default`) }}</button>
                                                                 </div>
                                                             </div>
                                                         </div>

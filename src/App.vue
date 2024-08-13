@@ -59,6 +59,13 @@ export default class App extends mixins(UtilityMixin) {
         // Load settings using the default game before the actual game is selected.
         const settings: ManagerSettings = await this.$store.dispatch('resetActiveGame');
 
+        // set display language from settings
+        if (typeof settings.getContext().global.displayLanguage === 'undefined') {
+            settings.setDisplayLanguage(this.$i18n.locale);
+        } else {
+            this.$i18n.locale = settings.getContext().global.displayLanguage;
+        }
+
         this.hookThunderstoreModListRefresh();
         await this.checkCdnConnection();
 
