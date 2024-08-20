@@ -728,6 +728,12 @@ export default class GameManager {
             "https://thunderstore.io/c/arcus-chroma/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1447350")], "ArcusChroma.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Betrayal Beach", "BetrayalBeach", "BetrayalBeach",
+            "Betrayal Beach", ["Betrayal Beach.exe"], "Betrayal Beach_Data",
+            "https://thunderstore.io/c/betrayal-beach/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2643810")], "BetrayalBeach.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
