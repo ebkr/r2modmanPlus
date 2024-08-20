@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
-import { InstallArgs, PackageInstallerV2 } from "./PackageInstaller";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
 import { PackageLoader } from "../model/installing/PackageLoader";
 import FsProvider from "../providers/generic/file/FsProvider";
@@ -13,7 +13,7 @@ const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 /**
  * Handles (un)installation of ReturnOfModding mod loader
  */
-export class ReturnOfModdingInstaller extends PackageInstallerV2 {
+export class ReturnOfModdingInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const {mod, packagePath, profile} = args;
 
@@ -64,7 +64,7 @@ export class ReturnOfModdingInstaller extends PackageInstallerV2 {
 /**
  * Handles (un)installation of mods that use ReturnOfModding mod loader
  */
-export class ReturnOfModdingPluginInstaller extends PackageInstallerV2 {
+export class ReturnOfModdingPluginInstaller implements PackageInstaller {
     _ROOT = "ReturnOfModding";
     _PLUGINS = "plugins";
     _DATA = "plugins_data";
