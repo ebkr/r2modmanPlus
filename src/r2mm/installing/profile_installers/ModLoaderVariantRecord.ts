@@ -186,6 +186,7 @@ const VARIANTS = {
     NineSols: MODLOADER_PACKAGES,
     ScrewDrivers: MODLOADER_PACKAGES,
     AleAndTaleTavern: MODLOADER_PACKAGES,
+    DeepRockGalacticSurvivor: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
