@@ -698,6 +698,12 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
+
+        new Game("Deep Rock Galactic: Survivor", "DeepRockGalacticSurvivor", "DeepRockGalacticSurvivor",
+            "Deep Rock Survivor", ["DRG Survivor.exe"], "DRG Survivor_Data",
+            "https://thunderstore.io/c/deep-rock-galactic-survivor/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2321470")], "DeepRockGalacticSurvivor.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
