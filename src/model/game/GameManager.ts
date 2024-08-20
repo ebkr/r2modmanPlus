@@ -698,6 +698,12 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
+
+        new Game("Arcus Chroma", "ArcusChroma", "ArcusChroma",
+            "Arcus Chroma", ["Arcus Chroma.exe"], "Arcus Chroma_Data",
+            "https://thunderstore.io/c/arcus-chroma/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1447350")], "ArcusChroma.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
