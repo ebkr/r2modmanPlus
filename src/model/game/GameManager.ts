@@ -698,6 +698,12 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
+
+        new Game("Nine Sols", "NineSols", "NineSols",
+            "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
+            "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1809540")], "NineSols.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
