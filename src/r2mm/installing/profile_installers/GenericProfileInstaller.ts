@@ -18,7 +18,7 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { GetInstallerIdForLoader, GetInstallerIdForPlugin } from '../../../model/installing/PackageLoader';
 import { PackageInstallerId, PackageInstallers } from "../../../installers/registry";
-import { InstallArgs, PackageInstallerV2 } from "../../../installers/PackageInstaller";
+import { InstallArgs } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
@@ -289,7 +289,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        // Implementations of PackageInstallerV2 define their own uninstallation logic.
+        // Support for installer specific uninstall methods are rolled out
+        // gradually and therefore might not be defined yet.
         try {
             if (
                 await this.uninstallModLoaderWithInstaller(mod, profile) ||
@@ -319,7 +320,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     /**
-     * Uninstall mod if it's a registered mod loader with PackageInstallerV2 implementation
+     * Uninstall mod if it's a registered mod loader and the installer class
+     * implements a custom uninstallation method.
      * @return true if mod loader was uninstalled
      */
     async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
@@ -329,7 +331,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     /**
-     * Uninstall mod if its registered installer implements PackageInstallerV2
+     * Uninstall mod if its registered installer implements a custom
+     * uninstallation method.
      * @return true if mod was uninstalled
      */
     async uninstallModWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
@@ -344,7 +347,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     ): Promise<boolean> {
         const installer = installerId ? PackageInstallers[installerId] : undefined;
 
-        if (installer && installer instanceof PackageInstallerV2) {
+        if (installer && installer.uninstall) {
             const args = this.getInstallArgs(mod, profile);
             await installer.uninstall(args);
             return true;

@@ -6,7 +6,7 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
-export class NorthstarInstaller extends PackageInstaller {
+export class NorthstarInstaller implements PackageInstaller {
     /**
      * Handles installation of Northstar
      */
