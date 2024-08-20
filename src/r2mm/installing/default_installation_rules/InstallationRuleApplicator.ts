@@ -136,6 +136,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("AmongUs"),
             buildBepInExRules("NineSols"),
             buildBepInExRules("ScrewDrivers"),
+            buildBepInExRules("AleAndTaleTavern"),
         ]
     }
 }

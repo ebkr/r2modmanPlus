@@ -710,6 +710,12 @@ export default class GameManager {
             "https://thunderstore.io/c/screw-drivers/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1279510")], "ScrewDrivers.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Ale & Tale Tavern", "AleAndTaleTavern", "AleAndTaleTavern",
+            "Ale & Tale Tavern", ["Ale and Tale Tavern.exe"], "Ale and Tale Tavern_Data",
+            "https://thunderstore.io/c/ale-and-tale-tavern/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2683150")], "AleAndTaleTavern.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
