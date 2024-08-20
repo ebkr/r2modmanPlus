@@ -699,10 +699,10 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
-        new Game("Goodbye Volcano High", "GoodbyeVolcanoHigh", "GoodbyeVolcanoHigh",
-            "Goodbye Volcano High", ["Goodbye Volcano High.exe"], "Goodbye Volcano High_Data",
-            "https://thunderstore.io/c/goodbye-volcano-high/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1310330")], "GoodbyeVolcanoHigh.png",
+        new Game("Nine Sols", "NineSols", "NineSols",
+            "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
+            "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1809540")], "NineSols.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 

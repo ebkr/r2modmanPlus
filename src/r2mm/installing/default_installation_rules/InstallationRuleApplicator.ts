@@ -134,7 +134,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("BelowTheStone"),
             buildBepInExRules("Gloomwood"),
             buildBepInExRules("AmongUs"),
-            buildBepInExRules("GoodbyeVolcanoHigh"),
+            buildBepInExRules("NineSols"),
         ]
     }
 }
