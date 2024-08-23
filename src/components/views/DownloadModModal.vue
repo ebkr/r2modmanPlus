@@ -152,7 +152,17 @@ let assignId = 0;
             return this.$store.getters['profile/activeProfile'];
         }
 
-        public static async downloadSpecific(game: Game, profile: Profile, combo: ThunderstoreCombo, thunderstorePackages: ThunderstoreMod[]): Promise<void> {
+        get ignoreCache(): boolean {
+            const settings = this.$store.getters['settings'];
+            return settings.getContext().global.ignoreCache;
+        }
+
+        public static async downloadSpecific(
+            profile: Profile,
+            combo: ThunderstoreCombo,
+            thunderstorePackages: ThunderstoreMod[],
+            ignoreCache: boolean
+        ): Promise<void> {
             return new Promise((resolve, reject) => {
                 const tsMod = combo.getMod();
                 const tsVersion = combo.getVersion();
@@ -166,7 +176,7 @@ let assignId = 0;
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
                 setTimeout(() => {
-                    ThunderstoreDownloaderProvider.instance.download(game, profile, tsMod, tsVersion, thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                    ThunderstoreDownloaderProvider.instance.download(profile, tsMod, tsVersion, thunderstorePackages, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                         const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                         if (status === StatusEnum.FAILURE) {
                             if (err !== null) {
@@ -280,7 +290,7 @@ let assignId = 0;
         }
 
         // TODO: rethink how this method and provider's downloadLatestOfAll()
-        // access the active game, local mod list and TS mod list.
+        // access the local mod list and TS mod list.
         async downloadLatest() {
             this.closeModal();
             const modsWithUpdates: ThunderstoreCombo[] = this.$store.getters['profile/modsWithUpdates'];
@@ -295,7 +305,7 @@ let assignId = 0;
             this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(this.activeGame, modsWithUpdates, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.thunderstorePackages, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                 const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
@@ -337,7 +347,7 @@ let assignId = 0;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.activeGame, this.profile, tsMod, tsVersion, this.thunderstorePackages, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ThunderstoreDownloaderProvider.instance.download(this.profile, tsMod, tsVersion, this.thunderstorePackages, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                     if (status === StatusEnum.FAILURE) {
                         if (err !== null) {

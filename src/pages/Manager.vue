@@ -615,6 +615,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 
 		async created() {
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
+			const ignoreCache = this.settings.getContext().global.ignoreCache;
 
 			InteractionProvider.instance.hookModInstallProtocol(async data => {
                 const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
@@ -625,7 +626,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.activeGame, this.profile, combo, this.thunderstoreModList)
+                DownloadModModal.downloadSpecific(this.profile, combo, this.thunderstoreModList, ignoreCache)
                     .then(async value => {
                         const modList = await ProfileModList.getModList(this.profile);
                         if (!(modList instanceof R2Error)) {
