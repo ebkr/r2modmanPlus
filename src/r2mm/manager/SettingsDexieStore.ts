@@ -1,21 +1,20 @@
 import Dexie from 'dexie';
-import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import Game from '../../model/game/Game';
 import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import GameManager from '../../model/game/GameManager';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import GameManager from '../../model/game/GameManager'
 
 export const SETTINGS_DB_NAME = "settings";
 
 export default class SettingsDexieStore extends Dexie {
 
-    global: Dexie.Table<SettingsInterface, number>;
-    gameSpecific: Dexie.Table<SettingsInterface, number>;
     activeGame: Game;
+    games: Dexie.Table<GameSettingsInterface, string>;
+    global: Dexie.Table<SettingsInterface, number>;
 
     constructor(game: Game) {
         super(SETTINGS_DB_NAME);
@@ -24,66 +23,73 @@ export default class SettingsDexieStore extends Dexie {
         });
 
         const store = {
-            value: `++id,settings`
+            value: `++id,settings`,
+            games: `identifier,settings`,
         } as any;
 
-        GameManager.gameList
-            .forEach(value => {
-                store[value.settingsIdentifier] = `++id,settings`;
-            });
+        // Setup the v3 (>= 75) dexie store.
+        // This contains the following tables:
+        // - `games`: (settingsIdentifier,settings) <-- Game-specific settings.
+        // - `value`: (++id, settings)              <-- Global settings.
+        this.version(75).stores(store).upgrade(async (tx) => {
+            // Migrate the current game's legacy (v2) table to the v3 schema, if applicable - versions < 75.
+            //
+            // v2 (whose types we still utilize) stored game-specific settings in individual tables.
+            // This worked but required us to bump the Dexie store version every time we added a new game. Yuck!
+            // To get around this we have moved all game settings into the `games` table, where the key
+            // is the settings identifier of the game, and the value is a JSON string.
+            for (const game of GameManager.gameList) {
+                let gameTable;
 
-        // Add all games to store. Borked v2-3 locally
-        // Increment per game or change to settings.
-        this.version(73).stores(store);
+                try {
+                    gameTable = tx.table(game.settingsIdentifier);
+                } catch {
+                    continue;
+                }
+
+                const legacyEntry = await gameTable.toCollection().first();
+                if (legacyEntry === undefined) {
+                    continue;
+                }
+
+                // If the legacy game table exists AND it contains a valid settings field, write it to the games table.
+                // Then clear the contents of the legacy game table.
+                await this.games.put({ identifier: gameTable.name, settings: legacyEntry.settings });
+                await gameTable.clear();
+            }
+        })
 
         this.activeGame = game;
         this.global = this.table("value");
-        this.gameSpecific = this.table(game.settingsIdentifier);
+        this.games = this.table("games");
     }
 
     public async getLatestGlobal(): Promise<ManagerSettingsInterfaceGlobal_V2> {
-        return this.global.toArray().then(async result => {
-            if (result.length > 0) {
-                const globalEntry = result[result.length - 1];
-                const parsed = JSON.parse(globalEntry.settings);
-                if ((parsed as ManagerSettingsInterfaceGlobal_V2).version) {
-                    // Is modern (at least V2).
-                    return parsed;
-                } else {
-                    // Is legacy.
-                    const legacyToV2 = this.mapLegacyToV2(parsed, this.activeGame);
-                    await this.global.put({ settings: JSON.stringify(legacyToV2.global) });
-                    await this.gameSpecific.put({ settings: JSON.stringify(legacyToV2.gameSpecific) });
-                    return legacyToV2.global;
-                }
-            } else {
-                ManagerSettings.NEEDS_MIGRATION = true;
-                const obj = this.createNewSettingsInstance();
-                await this.global.put({ settings: JSON.stringify(obj.global) });
-                await this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
-                return obj.global;
-            }
-        });
+        const global = await this.global.get(1);
+
+        // Create the global settings row if it does not already exist.
+        if (global === undefined) {
+            const newSettings = this.createNewSettingsInstance();
+            await this.global.put({ settings: JSON.stringify(newSettings.global) });
+            return newSettings.global;
+        }
+
+        // Otherwise parse and return the settings field.
+        return JSON.parse(global.settings);
     }
 
     public async getLatestGameSpecific(): Promise<ManagerSettingsInterfaceGame_V2> {
-        return this.gameSpecific.toArray().then(async result => {
-            if (result.length > 0) {
-                const globalEntry = result[result.length - 1];
-                const parsed = JSON.parse(globalEntry.settings);
-                if ((parsed as ManagerSettingsInterfaceGame_V2).version === 2) {
-                    // Is modern (at least V2).
-                    return parsed;
-                } else {
-                    // Placeholder for future migration
-                    return;
-                }
-            } else {
-                const obj = this.createNewSettingsInstance();
-                await this.gameSpecific.put({ settings: JSON.stringify(obj.gameSpecific) });
-                return obj.gameSpecific;
-            }
-        });
+        const identifier = this.activeGame.settingsIdentifier;
+        const game = await this.games.get(identifier);
+
+        if (game !== undefined) {
+            return JSON.parse(game.settings);
+        }
+
+        let newGame = this.createNewSettingsInstance();
+        await this.games.put({ identifier: identifier, settings: JSON.stringify(newGame.gameSpecific) });
+
+        return newGame.gameSpecific;
     }
 
     public async getLatest(): Promise<ManagerSettingsInterfaceHolder> {
@@ -96,7 +102,7 @@ export default class SettingsDexieStore extends Dexie {
             };
         };
 
-        return await this.transaction("rw!", this.global, this.gameSpecific, get);
+        return await this.transaction("rw!", this.global, this.games, get);
     }
 
     private createNewSettingsInstance(): ManagerSettingsInterfaceHolder {
@@ -131,55 +137,29 @@ export default class SettingsDexieStore extends Dexie {
 
     public async save(holder: ManagerSettingsInterfaceHolder) {
         const update = async () => {
+            // Update global settings.
             await this.global.toArray().then(async result => {
                 for (let settingsInterface of result) {
                     await this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
                 }
             });
-            await this.gameSpecific.toArray().then(async result => {
-                for (let settingsInterface of result) {
-                    await this.gameSpecific.update(settingsInterface.id!, {settings: JSON.stringify(holder.gameSpecific)});
-                }
-            });
+
+
+            // Update the active game's settings.
+            await this.games.put({ identifier: this.activeGame.settingsIdentifier, settings: JSON.stringify(holder.gameSpecific) });
         }
 
-        await this.transaction("rw!", this.global, this.gameSpecific, update);
+        await this.transaction("rw!", this.global, this.games, update);
     }
-
-    private mapLegacyToV2(itf: ManagerSettingsInterface_Legacy, game: Game): ManagerSettingsInterfaceHolder {
-        return {
-            global: {
-                darkTheme: itf.darkTheme,
-                dataDirectory: itf.dataDirectory,
-                expandedCards: itf.expandedCards,
-                funkyModeEnabled: itf.funkyModeEnabled,
-                ignoreCache: itf.ignoreCache,
-                steamDirectory: itf.steamDirectory,
-                lastSelectedGame: null,
-                version: 2,
-                favouriteGames: [],
-                defaultGame: undefined,
-                defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD,
-                displayLanguage: undefined,
-            },
-            gameSpecific: {
-                version: 2,
-                gameDirectory: game.displayName === "Risk of Rain 2" ? itf.riskOfRain2Directory : null,
-                installedDisablePosition: itf.installedDisablePosition,
-                installedSortBy: itf.installedDisablePosition,
-                installedSortDirection: itf.installedSortDirection,
-                lastSelectedProfile: itf.lastSelectedProfile,
-                launchParameters: itf.launchParameters,
-                linkedFiles: itf.linkedFiles
-            }
-        }
-    }
-
 }
 
 interface SettingsInterface {
     id?: number;
+    settings: string;
+}
+
+interface GameSettingsInterface {
+    identifier: string;
     settings: string;
 }
 

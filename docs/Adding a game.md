@@ -56,13 +56,6 @@
       - EG: RoR2, NASB, TABS, etc.
       - Pattern is lowercase although likely isn't necessary.
 
-### Update SettingsDexieStore
-You'll find a line similar to:
-```ts
-this.version(33).stores(store);
-```
-Bump this by one each time a game is added to GameManager.
-
 ### Creating new installation rules
 - See all files under `/src/r2mm/installing/default_installation_rules/`
   - `game_rules` stores all game specific rules.

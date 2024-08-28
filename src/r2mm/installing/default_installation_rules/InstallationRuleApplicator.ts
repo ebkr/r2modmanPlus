@@ -132,6 +132,10 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("AnotherCrabsTreasure"),
             buildBepInExRules("GladioMori"),
             buildBepInExRules("SlipstreamRogueSpace"),
+            buildBepInExRules("BacktotheDawn"),
+            buildBepInExRules("BelowTheStone"),
+            buildBepInExRules("Gloomwood"),
+            buildBepInExRules("AmongUs"),
         ]
     }
 }

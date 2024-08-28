@@ -644,7 +644,7 @@ export default class GameManager {
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+            GameSelectionDisplayMode.HIDDEN, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
 
         new Game("Magicraft", "Magicraft", "Magicraft",
             "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
@@ -669,6 +669,35 @@ export default class GameManager {
             "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["srs"]),
+
+        new Game("Back to the Dawn", "BacktotheDawn", "BacktotheDawn",
+            "MetalHeadGames", ["Back To The Dawn.exe"], "Back To The Dawn_Data",
+            "https://thunderstore.io/c/back-to-the-dawn/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1735700")], "BackToTheDawn.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bttd"]),
+
+        new Game("Below the Stone", "BelowTheStone", "BelowTheStone",
+            "Below The Stone", ["Below The Stone.exe"], "Below The Stone_Data",
+            "https://thunderstore.io/c/below-the-stone/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1170230")], "BelowTheStone.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bts"]),
+
+        new Game("Gloomwood", "Gloomwood", "Gloomwood",
+            "Gloomwood", ["Gloomwood.exe"], "Gloomwood_Data",
+            "https://thunderstore.io/c/gloomwood/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1150760")], "Gloomwood.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gw"]),
+
+        new Game("Among Us", "AmongUs", "AmongUs",
+            "Among Us", ["Among Us.exe"], "Among Us_Data",
+            "https://thunderstore.io/c/among-us/api/v1/package/", EXCLUSIONS,
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "945360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "among-us"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "Innersloth.AmongUs"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ],
+            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
     ];
 
     static get activeGame(): Game {

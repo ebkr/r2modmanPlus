@@ -179,6 +179,10 @@ const VARIANTS = {
     AnotherCrabsTreasure: MODLOADER_PACKAGES,
     GladioMori: MODLOADER_PACKAGES,
     SlipstreamRogueSpace: MODLOADER_PACKAGES,
+    BacktotheDawn: MODLOADER_PACKAGES,
+    BelowTheStone: MODLOADER_PACKAGES,
+    Gloomwood: MODLOADER_PACKAGES,
+    AmongUs: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
