@@ -6,8 +6,17 @@ import sanitize from "sanitize-filename";
 
 @Component
 export default class ProfilesMixin extends Vue {
+
     get profileList(): string[] {
         return this.$store.state.profiles.profileList;
+    }
+
+    get activeProfileName(): string {
+        return this.$store.getters['profile/activeProfileName'];
+    }
+
+    set activeProfileName(value: string) {
+        this.$store.dispatch('profiles/setSelectedProfile', {profileName: value, prewarmCache: false});
     }
 
     doesProfileExist(nameToCheck: string): boolean {
