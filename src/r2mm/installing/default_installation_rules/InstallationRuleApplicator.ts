@@ -140,6 +140,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("DeepRockGalacticSurvivor"),
             buildBepInExRules("ArcusChroma"),
             buildBepInExRules("BetrayalBeach"),
+            buildBepInExRules("SupermarketTogether"),
         ]
     }
 }

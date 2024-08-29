@@ -699,6 +699,7 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+<<<<<<< HEAD
         new Game("Nine Sols", "NineSols", "NineSols",
             "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
             "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,
@@ -733,6 +734,12 @@ export default class GameManager {
             "Betrayal Beach", ["Betrayal Beach.exe"], "Betrayal Beach_Data",
             "https://thunderstore.io/c/betrayal-beach/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2643810")], "BetrayalBeach.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Supermarket Together", "SupermarketTogether", "SupermarketTogether",
+            "Supermarket Together", ["Supermarket Together.exe"], "Supermarket Together_Data",
+            "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2709570")], "SupermarketTogether.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
