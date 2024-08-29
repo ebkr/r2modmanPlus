@@ -46,8 +46,8 @@
                   <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
               </template>
               <template v-if="addingProfile && importUpdateSelection === 'UPDATE'">
-                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(selectedProfile)">Update profile: {{ selectedProfile }}</button>
-                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ selectedProfile }}</button>
+                  <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(activeProfileName)">Update profile: {{ activeProfileName }}</button>
+                  <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ activeProfileName }}</button>
               </template>
           </div>
         </div>
@@ -168,7 +168,7 @@
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
                           <p
-                            :class="['card-header-title', {'has-text-info':selectedProfile === profileName}]"
+                            :class="['card-header-title', {'has-text-info':activeProfileName === profileName}]"
                           >{{profileName}}</p>
                         </div>
                       </div>
@@ -182,7 +182,7 @@
                       <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
                     </div>
                       <div class="level-item">
-                          <a id="rename-profile-disabled" class="button" v-if="selectedProfile === 'Default'" :disabled="true">Rename</a>
+                          <a id="rename-profile-disabled" class="button" v-if="activeProfileName === 'Default'" :disabled="true">Rename</a>
                           <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
                       </div>
                     <div class="level-item">
@@ -206,18 +206,13 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Ref } from 'vue-property-decorator';
 import { Hero, Progress } from '../components/all';
 import sanitize from 'sanitize-filename';
-import ZipProvider from '../providers/generic/zip/ZipProvider';
 
 import Profile from '../model/Profile';
-import VersionNumber from '../model/VersionNumber';
-import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
-import ThunderstoreVersion from '../model/ThunderstoreVersion';
 import ManifestV2 from '../model/ManifestV2';
 import ExportFormat from '../model/exports/ExportFormat';
 import ExportMod from '../model/exports/ExportMod';
@@ -228,18 +223,23 @@ import ProfileModList from '../r2mm/mods/ProfileModList';
 import ProfileInstallerProvider from '../providers/ror2/installing/ProfileInstallerProvider';
 import ThunderstoreDownloaderProvider from '../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
-import * as  yaml from 'yaml';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import Itf_RoR2MM from '../r2mm/installing/Itf_RoR2MM';
 import FileUtils from '../utils/FileUtils';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-import ManagerInformation from '../_managerinf/ManagerInformation';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import { ProfileImportExport } from '../r2mm/mods/ProfileImportExport';
 import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
 import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
 import CreateProfileModal from "../components/profiles-modals/CreateProfileModal.vue";
+import ProfilesMixin from "../components/mixins/ProfilesMixin.vue";
+import * as yaml from "yaml";
+import VersionNumber from "../model/VersionNumber";
+import ZipProvider from "../providers/generic/zip/ZipProvider";
+import ThunderstoreMod from "../model/ThunderstoreMod";
+import ThunderstoreVersion from "../model/ThunderstoreVersion";
+import ManagerInformation from "../_managerinf/ManagerInformation";
 
 let fs: FsProvider;
 
@@ -252,7 +252,7 @@ let fs: FsProvider;
         RenameProfileModal,
     },
 })
-export default class Profiles extends Vue {
+export default class Profiles extends ProfilesMixin {
     @Ref() readonly profileCodeInput: HTMLInputElement | undefined;
     @Ref() readonly profileNameInput: HTMLInputElement | undefined;
 
@@ -272,53 +272,22 @@ export default class Profiles extends Vue {
 
     private listenerId: number = 0;
 
-    get activeProfile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
+    get appName(): string {
+        return ManagerInformation.APP_NAME;
     }
 
-    get selectedProfile(): string {
+    get activeProfileName(): string {
         return this.$store.getters['profile/activeProfileName'];
     }
 
-    get profileList(): string[] {
-        return this.$store.state.profiles.profileList;
-    }
-
-    async setSelectedProfile(profileName: string, prewarmCache = true) {
-        try {
-            await this.$store.dispatch('profile/updateActiveProfile', profileName);
-
-            if (prewarmCache) {
-                await this.$store.dispatch('profile/updateModListFromFile');
-                await this.$store.dispatch('tsMods/prewarmCache');
-            }
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
-            this.$store.commit('error/handleError', err);
-        }
+    get activeProfile(): Profile {
+        return this.$store.getters['profile/activeProfile'];
     }
 
     async profileSelectOnChange(event: Event) {
         if (event.target instanceof HTMLSelectElement) {
             await this.setSelectedProfile(event.target.value, false);
         }
-    }
-
-    get appName(): string {
-        return ManagerInformation.APP_NAME;
-    }
-
-    doesProfileExist(nameToCheck: string): boolean {
-        if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
-            return true;
-        }
-        const safe: string | undefined = sanitize(nameToCheck);
-        if (safe === undefined) {
-            return true;
-        }
-        return (this.profileList.find(
-                (profile: string) =>
-                    profile.toLowerCase() === safe.toLowerCase())) !== undefined;
     }
 
     // Open modal for entering a name for a new profile. Triggered
@@ -350,7 +319,7 @@ export default class Profiles extends Vue {
     // User confirmed updating an existing profile via importing.
     updateProfile() {
         this.addingProfile = false;
-        document.dispatchEvent(new CustomEvent("created-profile", {detail: this.selectedProfile}));
+        document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
     }
 
     closeNewProfileModal() {
@@ -420,6 +389,21 @@ export default class Profiles extends Vue {
         });
     }
 
+    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
+        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
+        if (!(installError instanceof R2Error)) {
+            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
+            if (newModList instanceof R2Error) {
+                return newModList;
+            }
+            return manifestMod;
+        } else {
+            // (mod failed to be placed in /{profile} directory)
+            return installError;
+        }
+    }
+
     openProfileCodeModal() {
         this.profileImportCode = '';
         this.showCodeModal = true;
@@ -445,32 +429,18 @@ export default class Profiles extends Vue {
             this.importingProfile = false;
             return;
         }
-        let read = '';
-        if (files[0].endsWith('.r2x')) {
-            read = (await fs.readFile(files[0])).toString();
-        } else if (files[0].endsWith('.r2z')) {
-            const result: Buffer | null = await ZipProvider.instance.readFile(files[0], "export.r2x");
-            if (result === null) {
-                return;
-            }
-            read = result.toString();
-        } else if (files[0].endsWith(".json")) {
-            return this.importAlternativeManagerProfile(files[0]);
+
+        if (files[0].endsWith(".json")) {
+            return await this.importAlternativeManagerProfile(files[0]);
         }
-        const parsedYaml = yaml.parse(read);
-        const parsed: ExportFormat = new ExportFormat(
-            parsedYaml.profileName,
-            parsedYaml.mods.map((mod: any) => {
-                const enabled = mod.enabled === undefined || mod.enabled;
-                return new ExportMod(
-                    mod.name,
-                    new VersionNumber(
-                        `${mod.version.major}.${mod.version.minor}.${mod.version.patch}`
-                    ),
-                    enabled
-                );
-            })
-        );
+
+        let read: string | null = await this.readProfileFile(files[0]);
+
+        if (read === null) {
+            return;
+        }
+
+        const parsed: ExportFormat = await this.parseYamlToExportFormat(read);
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
         document.addEventListener('created-profile', ((event: CustomEvent) => {
@@ -493,41 +463,7 @@ export default class Profiles extends Vue {
                             setTimeout(() => {
                                 this.downloadImportedProfileMods(parsed.getMods(), async () => {
                                     if (files[0].endsWith('.r2z')) {
-                                        const entries = await ZipProvider.instance.getEntries(files[0]);
-                                        for (const entry of entries) {
-                                            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                                                try {
-                                                    await ZipProvider.instance.extractEntryTo(
-                                                        files[0],
-                                                        entry.entryName,
-                                                        path.join(
-                                                            Profile.getDirectory(),
-                                                            profileName,
-                                                            'BepInEx'
-                                                        )
-                                                    );
-                                                } catch (e) {
-                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
-                                                    this.$store.commit('error/handleError', err);
-                                                    return;
-                                                }
-                                            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                                                try {
-                                                    await ZipProvider.instance.extractEntryTo(
-                                                        files[0],
-                                                        entry.entryName,
-                                                        path.join(
-                                                            Profile.getDirectory(),
-                                                            profileName
-                                                        )
-                                                    )
-                                                } catch (e) {
-                                                    const err = R2Error.fromThrownValue(e, 'Error while trying to extract a Zip file while importing a profile');
-                                                    this.$store.commit('error/handleError', err);
-                                                    return;
-                                                }
-                                            }
-                                        }
+                                        await this.extractZippedProfileFile(files[0], profileName);
                                     }
                                     if (this.importUpdateSelection === 'UPDATE') {
                                         await this.setSelectedProfile(event.detail, false);
@@ -548,6 +484,63 @@ export default class Profiles extends Vue {
             }
         }) as EventListener, {once: true});
         this.newProfile('Import', parsed.getProfileName());
+    }
+
+    async extractZippedProfileFile(file: string, profileName: string) {
+        const entries = await ZipProvider.instance.getEntries(file);
+        for (const entry of entries) {
+            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
+                await ZipProvider.instance.extractEntryTo(
+                    file,
+                    entry.entryName,
+                    path.join(
+                        Profile.getDirectory(),
+                        profileName,
+                        'BepInEx'
+                    )
+                );
+            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
+                await ZipProvider.instance.extractEntryTo(
+                    file,
+                    entry.entryName,
+                    path.join(
+                        Profile.getDirectory(),
+                        profileName
+                    )
+                )
+            }
+        }
+    }
+
+    async readProfileFile(file: string) {
+        let read = '';
+        if (file.endsWith('.r2x')) {
+            read = (await FsProvider.instance.readFile(file)).toString();
+        } else if (file.endsWith('.r2z')) {
+            const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
+            if (result === null) {
+                return null;
+            }
+            read = result.toString();
+        }
+        return read;
+    }
+
+    async parseYamlToExportFormat(read: string) {
+        const parsedYaml = await yaml.parse(read);
+        return new ExportFormat(
+            parsedYaml.profileName,
+            parsedYaml.mods.map((mod: any) => {
+                const enabled = mod.enabled === undefined || mod.enabled;
+                return new ExportMod(
+                    mod.name,
+                    new VersionNumber(
+                        `${mod.version.major}.${mod.version.minor}.${mod.version.patch}`
+                    ),
+                    enabled
+                );
+            })
+        );
     }
 
     async importAlternativeManagerProfile(file: string) {
@@ -586,38 +579,6 @@ export default class Profiles extends Vue {
         })
     }
 
-    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
-        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
-        if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
-            if (newModList instanceof R2Error) {
-                return newModList;
-            }
-            return manifestMod;
-        } else {
-            // (mod failed to be placed in /{profile} directory)
-            return installError;
-        }
-    }
-
-    async updateProfileList() {
-        const profilesDirectory: string = this.activeProfile.getDirectory();
-        try {
-            const profilesDirectoryContents = await fs.readdir(profilesDirectory);
-            let promises = profilesDirectoryContents.map(async function(file) {
-                return ((await fs.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
-                    ? file : undefined;
-            });
-            Promise.all(promises).then((profileList) => {
-                this.$store.commit('profiles/setProfileList', ["Default", ...profileList.filter(file => file)].sort());
-            })
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
-            this.$store.commit('error/handleError', err);
-        }
-    }
-
     async created() {
         fs = FsProvider.instance;
         const settings = await this.$store.getters.settings;
@@ -651,6 +612,24 @@ export default class Profiles extends Vue {
         }
 
         await this.updateProfileList();
+    }
+
+    async setSelectedProfile(profileName: string, prewarmCache = true) {
+        try {
+            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: prewarmCache });
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
+            this.$store.commit('error/handleError', err);
+        }
+    }
+
+    async updateProfileList() {
+        try {
+            await this.$store.dispatch('profiles/updateProfileList');
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
+            this.$store.commit('error/handleError', err);
+        }
     }
 
     private async backToGameSelection() {
