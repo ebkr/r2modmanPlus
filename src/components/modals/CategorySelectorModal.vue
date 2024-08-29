@@ -36,13 +36,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class ChangeSelectorModal extends Vue {
 
     @Prop({required: true})
-    private title!: string;
+    readonly title!: string;
 
     @Prop({required: true})
-    private selectedCategories!: string[]
+    readonly selectedCategories!: string[]
 
     @Prop({required: true})
-    private selectableCategories!: string[]
+    readonly selectableCategories!: string[]
 
     emitSelected(event: Event) {
         this.$emit("selected-category", event);

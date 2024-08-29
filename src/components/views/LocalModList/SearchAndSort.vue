@@ -64,7 +64,7 @@ export default class SearchAndSort extends Vue {
 <template>
     <div class="inherit-background-colour sticky-top sticky-top--search non-selectable">
         <div class="is-shadowless is-square">
-            <div class="no-padding-left card-header-title">
+            <div class="card-header-title page-padding">
 
                 <div class="input-group input-group--flex margin-right">
                     <label for="local-search" class="non-selectable">Search</label>

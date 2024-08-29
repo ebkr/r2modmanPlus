@@ -2,7 +2,7 @@
     <div>
         <div class="inherit-background-colour sticky-top sticky-top--search non-selectable">
             <div class="is-shadowless is-square">
-                <div class="no-padding-left card-header-title">
+                <div class="page-padding card-header-title">
                     <div class="input-group input-group--flex margin-right">
                         <label for="thunderstore-search-filter">Search</label>
                         <DeferredInput
@@ -48,12 +48,12 @@
             :paged-mod-list="pagedThunderstoreModList"
         />
         <div class="in-mod-list" v-if="getPaginationSize() > 1">
-            <p class="notification margin-right">
+            <p class="notification">
                 Use the numbers below to change page
             </p>
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
-            <p class="notification margin-right">
+            <p class="notification">
                 {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
             </p>
         </div>

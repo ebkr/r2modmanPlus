@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-with-topbar">
         <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
         <ConfigEditLayout
             :config-file="editing"
@@ -22,7 +22,7 @@
         }
     })
     export default class BetterConfigEditor extends Vue {
-        private editing: ConfigFile | null = null;
+        public editing: ConfigFile | null = null;
 
         bindEdit(editing: ConfigFile | null) {
             this.editing = editing;

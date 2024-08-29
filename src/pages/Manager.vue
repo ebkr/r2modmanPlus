@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="page-with-topbar">
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>

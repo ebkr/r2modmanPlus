@@ -17,16 +17,16 @@ jobs:
             os: windows-latest
             platform: win
           - kind: mac
-            os: macos-11
+            os: macos-14
             platform: osx
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           # The talk on the street says this might be a good version for building.
-          node-version: 14.20.1
+          node-version: 20.16.0
           cache: yarn
 
       - name: Install Yarn dependencies
@@ -46,6 +46,11 @@ jobs:
         #   DEBUG: electron-builder
         with:
           run: yarn build-${{ matrix.platform }} --publish=never
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2modman-${{ matrix.platform }}
+          path: dist/electron/Packaged
 
       - if: steps.build.outputs.stderr != ''
         name: Log stderr

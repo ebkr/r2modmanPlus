@@ -1,5 +1,30 @@
 <template>
     <div>
+        <div class="titlebar">
+            <div class="titlebar_start">
+                <p class="titlebar_title">{{ appName }}</p>
+                <p class="titlebar_version">{{ appVersion }}</p>
+            </div>
+            <div class="titlebar_buttons">
+                <div class="btn" @click="() => ipcRenderer.send('window-minimize')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.47 8.47">
+                        <path
+                            d="M 0.71464503,4.235 H 7.7550979" stroke="currentColor" fill="currentColor"  stroke-linecap="round" stroke-width="1.59"/>
+                    </svg>
+                </div>
+                <div class="btn" @click="() => ipcRenderer.send('window-maximize')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.47 8.47">
+                        <path
+                            d="M 0.70215499,0.70215499 H 7.767847 V 7.7678511 H 0.70215499 Z" stroke="currentColor" fill="none" stroke-linecap="round" stroke-width="1.59" />
+                    </svg>
+                </div>
+                <div class="closebutton btn" @click="() => ipcRenderer.send('window-close')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.47 8.47">
+                        <path d="m7.67.794-6.88 6.88m0-6.88 6.88 6.88" stroke="currentColor" fill="currentColor" stroke-linecap="round" stroke-width="1.59" />
+                    </svg>
+                </div>
+            </div>
+        </div>
         <router-view v-if="visible"/>
         <ErrorModal />
     </div>
@@ -55,7 +80,8 @@ import ErrorModal from './components/modals/ErrorModal.vue';
     }
 })
 export default class App extends mixins(UtilityMixin) {
-    private visible: boolean = false;
+    public visible: boolean = false;
+    readonly ipcRenderer = ipcRenderer;
 
     async created() {
         // Load settings using the default game before the actual game is selected.
@@ -124,6 +150,14 @@ export default class App extends mixins(UtilityMixin) {
         PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 
         BindLoaderImpl.bind();
+    }
+
+    get appName(): string {
+        return ManagerInformation.APP_NAME;
+    }
+
+    get appVersion(): string {
+        return ManagerInformation.VERSION.toString();
     }
 
 }

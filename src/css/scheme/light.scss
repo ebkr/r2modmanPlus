@@ -84,6 +84,8 @@ $pagination-focus-color: var(--pagination-focus-color, $scheme-text-strong);
 $pagination-border-color: var(--pagination-border-color, $scheme-border);
 $pagination-hover-border-color: var(--pagination-hover-border-color, $scheme-border-hover);
 $pagination-focus-border-color: var(--pagination-focus-border-color, $scheme-border-hover);
+$pagination-current-background-color: $scheme-primary;
+$pagination-current-border-color: $scheme-primary;
 
 $panel-block-color: var(--panel-block-color, $scheme-text-strong);
 $panel-item-border: 1px solid var(--panel-item-border, $scheme-border);
@@ -102,3 +104,7 @@ $select-color: var(--select-color, $strong-color);
 $select-background-color: var(--select-background-color, $scheme-background);
 $select-border-color: var(--select-border-color, $scheme-border);
 $select-hover-border-color: var(--select-hover-border-color, $scheme-border-hover);
+$card-hover: var(--card-hover, #e2e2e2);
+$navigation-background: var(--navigation-background, #f5f5f5);
+$title-bar-border: var(--title-bar-border, #e4e4e4);
+$scrollbar-thumb: var(--scrollbar-thumb, #bfbfbf);

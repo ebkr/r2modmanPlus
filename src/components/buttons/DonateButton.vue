@@ -1,5 +1,5 @@
 <template>
-    <Link :url="mod.getDonationLink()"
+    <Link :url="mod?.getDonationLink()"
           :target="'external'"
           class="card-footer-item"
           v-tooltip.left="{content: 'Donate to the mod author', distance: 0}">

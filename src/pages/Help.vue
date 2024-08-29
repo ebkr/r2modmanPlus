@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-with-topbar">
         <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="is-info"/>
         <div
             class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
@@ -11,7 +11,7 @@
                 </li>
             </ul>
         </div>
-        <div class="margin-right">
+        <div class="page-padding">
             <br/>
             <div ref="General" v-if="activeTab === 'General'">
                 <h2 class="title is-5">Getting started with installing mods</h2>
@@ -113,10 +113,10 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
     }
 })
 export default class Help extends Vue {
-    private activeTab = 'General';
-    private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
-    private doorstopTarget = "";
-    private copyingDoorstopText = false;
+    activeTab = 'General';
+    tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
+    doorstopTarget = "";
+    copyingDoorstopText = false;
 
     changeTab(key: string) {
         this.activeTab = key;

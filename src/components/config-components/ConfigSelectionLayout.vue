@@ -5,7 +5,7 @@
             subtitle="Select a configuration file to edit"
             hero-type="is-info"
         />
-        <div class="notification is-warning is-square">
+        <div class="notification is-warning is-square no-margin">
             <div class="container">
                 <p>
                     Configuration files are generated after launching the game, with the mod installed, at least once.
@@ -13,14 +13,14 @@
             </div>
         </div>
         <div class='is-shadowless'>
-            <div class='no-padding-left card-header-title'>
+            <div class='card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
                     <label for="local-search" class="non-selectable">Search</label>
                     <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for config files"/>
                 </div>
 
-                <div class="input-group margin-right">
+                <div class="input-group">
                     <label for="config-sort-order" class="non-selectable">Sort</label>
                     <select id="config-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
                         <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
@@ -36,7 +36,7 @@
 
             </div>
         </div>
-        <div class="margin-right">
+        <div>
             <div v-for="(file, index) in sortedConfigFiles" :key="`config-file-${file.getName()}`">
                 <ExpandableCard
                     :id="index"
@@ -80,9 +80,9 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
         private configFiles: ConfigFile[] = [];
         private shownConfigFiles: ConfigFile[] = [];
 
-        private filterText: string = '';
-        private sortOrder: SortConfigFile = SortConfigFile.NAME;
-        private sortDirection: SortDirection = SortDirection.STANDARD;
+        filterText: string = '';
+        sortOrder: SortConfigFile = SortConfigFile.NAME;
+        sortDirection: SortDirection = SortDirection.STANDARD;
 
         @Watch('filterText')
         textChanged() {

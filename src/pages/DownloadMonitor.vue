@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-with-topbar">
         <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="is-info"/>
         <template v-if="activeDownloads.length === 0">
             <div class='text-center top'>
@@ -55,8 +55,8 @@ import Timeout = NodeJS.Timeout;
     }
 })
 export default class DownloadMonitor extends Vue {
-    private refreshInterval!: Timeout;
-    private activeDownloads: [number, any][] = [];
+    public refreshInterval!: Timeout;
+    public activeDownloads: [number, any][] = [];
 
     created() {
         this.activeDownloads = [...DownloadModModal.allVersions].reverse();
