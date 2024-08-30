@@ -308,13 +308,22 @@ export default {
         },
 
         async saveModListToDisk(
-            {dispatch},
+            {dispatch, getters},
             params: {
                 mods: ManifestV2[],
                 profile: Profile,
             }
         ) {
             const {mods, profile} = params;
+
+            // Sanity check against race conditions. E.g. using the text filter
+            // disables ordering, but if the user is fast enough they can start
+            // dragging a mod after writing into input. If the dragging is then
+            // finished succesfully after the filter is applied, mods.yml would
+            // be overwritten to contain only the visible, filtered mods.
+            if (!getters['canSortMods']) {
+                return;
+            }
 
             ProfileModList.requestLock(async () => {
                 const err = await ProfileModList.saveModList(profile, mods);
