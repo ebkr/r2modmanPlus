@@ -1,8 +1,10 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import path from "path";
+
+import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { PackageLoader } from "../model/installing/PackageLoader";
 import FsProvider from "../providers/generic/file/FsProvider";
 import { MODLOADER_PACKAGES } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
-import { PackageLoader } from "../model/installing/PackageLoader";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
@@ -38,5 +40,39 @@ export class ReturnOfModdingInstaller extends PackageInstaller {
                 }
             }
         }
+    }
+}
+
+export class ReturnOfModdingPluginInstaller extends PackageInstaller {
+    readonly installer = new InstallRuleInstaller({
+        gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
+        rules: [
+            {
+                route: path.join("ReturnOfModding", "plugins"),
+                isDefaultLocation: true,
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: [],
+            },
+            {
+                route: path.join("ReturnOfModding", "plugins_data"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: [],
+            },
+            {
+                route: path.join("ReturnOfModding", "config"),
+                defaultFileExtensions: [],
+                trackingMethod: "SUBDIR",
+                subRoutes: [],
+            }
+        ]
+    });
+
+    /**
+     * Handles installation of mods that use ReturnOfModding mod loader
+     */
+    async install(args: InstallArgs) {
+        await this.installer.install(args);
     }
 }
