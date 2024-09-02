@@ -49,3 +49,5 @@ GamefaceGamers-Mod_Sync
 codengine-SOTFEdit
 
 DevLeon-SonsOfTheForestMap
+
+Kesomannen-GaleModManager

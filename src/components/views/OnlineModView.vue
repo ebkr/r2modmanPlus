@@ -54,7 +54,7 @@
         </div>
         <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
             <p class="notification margin-right">
-                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                {{pagedThunderstoreModList.length ? "No mods matching search found": "No mods available"}}
             </p>
         </div>
         <br/>
@@ -92,17 +92,12 @@ export default class OnlineModView extends Vue {
     pagedThunderstoreModList: ThunderstoreMod[] = [];
     pageNumber = 1;
     searchableThunderstoreModList: ThunderstoreMod[] = [];
-    sortedThunderstoreModList: ThunderstoreMod[] = [];
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
-    }
-
-    get thunderstoreModList(): ThunderstoreMod[] {
-        return this.$store.state.tsMods.mods;
     }
 
     getPaginationSize() {
@@ -131,6 +126,9 @@ export default class OnlineModView extends Vue {
         this.filterThunderstoreModList();
     }
 
+    @Watch("sortingDirectionModel")
+    @Watch("sortingStyleModel")
+    @Watch("tsMods.mods")
     @Watch("$store.state.modFilters.allowNsfw")
     @Watch("$store.state.modFilters.selectedCategoriesCompareOne")
     @Watch("$store.state.modFilters.selectedCategoriesCompareAll")
@@ -143,10 +141,10 @@ export default class OnlineModView extends Vue {
         const filterCategoriesToExclude = this.$store.state.modFilters.selectedCategoriesToExclude;
         const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
 
-        let searchableList = this.sortedThunderstoreModList;
+        let searchableList = this.$store.state.tsMods.mods;
         const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
         if (searchKeys.length > 0) {
-            searchableList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+            searchableList = searchableList.filter((x: ThunderstoreMod) => {
                 return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getVersions()[0].getDescription())
             });
         }
@@ -173,19 +171,15 @@ export default class OnlineModView extends Vue {
                 filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
         }
 
-        this.searchableThunderstoreModList = [...searchableList];
+        this.searchableThunderstoreModList = this.sortThunderstoreMods(searchableList);
 
         // Update results
         this.changePage();
     }
 
-    @Watch("sortingDirectionModel")
-    @Watch("sortingStyleModel")
-    @Watch("tsMods.mods")
-    sortThunderstoreModList() {
+    private sortThunderstoreMods(mods: ThunderstoreMod[]): ThunderstoreMod[] {
         const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
-        const sortedList = [...this.thunderstoreModList];
-        sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+        return mods.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
             let result: boolean;
             switch (this.sortingStyleModel) {
                 case SortingStyle.LAST_UPDATED:
@@ -209,8 +203,6 @@ export default class OnlineModView extends Vue {
             }
             return result ? 1 : -1;
         });
-        this.sortedThunderstoreModList = sortedList;
-        this.filterThunderstoreModList();
     }
 
     updatePageNumber(page: number) {
@@ -223,7 +215,7 @@ export default class OnlineModView extends Vue {
     }
 
     async created() {
-        this.sortThunderstoreModList();
+        this.filterThunderstoreModList();
     }
 };
 </script>
