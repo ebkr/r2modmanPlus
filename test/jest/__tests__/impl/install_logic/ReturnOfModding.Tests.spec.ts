@@ -1,8 +1,10 @@
 import {
+    createFilesIntoProfile,
     createManifest,
     createPackageFilesIntoCache,
     expectFilesToBeCopied,
     expectFilesToBeRemoved,
+    expectFilesToExistInProfile,
     installLogicBeforeEach
 } from '../../../__utils__/InstallLogicUtils';
 import R2Error from '../../../../../src/model/errors/R2Error';
@@ -18,7 +20,8 @@ describe('ReturnOfModding Installer Tests', () => {
     test('Installs and uninstalls the package loader', async () => {
         const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
         const sourceToExpectedDestination = {
-            "ReturnOfModdingPack/version.dll": "version.dll",
+            "ReturnOfModdingPack/version.dll": "version.dll",  // RoRR
+            "ReturnOfModdingPack/d3d12.dll": "d3d12.dll",  // Hades 2
         };
         const expectedAfterUninstall: string[] = [];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
@@ -31,6 +34,20 @@ describe('ReturnOfModding Installer Tests', () => {
         await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
     });
 
+    test('Disabling/enabling the mod loader does nothing', async () => {
+        const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
+        const loaders = ["version.dll", "d3d12.dll"];
+        await createFilesIntoProfile(loaders);
+
+        await ProfileInstallerProvider.instance.disableMod(pkg, Profile.getActiveProfile());
+        await expectFilesToExistInProfile(loaders);
+
+        pkg.disable();
+
+        await ProfileInstallerProvider.instance.enableMod(pkg, Profile.getActiveProfile());
+        await expectFilesToExistInProfile(loaders);
+    });
+
     test('Installs and uninstalls a package', async () => {
         const pkg = createManifest("HelperFunctions", "Klehrik");
         const name = pkg.getName();
@@ -40,15 +57,13 @@ describe('ReturnOfModding Installer Tests', () => {
             "manifest.json": `ReturnOfModding/plugins/${name}/manifest.json`,
             "icon.png": `ReturnOfModding/plugins/${name}/icon.png`,
             "main.lua": `ReturnOfModding/plugins/${name}/main.lua`,
-            "custom-path-gets-flattened/path.txt": `ReturnOfModding/plugins/${name}/path.txt`,
-
-            // TODO: These are based on the current install rules but the mod loader's
-            // docs aren't clear if they are actually intended to be distributed with
-            // the mods or automatically created by them.
+            "custom-folder/file.txt": `ReturnOfModding/plugins/${name}/custom-folder/file.txt`,
             "plugins_data/data.dat": `ReturnOfModding/plugins_data/${name}/data.dat`,
             "config/config.cfg": `ReturnOfModding/config/${name}/config.cfg`,
         };
-        const expectedAfterUninstall: string[] = [];
+        const expectedAfterUninstall: string[] = [
+            `ReturnOfModding/config/${name}/config.cfg`,
+        ];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
@@ -57,5 +72,44 @@ describe('ReturnOfModding Installer Tests', () => {
         const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
         expect(result instanceof R2Error).toBeFalsy();
         await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
+    });
+
+    test('Package uninstall keeps plugins_data if it contains cache', async () => {
+        const pkg = createManifest("HelperFunctions", "Klehrik");
+        const name = pkg.getName();
+        const sourceToExpectedDestination = {
+            "plugins_data/cache/data.dat": `ReturnOfModding/plugins_data/${name}/cache/data.dat`,
+        };
+        const expectedAfterUninstall: string[] = [
+            `ReturnOfModding/plugins_data/${name}/cache/data.dat`,
+        ];
+        await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
+
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await expectFilesToBeCopied(sourceToExpectedDestination);
+
+        const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
+        expect(result instanceof R2Error).toBeFalsy();
+        await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
+    });
+
+    test('Disabling/enabling a mod renames files', async () => {
+        const pkg = createManifest("HelperFunctions", "Klehrik");
+        const name = pkg.getName();
+        const files = [
+            `ReturnOfModding/plugins/${name}/main.lua`,
+            `ReturnOfModding/plugins_data/${name}/data.dat`,
+            `ReturnOfModding/plugins_data/${name}/cache/cache.dat`,
+            `ReturnOfModding/config/${name}/config.cfg`,
+        ];
+        await createFilesIntoProfile(files);
+
+        await ProfileInstallerProvider.instance.disableMod(pkg, Profile.getActiveProfile());
+        await expectFilesToExistInProfile(files.map((fileName) => `${fileName}.old`));
+
+        pkg.disable();
+
+        await ProfileInstallerProvider.instance.enableMod(pkg, Profile.getActiveProfile());
+        await expectFilesToExistInProfile(files);
     });
 });

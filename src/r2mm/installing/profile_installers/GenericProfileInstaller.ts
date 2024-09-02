@@ -17,10 +17,11 @@ import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoad
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { GetInstallerIdForLoader, GetInstallerIdForPlugin } from '../../../model/installing/PackageLoader';
-import { PackageInstallers } from "../../../installers/registry";
+import { PackageInstallerId, PackageInstallers } from "../../../installers/registry";
 import { InstallArgs } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
+import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -45,7 +46,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
         if (installerId) {
             const installer = PackageInstallers[installerId];
-            if (installer instanceof ShimloaderPluginInstaller) {
+            if (
+                installer instanceof ShimloaderPluginInstaller ||
+                installer instanceof ReturnOfModdingPluginInstaller
+            ) {
                 rule = installer.installer.rule;
             }
         }
@@ -54,7 +58,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
 
         const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
-            .filter(value => value.trackingMethod === "SUBDIR");
+            .filter(value => ["SUBDIR", "SUBDIR_NO_FLATTEN"].includes(value.trackingMethod));
 
         for (const dir of subDirPaths) {
             if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {
@@ -147,28 +151,18 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-        const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-
-        const activeGame = GameManager.activeGame;
+        const args = this.getInstallArgs(mod, profile);
 
         // Installation logic for mod loaders.
-        const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
-        const variant = modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase());
+        const modLoader = this.getModLoader(mod);
 
-        const args: InstallArgs = {
-            mod: mod,
-            profile: profile,
-            packagePath: cachedLocationOfMod,
-        }
-
-        if (variant !== undefined) {
-            return this.installModLoader(variant, args);
+        if (modLoader !== undefined) {
+            return this.installModLoader(modLoader, args);
         }
 
         // Installation logic for mods for games that use "plugins",
-        //  i.e. the newer approach for defining installation logic.
-        const pluginInstaller = GetInstallerIdForPlugin(activeGame.packageLoader);
+        // i.e. the newer approach for defining installation logic.
+        const pluginInstaller = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
 
         if (pluginInstaller !== null) {
             await PackageInstallers[pluginInstaller].install(args);
@@ -177,6 +171,17 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         // Revert to legacy install behavior.
         return this.installForManifestV2(args);
+    }
+
+    private getInstallArgs(mod: ManifestV2, profile: Profile): InstallArgs {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+        const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
+        return {mod, profile, packagePath};
+    }
+
+    private getModLoader(mod: ManifestV2): ModLoaderPackageMapping|undefined {
+        const modLoaders = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName];
+        return modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase());
     }
 
     async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
@@ -219,11 +224,12 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
                 for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+                    if (file.toLowerCase() === 'mods.yml') {
+                        continue;
+                    }
                     const filePath = path.join(profile.getPathOfProfile(), file);
                     if ((await fs.lstat(filePath)).isFile()) {
-                        if (file.toLowerCase() !== 'mods.yml') {
-                            await fs.unlink(filePath);
-                        }
+                        await fs.unlink(filePath);
                     }
                 }
             } catch(e) {
@@ -283,6 +289,20 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+        // Support for installer specific uninstall methods are rolled out
+        // gradually and therefore might not be defined yet.
+        try {
+            if (
+                await this.uninstallModLoaderWithInstaller(mod, profile) ||
+                await this.uninstallModWithInstaller(mod, profile)
+            ) {
+                return null;
+            }
+        } catch (e) {
+            return R2Error.fromThrownValue(e);
+        }
+
+        // Fallback to legacy uninstallation.
         const uninstallState = await this.uninstallState(mod, profile);
         if (uninstallState instanceof R2Error) {
             return uninstallState;
@@ -297,5 +317,42 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             return R2Error.fromThrownValue(e, "Failed to remove files");
         }
         return null;
+    }
+
+    /**
+     * Uninstall mod if it's a registered mod loader and the installer class
+     * implements a custom uninstallation method.
+     * @return true if mod loader was uninstalled
+     */
+    async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
+        const modLoader = this.getModLoader(mod);
+        const installerId = modLoader ? GetInstallerIdForLoader(modLoader.loaderType) : null;
+        return this.uninstallWithInstaller(installerId, mod, profile);
+    }
+
+    /**
+     * Uninstall mod if its registered installer implements a custom
+     * uninstallation method.
+     * @return true if mod was uninstalled
+     */
+    async uninstallModWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
+        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+        return this.uninstallWithInstaller(installerId, mod, profile);
+    }
+
+    private async uninstallWithInstaller(
+        installerId: PackageInstallerId | null,
+        mod: ManifestV2,
+        profile: Profile
+    ): Promise<boolean> {
+        const installer = installerId ? PackageInstallers[installerId] : undefined;
+
+        if (installer && installer.uninstall) {
+            const args = this.getInstallArgs(mod, profile);
+            await installer.uninstall(args);
+            return true;
+        }
+
+        return false;
     }
 }
