@@ -25,17 +25,26 @@ const getDownloadDestination = async (): Promise<string> => {
     return path.join(cacheDir, "import.r2z");
 }
 
-const isProfileDataValid = (profileData: string): boolean => {
-    return profileData.startsWith(PROFILE_DATA_PREFIX)
+
+const B64_REGEX = /[A-Za-z0-9+/=]/;
+
+const isValidBase64 = (profileData: string): boolean => {
+    return B64_REGEX.test(profileData);
+}
+
+const normalizeProfileData = (profileData: string): string => {
+    if (profileData.startsWith(PROFILE_DATA_PREFIX)) {
+        profileData = profileData.substring(PROFILE_DATA_PREFIX.length).trim();
+    }
+    if (!isValidBase64(profileData)) {
+        throw new Error("Invalid profile data");
+    }
+    return profileData;
 }
 
 async function saveDownloadedProfile(profileData: string): Promise<string> {
-    if (!isProfileDataValid(profileData)) {
-        throw new Error("Invalid profile data");
-    }
-
     const fs = FsProvider.instance;
-    const b64 = profileData.substring(PROFILE_DATA_PREFIX.length).trim();
+    const b64 = normalizeProfileData(profileData);
     const decoded = Buffer.from(b64, "base64");
     const destination = await getDownloadDestination();
     await fs.writeFile(destination, decoded);
