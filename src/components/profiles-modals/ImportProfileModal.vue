@@ -419,7 +419,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
         <template v-slot:header>
             <p>{{percentageImported}}% imported</p>
         </template>
