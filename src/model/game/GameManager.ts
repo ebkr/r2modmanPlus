@@ -698,6 +698,12 @@ export default class GameManager {
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
+
+        new Game("Supermarket Together", "SupermarketTogether", "SupermarketTogether",
+            "Supermarket Together", ["Supermarket Together.exe"], "Supermarket Together_Data",
+            "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2709570")], "SupermarketTogether.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
