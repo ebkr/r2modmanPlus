@@ -4,7 +4,7 @@ import path from "path";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
-export class MelonLoaderInstaller extends PackageInstaller {
+export class MelonLoaderInstaller implements PackageInstaller {
     /**
      * Handles installation of MelonLoader
      */
