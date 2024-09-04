@@ -157,6 +157,7 @@ import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThemeManager from '../r2mm/manager/ThemeManager';
 import ManagerInformation from '../_managerinf/ManagerInformation';
+import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
 import { homedir } from 'os';
@@ -504,41 +505,22 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
             }
 		}
 
-        changeDataFolder() {
-            const fs = FsProvider.instance;
-            const dir: string = PathResolver.ROOT;
-            InteractionProvider.instance.selectFolder({
-                title: `Select a new folder to store ${ManagerInformation.APP_NAME} data`,
-                defaultPath: dir,
-                buttonLabel: 'Select Data Folder'
-            }).then(async files => {
-                if (files.length === 1) {
-                    const dataDirectoryOverrideFile = ".ddir.mm";
-                    const filesInDirectory = await fs.readdir(files[0]);
+        async changeDataFolder() {
+            try {
+                const folder = await DataFolderProvider.instance.showSelectionDialog();
 
-                    const hasOverrideFile = filesInDirectory.find(value => value.toLowerCase() === dataDirectoryOverrideFile) != undefined;
-                    const directoryHasContents = filesInDirectory.length > 0;
-                    const isDefaultDataDirectory = files[0] === PathResolver.APPDATA_DIR;
-
-                    if (hasOverrideFile || !directoryHasContents || isDefaultDataDirectory) {
-                        // Write dataDirectoryOverrideFile to allow re-selection of directory if changed at a later point.
-                        await fs.writeFile(path.join(files[0], dataDirectoryOverrideFile), "");
-                        await this.settings.setDataDirectory(files[0]);
-                        InteractionProvider.instance.restartApp();
-                    } else {
-                        this.$store.commit('error/handleError', new R2Error(
-                            "Selected directory is not empty",
-                            `Directory is not empty: ${files[0]}. Contains ${filesInDirectory.length} files.`,
-                            "Select an empty directory or create a new one."
-                        ));
-                    }
+                if (folder === null) {
+                    return;
                 }
-            }).catch((err) => {
-                this.$store.commit(
-                    "error/handleError",
-                    R2Error.fromThrownValue(err, "Failed to change Data Folder")
-                );
-            });
+
+                await DataFolderProvider.instance.throwForInvalidFolder(folder);
+                await DataFolderProvider.instance.writeOverrideFile(folder);
+                await this.settings.setDataDirectory(folder);
+                InteractionProvider.instance.restartApp();
+            } catch(err) {
+                this.$store.commit("error/handleError", R2Error.fromThrownValue(err));
+                return
+            }
         }
 
         async handleSettingsCallbacks(invokedSetting: any) {
@@ -613,7 +595,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
                     this.showDependencyStrings = true;
                     break;
                 case "ChangeDataFolder":
-                    this.changeDataFolder();
+                    await this.changeDataFolder();
                     break;
                 case "CleanCache":
                     CacheUtil.clean();

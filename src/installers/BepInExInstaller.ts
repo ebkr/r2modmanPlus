@@ -6,7 +6,7 @@ import { PackageLoader } from "../model/installing/PackageLoader";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 
-export class BepInExInstaller extends PackageInstaller {
+export class BepInExInstaller implements PackageInstaller {
     /**
      * Handles installation of BepInEx
      */

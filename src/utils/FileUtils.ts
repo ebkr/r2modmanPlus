@@ -3,6 +3,14 @@ import path from 'path';
 
 export default class FileUtils {
 
+    public static async copyFileOrFolder(source: string, target: string) {
+        if ((await FsProvider.instance.stat(source)).isFile()) {
+            await FsProvider.instance.copyFile(source, target);
+        } else {
+            await FsProvider.instance.copyFolder(source, target);
+        }
+    }
+
     public static async ensureDirectory(dir: string) {
         const fs = FsProvider.instance;
         await fs.mkdirs(dir);
@@ -39,4 +47,15 @@ export default class FileUtils {
             unitDisplay: "narrow",
         }).format(bytes);
     };
+
+    public static async recursiveRemoveDirectoryIfExists(dir: string) {
+        const fs = FsProvider.instance;
+
+        if (!(await fs.exists(dir)) || !(await fs.lstat(dir)).isDirectory()) {
+            return;
+        }
+
+        await FileUtils.emptyDirectory(dir);
+        await fs.rmdir(dir);
+    }
 }
