@@ -6,7 +6,7 @@ import FileTree from "../model/file/FileTree";
 import R2Error from "../model/errors/R2Error";
 import path from "path";
 
-export class LovelyInstaller extends PackageInstaller {
+export class LovelyInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const {
             mod,
@@ -45,7 +45,7 @@ export class LovelyInstaller extends PackageInstaller {
     }
 }
 
-export class LovelyPluginInstaller extends PackageInstaller {
+export class LovelyPluginInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const {
             mod,

@@ -2,7 +2,6 @@ import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
 import FileTree from '../../../model/file/FileTree';
-import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import Profile from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {

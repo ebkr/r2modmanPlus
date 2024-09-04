@@ -45,6 +45,143 @@ describe("InMemoryFsProvider", () => {
         expect(content.toString()).toBe("test_content");
     });
 
+    test("Rename throws for missing source", async() => {
+        await expect(
+            async () => await FsProvider.instance.rename("foo", "bar")
+        ).rejects.toThrowError("ENOENT: no such file or directory, rename 'foo' -> 'bar'");
+    });
+
+    test("Rename throws for missing target path", async() => {
+        const sourcePath = path.join("original", "file.txt");
+        const targetPath = path.join("new", "file.txt")
+        await FsProvider.instance.mkdirs(path.dirname(sourcePath));
+        await FsProvider.instance.writeFile(sourcePath, "content");
+
+        await expect(
+            async () => await FsProvider.instance.rename(sourcePath, targetPath)
+        ).rejects.toThrowError(`ENOENT: no such file or directory, rename '${sourcePath}' -> '${targetPath}'`);
+    });
+
+    test("Rename a file in same dir", async() => {
+        const sourcePath = path.join("dir", "file.txt");
+        const targetPath = path.join("dir", "file.txt.old");
+        await FsProvider.instance.mkdirs(path.dirname(sourcePath));
+        await FsProvider.instance.writeFile(sourcePath, "content");
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isFile()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isFile()
+        ).toBeTruthy();
+    });
+
+    test("Rename a file into another dir", async() => {
+        const sourcePath = path.join("dir", "file.txt");
+        const targetPath = path.join("landaa", "file.txt");
+        await FsProvider.instance.mkdirs(path.dirname(sourcePath));
+        await FsProvider.instance.writeFile(sourcePath, "content");
+        await FsProvider.instance.mkdirs(path.dirname(targetPath));
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isFile()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isFile()
+        ).toBeTruthy();
+    });
+
+    test("Rename a file with relative path", async() => {
+        const sourcePath = path.join("root", "middle", "file.txt");
+        const targetPath = path.join(path.dirname(sourcePath), "..", "file.txt");
+        await FsProvider.instance.mkdirs(path.dirname(sourcePath));
+        await FsProvider.instance.writeFile(sourcePath, "content");
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isFile()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isFile()
+        ).toBeTruthy();
+    });
+
+    test("Rename a dir in same dir", async() => {
+        const sourcePath = path.join("dir", "subdir");
+        const targetPath = path.join("dir", "newdir");
+        await FsProvider.instance.mkdirs(sourcePath);
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isDirectory()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isDirectory()
+        ).toBeTruthy();
+    });
+
+    test("Rename a dir into another dir", async() => {
+        const sourcePath = path.join("dir", "lan", "daa");
+        const targetPath = path.join("dar", "lan", "daa");
+        await FsProvider.instance.mkdirs(sourcePath);
+        await FsProvider.instance.mkdirs(path.dirname(targetPath));
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isDirectory()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isDirectory()
+        ).toBeTruthy();
+    });
+
+    test("Rename a dir with relative path", async() => {
+        const sourcePath = path.join("root", "middle", "leaf");
+        const targetPath = path.join("root", "middle", "..", "leaf");
+        await FsProvider.instance.mkdirs(sourcePath);
+        await FsProvider.instance.mkdirs(path.dirname(targetPath));
+        expect(await FsProvider.instance.exists(sourcePath)).toBeTruthy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeFalsy();
+        expect(
+            (await FsProvider.instance.lstat(sourcePath)).isDirectory()
+        ).toBeTruthy();
+
+        await FsProvider.instance.rename(sourcePath, targetPath);
+
+        expect(await FsProvider.instance.exists(sourcePath)).toBeFalsy();
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+        expect(
+            (await FsProvider.instance.lstat(targetPath)).isDirectory()
+        ).toBeTruthy();
+    });
+
     test("SetModifiedTime", async () => {
         const testFilePath = path.join("Test", "TestFile");
         await FsProvider.instance.mkdirs(path.dirname(testFilePath));
