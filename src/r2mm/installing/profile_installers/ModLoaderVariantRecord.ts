@@ -183,6 +183,7 @@ const VARIANTS = {
     BelowTheStone: MODLOADER_PACKAGES,
     Gloomwood: MODLOADER_PACKAGES,
     AmongUs: MODLOADER_PACKAGES,
+    GoodbyeVolcanoHigh: MODLOADER_PACKAGES,
     SupermarketTogether: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.

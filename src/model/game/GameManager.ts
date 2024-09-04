@@ -699,6 +699,12 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+        new Game("Goodbye Volcano High", "GoodbyeVolcanoHigh", "GoodbyeVolcanoHigh",
+            "Goodbye Volcano High", ["Goodbye Volcano High.exe"], "Goodbye Volcano High_Data",
+            "https://thunderstore.io/c/goodbye-volcano-high/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1310330")], "GoodbyeVolcanoHigh.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
         new Game("Supermarket Together", "SupermarketTogether", "SupermarketTogether",
             "Supermarket Together", ["Supermarket Together.exe"], "Supermarket Together_Data",
             "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
