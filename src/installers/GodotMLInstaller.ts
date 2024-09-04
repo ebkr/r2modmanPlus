@@ -2,7 +2,7 @@ import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import path from "path";
 import FsProvider from "../providers/generic/file/FsProvider";
 
-export class GodotMLInstaller extends PackageInstaller {
+export class GodotMLInstaller implements PackageInstaller {
     /**
      * Handles installation of GodotML
      */

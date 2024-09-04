@@ -644,7 +644,7 @@ export default class GameManager {
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
-            GameSelectionDisplayMode.HIDDEN, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
 
         new Game("Magicraft", "Magicraft", "Magicraft",
             "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
@@ -703,6 +703,18 @@ export default class GameManager {
             "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
             "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1809540")], "NineSols.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Goodbye Volcano High", "GoodbyeVolcanoHigh", "GoodbyeVolcanoHigh",
+            "Goodbye Volcano High", ["Goodbye Volcano High.exe"], "Goodbye Volcano High_Data",
+            "https://thunderstore.io/c/goodbye-volcano-high/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1310330")], "GoodbyeVolcanoHigh.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Supermarket Together", "SupermarketTogether", "SupermarketTogether",
+            "Supermarket Together", ["Supermarket Together.exe"], "Supermarket Together_Data",
+            "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2709570")], "SupermarketTogether.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 

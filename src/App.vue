@@ -30,6 +30,8 @@ import LinkProvider from './providers/components/LinkProvider';
 import LinkImpl from './r2mm/component_override/LinkImpl';
 import FsProvider from './providers/generic/file/FsProvider';
 import NodeFs from './providers/generic/file/NodeFs';
+import { DataFolderProvider } from './providers/ror2/system/DataFolderProvider';
+import { DataFolderProviderImpl } from './r2mm/system/DataFolderProviderImpl';
 import InteractionProvider from './providers/ror2/system/InteractionProvider';
 import InteractionProviderImpl from './r2mm/system/InteractionProviderImpl';
 import ZipProvider from './providers/generic/zip/ZipProvider';
@@ -117,6 +119,7 @@ export default class App extends mixins(UtilityMixin) {
         LoggerProvider.provide(() => new Logger());
         LinkProvider.provide(() => new LinkImpl());
         InteractionProvider.provide(() => new InteractionProviderImpl());
+        DataFolderProvider.provide(() => new DataFolderProviderImpl());
 
         PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 

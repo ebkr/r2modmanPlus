@@ -8,6 +8,9 @@ type FileType = {name: string, type: "FILE" | "DIR", nodes: FileType[] | undefin
 /**
  * (Poor) dummy implementation of the node FS library intended to be used for realistic tests.
  * Saves files from having to be written to disk during testing.
+ *
+ * Note that for all purposes, the path must contain a folder.
+ * E.g. writing a file to the root of the file system won't work as expected.
  */
 export default class InMemoryFsProvider extends FsProvider {
 
@@ -166,11 +169,27 @@ export default class InMemoryFsProvider extends FsProvider {
     }
 
     async rename(oldPath: string, newPath: string): Promise<void> {
+        if (
+            !(await this.exists(oldPath)) ||
+            !(await this.exists(path.dirname(newPath)))
+        ) {
+            throw new Error(`ENOENT: no such file or directory, rename '${oldPath}' -> '${newPath}'`);
+        }
+
+        if (path.dirname(oldPath) === "." || path.dirname(newPath) === ".") {
+            throw new Error("InMemoryFsProvider doesn't support operations on root dir")
+        }
+
         const copyOf = this.deepCopyDirFileType(oldPath);
+
+        // Remove the target file/dir from the old parent directory.
         const parent = this.findFileType(path.dirname(oldPath), "DIR");
-        const newParent = this.findFileType(path.dirname(newPath), "DIR");
         parent.nodes = (parent.nodes || []).filter(value => value.name !== copyOf.name);
+
+        // Rename the file/dir and place it in the new parent directory.
+        const newParent = this.findFileType(path.dirname(newPath), "DIR");
         newParent.nodes = (newParent.nodes || []);
+        copyOf.name = path.basename(newPath);
         newParent.nodes.push(copyOf);
     }
 
