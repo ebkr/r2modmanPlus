@@ -25,6 +25,15 @@ export const ProfilesModule = {
         },
     },
     actions: <ActionTree<State, RootState>>{
+        async addProfile({rootGetters, state, dispatch}, name: string) {
+            try {
+                await dispatch('setSelectedProfile', { profileName: name, prewarmCache: true });
+                await dispatch('updateProfileList');
+            } catch (e) {
+                throw R2Error.fromThrownValue(e, 'Error whilst creating a profile');
+            }
+        },
+
         async removeSelectedProfile({rootGetters, state, dispatch}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
             const path = activeProfile.getPathOfProfile();
@@ -77,6 +86,6 @@ export const ProfilesModule = {
             Promise.all(promises).then((profileList) => {
                 commit('setProfileList', ["Default", ...profileList.filter(file => file)].sort());
             })
-        }
-    },
+        },
+    }
 }

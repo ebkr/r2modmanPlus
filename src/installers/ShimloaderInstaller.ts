@@ -6,7 +6,7 @@ import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 
-export class ShimloaderInstaller extends PackageInstaller {
+export class ShimloaderInstaller implements PackageInstaller {
     /**
      * Handle installation of unreal-shimloader
      */
@@ -55,7 +55,7 @@ export class ShimloaderInstaller extends PackageInstaller {
     }
 }
 
-export class ShimloaderPluginInstaller extends PackageInstaller {
+export class ShimloaderPluginInstaller implements PackageInstaller {
     readonly installer = new InstallRuleInstaller({
         gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
         rules: [
