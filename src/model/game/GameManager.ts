@@ -699,6 +699,12 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+        new Game("Screw Drivers", "ScrewDrivers", "ScrewDrivers",
+            "Screw Drivers", ["Screw Drivers.exe"], "Screw Drivers_Data",
+            "https://thunderstore.io/c/screw-drivers/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1279510")], "ScrewDrivers.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
         new Game("Nine Sols", "NineSols", "NineSols",
             "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
             "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,

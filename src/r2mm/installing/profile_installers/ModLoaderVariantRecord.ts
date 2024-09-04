@@ -183,6 +183,7 @@ const VARIANTS = {
     BelowTheStone: MODLOADER_PACKAGES,
     Gloomwood: MODLOADER_PACKAGES,
     AmongUs: MODLOADER_PACKAGES,
+    ScrewDrivers: MODLOADER_PACKAGES,
     NineSols: MODLOADER_PACKAGES,
     GoodbyeVolcanoHigh: MODLOADER_PACKAGES,
     SupermarketTogether: MODLOADER_PACKAGES,
