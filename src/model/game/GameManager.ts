@@ -699,6 +699,12 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+        new Game("Deep Rock Galactic: Survivor", "DeepRockGalacticSurvivor", "DeepRockGalacticSurvivor",
+            "Deep Rock Survivor", ["DRG Survivor.exe"], "DRG Survivor_Data",
+            "https://thunderstore.io/c/deep-rock-galactic-survivor/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2321470")], "DeepRockGalacticSurvivor.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
         new Game("Ale & Tale Tavern", "AleAndTaleTavern", "AleAndTaleTavern",
             "Ale & Tale Tavern", ["Ale and Tale Tavern.exe"], "Ale and Tale Tavern_Data",
             "https://thunderstore.io/c/ale-and-tale-tavern/api/v1/package/", EXCLUSIONS,
