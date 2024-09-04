@@ -699,6 +699,12 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+        new Game("Betrayal Beach", "BetrayalBeach", "BetrayalBeach",
+            "Betrayal Beach", ["Betrayal Beach.exe"], "Betrayal Beach_Data",
+            "https://thunderstore.io/c/betrayal-beach/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2643810")], "BetrayalBeach.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
         new Game("Arcus Chroma", "ArcusChroma", "ArcusChroma",
             "Arcus Chroma", ["Arcus Chroma.exe"], "Arcus Chroma_Data",
             "https://thunderstore.io/c/arcus-chroma/api/v1/package/", EXCLUSIONS,
