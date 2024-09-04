@@ -183,6 +183,8 @@ const VARIANTS = {
     BelowTheStone: MODLOADER_PACKAGES,
     Gloomwood: MODLOADER_PACKAGES,
     AmongUs: MODLOADER_PACKAGES,
+    ArcusChroma: MODLOADER_PACKAGES,
+    AleAndTaleTavern: MODLOADER_PACKAGES,
     DeepRockGalacticSurvivor: MODLOADER_PACKAGES,
     ScrewDrivers: MODLOADER_PACKAGES,
     NineSols: MODLOADER_PACKAGES,

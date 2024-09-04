@@ -699,6 +699,12 @@ export default class GameManager {
             ],
             "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
 
+        new Game("Arcus Chroma", "ArcusChroma", "ArcusChroma",
+            "Arcus Chroma", ["Arcus Chroma.exe"], "Arcus Chroma_Data",
+            "https://thunderstore.io/c/arcus-chroma/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1447350")], "ArcusChroma.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
         new Game("Deep Rock Galactic: Survivor", "DeepRockGalacticSurvivor", "DeepRockGalacticSurvivor",
             "Deep Rock Survivor", ["DRG Survivor.exe"], "DRG Survivor_Data",
             "https://thunderstore.io/c/deep-rock-galactic-survivor/api/v1/package/", EXCLUSIONS,
