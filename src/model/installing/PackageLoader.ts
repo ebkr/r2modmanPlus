@@ -30,6 +30,7 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
     switch (loader) {
         case PackageLoader.SHIMLOADER: return "shimloader-plugin";
         case PackageLoader.LOVELY: return "lovely-plugin";
+        case PackageLoader.RETURN_OF_MODDING: return "returnofmodding-plugin";
     }
 
     return null;

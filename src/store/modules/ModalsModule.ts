@@ -7,10 +7,12 @@ interface State {
     downloadModModalMod: ThunderstoreMod | null;
     isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
+    isCreateProfileModalOpen: boolean;
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
     isDownloadModModalOpen: boolean;
     isGameRunningModalOpen: boolean;
+    isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
     isUninstallModModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
@@ -23,10 +25,12 @@ export default {
         downloadModModalMod: null,
         isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
+        isCreateProfileModalOpen: false,
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
         isDownloadModModalOpen: false,
         isGameRunningModalOpen: false,
+        isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
         isUninstallModModalOpen: false,
         uninstallModModalMod: null,
@@ -40,6 +44,10 @@ export default {
 
         closeCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = false;
+        },
+
+        closeCreateProfileModal: function(state: State): void {
+            state.isCreateProfileModalOpen = false;
         },
 
         closeDeleteProfileModal: function(state: State): void {
@@ -60,6 +68,10 @@ export default {
             state.isGameRunningModalOpen = false;
         },
 
+        closeImportProfileModal: function(state: State): void {
+            state.isImportProfileModalOpen = false;
+        },
+
         closeRenameProfileModal: function(state: State): void {
             state.isRenameProfileModalOpen = false;
         },
@@ -78,6 +90,10 @@ export default {
             state.isCategoryFilterModalOpen = true;
         },
 
+        openCreateProfileModal: function(state: State): void {
+            state.isCreateProfileModalOpen = true;
+        },
+
         openDeleteProfileModal: function(state: State): void {
             state.isDeleteProfileModalOpen = true;
         },
@@ -94,6 +110,10 @@ export default {
 
         openGameRunningModal: function(state: State): void {
             state.isGameRunningModalOpen = true;
+        },
+
+        openImportProfileModal: function(state: State): void {
+            state.isImportProfileModalOpen = true;
         },
 
         openRenameProfileModal: function(state: State): void {
