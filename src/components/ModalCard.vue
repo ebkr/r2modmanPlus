@@ -2,13 +2,13 @@
     <div :class="['modal', {'is-active': isActive}]">
         <div class="modal-background" @click="closeModal()"/>
         <div class="modal-card py-4">
-            <header class="modal-card-head">
+            <header v-if="$slots.header" class="modal-card-head">
                 <slot name="header"/>
             </header>
-            <section class="modal-card-body">
+            <section v-if="$slots.body" class="modal-card-body">
                 <slot name="body"/>
             </section>
-            <footer class="modal-card-foot">
+            <footer v-if="$slots.footer" class="modal-card-foot">
                 <slot name="footer"/>
             </footer>
         </div>

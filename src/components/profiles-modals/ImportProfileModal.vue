@@ -354,7 +354,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 <template>
     <ModalCard v-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p>Are you going to be updating an existing profile or creating a new one?</p>
+            <p class="card-header-title">Are you going to be updating an existing profile or creating a new one?</p>
         </template>
         <template v-slot:footer>
             <button id="modal-import-new-profile"
@@ -421,7 +421,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p>{{percentageImported}}% imported</p>
+            <p class="card-header-title">{{percentageImported}}% imported</p>
         </template>
         <template v-slot:body>
             <p>This may take a while, as mods are being downloaded.</p>
