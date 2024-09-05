@@ -29,6 +29,7 @@ interface State {
 type ProgressCallback = (progress: number) => void;
 type PackageListChunk = {full_name: string}[];
 export type PackageListChunks = PackageListChunk[];
+export type PackageListIndex = {content: string[], hash: string, isLatest: boolean};
 
 function isPackageListChunk(value: unknown): value is PackageListChunk {
     return Array.isArray(value) && (
@@ -169,7 +170,7 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async _fetchPackageListIndex({rootState}): Promise<string[]> {
+        async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = rootState.activeGame.thunderstoreUrl;
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl));
 
@@ -180,17 +181,18 @@ export const TsModsModule = {
                 throw new Error('Received empty chunk index from API');
             }
 
-            return index.content;
+            const community = rootState.activeGame.internalFolderName;
+            const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
+
+            return {...index, isLatest};
         },
 
         async fetchPackageListChunks(
-            {dispatch},
-            progressCallback?: ProgressCallback
+            {},
+            {chunkUrls, progressCallback}: {chunkUrls: string[], progressCallback?: ProgressCallback},
         ): Promise<PackageListChunks> {
-            const chunkIndex: string[] = await dispatch('_fetchPackageListIndex');
-
             // Count index as a chunk for progress bar purposes.
-            const chunkCount = chunkIndex.length + 1;
+            const chunkCount = chunkUrls.length + 1;
             let completed = 1;
             const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
             updateProgress();
@@ -198,10 +200,10 @@ export const TsModsModule = {
             // Download chunks serially to avoid slow connections timing
             // out due to concurrent requests competing for the bandwidth.
             const chunks = [];
-            for (const [i, chunkUrl] of chunkIndex.entries()) {
+            for (const [i, chunkUrl] of chunkUrls.entries()) {
                 const {content: chunk} = await retry(() => fetchAndProcessBlobFile(chunkUrl))
 
-                if (chunkIndex.length > 1 && isEmptyArray(chunkIndex)) {
+                if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
                     throw new Error(`Chunk #${i} in multichunk response was empty`);
                 } else if (!isPackageListChunk(chunk)) {
                     throw new Error(`Chunk #${i} was invalid format`);
@@ -240,17 +242,18 @@ export const TsModsModule = {
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
         async updatePersistentCache(
             {dispatch, rootState, state},
-            packages: PackageListChunks
+            {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
             }
 
-            const filtered = packages.map((chunk) => chunk.filter(
+            const filtered = chunks.map((chunk) => chunk.filter(
                 (pkg) => !state.exclusions!.includes(pkg.full_name)
             ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
+            await PackageDb.setLatestPackageListIndex(community, indexHash);
         }
     }
 }
