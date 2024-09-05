@@ -171,16 +171,16 @@ export const TsModsModule = {
     actions: <ActionTree<State, RootState>>{
         async _fetchPackageListIndex({rootState}): Promise<string[]> {
             const indexUrl = rootState.activeGame.thunderstoreUrl;
-            const chunkIndex: string[] = await retry(() => fetchAndProcessBlobFile(indexUrl));
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl));
 
-            if (!isStringArray(chunkIndex)) {
+            if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
             }
-            if (isEmptyArray(chunkIndex)) {
+            if (isEmptyArray(index.content)) {
                 throw new Error('Received empty chunk index from API');
             }
 
-            return chunkIndex;
+            return index.content;
         },
 
         async fetchPackageListChunks(
@@ -199,7 +199,7 @@ export const TsModsModule = {
             // out due to concurrent requests competing for the bandwidth.
             const chunks = [];
             for (const [i, chunkUrl] of chunkIndex.entries()) {
-                const chunk = await retry(() => fetchAndProcessBlobFile(chunkUrl))
+                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(chunkUrl))
 
                 if (chunkIndex.length > 1 && isEmptyArray(chunkIndex)) {
                     throw new Error(`Chunk #${i} in multichunk response was empty`);
