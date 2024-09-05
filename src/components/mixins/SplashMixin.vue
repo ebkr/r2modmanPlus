@@ -4,6 +4,8 @@ import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
 import RequestItem from '../../model/requests/RequestItem';
+import type { PackageListChunks } from '../../store/modules/TsModsModule';
+
 
 @Component
 export default class SplashMixin extends Vue {
@@ -49,27 +51,54 @@ export default class SplashMixin extends Vue {
 
     // Get the list of Thunderstore mods from API or local cache.
     async getThunderstoreMods() {
-        this.loadingText = 'Connecting to Thunderstore';
-        let packageListChunks: {full_name: string}[][]|undefined = undefined;
+        const packageListChunks = await this.fetchPackageListChunksIfUpdated();
+        this.getRequestItem('ThunderstoreDownload').setProgress(100);
+        await this.writeModsToPersistentCacheIfUpdated(packageListChunks);
+        const isModListLoaded = await this.readModsToVuex();
+
+        // To proceed, the loading of the mod list should result in a non-empty list.
+        // Empty list is allowed if that's actually what the API returned.
+        const modListHasMods = this.$store.state.tsMods.mods.length;
+        const apiReturnedEmptyList = packageListChunks && packageListChunks[0].length === 0;
+        if (isModListLoaded && (modListHasMods || apiReturnedEmptyList)) {
+            await this.moveToNextScreen();
+        } else {
+            this.heroTitle = 'Failed to get the list of online mods';
+            this.loadingText = 'You may still use the manager offline, but some features might be unavailable.';
+            this.isOffline = true;
+        }
+    }
+
+    /***
+     * Load the package list in chunks.
+     * Fails silently to fallback reading the old values from the IndexedDB cache.
+     */
+    async fetchPackageListChunksIfUpdated(): Promise<PackageListChunks|undefined> {
 
         const showProgress = (progress: number) => {
-            this.loadingText = 'Getting mod list from Thunderstore';
+            this.loadingText = 'Loading latest mod list from Thunderstore';
             this.getRequestItem('ThunderstoreDownload').setProgress(progress);
         };
 
         try {
-            packageListChunks = await this.$store.dispatch('tsMods/fetchPackageListChunks', showProgress);
+            return await this.$store.dispatch('tsMods/fetchPackageListChunks', showProgress);
         } catch (e) {
             console.error('SplashMixin failed to fetch mod list from API.', e);
-        } finally {
-            this.getRequestItem('ThunderstoreDownload').setProgress(100);
+            return undefined;
         }
+    }
 
+    /***
+     * Update a fresh package list to the IndexedDB cache.
+     * Done only if the package list was loaded successfully.
+     * Fails silently to fallback reading the old values from the IndexedDB cache.
+     */
+    async writeModsToPersistentCacheIfUpdated(packageListChunks?: PackageListChunks) {
         if (packageListChunks) {
             this.loadingText = 'Storing the mod list into local cache';
 
             try {
-                await this.$store.dispatch('tsMods/updatePersistentCache', packageListChunks);
+                await this.$store.dispatch('tsMods/updatePersistentCache', packageListChunks)
             } catch (e) {
                 console.error('SplashMixin failed to cache mod list locally.', e);
             }
@@ -80,6 +109,22 @@ export default class SplashMixin extends Vue {
         }
 
         this.getRequestItem('CacheOperations').setProgress(50);
+    }
+
+    /***
+     * Read mod list from the IndexedDB cache to Vuex so it's kept in memory.
+     * Always read from the IndexedDB since we don't know if the mod list was
+     * queried from the API successfully or not. This also handles the type
+     * casting, since mod manager expects the data to be formatted into objects.
+     *
+     * Return value is used to tell whether Vuex might contain an empty list
+     * after calling this because there was an error, or because the package
+     * list is actually empty.
+     *
+     * Failure at this point is no longer silently ignored, instead an error
+     * modal is shown.
+     */
+    async readModsToVuex(): Promise<boolean> {
         let isModListLoaded = false;
 
         try {
@@ -92,18 +137,7 @@ export default class SplashMixin extends Vue {
             );
         } finally {
             this.getRequestItem('CacheOperations').setProgress(100);
-        }
-
-        // To proceed, the loading of the mod list should result in a non-empty list.
-        // Empty list is allowed if that's actually what the API returned.
-        const modListHasMods = this.$store.state.tsMods.mods.length;
-        const apiReturnedEmptyList = packageListChunks && packageListChunks[0].length === 0;
-        if (isModListLoaded && (modListHasMods || apiReturnedEmptyList)) {
-            await this.moveToNextScreen();
-        } else {
-            this.heroTitle = 'Failed to get the list of online mods';
-            this.loadingText = 'You may still use the manager offline, but some features might be unavailable.';
-            this.isOffline = true;
+            return isModListLoaded;
         }
     }
 

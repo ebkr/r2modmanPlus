@@ -28,7 +28,7 @@ interface State {
 
 type ProgressCallback = (progress: number) => void;
 type PackageListChunk = {full_name: string}[];
-type ChunkedPackageList = PackageListChunk[];
+export type PackageListChunks = PackageListChunk[];
 
 function isPackageListChunk(value: unknown): value is PackageListChunk {
     return Array.isArray(value) && (
@@ -186,7 +186,7 @@ export const TsModsModule = {
         async fetchPackageListChunks(
             {dispatch},
             progressCallback?: ProgressCallback
-        ): Promise<ChunkedPackageList> {
+        ): Promise<PackageListChunks> {
             const chunkIndex: string[] = await dispatch('_fetchPackageListIndex');
 
             // Count index as a chunk for progress bar purposes.
@@ -240,7 +240,7 @@ export const TsModsModule = {
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
         async updatePersistentCache(
             {dispatch, rootState, state},
-            packages: ChunkedPackageList
+            packages: PackageListChunks
         ) {
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
