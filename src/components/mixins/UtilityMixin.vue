@@ -19,6 +19,7 @@ export default class UtilityMixin extends Vue {
         const packageListIndex: PackageListIndex = await this.$store.dispatch("tsMods/fetchPackageListIndex");
 
         if (packageListIndex.isLatest) {
+            await this.$store.dispatch("tsMods/updateModsLastUpdated");
             return;
         }
 

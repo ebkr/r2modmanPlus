@@ -170,7 +170,7 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
+        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
             const indexUrl = rootState.activeGame.thunderstoreUrl;
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl));
 
@@ -183,6 +183,13 @@ export const TsModsModule = {
 
             const community = rootState.activeGame.internalFolderName;
             const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
+
+            // Normally the hash would be updated after the mod list is successfully
+            // fetched and written to IndexedDB, but if the list hasn't changed,
+            // those step are skipped, so update the "last seen" timestamp now.
+            if (isLatest) {
+                await dispatch('updateIndexHash', index.hash);
+            }
 
             return {...index, isLatest};
         },
@@ -230,13 +237,17 @@ export const TsModsModule = {
             commit('setExclusions', exclusions);
         },
 
-        async updateMods({commit, rootState}) {
+        async updateMods({commit, dispatch, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
-            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
-            commit('setModsLastUpdated', updated);
             commit('updateDeprecated', modList);
             commit('clearModCache');
+            await dispatch('updateModsLastUpdated');
+        },
+
+        async updateModsLastUpdated({commit, rootState}) {
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            commit('setModsLastUpdated', updated);
         },
 
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
@@ -253,7 +264,12 @@ export const TsModsModule = {
             ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
+            await dispatch('updateIndexHash', indexHash);
+        },
+
+        async updateIndexHash({rootState}, indexHash: string) {
+            const community = rootState.activeGame.internalFolderName;
             await PackageDb.setLatestPackageListIndex(community, indexHash);
-        }
+        },
     }
 }
