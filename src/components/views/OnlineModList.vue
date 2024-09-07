@@ -25,12 +25,12 @@
                 </span>
             </template>
             <template v-slot:other-icons>
-                <span class='card-header-icon' v-if="key.getDonationLink()">
+                <span class='card-header-icon' v-if="key.getDonationLink() && !readOnly">
                     <Link :url="key.getDonationLink()" target="external" tag="span">
                         <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
                     </Link>
                 </span>
-                <span class='card-header-icon' v-if="isThunderstoreModInstalled(key)">
+                <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
                     <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
                 </span>
             </template>
@@ -38,11 +38,11 @@
                 <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
                 <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
             </template>
-            <a class='card-footer-item' @click='showDownloadModal(key)'>Download</a>
+            <a class='card-footer-item' v-if="!readOnly" @click='showDownloadModal(key)'>Download</a>
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </Link>
-            <template v-if="key.getDonationLink() !== undefined">
+            <template v-if="key.getDonationLink() !== undefined && !readOnly">
                 <DonateButton :mod="key"/>
             </template>
             <div class='card-footer-item non-selectable'>
@@ -81,6 +81,9 @@ export default class OnlineModList extends Vue {
 
     @Prop()
     pagedModList!: ThunderstoreMod[];
+
+    @Prop({default: false})
+    readOnly!: boolean;
 
     private cardExpanded: boolean = false;
     private funkyMode: boolean = false;

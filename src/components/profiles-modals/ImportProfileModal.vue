@@ -25,12 +25,13 @@ import ZipProvider from "../../providers/generic/zip/ZipProvider";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
+import OnlineModList from 'components/views/OnlineModList.vue';
 
 let fs: FsProvider;
 
 
 @Component({
-    components: {ModalCard}
+    components: { OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
@@ -39,7 +40,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private isProfileBeingImported: boolean = false;
     private listenerId: number = 0;
     private newProfileName: string = '';
-    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' = 'IMPORT_UPDATE_SELECTION';
+    private profileImportFilePath: string | null = null;
+    private profileImportContent: ExportFormat | null = null;
+    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' = 'IMPORT_UPDATE_SELECTION';
 
 
 
@@ -65,12 +68,23 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
+    get profileToOnlineMods() {
+        if (!this.profileImportContent) {
+            return [];
+        }
+        return this.profileImportContent.getMods()
+            .map(mod => this.$store.getters['tsMods/tsMod'](mod))
+            .filter(mod => !!mod)
+    }
+
     closeModal() {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
         this.listenerId = 0;
         this.newProfileName = '';
         this.importUpdateSelection = null;
         this.profileImportCode = '';
+        this.profileImportFilePath = null;
+        this.profileImportContent = null;
         this.$store.commit('closeImportProfileModal');
     }
 
@@ -92,7 +106,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             title: 'Import Profile',
             filters: [{
                 name: "*",
-                extensions: ["r2z", "r2x"]
+                extensions: ["r2z"]
             }],
             buttonLabel: 'Import'
         }).then((value: string[]) => {
@@ -120,23 +134,24 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        if (files[0].endsWith(".json")) {
-            return await this.importAlternativeManagerProfile(files[0]);
-        }
-
         let read: string | null = await this.readProfileFile(files[0]);
 
         if (read !== null) {
-            const parsed: ExportFormat = await this.parseYamlToExportFormat(read);
-
-            const localListenerId = this.listenerId + 1;
-            this.listenerId = localListenerId;
-            document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, parsed, files)
-            ) as EventListener, {once: true});
-            this.newProfileName = parsed.getProfileName();
-            this.activeStep = 'ADDING_PROFILE';
+            this.profileImportFilePath = files[0];
+            this.profileImportContent = await this.parseYamlToExportFormat(read);
+            this.activeStep = 'REVIEW_IMPORT';
         }
+    }
+
+    async installProfileHandler() {
+        const profileContent = this.profileImportContent;
+        const localListenerId = this.listenerId + 1;
+        this.listenerId = localListenerId;
+        document.addEventListener('created-profile', ((event: CustomEvent) =>
+                this.profileCreatedCallback(event, localListenerId, profileContent!, [this.profileImportFilePath!])
+        ) as EventListener, {once: true});
+        this.newProfileName = profileContent!.getProfileName();
+        this.activeStep = 'ADDING_PROFILE';
     }
 
     async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
@@ -168,29 +183,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return read;
     }
 
-    async importAlternativeManagerProfile(file: string) {
-        try {
-            const fileString = (await FsProvider.instance.readFile(file)).toString();
-            const jsonContent = JSON.parse(fileString.trim());
-            const ror2Itf = jsonContent as Itf_RoR2MM;
-            if (ror2Itf.name != undefined && ror2Itf.packages != undefined) {
-                this.newProfileName = ror2Itf.name;
-                this.activeStep = 'ADDING_PROFILE';
-                const itfPackages: string[] = ror2Itf.packages;
-                document.addEventListener("created-profile", ((() => {
-                    const packages = itfPackages.map(value => ExportMod.fromFullString(value));
-                    setTimeout(() => {
-                        this.downloadImportedProfileMods(packages);
-                    }, 100);
-                }) as EventListener), {once: true});
-            }
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
-            this.$store.commit('error/handleError', err);
-        }
-    }
-
-    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: { getMods: () => ExportMod[]; }, files: string[]) {
+    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
         if (this.listenerId === localListenerId) {
             (async () => {
                 let profileName: string = event.detail;
@@ -351,10 +344,11 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 }
 
 </script>
+
 <template>
     <ModalCard v-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p>Are you going to be updating an existing profile or creating a new one?</p>
+            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-new-profile"
@@ -372,8 +366,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p class="card-header-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</p>
-            <p class="card-header-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</p>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</h2>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-profile-file"
@@ -387,7 +381,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p class="card-header-title">Enter the profile code</p>
+            <h2 class="modal-title">Enter the profile code</h2>
         </template>
         <template v-slot:body>
             <input
@@ -414,6 +408,23 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="button is-info"
                 @click="importProfileUsingCode();"
                 v-else>
+                Continue
+            </button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'REVIEW_IMPORT'" key="REVIEW_IMPORT" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <h2 class="modal-title">Packages to be installed</h2>
+        </template>
+        <template v-slot:body>
+            <OnlineModList :paged-mod-list="profileToOnlineMods" :read-only="true" />
+        </template>
+        <template v-slot:footer>
+            <button
+                id="modal-import-profile-from-code-invalid"
+                class="button is-info"
+                @click="installProfileHandler();">
                 Import
             </button>
         </template>
@@ -421,7 +432,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
         <template v-slot:header>
-            <p>{{percentageImported}}% imported</p>
+            <h2 class="modal-title">{{percentageImported}}% imported</h2>
         </template>
         <template v-slot:body>
             <p>This may take a while, as mods are being downloaded.</p>
@@ -431,7 +442,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <p v-if="importUpdateSelection === 'IMPORT'" class="card-header-title">Import a profile</p>
+            <h2 v-if="importUpdateSelection === 'IMPORT'" class="modal-title">Import a profile</h2>
         </template>
         <template v-slot:body v-if="importUpdateSelection === 'IMPORT'">
             <p>This profile will store its own mods independently from other profiles.</p>
@@ -475,3 +486,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 </template>
+
+<style scoped>
+.modal-title {
+    font-size: 1.5rem;
+}
+</style>
