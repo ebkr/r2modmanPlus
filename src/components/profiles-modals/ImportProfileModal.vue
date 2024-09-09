@@ -42,7 +42,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private newProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
-    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' = 'IMPORT_UPDATE_SELECTION';
+    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
 
 
 
@@ -117,17 +117,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         })
     }
 
-    // When creating, the flow is:
-    //      1. Reads and parses the mods to be installed
-    //      2. Creates an EventListener which gets triggered after the user has created a new profile. The callback then:
-    //          1. Downloads (and extracts) the mods to the profile
-    // When updating, the flow is:
-    //      1. Reads and parses the mods to be installed
-    //      2. Creates an EventListener which gets triggered after the user has selected the old profile to be updated. The callback then:
-    //          1. Deletes the temporary profile (called _profile_update) if it exists (leftover from previous failed run etc.)
-    //          2. Downloads (and extracts) the mods to temporary profile
-    //          3. Deletes the old profile (including the folder on disk)
-    //          4. Renames temporary profile to the chosen profile's name
     async importProfileHandler(files: string[] | null) {
         if (files === null || files.length === 0) {
             this.isProfileBeingImported = false;
@@ -139,10 +128,26 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         if (read !== null) {
             this.profileImportFilePath = files[0];
             this.profileImportContent = await this.parseYamlToExportFormat(read);
+
+            if (this.profileToOnlineMods.length === 0) {
+                this.activeStep = 'NO_PACKAGES_IN_IMPORT';
+                return;
+            }
+
             this.activeStep = 'REVIEW_IMPORT';
         }
     }
 
+    // When creating, the flow is:
+    // 1. Creates an EventListener which gets triggered after the user has created a new profile. The callback then:
+    // 2. Downloads (and extracts) the mods to the profile
+    //
+    // When updating, the flow is:
+    // 1. Creates an EventListener which gets triggered after the user has selected the old profile to be updated. The callback then:
+    // 2. Deletes the temporary profile (called _profile_update) if it exists (leftover from previous failed run etc.)
+    // 3. Downloads (and extracts) the mods to temporary profile
+    // 4. Deletes the old profile (including the folder on disk)
+    // 5. Renames temporary profile to the chosen profile's name
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
         const localListenerId = this.listenerId + 1;
@@ -426,6 +431,24 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="button is-info"
                 @click="installProfileHandler();">
                 Import
+            </button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'NO_PACKAGES_IN_IMPORT'" key="NO_PACKAGES_IN_IMPORT" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <h2 class="modal-title">There was a problem importing the profile</h2>
+        </template>
+        <template v-slot:body>
+            <p>None of the packages inside the export were found on Thunderstore.</p>
+            <p>There is nothing to import.</p>
+        </template>
+        <template v-slot:footer>
+            <button
+                id="modal-import-profile-from-code-invalid"
+                class="button is-info"
+                @click="closeModal">
+                Close
             </button>
         </template>
     </ModalCard>
