@@ -748,9 +748,9 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
 
         new Game("Hades II", "HadesII", "HadesII",
-            "Hades II/Ship", ["Hades2.exe"], "",
+            path.join("Hades II", "Ship"), ["Hades2.exe"], "",
             "https://thunderstore.io/c/hades-ii/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "HadesII.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
     ];
 
