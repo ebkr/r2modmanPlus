@@ -1,7 +1,7 @@
 <template>
-    <modal v-show="isOpen" :open="isOpen" :show-close="false">
-        <template v-slot:title>
-            <p class="card-header-title">Filter mod categories</p>
+    <ModalCard v-show="isOpen" :is-active="isOpen" :can-close="false">
+        <template v-slot:header>
+            <h2 class="modal-title">Filter mod categories</h2>
         </template>
         <template v-slot:body>
             <div>
@@ -58,7 +58,7 @@
                 Apply filters
             </button>
         </template>
-    </modal>
+    </ModalCard>
 </template>
 
 <script lang="ts">
@@ -66,9 +66,10 @@ import { Component, Vue } from "vue-property-decorator";
 
 import { Modal } from '../../components/all';
 import CategorySelectorModal from '../../components/modals/CategorySelectorModal.vue';
+import ModalCard from 'components/ModalCard.vue';
 
 @Component({
-    components: { CategorySelectorModal, Modal }
+    components: { ModalCard, CategorySelectorModal, Modal }
 })
 export default class CategoryFilterModal extends Vue {
     get allowNsfw(): boolean {
