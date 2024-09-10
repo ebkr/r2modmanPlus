@@ -215,11 +215,10 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
-export class InstallRuleInstaller extends PackageInstaller {
+export class InstallRuleInstaller implements PackageInstaller {
     public readonly rule: CoreRuleType;
 
     constructor(rules: CoreRuleType) {
-        super();
         this.rule = rules;
     }
 
