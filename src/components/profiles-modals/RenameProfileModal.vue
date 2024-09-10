@@ -10,7 +10,7 @@ import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 })
 export default class RenameProfileModal extends ProfilesMixin {
     @Ref() readonly nameInput: HTMLInputElement | undefined;
-    private newProfileName: string = '';
+    newProfileName: string = '';
 
     @Watch('$store.state.profile.activeProfile')
     activeProfileChanged(newProfile: Profile, oldProfile: Profile|null) {
@@ -69,7 +69,7 @@ export default class RenameProfileModal extends ProfilesMixin {
             <input
                 class="input"
                 v-model="newProfileName"
-                @keyup.enter="!doesProfileExist(newProfileName) && performRename(newProfileName)"
+                @keyup.enter="!doesProfileExist(newProfileName) && performRename()"
                 ref="nameInput"
             />
 
@@ -85,7 +85,7 @@ export default class RenameProfileModal extends ProfilesMixin {
         </template>
         <template v-slot:footer>
             <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+            <button class="button is-info" @click="performRename()" v-else>Rename</button>
         </template>
 
     </ModalCard>

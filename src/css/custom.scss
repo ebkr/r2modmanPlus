@@ -1,14 +1,32 @@
 // fix color vars that we can't override
 html {
     background-color: $scheme-background;
+    overflow: hidden;
 }
 
 body {
     position: relative;
+    padding-top: 40px;
+    overflow: hidden;
 }
 
 body.body--dark {
     color: $scheme-text;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: $scrollbar-thumb;
+    border-radius: 20px;
+    background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+    background-color: transparent;
 }
 
 a {
@@ -38,8 +56,35 @@ select {
     }
 }
 
+.sidebar {
+    width: 25vw;
+    height: 100%;
+    background-color: $navigation-background;
+}
+
+.tag:not(body).is-link {
+    background-color: $scheme-primary !important;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: auto;
+    flex-grow: 1;
+}
+
 .menu-list a.is-active {
     color: $menu-item-active-color;
+    background-color: $scheme-primary;
+}
+
+.menu-list a:hover {
+    background-color: $card-hover;
+}
+
+.menu-list a.is-active:hover {
+    background-color: #165ed1;
 }
 
 .pagination-link.is-current {
@@ -54,16 +99,20 @@ select {
 
 // custom
 .menu {
-    display: block;
-    padding: 1em 0 1em 1em;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 8px;
     position: sticky;
     top: 0;
+    height: 100%;
 
     .tagged-link {
 
         display: flex;
         flex: 1;
         align-items: center;
+        border-radius: 6px;
+        height: 40px !important;
 
         &__icon {
             flex: 0;
@@ -143,6 +192,12 @@ select {
 
 .card {
     border: 0 !important;
+}
+
+.card-header-title.page-padding {
+    padding-left: 10px;
+    padding-top: 6px;
+    padding-right: 4px;
 }
 
 .disabled-card {
@@ -258,6 +313,8 @@ select {
 .in-mod-list {
     margin-top: 1em;
     margin-bottom: 0.5em;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 select {
@@ -297,6 +354,10 @@ select {
 
 .tabs {
     margin-bottom: 0 !important;
+}
+
+.tabs a {
+    border-bottom-width: 1.5px !important;
 }
 
 .no-break {
@@ -391,7 +452,14 @@ code {
 }
 
 .modal {
+    height: calc(100vh - 40px);
+    top: 40px;
     z-index: 200;
+    position: fixed;
+}
+
+.modal-close {
+    top: 50px;
 }
 
 .card-action-overlay {
@@ -480,4 +548,230 @@ code {
     padding: 4px 4px 4px 8px;
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.15);
+}
+
+.page {
+    height: calc(100vh - 40px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.page-with-topbar {
+    height: calc(100vh - 40px - 65px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.page-padding {
+    padding-left: 10px;
+}
+
+.titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $scheme-background;
+    z-index: 500;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-bottom: 2px solid $title-bar-border;
+    -webkit-app-region: drag;
+    font-size: 12px;
+}
+
+.titlebar_title {
+    font-weight: bold;
+}
+
+.titlebar_start {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.titlebar_version {
+    opacity: 50%;
+    font-size: 10px;
+}
+
+.titlebar_buttons {
+    display: flex;
+    gap: 2px;
+    height: 38px;
+    width: 100px;
+    -webkit-app-region: no-drag;
+}
+
+.titlebar_buttons > .btn {
+    min-height: 38px;
+    min-width: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #7d91a7;
+    transition: all 100ms ease;
+}
+
+.titlebar_buttons > .btn:hover {
+    color: #4e4e4e;
+}
+
+:root.html--dark .titlebar_buttons > .btn:hover {
+    color: white;
+}
+
+.titlebar_buttons > * > svg {
+    width: 30%;
+    height: 30%;
+}
+
+.top-bar {
+    width: 75vw;
+    padding: 10px 8px;
+    background-color: $navigation-background;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-weight: bold;
+    height: 44px;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.profile > p {
+    font-weight: 500;
+    font-size: 12px;
+    font-weight: 500;
+    color: #869bb1;
+}
+
+.profile:hover {
+    background-color: $card-hover;
+}
+
+.profile:hover > p {
+    color: #308ed0;
+}
+
+.play-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    height: 42px;
+}
+
+.play-buttons > button {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.play-buttons > .vanilla {
+    color: $scheme-text;
+    background: transparent;
+}
+
+.play-buttons > .vanilla:hover {
+    background-color: $card-hover;
+}
+
+.play-buttons > .modded {
+    color: white;
+    background: $scheme-primary;
+}
+
+.play-buttons > .modded:hover {
+    background: #165ed1;
+}
+
+
+.active-game {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 2px;
+    outline: none;
+    height: 44px;
+    border-radius: 4px;
+    color: $scheme-text;
+}
+
+.active-game-text {
+    display: flex;
+    flex-direction: column;
+    height: 40px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.active-game-change {
+    font-size: 12px;
+    font-weight: 500;
+    color: #869bb1;
+}
+
+.active-game > img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.active-game:hover {
+    background-color: $card-hover;
+}
+
+.active-game:hover > .active-game-text > .active-game-change {
+    color: #308ed0;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100%;
+    background-color: $navigation-background;
+}
+
+.router-page {
+    width: 75vw;
+    border-top-left-radius: 8px;
+    overflow: hidden;
+    background-color: $scheme-background;
+}
+
+.menu-list {
+    height: 100%;
+}
+
+.menu-help {
+    height: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.full-height-minus-bar {
+    height: calc(100vh - 40px) !important;
 }

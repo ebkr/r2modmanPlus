@@ -18,8 +18,8 @@
         <template v-else-if="localModList.length > 0">
             <LocalModList>
                 <template v-slot:above-list v-if="numberOfModsWithUpdates > 0 && !dismissedUpdateAll">
-                    <div class="margin-bottom">
-                        <div class="notification is-warning margin-right">
+                    <div class="margin-bottom page-padding">
+                        <div class="notification is-warning">
                             <span>
                                 You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
                                 Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?

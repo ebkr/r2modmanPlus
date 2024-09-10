@@ -34,6 +34,19 @@ ipcMain.on('get-appData-directory', ()=>{
     browserWindow.webContents.send('receive-appData-directory', app.getPath('appData'));
 });
 
+ipcMain.on('window-minimize', () => {
+    browserWindow.minimize();
+})
+ipcMain.on('window-maximize', () => {
+    if(browserWindow.isMaximized())
+        browserWindow.unmaximize();
+    else
+        browserWindow.maximize();
+})
+ipcMain.on('window-close', () => {
+    browserWindow.close();
+})
+
 ipcMain.on('get-is-portable', ()=>{
     let isPortable = false;
     switch(process.platform){
@@ -68,4 +81,3 @@ ipcMain.on('show-open-dialog', (arg, fileOpts) => {
     browserWindow.webContents.send('receive-open-dialog', r);
   });
 });
-

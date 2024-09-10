@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, nativeTheme, protocol } from 'electron';
+import { app, BrowserWindow, ipcMain, protocol } from 'electron';
 import Listeners from './ipcListeners';
 import Persist from './window-state-persist';
 import path from 'path';
@@ -6,13 +6,6 @@ import ipcServer from 'node-ipc';
 import * as fs from 'fs';
 
 app.allowRendererProcessReuse = true;
-
-try {
-    if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
-        require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'));
-    }
-} catch (_) {
-}
 
 /**
  * Set `__statics` path to static files in production;
@@ -30,7 +23,6 @@ function createWindow() {
     /**
      * Initial window options
      */
-
     const windowSize = Persist.getSize(app, {
         defaultWidth: 1200,
         defaultHeight: 700
@@ -39,6 +31,8 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: windowSize.width,
         height: windowSize.height,
+        minWidth: 1200,
+        minHeight: 700,
         useContentSize: true,
         webPreferences: {
             nodeIntegration: true,
@@ -47,7 +41,13 @@ function createWindow() {
             contextIsolation: false,
         },
         icon: path.join(__dirname, 'icon.png'),
-        autoHideMenuBar: process.env.PROD
+        autoHideMenuBar: process.env.PROD,
+        frame: false,
+        show: false
+    });
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
     });
 
     if (windowSize.maximized) {

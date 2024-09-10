@@ -19,20 +19,20 @@ import Timeout = NodeJS.Timeout;
 @Component
     export default class SettingsItem extends Vue {
 
-        private reactiveValue: any | null = null;
+        reactiveValue: any | null = null;
         private timeout: Timeout | null = null;
 
         @Prop({default: ""})
-        private action: string | undefined;
+        readonly action: string | undefined;
 
         @Prop({default: ""})
-        private description: string | undefined;
+        readonly description: string | undefined;
 
         @Prop({default: () => Promise.resolve() })
         private value!: () => Promise<any>;
 
         @Prop({default: ""})
-        private icon: string | undefined;
+        readonly icon: string | undefined;
 
         async mounted() {
             if (this.timeout !== null) {

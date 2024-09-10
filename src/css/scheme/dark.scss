@@ -40,15 +40,16 @@
 
     --card-header-color: #{$night-d};
     --card-color: #{$night-b};
+    --card-hover: #{$night-1};
 
-    --menu-item-color: #{$night-b};
+    --menu-item-color: #{$night-9};
     --menu-item-hover-background-color: #{$night-2};
     --menu-item-hover-color: #{$night-d};
     --menu-label-color: #{$night-9};
 
     --tabs-link-color: #{$night-b};
     --tabs-link-hover-color: #{$night-d};
-    --tabs-link-active-color: #{$primary-2};
+    --tabs-link-active-color: #{$primary-1};
 
     --input-color: #{$night-d};
     --input-placeholder-color: #{rgba($night-d, 0.3)};
@@ -65,6 +66,10 @@
     --panel-block-hover-background-color: #{$night-2};
 
     --code-font-color: #ffb583;
+
+    --navigation-background: #1a2632;
+    --title-bar-border: #162029;
+    --scrollbar-thumb: #162029;
 }
 
 html.html--dark {

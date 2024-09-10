@@ -36,33 +36,35 @@ import LocalModCard from './LocalModList/LocalModCard.vue';
 import SearchAndSort from './LocalModList/SearchAndSort.vue';
 
 @Component({
-        components: {
-            Draggable,
-            AssociatedModsModal,
-            DisableModModal,
-            UninstallModModal,
-            LocalModCard,
-            SearchAndSort,
-        }
-    })
-    export default class LocalModList extends Vue {
-        get profile(): Profile {
-            return this.$store.getters['profile/activeProfile'];
-        }
+    components: {
+        Draggable,
+        AssociatedModsModal,
+        DisableModModal,
+        UninstallModModal,
+        LocalModCard,
+        SearchAndSort,
+    }
+})
+export default class LocalModList extends Vue {
+    drag = false
 
-        get draggableList(): ManifestV2[] {
-            return this.$store.getters['profile/visibleModList'];
-        }
+    get profile(): Profile {
+        return this.$store.getters['profile/activeProfile'];
+    }
 
-        set draggableList(newList: ManifestV2[]) {
-            try {
-                this.$store.dispatch(
-                    'profile/saveModListToDisk',
-                    {mods: newList, profile: this.profile}
-                );
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
+    get draggableList(): ManifestV2[] {
+        return this.$store.getters['profile/visibleModList'];
+    }
+
+    set draggableList(newList: ManifestV2[]) {
+        try {
+            this.$store.dispatch(
+                'profile/saveModListToDisk',
+                {mods: newList, profile: this.profile}
+            );
+        } catch (e) {
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
         }
     }
+}
 </script>

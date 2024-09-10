@@ -6,13 +6,13 @@
             hero-type="is-info"
         />
         <br/>
-        <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
+        <div class="sticky-top sticky-top--buttons page-padding">
+            <button class="button is-info margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
-        <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="margin-right non-selectable">
-            <h3 class='subtitle is-3'>Sections</h3>
-            <ul>
+        <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="non-selectable">
+            <h3 class='subtitle is-3 page-padding'>Sections</h3>
+            <ul class="page-padding">
                 <li v-for="(value, key) in dumpedConfigVariables" :key="`${key}-${value.toString()}-tab`">
                     <a :href="`#${key}`">{{ key }}</a>
                 </li>
@@ -42,7 +42,7 @@
                                 <input
                                     type="range"
                                     class="slider is-fullwidth is-circle is-small"
-                                    v-on:input="e => setConfigLineValue(line, e.target.value)"
+                                    @input="setConfigLineValue(line, $event.target.value)"
                                     :value="parseFloat(line.value)"
                                     :min="line.getMinRange()"
                                     :max="line.getMaxRange()" />
@@ -83,11 +83,11 @@ import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
     export default class ConfigEditLayout extends Vue {
 
         @Prop({required: true})
-        private configFile!: ConfigFile;
+        readonly configFile!: ConfigFile;
 
-        private fileText: string = "";
+        fileText: string = "";
 
-        private dumpedConfigVariables: { [section: string]: { [variable: string]: ConfigLine } } = {};
+        dumpedConfigVariables: { [section: string]: { [variable: string]: ConfigLine } } = {};
 
         async created() {
             const fs = FsProvider.instance;
@@ -150,7 +150,7 @@ import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
                 .trim();
         }
 
-        toggleEntryExpansion(key: string, variable: string) {
+        toggleEntryExpansion(key: string | number, variable: string | number) {
             const oldLine = this.dumpedConfigVariables[key][variable];
             const newLine = new ConfigLine(oldLine.value, oldLine.comments, oldLine.allowedValues);
             newLine.commentsExpanded = !oldLine.commentsExpanded;
@@ -158,7 +158,7 @@ import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
             this.dumpedConfigVariables = JSON.parse(JSON.stringify(this.dumpedConfigVariables));
         }
 
-        setConfigLineValue(line: ConfigLine, value: number) {
+        setConfigLineValue(line: ConfigLine, value: number | string) {
             line.value = value.toString();
         }
 

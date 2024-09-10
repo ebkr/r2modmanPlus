@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page">
         <modal v-show="showPlatformModal === true" :open="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:title>
                 <p class='card-header-title'>Which store manages your game?</p>
@@ -48,12 +48,12 @@
                             </div>
                             <div class="margin-right">
                                 <a class="button is-info"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
+                                   :disabled="selectedGame === null && !runningMigration" @click="selectGame(selectedGame)">Select
                                     {{ activeTab.toLowerCase() }}</a>
                             </div>
                             <div class="margin-right">
                                 <a class="button"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
+                                   :disabled="selectedGame === null && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -184,16 +184,16 @@ import ProviderUtils from '../providers/generic/ProviderUtils';
 })
 export default class GameSelectionScreen extends Vue {
 
-    private runningMigration = false;
-    private selectedGame: Game | null = null;
-    private filterText: string = "";
-    private showPlatformModal: boolean = false;
-    private selectedPlatform: StorePlatform | null = null;
-    private favourites: string[] = [];
-    private settings: ManagerSettings | undefined;
-    private isSettingDefaultPlatform: boolean = false;
-    private viewMode = GameSelectionViewMode.LIST;
-    private activeTab = GameInstanceType.GAME;
+    public runningMigration = false;
+    public selectedGame: Game | null = null;
+    public filterText: string = "";
+    public showPlatformModal: boolean = false;
+    public selectedPlatform: StorePlatform | null = null;
+    public favourites: string[] = [];
+    public settings: ManagerSettings | undefined;
+    public isSettingDefaultPlatform: boolean = false;
+    public viewMode = GameSelectionViewMode.LIST;
+    public activeTab = GameInstanceType.GAME;
 
     get gameInstanceTypes(): string[] {
         return Object.values(GameInstanceType);
@@ -227,7 +227,7 @@ export default class GameSelectionScreen extends Vue {
         });
     }
 
-    private changeTab(key: string) {
+    changeTab(key: string) {
         for (const objKey of Object.keys(GameInstanceType)) {
             if ((GameInstanceType as any)[objKey] === key) {
                 this.activeTab = (GameInstanceType as any)[objKey];
@@ -235,7 +235,8 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
-    private selectGame(game: Game) {
+    selectGame(game: Game | null) {
+        if (game === null) return
         this.selectedGame = game;
         this.isSettingDefaultPlatform = false;
         if (game.storePlatformMetadata.length > 1) {
@@ -248,7 +249,8 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
-    private selectDefaultGame(game: Game) {
+    selectDefaultGame(game: Game | null) {
+        if (game === null) return
         this.selectedGame = game;
         this.isSettingDefaultPlatform = true;
         if (game.storePlatformMetadata.length > 1) {
@@ -260,7 +262,7 @@ export default class GameSelectionScreen extends Vue {
         }
     }
 
-    private selectPlatform() {
+    selectPlatform() {
         if (this.isSettingDefaultPlatform) {
             this.proceedDefault()
         } else {
@@ -304,7 +306,7 @@ export default class GameSelectionScreen extends Vue {
         this.proceed();
     }
 
-    private toggleFavourite(game: Game) {
+    toggleFavourite(game: Game) {
         if (this.favourites.includes(game.settingsIdentifier)) {
             this.favourites = this.favourites.filter(value => value !== game.settingsIdentifier)
         } else {

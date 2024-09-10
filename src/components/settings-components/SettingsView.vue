@@ -1,45 +1,43 @@
 <template>
-    <div>
+    <div class="page-with-topbar">
         <Hero title='Settings'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='is-info'/>
-        <div class="margin-right">
-            <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
-                <div class='border-at-bottom'>
-                    <div class='card is-shadowless is-square'>
-                        <div class='card-header-title'>
-                            <span class="non-selectable margin-right">Search:</span>
-                            <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
-                        </div>
+        <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
+            <div class='border-at-bottom'>
+                <div class='card is-shadowless is-square'>
+                    <div class='card-header-title'>
+                        <span class="non-selectable margin-right">Search:</span>
+                        <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
                     </div>
                 </div>
-                <div class="tabs">
-                    <ul>
-                        <li v-for="(key, index) in tabs" :key="`tab-${key}`"
-                            :class="[{'is-active': activeTab === key}]"
-                            @click="changeTab(key)">
-                            <a>{{key}}</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
-            <template v-if="activeTab === 'All'">
-                <SettingsItem v-for="(key, _) in searchableSettings" :key="`setting-${key.action}`"
-                              :action="key.action"
-                              :description="key.description"
-                              :value="key.value"
-                              :icon="key.icon"
-                              @click="key.clickAction()"/>
-            </template>
-            <template v-else>
-                <SettingsItem v-for="(key, _) in getFilteredSettings()" :key="`setting-${key.action}`"
-                              :action="key.action"
-                              :description="key.description"
-                              :value="key.value"
-                              :icon="key.icon"
-                              @click="key.clickAction()"/>
-            </template>
+            <div class="tabs">
+                <ul>
+                    <li v-for="(key, index) in tabs" :key="`tab-${key}`"
+                        :class="[{'is-active': activeTab === key}]"
+                        @click="changeTab(key)">
+                        <a>{{key}}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+        <template v-if="activeTab === 'All'">
+            <SettingsItem v-for="(key, _) in searchableSettings" :key="`setting-${key.action}`"
+                            :action="key.action"
+                            :description="key.description"
+                            :value="key.value"
+                            :icon="key.icon"
+                            @click="key.clickAction()"/>
+        </template>
+        <template v-else>
+            <SettingsItem v-for="(key, _) in getFilteredSettings()" :key="`setting-${key.action}`"
+                            :action="key.action"
+                            :description="key.description"
+                            :value="key.value"
+                            :icon="key.icon"
+                            @click="key.clickAction()"/>
+        </template>
     </div>
 </template>
 
@@ -73,12 +71,12 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
     })
     export default class SettingsView extends mixins(UtilityMixin) {
 
-        private activeTab: string = 'All';
-        private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
-        private logOutput: LogOutputProvider = LogOutputProvider.instance;
-        private search: string = '';
-        private managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
-        private searchableSettings: SettingsRow[] = [];
+        activeTab: string = 'All';
+        tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
+        logOutput: LogOutputProvider = LogOutputProvider.instance;
+        search: string = '';
+        managerVersionNumber: VersionNumber = ManagerInformation.VERSION;
+        searchableSettings: SettingsRow[] = [];
 
         get activeGame(): Game {
             return this.$store.state.activeGame;

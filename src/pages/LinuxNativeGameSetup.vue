@@ -28,19 +28,14 @@ import * as path from 'path';
     }
 })
 export default class LinuxFirstTimeSetup extends Vue {
-
-	data() {
-		return {
-			activeGame: this.$store.state.activeGame.displayName,
-			launchArgs: `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}"`
-		}
-	}
+    readonly activeGame = this.$store.state.activeGame.displayName
+    readonly launchArgs = `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}"`
 
     get platformName(): string {
         return process.platform === 'darwin' ? 'macOS' : process.platform
     }
 
-	private copy(){
+	copy(){
 		let range = document.createRange();
 		range.selectNode(this.$refs.launchargs as Node);
 		const selection = window.getSelection();
@@ -55,7 +50,7 @@ export default class LinuxFirstTimeSetup extends Vue {
 		}, 2000);
 	}
 
-	private async acknowledge(){
+	async acknowledge(){
 		this.$router.push({path: "/profiles"});
 	}
 

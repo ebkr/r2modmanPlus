@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-padding">
         <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadObject !== null">
             <div class="modal-background" @click="downloadingMod = false;"></div>
             <div class='modal-content'>

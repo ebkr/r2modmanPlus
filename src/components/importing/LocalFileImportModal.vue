@@ -82,20 +82,20 @@ import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModI
 export default class LocalFileImportModal extends Vue {
 
     @Prop({default: false, type: Boolean})
-    private visible!: boolean;
+    visible!: boolean;
 
-    private fileToImport: string | null = null;
-    private waitingForSelection: boolean = false;
-    private validationMessage: string | null = null;
+    fileToImport: string | null = null;
+    waitingForSelection: boolean = false;
+    validationMessage: string | null = null;
 
-    private modName = "";
-    private modAuthor = "Unknown";
-    private modDescription = "";
-    private modVersionMajor = 0;
-    private modVersionMinor = 0;
-    private modVersionPatch = 0;
+    modName = "";
+    modAuthor = "Unknown";
+    modDescription = "";
+    modVersionMajor = 0;
+    modVersionMinor = 0;
+    modVersionPatch = 0;
 
-    private resultingManifest = new ManifestV2();
+    resultingManifest = new ManifestV2();
 
     @Watch("visible")
     private visiblityChanged() {
@@ -104,7 +104,7 @@ export default class LocalFileImportModal extends Vue {
         this.validationMessage = null;
     }
 
-    private async selectFile() {
+    async selectFile() {
         this.waitingForSelection = true;
         InteractionProvider.instance.selectFile({
             buttonLabel: "Select file",
@@ -121,7 +121,7 @@ export default class LocalFileImportModal extends Vue {
         })
     }
 
-    private async assumeDefaults() {
+    async assumeDefaults() {
 
         this.modName = "";
         this.modAuthor = "Unknown";
@@ -180,7 +180,7 @@ export default class LocalFileImportModal extends Vue {
         this.modVersionPatch = inferred.modVersionPatch;
     }
 
-    private inferFieldValuesFromFile(file: string): ImportFieldAttributes {
+    inferFieldValuesFromFile(file: string): ImportFieldAttributes {
         const fileSafe = file.split("\\").join("/");
         const fileName = path.basename(fileSafe, path.extname(fileSafe));
         const hyphenSeparated = fileName.split("-");
@@ -227,23 +227,23 @@ export default class LocalFileImportModal extends Vue {
         return data;
     }
 
-    private santizeVersionNumber(vn: string): VersionNumber {
+    santizeVersionNumber(vn: string): VersionNumber {
         const modVersionSplit = vn.split(".");
         const modVersionString = `${this.versionPartToNumber(modVersionSplit[0])}.${this.versionPartToNumber(modVersionSplit[1])}.${this.versionPartToNumber(modVersionSplit[2])}`;
         return new VersionNumber(modVersionString);
     }
 
-    private versionPartToNumber(input: string | undefined) {
+    versionPartToNumber(input: string | undefined) {
         return (input || "0").split(new RegExp("[^0-9]+"))
             .filter(value => value.trim().length > 0)
             .shift() || "0";
     }
 
-    private emitClose() {
+    emitClose() {
         this.$emit("close-modal");
     }
 
-    private importFile() {
+    importFile() {
         if (this.fileToImport === null) {
             return;
         }
