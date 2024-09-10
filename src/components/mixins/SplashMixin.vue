@@ -37,10 +37,10 @@ export default class SplashMixin extends Vue {
 
     // Get the list of game-specific packages to exclude.
     async getExclusions() {
-        this.loadingText = 'Connecting to GitHub repository';
+        this.loadingText = this.$t('mixins.splash.loadingText1');
 
         const showProgress = (progress: number) => {
-            this.loadingText = 'Downloading exclusions';
+            this.loadingText = this.$t('mixins.splash.loadingText2');
             this.getRequestItem('ExclusionsList').setProgress(progress);
         };
 
@@ -51,11 +51,11 @@ export default class SplashMixin extends Vue {
 
     // Get the list of Thunderstore mods from API or local cache.
     async getThunderstoreMods() {
-        this.loadingText = 'Connecting to Thunderstore';
+        this.loadingText = this.$t('mixins.splash.loadingText3');
         let response: ApiResponse|undefined = undefined;
 
         const showProgress = (progress: number) => {
-            this.loadingText = 'Getting mod list from Thunderstore';
+            this.loadingText = this.$t('mixins.splash.loadingText4');
             this.getRequestItem('ThunderstoreDownload').setProgress(progress);
         };
 
@@ -68,7 +68,7 @@ export default class SplashMixin extends Vue {
         }
 
         if (response) {
-            this.loadingText = 'Storing the mod list into local cache';
+            this.loadingText = this.$t('mixins.splash.loadingText5');
 
             try {
                 await this.$store.dispatch('tsMods/updatePersistentCache', response.data);
@@ -76,9 +76,9 @@ export default class SplashMixin extends Vue {
                 console.error('SplashMixin failed to cache mod list locally.', e);
             }
 
-            this.loadingText = 'Processing the mod list';
+            this.loadingText = this.$t('mixins.splash.loadingText6');
         } else {
-            this.loadingText = 'Processing the mod list from cache';
+            this.loadingText = this.$t('mixins.splash.loadingText7');
         }
 
         this.getRequestItem('CacheOperations').setProgress(50);
@@ -104,8 +104,8 @@ export default class SplashMixin extends Vue {
         ) {
             await this.moveToNextScreen();
         } else {
-            this.heroTitle = 'Failed to get the list of online mods';
-            this.loadingText = 'You may still use the manager offline, but some features might be unavailable.';
+            this.heroTitle = this.$t('mixins.splash.heroTitle');
+            this.loadingText = this.$t('mixins.splash.loadingText8');
             this.isOffline = true;
         }
     }

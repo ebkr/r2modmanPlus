@@ -6,7 +6,7 @@
         style="width:30vw;max-width:150px;"
       >
     </p>
-    <p class="text-faded">Sorry, nothing here...<strong>(404)</strong></p>
+    <p class="text-faded">{{ $t(`pages.error.nothing`) }}<strong>(404)</strong></p>
     <q-btn
       color="secondary"
       style="width:200px;"
@@ -21,5 +21,5 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 @Component
-export default class Error404 extends Vue {} 
+export default class Error404 extends Vue {}
 </script>

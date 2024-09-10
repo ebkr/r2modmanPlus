@@ -1,17 +1,17 @@
 <template>
 	<div>
-		<hero :title="`Getting started on ${platformName}`" subtitle="Let's configure the game properly" heroType="is-warning" />
+		<hero :title="$t('pages.linux.title', {name: platformName})" :subtitle="$t('pages.help.subtitle')" heroType="is-warning" />
 		<br/>
 		<div class="container">
-			To be able to launch {{ activeGame }} on Linux, you must first setup your Steam launch options correctly.<br/>
-			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
+            {{ $t('pages.linux.tip1', { game: activeGame }) }}<br/>
+            {{ $t('pages.linux.tip2') }}<br/>
 			<br/>
-			Please copy and paste the following to your {{ activeGame }} launch options:<br/>
+            {{ $t('pages.linux.tip3', { game: activeGame }) }}<br/>
 			<code ref="launchargs">{{ launchArgs }} %command%</code>
 			<br/>
 			<br/>
-			<a ref="copy" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
-			<a class="button is-info" @click="acknowledge">Continue</a>
+			<a ref="copy" class="button margin-right margin-right--half-width" @click="copy">{{ $t(`pages.linux.copyTo`) }}</a>
+			<a class="button is-info" @click="acknowledge">{{ $t(`pages.linux.continue`) }}</a>
 		</div>
 	</div>
 </template>
@@ -49,9 +49,9 @@ export default class LinuxFirstTimeSetup extends Vue {
 			selection.addRange(range);
 		}
 		document.execCommand("copy");
-		(this.$refs.copy as Element).innerHTML = "Copied!";
+		(this.$refs.copy as Element).innerHTML = this.$t('pages.linux.copied');
 		setTimeout(() => {
-			(this.$refs.copy as Element).innerHTML = "Copy to clipboard";
+			(this.$refs.copy as Element).innerHTML = this.$t('pages.linux.copyTo');
 		}, 2000);
 	}
 

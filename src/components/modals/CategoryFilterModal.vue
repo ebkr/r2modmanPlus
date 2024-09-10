@@ -1,12 +1,12 @@
 <template>
     <modal v-show="isOpen" :open="isOpen" :show-close="false">
         <template v-slot:title>
-            <p class="card-header-title">Filter mod categories</p>
+            <p class="card-header-title">{{ $t('modals.filter.title') }}</p>
         </template>
         <template v-slot:body>
             <div>
                 <CategorySelectorModal
-                    title="Mods must contain at least one of these categories"
+                    title= {{ $t(`modals.filter.leastCategories`) }}
                     :selected-categories="selectedCategoriesCompareOne"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareOneCategory"
@@ -14,7 +14,7 @@
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods must contain all of these categories"
+                    title= {{ $t(`modals.filter.allCategories`) }}
                     :selected-categories="selectedCategoriesCompareAll"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectCompareAllCategory"
@@ -22,7 +22,7 @@
                 />
                 <hr/>
                 <CategorySelectorModal
-                    title="Mods cannot contain any of these categories"
+                    title= {{ $t(`modals.filter.noneCategories`) }}
                     :selected-categories="selectedCategoriesToExclude"
                     :selectable-categories="unselectedCategories"
                     @selected-category="selectToExcludeCategory"
@@ -39,7 +39,7 @@
                         type="checkbox"
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
-                    <label for="nsfwCheckbox">Allow NSFW (potentially explicit) mods</label>
+                    <label for="nsfwCheckbox">{{ $t('modals.filter.allowNsfw') }}</label>
                 </div>
                 <div>
                     <input
@@ -49,13 +49,13 @@
                         type="checkbox"
                         :class="[{'is-dark': !isDarkTheme, 'is-white': isDarkTheme}]"
                     >
-                    <label for="showDeprecatedCheckbox">Show deprecated mods</label>
+                    <label for="showDeprecatedCheckbox">{{ $t('modals.filter.showDeprecated') }}</label>
                 </div>
             </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="close">
-                Apply filters
+                {{ $t('modals.filter.apply') }}
             </button>
         </template>
     </modal>

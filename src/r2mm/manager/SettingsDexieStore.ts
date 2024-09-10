@@ -119,7 +119,8 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
+                displayLanguage: undefined,
             },
             gameSpecific: {
                 version: 2,
@@ -142,6 +143,7 @@ export default class SettingsDexieStore extends Dexie {
                     await this.global.update(settingsInterface.id!, {settings: JSON.stringify(holder.global)});
                 }
             });
+
 
             // Update the active game's settings.
             await this.games.put({ identifier: this.activeGame.settingsIdentifier, settings: JSON.stringify(holder.gameSpecific) });
@@ -197,6 +199,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     defaultGame: string | undefined;
     defaultStore: StorePlatform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
+    displayLanguage: string | undefined;
 }
 
 /**

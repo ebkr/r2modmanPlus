@@ -5,45 +5,35 @@
         <div v-if="phase > PHASES.ERROR_STATES" class="modal z-top is-active">
             <div class="modal-content">
                 <div class="notification is-danger">
-                    <h3 class="title">Error</h3>
+                    <h3 class="title">{{ $t(`settingsLoader.title`) }}</h3>
                     <h5 class="title is-5">{{error && error.name}}</h5>
                     <p>{{error && error.message}}</p>
                     <br />
-                    <h5 class="title is-5">Suggestion</h5>
+                    <h5 class="title is-5">{{ $t(`settingsLoader.suggestion`) }}</h5>
 
                     <p v-if="phase === PHASES.GAME_FAILED">
-                        This is a problem with the mod manager itself.
-                        If there's a newer version of the manager
-                        available, try installing it.
+                        {{ $t(`settingsLoader.gameFailed`) }}
                     </p>
 
                     <div v-else-if="phase === PHASES.SETTINGS_FAILED">
                         <p>
-                            Loading of local user settings failed. You
-                            can use the button below to reset the
-                            settings, but note that all settings for all
-                            games will be lost and this can't be undone.
+                            {{ $t(`settingsLoader.settingsFailed`) }}
                         </p>
                         <br />
                         <button @click="resetSettings" class="button is-white">
-                            Reset settings
+                            {{ $t(`settingsLoader.reset`) }}
                         </button>
                     </div>
 
                     <p v-else-if="phase === PHASES.RESET_FAILED">
-                        Resetting of the settings failed. You can still
-                        try to reset the settings manually by following
-                        these
+                        {{ $t(`settingsLoader.resetFailed`) }}
                         <a @click="openLink('https://github.com/ebkr/r2modmanPlus/wiki/Error:-White-or-blank-game-select-screen-on-startup#corrupted-settings-on-update')">
-                            instructions.
+                            {{ $t(`settingsLoader.instructions`) }}
                         </a>
                     </p>
 
                     <p v-else-if="phase === PHASES.RETRY_FAILED">
-                        Locally stored settings were reset, but that
-                        didn't solve the issue with loading the
-                        settings. If there's a newer version of the
-                        manager available, try installing it.
+                        {{ $t(`settingsLoader.retryFailed`) }}
                     </p>
                 </div>
             </div>

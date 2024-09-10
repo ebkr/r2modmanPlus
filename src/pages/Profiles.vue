@@ -6,8 +6,8 @@
     <ImportProfileModal />
     <!-- Content -->
     <hero
-      title="Profile selection"
-      subtitle="Profiles help to organise mods easily"
+      :title="$t(`pages.profiles.title`)"
+      :subtitle="$t(`pages.profiles.subtitle`)"
       heroType="is-info"
     />
     <div class="columns">
@@ -19,7 +19,7 @@
                 <div class='notification'>
                     <div class="container">
                         <i class='fas fa-long-arrow-alt-left margin-right' />
-                        <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                        <strong><a @click="backToGameSelection">{{ $t(`pages.profiles.back`) }}</a></strong>
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
@@ -39,7 +39,7 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
+                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">{{ $t(`pages.profiles.select`) }}</a>
                     </div>
                       <div class="level-item">
                           <a id="rename-profile-disabled" class="button" v-if="activeProfileName === 'Default'" :disabled="true">Rename</a>
@@ -52,7 +52,7 @@
                       <a class="button" @click="openImportProfileModal()">Import / Update</a>
                     </div>
                     <div class="level-item">
-                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">{{ $t(`pages.profiles.removeProfile`) }}</a>
                     </div>
                   </nav>
                 </div>

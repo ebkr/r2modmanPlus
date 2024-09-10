@@ -1,13 +1,13 @@
 <template>
     <div>
-        <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="is-info"/>
+        <Hero :title="$t(`pages.download.title`)" :subtitle="$t(`pages.download.subtitle`)" hero-type="is-info"/>
         <template v-if="activeDownloads.length === 0">
             <div class='text-center top'>
                 <div class="margin-right">
                     <br/>
-                    <h3 class='title is-4'>You don't have anything downloading.</h3>
+                    <h3 class='title is-4'>{{ $t(`pages.download.nothing`) }}</h3>
                     <h4 class='subtitle is-5'>
-                        Click <router-link :to="{name: 'manager.online'}">here</router-link> to download something.
+                        {{ $t(`pages.download.click`) }}<router-link :to="{name: 'manager.online'}">{{ $t(`pages.download.here`) }}</router-link>{{ $t(`pages.download.download`) }}
                     </h4>
                 </div>
             </div>
@@ -19,8 +19,8 @@
                         <div class="border-at-bottom pad pad--sides">
                             <div class="card is-shadowless">
                                 <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
-                                <p v-if="downloadObject.progress < 100">Downloading: {{ downloadObject.modName }}</p>
-                                <p>{{Math.min(Math.floor(downloadObject.progress), 100)}}% complete</p>
+                                <p v-if="downloadObject.progress < 100">{{ $t(`pages.download.downloading`) }}{{ downloadObject.modName }}</p>
+                                <p>{{ $t(`pages.download.progress`, {progress: Math.min(Math.floor(downloadObject.progress), 100)}) }}</p>
                                 <Progress v-if="!downloadObject.failed"
                                     :max='100'
                                     :value='downloadObject.progress'
