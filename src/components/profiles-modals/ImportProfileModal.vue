@@ -18,7 +18,6 @@ import InteractionProvider from "../../providers/ror2/system/InteractionProvider
 import { mixins } from "vue-class-component";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
 import ExportFormat from "../../model/exports/ExportFormat";
-import Itf_RoR2MM from "../../r2mm/installing/Itf_RoR2MM";
 import * as yaml from "yaml";
 import VersionNumber from "../../model/VersionNumber";
 import ZipProvider from "../../providers/generic/zip/ZipProvider";
@@ -26,6 +25,7 @@ import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import OnlineModList from 'components/views/OnlineModList.vue';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 let fs: FsProvider;
 
@@ -43,8 +43,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
-
-
 
     async created() {
         fs = FsProvider.instance;
@@ -203,8 +201,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     }
                     if (parsed.getMods().length > 0) {
                         this.isProfileBeingImported = true;
-                        setTimeout(() => {
-                            this.downloadImportedProfileMods(parsed.getMods(), async () => {
+                        setTimeout(async () => {
+                            await this.downloadImportedProfileMods(parsed.getMods(), async () => {
                                 if (files[0].endsWith('.r2z')) {
                                     await this.extractZippedProfileFile(files[0], profileName);
                                 }
@@ -254,11 +252,19 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
+    async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
+        const settings = this.$store.getters['settings'];
+        const ignoreCache = settings.getContext().global.ignoreCache;
+        const allMods = await PackageDb.getPackagesByNames(
+            this.$store.state.activeGame.internalFolderName,
+            modList.map((m) => m.getName())
+        );
+
         this.percentageImported = 0;
         ThunderstoreDownloaderProvider.instance.downloadImportedMods(
-            this.$store.state.activeGame,
             modList,
+            allMods,
+            ignoreCache,
             this.downloadProgressCallback,
             async (comboList: ThunderstoreCombo[]) => {
                 await this.downloadCompletedCallback(comboList, modList, callback);
