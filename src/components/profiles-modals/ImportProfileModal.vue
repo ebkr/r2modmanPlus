@@ -24,7 +24,7 @@ import ZipProvider from "../../providers/generic/zip/ZipProvider";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
-import OnlineModList from 'components/views/OnlineModList.vue';
+import OnlineModList from "../views/OnlineModList.vue";
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 let fs: FsProvider;
