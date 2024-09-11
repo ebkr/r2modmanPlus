@@ -17,6 +17,7 @@ Vue.use(Vuex);
 
 export interface State {
     activeGame: Game;
+    activeGameModLoaderTarget: string | null;
     isMigrationChecked: boolean;
     _settings: ManagerSettings | null;
 }
@@ -31,6 +32,7 @@ type Context = ActionContext<State, State>;
 export const store = {
     state: {
         activeGame: GameManager.defaultGame,
+        activeGameModLoaderTarget: null,
         isMigrationChecked: false,
 
         // Access through getters to ensure the settings are loaded.
@@ -68,11 +70,17 @@ export const store = {
             const settings = await ManagerSettings.getSingleton(game);
             commit('setSettings', settings);
             return settings;
+
+            // TODO: update setActiveGameModLoaderTarget once we know
+            // where to read it from.
         }
     },
     mutations: {
         setActiveGame(state: State, game: Game) {
             state.activeGame = game;
+        },
+        setActiveGameModLoaderTarget(state: State, dependencyString: string) {
+            state.activeGameModLoaderTarget = dependencyString;
         },
         setMigrationChecked(state: State) {
             state.isMigrationChecked = true;
