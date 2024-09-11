@@ -61,7 +61,7 @@ export default class RenameProfileModal extends ProfilesMixin {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <p class="modal-card-title">Rename a profile</p>
+            <h2 class="modal-title">Rename a profile</h2>
         </template>
         <template v-slot:body>
             <p>This profile will store its own mods independently from other profiles.</p>

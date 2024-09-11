@@ -35,9 +35,9 @@
 			<button class="modal-close is-large" aria-label="close"
 			        @click="showRor2IncorrectDirectoryModal = false"></button>
 		</div>
-		<modal v-show="fixingPreloader" :open="fixingPreloader" @close-modal="closePreloaderFixModal">
-			<template v-slot:title>
-				<p class='card-header-title'>Attempting to fix preloader issues</p>
+		<ModalCard :is-active="fixingPreloader" @close-modal="closePreloaderFixModal" :can-close="true">
+			<template v-slot:header>
+				<h2 class='modal-title'>Attempting to fix preloader issues</h2>
 			</template>
 			<template v-slot:body>
 				<div class='notification is-warning'>
@@ -57,10 +57,10 @@
 					I understand
 				</button>
 			</template>
-		</modal>
-        <modal v-if="showDependencyStrings" :open="showDependencyStrings" @close-modal="showDependencyStrings = false;">
-            <template v-slot:title>
-                <p class='card-header-title'>Dependency string list</p>
+		</ModalCard>
+        <ModalCard :is-active="showDependencyStrings" @close-modal="showDependencyStrings = false;" :can-close="true">
+            <template v-slot:header>
+                <h2 class='modal-title'>Dependency string list</h2>
             </template>
             <template v-slot:body>
                 <ul>
@@ -75,10 +75,10 @@
                     Close
                 </button>
             </template>
-        </modal>
-		<modal v-show="showLaunchParameterModal === true" :open="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}">
-			<template v-slot:title>
-				<p class='card-header-title'>Set custom launch parameters</p>
+        </ModalCard>
+		<ModalCard :is-active="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}" :can-close="true">
+			<template v-slot:header>
+				<h2 class='modal-title'>Set custom launch parameters</h2>
 			</template>
 			<template v-slot:body>
 				<p>Some parameters are provided by default:</p>
@@ -110,10 +110,10 @@
 					Update launch parameters
 				</button>
 			</template>
-		</modal>
-		<modal v-show="exportCode !== ''" :open="exportCode !== ''" @close-modal="() => {exportCode = '';}">
-			<template v-slot:title>
-				<p class='card-header-title'>Profile exported</p>
+		</ModalCard>
+		<ModalCard :is-active="exportCode !== ''" @close-modal="() => {exportCode = '';}" :can-close="true">
+			<template v-slot:header>
+				<h2 class='modal-title'>Profile exported</h2>
 			</template>
 			<template v-slot:body>
 				<p>Your code: <strong>{{exportCode}}</strong> has been copied to your clipboard. Just give it to a
@@ -125,7 +125,7 @@
 					Done
 				</button>
 			</template>
-		</modal>
+		</ModalCard>
 
         <CategoryFilterModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
@@ -173,9 +173,11 @@ import LocalFileImportModal from '../components/importing/LocalFileImportModal.v
 import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
+import ModalCard from '../components/ModalCard.vue';
 
 @Component({
 		components: {
+            ModalCard,
             LocalFileImportModal,
             CategoryFilterModal,
             DownloadModModal,

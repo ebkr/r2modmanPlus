@@ -10,9 +10,11 @@
                     <slot name="body"/>
                 </section>
             </template>
-            <footer class="modal-card-foot">
-                <slot name="footer"/>
-            </footer>
+            <template v-if="!!$slots.footer">
+                <footer class="modal-card-foot">
+                    <slot name="footer"/>
+                </footer>
+            </template>
         </div>
         <button v-if="canClose" class="modal-close is-large" aria-label="close" @click="closeModal()"/>
     </div>
