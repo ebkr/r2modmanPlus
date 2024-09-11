@@ -32,7 +32,7 @@ export default class DeleteProfileModal extends ProfilesMixin {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
-            <p class="modal-title">Delete profile</p>
+            <h2 class="modal-title">Delete profile</h2>
         </template>
         <template v-slot:body>
             <p>This will remove all mods, and their config files, installed within this profile.</p>

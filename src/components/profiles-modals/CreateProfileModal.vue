@@ -40,7 +40,7 @@ export default class CreateProfileModal extends ProfilesMixin {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <p class="modal-title">Create a profile</p>
+            <h2 class="modal-title">Create a profile</h2>
         </template>
 
         <template v-slot:body>

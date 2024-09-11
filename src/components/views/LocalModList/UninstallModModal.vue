@@ -69,7 +69,7 @@ export default class UninstallModModal extends Vue {
 <template>
     <ModalCard v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <p class='modal-card-title'>Uninstalling {{mod.getName()}}</p>
+            <h2 class='modal-title'>Uninstalling {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">
@@ -104,7 +104,7 @@ export default class UninstallModModal extends Vue {
             <button class="button"
                     :disabled="isLocked"
                     @click="uninstallModExcludingDependants">
-                Uninstall {{mod.getName()}} only
+                Uninstall {{mod.getDisplayName()}} only
             </button>
         </template>
     </ModalCard>

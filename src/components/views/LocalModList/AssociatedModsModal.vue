@@ -41,9 +41,7 @@ export default class AssociatedModsModal extends Vue {
 <template>
     <ModalCard v-if="isOpen" :is-active="true" @close-modal="onClose">
         <template v-slot:header>
-            <p class='card-header-title'>
-                Mods associated with {{mod.getName()}}
-            </p>
+            <h2 class='modal-title'>Mods associated with {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div v-if="!!dependencies.size">
