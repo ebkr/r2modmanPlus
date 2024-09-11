@@ -5,9 +5,11 @@
             <header class="modal-card-head">
                 <slot name="header"/>
             </header>
-            <section class="modal-card-body">
-                <slot name="body"/>
-            </section>
+            <template v-if="!!$slots.body">
+                <section class="modal-card-body">
+                    <slot name="body"/>
+                </section>
+            </template>
             <footer class="modal-card-foot">
                 <slot name="footer"/>
             </footer>
