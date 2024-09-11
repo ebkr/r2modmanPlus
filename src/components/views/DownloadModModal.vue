@@ -15,88 +15,76 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
-        <div id="downloadModal" :class="['modal', {'is-active': isOpen}]" v-if="thunderstoreMod !== null">
-            <div class="modal-background" @click="closeModal()"></div>
-            <div class="modal-content">
-                <div class='card'>
-                    <header class="card-header">
-                        <p class='card-header-title' v-if="thunderstoreMod !== null">Select a version of
-                            {{thunderstoreMod.getName()}} to download
-                        </p>
-                    </header>
-                    <div class='card-content'>
-                        <p>It's recommended to select the latest version of all mods.</p>
-                        <p>Using outdated versions may cause problems.</p>
-                        <br/>
-                        <div class="columns is-vcentered">
-                            <template v-if="currentVersion !== null">
-                                <div class="column is-narrow">
-                                    <select class="select" disabled="true">
-                                        <option selected>
-                                            {{currentVersion}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="column is-narrow">
-                                    <span class="margin-right margin-right--half-width"><span class="margin-right margin-right--half-width"/> <i class='fas fa-long-arrow-alt-right'></i></span>
-                                </div>
-                            </template>
-                            <div class="column is-narrow">
-                                <select class='select' v-model='selectedVersion'>
-                                    <option v-for='(value, index) in versionNumbers' :key='index' v-bind:value='value'>
-                                        {{value}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="column is-narrow">
-                                <span class="tag is-dark" v-if='selectedVersion === null'>
-                                    You need to select a version
-                                </span>
-                                <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
-                                    {{selectedVersion}} is the recommended version
-                                </span>
-                                <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
-                                    {{selectedVersion}} is the latest version
-                                </span>
-                                <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>
-                                    {{selectedVersion}} is an outdated version
-                                </span>
-                            </div>
+        <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
+            <template v-slot:header>
+                <h2 class='modal-title' v-if="thunderstoreMod !== null">
+                    Select a version of {{thunderstoreMod.getName()}} to download
+                </h2>
+            </template>
+            <template v-slot:body>
+                <p>It's recommended to select the latest version of all mods.</p>
+                <p>Using outdated versions may cause problems.</p>
+                <br/>
+                <div class="columns is-vcentered">
+                    <template v-if="currentVersion !== null">
+                        <div class="column is-narrow">
+                            <select class="select" disabled="true">
+                                <option selected>
+                                    {{currentVersion}}
+                                </option>
+                            </select>
                         </div>
+                        <div class="column is-narrow">
+                            <span class="margin-right margin-right--half-width"><span class="margin-right margin-right--half-width"/> <i class='fas fa-long-arrow-alt-right'></i></span>
+                        </div>
+                    </template>
+                    <div class="column is-narrow">
+                        <select class='select' v-model='selectedVersion'>
+                            <option v-for='(value, index) in versionNumbers' :key='index' v-bind:value='value'>
+                                {{value}}
+                            </option>
+                        </select>
                     </div>
-                    <div class='card-footer'>
-                        <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="updateAllModal" :class="['modal', {'is-active': isOpen}]" v-if="thunderstoreMod === null">
-            <div class="modal-background" @click="closeModal()"></div>
-            <div class="modal-content">
-                <div class='card'>
-                    <header class="card-header">
-                        <p class='card-header-title'>Update all installed mods</p>
-                    </header>
-                    <div class='card-content'>
-                        <p>All installed mods will be updated to their latest versions.</p>
-                        <p>Any missing dependencies will be installed.</p>
-                        <p>The following mods will be downloaded and installed:</p>
-                        <br/>
-                        <ul class="list">
-                            <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
-                                :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
-                                {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class='card-footer'>
-                        <button class="button is-info" @click="downloadLatest()">Update all</button>
+                    <div class="column is-narrow">
+                        <span class="tag is-dark" v-if='selectedVersion === null'>
+                            You need to select a version
+                        </span>
+                        <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
+                            {{selectedVersion}} is the recommended version
+                        </span>
+                        <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
+                            {{selectedVersion}} is the latest version
+                        </span>
+                        <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>
+                            {{selectedVersion}} is an outdated version
+                        </span>
                     </div>
                 </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="closeModal()"></button>
-        </div>
+            </template>
+            <template v-slot:footer>
+                <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies</button>
+            </template>
+        </ModalCard>
+        <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
+            <template v-slot:header>
+                <h2 class='modal-title'>Update all installed mods</h2>
+            </template>
+            <template v-slot:body>
+                <p>All installed mods will be updated to their latest versions.</p>
+                <p>Any missing dependencies will be installed.</p>
+                <p>The following mods will be downloaded and installed:</p>
+                <br/>
+                <ul class="list">
+                    <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
+                        :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
+                        {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
+                    </li>
+                </ul>
+            </template>
+            <template v-slot:footer>
+                <button class="button is-info" @click="downloadLatest()">Update all</button>
+            </template>
+        </ModalCard>
     </div>
 </template>
 
@@ -117,6 +105,7 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
+import ModalCard from 'components/ModalCard.vue';
 
 interface DownloadProgress {
     assignId: number;
@@ -130,6 +119,7 @@ let assignId = 0;
 
     @Component({
         components: {
+            ModalCard,
             Progress
         }
     })
