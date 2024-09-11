@@ -105,7 +105,7 @@ import { Progress } from '../all';
 import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../ModalCard.vue';
 
 interface DownloadProgress {
     assignId: number;

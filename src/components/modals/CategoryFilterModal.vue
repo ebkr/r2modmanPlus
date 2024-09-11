@@ -66,7 +66,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import { Modal } from '../../components/all';
 import CategorySelectorModal from '../../components/modals/CategorySelectorModal.vue';
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../../components/ModalCard.vue';
 
 @Component({
     components: { ModalCard, CategorySelectorModal, Modal }

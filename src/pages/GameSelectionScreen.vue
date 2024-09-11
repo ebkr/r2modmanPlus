@@ -174,7 +174,7 @@ import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
 import ProviderUtils from '../providers/generic/ProviderUtils';
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../components/ModalCard.vue';
 
 @Component({
     components: {

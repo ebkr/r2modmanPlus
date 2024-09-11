@@ -75,7 +75,7 @@ import R2Error from '../../model/errors/R2Error';
 import Profile from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../ModalCard.vue';
 
 @Component({
     components: { ModalCard, Modal }
