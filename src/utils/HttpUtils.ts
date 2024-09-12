@@ -103,6 +103,12 @@ export const isNetworkError = (responseOrError: unknown) =>
     responseOrError instanceof Error && responseOrError.message === "Network Error";
 
 /**
+ * Is the request canceled by the AbortController like the one used by makeLongRunningGetRequest?
+ */
+export const isCanceledByRequest = (responseOrError: unknown) =>
+    axios.isCancel(responseOrError);
+
+/**
  * Is the Error thrown by Axios request caused by a response timeout?
  */
 export const isResponseTimeout = (error: unknown) =>
