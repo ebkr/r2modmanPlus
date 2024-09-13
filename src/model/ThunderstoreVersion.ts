@@ -13,6 +13,7 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
     private enabled: boolean = true;
     private downloads: number = 0;
     private downloadUrl: string = '';
+    private dateCreated: string = '';
 
     public make(version: any): ThunderstoreVersion {
         this.setName(version.name);
@@ -23,6 +24,7 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
         this.setIcon(version.icon);
         this.setDownloadCount(version.downloads);
         this.setDownloadUrl(version.download_url);
+        this.setDateCreated(version.date_created);
         return this;
     }
 
@@ -36,6 +38,7 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
         this.enabled = reactive.enabled;
         this.setDownloadCount(reactive.downloadCount);
         this.setDownloadUrl(reactive.downloadUrl);
+        this.setDateCreated(reactive.dateCreated);
         return this;
     }
 
@@ -113,5 +116,13 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
 
     public setDownloadUrl(url: string) {
         this.downloadUrl = url;
+    }
+
+    public getDateCreated(): string {
+        return this.dateCreated;
+    }
+
+    public setDateCreated(date: string) {
+        this.dateCreated = date;
     }
 }
