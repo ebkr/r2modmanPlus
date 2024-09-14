@@ -1,16 +1,37 @@
+### 3.1.50
+#### Games added
+- Risk of Rain Returns
+- Hades II
+- Among Us
+- Ale & Tale Tavern
+- Screw Drivers
+- Nine Sols
+- Goodbye Volcano High
+- Gloomwood
+- Below the Stone
+- Back to the Dawn
+- Supermarket Together
+- Betrayal Beach
+- Arcus Chroma
+- Deep Rock Galactic: Survivor
+
+#### Other changes
+- Mods included in profile imports can now be seen before importing the profile.
+- Improved visual appearance of modals
+
 ### 3.1.49
 #### Games added
-  - Gladio Mori
-  - Slipstream: Rogue Space
-  - Panicore
-  - Magicraft
-  - Another Crab's Treasure
-  - Bopl Battle
-  - Vertigo 2
-  - Against the Storm
-  - Lycans
-  - Castle Story
-  - Balatro
+- Gladio Mori
+- Slipstream: Rogue Space
+- Panicore
+- Magicraft
+- Another Crab's Treasure
+- Bopl Battle
+- Vertigo 2
+- Against the Storm
+- Lycans
+- Castle Story
+- Balatro
 
 #### General fixes
 - Better online mod filtering
