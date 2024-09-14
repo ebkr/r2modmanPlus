@@ -70,7 +70,12 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const folderName = parsedVdf.AppState.installdir;
             const gamePath = path.join(manifestLocation, 'common', folderName);
             if (await fs.exists(gamePath)) {
-                return gamePath;
+                if (gamePath.endsWith(path.dirname(GameManager.activeGame.steamFolderName))) {
+                    const dir = path.dirname(gamePath);
+                    return path.join(dir, GameManager.activeGame.steamFolderName);
+                } else {
+                    return gamePath;
+                }
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,
