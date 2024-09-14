@@ -1,13 +1,13 @@
 <template>
     <div>
-        <Modal :show-close="true" @close-modal="emitClose" :open="visible">
-            <template slot="title">
-                <p class='card-header-title'>Import mod from file</p>
+        <ModalCard :can-close="true" @close-modal="emitClose" :is-active="visible">
+            <template v-slot:header>
+                <h2 class='modal-title'>Import mod from file</h2>
             </template>
-            <template slot="footer" v-if="fileToImport === null">
+            <template v-slot:footer v-if="fileToImport === null">
                 <button class="button is-info" @click="selectFile">Select file</button>
             </template>
-            <template slot="footer" v-else-if="fileToImport !== null">
+            <template v-slot:footer v-else>
                 <button class="button is-info" @click="importFile">Import local mod</button>
             </template>
 
@@ -21,7 +21,7 @@
                 </template>
             </template>
 
-            <template slot="body" v-if="fileToImport !== null">
+            <template v-slot:body v-if="fileToImport !== null">
                 <div class="notification is-warning" v-if="validationMessage !== null">
                     <p>{{ validationMessage }}</p>
                 </div>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </template>
-        </Modal>
+        </ModalCard>
     </div>
 </template>
 
@@ -75,9 +75,10 @@ import R2Error from '../../model/errors/R2Error';
 import Profile from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
+import ModalCard from '../ModalCard.vue';
 
 @Component({
-    components: { Modal }
+    components: { ModalCard, Modal }
 })
 export default class LocalFileImportModal extends Vue {
 

@@ -1,11 +1,10 @@
 <template>
     <div>
-        <modal v-show="showPlatformModal === true" :open="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
-            <template v-slot:title>
-                <p class='card-header-title'>Which store manages your game?</p>
+        <ModalCard v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
+            <template v-slot:header>
+                <h2 class='modal-title'>Which store manages your game?</h2>
             </template>
             <template v-slot:body>
-                <p>Select a platform:</p>
                 <div v-if="selectedGame !== null">
                     <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
                         <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
@@ -18,7 +17,7 @@
                     Select platform
                 </button>
             </template>
-        </modal>
+        </ModalCard>
         <hero
             :title="`${activeTab} selection`"
             :subtitle="
@@ -175,9 +174,11 @@ import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
 import ProviderUtils from '../providers/generic/ProviderUtils';
+import ModalCard from '../components/ModalCard.vue';
 
 @Component({
     components: {
+        ModalCard,
         Hero,
         Modal
     }
