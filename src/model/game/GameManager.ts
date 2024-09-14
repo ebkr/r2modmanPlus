@@ -746,6 +746,12 @@ export default class GameManager {
             "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2709570")], "SupermarketTogether.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Hades II", "HadesII", "HadesII",
+            path.join("Hades II", "Ship"), ["Hades2.exe"], "",
+            "https://thunderstore.io/c/hades-ii/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
     ];
 
     static get activeGame(): Game {

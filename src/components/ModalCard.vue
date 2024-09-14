@@ -5,12 +5,16 @@
             <header class="modal-card-head">
                 <slot name="header"/>
             </header>
-            <section class="modal-card-body">
-                <slot name="body"/>
-            </section>
-            <footer class="modal-card-foot">
-                <slot name="footer"/>
-            </footer>
+            <template v-if="!!$slots.body">
+                <section class="modal-card-body">
+                    <slot name="body"/>
+                </section>
+            </template>
+            <template v-if="!!$slots.footer">
+                <footer class="modal-card-foot">
+                    <slot name="footer"/>
+                </footer>
+            </template>
         </div>
         <button v-if="canClose" class="modal-close is-large" aria-label="close" @click="closeModal()"/>
     </div>

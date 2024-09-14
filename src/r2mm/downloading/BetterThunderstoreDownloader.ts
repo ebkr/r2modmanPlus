@@ -12,11 +12,8 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import Profile from '../../model/Profile';
 import ExportMod from '../../model/exports/ExportMod';
-import ManagerSettings from '../manager/ManagerSettings';
-import * as PackageDb from '../manager/PackageDexieStore';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
-import Game from '../../model/game/Game';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
@@ -90,7 +87,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadLatestOfAll(game: Game, modsWithUpdates: ThunderstoreCombo[], allMods: ThunderstoreMod[],
+    public async downloadLatestOfAll(modsWithUpdates: ThunderstoreCombo[], allMods: ThunderstoreMod[], ignoreCache: boolean,
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
@@ -102,9 +99,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         this.sortDependencyOrder(dependencies);
 
         let downloadCount = 0;
-        const downloadableDependencySize = this.calculateInitialDownloadSize(await ManagerSettings.getSingleton(game), dependencies);
+        const downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
 
-        await this.queueDownloadDependencies(await ManagerSettings.getSingleton(game), dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        await this.queueDownloadDependencies(dependencies.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -120,7 +117,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(game: Game, profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[],
+    public async download(profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
+                           allMods: ThunderstoreMod[], ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
@@ -135,8 +133,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
         }
 
-        const settings = await ManagerSettings.getSingleton(game);
-        let downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+        let downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
 
         // Determine if modpack
         // If modpack, use specified dependencies as retrieved above
@@ -148,10 +145,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
             dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
-            downloadableDependencySize = this.calculateInitialDownloadSize(settings, dependencies);
+            downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
         }
 
-        await this.downloadAndSave(combo, settings, async (progress: number, status: number, err: R2Error | null) => {
+        await this.downloadAndSave(combo, ignoreCache, async (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -166,7 +163,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 }
 
                 // If dependencies, queue and download.
-                await this.queueDownloadDependencies(settings, dependencies.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+                await this.queueDownloadDependencies(dependencies.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     if (status === StatusEnum.FAILURE) {
                         callback(0, modName, status, err);
                     } else if (status === StatusEnum.PENDING) {
@@ -184,15 +181,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadImportedMods(game: Game, modList: ExportMod[],
+    public async downloadImportedMods(modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
                                        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                        completedCallback: (mods: ThunderstoreCombo[]) => void) {
-        const tsMods = await PackageDb.getPackagesByNames(
-            game.internalFolderName,
-            modList.map((m) => m.getName())
-        );
 
-        const comboList = tsMods.map((mod) => {
+        const comboList = allMods.map((mod) => {
             const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
             const version = targetMod
                 ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
@@ -216,10 +209,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             return;
         }
 
-        const settings = await ManagerSettings.getSingleton(game);
-
         let downloadCount = 0;
-        await this.queueDownloadDependencies(settings, comboList.entries(), (progress: number, modName: string, status: number, err: R2Error | null) => {
+        await this.queueDownloadDependencies(comboList.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
@@ -240,28 +231,28 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return completedProgress + (progress * 1/total);
     }
 
-    public async queueDownloadDependencies(settings: ManagerSettings, entries: IterableIterator<[number, ThunderstoreCombo]>, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
+    public async queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, ignoreCache: boolean, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
         const entry = entries.next();
         if (!entry.done) {
-            await this.downloadAndSave(entry.value[1] as ThunderstoreCombo, settings, async (progress: number, status: number, err: R2Error | null) => {
+            await this.downloadAndSave(entry.value[1] as ThunderstoreCombo, ignoreCache, async (progress: number, status: number, err: R2Error | null) => {
                 if (status === StatusEnum.FAILURE) {
                     callback(0, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.PENDING) {
                     callback(progress, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
                 } else if (status === StatusEnum.SUCCESS) {
                     callback(100, (entry.value[1] as ThunderstoreCombo).getMod().getName(), status, err);
-                    await this.queueDownloadDependencies(settings, entries, callback);
+                    await this.queueDownloadDependencies(entries, ignoreCache, callback);
                 }
             });
         }
     }
 
-    public calculateInitialDownloadSize(settings: ManagerSettings, list: ThunderstoreCombo[]): number {
+    public calculateInitialDownloadSize(list: ThunderstoreCombo[]): number {
         return list.length;
     }
 
-    public async downloadAndSave(combo: ThunderstoreCombo, settings: ManagerSettings, callback: (progress: number, status: number, err: R2Error | null) => void) {
-        if (await this.isVersionAlreadyDownloaded(combo) && !settings.getContext().global.ignoreCache) {
+    public async downloadAndSave(combo: ThunderstoreCombo, ignoreCache: boolean, callback: (progress: number, status: number, err: R2Error | null) => void) {
+        if (!ignoreCache && await this.isVersionAlreadyDownloaded(combo)) {
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
