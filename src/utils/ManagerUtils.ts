@@ -33,6 +33,7 @@ export const filterModVersions = (modList: ThunderstoreMod[], dependencyString: 
 
         if (filtered.length) {
             modList[target].setVersions(filtered);
+            modList[target].setDateUpdated(filtered[filtered.length - 1].getDateCreated());
         } else {
             modList.splice(target, 1);
         }
