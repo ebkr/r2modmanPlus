@@ -32,6 +32,5 @@ export default class ProfilesMixin extends Vue {
     makeProfileNameSafe(nameToSanitize: string): string {
         return sanitize(nameToSanitize);
     }
-
 }
 </script>

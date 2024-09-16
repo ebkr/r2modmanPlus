@@ -4,16 +4,9 @@ import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
 import ExportMod from "../../model/exports/ExportMod";
-import path from "path";
 import Profile from "../../model/Profile";
-import FileUtils from "../../utils/FileUtils";
 import FsProvider from "../../providers/generic/file/FsProvider";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import StatusEnum from "../../model/enums/StatusEnum";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import ManifestV2 from "../../model/ManifestV2";
-import ProfileModList from "../../r2mm/mods/ProfileModList";
-import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { mixins } from "vue-class-component";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
@@ -21,14 +14,9 @@ import ExportFormat from "../../model/exports/ExportFormat";
 import * as yaml from "yaml";
 import VersionNumber from "../../model/VersionNumber";
 import ZipProvider from "../../providers/generic/zip/ZipProvider";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
-import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import OnlineModList from "../views/OnlineModList.vue";
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-
-let fs: FsProvider;
-
+import { installProfileToFileSystem } from "../../utils/ProfilesUtils";
 
 @Component({
     components: { OnlineModList, ModalCard}
@@ -38,21 +26,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private percentageImported: number = 0;
     private profileImportCode: string = '';
     private isProfileBeingImported: boolean = false;
-    private listenerId: number = 0;
     private newProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
 
-    async created() {
-        fs = FsProvider.instance;
-    }
-
     get appName(): string {
         return ManagerInformation.APP_NAME;
     }
 
-    get activeProfile(): Profile {
+    public get activeProfile(): Profile {
         return this.$store.getters['profile/activeProfile'];
     }
 
@@ -62,7 +45,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     async profileSelectOnChange(event: Event) {
         if (event.target instanceof HTMLSelectElement) {
-            this.activeProfileName = event.target.value;
+            this.setActiveProfileName(event.target.value);
         }
     }
 
@@ -75,9 +58,21 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             .filter(mod => !!mod)
     }
 
+    setIsProfileBeingImported(value: boolean) {
+        this.isProfileBeingImported = value;
+    }
+
+    setActiveProfileName(value: string) {
+        this.activeProfileName = value;
+    }
+
+    setPercentageImported(value: number) {
+        this.percentageImported = value;
+    }
+
     closeModal() {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
-        this.listenerId = 0;
+        this.percentageImported = 0;
         this.newProfileName = '';
         this.importUpdateSelection = null;
         this.profileImportCode = '';
@@ -136,40 +131,26 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    // When creating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has created a new profile. The callback then:
-    // 2. Downloads (and extracts) the mods to the profile
-    //
-    // When updating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has selected the old profile to be updated. The callback then:
-    // 2. Deletes the temporary profile (called _profile_update) if it exists (leftover from previous failed run etc.)
-    // 3. Downloads (and extracts) the mods to temporary profile
-    // 4. Deletes the old profile (including the folder on disk)
-    // 5. Renames temporary profile to the chosen profile's name
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
-        const localListenerId = this.listenerId + 1;
-        this.listenerId = localListenerId;
-        document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, profileContent!, [this.profileImportFilePath!])
-        ) as EventListener, {once: true});
+        document.addEventListener('created-profile', ((event: CustomEvent) => {
+            const isUpdate: boolean = this.importUpdateSelection === 'UPDATE';
+            installProfileToFileSystem(
+                event.detail,
+                profileContent!,
+                isUpdate,
+                [this.profileImportFilePath!],
+                this,
+                this.activeProfile,
+                this.closeModal,
+                this.setIsProfileBeingImported,
+                this.setActiveProfileName,
+                this.setPercentageImported,
+                this.downloadProgressCallback
+            )
+        }) as EventListener, {once: true});
         this.newProfileName = profileContent!.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
-    }
-
-    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
-        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
-        if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
-            if (newModList instanceof R2Error) {
-                return newModList;
-            }
-            return manifestMod;
-        } else {
-            // (mod failed to be placed in /{profile} directory)
-            return installError;
-        }
     }
 
     async readProfileFile(file: string) {
@@ -186,93 +167,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return read;
     }
 
-    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
-        if (this.listenerId === localListenerId) {
-            (async () => {
-                let profileName: string = event.detail;
-                if (profileName !== '') {
-                    if (this.importUpdateSelection === 'UPDATE') {
-                        profileName = "_profile_update";
-                        if (await fs.exists(path.join(Profile.getDirectory(), profileName))) {
-                            await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
-                            await fs.rmdir(path.join(Profile.getDirectory(), profileName));
-                        }
-                        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
-                    }
-                    if (parsed.getMods().length > 0) {
-                        this.isProfileBeingImported = true;
-                        setTimeout(async () => {
-                            await this.downloadImportedProfileMods(parsed.getMods(), async () => {
-                                if (files[0].endsWith('.r2z')) {
-                                    await this.extractZippedProfileFile(files[0], profileName);
-                                }
-                                if (this.importUpdateSelection === 'UPDATE') {
-                                    this.activeProfileName = event.detail;
-                                    try {
-                                        await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
-                                    } catch (e) {
-                                        console.log("Failed to empty directory:", e);
-                                    }
-                                    await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
-                                    await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
-                                }
-                                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: true });
-                                this.closeModal();
-                            });
-                        }, 100);
-                    }
-                }
-            })();
-        }
-    }
-
-    async extractZippedProfileFile(file: string, profileName: string) {
-        const entries = await ZipProvider.instance.getEntries(file);
-        for (const entry of entries) {
-            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName,
-                        'BepInEx'
-                    )
-                );
-            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName
-                    )
-                )
-            }
-        }
-    }
-
-    async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
-        const settings = this.$store.getters['settings'];
-        const ignoreCache = settings.getContext().global.ignoreCache;
-        const allMods = await PackageDb.getPackagesByNames(
-            this.$store.state.activeGame.internalFolderName,
-            modList.map((m) => m.getName())
-        );
-
-        this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(
-            modList,
-            allMods,
-            ignoreCache,
-            this.downloadProgressCallback,
-            async (comboList: ThunderstoreCombo[]) => {
-                await this.downloadCompletedCallback(comboList, modList, callback);
-            }
-        );
-    }
-
-    // Called from the downloadImportedProfileMods function
     downloadProgressCallback(progress: number, modName: string, status: number, err: R2Error | null) {
         if (status == StatusEnum.FAILURE) {
             this.closeModal();
@@ -283,37 +177,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         } else if (status == StatusEnum.PENDING) {
             this.percentageImported = Math.floor(progress);
         }
-    }
-
-    // Called from the downloadImportedProfileMods function
-    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[], callback?: () => void) {
-        let keepIterating = true;
-        for (const comboMod of comboList) {
-            if (!keepIterating) {
-                return;
-            }
-            const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
-            if (installResult instanceof R2Error) {
-                this.$store.commit('error/handleError', installResult);
-                keepIterating = false;
-                this.isProfileBeingImported = false;
-                return;
-            }
-            for (const imported of modList) {
-                if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installResult, this.activeProfile, async (modToDisable: ManifestV2) => {
-                        // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                        modToDisable.enable();
-                        await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);
-                        modToDisable.disable();
-                    });
-                }
-            }
-        }
-        if (callback !== undefined) {
-            callback();
-        }
-        this.isProfileBeingImported = false;
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.
