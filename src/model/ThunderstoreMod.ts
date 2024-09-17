@@ -6,7 +6,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     private rating: number = 0;
     private owner: string = '';
     private packageUrl: string = '';
-    private dateCreated: string = '';
     private dateUpdated: string = '';
     private uuid4: string = '';
     private pinned: boolean = false;
@@ -46,6 +45,22 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         mod.setNsfwFlag(data.has_nsfw_content);
         mod.setDonationLink(data.donation_link);
         return mod;
+    }
+
+    // Imitate the order where mods are returned from Thunderstore package listing API.
+    public static defaultOrderComparer(a: ThunderstoreMod, b: ThunderstoreMod): number {
+        // Pinned mods first.
+        if (a.isPinned() !== b.isPinned()) {
+            return a.isPinned() ? -1 : 1;
+        }
+
+        // Deprecated mods last.
+        if (a.isDeprecated() !== b.isDeprecated()) {
+            return a.isDeprecated() ? 1 : -1;
+        }
+
+        // Sort mods with same boolean flags by update date.
+        return a.getDateUpdated() >= b.getDateUpdated() ? -1 : 1;
     }
 
     public fromReactive(reactive: any): ThunderstoreMod {
@@ -102,14 +117,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
 
     public setPackageUrl(url: string) {
         this.packageUrl = url;
-    }
-
-    public getDateCreated(): string {
-        return this.dateCreated;
-    }
-
-    public setDateCreated(date: string) {
-        this.dateCreated = date;
     }
 
     public getDateUpdated(): string {
