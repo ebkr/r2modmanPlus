@@ -181,7 +181,7 @@ export default class OnlineModView extends Vue {
 
     @Watch("sortingDirectionModel")
     @Watch("sortingStyleModel")
-    @Watch("tsMods.mods")
+    @Watch("thunderstoreModList")
     sortThunderstoreModList() {
         const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];
