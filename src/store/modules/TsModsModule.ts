@@ -7,7 +7,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { Deprecations } from '../../utils/Deprecations';
-import { filterModVersions } from '../../utils/ManagerUtils';
+import { filterModVersions, filterModVersionsByDate } from '../../utils/ManagerUtils';
 
 interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -162,12 +162,25 @@ export const TsModsModule = {
             commit('setExclusions', exclusions);
         },
 
-        async updateMods({commit, rootState}) {
+        async updateMods({commit, rootGetters, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
 
             if (rootState.activeGameModLoaderTarget) {
                 filterModVersions(modList, rootState.activeGameModLoaderTarget);
             }
+
+            const startDate = undefined;  // Not supported initially.
+            const endDate = rootGetters['profile/endDate'];
+            console.time("Filter execution time");
+            filterModVersionsByDate(modList, startDate, endDate);
+            console.timeEnd("Filter execution time");
+
+            let totalVersions = 0;
+            for (let i = 0; i < modList.length; i++) {
+                totalVersions += modList[i].getVersions().length;
+            }
+            console.log(`${totalVersions} versions remaining`);
+            console.log('----------------------------------------------');
 
             const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);

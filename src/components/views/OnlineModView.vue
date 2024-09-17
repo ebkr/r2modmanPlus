@@ -40,6 +40,9 @@
                             </button>
                         </div>
                     </div>
+                    <div class="input-group">
+                        <input type="date" v-model="endDate" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,6 +99,15 @@ export default class OnlineModView extends Vue {
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
+
+    get endDate(): string {
+        return this.$store.state.profile.endDate;
+    }
+
+    set endDate(value: string) {
+        this.$store.commit("profile/setEndDate", value);
+        this.$store.dispatch("tsMods/updateMods");
+    }
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;

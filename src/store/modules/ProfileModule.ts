@@ -25,6 +25,7 @@ interface State {
     disabledPosition?: SortLocalDisabledMods;
     searchQuery: string;
     dismissedUpdateAll: boolean;
+    endDate: string|undefined;
 }
 
 /**
@@ -43,6 +44,7 @@ export default {
         disabledPosition: undefined,
         searchQuery: '',
         dismissedUpdateAll: false,
+        endDate: undefined,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -116,6 +118,10 @@ export default {
                 && state.disabledPosition === SortLocalDisabledMods.CUSTOM
                 && state.searchQuery.length === 0;
         },
+
+        endDate(state) {
+            return state.endDate;
+        }
     },
 
     mutations: {
@@ -160,6 +166,10 @@ export default {
 
         setSearchQuery(state: State, value: string) {
             state.searchQuery = value.trim();
+        },
+
+        setEndDate(state: State, value: string) {
+            state.endDate = value.trim();
         },
     },
 
