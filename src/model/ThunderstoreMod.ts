@@ -47,6 +47,22 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         return mod;
     }
 
+    // Imitate the order where mods are returned from Thunderstore package listing API.
+    public static defaultOrderComparer(a: ThunderstoreMod, b: ThunderstoreMod): number {
+        // Pinned mods first.
+        if (a.isPinned() !== b.isPinned()) {
+            return a.isPinned() ? -1 : 1;
+        }
+
+        // Deprecated mods last.
+        if (a.isDeprecated() !== b.isDeprecated()) {
+            return a.isDeprecated() ? 1 : -1;
+        }
+
+        // Sort mods with same boolean flags by update date.
+        return a.getDateUpdated() >= b.getDateUpdated() ? -1 : 1;
+    }
+
     public fromReactive(reactive: any): ThunderstoreMod {
         this.setName(reactive.name);
         this.setFullName(reactive.fullName);
