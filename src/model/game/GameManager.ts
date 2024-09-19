@@ -752,6 +752,24 @@ export default class GameManager {
             "https://thunderstore.io/c/hades-ii/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
+
+        new Game("Shapez 2", "Shapez2", "Shapez2",
+            "shapez 2", ["shapez 2.exe"], "shapez 2_Data",
+            "https://thunderstore.io/c/shapez-2/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2162800")], "Shapez2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Paquerette Down the Bunburrows", "PaqueretteDownTheBunburrows", "PaqueretteDownTheBunburrows",
+            "Paquerette Down the Bunburrows", ["Paquerette Down the Bunburrows.exe"], "Paquerette Down the Bunburrows_Data",
+            "https://thunderstore.io/c/paquerette-down-the-bunburrows/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1628610")], "PaqueretteDownTheBunburrows.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Hard Time III", "HardTime3", "HardTime3",
+            "Hard Time III", ["Hard Time III.exe"], "Hard Time III_Data",
+            "https://thunderstore.io/c/hard-time-3/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3009850")], "HardTime3.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
