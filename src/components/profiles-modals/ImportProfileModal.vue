@@ -26,6 +26,7 @@ import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import OnlineModList from "../views/OnlineModList.vue";
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { extractZippedProfileFile } from "../../utils/ProfileUtils";
 
 let fs: FsProvider;
 
@@ -204,7 +205,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                         setTimeout(async () => {
                             await this.downloadImportedProfileMods(parsed.getMods(), async () => {
                                 if (files[0].endsWith('.r2z')) {
-                                    await this.extractZippedProfileFile(files[0], profileName);
+                                    await extractZippedProfileFile(files[0], profileName);
                                 }
                                 if (this.importUpdateSelection === 'UPDATE') {
                                     this.activeProfileName = event.detail;
@@ -223,32 +224,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     }
                 }
             })();
-        }
-    }
-
-    async extractZippedProfileFile(file: string, profileName: string) {
-        const entries = await ZipProvider.instance.getEntries(file);
-        for (const entry of entries) {
-            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName,
-                        'BepInEx'
-                    )
-                );
-            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName
-                    )
-                )
-            }
         }
     }
 
