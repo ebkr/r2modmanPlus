@@ -168,7 +168,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
         document.addEventListener('created-profile', ((event: CustomEvent) => {
-            if (typeof event.detail === "string") {
+            if (typeof event.detail === "string" && event.detail.trim() !== '') {
                 this.profileCreatedCallback(event.detail, localListenerId, profileContent.getMods(), filePath);
             } else {
                 this.closeModal();
@@ -186,36 +186,35 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         (async () => {
             let profileName = targetProfile;
-            if (profileName !== '') {
-                this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
-                if (this.importUpdateSelection === 'UPDATE') {
-                    profileName = "_profile_update";
-                    if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
-                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
-                        await fs.rmdir(path.join(Profile.getRootDir(), profileName));
-                    }
-                    await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
-                }
-                if (mods.length > 0) {
-                    setTimeout(async () => {
-                        await this.downloadImportedProfileMods(mods, async () => {
-                            await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+            this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
 
-                            if (this.importUpdateSelection === 'UPDATE') {
-                                this.activeProfileName = targetProfile;
-                                try {
-                                    await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
-                                } catch (e) {
-                                    console.log("Failed to empty directory:", e);
-                                }
-                                await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
-                                await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
-                            }
-                            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
-                            this.closeModal();
-                        });
-                    }, 100);
+            if (this.importUpdateSelection === 'UPDATE') {
+                profileName = "_profile_update";
+                if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
+                    await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
+                    await fs.rmdir(path.join(Profile.getRootDir(), profileName));
                 }
+                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
+            }
+            if (mods.length > 0) {
+                setTimeout(async () => {
+                    await this.downloadImportedProfileMods(mods, async () => {
+                        await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+
+                        if (this.importUpdateSelection === 'UPDATE') {
+                            this.activeProfileName = targetProfile;
+                            try {
+                                await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
+                            } catch (e) {
+                                console.log("Failed to empty directory:", e);
+                            }
+                            await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
+                            await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+                        }
+                        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+                        this.closeModal();
+                    });
+                }, 100);
             }
         })();
     }
