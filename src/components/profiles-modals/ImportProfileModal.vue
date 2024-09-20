@@ -203,24 +203,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
         }
 
-        setTimeout(async () => {
-            await this.downloadImportedProfileMods(mods, async () => {
-                await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+        await this.downloadImportedProfileMods(mods, async () => {
+            await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
 
-                if (this.importUpdateSelection === 'UPDATE') {
-                    this.activeProfileName = targetProfile;
-                    try {
-                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
-                    } catch (e) {
-                        console.log("Failed to empty directory:", e);
-                    }
-                    await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
-                    await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+            if (this.importUpdateSelection === 'UPDATE') {
+                this.activeProfileName = targetProfile;
+                try {
+                    await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
+                } catch (e) {
+                    console.log("Failed to empty directory:", e);
                 }
-                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
-                this.closeModal();
-            });
-        }, 100);
+                await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
+                await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+            }
+            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+            this.closeModal();
+        });
     }
 
     async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
