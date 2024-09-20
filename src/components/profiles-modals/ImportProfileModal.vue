@@ -156,12 +156,21 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // 5. Renames temporary profile to the chosen profile's name
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
+        const filePath = this.profileImportFilePath;
+
+        if (profileContent === null || filePath === null) {
+            this.closeModal();
+            const reason = `content is ${profileContent ? 'not' : ''} null, file path is ${filePath ? 'not' : ''} null`;
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+            return;
+        }
+
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
         document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, profileContent!, [this.profileImportFilePath!])
+                this.profileCreatedCallback(event, localListenerId, profileContent, [filePath])
         ) as EventListener, {once: true});
-        this.newProfileName = profileContent!.getProfileName();
+        this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
