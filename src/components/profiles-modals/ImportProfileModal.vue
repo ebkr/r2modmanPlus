@@ -196,9 +196,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     if (mods.length > 0) {
                         setTimeout(async () => {
                             await this.downloadImportedProfileMods(mods, async () => {
-                                if (zipPath.endsWith('.r2z')) {
-                                    await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
-                                }
+                                await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+
                                 if (this.importUpdateSelection === 'UPDATE') {
                                     this.activeProfileName = targetProfile;
                                     try {
