@@ -167,56 +167,62 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
-        document.addEventListener('created-profile', ((event: CustomEvent) => {
-            if (typeof event.detail === "string" && event.detail.trim() !== '') {
-                this.profileCreatedCallback(event.detail, localListenerId, profileContent.getMods(), filePath);
-            } else {
-                this.closeModal();
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
-            }
-        }) as EventListener, {once: true});
+
+        document.addEventListener(
+            'created-profile',
+            async (event: Event) => {
+                const targetProfile = (event as CustomEvent).detail;
+                if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
+                    await this.profileCreatedCallback(targetProfile, localListenerId, profileContent.getMods(), filePath);
+                } else {
+                    this.closeModal();
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
+                }
+            },
+            {once: true}
+        );
+
         this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
+    async profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
         if (this.listenerId !== localListenerId) {
             return;
         }
 
-        (async () => {
-            let profileName = targetProfile;
-            this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
+        let profileName = targetProfile;
+        this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
 
-            if (this.importUpdateSelection === 'UPDATE') {
-                profileName = "_profile_update";
-                if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
-                    await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
-                    await fs.rmdir(path.join(Profile.getRootDir(), profileName));
-                }
-                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
+        if (this.importUpdateSelection === 'UPDATE') {
+            profileName = "_profile_update";
+            if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
+                await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
+                await fs.rmdir(path.join(Profile.getRootDir(), profileName));
             }
-            if (mods.length > 0) {
-                setTimeout(async () => {
-                    await this.downloadImportedProfileMods(mods, async () => {
-                        await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
+        }
 
-                        if (this.importUpdateSelection === 'UPDATE') {
-                            this.activeProfileName = targetProfile;
-                            try {
-                                await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
-                            } catch (e) {
-                                console.log("Failed to empty directory:", e);
-                            }
-                            await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
-                            await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+        if (mods.length > 0) {
+            setTimeout(async () => {
+                await this.downloadImportedProfileMods(mods, async () => {
+                    await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+
+                    if (this.importUpdateSelection === 'UPDATE') {
+                        this.activeProfileName = targetProfile;
+                        try {
+                            await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
+                        } catch (e) {
+                            console.log("Failed to empty directory:", e);
                         }
-                        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
-                        this.closeModal();
-                    });
-                }, 100);
-            }
-        })();
+                        await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
+                        await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+                    }
+                    await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+                    this.closeModal();
+                });
+            }, 100);
+        }
     }
 
     async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
