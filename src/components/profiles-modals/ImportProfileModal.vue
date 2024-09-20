@@ -167,17 +167,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
-        document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, profileContent, [filePath])
-        ) as EventListener, {once: true});
+        document.addEventListener('created-profile', ((event: CustomEvent) => {
+            if (typeof event.detail === "string") {
+                this.profileCreatedCallback(event.detail, localListenerId, profileContent.getMods(), filePath);
+            } else {
+                this.closeModal();
+                this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
+            }
+        }) as EventListener, {once: true});
         this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
+    profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
         if (this.listenerId === localListenerId) {
             (async () => {
-                let profileName: string = event.detail;
+                let profileName = targetProfile;
                 if (profileName !== '') {
                     this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
                     if (this.importUpdateSelection === 'UPDATE') {
@@ -188,23 +193,23 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                         }
                         await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
                     }
-                    if (parsed.getMods().length > 0) {
+                    if (mods.length > 0) {
                         setTimeout(async () => {
-                            await this.downloadImportedProfileMods(parsed.getMods(), async () => {
-                                if (files[0].endsWith('.r2z')) {
-                                    await ProfileUtils.extractZippedProfileFile(files[0], profileName);
+                            await this.downloadImportedProfileMods(mods, async () => {
+                                if (zipPath.endsWith('.r2z')) {
+                                    await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
                                 }
                                 if (this.importUpdateSelection === 'UPDATE') {
-                                    this.activeProfileName = event.detail;
+                                    this.activeProfileName = targetProfile;
                                     try {
-                                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), event.detail));
+                                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
                                     } catch (e) {
                                         console.log("Failed to empty directory:", e);
                                     }
-                                    await fs.rmdir(path.join(Profile.getRootDir(), event.detail));
-                                    await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), event.detail));
+                                    await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
+                                    await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
                                 }
-                                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: true });
+                                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
                                 this.closeModal();
                             });
                         }, 100);
