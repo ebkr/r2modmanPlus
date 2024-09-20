@@ -196,10 +196,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         if (this.importUpdateSelection === 'UPDATE') {
             profileName = "_profile_update";
-            if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
-                await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
-                await fs.rmdir(path.join(Profile.getRootDir(), profileName));
-            }
+            await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), profileName));
             await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
         }
 
@@ -209,11 +206,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             if (this.importUpdateSelection === 'UPDATE') {
                 this.activeProfileName = targetProfile;
                 try {
-                    await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), targetProfile));
+                    await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
                 } catch (e) {
-                    console.log("Failed to empty directory:", e);
+                    console.log("Failed to remove directory:", e);
                 }
-                await fs.rmdir(path.join(Profile.getRootDir(), targetProfile));
                 await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
             }
             await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
