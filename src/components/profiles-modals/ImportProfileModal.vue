@@ -1,32 +1,32 @@
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { ModalCard } from "../all";
-import R2Error from "../../model/errors/R2Error";
-import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
-import ExportMod from "../../model/exports/ExportMod";
 import path from "path";
-import Profile from "../../model/Profile";
-import FileUtils from "../../utils/FileUtils";
-import FsProvider from "../../providers/generic/file/FsProvider";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
-import StatusEnum from "../../model/enums/StatusEnum";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import ManifestV2 from "../../model/ManifestV2";
-import ProfileModList from "../../r2mm/mods/ProfileModList";
-import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
-import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
+
 import { mixins } from "vue-class-component";
-import ProfilesMixin from "../mixins/ProfilesMixin.vue";
+import { Component } from 'vue-property-decorator';
+
+import ManagerInformation from "../../_managerinf/ManagerInformation";
+import StatusEnum from "../../model/enums/StatusEnum";
+import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
-import * as yaml from "yaml";
-import VersionNumber from "../../model/VersionNumber";
-import ZipProvider from "../../providers/generic/zip/ZipProvider";
+import ExportMod from "../../model/exports/ExportMod";
+import ManifestV2 from "../../model/ManifestV2";
+import Profile from "../../model/Profile";
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
-import ManagerInformation from "../../_managerinf/ManagerInformation";
-import OnlineModList from "../views/OnlineModList.vue";
+import FsProvider from "../../providers/generic/file/FsProvider";
+import ZipProvider from "../../providers/generic/zip/ZipProvider";
+import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
+import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
+import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import { extractZippedProfileFile } from "../../utils/ProfileUtils";
+import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import ProfileModList from "../../r2mm/mods/ProfileModList";
+import FileUtils from "../../utils/FileUtils";
+import * as ProfileUtils from "../../utils/ProfileUtils";
+import { ModalCard } from "../all";
+import ProfilesMixin from "../mixins/ProfilesMixin.vue";
+import OnlineModList from "../views/OnlineModList.vue";
 
 let fs: FsProvider;
 
@@ -126,7 +126,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         if (read !== null) {
             this.profileImportFilePath = files[0];
-            this.profileImportContent = await this.parseYamlToExportFormat(read);
+            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
 
             if (this.profileToOnlineMods.length === 0) {
                 this.activeStep = 'NO_PACKAGES_IN_IMPORT';
@@ -205,7 +205,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                         setTimeout(async () => {
                             await this.downloadImportedProfileMods(parsed.getMods(), async () => {
                                 if (files[0].endsWith('.r2z')) {
-                                    await extractZippedProfileFile(files[0], profileName);
+                                    await ProfileUtils.extractZippedProfileFile(files[0], profileName);
                                 }
                                 if (this.importUpdateSelection === 'UPDATE') {
                                     this.activeProfileName = event.detail;
@@ -311,22 +311,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
     }
 
-    async parseYamlToExportFormat(read: string) {
-        const parsedYaml = await yaml.parse(read);
-        return new ExportFormat(
-            parsedYaml.profileName,
-            parsedYaml.mods.map((mod: any) => {
-                const enabled = mod.enabled === undefined || mod.enabled;
-                return new ExportMod(
-                    mod.name,
-                    new VersionNumber(
-                        `${mod.version.major}.${mod.version.minor}.${mod.version.patch}`
-                    ),
-                    enabled
-                );
-            })
-        );
-    }
+
 }
 
 </script>
