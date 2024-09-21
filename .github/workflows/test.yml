@@ -1,9 +1,9 @@
-name: Build
+name: Test
 
 on: [push]
 
 jobs:
-    build:
+    test:
         name: Test on ${{ matrix.platform }}
         runs-on: ${{ matrix.os }}
         strategy:
@@ -17,7 +17,7 @@ jobs:
                       os: windows-latest
                       platform: win
                     - kind: mac
-                      os: macos-11
+                      os: macos-12
                       platform: osx
         steps:
             - uses: actions/checkout@v3
