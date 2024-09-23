@@ -7,6 +7,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { Deprecations } from '../../utils/Deprecations';
+import { filterModVersions } from '../../utils/ManagerUtils';
 
 interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -163,6 +164,11 @@ export const TsModsModule = {
 
         async updateMods({commit, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
+
+            if (rootState.activeGameModLoaderTarget) {
+                filterModVersions(modList, rootState.activeGameModLoaderTarget);
+            }
+
             const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
             commit('setModsLastUpdated', updated);
