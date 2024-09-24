@@ -173,9 +173,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
                     if (this.importUpdateSelection === 'UPDATE') {
                         profileName = "_profile_update";
-                        if (await fs.exists(path.join(Profile.getDirectory(), profileName))) {
-                            await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
-                            await fs.rmdir(path.join(Profile.getDirectory(), profileName));
+                        if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
+                            await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
+                            await fs.rmdir(path.join(Profile.getRootDir(), profileName));
                         }
                         await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
                     }
@@ -188,12 +188,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                                 if (this.importUpdateSelection === 'UPDATE') {
                                     this.activeProfileName = event.detail;
                                     try {
-                                        await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
+                                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), event.detail));
                                     } catch (e) {
                                         console.log("Failed to empty directory:", e);
                                     }
-                                    await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
-                                    await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
+                                    await fs.rmdir(path.join(Profile.getRootDir(), event.detail));
+                                    await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), event.detail));
                                 }
                                 await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: true });
                                 this.closeModal();
