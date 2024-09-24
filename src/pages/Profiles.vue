@@ -116,7 +116,6 @@ export default class Profiles extends ProfilesMixin {
         await settings.load();
 
         await this.$store.commit('modFilters/reset');
-        await this.$store.commit('tsMods/reset');
         await this.$store.commit('profile/reset');
 
         const lastProfileName = await this.$store.dispatch('profile/loadLastSelectedProfile');

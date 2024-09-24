@@ -120,7 +120,6 @@ export default {
 
     mutations: {
         reset(state: State) {
-            state.activeProfile = null;
             state.modList = [];
             state.order = undefined;
             state.direction = undefined;
