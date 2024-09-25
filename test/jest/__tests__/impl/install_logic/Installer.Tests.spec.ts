@@ -53,9 +53,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), 'loose.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), 'loose.dll'))
+            ).toBeTruthy();
         });
 
         test("Keep override folder structure", async () => {
@@ -74,9 +74,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), "static_dir", "structured.dll"))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), "static_dir", "structured.dll")
+            )).toBeTruthy();
         });
 
         test("Flatten non-override structure", async () => {
@@ -95,9 +95,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), "structured.dll"))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), "structured.dll")
+            )).toBeTruthy();
         });
 
         test('Default file extension', async () => {
@@ -115,9 +115,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "monomod", pkg.getName(), 'loose.mm.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "monomod", pkg.getName(), 'loose.mm.dll')
+            )).toBeTruthy();
         });
 
     });
@@ -157,9 +157,9 @@ describe('Installer Tests', () => {
                 .find(value => value.isDefaultLocation)!;
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), defaultRuleSubtype.route, 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath(defaultRuleSubtype.route, 'loose.file')
+            )).toBeTruthy();
         });
 
         test('One-level nested', async () => {
@@ -178,9 +178,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "UserData", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("UserData", 'loose.file')
+            )).toBeTruthy();
         });
 
         test('Two-level nested', async () => {
@@ -199,9 +199,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "UserData", "CustomFolder", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("UserData", "CustomFolder", 'loose.file')
+            )).toBeTruthy();
         });
 
         // .managed.dll rule points to /MelonLoader/Managed
@@ -220,9 +220,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "MelonLoader", "Managed", 'loose.managed.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("MelonLoader", "Managed", 'loose.managed.dll')
+            )).toBeTruthy();
         });
 
     });
@@ -258,9 +258,9 @@ describe('Installer Tests', () => {
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "config", 'loose.file')
+            )).toBeTruthy();
         });
 
     });

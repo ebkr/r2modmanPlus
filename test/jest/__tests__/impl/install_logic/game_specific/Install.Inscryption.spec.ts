@@ -110,8 +110,9 @@ describe('Inscryption Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 
@@ -126,8 +127,9 @@ describe('Inscryption Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 

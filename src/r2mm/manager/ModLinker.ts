@@ -68,7 +68,7 @@ export default class ModLinker {
                     await fs.rmdir(file);
                 } else {
                     const fileRelative = path.relative(installDirectory, file);
-                    const fileInProfileDir = path.join(profile.getPathOfProfile(), fileRelative);
+                    const fileInProfileDir = profile.joinToProfilePath(fileRelative);
                     if (!(await this.isFileIdentical(fileInProfileDir, file)) && await fs.exists(file)) {
                         await fs.unlink(file);
                     }
@@ -100,13 +100,13 @@ export default class ModLinker {
             const profileFiles = await fs.readdir(profile.getPathOfProfile());
             try {
                 for (const file of profileFiles) {
-                    if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
+                    if ((await fs.lstat(profile.joinToProfilePath(file))).isFile()) {
                         try {
                             const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
                             if (targetDir === null) continue;
 
                             const gameDirFilePath = path.join(targetDir, file);
-                            const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
+                            const profileDirFilePath = profile.joinToProfilePath(file);
 
                             if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
                                 await fs.copyFile(profileDirFilePath, gameDirFilePath);
@@ -123,7 +123,7 @@ export default class ModLinker {
                             )
                         }
                     } else {
-                        if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
+                        if ((await fs.lstat(profile.joinToProfilePath(file))).isDirectory()) {
                             const exclusionsList = [
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
@@ -132,7 +132,7 @@ export default class ModLinker {
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {
-                                const fileProfileFolderPath = path.join(profile.getPathOfProfile(), file);
+                                const fileProfileFolderPath = profile.joinToProfilePath(file);
                                 const fileTree = await FileTree.buildFromLocation(fileProfileFolderPath);
                                 if (fileTree instanceof R2Error) {
                                     return fileTree;

@@ -38,12 +38,12 @@ export default class ProfileModList {
     public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(profile.getPathOfProfile());
-        if (!await fs.exists(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
-            await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
+        if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
+            await fs.writeFile(profile.joinToProfilePath('mods.yml'), JSON.stringify([]));
         }
         try {
             try {
-                const value = (yaml.parse((await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))).toString()) || []);
+                const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
                 for(let modIndex in value){
                     const mod = new ManifestV2().fromReactive(value[modIndex]);
                     const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
@@ -90,7 +90,7 @@ export default class ProfileModList {
             const yamlModList: string = yaml.stringify(modList);
             try {
                 await fs.writeFile(
-                    path.join(profile.getPathOfProfile(), 'mods.yml'),
+                    profile.joinToProfilePath('mods.yml'),
                     yamlModList
                 );
             } catch(e) {
@@ -193,8 +193,8 @@ export default class ProfileModList {
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
-        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
-            await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
+            await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
         const tree = await FileTree.buildFromLocation(profile.getPathOfProfile());
         if (tree instanceof R2Error) {
@@ -205,7 +205,7 @@ export default class ProfileModList {
         tree.navigateAndPerform(bepInExDir => {
             bepInExDir.removeDirectories("config");
             bepInExDir.navigateAndPerform(pluginDir => {
-                pluginDir.getDirectories().forEach(value => value.removeFiles(path.join(profile.getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
+                pluginDir.getDirectories().forEach(value => value.removeFiles(profile.joinToProfilePath("BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
             }, "plugins");
         }, "BepInEx");
         tree.removeDirectories("MelonLoader");
@@ -266,7 +266,7 @@ export default class ProfileModList {
                 const zipSize = FileUtils.humanReadableSize(zipStats.size);
                 const maxSize = FileUtils.humanReadableSize(this.MAX_EXPORT_AS_CODE_SIZE);
                 const fileTypes = this.SUPPORTED_CONFIG_FILE_EXTENSIONS.join(', ');
-                const configFolder = path.join(profile.getPathOfProfile(), 'BepInEx', 'config');
+                const configFolder = profile.joinToProfilePath('BepInEx', 'config');
                 return new R2Error(
                     'The profile is too large to be exported as a code',
                     `Exported profile size is ${zipSize} while the maximum supported size is ${maxSize}.

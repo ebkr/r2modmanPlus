@@ -116,8 +116,9 @@ describe('NASB Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 
@@ -132,8 +133,9 @@ describe('NASB Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 
@@ -149,9 +151,10 @@ describe('NASB Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value[0].replace(/[\/\\]/g, '_')}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), '_state', `${pkg.getName()}.yml`)));
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath(value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
+            expect(FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath('_state', `${pkg.getName()}.yml`)));
         }
     });
 

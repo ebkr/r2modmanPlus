@@ -61,11 +61,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             .filter(value => ["SUBDIR", "SUBDIR_NO_FLATTEN"].includes(value.trackingMethod));
 
         for (const dir of subDirPaths) {
-            if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {
-                const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
+            if (await FsProvider.instance.exists(profile.joinToProfilePath(dir.route))) {
+                const dirContents = await FsProvider.instance.readdir(profile.joinToProfilePath(dir.route));
                 for (const namespacedDir of dirContents) {
                     if (namespacedDir === mod.getName()) {
-                        const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
+                        const tree = await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir));
                         if (tree instanceof R2Error) {
                             return tree;
                         }
@@ -227,7 +227,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     if (file.toLowerCase() === 'mods.yml') {
                         continue;
                     }
-                    const filePath = path.join(profile.getPathOfProfile(), file);
+                    const filePath = profile.joinToProfilePath(file);
                     if ((await fs.lstat(filePath)).isFile()) {
                         await fs.unlink(filePath);
                     }
@@ -271,19 +271,19 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private async uninstallState(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        const stateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+        const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
         if (await FsProvider.instance.exists(stateFilePath)) {
             const read = await FsProvider.instance.readFile(stateFilePath);
             const tracker = (yaml.parse(read.toString()) as ModFileTracker);
             for (const [cacheFile, installFile] of tracker.files) {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), installFile))) {
-                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), installFile));
-                    if ((await FsProvider.instance.readdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)))).length === 0) {
-                        await FsProvider.instance.rmdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)));
+                if (await FsProvider.instance.exists(profile.joinToProfilePath(installFile))) {
+                    await FsProvider.instance.unlink(profile.joinToProfilePath(installFile));
+                    if ((await FsProvider.instance.readdir(path.dirname(profile.joinToProfilePath(installFile)))).length === 0) {
+                        await FsProvider.instance.rmdir(path.dirname(profile.joinToProfilePath(installFile)));
                     }
                 }
             }
-            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
+            await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
         }
         return Promise.resolve(null);
     }
