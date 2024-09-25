@@ -70,11 +70,12 @@ export const store = {
             return settings;
         },
 
-        async resetLocalState({commit}: Context) {
+        async resetLocalState({commit, dispatch}: Context) {
             commit('profile/reset');
             commit('profiles/reset');
             commit('tsMods/reset');
             commit('modFilters/reset');
+            await dispatch('resetActiveGame');
         },
     },
     mutations: {
