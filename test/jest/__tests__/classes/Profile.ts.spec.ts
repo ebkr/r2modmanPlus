@@ -40,9 +40,9 @@ describe("ImmutableProfile", () => {
         const immutable = new ImmutableProfile("Immutable");
 
         expect(immutable.getProfileName()).toStrictEqual("Immutable");
-        expect(immutable.getPathOfProfile()).toMatch(/Immutable$/);
+        expect(immutable.getProfilePath()).toMatch(/Immutable$/);
         expect(Profile.getActiveProfile().getProfileName()).toStrictEqual("ActiveProfile");
-        expect(Profile.getActiveProfile().getPathOfProfile()).toMatch(/ActiveProfile$/);
+        expect(Profile.getActiveProfile().getProfilePath()).toMatch(/ActiveProfile$/);
     });
 
     it("joinToProfilePath is immutable if active game changes", () => {
@@ -86,9 +86,9 @@ describe("Profile", () => {
         new Profile("ActiveProfile");
 
         expect(immutable.getProfileName()).toStrictEqual("Immutable");
-        expect(immutable.getPathOfProfile()).toMatch(/Immutable$/);
+        expect(immutable.getProfilePath()).toMatch(/Immutable$/);
         expect(Profile.getActiveProfile().getProfileName()).toStrictEqual("ActiveProfile");
-        expect(Profile.getActiveProfile().getPathOfProfile()).toMatch(/ActiveProfile$/);
+        expect(Profile.getActiveProfile().getProfilePath()).toMatch(/ActiveProfile$/);
     });
 
     // Active game shouldn't change without the active profile resetting but test

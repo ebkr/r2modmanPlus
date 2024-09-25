@@ -30,7 +30,7 @@ const def = () => describe('ModLinker (win32)', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
         settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
         await settings.load(true);

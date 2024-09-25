@@ -44,7 +44,7 @@ export class ReturnOfModdingInstaller implements PackageInstaller {
 
         try {
             // Delete all files except mods.yml from profile root. Ignore directories.
-            for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+            for (const file of (await fs.readdir(profile.getProfilePath()))) {
                 if (file.toLowerCase() === 'mods.yml') {
                     continue;
                 }

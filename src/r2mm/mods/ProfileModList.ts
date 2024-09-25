@@ -37,7 +37,7 @@ export default class ProfileModList {
 
     public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
-        await FileUtils.ensureDirectory(profile.getPathOfProfile());
+        await FileUtils.ensureDirectory(profile.getProfilePath());
         if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
             await fs.writeFile(profile.joinToProfilePath('mods.yml'), JSON.stringify([]));
         }
@@ -53,9 +53,9 @@ export default class ProfileModList {
                             .find(x => x.packageName === mod.getName()) !== undefined
                     ) {
                         // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache
-                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png");
+                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "core", "icon.png");
                     } else {
-                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png");
+                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png");
                     }
 
                     if (await fs.exists(iconPath)) {
@@ -196,7 +196,7 @@ export default class ProfileModList {
         if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
             await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
-        const tree = await FileTree.buildFromLocation(profile.getPathOfProfile());
+        const tree = await FileTree.buildFromLocation(profile.getProfilePath());
         if (tree instanceof R2Error) {
             return tree;
         }
@@ -213,7 +213,7 @@ export default class ProfileModList {
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
             if (this.SUPPORTED_CONFIG_FILE_EXTENSIONS.filter(value => fileLower.endsWith(value)).length > 0) {
-                await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
+                await builder.addBuffer(path.relative(profile.getProfilePath(), file), await FsProvider.instance.readFile(file));
             }
         }
         return builder;

@@ -33,7 +33,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             }
         } else {
             // If sh files aren't executable then the wrapper will fail.
-            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getPathOfProfile())))
+            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
                 .filter(value => value.endsWith(".sh"));
 
             try {

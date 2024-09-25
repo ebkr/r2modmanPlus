@@ -70,7 +70,7 @@ describe('ROUNDS Install Logic', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         InstallationRuleApplicator.apply();
 
         pkg = packageBuilder('test_mod', 'author', new VersionNumber('1.0.0'));

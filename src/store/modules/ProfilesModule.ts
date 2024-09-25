@@ -39,7 +39,7 @@ export const ProfilesModule = {
 
         async removeSelectedProfile({rootGetters, state, dispatch}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
-            const path = activeProfile.getPathOfProfile();
+            const path = activeProfile.getProfilePath();
             const profileName = activeProfile.getProfileName();
 
             try {

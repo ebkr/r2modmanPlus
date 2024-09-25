@@ -116,11 +116,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.DISABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getProfilePath(), ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.ENABLED);
+        return this.applyModMode(mod, new FileTree(), profile, profile.getProfilePath(), ModMode.ENABLED);
     }
 
     async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
@@ -212,7 +212,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             }
         }
 
-        await recursiveDelete(profile.getPathOfProfile(), `${mod.getName()}.ts.zip`);
+        await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
     }
 
     private async uninstallSubDir(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
@@ -223,7 +223,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
-                for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+                for (const file of (await fs.readdir(profile.getProfilePath()))) {
                     if (file.toLowerCase() === 'mods.yml') {
                         continue;
                     }
@@ -241,7 +241,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         // Uninstallation logic for regular mods.
         // TODO: Move to work through the installer interface
-        const profilePath = profile.getPathOfProfile();
+        const profilePath = profile.getProfilePath();
         const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding"];
         for (const searchLocation of searchLocations) {
             const bepInExLocation: string = path.join(profilePath, searchLocation);

@@ -32,7 +32,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             InstallationRuleApplicator.apply();
             InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
@@ -132,7 +132,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
             InstallationRuleApplicator.apply();
             ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
@@ -237,7 +237,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             InstallationRuleApplicator.apply();
         });

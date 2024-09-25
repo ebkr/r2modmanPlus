@@ -97,7 +97,7 @@ export default class ModLinker {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
-            const profileFiles = await fs.readdir(profile.getPathOfProfile());
+            const profileFiles = await fs.readdir(profile.getProfilePath());
             try {
                 for (const file of profileFiles) {
                     if ((await fs.lstat(profile.joinToProfilePath(file))).isFile()) {
@@ -138,7 +138,7 @@ export default class ModLinker {
                                     return fileTree;
                                 }
                                 for (const recursiveFileInFolder of fileTree.getRecursiveFiles()) {
-                                    const fileRelativeToProfileFolder = path.relative(profile.getPathOfProfile(), recursiveFileInFolder);
+                                    const fileRelativeToProfileFolder = path.relative(profile.getProfilePath(), recursiveFileInFolder);
                                     const gameDirFile = path.join(installDirectory, fileRelativeToProfileFolder);
                                     if (!(await this.isFileIdentical(recursiveFileInFolder, gameDirFile))) {
                                         await FileUtils.ensureDirectory(path.join(installDirectory, path.dirname(fileRelativeToProfileFolder)));

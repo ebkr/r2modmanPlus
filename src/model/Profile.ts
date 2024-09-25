@@ -5,7 +5,7 @@ import PathResolver from '../r2mm/manager/PathResolver';
 
 interface ProfileCompatible {
     getProfileName: () => string;
-    getPathOfProfile: () => string;
+    getProfilePath: () => string;
     joinToProfilePath: (...paths: [string, ...string[]]) => string;
 }
 
@@ -29,12 +29,12 @@ export class ImmutableProfile implements ProfileCompatible {
         return this.profileName;
     }
 
-    public getPathOfProfile(): string {
+    public getProfilePath(): string {
         return path.join(this.rootDir, this.profileName);
     }
 
     public joinToProfilePath(...paths: [string, ...string[]]): string {
-        return path.join(this.getPathOfProfile(), ...paths);
+        return path.join(this.getProfilePath(), ...paths);
     }
 }
 
@@ -75,11 +75,11 @@ export default class Profile implements ProfileCompatible {
         return this.profileName;
     }
 
-    public getPathOfProfile(): string {
+    public getProfilePath(): string {
         return path.join(Profile.getRootDir(), this.profileName);
     }
 
     public joinToProfilePath(...paths: [string, ...string[]]): string {
-        return path.join(this.getPathOfProfile(), ...paths);
+        return path.join(this.getProfilePath(), ...paths);
     }
 }

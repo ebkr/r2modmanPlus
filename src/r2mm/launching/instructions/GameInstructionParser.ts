@@ -34,7 +34,7 @@ export default class GameInstructionParser {
     }
 
     private static async profileDirectoryResolver(game: Game, profile: Profile): Promise<string> {
-        return profile.getPathOfProfile();
+        return profile.getProfilePath();
     }
 
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
@@ -63,7 +63,7 @@ export default class GameInstructionParser {
             return await FsProvider.instance.realpath(profile.joinToProfilePath("unstripped_corlib"));
         } catch (e) {
             const err: Error = e as Error;
-            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${Profile.getActiveProfile().getPathOfProfile()}.\nReason: ${err.message}`, null);
+            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${Profile.getActiveProfile().getProfilePath()}.\nReason: ${err.message}`, null);
         }
     }
 
