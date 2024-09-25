@@ -115,9 +115,6 @@ export default class Profiles extends ProfilesMixin {
         const settings = await this.$store.getters.settings;
         await settings.load();
 
-        await this.$store.commit('modFilters/reset');
-        await this.$store.commit('profile/reset');
-
         const lastProfileName = await this.$store.dispatch('profile/loadLastSelectedProfile');
 
         // If the view was entered via game selection, the mod list was updated
