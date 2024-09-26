@@ -12,8 +12,6 @@ import ExportMod from "../../model/exports/ExportMod";
 import ManifestV2 from "../../model/ManifestV2";
 import Profile from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
-import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import ZipProvider from "../../providers/generic/zip/ZipProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
@@ -158,21 +156,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
-        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
-        if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
-            if (newModList instanceof R2Error) {
-                return newModList;
-            }
-            return manifestMod;
-        } else {
-            // (mod failed to be placed in /{profile} directory)
-            return installError;
-        }
-    }
-
     async readProfileFile(file: string) {
         let read = '';
         if (file.endsWith('.r2x')) {
@@ -267,7 +250,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             if (!keepIterating) {
                 return;
             }
-            const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
+            const installResult: R2Error | ManifestV2 = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile);
             if (installResult instanceof R2Error) {
                 this.$store.commit('error/handleError', installResult);
                 keepIterating = false;
