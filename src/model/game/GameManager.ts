@@ -770,6 +770,24 @@ export default class GameManager {
             "https://thunderstore.io/c/hard-time-3/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "3009850")], "HardTime3.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Tank Team", "TankTeam", "TankTeam",
+            "Tank Team", ["Tank Team.exe"], "Tank Team_Data",
+            "https://thunderstore.io/c/tank-team/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2587450")], "TankTeam.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Distance", "Distance", "Distance",
+            "Distance", ["Distance.exe"], "Distance_Data",
+            "https://thunderstore.io/c/distance/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "233610")], "Distance.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Five Nights at Freddy's: Into the Pit", "FiveNightsAtFreddysIntoThePit", "FiveNightsAtFreddysIntoThePit",
+            "Five Nights at Freddy's Into the Pit", ["Five Nights at Freddy's Into the Pit.exe"], "Five Nights at Freddy's Into the Pit_Data",
+            "https://thunderstore.io/c/five-nights-at-freddys-into-the-pit/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2638370")], "FiveNightsAtFreddysIntoThePit.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
