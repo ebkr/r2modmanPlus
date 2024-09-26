@@ -116,6 +116,14 @@ export const TsModsModule = {
     },
 
     mutations: <MutationTree<State>>{
+        reset(state: State) {
+            state.cache = new Map<string, CachedMod>();
+            state.connectionError = '';
+            state.deprecated = new Map<string, boolean>();
+            state.exclusions = [];
+            state.mods = [];
+            state.modsLastUpdated = undefined;
+        },
         clearModCache(state) {
             state.cache.clear();
         },

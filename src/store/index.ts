@@ -70,10 +70,13 @@ export const store = {
             return settings;
         },
 
-        // TODO: Add reset actions for other modules
-        async resetProfileModule({dispatch}: Context) {
-            return await dispatch('profile/reset');
-        }
+        async resetLocalState({commit, dispatch}: Context) {
+            commit('profile/reset');
+            commit('profiles/reset');
+            commit('tsMods/reset');
+            commit('modFilters/reset');
+            await dispatch('resetActiveGame');
+        },
     },
     mutations: {
         setActiveGame(state: State, game: Game) {
