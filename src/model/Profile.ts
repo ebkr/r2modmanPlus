@@ -58,6 +58,11 @@ export default class Profile implements ProfileCompatible {
         activeProfile = this;
     }
 
+    // Return a snapshot of the currently active profile.
+    public static getActiveAsImmutableProfile(): ImmutableProfile {
+        return new ImmutableProfile(activeProfile.profileName);
+    }
+
     public static getActiveProfile() {
         return activeProfile;
     }
@@ -69,6 +74,10 @@ export default class Profile implements ProfileCompatible {
      */
     public static getRootDir(): string {
         return path.join(PathResolver.MOD_ROOT, 'profiles');
+    }
+
+    public asImmutableProfile(): ImmutableProfile {
+        return Profile.getActiveAsImmutableProfile();
     }
 
     public getProfileName(): string {
