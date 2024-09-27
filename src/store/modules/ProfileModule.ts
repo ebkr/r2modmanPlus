@@ -119,6 +119,15 @@ export default {
     },
 
     mutations: {
+        reset(state: State) {
+            state.modList = [];
+            state.order = undefined;
+            state.direction = undefined;
+            state.disabledPosition = undefined;
+            state.searchQuery = '';
+            state.dismissedUpdateAll = false;
+        },
+
         dismissUpdateAll(state: State) {
             state.dismissedUpdateAll = true;
         },
