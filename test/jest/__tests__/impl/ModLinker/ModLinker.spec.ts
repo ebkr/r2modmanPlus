@@ -51,7 +51,7 @@ const def = () => describe('ModLinker (win32)', () => {
         const testFile = Profile.getActiveProfile().joinToProfilePath("test_file");
         await FsProvider.instance.writeFile(testFile, "content");
         expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeFalsy();
-        await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+        await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
         expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
     });
 
@@ -61,7 +61,7 @@ const def = () => describe('ModLinker (win32)', () => {
         const oldStat = await FsProvider.instance.stat(testFile);
         await new Promise(resolve => {
             setTimeout(async () => {
-                await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+                await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).toEqual(oldStat.mtime);
@@ -77,7 +77,7 @@ const def = () => describe('ModLinker (win32)', () => {
         await FsProvider.instance.writeFile(testFile, "modified");
         await new Promise(resolve => {
             setTimeout(async () => {
-                await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+                await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).not.toEqual(oldStat.mtime);

@@ -1,5 +1,5 @@
 import R2Error from '../../model/errors/R2Error';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
@@ -15,7 +15,7 @@ import { PackageLoader } from "../../model/installing/PackageLoader";
 
 export default class ModLinker {
 
-    public static async link(profile: Profile, game: Game): Promise<string[] | R2Error> {
+    public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
         if (game.packageLoader == PackageLoader.BEPINEX) {
             if (process.platform === 'linux') {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
@@ -56,7 +56,7 @@ export default class ModLinker {
     // Is this 100% needed?
     // Could move to a setting at a later date?
     // TBD: Only apply when starting vanilla?
-    private static async cleanupLinkedFiles(profile: Profile, installDirectory: string, previouslyLinkedFiles: string[]) {
+    private static async cleanupLinkedFiles(profile: ImmutableProfile, installDirectory: string, previouslyLinkedFiles: string[]) {
         const fs = FsProvider.instance;
         await LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
         for (const file of previouslyLinkedFiles) {
@@ -93,7 +93,7 @@ export default class ModLinker {
         }
     }
 
-    private static async performLink(profile: Profile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
+    private static async performLink(profile: ImmutableProfile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
