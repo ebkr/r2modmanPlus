@@ -774,7 +774,7 @@ export default class GameManager {
         new Game("Tank Team", "TankTeam", "TankTeam",
             "Tank Team", ["Tank Team.exe"], "Tank Team_Data",
             "https://thunderstore.io/c/tank-team/api/v1/package/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2587450")], "TankTeam.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2587450")], "TankTeam.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
 
         new Game("Distance", "Distance", "Distance",
