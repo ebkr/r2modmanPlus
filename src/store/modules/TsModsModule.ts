@@ -4,6 +4,7 @@ import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
@@ -171,8 +172,8 @@ export const TsModsModule = {
 
     actions: <ActionTree<State, RootState>>{
         async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
-            const indexUrl = rootState.activeGame.thunderstoreUrl;
-            const index = await retry(() => fetchAndProcessBlobFile(indexUrl));
+            const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
 
             if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
@@ -208,7 +209,8 @@ export const TsModsModule = {
             // out due to concurrent requests competing for the bandwidth.
             const chunks = [];
             for (const [i, chunkUrl] of chunkUrls.entries()) {
-                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(chunkUrl))
+                const url = CdnProvider.replaceCdnHost(chunkUrl);
+                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
 
                 if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
                     throw new Error(`Chunk #${i} in multichunk response was empty`);

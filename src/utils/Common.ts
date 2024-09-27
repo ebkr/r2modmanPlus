@@ -29,6 +29,7 @@ export const getPropertyFromPath = (object: Mappable, path: string | string[]): 
 export async function retry<T>(
     fn: () => Promise<T>,
     attempts: number = 3,
+    interval: number = 5000,
     canRetry: () => boolean = () => true,
     onError: (e: Error | unknown) => void = console.error
 ): Promise<T> {
@@ -43,7 +44,7 @@ export async function retry<T>(
             onError(e);
 
             if (currentAttempt < attempts) {
-                await sleep(5000);
+                await sleep(interval);
             }
         }
     }
