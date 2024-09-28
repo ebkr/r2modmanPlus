@@ -71,6 +71,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
 
 const RUNNERS: RunnerType = {
     [StorePlatform.STEAM]: buildRunners(STEAM_RUNNERS),
+    [StorePlatform.STEAM_DEMO]: buildRunners(STEAM_RUNNERS),
     [StorePlatform.STEAM_DIRECT]: buildRunners(DIRECT_RUNNERS),
     [StorePlatform.EPIC_GAMES_STORE]: buildRunners(EGS_RUNNERS),
     [StorePlatform.OCULUS_STORE]: buildRunners(DIRECT_RUNNERS),
@@ -81,6 +82,11 @@ const RUNNERS: RunnerType = {
 
 const RESOLVERS: ResolverType = {
     [StorePlatform.STEAM]: {
+        "win32": new GameDirectoryResolverImpl_Steam_Win,
+        "linux": new GameDirectoryResolverImpl_Steam_Linux(),
+        "darwin": new DarwinGameDirectoryResolver()
+    },
+    [StorePlatform.STEAM_DEMO]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()

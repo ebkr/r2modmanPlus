@@ -87,7 +87,7 @@ export default class GameManager {
         new Game('TaleSpire', 'TaleSpire', 'TaleSpire',
             'TaleSpire', ['TaleSpire.exe'], 'TaleSpire_Data',
             'https://talespire.thunderstore.io/api/v1/package/', EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "720620")], "TaleSpire.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "720620"), new StorePlatformMetadata(StorePlatform.STEAM_DEMO, "2881860")], "TaleSpire.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TS"]),
 
         new Game("H3VR", "H3VR", "H3VR",
