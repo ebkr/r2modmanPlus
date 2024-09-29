@@ -72,7 +72,7 @@ export default class DisableModModal extends Vue {
 <template>
     <ModalCard v-if="isOpen" :is-active="isOpen" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
-            <p class="modal-card-title">Disabling {{mod.getName()}}</p>
+            <h2 class="modal-title">Disabling {{mod.getName()}}</h2>
         </template>
         <template v-slot:body>
             <div class="max-height-100 is-flex is-flex-direction-column">

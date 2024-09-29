@@ -19,7 +19,6 @@ import {
 import {
     buildMelonLoaderRules
 } from "../default_installation_rules/game_rules/InstallRules_MelonLoader";
-import { buildReturnOfModdingRules } from './game_rules/InstallRules_ReturnOfModding';
 
 export default class InstallationRuleApplicator {
 
@@ -127,11 +126,22 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("AgainstTheStorm"),
             buildBepInExRules("Lycans"),
             buildBepInExRules("CastleStory"),
-            buildReturnOfModdingRules("RiskofRainReturns"),
             buildBepInExRules("Magicraft"),
             buildBepInExRules("AnotherCrabsTreasure"),
             buildBepInExRules("GladioMori"),
             buildBepInExRules("SlipstreamRogueSpace"),
+            buildBepInExRules("BacktotheDawn"),
+            buildBepInExRules("BelowTheStone"),
+            buildBepInExRules("Gloomwood"),
+            buildBepInExRules("AmongUs"),
+            buildBepInExRules("BetrayalBeach"),
+            buildBepInExRules("ArcusChroma"),
+            buildBepInExRules("DeepRockGalacticSurvivor"),
+            buildBepInExRules("AleAndTaleTavern"),
+            buildBepInExRules("ScrewDrivers"),
+            buildBepInExRules("NineSols"),
+            buildBepInExRules("GoodbyeVolcanoHigh"),
+            buildBepInExRules("SupermarketTogether"),
         ]
     }
 }

@@ -644,7 +644,7 @@ export default class GameManager {
             "Risk of Rain Returns", ["Risk of Rain Returns.exe"], "",
             "https://thunderstore.io/c/risk-of-rain-returns/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "1337520")], "RiskOfRainReturns.png",
-            GameSelectionDisplayMode.HIDDEN, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["rorr"]),
 
         new Game("Magicraft", "Magicraft", "Magicraft",
             "Magicraft", ["Magicraft.exe"], "Magicraft_Data",
@@ -669,6 +669,89 @@ export default class GameManager {
             "https://thunderstore.io/c/slipstream-rogue-space/api/v1/package/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2765860")], "SlipstreamRogueSpace.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["srs"]),
+
+        new Game("Back to the Dawn", "BacktotheDawn", "BacktotheDawn",
+            "MetalHeadGames", ["Back To The Dawn.exe"], "Back To The Dawn_Data",
+            "https://thunderstore.io/c/back-to-the-dawn/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1735700")], "BackToTheDawn.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bttd"]),
+
+        new Game("Below the Stone", "BelowTheStone", "BelowTheStone",
+            "Below The Stone", ["Below The Stone.exe"], "Below The Stone_Data",
+            "https://thunderstore.io/c/below-the-stone/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1170230")], "BelowTheStone.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["bts"]),
+
+        new Game("Gloomwood", "Gloomwood", "Gloomwood",
+            "Gloomwood", ["Gloomwood.exe"], "Gloomwood_Data",
+            "https://thunderstore.io/c/gloomwood/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1150760")], "Gloomwood.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gw"]),
+
+        new Game("Among Us", "AmongUs", "AmongUs",
+            "Among Us", ["Among Us.exe"], "Among Us_Data",
+            "https://thunderstore.io/c/among-us/api/v1/package/", EXCLUSIONS,
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "945360"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "among-us"),
+                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "Innersloth.AmongUs"),
+                new StorePlatformMetadata(StorePlatform.OTHER)
+            ],
+            "AmongUs.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["au"]),
+
+        new Game("Betrayal Beach", "BetrayalBeach", "BetrayalBeach",
+            "Betrayal Beach", ["Betrayal Beach.exe"], "Betrayal Beach_Data",
+            "https://thunderstore.io/c/betrayal-beach/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2643810")], "BetrayalBeach.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Arcus Chroma", "ArcusChroma", "ArcusChroma",
+            "Arcus Chroma", ["Arcus Chroma.exe"], "Arcus Chroma_Data",
+            "https://thunderstore.io/c/arcus-chroma/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1447350")], "ArcusChroma.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Deep Rock Galactic: Survivor", "DeepRockGalacticSurvivor", "DeepRockGalacticSurvivor",
+            "Deep Rock Survivor", ["DRG Survivor.exe"], "DRG Survivor_Data",
+            "https://thunderstore.io/c/deep-rock-galactic-survivor/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2321470")], "DeepRockGalacticSurvivor.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Ale & Tale Tavern", "AleAndTaleTavern", "AleAndTaleTavern",
+            "Ale & Tale Tavern", ["Ale and Tale Tavern.exe"], "Ale and Tale Tavern_Data",
+            "https://thunderstore.io/c/ale-and-tale-tavern/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2683150")], "AleAndTaleTavern.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Screw Drivers", "ScrewDrivers", "ScrewDrivers",
+            "Screw Drivers", ["Screw Drivers.exe"], "Screw Drivers_Data",
+            "https://thunderstore.io/c/screw-drivers/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1279510")], "ScrewDrivers.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Nine Sols", "NineSols", "NineSols",
+            "Nine Sols", ["NineSols.exe"], "Nine Sols_Data",
+            "https://thunderstore.io/c/nine-sols/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1809540")], "NineSols.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Goodbye Volcano High", "GoodbyeVolcanoHigh", "GoodbyeVolcanoHigh",
+            "Goodbye Volcano High", ["Goodbye Volcano High.exe"], "Goodbye Volcano High_Data",
+            "https://thunderstore.io/c/goodbye-volcano-high/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1310330")], "GoodbyeVolcanoHigh.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Supermarket Together", "SupermarketTogether", "SupermarketTogether",
+            "Supermarket Together", ["Supermarket Together.exe"], "Supermarket Together_Data",
+            "https://thunderstore.io/c/supermarket-together/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2709570")], "SupermarketTogether.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Hades II", "HadesII", "HadesII",
+            path.join("Hades II", "Ship"), ["Hades2.exe"], "",
+            "https://thunderstore.io/c/hades-ii/api/v1/package/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
     ];
 
     static get activeGame(): Game {

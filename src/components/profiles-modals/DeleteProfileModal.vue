@@ -1,18 +1,15 @@
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
+import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 
 @Component({
     components: {ModalCard}
 })
-export default class DeleteProfileModal extends Vue {
+export default class DeleteProfileModal extends ProfilesMixin {
     get isOpen(): boolean {
         return this.$store.state.modals.isDeleteProfileModalOpen;
-    }
-
-    get profileList(): string[] {
-        return this.$store.state.profiles.profileList;
     }
 
     closeDeleteProfileModal() {
@@ -35,7 +32,7 @@ export default class DeleteProfileModal extends Vue {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
-            <p class="modal-card-title">Delete profile</p>
+            <h2 class="modal-title">Delete profile</h2>
         </template>
         <template v-slot:body>
             <p>This will remove all mods, and their config files, installed within this profile.</p>

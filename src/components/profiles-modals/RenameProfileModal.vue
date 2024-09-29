@@ -1,14 +1,14 @@
 <script lang="ts">
-import { Vue, Component, Ref, Watch } from 'vue-property-decorator';
+import { Component, Ref, Watch } from 'vue-property-decorator';
 import { ModalCard } from "../all";
-import sanitize from 'sanitize-filename';
 import R2Error from "../../model/errors/R2Error";
 import Profile from "../../model/Profile";
+import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 
 @Component({
     components: {ModalCard}
 })
-export default class RenameProfileModal extends Vue {
+export default class RenameProfileModal extends ProfilesMixin {
     @Ref() readonly nameInput: HTMLInputElement | undefined;
     private newProfileName: string = '';
 
@@ -40,27 +40,9 @@ export default class RenameProfileModal extends Vue {
         return isOpen_;
     }
 
-    get profileList(): string[] {
-        return this.$store.state.profiles.profileList;
-    }
-
     closeModal() {
         this.newProfileName = this.$store.state.profile.activeProfile.getProfileName();
         this.$store.commit('closeRenameProfileModal');
-    }
-
-    makeProfileNameSafe(nameToSanitize: string): string {
-        return sanitize(nameToSanitize);
-    }
-
-    doesProfileExist(nameToCheck: string): boolean {
-        if ((nameToCheck.match(new RegExp('^([a-zA-Z0-9])(\\s|[a-zA-Z0-9]|_|-|[.])*$'))) === null) {
-            return true;
-        }
-        const safe: string = this.makeProfileNameSafe(nameToCheck);
-        return (this.profileList.some(function (profile: string) {
-            return profile.toLowerCase() === safe.toLowerCase()
-        }));
     }
 
     async performRename() {
@@ -79,7 +61,7 @@ export default class RenameProfileModal extends Vue {
     <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <p class="modal-card-title">Rename a profile</p>
+            <h2 class="modal-title">Rename a profile</h2>
         </template>
         <template v-slot:body>
             <p>This profile will store its own mods independently from other profiles.</p>
