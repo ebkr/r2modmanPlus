@@ -1,5 +1,5 @@
 import * as yaml from 'yaml';
-import Profile from '../../model/Profile';
+import Profile, { ImmutableProfile } from '../../model/Profile';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -35,7 +35,7 @@ export default class ProfileModList {
         return this.lock.acquire("acquire", fn);
     }
 
-    public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async getModList(profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(profile.getProfilePath());
         if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
@@ -114,13 +114,13 @@ export default class ProfileModList {
 
     public static async addMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
         mod.setInstalledAtTime(Number(new Date())); // Set InstalledAt to current epoch millis
-        let currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
+        let currentModList: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
         const modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
         await this.removeMod(mod, profile);
-        currentModList = await this.getModList(profile);
+        currentModList = await this.getModList(profile.asImmutableProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
@@ -134,11 +134,11 @@ export default class ProfileModList {
         if (saveError !== null) {
             return saveError;
         }
-        return this.getModList(profile);
+        return this.getModList(profile.asImmutableProfile());
     }
 
     public static async removeMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
-        const currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
+        const currentModList: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
         if (currentModList instanceof R2Error) {
             return currentModList;
         }
@@ -148,11 +148,11 @@ export default class ProfileModList {
             return saveError;
         }
         // Return mod list, or R2 error. We don't care at this point.
-        return this.getModList(profile);
+        return this.getModList(profile.asImmutableProfile());
     }
 
     public static async updateMods(mods: ManifestV2[], profile: Profile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
-        const list: ManifestV2[] | R2Error = await this.getModList(profile);
+        const list: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
         if (list instanceof R2Error) {
             return list;
         }
@@ -166,11 +166,11 @@ export default class ProfileModList {
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
-        return this.getModList(profile);
+        return this.getModList(profile.asImmutableProfile());
     }
 
     public static async updateMod(mod: ManifestV2, profile: Profile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
-        const list: ManifestV2[] | R2Error = await this.getModList(profile);
+        const list: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
         if (list instanceof R2Error) {
             return list;
         }
@@ -181,11 +181,11 @@ export default class ProfileModList {
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
-        return this.getModList(profile);
+        return this.getModList(profile.asImmutableProfile());
     }
 
     private static async createExport(profile: Profile): Promise<ZipBuilder | R2Error> {
-        const list: ManifestV2[] | R2Error = await this.getModList(profile);
+        const list: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
         if (list instanceof R2Error) {
             return list;
         }

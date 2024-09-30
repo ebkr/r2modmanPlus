@@ -352,7 +352,7 @@ export default {
                 return;
             }
 
-            const modList = await ProfileModList.getModList(state.activeProfile);
+            const modList = await ProfileModList.getModList(state.activeProfile.asImmutableProfile());
 
             if (!(modList instanceof R2Error)) {
                 await dispatch('updateModList', modList);
@@ -433,7 +433,7 @@ export default {
         /*** Read profiles mod list from mods.yml in profile directory. */
         async updateModListFromFile({dispatch, getters}) {
             const profile: Profile = getters['activeProfile'];
-            const mods = await ProfileModList.getModList(profile);
+            const mods = await ProfileModList.getModList(profile.asImmutableProfile());
 
             if (mods instanceof R2Error) {
                 throw mods;

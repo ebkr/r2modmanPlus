@@ -197,7 +197,7 @@ let assignId = 0;
                                     );
                                 }
                             }
-                            const modList = await ProfileModList.getModList(profile);
+                            const modList = await ProfileModList.getModList(profile.asImmutableProfile());
                             if (!(modList instanceof R2Error)) {
                                 const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
                                 if (err instanceof R2Error) {
@@ -250,7 +250,7 @@ let assignId = 0;
                     }
                 }
 
-                const modListResult = await ProfileModList.getModList(this.profile);
+                const modListResult = await ProfileModList.getModList(this.profile.asImmutableProfile());
                 if (!(modListResult instanceof R2Error)) {
                     const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
                     if (manifestMod !== undefined) {
@@ -379,7 +379,7 @@ let assignId = 0;
                     }
                 }
                 this.downloadingMod = false;
-                const modList = await ProfileModList.getModList(this.profile);
+                const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                 if (!(modList instanceof R2Error)) {
                     await this.$store.dispatch('profile/updateModList', modList);
                     const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
@@ -393,7 +393,7 @@ let assignId = 0;
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             return new Promise(async (resolve, reject) => {
                 const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-                const profileModList = await ProfileModList.getModList(profile);
+                const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
                 if (profileModList instanceof R2Error) {
                     return reject(profileModList);
                 }

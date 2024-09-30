@@ -630,7 +630,7 @@ import ModalCard from '../components/ModalCard.vue';
                 }
                 DownloadModModal.downloadSpecific(this.profile, combo, this.thunderstoreModList, ignoreCache)
                     .then(async value => {
-                        const modList = await ProfileModList.getModList(this.profile);
+                        const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('profile/updateModList', modList);
                         } else {
