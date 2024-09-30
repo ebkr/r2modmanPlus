@@ -28,7 +28,7 @@ import Draggable from 'vuedraggable';
 import { Component, Vue } from 'vue-property-decorator';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
@@ -46,8 +46,8 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
         }
     })
     export default class LocalModList extends Vue {
-        get profile(): Profile {
-            return this.$store.getters['profile/activeProfile'];
+        get profile(): ImmutableProfile {
+            return this.$store.getters['profile/activeProfile'].asImmutableProfile();
         }
 
         get draggableList(): ManifestV2[] {

@@ -3,7 +3,7 @@ import { ActionTree, GetterTree } from 'vuex';
 import { State as RootState } from '../index';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import Profile from "../../model/Profile";
+import Profile, { ImmutableProfile } from "../../model/Profile";
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
@@ -320,7 +320,7 @@ export default {
             {dispatch, getters},
             params: {
                 mods: ManifestV2[],
-                profile: Profile,
+                profile: ImmutableProfile,
             }
         ) {
             const {mods, profile} = params;

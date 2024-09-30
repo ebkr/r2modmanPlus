@@ -84,7 +84,7 @@ export default class ProfileModList {
         }
     }
 
-    public static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+    public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
@@ -130,7 +130,7 @@ export default class ProfileModList {
         } else {
             currentModList.push(mod);
         }
-        const saveError: R2Error | null = await this.saveModList(profile, currentModList);
+        const saveError: R2Error | null = await this.saveModList(profile.asImmutableProfile(), currentModList);
         if (saveError !== null) {
             return saveError;
         }
@@ -143,7 +143,7 @@ export default class ProfileModList {
             return currentModList;
         }
         const newModList = currentModList.filter((m: ManifestV2) => m.getName() !== mod.getName());
-        const saveError: R2Error | null = await this.saveModList(profile, newModList);
+        const saveError: R2Error | null = await this.saveModList(profile.asImmutableProfile(), newModList);
         if (saveError !== null) {
             return saveError;
         }
@@ -162,7 +162,7 @@ export default class ProfileModList {
                     apply(filteringMod);
                 });
         }
-        const saveErr = await this.saveModList(profile, list);
+        const saveErr = await this.saveModList(profile.asImmutableProfile(), list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
@@ -177,7 +177,7 @@ export default class ProfileModList {
         for (const modToApply of list.filter((filteringMod: ManifestV2) => filteringMod.getName() === mod.getName())) {
             await apply(modToApply);
         }
-        const saveErr = await this.saveModList(profile, list);
+        const saveErr = await this.saveModList(profile.asImmutableProfile(), list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
