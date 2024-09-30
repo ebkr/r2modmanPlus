@@ -394,7 +394,7 @@ export default {
                     // Update mod list status to mods.yml.
                     // TODO: can performance be improved by implementing
                     // a .removeMods(mods, profile) and calling it once outside the loop?
-                    const updatedList = await ProfileModList.removeMod(mod, profile);
+                    const updatedList = await ProfileModList.removeMod(mod, profile.asImmutableProfile());
                     if (updatedList instanceof R2Error) {
                         throw updatedList;
                     } else {

@@ -119,7 +119,7 @@ export default class ProfileModList {
             currentModList = [];
         }
         const modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
-        await this.removeMod(mod, profile);
+        await this.removeMod(mod, profile.asImmutableProfile());
         currentModList = await this.getModList(profile.asImmutableProfile());
         if (currentModList instanceof R2Error) {
             currentModList = [];
@@ -137,18 +137,18 @@ export default class ProfileModList {
         return this.getModList(profile.asImmutableProfile());
     }
 
-    public static async removeMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
-        const currentModList: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
+    public static async removeMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
+        const currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             return currentModList;
         }
         const newModList = currentModList.filter((m: ManifestV2) => m.getName() !== mod.getName());
-        const saveError: R2Error | null = await this.saveModList(profile.asImmutableProfile(), newModList);
+        const saveError: R2Error | null = await this.saveModList(profile, newModList);
         if (saveError !== null) {
             return saveError;
         }
         // Return mod list, or R2 error. We don't care at this point.
-        return this.getModList(profile.asImmutableProfile());
+        return this.getModList(profile);
     }
 
     public static async updateMods(mods: ManifestV2[], profile: Profile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
