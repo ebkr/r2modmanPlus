@@ -66,7 +66,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                         callback(false, profileInstallResult);
                         return Promise.resolve();
                     }
-                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+                    const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
                     if (modListInstallResult instanceof R2Error) {
                         callback(false, modListInstallResult);
                         return Promise.resolve();
@@ -92,7 +92,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                 callback(false, profileInstallResult);
                 return Promise.resolve();
             }
-            const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+            const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
             if (modListInstallResult instanceof R2Error) {
                 callback(false, modListInstallResult);
                 return Promise.resolve();

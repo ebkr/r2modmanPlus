@@ -112,15 +112,15 @@ export default class ProfileModList {
         return null;
     }
 
-    public static async addMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async addMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         mod.setInstalledAtTime(Number(new Date())); // Set InstalledAt to current epoch millis
-        let currentModList: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
+        let currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
         const modIndex: number = currentModList.findIndex((search: ManifestV2) => search.getName() === mod.getName());
-        await this.removeMod(mod, profile.asImmutableProfile());
-        currentModList = await this.getModList(profile.asImmutableProfile());
+        await this.removeMod(mod, profile);
+        currentModList = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             currentModList = [];
         }
@@ -130,11 +130,11 @@ export default class ProfileModList {
         } else {
             currentModList.push(mod);
         }
-        const saveError: R2Error | null = await this.saveModList(profile.asImmutableProfile(), currentModList);
+        const saveError: R2Error | null = await this.saveModList(profile, currentModList);
         if (saveError !== null) {
             return saveError;
         }
-        return this.getModList(profile.asImmutableProfile());
+        return this.getModList(profile);
     }
 
     public static async removeMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
