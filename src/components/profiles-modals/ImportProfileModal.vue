@@ -250,16 +250,20 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             if (!keepIterating) {
                 return;
             }
-            const installResult: R2Error | ManifestV2 = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile);
-            if (installResult instanceof R2Error) {
-                this.$store.commit('error/handleError', installResult);
+
+            let installedMod: ManifestV2;
+            try {
+                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile);
+            } catch (e) {
+                this.$store.commit('error/handleError', e);
                 keepIterating = false;
                 this.isProfileBeingImported = false;
                 return;
             }
+
             for (const imported of modList) {
                 if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installResult, this.activeProfile, async (modToDisable: ManifestV2) => {
+                    await ProfileModList.updateMod(installedMod, this.activeProfile, async (modToDisable: ManifestV2) => {
                         // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
                         modToDisable.enable();
                         await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);

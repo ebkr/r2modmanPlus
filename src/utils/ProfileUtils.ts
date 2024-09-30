@@ -40,16 +40,16 @@ export async function extractZippedProfileFile(file: string, profileName: string
     }
 }
 
-export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: Profile): Promise<R2Error | ManifestV2> {
+export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: Profile): Promise<ManifestV2> {
     const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
     const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
     if (installError instanceof R2Error) {
-        return installError;
+        throw installError;
     }
 
     const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
     if (newModList instanceof R2Error) {
-        return newModList;
+        throw newModList;
     }
 
     return manifestMod;
