@@ -4,7 +4,7 @@ import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
 import ExportMod from '../../../model/exports/ExportMod';
-import Profile from '../../../model/Profile';
+import Profile, { ImmutableProfile } from '../../../model/Profile';
 
 export default abstract class ThunderstoreDownloaderProvider {
 
@@ -58,6 +58,7 @@ export default abstract class ThunderstoreDownloaderProvider {
     /**
      * A top-level method to download the latest version of a mod including its dependencies.
      *
+     * @param profile           The profile the mod is downloaded for (needed to prevent dependencies from updating existing mods).
      * @param mod               The mod to be downloaded.
      * @param modVersion        The version of the mod to download.
      * @param allMods           An array of all mods available from the Thunderstore API.
@@ -65,7 +66,8 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract download(profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion, allMods: ThunderstoreMod[], ignoreCache: boolean,
+    public abstract download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
+                    allMods: ThunderstoreMod[], ignoreCache: boolean,
                     callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                     completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
