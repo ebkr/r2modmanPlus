@@ -41,7 +41,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private newProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
-    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
+    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
 
     async created() {
         fs = FsProvider.instance;
@@ -98,20 +98,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     // User selects importing from file from the UI.
     importProfileFromFile() {
-        this.activeStep = 'FILE_SELECTION';
-        InteractionProvider.instance.selectFile({
-            title: 'Import Profile',
-            filters: [{
-                name: "*",
-                extensions: ["r2z"]
-            }],
-            buttonLabel: 'Import'
-        }).then((value: string[]) => {
-            if(value.length === 0) {
-                this.closeModal();
-            }
-            this.importProfileHandler(value);
-        })
+        this.activeStep = 'IMPORT_FILE';
+        setImmediate(() => {
+            InteractionProvider.instance.selectFile({
+                title: 'Import Profile',
+                filters: [{
+                    name: "*",
+                    extensions: ["r2z"]
+                }],
+                buttonLabel: 'Import'
+            }).then((value: string[]) => {
+                if (value.length === 0) {
+                    this.closeModal();
+                }
+                this.importProfileHandler(value);
+            })
+        });
     }
 
     async importProfileHandler(files: string[] | null) {
@@ -456,8 +458,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     </ModalCard>
 
     <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
-        <template v-slot:body>
-            <h3 class="title">Loading file</h3>
+        <template v-slot:header>
+            <h2 class="modal-title">Loading file</h2>
+        </template>
+        <template v-slot:footer>
             <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
         </template>
     </ModalCard>
