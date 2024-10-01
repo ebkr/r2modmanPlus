@@ -211,7 +211,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.disable());
+                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.disable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {
@@ -266,7 +266,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.enable());
+                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.enable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {

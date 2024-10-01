@@ -151,8 +151,8 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async updateMods(mods: ManifestV2[], profile: Profile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
-        const list: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
+    public static async updateMods(mods: ManifestV2[], profile: ImmutableProfile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+        const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
         }
@@ -162,11 +162,11 @@ export default class ProfileModList {
                     apply(filteringMod);
                 });
         }
-        const saveErr = await this.saveModList(profile.asImmutableProfile(), list);
+        const saveErr = await this.saveModList(profile, list);
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
-        return this.getModList(profile.asImmutableProfile());
+        return this.getModList(profile);
     }
 
     public static async updateMod(mod: ManifestV2, profile: Profile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
