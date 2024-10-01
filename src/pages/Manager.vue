@@ -391,7 +391,7 @@ import ModalCard from '../components/ModalCard.vue';
 				this.$store.commit('error/handleError', err);
 				return;
 			}
-			const exportErr = await ProfileModList.exportModListAsCode(this.profile, (code: string, err: R2Error | null) => {
+			const exportErr = await ProfileModList.exportModListAsCode(this.profile.asImmutableProfile(), (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.$store.commit('error/handleError', err);
 				} else {

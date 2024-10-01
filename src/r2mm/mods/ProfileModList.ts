@@ -1,5 +1,5 @@
 import * as yaml from 'yaml';
-import Profile, { ImmutableProfile } from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -246,12 +246,12 @@ export default class ProfileModList {
         return exportPath;
     }
 
-    public static async exportModListAsCode(profile: Profile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
+    public static async exportModListAsCode(profile: ImmutableProfile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         await FileUtils.ensureDirectory(exportDirectory);
         const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
-        const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile.asImmutableProfile());
+        const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile);
         if (exportBuilder instanceof R2Error) {
             return exportBuilder;
         } else {
