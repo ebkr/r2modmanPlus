@@ -107,7 +107,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // User selects importing from file from the UI.
     importProfileFromFile() {
         this.activeStep = 'IMPORT_FILE';
-        setImmediate(() => {
+        process.nextTick(() => {
             InteractionProvider.instance.selectFile({
                 title: 'Import Profile',
                 filters: [{
@@ -120,7 +120,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     this.closeModal();
                 }
                 this.importProfileHandler(value);
-            })
+            });
         });
     }
 
@@ -266,6 +266,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             } catch (e) {
                 this.$store.commit('error/handleError', e);
                 keepIterating = false;
+                this.closeModal();
                 return;
             }
 
@@ -344,6 +345,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
+    <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <h2 class="modal-title">Loading file</h2>
+        </template>
+        <template v-slot:footer>
+            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+        </template>
+    </ModalCard>
+
     <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Enter the profile code</h2>
@@ -413,16 +423,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'PROFILE_IS_BEING_IMPORTED'" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
-        <template v-slot:header>
-            <h2 class="modal-title">{{percentageImported}}% imported</h2>
-        </template>
-        <template v-slot:footer>
-            <p>This may take a while, as mods are being downloaded.<br>
-                Please do not close {{appName}}.</p>
-        </template>
-    </ModalCard>
-
     <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 v-if="importUpdateSelection === 'IMPORT'" class="modal-title">Import a profile</h2>
@@ -462,12 +462,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-else-if="activeStep === 'PROFILE_IS_BEING_IMPORTED'" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
         <template v-slot:header>
-            <h2 class="modal-title">Loading file</h2>
+            <h2 class="modal-title">{{percentageImported}}% imported</h2>
         </template>
         <template v-slot:footer>
-            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+            <p>This may take a while, as mods are being downloaded.<br>
+                Please do not close {{appName}}.</p>
         </template>
     </ModalCard>
 </template>
