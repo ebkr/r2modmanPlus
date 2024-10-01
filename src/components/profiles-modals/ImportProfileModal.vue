@@ -36,12 +36,20 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
     private percentageImported: number = 0;
     private profileImportCode: string = '';
-    private isProfileBeingImported: boolean = false;
     private listenerId: number = 0;
     private newProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
-    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
+    private activeStep:
+        'IMPORT_UPDATE_SELECTION'
+        | 'FILE_CODE_SELECTION'
+        | 'IMPORT_CODE'
+        | 'IMPORT_FILE'
+        | 'ADDING_PROFILE'
+        | 'REVIEW_IMPORT'
+        | 'NO_PACKAGES_IN_IMPORT'
+        | 'PROFILE_IS_BEING_IMPORTED'
+    = 'IMPORT_UPDATE_SELECTION';
 
     async created() {
         fs = FsProvider.instance;
@@ -118,7 +126,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     async importProfileHandler(files: string[] | null) {
         if (files === null || files.length === 0) {
-            this.isProfileBeingImported = false;
+            this.closeModal();
             return;
         }
 
@@ -177,6 +185,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             (async () => {
                 let profileName: string = event.detail;
                 if (profileName !== '') {
+                    this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
                     if (this.importUpdateSelection === 'UPDATE') {
                         profileName = "_profile_update";
                         if (await fs.exists(path.join(Profile.getDirectory(), profileName))) {
@@ -186,7 +195,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                         await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
                     }
                     if (parsed.getMods().length > 0) {
-                        this.isProfileBeingImported = true;
                         setTimeout(async () => {
                             await this.downloadImportedProfileMods(parsed.getMods(), async () => {
                                 if (files[0].endsWith('.r2z')) {
@@ -236,7 +244,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     downloadProgressCallback(progress: number, modName: string, status: number, err: R2Error | null) {
         if (status == StatusEnum.FAILURE) {
             this.closeModal();
-            this.isProfileBeingImported = false;
             if (err instanceof R2Error) {
                 this.$store.commit('error/handleError', err);
             }
@@ -259,7 +266,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             } catch (e) {
                 this.$store.commit('error/handleError', e);
                 keepIterating = false;
-                this.isProfileBeingImported = false;
                 return;
             }
 
@@ -277,7 +283,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         if (callback !== undefined) {
             callback();
         }
-        this.isProfileBeingImported = false;
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.
@@ -408,13 +413,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
+    <ModalCard v-else-if="activeStep === 'PROFILE_IS_BEING_IMPORTED'" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
         <template v-slot:header>
             <h2 class="modal-title">{{percentageImported}}% imported</h2>
         </template>
-        <template v-slot:body>
-            <p>This may take a while, as mods are being downloaded.</p>
-            <p>Please do not close {{appName}}.</p>
+        <template v-slot:footer>
+            <p>This may take a while, as mods are being downloaded.<br>
+                Please do not close {{appName}}.</p>
         </template>
     </ModalCard>
 
