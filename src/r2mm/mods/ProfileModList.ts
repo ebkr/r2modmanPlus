@@ -184,8 +184,8 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    private static async createExport(profile: Profile): Promise<ZipBuilder | R2Error> {
-        const list: ManifestV2[] | R2Error = await this.getModList(profile.asImmutableProfile());
+    private static async createExport(profile: ImmutableProfile): Promise<ZipBuilder | R2Error> {
+        const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
         }
@@ -236,7 +236,7 @@ export default class ProfileModList {
         if (dir.length === 0) {
             return new R2Error("Failed to export profile", "No export directory was selected", null);
         }
-        const builder = await this.createExport(profile);
+        const builder = await this.createExport(profile.asImmutableProfile());
         if (builder instanceof R2Error) {
             return builder;
         }
@@ -251,7 +251,7 @@ export default class ProfileModList {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         await FileUtils.ensureDirectory(exportDirectory);
         const exportPath = path.join(exportDirectory, `${profile.getProfileName()}.r2z`);
-        const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile);
+        const exportBuilder: R2Error | ZipBuilder = await this.createExport(profile.asImmutableProfile());
         if (exportBuilder instanceof R2Error) {
             return exportBuilder;
         } else {
