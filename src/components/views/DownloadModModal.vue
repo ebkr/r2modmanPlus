@@ -422,7 +422,7 @@ let assignId = 0;
                     }
                     if (olderInstallOfMod !== undefined) {
                         if (!olderInstallOfMod.isEnabled()) {
-                            await ProfileModList.updateMod(manifestMod, profile, async mod => {
+                            await ProfileModList.updateMod(manifestMod, profile.asImmutableProfile(), async mod => {
                                 mod.disable();
                             });
                             await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);

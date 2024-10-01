@@ -257,7 +257,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
             for (const imported of modList) {
                 if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installedMod, this.activeProfile, async (modToDisable: ManifestV2) => {
+                    await ProfileModList.updateMod(installedMod, this.activeProfile.asImmutableProfile(), async (modToDisable: ManifestV2) => {
                         // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
                         modToDisable.enable();
                         await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);
