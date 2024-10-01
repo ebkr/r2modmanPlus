@@ -219,7 +219,7 @@ export default class ProfileModList {
         return builder;
     }
 
-    public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
+    public static async exportModListToFile(profile: ImmutableProfile): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         try {
             await FileUtils.ensureDirectory(exportDirectory);
@@ -236,7 +236,7 @@ export default class ProfileModList {
         if (dir.length === 0) {
             return new R2Error("Failed to export profile", "No export directory was selected", null);
         }
-        const builder = await this.createExport(profile.asImmutableProfile());
+        const builder = await this.createExport(profile);
         if (builder instanceof R2Error) {
             return builder;
         }
