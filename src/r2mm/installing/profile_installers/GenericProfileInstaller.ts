@@ -1,6 +1,6 @@
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
 import ManifestV2 from '../../../model/ManifestV2';
-import Profile from '../../../model/Profile';
+import Profile, { ImmutableProfile } from '../../../model/Profile';
 import FileTree from '../../../model/file/FileTree';
 import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
@@ -35,7 +35,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.legacyInstaller = new InstallRuleInstaller(this.rule);
     }
 
-    private async applyModModeForSubdir(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
+    private async applyModModeForSubdir(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
         // TODO: Call through the installer interface. For now we hardcode the only known case because expanding the
         //       installer system is out of scope.
         //
@@ -82,7 +82,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModModeForState(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
+    private async applyModModeForState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
         profile.getProfilePath()
         try {
             const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
@@ -106,7 +106,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModMode(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
+    private async applyModMode(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
         const appliedState = await this.applyModModeForState(mod, profile, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;
@@ -117,11 +117,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
+    async disableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         return this.applyModMode(mod, profile, ModMode.DISABLED);
     }
 
-    async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
+    async enableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         return this.applyModMode(mod, profile, ModMode.ENABLED);
     }
 

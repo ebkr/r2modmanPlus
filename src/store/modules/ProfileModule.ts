@@ -204,7 +204,7 @@ export default {
                         continue;
                     }
 
-                    const err = await ProfileInstallerProvider.instance.disableMod(mod, profile);
+                    const err = await ProfileInstallerProvider.instance.disableMod(mod, profile.asImmutableProfile());
                     if (err instanceof R2Error) {
                         throw err;
                     }
@@ -259,7 +259,7 @@ export default {
                         continue;
                     }
 
-                    const err = await ProfileInstallerProvider.instance.enableMod(mod, profile);
+                    const err = await ProfileInstallerProvider.instance.enableMod(mod, profile.asImmutableProfile());
                     if (err instanceof R2Error) {
                         throw err;
                     }
