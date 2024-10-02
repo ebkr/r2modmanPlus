@@ -35,7 +35,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.legacyInstaller = new InstallRuleInstaller(this.rule);
     }
 
-    private async applyModModeForSubdir(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForSubdir(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
         // TODO: Call through the installer interface. For now we hardcode the only known case because expanding the
         //       installer system is out of scope.
         //
@@ -82,19 +82,21 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModModeForState(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForState(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
+        profile.getProfilePath()
         try {
-            const modStateFilePath = path.join(location, "_state", `${mod.getName()}-state.yml`);
+            const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
             if (await FsProvider.instance.exists(modStateFilePath)) {
                 const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        if (await FsProvider.instance.exists(path.join(location, value))) {
-                            await FsProvider.instance.unlink(path.join(location, value));
+                        const filePath = profile.joinToProfilePath(value);
+                        if (await FsProvider.instance.exists(filePath)) {
+                            await FsProvider.instance.unlink(filePath);
                         }
                         if (mode === ModMode.ENABLED) {
-                            await FsProvider.instance.copyFile(key, path.join(location, value));
+                            await FsProvider.instance.copyFile(key, filePath);
                         }
                     }
                 }
@@ -104,23 +106,23 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModMode(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
-        const appliedState = await this.applyModModeForState(mod, profile, location, mode);
+    private async applyModMode(mod: ManifestV2, profile: Profile, mode: number): Promise<R2Error | void> {
+        const appliedState = await this.applyModModeForState(mod, profile, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;
         }
-        const appliedSub = await this.applyModModeForSubdir(mod, profile, location, mode);
+        const appliedSub = await this.applyModModeForSubdir(mod, profile, mode);
         if (appliedSub instanceof R2Error) {
             return appliedSub;
         }
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, profile, profile.getProfilePath(), ModMode.DISABLED);
+        return this.applyModMode(mod, profile, ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, profile, profile.getProfilePath(), ModMode.ENABLED);
+        return this.applyModMode(mod, profile, ModMode.ENABLED);
     }
 
     async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
