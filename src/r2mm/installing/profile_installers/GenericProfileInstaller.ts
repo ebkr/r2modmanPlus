@@ -157,10 +157,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(args);
     }
 
-    private getInstallArgs(mod: ManifestV2, profile: Profile): InstallArgs {
+    private getInstallArgs(mod: ManifestV2, profile: Profile|ImmutableProfile): InstallArgs {
+        const immutable = profile instanceof Profile ? profile.asImmutableProfile() : profile;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        return {mod, profile, packagePath};
+        return {mod, profile: immutable, packagePath};
     }
 
     private getModLoader(mod: ManifestV2): ModLoaderPackageMapping|undefined {

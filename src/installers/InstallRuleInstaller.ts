@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import Profile from "../model/Profile";
+import Profile, { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
 import ManifestV2 from "../model/ManifestV2";
@@ -14,7 +14,7 @@ import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 
 type InstallRuleArgs = {
-    profile: Profile,
+    profile: ImmutableProfile,
     coreRule: CoreRuleType,
     rule: ManagedRule,
     installSources: string[],
@@ -22,7 +22,7 @@ type InstallRuleArgs = {
 };
 
 
-async function installUntracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installUntracked(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     // Functionally identical to the install method of subdir, minus the subdirectory.
     const ruleDir = profile.joinToProfilePath(rule.route);
     await FileUtils.ensureDirectory(ruleDir);
@@ -43,7 +43,7 @@ async function installUntracked(profile: Profile, rule: ManagedRule, installSour
 
 
 async function installSubDir(
-    profile: Profile,
+    profile: ImmutableProfile,
     rule: ManagedRule,
     installSources: string[],
     mod: ManifestV2,
@@ -69,7 +69,7 @@ async function installSubDir(
 }
 
 
-async function installPackageZip(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installPackageZip(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     /*
         This install method repackages the entire mod as-is and places it to the
         destination route. Essentially the same as SUBDIR_NO_FLATTEN, but as a
@@ -86,7 +86,7 @@ async function installPackageZip(profile: Profile, rule: ManagedRule, installSou
 }
 
 
-async function installSubDirNoFlatten(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     const subDir = profile.joinToProfilePath(rule.route, mod.getName());
     await FileUtils.ensureDirectory(subDir);
     const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
@@ -169,7 +169,7 @@ async function buildInstallForRuleSubtype(
 }
 
 
-export async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
+export async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: ImmutableProfile) {
     await FileUtils.ensureDirectory(profile.joinToProfilePath("_state"));
     let existing: Map<string, string> = new Map();
     if (await FsProvider.instance.exists(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`))) {
@@ -244,7 +244,7 @@ export class InstallRuleInstaller implements PackageInstaller {
         }
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
+    async resolveBepInExTree(profile: ImmutableProfile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
