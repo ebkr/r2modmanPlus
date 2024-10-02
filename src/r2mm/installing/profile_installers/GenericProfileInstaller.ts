@@ -35,7 +35,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.legacyInstaller = new InstallRuleInstaller(this.rule);
     }
 
-    private async applyModModeForSubdir(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForSubdir(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         // TODO: Call through the installer interface. For now we hardcode the only known case because expanding the
         //       installer system is out of scope.
         //
@@ -82,7 +82,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModModeForState(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForState(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         try {
             const modStateFilePath = path.join(location, "_state", `${mod.getName()}-state.yml`);
             if (await FsProvider.instance.exists(modStateFilePath)) {
@@ -104,23 +104,23 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
-        const appliedState = await this.applyModModeForState(mod, tree, profile, location, mode);
+    private async applyModMode(mod: ManifestV2, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+        const appliedState = await this.applyModModeForState(mod, profile, location, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;
         }
-        const appliedSub = await this.applyModModeForSubdir(mod, tree, profile, location, mode);
+        const appliedSub = await this.applyModModeForSubdir(mod, profile, location, mode);
         if (appliedSub instanceof R2Error) {
             return appliedSub;
         }
     }
 
     async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getProfilePath(), ModMode.DISABLED);
+        return this.applyModMode(mod, profile, profile.getProfilePath(), ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getProfilePath(), ModMode.ENABLED);
+        return this.applyModMode(mod, profile, profile.getProfilePath(), ModMode.ENABLED);
     }
 
     async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
