@@ -146,7 +146,12 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("PaqueretteDownTheBunburrows"),
             buildBepInExRules("HardTime3"),
             buildBepInExRules("TankTeam"),
-            buildBepInExRules("Distance"),
+            buildBepInExRules("Distance", [{
+                route: path.join("BepInEx", "Assets"),
+                defaultFileExtensions: [],
+                trackingMethod: "STATE",
+                subRoutes: []
+            }]),
             buildBepInExRules("FiveNightsAtFreddysIntoThePit"),
         ]
     }
