@@ -10,6 +10,7 @@ import Profile from "../model/Profile";
 import ThunderstoreMod from "../model/ThunderstoreMod";
 import ThunderstoreVersion from "../model/ThunderstoreVersion";
 import VersionNumber from "../model/VersionNumber";
+import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import ProfileModList from "../r2mm/mods/ProfileModList";
@@ -70,4 +71,19 @@ export async function parseYamlToExportFormat(yamlContent: string) {
             );
         })
     );
+}
+
+//TODO: Check if instead of returning null/empty strings, there's some errors that should be handled
+export async function readProfileFile(file: string) {
+    let read = '';
+    if (file.endsWith('.r2x')) {
+        read = (await FsProvider.instance.readFile(file)).toString();
+    } else if (file.endsWith('.r2z')) {
+        const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
+        if (result === null) {
+            return null;
+        }
+        read = result.toString();
+    }
+    return read;
 }
