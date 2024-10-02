@@ -104,7 +104,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
         const appliedState = await this.applyModModeForState(mod, tree, profile, location, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;

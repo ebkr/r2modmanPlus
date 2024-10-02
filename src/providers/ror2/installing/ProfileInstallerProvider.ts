@@ -1,7 +1,6 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
-import FileTree from '../../../model/file/FileTree';
 import Profile from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {
@@ -41,15 +40,4 @@ export default abstract class ProfileInstallerProvider {
      * @param mod
      */
     public abstract installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null>;
-
-    /**
-     * Applies either enabling or disabling under a shared method.
-     * Logic for both {@method enableMod} and {@method disableMod} should be handled here.
-     *
-     * @param mod
-     * @param tree      A BepInExTree object to provide a list of all files provided in the mod.
-     * @param location  The location of the mod within a BepInEx sub-folder.
-     * @param mode      The ModMode number. {@class model/enums/ModMode}
-     */
-    abstract applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void>;
 }
