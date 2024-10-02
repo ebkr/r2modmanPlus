@@ -123,24 +123,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.applyModMode(mod, new FileTree(), profile, profile.getProfilePath(), ModMode.ENABLED);
     }
 
-    async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
-        const files: string[] = [];
-        if (tree === null) {
-            const newTree = await FileTree.buildFromLocation(location);
-            if (newTree instanceof R2Error) {
-                return files;
-            }
-            tree = newTree;
-        }
-        for (const directory of tree.getDirectories()) {
-            files.push(...(await this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName()))));
-        }
-        tree.getFiles().forEach((file: string) => {
-            files.push(file);
-        })
-        return files;
-    }
-
     async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
         try {
             await this.legacyInstaller.install(args);

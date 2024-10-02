@@ -52,13 +52,4 @@ export default abstract class ProfileInstallerProvider {
      * @param mode      The ModMode number. {@class model/enums/ModMode}
      */
     abstract applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void>;
-
-    /**
-     * Get descendant files of a given location.
-     *
-     * For params, see {@method applyModMode}
-     * @param tree      If tree is not provided, one is created on first call. This method is recursive.
-     * @param location
-     */
-    abstract getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]>;
 }
