@@ -13,7 +13,6 @@ import ManifestV2 from "../../model/ManifestV2";
 import Profile from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import FsProvider from "../../providers/generic/file/FsProvider";
-import ZipProvider from "../../providers/generic/zip/ZipProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
@@ -130,7 +129,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        let read: string | null = await this.readProfileFile(files[0]);
+        let read: string | null = await ProfileUtils.readProfileFile(files[0]);
 
         if (read !== null) {
             this.profileImportFilePath = files[0];
@@ -164,20 +163,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         ) as EventListener, {once: true});
         this.newProfileName = profileContent!.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
-    }
-
-    async readProfileFile(file: string) {
-        let read = '';
-        if (file.endsWith('.r2x')) {
-            read = (await FsProvider.instance.readFile(file)).toString();
-        } else if (file.endsWith('.r2z')) {
-            const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
-            if (result === null) {
-                return null;
-            }
-            read = result.toString();
-        }
-        return read;
     }
 
     profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
