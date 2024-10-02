@@ -134,7 +134,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+    async installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         const args = this.getInstallArgs(mod, profile);
 
         // Installation logic for mod loaders.

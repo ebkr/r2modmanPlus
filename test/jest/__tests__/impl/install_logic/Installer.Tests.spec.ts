@@ -50,7 +50,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -71,7 +71,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "Plugins", "static_dir", "structured.dll"))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -92,7 +92,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "static_dir", "structured.dll"))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -112,7 +112,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.mm.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -150,7 +150,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             const coreRule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
             const defaultRuleSubtype = InstallationRules.getAllManagedPaths(coreRule.rules)
@@ -175,7 +175,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -196,7 +196,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -217,7 +217,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.managed.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(
@@ -255,7 +255,7 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
             expect(await FsProvider.instance.exists(

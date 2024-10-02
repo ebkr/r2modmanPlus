@@ -39,5 +39,5 @@ export default abstract class ProfileInstallerProvider {
      * Installs a mod to the profile.
      * @param mod
      */
-    public abstract installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null>;
+    public abstract installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
 }
