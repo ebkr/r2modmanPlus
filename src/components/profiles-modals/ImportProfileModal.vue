@@ -259,7 +259,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
             let installedMod: ManifestV2;
             try {
-                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile);
+                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
             } catch (e) {
                 this.$store.commit('error/handleError', e);
                 keepIterating = false;
