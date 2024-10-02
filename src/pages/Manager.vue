@@ -370,6 +370,10 @@ import ModalCard from '../components/ModalCard.vue';
 			this.settings.setFunkyMode(value);
 		}
 
+		setLinuxUseFlatpak(value: boolean) {
+			this.settings.setLinuxUseFlatpak(value);
+		}
+
 		async exportProfile() {
 			if (!this.localModList.length) {
 				const err = new R2Error(
@@ -578,6 +582,9 @@ import ModalCard from '../components/ModalCard.vue';
                     break;
                 case "ToggleFunkyMode":
                     this.setFunkyMode(!this.settings.getContext().global.funkyModeEnabled);
+                    break;
+                case "ToggleLinuxUseFlatpak":
+                    this.setLinuxUseFlatpak(!this.settings.getContext().global.linuxUseFlatpak);
                     break;
                 case "SwitchTheme":
                     this.toggleDarkTheme();
