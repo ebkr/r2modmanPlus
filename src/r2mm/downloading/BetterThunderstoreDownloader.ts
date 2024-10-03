@@ -2,7 +2,7 @@ import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
@@ -256,7 +256,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
-        axios.get(combo.getVersion().getDownloadUrl(), {
+        this._downloadCombo(combo, callback)
+            .then(async response => this._saveDownloadResponse(response, combo, callback))
+            .catch((reason: Error) => {
+                callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
+            })
+    }
+
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+        return axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => {
                 callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
             },
@@ -265,19 +273,19 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 'Content-Type': 'application/zip',
                 'Access-Control-Allow-Origin': '*'
             }
-        }).then(async response => {
-            const buf: Buffer = Buffer.from(response.data)
-            callback(100, StatusEnum.PENDING, null);
-            await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
-                if (success) {
-                    callback(100, StatusEnum.SUCCESS, error || null);
-                } else {
-                    callback(100, StatusEnum.FAILURE, error || null);
-                }
-            });
-        }).catch((reason: Error) => {
-            callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
-        })
+        });
+    }
+
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<void> {
+        const buf: Buffer = Buffer.from(response.data)
+        callback(100, StatusEnum.PENDING, null);
+        await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
+            if (success) {
+                callback(100, StatusEnum.SUCCESS, error || null);
+            } else {
+                callback(100, StatusEnum.FAILURE, error || null);
+            }
+        });
     }
 
     public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
