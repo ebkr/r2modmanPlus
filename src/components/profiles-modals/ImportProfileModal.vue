@@ -217,20 +217,17 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     async downloadAndSaveMods(modList: ExportMod[]): Promise<ThunderstoreCombo[]> {
+        const comboList = await ProfileUtils.exportModsToCombos(modList, this.$store.state.activeGame.internalFolderName);
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
-        const allMods = await PackageDb.getPackagesByNames(
-            this.$store.state.activeGame.internalFolderName,
-            modList.map((m) => m.getName())
-        );
 
         this.percentageImported = 0;
-        return await ThunderstoreDownloaderProvider.instance.downloadImportedMods(
-            modList,
-            allMods,
+        await ThunderstoreDownloaderProvider.instance.downloadImportedMods(
+            comboList,
             ignoreCache,
             (progress: number) => this.percentageImported = Math.floor(progress)
         );
+        return comboList;
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.

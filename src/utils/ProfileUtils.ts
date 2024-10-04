@@ -12,7 +12,36 @@ import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
+import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
+
+export async function exportModsToCombos(exportMods: ExportMod[], community: string): Promise<ThunderstoreCombo[]> {
+    const tsMods = await PackageDb.getPackagesByNames(community, exportMods.map((m) => m.getName()));
+
+    const combos = tsMods.map((tsMod) => {
+        const targetMod = exportMods.find((expMod) => tsMod.getFullName() == expMod.getName());
+        const version = targetMod
+            ? tsMod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
+            : undefined;
+
+        if (version) {
+            const combo = new ThunderstoreCombo();
+            combo.setMod(tsMod);
+            combo.setVersion(version);
+            return combo;
+        }
+    }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
+
+    if (combos.length === 0) {
+        throw new R2Error(
+            'No importable mods found',
+            'None of the mods or versions listed in the shared profile are available on Thunderstore.',
+            'Make sure the shared profile is meant for the currently selected game.'
+        );
+    }
+
+    return combos;
+}
 
 export async function extractImportedProfileConfigs(file: string, profileName: string) {
     const entries = await ZipProvider.instance.getEntries(file);
