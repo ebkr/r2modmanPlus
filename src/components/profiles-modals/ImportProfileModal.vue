@@ -243,31 +243,18 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     async installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
-        let keepIterating = true;
+        const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
+
         for (const comboMod of comboList) {
-            if (!keepIterating) {
-                return;
-            }
+            const installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
 
-            let installedMod: ManifestV2;
-            try {
-                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
-            } catch (e) {
-                this.$store.commit('error/handleError', e);
-                keepIterating = false;
-                this.closeModal();
-                return;
-            }
-
-            for (const imported of modList) {
-                if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installedMod, this.activeProfile.asImmutableProfile(), async (modToDisable: ManifestV2) => {
-                        // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                        modToDisable.enable();
-                        await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile.asImmutableProfile());
-                        modToDisable.disable();
-                    });
-                }
+            if (disabledMods.includes(installedMod.getName())) {
+                await ProfileModList.updateMod(installedMod, this.activeProfile.asImmutableProfile(), async (modToDisable: ManifestV2) => {
+                    // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
+                    modToDisable.enable();
+                    await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile.asImmutableProfile());
+                    modToDisable.disable();
+                });
             }
         }
     }
