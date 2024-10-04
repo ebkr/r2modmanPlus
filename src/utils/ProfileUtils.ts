@@ -15,7 +15,7 @@ import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import ProfileModList from "../r2mm/mods/ProfileModList";
 
-export async function extractZippedProfileFile(file: string, profileName: string) {
+export async function extractImportedProfileConfigs(file: string, profileName: string) {
     const entries = await ZipProvider.instance.getEntries(file);
     for (const entry of entries) {
         if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {

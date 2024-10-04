@@ -200,9 +200,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         try {
-            const comboList = await this.downloadImportedProfileMods(mods);
-            await this.downloadCompletedCallback(comboList, mods);
-            await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+            const comboList = await this.downloadAndSaveMods(mods);
+            await this.installModsToProfile(comboList, mods);
+            await ProfileUtils.extractImportedProfileConfigs(zipPath, profileName);
         } catch (e) {
             this.closeModal();
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
@@ -225,7 +225,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.closeModal();
     }
 
-    async downloadImportedProfileMods(modList: ExportMod[]): Promise<ThunderstoreCombo[]> {
+    async downloadAndSaveMods(modList: ExportMod[]): Promise<ThunderstoreCombo[]> {
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
         const allMods = await PackageDb.getPackagesByNames(
@@ -242,8 +242,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         );
     }
 
-    // Called from the downloadImportedProfileMods function
-    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
+    async installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
         let keepIterating = true;
         for (const comboMod of comboList) {
             if (!keepIterating) {
