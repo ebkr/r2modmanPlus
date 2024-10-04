@@ -8,16 +8,13 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
-import ManifestV2 from "../../model/ManifestV2";
 import Profile from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
-import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
-import ProfileModList from "../../r2mm/mods/ProfileModList";
 import FileUtils from "../../utils/FileUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
@@ -201,7 +198,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         try {
             const comboList = await this.downloadAndSaveMods(mods);
-            await this.installModsToProfile(comboList, mods);
+            await ProfileUtils.installModsToProfile(comboList, mods, this.activeProfile.asImmutableProfile());
             await ProfileUtils.extractImportedProfileConfigs(zipPath, profileName);
         } catch (e) {
             this.closeModal();
@@ -240,23 +237,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             ignoreCache,
             (progress: number) => this.percentageImported = Math.floor(progress)
         );
-    }
-
-    async installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
-        const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-
-        for (const comboMod of comboList) {
-            const installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
-
-            if (disabledMods.includes(installedMod.getName())) {
-                await ProfileModList.updateMod(installedMod, this.activeProfile.asImmutableProfile(), async (modToDisable: ManifestV2) => {
-                    // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                    modToDisable.enable();
-                    await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile.asImmutableProfile());
-                    modToDisable.disable();
-                });
-            }
-        }
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.

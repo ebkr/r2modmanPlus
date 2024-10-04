@@ -7,8 +7,7 @@ import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
 import ManifestV2 from "../model/ManifestV2";
 import Profile, { ImmutableProfile } from "../model/Profile";
-import ThunderstoreMod from "../model/ThunderstoreMod";
-import ThunderstoreVersion from "../model/ThunderstoreVersion";
+import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
@@ -41,19 +40,31 @@ export async function extractImportedProfileConfigs(file: string, profileName: s
     }
 }
 
-export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: ImmutableProfile): Promise<ManifestV2> {
-    const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
-    if (installError instanceof R2Error) {
-        throw installError;
-    }
+export async function installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[], profile: ImmutableProfile) {
+    const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
 
-    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
-    if (newModList instanceof R2Error) {
-        throw newModList;
-    }
+    for (const comboMod of comboList) {
+        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
-    return manifestMod;
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
+        if (installError instanceof R2Error) {
+            throw installError;
+        }
+
+        const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
+        if (newModList instanceof R2Error) {
+            throw newModList;
+        }
+
+        if (disabledMods.includes(manifestMod.getName())) {
+            await ProfileModList.updateMod(manifestMod, profile, async (modToDisable: ManifestV2) => {
+                // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
+                modToDisable.enable();
+                await ProfileInstallerProvider.instance.disableMod(modToDisable, profile);
+                modToDisable.disable();
+            });
+        }
+    }
 }
 
 export async function parseYamlToExportFormat(yamlContent: string) {
