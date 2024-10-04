@@ -2,6 +2,7 @@ import path from "path";
 
 import * as yaml from "yaml";
 
+import FileUtils from "./FileUtils";
 import R2Error from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
@@ -111,6 +112,37 @@ export async function parseYamlToExportFormat(yamlContent: string) {
             );
         })
     );
+}
+
+/**
+ * Copies mods (which should exists in the cache at this point) to profile folder and
+ * updates the profile status. Extracts the configs etc. files that are included in
+ * the zip file created when the profile was exported.
+ *
+ * When updating an existing profile, all this is done to a temporary profile first,
+ * and the target profile is overwritten only if the process is successful.
+ */
+export async function populateImportedProfile(
+    comboList: ThunderstoreCombo[],
+    exportModList: ExportMod[],
+    profileName: string,
+    isUpdate: boolean,
+    zipPath: string
+) {
+    const profile = new ImmutableProfile(isUpdate ? '_profile_update' : profileName);
+
+    if (isUpdate) {
+        await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
+    }
+
+    await installModsToProfile(comboList, exportModList, profile);
+    await extractImportedProfileConfigs(zipPath, profile.getProfileName());
+
+    if (isUpdate) {
+        const targetProfile = new ImmutableProfile(profileName);
+        await FileUtils.recursiveRemoveDirectoryIfExists(targetProfile.getProfilePath());
+        await FsProvider.instance.rename(profile.getProfilePath(), targetProfile.getProfilePath());
+    }
 }
 
 //TODO: Check if instead of returning null/empty strings, there's some errors that should be handled
