@@ -1,6 +1,4 @@
 <script lang="ts">
-import path from "path";
-
 import { mixins } from "vue-class-component";
 import { Component } from 'vue-property-decorator';
 
@@ -8,7 +6,7 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
-import Profile from "../../model/Profile";
+import { ImmutableProfile } from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
@@ -52,10 +50,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
-    }
-
-    get activeProfile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
     }
 
     get isOpen(): boolean {
@@ -182,24 +176,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    async profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
+    async profileCreatedCallback(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
         if (this.listenerId !== localListenerId) {
             return;
         }
 
-        let profileName = targetProfile;
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
+        const profile = new ImmutableProfile(this.importUpdateSelection === 'UPDATE' ? '_profile_update' : targetProfileName);
 
         if (this.importUpdateSelection === 'UPDATE') {
-            profileName = "_profile_update";
-            await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), profileName));
-            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
+            await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
         }
 
         try {
             const comboList = await this.downloadAndSaveMods(mods);
-            await ProfileUtils.installModsToProfile(comboList, mods, this.activeProfile.asImmutableProfile());
-            await ProfileUtils.extractImportedProfileConfigs(zipPath, profileName);
+            await ProfileUtils.installModsToProfile(comboList, mods, profile);
+            await ProfileUtils.extractImportedProfileConfigs(zipPath, profile.getProfileName());
         } catch (e) {
             this.closeModal();
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
@@ -207,18 +199,20 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         if (this.importUpdateSelection === 'UPDATE') {
-            this.activeProfileName = targetProfile;
+            const targetProfile = new ImmutableProfile(targetProfileName);
+
             try {
-                await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
+                await FileUtils.recursiveRemoveDirectoryIfExists(targetProfile.getProfilePath());
             } catch (e) {
                 this.closeModal();
                 this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                 return;
             }
-            await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+
+            await fs.rename(profile.getProfilePath(), targetProfile.getProfilePath());
         }
 
-        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfileName, prewarmCache: true });
         this.closeModal();
     }
 
