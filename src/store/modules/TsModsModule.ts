@@ -28,7 +28,8 @@ interface State {
 
 type ProgressCallback = (progress: number) => void;
 type PackageListChunk = {full_name: string}[];
-type ChunkedPackageList = PackageListChunk[];
+export type PackageListChunks = PackageListChunk[];
+export type PackageListIndex = {content: string[], hash: string, isLatest: boolean};
 
 function isPackageListChunk(value: unknown): value is PackageListChunk {
     return Array.isArray(value) && (
@@ -169,28 +170,36 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async _fetchPackageListIndex({rootState}): Promise<string[]> {
+        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
             const indexUrl = rootState.activeGame.thunderstoreUrl;
-            const chunkIndex: string[] = await retry(() => fetchAndProcessBlobFile(indexUrl));
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl));
 
-            if (!isStringArray(chunkIndex)) {
+            if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
             }
-            if (isEmptyArray(chunkIndex)) {
+            if (isEmptyArray(index.content)) {
                 throw new Error('Received empty chunk index from API');
             }
 
-            return chunkIndex;
+            const community = rootState.activeGame.internalFolderName;
+            const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
+
+            // Normally the hash would be updated after the mod list is successfully
+            // fetched and written to IndexedDB, but if the list hasn't changed,
+            // those step are skipped, so update the "last seen" timestamp now.
+            if (isLatest) {
+                await dispatch('updateIndexHash', index.hash);
+            }
+
+            return {...index, isLatest};
         },
 
         async fetchPackageListChunks(
-            {dispatch},
-            progressCallback?: ProgressCallback
-        ): Promise<ChunkedPackageList> {
-            const chunkIndex: string[] = await dispatch('_fetchPackageListIndex');
-
+            {},
+            {chunkUrls, progressCallback}: {chunkUrls: string[], progressCallback?: ProgressCallback},
+        ): Promise<PackageListChunks> {
             // Count index as a chunk for progress bar purposes.
-            const chunkCount = chunkIndex.length + 1;
+            const chunkCount = chunkUrls.length + 1;
             let completed = 1;
             const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
             updateProgress();
@@ -198,10 +207,10 @@ export const TsModsModule = {
             // Download chunks serially to avoid slow connections timing
             // out due to concurrent requests competing for the bandwidth.
             const chunks = [];
-            for (const [i, chunkUrl] of chunkIndex.entries()) {
-                const chunk = await retry(() => fetchAndProcessBlobFile(chunkUrl))
+            for (const [i, chunkUrl] of chunkUrls.entries()) {
+                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(chunkUrl))
 
-                if (chunkIndex.length > 1 && isEmptyArray(chunkIndex)) {
+                if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
                     throw new Error(`Chunk #${i} in multichunk response was empty`);
                 } else if (!isPackageListChunk(chunk)) {
                     throw new Error(`Chunk #${i} was invalid format`);
@@ -228,29 +237,39 @@ export const TsModsModule = {
             commit('setExclusions', exclusions);
         },
 
-        async updateMods({commit, rootState}) {
+        async updateMods({commit, dispatch, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
-            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
-            commit('setModsLastUpdated', updated);
             commit('updateDeprecated', modList);
             commit('clearModCache');
+            await dispatch('updateModsLastUpdated');
+        },
+
+        async updateModsLastUpdated({commit, rootState}) {
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            commit('setModsLastUpdated', updated);
         },
 
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
         async updatePersistentCache(
             {dispatch, rootState, state},
-            packages: ChunkedPackageList
+            {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
             }
 
-            const filtered = packages.map((chunk) => chunk.filter(
+            const filtered = chunks.map((chunk) => chunk.filter(
                 (pkg) => !state.exclusions!.includes(pkg.full_name)
             ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
-        }
+            await dispatch('updateIndexHash', indexHash);
+        },
+
+        async updateIndexHash({rootState}, indexHash: string) {
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.setLatestPackageListIndex(community, indexHash);
+        },
     }
 }

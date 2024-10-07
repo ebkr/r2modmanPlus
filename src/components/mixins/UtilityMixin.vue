@@ -4,6 +4,7 @@ import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
+import { PackageListIndex } from '../../store/modules/TsModsModule';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -15,8 +16,21 @@ export default class UtilityMixin extends Vue {
     }
 
     async refreshThunderstoreModList() {
-        const packageListChunks = await this.$store.dispatch('tsMods/fetchPackageListChunks');
-        await this.$store.dispatch("tsMods/updatePersistentCache", packageListChunks);
+        const packageListIndex: PackageListIndex = await this.$store.dispatch("tsMods/fetchPackageListIndex");
+
+        if (packageListIndex.isLatest) {
+            await this.$store.dispatch("tsMods/updateModsLastUpdated");
+            return;
+        }
+
+        const packageListChunks = await this.$store.dispatch(
+            "tsMods/fetchPackageListChunks",
+            {chunkUrls: packageListIndex.content},
+        );
+        await this.$store.dispatch(
+            "tsMods/updatePersistentCache",
+            {chunks: packageListChunks, indexHash: packageListIndex.hash},
+        );
         await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
         await this.$store.dispatch("tsMods/prewarmCache");

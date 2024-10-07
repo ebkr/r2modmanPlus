@@ -112,8 +112,17 @@ export const makeLongRunningGetRequest = async (
 export const fetchAndProcessBlobFile = async (url: string) => {
     const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
     const buffer = Buffer.from(response.data);
+    const hash = await getSha256Hash(buffer);
     const jsonString = await decompressArrayBuffer(buffer);
-    return JSON.parse(jsonString);
+    const content = JSON.parse(jsonString);
+    return {content, hash};
+}
+
+async function getSha256Hash(arrayBuffer: ArrayBuffer): Promise<string> {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashByteArray = Array.from(new Uint8Array(hashBuffer));
+    const hexHash = hashByteArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hexHash;
 }
 
 export const isNetworkError = (responseOrError: unknown) =>
