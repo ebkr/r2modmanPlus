@@ -1,7 +1,6 @@
 import Dexie, { Table } from 'dexie';
 
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import * as ArrayUtils from '../../utils/ArrayUtils';
 
 interface DexieVersion {
     full_name: string;
@@ -56,17 +55,19 @@ class PackageDexieStore extends Dexie {
 const db = new PackageDexieStore();
 
 // TODO: user type guards to validate (part of) the data before operations?
-export async function updateFromApiResponse(community: string, packages: any[]) {
+export async function updateFromApiResponse(community: string, packageChunks: any[][]) {
+    let default_order = 0;
     const extra = {community, date_fetched: new Date()};
-    const newPackageChunks: DexiePackage[][] = ArrayUtils.chunk(
-        packages.map((pkg, i) => ({
+    const newPackageChunks: DexiePackage[][] = packageChunks.map((chunk) =>
+        chunk.map((pkg) => ({
             ...pkg,
             ...extra,
-            default_order: i
-        })),
-        5000
+            default_order: default_order++
+        }))
     );
 
+    // Since we need to do these operations in a single transaction we can't
+    // process the chunks one by one as they are downloaded.
     await db.transaction(
         'rw',
         db.packages,

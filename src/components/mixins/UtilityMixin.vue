@@ -4,7 +4,6 @@ import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -16,8 +15,8 @@ export default class UtilityMixin extends Vue {
     }
 
     async refreshThunderstoreModList() {
-        const response = await ConnectionProvider.instance.getPackages(this.$store.state.activeGame);
-        await this.$store.dispatch("tsMods/updatePersistentCache", response.data);
+        const packageListChunks = await this.$store.dispatch('tsMods/fetchPackageListChunks');
+        await this.$store.dispatch("tsMods/updatePersistentCache", packageListChunks);
         await this.$store.dispatch("tsMods/updateMods");
         await this.$store.dispatch("profile/tryLoadModListFromDisk");
         await this.$store.dispatch("tsMods/prewarmCache");
