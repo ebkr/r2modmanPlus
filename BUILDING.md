@@ -1,10 +1,15 @@
 # Setting Up
 ### Prerequisites
-- Node.js (Built on 13.2.0)
+- Node.js (>=18.0.0)
 - Yarn
 - Quasar CLI (Install using `yarn global add @quasar/cli`)
+- Python2 (EOL for 4 years. Goodluck!)
+
+#### Linux Build
+- rpm builder
 
 ### Setting up
 1. Navigate to the root directory, and run `yarn install`.
-2. To run: `quasar dev -m electron`
-3. To build: `yarn build-{platform}`
+2. Navigate to the root directory, and run `yarn upgrade`.
+3. To run quick dev build: `quasar dev -m electron`
+4. To fully build: `yarn build-{platform}`
