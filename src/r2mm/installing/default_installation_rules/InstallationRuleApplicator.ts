@@ -148,6 +148,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("TankTeam"),
             buildBepInExRules("Distance"),
             buildBepInExRules("FiveNightsAtFreddysIntoThePit"),
+            buildBepInExRules("GoreBox"),
         ]
     }
 }
