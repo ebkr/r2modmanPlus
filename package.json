@@ -90,7 +90,7 @@
         "chai": "^4.2.0",
         "devtron": "^1.4.0",
         "electron": "^24.0.0",
-        "electron-builder": "22.10.5",
+        "electron-builder": "^24.10.5",
         "electron-debug": "^3.0.1",
         "electron-devtools-installer": "^3.0.0",
         "electron-packager": "14.1.1",
@@ -124,8 +124,8 @@
         "last 5 Opera versions"
     ],
     "engines": {
-        "node": ">= 16.13.0",
-        "npm": ">= 6.13.4",
+        "node": ">= 18.0.0",
+        "npm": ">= 10.0.0",
         "yarn": ">= 1.21.1"
     }
 }
