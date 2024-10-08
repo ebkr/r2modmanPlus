@@ -9,8 +9,6 @@ import YamlParseError from '../../model/errors/Yaml/YamlParseError';
 import YamlConvertError from '../../model/errors/Yaml/YamlConvertError';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ManifestV2 from '../../model/ManifestV2';
-import ExportFormat from '../../model/exports/ExportFormat';
-import ExportMod from '../../model/exports/ExportMod';
 import PathResolver from '../manager/PathResolver';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import FileUtils from '../../utils/FileUtils';
@@ -189,10 +187,7 @@ export default class ProfileModList {
         if (list instanceof R2Error) {
             return list;
         }
-        const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
-        const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
-        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
             await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
         }

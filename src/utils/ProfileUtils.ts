@@ -28,6 +28,7 @@ export async function extractZippedProfileFile(file: string, profileName: string
                     'BepInEx'
                 )
             );
+        // This is for legacy support, old profiles may contain r2x files:
         } else if (entry.entryName.toLowerCase() !== "export.r2x") {
             await ZipProvider.instance.extractEntryTo(
                 file,
@@ -75,15 +76,9 @@ export async function parseYamlToExportFormat(yamlContent: string) {
 
 //TODO: Check if instead of returning null/empty strings, there's some errors that should be handled
 export async function readProfileFile(file: string) {
-    let read = '';
-    if (file.endsWith('.r2x')) {
-        read = (await FsProvider.instance.readFile(file)).toString();
-    } else if (file.endsWith('.r2z')) {
-        const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
-        if (result === null) {
-            return null;
-        }
-        read = result.toString();
+    const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
+    if (result === null) {
+        return null;
     }
-    return read;
+    return result.toString();
 }
