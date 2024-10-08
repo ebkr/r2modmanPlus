@@ -15,7 +15,12 @@ export default class UtilityMixin extends Vue {
         setInterval(this.tryRefreshThunderstoreModList, this.REFRESH_INTERVAL);
     }
 
+    // Wrapper to allow TSMM to inject telemetry gathering.
     async refreshThunderstoreModList() {
+        await this._refreshThunderstoreModList();
+    }
+
+    async _refreshThunderstoreModList() {
         const packageListIndex: PackageListIndex = await this.$store.dispatch("tsMods/fetchPackageListIndex");
 
         if (packageListIndex.isLatest) {

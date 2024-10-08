@@ -49,8 +49,13 @@ export default class SplashMixin extends Vue {
         this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
-    // Get the list of Thunderstore mods from API or local cache.
+    // Wrapper to allow TSMM to inject telemetry gathering.
     async getThunderstoreMods() {
+        await this._getThunderstoreMods();
+    }
+
+    // Get the list of Thunderstore mods from API or local cache.
+    async _getThunderstoreMods() {
         const packageListIndex = await this.fetchPackageListIndex();
         const packageListChunks = await this.fetchPackageListChunksIfUpdated(packageListIndex);
         this.getRequestItem('ThunderstoreDownload').setProgress(100);
