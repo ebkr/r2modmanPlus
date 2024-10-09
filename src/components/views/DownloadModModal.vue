@@ -166,7 +166,7 @@ let assignId = 0;
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
                 setTimeout(() => {
-                    ThunderstoreDownloaderProvider.instance.download(profile, tsMod, tsVersion, thunderstorePackages, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                    ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, thunderstorePackages, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                         const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                         if (status === StatusEnum.FAILURE) {
                             if (err !== null) {
@@ -337,7 +337,7 @@ let assignId = 0;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.profile, tsMod, tsVersion, this.thunderstorePackages, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.thunderstorePackages, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                     if (status === StatusEnum.FAILURE) {
                         if (err !== null) {
