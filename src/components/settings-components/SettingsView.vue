@@ -135,7 +135,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Browse profile folder',
                 'Open the folder where mods are stored for the current profile.',
                 async () => {
-                    return this.$store.getters['profile/activeProfile'].getPathOfProfile();
+                    return this.$store.getters['profile/activeProfile'].getProfilePath();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')

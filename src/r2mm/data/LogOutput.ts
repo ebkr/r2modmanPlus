@@ -1,5 +1,4 @@
 import Profile from '../../model/Profile';
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import GameManager from '../../model/game/GameManager';
 import { PackageLoader } from '../../model/installing/PackageLoader';
@@ -35,16 +34,16 @@ export default class LogOutput {
         const game = GameManager.activeGame;
         switch (game.packageLoader) {
             case PackageLoader.BEPINEX:
-                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'BepInEx', 'LogOutput.log'))
+                fs.exists(Profile.getActiveProfile().joinToProfilePath('BepInEx', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
             case PackageLoader.RETURN_OF_MODDING:
-                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'ReturnOfModding', 'LogOutput.log'))
+                fs.exists(Profile.getActiveProfile().joinToProfilePath('ReturnOfModding', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
             case PackageLoader.MELON_LOADER:
             case PackageLoader.NORTHSTAR:
-                fs.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), 'MelonLoader', 'Latest.log'))
+                fs.exists(Profile.getActiveProfile().joinToProfilePath('MelonLoader', 'Latest.log'))
                     .then(value => this._exists = value);
                 break;
         }

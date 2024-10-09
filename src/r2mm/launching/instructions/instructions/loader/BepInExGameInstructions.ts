@@ -3,7 +3,6 @@ import { GameInstruction } from '../../GameInstructions';
 import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
-import path from 'path';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
 import { getUnityDoorstopVersion } from '../../../../../utils/UnityDoorstopUtils';
@@ -25,7 +24,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
+            if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
                 extraArguments += ` --doorstop-dll-search-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
             }
         }
@@ -42,7 +41,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
             }
-            if (await FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "unstripped_corlib"))) {
+            if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
                 extraArguments += ` --doorstop-mono-dll-search-path-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
             }
         }

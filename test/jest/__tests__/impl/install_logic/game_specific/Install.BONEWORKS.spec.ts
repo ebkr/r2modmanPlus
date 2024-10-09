@@ -72,7 +72,7 @@ describe('BONEWORKS Install Logic', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         InstallationRuleApplicator.apply();
 
         ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
@@ -129,9 +129,10 @@ describe('BONEWORKS Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "_state", `${pkg.getName()}.yml`)))
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath(value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
+            expect(FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}.yml`)))
         }
     });
 

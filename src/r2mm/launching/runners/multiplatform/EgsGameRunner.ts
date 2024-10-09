@@ -93,7 +93,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
 
     private async updateDoorstopConfigVars(profile: Profile, data: {[section: string]: {[key: string]: string}}): Promise<R2Error | undefined> {
         const fs = FsProvider.instance;
-        const doorstopConfigPath = path.join(profile.getPathOfProfile(), "doorstop_config.ini");
+        const doorstopConfigPath = profile.joinToProfilePath("doorstop_config.ini");
         try {
             if (await fs.exists(doorstopConfigPath)) {
                 const originalConfigText = (await fs.readFile(doorstopConfigPath)).toString();

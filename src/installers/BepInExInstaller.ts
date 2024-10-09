@@ -32,9 +32,9 @@ export class BepInExInstaller implements PackageInstaller {
         for (const item of (await FsProvider.instance.readdir(bepInExRoot))) {
             if (!basePackageFiles.includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(bepInExRoot, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFile(path.join(bepInExRoot, item), profile.joinToProfilePath(item));
                 } else {
-                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFolder(path.join(bepInExRoot, item), profile.joinToProfilePath(item));
                 }
             }
         }

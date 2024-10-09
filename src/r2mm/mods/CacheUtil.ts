@@ -17,9 +17,9 @@ export default class CacheUtil {
         const fs = FsProvider.instance;
 
         // Store profile name to allow returning back to current profile.
-        fs.readdir(Profile.getDirectory()).then(async dir => {
+        fs.readdir(Profile.getRootDir()).then(async dir => {
             for (const value of dir) {
-                if ((await fs.stat(path.join(Profile.getDirectory(), value))).isDirectory()) {
+                if ((await fs.stat(path.join(Profile.getRootDir(), value))).isDirectory()) {
                     profiles.push(value);
                 }
             }

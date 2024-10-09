@@ -23,7 +23,7 @@ export async function extractZippedProfileFile(file: string, profileName: string
                 file,
                 entry.entryName,
                 path.join(
-                    Profile.getDirectory(),
+                    Profile.getRootDir(),
                     profileName,
                     'BepInEx'
                 )
@@ -33,7 +33,7 @@ export async function extractZippedProfileFile(file: string, profileName: string
                 file,
                 entry.entryName,
                 path.join(
-                    Profile.getDirectory(),
+                    Profile.getRootDir(),
                     profileName
                 )
             )

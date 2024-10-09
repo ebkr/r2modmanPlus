@@ -14,7 +14,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
     // TODO: Override files in conflict management state file to say they belong to the following mod.
     async overrideInstalledState(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
         let stateFileContents: string | undefined;
-        const modStateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+        const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
         if (await FsProvider.instance.exists(modStateFilePath)) {
             stateFileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
         }
@@ -31,7 +31,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         modState.files.forEach(([key, value]) => {
             modMap.set(value, mod.getName());
         });
-        const totalStateFilePath = path.join(profile.getPathOfProfile(), "_state", "installation_state.yml");
+        const totalStateFilePath = profile.joinToProfilePath("_state", "installation_state.yml");
         await FileUtils.ensureDirectory(path.dirname(totalStateFilePath));
         await FsProvider.instance.writeFile(totalStateFilePath, yaml.stringify({
             currentState: Array.from(modMap.entries())
@@ -45,7 +45,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         const modNameToManifestV2 = new Map<string, ManifestV2>();
         for (const mod of mods) {
             let stateFileContents: string | undefined;
-            const modStateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+            const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
             if (await FsProvider.instance.exists(modStateFilePath)) {
                 stateFileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
             }
@@ -72,26 +72,26 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
                 copyAcross = true;
             } else if (stateMap.get(file) !== overallState.get(file)) {
                 copyAcross = true;
-            } else if (!(await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file)))) {
+            } else if (!(await FsProvider.instance.exists(profile.joinToProfilePath(file)))) {
                 copyAcross = true;
             }
             if (copyAcross) {
                 const modFiles = modStates.get(overallState.get(file)!)!;
                 for (const [key, value] of modFiles.files) {
                     if (value === file) {
-                        await FileUtils.ensureDirectory(path.dirname(path.join(profile.getPathOfProfile(), file)));
-                        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), file))) {
-                            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), file));
+                        await FileUtils.ensureDirectory(path.dirname(profile.joinToProfilePath(file)));
+                        if (await FsProvider.instance.exists(profile.joinToProfilePath(file))) {
+                            await FsProvider.instance.unlink(profile.joinToProfilePath(file));
                         }
                         if (!file.toLowerCase().endsWith(".manager.disabled")) {
-                            await FsProvider.instance.copyFile(key, path.join(profile.getPathOfProfile(), file));
+                            await FsProvider.instance.copyFile(key, profile.joinToProfilePath(file));
                         }
                         break;
                     }
                 }
             }
         }
-        const totalStateFilePath = path.join(profile.getPathOfProfile(), "_state", "installation_state.yml");
+        const totalStateFilePath = profile.joinToProfilePath("_state", "installation_state.yml");
         await FileUtils.ensureDirectory(path.dirname(totalStateFilePath));
         await FsProvider.instance.writeFile(totalStateFilePath, yaml.stringify({
             currentState: Array.from(overallState.entries())
@@ -109,7 +109,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
     }
 
     private async getTotalState(profile: Profile): Promise<StateTracker> {
-        const totalStateFilePath = path.join(profile.getPathOfProfile(), "_state", "installation_state.yml");
+        const totalStateFilePath = profile.joinToProfilePath("_state", "installation_state.yml");
         let totalState: StateTracker = {
             currentState: []
         };

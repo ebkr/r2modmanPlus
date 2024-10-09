@@ -33,7 +33,7 @@ export class ReturnOfModdingInstaller implements PackageInstaller {
         for (const fileOrFolder of toCopy) {
             await FileUtils.copyFileOrFolder(
                 path.join(root, fileOrFolder),
-                path.join(profile.getPathOfProfile(), fileOrFolder)
+                profile.joinToProfilePath(fileOrFolder)
             );
         }
     }
@@ -44,11 +44,11 @@ export class ReturnOfModdingInstaller implements PackageInstaller {
 
         try {
             // Delete all files except mods.yml from profile root. Ignore directories.
-            for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+            for (const file of (await fs.readdir(profile.getProfilePath()))) {
                 if (file.toLowerCase() === 'mods.yml') {
                     continue;
                 }
-                const filePath = path.join(profile.getPathOfProfile(), file);
+                const filePath = profile.joinToProfilePath(file);
                 if ((await fs.lstat(filePath)).isFile()) {
                     await fs.unlink(filePath);
                 }
@@ -108,8 +108,8 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
         // Remove the data dir, but keep the cache subdir if it exists.
         // Leave the config dir alone.
         try {
-            const pluginPath = path.join(profile.getPathOfProfile(), this._ROOT, this._PLUGINS, mod.getName())
-            const dataPath = path.join(profile.getPathOfProfile(), this._ROOT, this._DATA, mod.getName());
+            const pluginPath = profile.joinToProfilePath(this._ROOT, this._PLUGINS, mod.getName())
+            const dataPath = profile.joinToProfilePath(this._ROOT, this._DATA, mod.getName());
 
             await FileUtils.recursiveRemoveDirectoryIfExists(pluginPath);
 

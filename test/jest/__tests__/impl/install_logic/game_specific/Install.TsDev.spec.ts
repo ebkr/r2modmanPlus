@@ -70,7 +70,7 @@ describe('TS Dev No Flatten Install Logic', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         InstallationRuleApplicator.apply();
 
         pkg = packageBuilder('test_mod', 'author', new VersionNumber('1.0.0'));
@@ -107,7 +107,7 @@ describe('TS Dev No Flatten Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            const noFlattenDir = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "NoFlatten");
+            const noFlattenDir = Profile.getActiveProfile().joinToProfilePath("BepInEx", "NoFlatten");
             // Add one to remove trailing path separator.
             const subdirPathAfterNoFlatten = value.substring(path.join("BIE", "GameSpecific", "ThunderstoreDev", "NoFlatten").length + 1);
             expect(await FsProvider.instance.exists(path.join(
@@ -123,7 +123,7 @@ describe('TS Dev No Flatten Install Logic', () => {
         ]
 
         for (const value of subdirPaths) {
-            const noFlattenDir = path.join(Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "NoFlatten");
+            const noFlattenDir = Profile.getActiveProfile().joinToProfilePath("BepInEx", "NoFlatten");
             const convertedName = value.replace(/[\/\\]/g, "_");
 
             expect(await FsProvider.instance.exists(path.join(
