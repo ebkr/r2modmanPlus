@@ -24,20 +24,18 @@ export default abstract class ThunderstoreDownloaderProvider {
      * This method is recursive to allow dependency building from nested dependencies.
      *
      * @param mod       The current mod to download.
-     * @param builder   An array of resolved dependencies.
-     * @return          ThunderstoreCombo array of the final result of the builder.
+     * @param builder   An array of resolved dependencies. This is mutated in place!
      */
-    public abstract buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<ThunderstoreCombo[]>;
+    public abstract buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void>;
 
     /**
      * Resolve all downloadable dependencies of a ThunderstoreVersion fetching the latest version of the dependency.
      * This method is recursive to allow dependency building from nested dependencies.
      *
      * @param mod       The current mod to download.
-     * @param builder   An array of resolved dependencies.
-     * @return          ThunderstoreCombo array of the final result of the builder.
+     * @param builder   An array of resolved dependencies. This is mutated in place!
      */
-    public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<ThunderstoreCombo[]>;
+    public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void>;
 
     /**
      * A top-level method to download the latest version of all mods passed in, including their dependencies.
