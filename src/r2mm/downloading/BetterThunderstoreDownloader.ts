@@ -1,6 +1,5 @@
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
 import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -14,35 +13,27 @@ import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import GameManager from '../../model/game/GameManager';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
-    public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
-            // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (matchingProvider !== undefined) {
-                const version = new VersionNumber(dependency.substring(matchingProvider.getFullName().length + 1));
-                // Find ThunderstoreVersion with VersionNumber matching ${version}
-                const matchingVersion = matchingProvider.getVersions().find(v => v.getVersionNumber().isEqualTo(version));
-                if (matchingVersion !== undefined) {
-                    let otherVersionAlreadyAdded = false;
-                    builder.forEach(v => {
-                        // If otherVersionAlreadyAdded, or full names are equal
-                        otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
-                    });
-                    if (!otherVersionAlreadyAdded) {
-                        const tsCombo = new ThunderstoreCombo();
-                        tsCombo.setMod(matchingProvider);
-                        tsCombo.setVersion(matchingVersion);
-                        foundDependencies.push(tsCombo);
-                    }
-                }
-            }
-        })
+    public async buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): Promise<ThunderstoreCombo[]> {
+        let foundDependencies = await PackageDb.getCombosByDependencyStrings(GameManager.activeGame, mod.getDependencies());
+
+        // Filter out already added AFTER reading packages from the DB to
+        // ensure the recursion works as expected.
+        const alreadyAdded = builder.map((seenMod) => seenMod.getMod().getFullName());
+        foundDependencies = foundDependencies.filter(
+            (dep) => !alreadyAdded.includes(dep.getMod().getFullName())
+        );
+
         foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySet(found.getVersion(), allMods, builder));
+
+        for (const dependency of foundDependencies) {
+            await this.buildDependencySet(dependency.getVersion(), allMods, builder);
+        }
+
         return builder;
     }
 
@@ -120,7 +111,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                            allMods: ThunderstoreMod[], ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
+        let dependencies = await this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
         this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);

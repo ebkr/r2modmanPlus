@@ -28,7 +28,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param builder   An array of resolved dependencies.
      * @return          ThunderstoreCombo array of the final result of the builder.
      */
-    public abstract buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
+    public abstract buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): Promise<ThunderstoreCombo[]>;
 
     /**
      * Resolve all downloadable dependencies of a ThunderstoreVersion fetching the latest version of the dependency.
