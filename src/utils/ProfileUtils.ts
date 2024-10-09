@@ -44,9 +44,14 @@ export async function exportModsToCombos(exportMods: ExportMod[], community: str
     return combos;
 }
 
-export async function extractImportedProfileConfigs(file: string, profileName: string) {
-    const entries = await ZipProvider.instance.getEntries(file);
-    for (const entry of entries) {
+async function extractImportedProfileConfigs(
+    file: string,
+    profileName: string,
+    progressCallback: (status: string) => void
+) {
+    const zipEntries = await ZipProvider.instance.getEntries(file);
+
+    for (const [index, entry] of zipEntries.entries()) {
         if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
             await ZipProvider.instance.extractEntryTo(
                 file,
@@ -67,13 +72,21 @@ export async function extractImportedProfileConfigs(file: string, profileName: s
                 )
             )
         }
+
+        const progress = Math.floor((index/zipEntries.length) * 100);
+        progressCallback(`Copying configs to profile: ${progress}%`);
     }
 }
 
-export async function installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[], profile: ImmutableProfile) {
+async function installModsToProfile(
+    comboList: ThunderstoreCombo[],
+    modList: ExportMod[],
+    profile: ImmutableProfile,
+    progressCallback: (status: string) => void
+) {
     const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
 
-    for (const comboMod of comboList) {
+    for (const [index, comboMod] of comboList.entries()) {
         const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
         const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
@@ -94,6 +107,9 @@ export async function installModsToProfile(comboList: ThunderstoreCombo[], modLi
                 modToDisable.disable();
             });
         }
+
+        const progress = Math.floor((index/comboList.length) * 100);
+        progressCallback(`Copying mods to profile: ${progress}%`);
     }
 }
 
@@ -127,18 +143,21 @@ export async function populateImportedProfile(
     exportModList: ExportMod[],
     profileName: string,
     isUpdate: boolean,
-    zipPath: string
+    zipPath: string,
+    progressCallback: (status: string) => void
 ) {
     const profile = new ImmutableProfile(isUpdate ? '_profile_update' : profileName);
 
     if (isUpdate) {
+        progressCallback('Cleaning up...');
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
     }
 
-    await installModsToProfile(comboList, exportModList, profile);
-    await extractImportedProfileConfigs(zipPath, profile.getProfileName());
+    await installModsToProfile(comboList, exportModList, profile, progressCallback);
+    await extractImportedProfileConfigs(zipPath, profile.getProfileName(), progressCallback);
 
     if (isUpdate) {
+        progressCallback('Applying changes to updated profile...');
         const targetProfile = new ImmutableProfile(profileName);
         await FileUtils.recursiveRemoveDirectoryIfExists(targetProfile.getProfilePath());
         await FsProvider.instance.rename(profile.getProfilePath(), targetProfile.getProfilePath());

@@ -20,7 +20,7 @@ import OnlineModList from "../views/OnlineModList.vue";
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
-    private percentageImported: number = 0;
+    private importPhaseDescription: string = 'Downloading mods: 0%';
     private profileImportCode: string = '';
     private listenerId: number = 0;
     private newProfileName: string = '';
@@ -163,8 +163,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
-        this.percentageImported = 0;
-        const progressCallback = (progress: number) => this.percentageImported = Math.floor(progress);
+        this.importPhaseDescription = 'Downloading mods: 0%';
+        const progressCallback = (progress: number|string) => typeof progress === "number"
+            ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
+            : this.importPhaseDescription = progress;
         const community = this.$store.state.activeGame.internalFolderName;
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
@@ -173,7 +175,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         try {
             const comboList = await ProfileUtils.exportModsToCombos(mods, community);
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
-            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath);
+            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
         } catch (e) {
             this.closeModal();
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
@@ -359,11 +361,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'PROFILE_IS_BEING_IMPORTED'" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
         <template v-slot:header>
-            <h2 class="modal-title">{{percentageImported}}% imported</h2>
+            <h2 class="modal-title">{{importPhaseDescription}}</h2>
         </template>
         <template v-slot:footer>
-            <p>This may take a while, as mods are being downloaded.<br>
-                Please do not close {{appName}}.</p>
+            <p>
+                This may take a while, as files are being downloaded, extracted, and copied.
+                <br><br>
+                Please do not close {{appName}}.
+            </p>
         </template>
     </ModalCard>
 </template>
