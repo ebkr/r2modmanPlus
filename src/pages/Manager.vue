@@ -376,7 +376,7 @@ import ModalCard from '../components/ModalCard.vue';
 				this.$store.commit('error/handleError', err);
 				return;
 			}
-			const exportErr = await ProfileModList.exportModListToFile(this.profile);
+			const exportErr = await ProfileModList.exportModListToFile(this.profile.asImmutableProfile());
 			if (exportErr instanceof R2Error) {
 				this.$store.commit('error/handleError', exportErr);
 			}
@@ -391,7 +391,7 @@ import ModalCard from '../components/ModalCard.vue';
 				this.$store.commit('error/handleError', err);
 				return;
 			}
-			const exportErr = await ProfileModList.exportModListAsCode(this.profile, (code: string, err: R2Error | null) => {
+			const exportErr = await ProfileModList.exportModListAsCode(this.profile.asImmutableProfile(), (code: string, err: R2Error | null) => {
 				if (err !== null) {
 					this.$store.commit('error/handleError', err);
 				} else {
@@ -630,7 +630,7 @@ import ModalCard from '../components/ModalCard.vue';
                 }
                 DownloadModModal.downloadSpecific(this.profile, combo, this.thunderstoreModList, ignoreCache)
                     .then(async value => {
-                        const modList = await ProfileModList.getModList(this.profile);
+                        const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                         if (!(modList instanceof R2Error)) {
                             await this.$store.dispatch('profile/updateModList', modList);
                         } else {

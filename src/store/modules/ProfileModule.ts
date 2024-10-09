@@ -3,7 +3,7 @@ import { ActionTree, GetterTree } from 'vuex';
 import { State as RootState } from '../index';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import Profile from "../../model/Profile";
+import Profile, { ImmutableProfile } from "../../model/Profile";
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
@@ -211,7 +211,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.disable());
+                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.disable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {
@@ -266,7 +266,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.enable());
+                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.enable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {
@@ -320,7 +320,7 @@ export default {
             {dispatch, getters},
             params: {
                 mods: ManifestV2[],
-                profile: Profile,
+                profile: ImmutableProfile,
             }
         ) {
             const {mods, profile} = params;
@@ -352,7 +352,7 @@ export default {
                 return;
             }
 
-            const modList = await ProfileModList.getModList(state.activeProfile);
+            const modList = await ProfileModList.getModList(state.activeProfile.asImmutableProfile());
 
             if (!(modList instanceof R2Error)) {
                 await dispatch('updateModList', modList);
@@ -394,7 +394,7 @@ export default {
                     // Update mod list status to mods.yml.
                     // TODO: can performance be improved by implementing
                     // a .removeMods(mods, profile) and calling it once outside the loop?
-                    const updatedList = await ProfileModList.removeMod(mod, profile);
+                    const updatedList = await ProfileModList.removeMod(mod, profile.asImmutableProfile());
                     if (updatedList instanceof R2Error) {
                         throw updatedList;
                     } else {
@@ -433,7 +433,7 @@ export default {
         /*** Read profiles mod list from mods.yml in profile directory. */
         async updateModListFromFile({dispatch, getters}) {
             const profile: Profile = getters['activeProfile'];
-            const mods = await ProfileModList.getModList(profile);
+            const mods = await ProfileModList.getModList(profile.asImmutableProfile());
 
             if (mods instanceof R2Error) {
                 throw mods;

@@ -48,7 +48,7 @@ export async function installModAfterDownload(mod: ThunderstoreMod, version: Thu
         throw installError;
     }
 
-    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
+    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile.asImmutableProfile());
     if (newModList instanceof R2Error) {
         throw newModList;
     }

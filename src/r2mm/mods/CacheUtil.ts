@@ -27,7 +27,7 @@ export default class CacheUtil {
             const activeModSet = new Set<ManifestV2>();
             for (const value of profiles) {
                 const profile = new Profile(value);
-                const modList = await ProfileModList.getModList(profile);
+                const modList = await ProfileModList.getModList(profile.asImmutableProfile());
                 if (modList instanceof R2Error) {
                     continue;
                 }
