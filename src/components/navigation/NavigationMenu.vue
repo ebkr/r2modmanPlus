@@ -107,7 +107,7 @@ export default class NavigationMenu extends Vue {
             await throwIfNoGameDir(this.activeGame);
 
             if (mode === LaunchMode.MODDED) {
-                await linkProfileFiles(this.activeGame, this.profile);
+                await linkProfileFiles(this.activeGame, this.profile.asImmutableProfile());
             }
 
             this.$store.commit("openGameRunningModal");

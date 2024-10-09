@@ -1,4 +1,4 @@
-import Profile from "../model/Profile";
+import Profile, { ImmutableProfile } from "../model/Profile";
 import R2Error from "../model/errors/R2Error";
 import Game from "../model/game/Game";
 import FsProvider from "../providers/generic/file/FsProvider";
@@ -19,7 +19,7 @@ export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Pr
     }
 };
 
-export const linkProfileFiles = async (game: Game, profile: Profile): Promise<void> => {
+export const linkProfileFiles = async (game: Game, profile: ImmutableProfile): Promise<void> => {
     const settings = await ManagerSettings.getSingleton(game);
 
     const newLinkedFiles = await ModLinker.link(profile, game);
