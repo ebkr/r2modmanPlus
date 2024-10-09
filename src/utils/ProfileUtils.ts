@@ -6,7 +6,7 @@ import R2Error from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
 import ManifestV2 from "../model/ManifestV2";
-import Profile from "../model/Profile";
+import Profile, { ImmutableProfile } from "../model/Profile";
 import ThunderstoreMod from "../model/ThunderstoreMod";
 import ThunderstoreVersion from "../model/ThunderstoreVersion";
 import VersionNumber from "../model/VersionNumber";
@@ -41,14 +41,14 @@ export async function extractZippedProfileFile(file: string, profileName: string
     }
 }
 
-export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: Profile): Promise<ManifestV2> {
+export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: ImmutableProfile): Promise<ManifestV2> {
     const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile.asImmutableProfile());
+    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
     if (installError instanceof R2Error) {
         throw installError;
     }
 
-    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile.asImmutableProfile());
+    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
     if (newModList instanceof R2Error) {
         throw newModList;
     }
