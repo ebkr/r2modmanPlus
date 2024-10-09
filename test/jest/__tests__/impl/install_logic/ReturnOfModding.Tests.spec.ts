@@ -8,7 +8,7 @@ import {
     installLogicBeforeEach
 } from '../../../__utils__/InstallLogicUtils';
 import R2Error from '../../../../../src/model/errors/R2Error';
-import Profile from '../../../../../src/model/Profile';
+import Profile, { ImmutableProfile } from '../../../../../src/model/Profile';
 import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 
 
@@ -36,15 +36,16 @@ describe('ReturnOfModding Installer Tests', () => {
 
     test('Disabling/enabling the mod loader does nothing', async () => {
         const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
+        const profile = new ImmutableProfile("TestProfile");
         const loaders = ["version.dll", "d3d12.dll"];
         await createFilesIntoProfile(loaders);
 
-        await ProfileInstallerProvider.instance.disableMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.disableMod(pkg, profile);
         await expectFilesToExistInProfile(loaders);
 
         pkg.disable();
 
-        await ProfileInstallerProvider.instance.enableMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.enableMod(pkg, profile);
         await expectFilesToExistInProfile(loaders);
     });
 
@@ -95,6 +96,7 @@ describe('ReturnOfModding Installer Tests', () => {
 
     test('Disabling/enabling a mod renames files', async () => {
         const pkg = createManifest("HelperFunctions", "Klehrik");
+        const profile = new ImmutableProfile("TestProfile");
         const name = pkg.getName();
         const files = [
             `ReturnOfModding/plugins/${name}/main.lua`,
@@ -104,12 +106,12 @@ describe('ReturnOfModding Installer Tests', () => {
         ];
         await createFilesIntoProfile(files);
 
-        await ProfileInstallerProvider.instance.disableMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.disableMod(pkg, profile);
         await expectFilesToExistInProfile(files.map((fileName) => `${fileName}.old`));
 
         pkg.disable();
 
-        await ProfileInstallerProvider.instance.enableMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.enableMod(pkg, profile);
         await expectFilesToExistInProfile(files);
     });
 });

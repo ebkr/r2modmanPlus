@@ -425,7 +425,7 @@ let assignId = 0;
                             await ProfileModList.updateMod(manifestMod, profile.asImmutableProfile(), async mod => {
                                 mod.disable();
                             });
-                            await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
+                            await ProfileInstallerProvider.instance.disableMod(manifestMod, profile.asImmutableProfile());
                         }
                     }
                 }
