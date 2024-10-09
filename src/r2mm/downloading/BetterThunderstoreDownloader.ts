@@ -11,7 +11,6 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import { ImmutableProfile } from '../../model/Profile';
-import ExportMod from '../../model/exports/ExportMod';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
@@ -182,31 +181,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async downloadImportedMods(
-        modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+        modList: ThunderstoreCombo[],
+        ignoreCache: boolean,
         totalProgressCallback: (progress: number) => void
     ) {
-        const comboList = allMods.map((mod) => {
-            const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
-            const version = targetMod
-                ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
-                : undefined;
-
-            if (version) {
-                const combo = new ThunderstoreCombo();
-                combo.setMod(mod);
-                combo.setVersion(version);
-                return combo;
-            }
-        }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
-
-        if (comboList.length === 0) {
-            throw new R2Error(
-                'No importable mods found',
-                'None of the mods or versions listed in the shared profile are available on Thunderstore.',
-                'Make sure the shared profile is meant for the currently selected game.'
-            );
-        }
-
         let downloadCount = 0;
 
         // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
@@ -217,9 +195,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
             let totalProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalProgress = this.generateProgressPercentage(progress * 0.8, downloadCount, comboList.length);
+                totalProgress = this.generateProgressPercentage(progress * 0.8, downloadCount, modList.length);
             } else if (status === StatusEnum.SUCCESS) {
-                totalProgress = this.generateProgressPercentage(100, downloadCount, comboList.length);
+                totalProgress = this.generateProgressPercentage(100, downloadCount, modList.length);
                 downloadCount += 1;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
@@ -229,7 +207,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             totalProgressCallback(totalProgress);
         }
 
-        for (const combo of comboList) {
+        for (const combo of modList) {
             if (!ignoreCache && await this.isVersionAlreadyDownloaded(combo)) {
                 singleModProgressCallback(100, StatusEnum.SUCCESS, null);
                 continue;
@@ -244,7 +222,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
 
         totalProgressCallback(100);
-        return comboList;
     }
 
     public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {

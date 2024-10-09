@@ -1,6 +1,4 @@
 <script lang="ts">
-import path from "path";
-
 import { mixins } from "vue-class-component";
 import { Component } from 'vue-property-decorator';
 
@@ -8,23 +6,13 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
-import ManifestV2 from "../../model/ManifestV2";
-import Profile from "../../model/Profile";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import FsProvider from "../../providers/generic/file/FsProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
-import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
-import ProfileModList from "../../r2mm/mods/ProfileModList";
-import FileUtils from "../../utils/FileUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
 import OnlineModList from "../views/OnlineModList.vue";
-
-let fs: FsProvider;
 
 
 @Component({
@@ -49,16 +37,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         | 'PROFILE_IS_BEING_IMPORTED'
     = 'IMPORT_UPDATE_SELECTION';
 
-    async created() {
-        fs = FsProvider.instance;
-    }
-
     get appName(): string {
         return ManagerInformation.APP_NAME;
-    }
-
-    get activeProfile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
     }
 
     get isOpen(): boolean {
@@ -143,16 +123,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    // When creating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has created a new profile. The callback then:
-    // 2. Downloads (and extracts) the mods to the profile
-    //
-    // When updating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has selected the old profile to be updated. The callback then:
-    // 2. Deletes the temporary profile (called _profile_update) if it exists (leftover from previous failed run etc.)
-    // 3. Downloads (and extracts) the mods to temporary profile
-    // 4. Deletes the old profile (including the folder on disk)
-    // 5. Renames temporary profile to the chosen profile's name
+    // Create an EventListener which gets triggered after the user either
+    // creates a new profile or selects an existing one to be updated.
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
         const filePath = this.profileImportFilePath;
@@ -172,7 +144,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             async (event: Event) => {
                 const targetProfile = (event as CustomEvent).detail;
                 if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
-                    await this.profileCreatedCallback(targetProfile, localListenerId, profileContent.getMods(), filePath);
+                    await this.importProfile(targetProfile, localListenerId, profileContent.getMods(), filePath);
                 } else {
                     this.closeModal();
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
@@ -185,92 +157,31 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    async profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
+    async importProfile(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
         if (this.listenerId !== localListenerId) {
             return;
         }
 
-        let profileName = targetProfile;
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
-
-        if (this.importUpdateSelection === 'UPDATE') {
-            profileName = "_profile_update";
-            await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), profileName));
-            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
-        }
+        this.percentageImported = 0;
+        const progressCallback = (progress: number) => this.percentageImported = Math.floor(progress);
+        const community = this.$store.state.activeGame.internalFolderName;
+        const settings = this.$store.getters['settings'];
+        const ignoreCache = settings.getContext().global.ignoreCache;
+        const isUpdate = this.importUpdateSelection === 'UPDATE';
 
         try {
-            const comboList = await this.downloadImportedProfileMods(mods);
-            await this.downloadCompletedCallback(comboList, mods);
-            await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+            const comboList = await ProfileUtils.exportModsToCombos(mods, community);
+            await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
+            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath);
         } catch (e) {
             this.closeModal();
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
             return;
         }
 
-        if (this.importUpdateSelection === 'UPDATE') {
-            this.activeProfileName = targetProfile;
-            try {
-                await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
-            } catch (e) {
-                this.closeModal();
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-                return;
-            }
-            await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
-        }
-
-        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+        await this.$store.dispatch('profiles/setSelectedProfile', {profileName: targetProfileName, prewarmCache: true});
         this.closeModal();
-    }
-
-    async downloadImportedProfileMods(modList: ExportMod[]): Promise<ThunderstoreCombo[]> {
-        const settings = this.$store.getters['settings'];
-        const ignoreCache = settings.getContext().global.ignoreCache;
-        const allMods = await PackageDb.getPackagesByNames(
-            this.$store.state.activeGame.internalFolderName,
-            modList.map((m) => m.getName())
-        );
-
-        this.percentageImported = 0;
-        return await ThunderstoreDownloaderProvider.instance.downloadImportedMods(
-            modList,
-            allMods,
-            ignoreCache,
-            (progress: number) => this.percentageImported = Math.floor(progress)
-        );
-    }
-
-    // Called from the downloadImportedProfileMods function
-    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
-        let keepIterating = true;
-        for (const comboMod of comboList) {
-            if (!keepIterating) {
-                return;
-            }
-
-            let installedMod: ManifestV2;
-            try {
-                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
-            } catch (e) {
-                this.$store.commit('error/handleError', e);
-                keepIterating = false;
-                this.closeModal();
-                return;
-            }
-
-            for (const imported of modList) {
-                if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installedMod, this.activeProfile.asImmutableProfile(), async (modToDisable: ManifestV2) => {
-                        // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                        modToDisable.enable();
-                        await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile.asImmutableProfile());
-                        modToDisable.disable();
-                    });
-                }
-            }
-        }
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.
@@ -292,10 +203,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     updateProfile() {
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
     }
-
-
 }
-
 </script>
 
 <template>

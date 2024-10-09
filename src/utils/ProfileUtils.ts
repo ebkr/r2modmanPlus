@@ -2,20 +2,49 @@ import path from "path";
 
 import * as yaml from "yaml";
 
+import FileUtils from "./FileUtils";
 import R2Error from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
 import ManifestV2 from "../model/ManifestV2";
 import Profile, { ImmutableProfile } from "../model/Profile";
-import ThunderstoreMod from "../model/ThunderstoreMod";
-import ThunderstoreVersion from "../model/ThunderstoreVersion";
+import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
+import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
 
-export async function extractZippedProfileFile(file: string, profileName: string) {
+export async function exportModsToCombos(exportMods: ExportMod[], community: string): Promise<ThunderstoreCombo[]> {
+    const tsMods = await PackageDb.getPackagesByNames(community, exportMods.map((m) => m.getName()));
+
+    const combos = tsMods.map((tsMod) => {
+        const targetMod = exportMods.find((expMod) => tsMod.getFullName() == expMod.getName());
+        const version = targetMod
+            ? tsMod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
+            : undefined;
+
+        if (version) {
+            const combo = new ThunderstoreCombo();
+            combo.setMod(tsMod);
+            combo.setVersion(version);
+            return combo;
+        }
+    }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
+
+    if (combos.length === 0) {
+        throw new R2Error(
+            'No importable mods found',
+            'None of the mods or versions listed in the shared profile are available on Thunderstore.',
+            'Make sure the shared profile is meant for the currently selected game.'
+        );
+    }
+
+    return combos;
+}
+
+export async function extractImportedProfileConfigs(file: string, profileName: string) {
     const entries = await ZipProvider.instance.getEntries(file);
     for (const entry of entries) {
         if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
@@ -41,19 +70,31 @@ export async function extractZippedProfileFile(file: string, profileName: string
     }
 }
 
-export async function installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion, profile: ImmutableProfile): Promise<ManifestV2> {
-    const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
-    if (installError instanceof R2Error) {
-        throw installError;
-    }
+export async function installModsToProfile(comboList: ThunderstoreCombo[], modList: ExportMod[], profile: ImmutableProfile) {
+    const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
 
-    const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
-    if (newModList instanceof R2Error) {
-        throw newModList;
-    }
+    for (const comboMod of comboList) {
+        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
-    return manifestMod;
+        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
+        if (installError instanceof R2Error) {
+            throw installError;
+        }
+
+        const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
+        if (newModList instanceof R2Error) {
+            throw newModList;
+        }
+
+        if (disabledMods.includes(manifestMod.getName())) {
+            await ProfileModList.updateMod(manifestMod, profile, async (modToDisable: ManifestV2) => {
+                // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
+                modToDisable.enable();
+                await ProfileInstallerProvider.instance.disableMod(modToDisable, profile);
+                modToDisable.disable();
+            });
+        }
+    }
 }
 
 export async function parseYamlToExportFormat(yamlContent: string) {
@@ -71,6 +112,37 @@ export async function parseYamlToExportFormat(yamlContent: string) {
             );
         })
     );
+}
+
+/**
+ * Copies mods (which should exists in the cache at this point) to profile folder and
+ * updates the profile status. Extracts the configs etc. files that are included in
+ * the zip file created when the profile was exported.
+ *
+ * When updating an existing profile, all this is done to a temporary profile first,
+ * and the target profile is overwritten only if the process is successful.
+ */
+export async function populateImportedProfile(
+    comboList: ThunderstoreCombo[],
+    exportModList: ExportMod[],
+    profileName: string,
+    isUpdate: boolean,
+    zipPath: string
+) {
+    const profile = new ImmutableProfile(isUpdate ? '_profile_update' : profileName);
+
+    if (isUpdate) {
+        await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
+    }
+
+    await installModsToProfile(comboList, exportModList, profile);
+    await extractImportedProfileConfigs(zipPath, profile.getProfileName());
+
+    if (isUpdate) {
+        const targetProfile = new ImmutableProfile(profileName);
+        await FileUtils.recursiveRemoveDirectoryIfExists(targetProfile.getProfilePath());
+        await FsProvider.instance.rename(profile.getProfilePath(), targetProfile.getProfilePath());
+    }
 }
 
 //TODO: Check if instead of returning null/empty strings, there's some errors that should be handled
