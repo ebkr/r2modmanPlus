@@ -2,7 +2,7 @@ import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
@@ -181,10 +181,10 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadImportedMods(modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
-                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                                       completedCallback: (mods: ThunderstoreCombo[]) => void) {
-
+    public async downloadImportedMods(
+        modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+        totalProgressCallback: (progress: number) => void
+    ) {
         const comboList = allMods.map((mod) => {
             const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
             const version = targetMod
@@ -200,30 +200,51 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
 
         if (comboList.length === 0) {
-            const err = new R2Error(
+            throw new R2Error(
                 'No importable mods found',
                 'None of the mods or versions listed in the shared profile are available on Thunderstore.',
                 'Make sure the shared profile is meant for the currently selected game.'
             );
-            callback(0, '', StatusEnum.FAILURE, err);
-            return;
         }
 
         let downloadCount = 0;
-        await this.queueDownloadDependencies(comboList.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+
+        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
+        const singleModProgressCallback = (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
-                callback(0, modName, status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, status, err);
-            } else if (status === StatusEnum.SUCCESS) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, StatusEnum.PENDING, err);
-                downloadCount += 1;
-                if (downloadCount >= comboList.length) {
-                    callback(100, modName, StatusEnum.PENDING, err);
-                    completedCallback(comboList);
-                }
+                throw err;
             }
-        });
+
+            let totalProgress: number;
+            if (status === StatusEnum.PENDING) {
+                totalProgress = this.generateProgressPercentage(progress * 0.8, downloadCount, comboList.length);
+            } else if (status === StatusEnum.SUCCESS) {
+                totalProgress = this.generateProgressPercentage(100, downloadCount, comboList.length);
+                downloadCount += 1;
+            } else {
+                console.error(`Ignore unknown status code "${status}"`);
+                return;
+            }
+
+            totalProgressCallback(totalProgress);
+        }
+
+        for (const combo of comboList) {
+            if (!ignoreCache && await this.isVersionAlreadyDownloaded(combo)) {
+                singleModProgressCallback(100, StatusEnum.SUCCESS, null);
+                continue;
+            }
+
+            try {
+                const response = await this._downloadCombo(combo, singleModProgressCallback);
+                await this._saveDownloadResponse(response, combo, singleModProgressCallback);
+            } catch(e) {
+                throw R2Error.fromThrownValue(e, `Failed to download mod ${combo.getVersion().getFullName()}`);
+            }
+        }
+
+        totalProgressCallback(100);
+        return comboList;
     }
 
     public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
@@ -256,7 +277,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
-        axios.get(combo.getVersion().getDownloadUrl(), {
+        this._downloadCombo(combo, callback)
+            .then(async response => this._saveDownloadResponse(response, combo, callback))
+            .catch((reason: Error) => {
+                callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
+            })
+    }
+
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+        return axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => {
                 callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
             },
@@ -265,19 +294,19 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 'Content-Type': 'application/zip',
                 'Access-Control-Allow-Origin': '*'
             }
-        }).then(async response => {
-            const buf: Buffer = Buffer.from(response.data)
-            callback(100, StatusEnum.PENDING, null);
-            await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
-                if (success) {
-                    callback(100, StatusEnum.SUCCESS, error || null);
-                } else {
-                    callback(100, StatusEnum.FAILURE, error || null);
-                }
-            });
-        }).catch((reason: Error) => {
-            callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
-        })
+        });
+    }
+
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<void> {
+        const buf: Buffer = Buffer.from(response.data)
+        callback(100, StatusEnum.PENDING, null);
+        await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
+            if (success) {
+                callback(100, StatusEnum.SUCCESS, error || null);
+            } else {
+                callback(100, StatusEnum.FAILURE, error || null);
+            }
+        });
     }
 
     public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
