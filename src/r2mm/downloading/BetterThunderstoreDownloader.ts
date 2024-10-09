@@ -19,24 +19,17 @@ import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
     public async buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void> {
-        let foundDependencies = await PackageDb.getCombosByDependencyStrings(GameManager.activeGame, mod.getDependencies());
-
-        // Filter out already added AFTER reading packages from the DB to
-        // ensure the recursion works as expected.
-        const alreadyAdded = builder.map((seenMod) => seenMod.getMod().getFullName());
-        foundDependencies = foundDependencies.filter(
-            (dep) => !alreadyAdded.includes(dep.getMod().getFullName())
-        );
-
-        foundDependencies.forEach(found => builder.push(found));
-
-        for (const dependency of foundDependencies) {
-            await this.buildDependencySet(dependency.getVersion(), builder);
-        }
+        await this._buildDependencySet(mod, builder);
     }
 
     public async buildDependencySetUsingLatest(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void> {
-        let foundDependencies = await PackageDb.getCombosByDependencyStrings(GameManager.activeGame, mod.getDependencies(), true);
+        const useLatestVersion = true;
+        await this._buildDependencySet(mod, builder, useLatestVersion);
+    }
+
+    private async _buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[], useLatestVersion=false): Promise<void> {
+        const game = GameManager.activeGame;
+        let foundDependencies = await PackageDb.getCombosByDependencyStrings(game, mod.getDependencies(), useLatestVersion);
 
         // Filter out already added AFTER reading packages from the DB to
         // ensure the recursion works as expected.
@@ -48,7 +41,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         foundDependencies.forEach(found => builder.push(found));
 
         for (const dependency of foundDependencies) {
-            await this.buildDependencySetUsingLatest(dependency.getVersion(), builder);
+            await this._buildDependencySet(dependency.getVersion(), builder, useLatestVersion);
         }
     }
 
