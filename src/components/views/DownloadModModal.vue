@@ -411,7 +411,7 @@ let assignId = 0;
                             return reject(result);
                         }
                     }
-                    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
+                    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile.asImmutableProfile());
                     if (!(installError instanceof R2Error)) {
                         const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile.asImmutableProfile());
                         if (newModList instanceof R2Error) {

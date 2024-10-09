@@ -20,7 +20,7 @@ export default abstract class ConflictManagementProvider {
 
     public abstract resolveConflicts(mods: ManifestV2[], profile: Profile): Promise<R2Error | void>;
 
-    public abstract overrideInstalledState(mod: ManifestV2, profile: Profile): Promise<R2Error | void>;
+    public abstract overrideInstalledState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void>;
 
     public abstract isFileActive(mod: ManifestV2, profile: Profile|ImmutableProfile, file: string): Promise<boolean>;
 

@@ -2,10 +2,9 @@ import Sinon from 'sinon';
 import TestSetup from 'app/test/jest/__tests__/test-setup';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
-import Profile from 'src/model/Profile';
+import Profile, { ImmutableProfile } from 'src/model/Profile';
 import FsProvider from 'src/providers/generic/file/FsProvider';
 import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
-import path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from 'src/model/installing/ModFileTracker';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
@@ -44,7 +43,7 @@ describe("State testing", () => {
             const fileMap = new Map<string, string>(files);
 
             sandbox.stub(ProfileProvider.instance);
-            const profile = new Profile("stub");
+            const profile = new ImmutableProfile("stub");
 
             const fsStub = sandbox.stub(FsProvider.instance);
             FsProvider.provide(() => fsStub);

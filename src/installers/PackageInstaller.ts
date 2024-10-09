@@ -1,9 +1,9 @@
-import Profile from "../model/Profile";
+import { ImmutableProfile } from "../model/Profile";
 import ManifestV2 from "../model/ManifestV2";
 
 export type InstallArgs = {
     mod: ManifestV2;
-    profile: Profile;
+    profile: ImmutableProfile;
     packagePath: string;
 };
 
