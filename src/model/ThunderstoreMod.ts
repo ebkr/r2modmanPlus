@@ -80,6 +80,10 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         return this.getVersions().reduce(reduceToNewestVersion);
     }
 
+    public getLatestDependencyString(): string {
+        return `${this.getFullName()}-${this.getLatestVersion().toString()}`;
+    }
+
     public getRating(): number {
         return this.rating;
     }
