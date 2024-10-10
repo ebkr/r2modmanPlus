@@ -223,25 +223,22 @@ let assignId = 0;
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
                 this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
+                this.recommendedVersion = null;
+
                 this.versionNumbers = this.thunderstoreMod.getVersions()
                     .map(value => value.getVersionNumber().toString());
 
                 const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
                     .find(value => value.packageName === this.thunderstoreMod!.getFullName());
 
-                if (foundRecommendedVersion === undefined || foundRecommendedVersion.recommendedVersion === undefined) {
-                    this.recommendedVersion = null;
-                    this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
-                } else {
+                if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
                     this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
 
-                    // Bind to recommended version or fall back to latest
+                    // Auto-select recommended version if it's found.
                     const thunderstoreRecommendedVersion = this.thunderstoreMod.getVersions()
                         .find(value => value.getVersionNumber().isEqualTo(foundRecommendedVersion.recommendedVersion!));
-                    if (thunderstoreRecommendedVersion !== undefined) {
+                    if (thunderstoreRecommendedVersion) {
                         this.selectedVersion = thunderstoreRecommendedVersion.getVersionNumber().toString();
-                    } else {
-                        this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString()
                     }
                 }
 
