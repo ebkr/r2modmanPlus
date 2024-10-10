@@ -1,7 +1,6 @@
 import ThunderstoreVersion from './ThunderstoreVersion';
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class ThunderstoreMod extends ThunderstoreVersion implements ReactiveObjectConverterInterface {
+export default class ThunderstoreMod extends ThunderstoreVersion {
     private versions: ThunderstoreVersion[] = [];
     private rating: number = 0;
     private owner: string = '';
@@ -46,26 +45,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         mod.setNsfwFlag(data.has_nsfw_content);
         mod.setDonationLink(data.donation_link);
         return mod;
-    }
-
-    public fromReactive(reactive: any): ThunderstoreMod {
-        this.setName(reactive.name);
-        this.setFullName(reactive.fullName);
-        this.setOwner(reactive.owner);
-        this.setPackageUrl(reactive.packageUrl);
-        this.setDateCreated(reactive.dateCreated);
-        this.setDateUpdated(reactive.dateUpdated);
-        this.setDeprecatedStatus(reactive.deprecated);
-        this.setPinnedStatus(reactive.pinned);
-        this.setVersions(reactive.versions.map((x: ThunderstoreVersion) => new ThunderstoreVersion().fromReactive(x)));
-        this.setDownloadCount(reactive.downloadCount);
-        this.setRating(reactive.rating);
-        this.setTotalDownloads(reactive.totalDownloads);
-        this.setUuid4(reactive.uuid4);
-        this.setCategories(reactive.categories);
-        this.setNsfwFlag(reactive.hasNsfwContent);
-        this.setDonationLink(reactive.donationUrl);
-        return this;
     }
 
     public getVersions(): ThunderstoreVersion[] {
