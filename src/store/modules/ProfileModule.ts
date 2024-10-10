@@ -8,6 +8,7 @@ import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -83,8 +84,18 @@ export default {
             return state.modList;
         },
 
+        /*** Which locally installed mods have updates in Thunderstore? */
         modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreCombo[] {
-            return rootGetters['tsMods/modsWithUpdates'](state.modList);
+            return state.modList
+                .filter(mod => !rootGetters['tsMods/isLatestVersion'](mod))
+                .map((mod): ThunderstoreMod | undefined => rootGetters['tsMods/tsMod'](mod))
+                .filter((tsMod): tsMod is ThunderstoreMod => tsMod !== undefined)
+                .map((tsMod) => {
+                    const combo = new ThunderstoreCombo();
+                    combo.setMod(tsMod);
+                    combo.setVersion(tsMod.getLatestVersion());
+                    return combo;
+                });
         },
 
         visibleModList(state, _getters, rootState): ManifestV2[] {
