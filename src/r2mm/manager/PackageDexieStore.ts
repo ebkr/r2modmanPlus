@@ -127,6 +127,11 @@ export async function getPackagesByNames(community: string, packageNames: string
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
 }
 
+export async function getPackageVersionNumbers(community: string, packageName: string) {
+    const pkg = await getPackageFromDatabase(community, packageName);
+    return pkg.versions.map((v) => v.version_number);
+}
+
 /**
  * @param game Game (community) which package listings should be used in the lookup.
  * @param dependencies Lookup targets as Thunderstore dependency strings.
@@ -175,4 +180,14 @@ export async function isLatestPackageListIndex(community: string, hash: string) 
 
 export async function setLatestPackageListIndex(community: string, hash: string) {
     await db.indexHashes.put({community, hash, date_updated: new Date()});
+}
+
+async function getPackageFromDatabase(community: string, packageName: string) {
+    const pkg = await db.packages.where({community, full_name: packageName}).first();
+
+    if (!pkg) {
+        throw new Error(`Couldn't find package "${packageName}" in ${community} packages`);
+    }
+
+    return pkg;
 }

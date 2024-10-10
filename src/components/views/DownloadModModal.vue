@@ -106,6 +106,7 @@ import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 interface DownloadProgress {
     assignId: number;
@@ -225,8 +226,10 @@ let assignId = 0;
                 this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
                 this.recommendedVersion = null;
 
-                this.versionNumbers = this.thunderstoreMod.getVersions()
-                    .map(value => value.getVersionNumber().toString());
+                this.versionNumbers = await PackageDb.getPackageVersionNumbers(
+                    this.activeGame.internalFolderName,
+                    this.thunderstoreMod.getFullName()
+                );
 
                 const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
                     .find(value => value.packageName === this.thunderstoreMod!.getFullName());
@@ -235,10 +238,11 @@ let assignId = 0;
                     this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
 
                     // Auto-select recommended version if it's found.
-                    const thunderstoreRecommendedVersion = this.thunderstoreMod.getVersions()
-                        .find(value => value.getVersionNumber().isEqualTo(foundRecommendedVersion.recommendedVersion!));
-                    if (thunderstoreRecommendedVersion) {
-                        this.selectedVersion = thunderstoreRecommendedVersion.getVersionNumber().toString();
+                    const recommendedVersion = this.versionNumbers.find(
+                        (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
+                    );
+                    if (recommendedVersion) {
+                        this.selectedVersion = recommendedVersion;
                     }
                 }
 
