@@ -147,7 +147,7 @@ export default class OnlineModView extends Vue {
         const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
         if (searchKeys.length > 0) {
             searchableList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getVersions()[0].getDescription())
+                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getLatestVersion().getDescription())
             });
         }
         if (!allowNsfw) {
