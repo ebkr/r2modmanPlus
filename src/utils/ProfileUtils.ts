@@ -6,6 +6,7 @@ import FileUtils from "./FileUtils";
 import R2Error from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
+import Game from "../model/game/Game";
 import ManifestV2 from "../model/ManifestV2";
 import Profile, { ImmutableProfile } from "../model/Profile";
 import ThunderstoreCombo from "../model/ThunderstoreCombo";
@@ -15,22 +16,9 @@ import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 
-export async function exportModsToCombos(exportMods: ExportMod[], community: string): Promise<ThunderstoreCombo[]> {
-    const tsMods = await PackageDb.getPackagesByNames(community, exportMods.map((m) => m.getName()));
-
-    const combos = tsMods.map((tsMod) => {
-        const targetMod = exportMods.find((expMod) => tsMod.getFullName() == expMod.getName());
-        const version = targetMod
-            ? tsMod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
-            : undefined;
-
-        if (version) {
-            const combo = new ThunderstoreCombo();
-            combo.setMod(tsMod);
-            combo.setVersion(version);
-            return combo;
-        }
-    }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
+export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
+    const dependencyStrings = exportMods.map((m) => m.getDependencyString());
+    const combos = await PackageDb.getCombosByDependencyStrings(game, dependencyStrings);
 
     if (combos.length === 0) {
         throw new R2Error(

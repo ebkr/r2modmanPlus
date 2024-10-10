@@ -167,13 +167,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         const progressCallback = (progress: number|string) => typeof progress === "number"
             ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
             : this.importPhaseDescription = progress;
-        const community = this.$store.state.activeGame.internalFolderName;
+        const game = this.$store.state.activeGame;
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
         const isUpdate = this.importUpdateSelection === 'UPDATE';
 
         try {
-            const comboList = await ProfileUtils.exportModsToCombos(mods, community);
+            const comboList = await ProfileUtils.exportModsToCombos(mods, game);
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
             await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
         } catch (e) {
