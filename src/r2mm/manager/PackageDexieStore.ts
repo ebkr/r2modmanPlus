@@ -172,6 +172,11 @@ export async function getLastPackageListUpdateTime(community: string) {
     return hash ? hash.date_updated : undefined;
 }
 
+export async function getVersionAsThunderstoreVersion(community: string, packageName: string, versionNumber: string) {
+    const version = await getPackgeVersionFromDatabase(community, packageName, versionNumber);
+    return ThunderstoreVersion.parseFromThunderstoreData(version);
+}
+
 export async function isLatestPackageListIndex(community: string, hash: string) {
     return Boolean(
         await db.indexHashes.where({community, hash}).count()
@@ -190,4 +195,15 @@ async function getPackageFromDatabase(community: string, packageName: string) {
     }
 
     return pkg;
+}
+
+async function getPackgeVersionFromDatabase(community: string, packageName: string, versionNumber: string) {
+    const pkg = await getPackageFromDatabase(community, packageName);
+    const ver = pkg.versions.find((v) => v.version_number === versionNumber);
+
+    if (!ver) {
+        throw new Error(`Couldn't find version "${versionNumber}" of package "${packageName}" in ${community} packages`);
+    }
+
+    return ver;
 }

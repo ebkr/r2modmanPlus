@@ -260,18 +260,26 @@ let assignId = 0;
             this.$store.commit("closeDownloadModModal");
         }
 
-        downloadThunderstoreMod() {
+        async downloadThunderstoreMod() {
             const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
             const refSelectedVersion: string | null = this.selectedVersion;
             if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
                 // Shouldn't happen, but shouldn't throw an error.
                 return;
             }
-            const version = refSelectedThunderstoreMod.getVersions()
-                .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
-            if (version === undefined) {
+
+            let version: ThunderstoreVersion;
+
+            try {
+                version = await PackageDb.getVersionAsThunderstoreVersion(
+                    this.activeGame.internalFolderName,
+                    refSelectedThunderstoreMod.getFullName(),
+                    refSelectedVersion
+                );
+            } catch {
                 return;
             }
+
             this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 
