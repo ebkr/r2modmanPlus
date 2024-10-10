@@ -1,8 +1,7 @@
 import VersionNumber from './VersionNumber';
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 import CdnProvider from '../providers/generic/connection/CdnProvider';
 
-export default class ThunderstoreVersion implements ReactiveObjectConverterInterface {
+export default class ThunderstoreVersion  {
 
     private name: string = '';
     private versionNumber: VersionNumber = new VersionNumber('0.0.0');
@@ -29,19 +28,6 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
         this.setIcon(version.icon);
         this.setDownloadCount(version.downloads);
         this.setDownloadUrl(version.download_url);
-        return this;
-    }
-
-    public fromReactive(reactive: any): ThunderstoreVersion {
-        this.setName(reactive.name);
-        this.setVersionNumber(new VersionNumber('0.0.0').fromReactive(reactive.versionNumber));
-        this.setDependencies(reactive.dependencies);
-        this.setFullName(reactive.fullName);
-        this.setDescription(reactive.description);
-        this.setIcon(reactive.icon);
-        this.enabled = reactive.enabled;
-        this.setDownloadCount(reactive.downloadCount);
-        this.setDownloadUrl(reactive.downloadUrl);
         return this;
     }
 
