@@ -223,7 +223,7 @@ let assignId = 0;
         async getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
-                this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
+                this.selectedVersion = this.thunderstoreMod.getLatestVersion().getVersionNumber().toString();
                 this.recommendedVersion = null;
 
                 this.versionNumbers = await PackageDb.getPackageVersionNumbers(
