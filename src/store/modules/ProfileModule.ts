@@ -1,5 +1,6 @@
 import { ActionTree, GetterTree } from 'vuex';
 
+import { CachedMod } from './TsModsModule';
 import { State as RootState } from '../index';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
@@ -12,6 +13,7 @@ import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import SearchUtils from '../../utils/SearchUtils';
@@ -84,18 +86,12 @@ export default {
             return state.modList;
         },
 
-        /*** Which locally installed mods have updates in Thunderstore? */
-        modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreCombo[] {
-            return state.modList
-                .filter(mod => !rootGetters['tsMods/isLatestVersion'](mod))
-                .map((mod): ThunderstoreMod | undefined => rootGetters['tsMods/tsMod'](mod))
-                .filter((tsMod): tsMod is ThunderstoreMod => tsMod !== undefined)
-                .map((tsMod) => {
-                    const combo = new ThunderstoreCombo();
-                    combo.setMod(tsMod);
-                    combo.setVersion(tsMod.getLatestVersion());
-                    return combo;
-                });
+        // Swap the ManifestV2s to ThunderstoreMods as the latter knows the version number
+        // of the latest version, which we need when showing how mods will be updated.
+        modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreMod[] {
+            return state.modList.map((mod): CachedMod => rootGetters['tsMods/cachedMod'](mod))
+                                .filter(cachedMod => !cachedMod.isLatest && cachedMod.tsMod)
+                                .map(cachedMod => cachedMod.tsMod!);
         },
 
         visibleModList(state, _getters, rootState): ManifestV2[] {
@@ -292,6 +288,16 @@ export default {
 
             await dispatch('resolveConflicts', params);
         },
+
+        // Return ThunderstoreCombos pointing to the latest available version.
+        async getCombosWithUpdates({getters, rootState}): Promise<ThunderstoreCombo[]> {
+            const game = rootState.activeGame;
+            const outdated = getters.modsWithUpdates.map((mod: ThunderstoreMod) => mod.getLatestDependencyString());
+            const useLatestVersion = true;
+
+            return await PackageDb.getCombosByDependencyStrings(game, outdated, useLatestVersion);
+        },
+
 
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;

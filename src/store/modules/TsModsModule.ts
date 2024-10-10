@@ -11,7 +11,7 @@ import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile } from '../../utils/HttpUtils';
 
-interface CachedMod {
+export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
     isLatest: boolean;
 }
