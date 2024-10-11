@@ -77,7 +77,7 @@
                 <ul class="list">
                     <li class="list-item" v-for='(mod, index) in $store.getters["profile/modsWithUpdates"]'
                         :key='`to-update-${index}-${mod.getFullName()}`'>
-                        {{mod.getName()}} will be updated to: {{mod.getLatestVersion().getVersionNumber().toString()}}
+                        {{mod.getName()}} will be updated to: {{mod.getLatestVersion()}}
                     </li>
                 </ul>
             </template>
@@ -223,7 +223,7 @@ let assignId = 0;
         async getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
-                this.selectedVersion = this.thunderstoreMod.getLatestVersion().getVersionNumber().toString();
+                this.selectedVersion = this.thunderstoreMod.getLatestVersion();
                 this.recommendedVersion = null;
 
                 this.versionNumbers = await PackageDb.getPackageVersionNumbers(
