@@ -197,7 +197,7 @@ export default class InMemoryFsProvider extends FsProvider {
         const found = this.findFileType(dir, "DIR");
         const parent = this.findFileType(path.dirname(dir), "DIR");
         if ((found.nodes || []).length > 0) {
-            throw new Error(`Directory is not empty, found ${JSON.stringify(found.nodes, null, 2)}`);
+            throw new Error(`Folder is not empty, found ${JSON.stringify(found.nodes, null, 2)}`);
         }
         parent.nodes = (parent.nodes || []).filter(value => value.name !== found.name);
     }

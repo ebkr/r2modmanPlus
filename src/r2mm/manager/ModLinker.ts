@@ -117,7 +117,7 @@ export default class ModLinker {
                         } catch (e) {
                             const err: Error = e as Error;
                             throw new FileWriteError(
-                                `Couldn't copy file ${file} to ${game.displayName} directory`,
+                                `Couldn't copy file ${file} to ${game.displayName} folder`,
                                 err.message,
                                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
                             )
@@ -163,7 +163,7 @@ export default class ModLinker {
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
-                `Unable to read directory for profile ${profile.getProfileName()}`,
+                `Unable to read folder for profile ${profile.getProfileName()}`,
                 err.message,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             )

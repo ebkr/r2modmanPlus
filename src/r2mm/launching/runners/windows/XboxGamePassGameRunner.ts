@@ -43,7 +43,7 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
                 .find((x: string) => "gamelaunchhelper.exe" === x);
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
-                        
+
             exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir,
                 windowsHide: false,
@@ -51,7 +51,7 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-                    const r2err = new R2Error('Error starting the game', err.message, 'Ensure that the game directory has been set correctly in the settings');
+                    const r2err = new R2Error('Error starting the game', err.message, 'Ensure that the game folder has been set correctly in the settings');
                     return reject(r2err);
                 }
                 return resolve();

@@ -66,7 +66,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             return steamDir;
         }
 
-        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
+        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
 
         try {
             const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
@@ -75,7 +75,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         } catch(err) {
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
             LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
-            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
+            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam folder has been set correctly in the settings');
         }
 
     }
