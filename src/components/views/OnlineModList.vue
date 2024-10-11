@@ -4,7 +4,7 @@
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="getImageUrl(key)"
             :id="index"
-            :description="key.getLatestVersion().getDescription()">
+            :description="key.getDescription()">
             <template v-slot:title>
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
@@ -121,9 +121,7 @@ export default class OnlineModList extends Vue {
     }
 
     getImageUrl(mod: ThunderstoreMod): string {
-        return CdnProvider.replaceCdnHost(
-            mod.getLatestVersion().getIcon()
-        );
+        return CdnProvider.replaceCdnHost(mod.getIcon());
     }
 
     async created() {

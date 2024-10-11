@@ -3,6 +3,7 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import VersionNumber from '../../model/VersionNumber';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
@@ -80,7 +81,7 @@ export const TsModsModule = {
                 if (tsMod === undefined) {
                     state.cache.set(cacheKey, {tsMod: undefined, isLatest: true});
                 } else {
-                    const latestVersionNumber = tsMod.getLatestVersion().getVersionNumber();
+                    const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
                     const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
                     state.cache.set(cacheKey, {tsMod, isLatest});
                 }
