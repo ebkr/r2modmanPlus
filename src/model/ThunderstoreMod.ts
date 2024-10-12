@@ -6,8 +6,8 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     private rating: number = 0;
     private owner: string = '';
     private packageUrl: string = '';
-    private dateCreated: Date = new Date();
-    private dateUpdated: Date = new Date();
+    private dateCreated: string = '';
+    private dateUpdated: string = '';
     private uuid4: string = '';
     private pinned: boolean = false;
     private deprecated: boolean = false;
@@ -104,19 +104,19 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.packageUrl = url;
     }
 
-    public getDateCreated(): Date {
+    public getDateCreated(): string {
         return this.dateCreated;
     }
 
-    public setDateCreated(date: Date) {
+    public setDateCreated(date: string) {
         this.dateCreated = date;
     }
 
-    public getDateUpdated(): Date {
+    public getDateUpdated(): string {
         return this.dateUpdated;
     }
 
-    public setDateUpdated(date: Date) {
+    public setDateUpdated(date: string) {
         this.dateUpdated = date;
     }
 

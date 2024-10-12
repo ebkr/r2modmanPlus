@@ -13,3 +13,11 @@ export function chunk<T>(original: T[], chunkSize: number): T[][] {
 
     return result;
 }
+
+export function isEmptyArray(value: unknown): boolean {
+    return Array.isArray(value) && !value.length;
+}
+
+export function isStringArray(value: any): value is string[] {
+    return Array.isArray(value) && value.every((item) => typeof item === 'string');
+}

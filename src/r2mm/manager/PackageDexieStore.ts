@@ -1,7 +1,6 @@
 import Dexie, { Table } from 'dexie';
 
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import * as ArrayUtils from '../../utils/ArrayUtils';
 
 interface DexieVersion {
     full_name: string;
@@ -41,8 +40,17 @@ interface DexiePackage {
     default_order: number; // Entry's index when received from the API
 }
 
+// For keeping track of seen package list index files so we can
+// skip processing chunks if there's no changes.
+interface IndexChunkHash {
+    community: string;
+    hash: string;
+    date_updated: Date;
+}
+
 class PackageDexieStore extends Dexie {
     packages!: Table<DexiePackage, string>;
+    indexHashes!: Table<IndexChunkHash, string>;
 
     constructor() {
         super('tsPackages');
@@ -50,23 +58,28 @@ class PackageDexieStore extends Dexie {
         this.version(1).stores({
             packages: '[community+full_name], [community+date_fetched]'
         });
+        this.version(2).stores({
+            indexHashes: '&community, [community+hash]'
+        });
     }
 }
 
 const db = new PackageDexieStore();
 
 // TODO: user type guards to validate (part of) the data before operations?
-export async function updateFromApiResponse(community: string, packages: any[]) {
+export async function updateFromApiResponse(community: string, packageChunks: any[][]) {
+    let default_order = 0;
     const extra = {community, date_fetched: new Date()};
-    const newPackageChunks: DexiePackage[][] = ArrayUtils.chunk(
-        packages.map((pkg, i) => ({
+    const newPackageChunks: DexiePackage[][] = packageChunks.map((chunk) =>
+        chunk.map((pkg) => ({
             ...pkg,
             ...extra,
-            default_order: i
-        })),
-        5000
+            default_order: default_order++
+        }))
     );
 
+    // Since we need to do these operations in a single transaction we can't
+    // process the chunks one by one as they are downloaded.
     await db.transaction(
         'rw',
         db.packages,
@@ -110,17 +123,17 @@ export async function getPackagesByNames(community: string, packageNames: string
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
 }
 
-// TODO: Dexie v3 doesn't support combining .where() and .orderBy() in a
-// way that would utilize the DB indexes. The current implementation
-// bypasses this by assuming that outside the updateFromApiResponse
-// transaction, all the packages have the same date_fetched value.
-// Moving to Dexie v4 might improve things, but if that doesn't turn out
-// to be true, filter or order the result set on JS side instead.
 export async function getLastPackageListUpdateTime(community: string) {
-    const fetched = await db.packages
-        .where('[community+date_fetched]')
-        .between([community, Dexie.minKey], [community, Dexie.maxKey])
-        .first();
+    const hash = await db.indexHashes.where({community}).first();
+    return hash ? hash.date_updated : undefined;
+}
 
-    return fetched ? fetched.date_fetched : undefined;
+export async function isLatestPackageListIndex(community: string, hash: string) {
+    return Boolean(
+        await db.indexHashes.where({community, hash}).count()
+    );
+}
+
+export async function setLatestPackageListIndex(community: string, hash: string) {
+    await db.indexHashes.put({community, hash, date_updated: new Date()});
 }
