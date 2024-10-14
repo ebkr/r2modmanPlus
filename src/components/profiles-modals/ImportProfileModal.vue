@@ -5,7 +5,6 @@ import { mixins } from "vue-class-component";
 import { Component } from 'vue-property-decorator';
 
 import ManagerInformation from "../../_managerinf/ManagerInformation";
-import StatusEnum from "../../model/enums/StatusEnum";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
@@ -200,24 +199,33 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
         }
 
-        await this.downloadImportedProfileMods(mods, async () => {
+        try {
+            const comboList = await this.downloadImportedProfileMods(mods);
+            await this.downloadCompletedCallback(comboList, mods);
             await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
-
-            if (this.importUpdateSelection === 'UPDATE') {
-                this.activeProfileName = targetProfile;
-                try {
-                    await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
-                } catch (e) {
-                    console.log("Failed to remove directory:", e);
-                }
-                await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
-            }
-            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+        } catch (e) {
             this.closeModal();
-        });
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+            return;
+        }
+
+        if (this.importUpdateSelection === 'UPDATE') {
+            this.activeProfileName = targetProfile;
+            try {
+                await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
+            } catch (e) {
+                this.closeModal();
+                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+                return;
+            }
+            await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+        }
+
+        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+        this.closeModal();
     }
 
-    async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
+    async downloadImportedProfileMods(modList: ExportMod[]): Promise<ThunderstoreCombo[]> {
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
         const allMods = await PackageDb.getPackagesByNames(
@@ -226,31 +234,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         );
 
         this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(
+        return await ThunderstoreDownloaderProvider.instance.downloadImportedMods(
             modList,
             allMods,
             ignoreCache,
-            this.downloadProgressCallback,
-            async (comboList: ThunderstoreCombo[]) => {
-                await this.downloadCompletedCallback(comboList, modList, callback);
-            }
+            (progress: number) => this.percentageImported = Math.floor(progress)
         );
     }
 
     // Called from the downloadImportedProfileMods function
-    downloadProgressCallback(progress: number, modName: string, status: number, err: R2Error | null) {
-        if (status == StatusEnum.FAILURE) {
-            this.closeModal();
-            if (err instanceof R2Error) {
-                this.$store.commit('error/handleError', err);
-            }
-        } else if (status == StatusEnum.PENDING) {
-            this.percentageImported = Math.floor(progress);
-        }
-    }
-
-    // Called from the downloadImportedProfileMods function
-    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[], callback?: () => void) {
+    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[]) {
         let keepIterating = true;
         for (const comboMod of comboList) {
             if (!keepIterating) {
@@ -277,9 +270,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     });
                 }
             }
-        }
-        if (callback !== undefined) {
-            callback();
         }
     }
 
