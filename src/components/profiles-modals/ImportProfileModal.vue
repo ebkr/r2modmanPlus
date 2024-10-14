@@ -156,53 +156,65 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // 5. Renames temporary profile to the chosen profile's name
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
+        const filePath = this.profileImportFilePath;
+
+        if (profileContent === null || filePath === null) {
+            this.closeModal();
+            const reason = `content is ${profileContent ? 'not' : ''} null, file path is ${filePath ? 'not' : ''} null`;
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+            return;
+        }
+
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
-        document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, profileContent!, [this.profileImportFilePath!])
-        ) as EventListener, {once: true});
-        this.newProfileName = profileContent!.getProfileName();
+
+        document.addEventListener(
+            'created-profile',
+            async (event: Event) => {
+                const targetProfile = (event as CustomEvent).detail;
+                if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
+                    await this.profileCreatedCallback(targetProfile, localListenerId, profileContent.getMods(), filePath);
+                } else {
+                    this.closeModal();
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
+                }
+            },
+            {once: true}
+        );
+
+        this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
-        if (this.listenerId === localListenerId) {
-            (async () => {
-                let profileName: string = event.detail;
-                if (profileName !== '') {
-                    this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
-                    if (this.importUpdateSelection === 'UPDATE') {
-                        profileName = "_profile_update";
-                        if (await fs.exists(path.join(Profile.getRootDir(), profileName))) {
-                            await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), profileName));
-                            await fs.rmdir(path.join(Profile.getRootDir(), profileName));
-                        }
-                        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
-                    }
-                    if (parsed.getMods().length > 0) {
-                        setTimeout(async () => {
-                            await this.downloadImportedProfileMods(parsed.getMods(), async () => {
-                                if (files[0].endsWith('.r2z')) {
-                                    await ProfileUtils.extractZippedProfileFile(files[0], profileName);
-                                }
-                                if (this.importUpdateSelection === 'UPDATE') {
-                                    this.activeProfileName = event.detail;
-                                    try {
-                                        await FileUtils.emptyDirectory(path.join(Profile.getRootDir(), event.detail));
-                                    } catch (e) {
-                                        console.log("Failed to empty directory:", e);
-                                    }
-                                    await fs.rmdir(path.join(Profile.getRootDir(), event.detail));
-                                    await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), event.detail));
-                                }
-                                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: true });
-                                this.closeModal();
-                            });
-                        }, 100);
-                    }
-                }
-            })();
+    async profileCreatedCallback(targetProfile: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
+        if (this.listenerId !== localListenerId) {
+            return;
         }
+
+        let profileName = targetProfile;
+        this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
+
+        if (this.importUpdateSelection === 'UPDATE') {
+            profileName = "_profile_update";
+            await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), profileName));
+            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
+        }
+
+        await this.downloadImportedProfileMods(mods, async () => {
+            await ProfileUtils.extractZippedProfileFile(zipPath, profileName);
+
+            if (this.importUpdateSelection === 'UPDATE') {
+                this.activeProfileName = targetProfile;
+                try {
+                    await FileUtils.recursiveRemoveDirectoryIfExists(path.join(Profile.getRootDir(), targetProfile));
+                } catch (e) {
+                    console.log("Failed to remove directory:", e);
+                }
+                await fs.rename(path.join(Profile.getRootDir(), profileName), path.join(Profile.getRootDir(), targetProfile));
+            }
+            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: targetProfile, prewarmCache: true });
+            this.closeModal();
+        });
     }
 
     async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
@@ -247,7 +259,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
             let installedMod: ManifestV2;
             try {
-                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile);
+                installedMod = await ProfileUtils.installModAfterDownload(comboMod.getMod(), comboMod.getVersion(), this.activeProfile.asImmutableProfile());
             } catch (e) {
                 this.$store.commit('error/handleError', e);
                 keepIterating = false;
