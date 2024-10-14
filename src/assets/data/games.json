@@ -5452,6 +5452,79 @@
       },
       "discordUrl": "https://discord.gg/sunhaven"
     },
+    "tcg-card-shop-simulator": {
+      "displayName": "TCG Card Shop SImulator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "sets": {
+          "label": "Sets"
+        },
+        "expansions": {
+          "label": "Expansions"
+        },
+        "cards": {
+          "label": "Cards"
+        },
+        "npcs": {
+          "label": "NPCs"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "asset-replacement": {
+          "label": "Asset Replacement"
+        },
+        "qol": {
+          "label": "QOL"
+        },
+        "phone-related": {
+          "label": "Phone Related"
+        },
+        "furniture": {
+          "label": "Furniture"
+        },
+        "decoration": {
+          "label": "Decoration"
+        },
+        "shop": {
+          "label": "Shop"
+        },
+        "apps": {
+          "label": "Apps"
+        },
+        "themes": {
+          "label": "Themes"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      }
+    },
     "techtonica": {
       "displayName": "Techtonica",
       "categories": {
