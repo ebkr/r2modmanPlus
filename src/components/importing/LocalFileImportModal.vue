@@ -297,7 +297,7 @@ export default class LocalFileImportModal extends Vue {
                 this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
                 return;
             }
-            const updatedModListResult = await ProfileModList.getModList(profile);
+            const updatedModListResult = await ProfileModList.getModList(profile.asImmutableProfile());
             if (updatedModListResult instanceof R2Error) {
                 this.$store.commit("error/handleError", updatedModListResult);
                 return;

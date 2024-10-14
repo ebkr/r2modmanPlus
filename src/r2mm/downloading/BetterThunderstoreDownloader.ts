@@ -128,7 +128,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         combo.setVersion(modVersion);
         let downloadCount = 0;
 
-        const modList = await ProfileModList.getModList(profile);
+        const modList = await ProfileModList.getModList(profile.asImmutableProfile());
         if (modList instanceof R2Error) {
             return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
         }

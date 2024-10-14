@@ -1,5 +1,5 @@
 import * as yaml from 'yaml';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -35,7 +35,7 @@ export default class ProfileModList {
         return this.lock.acquire("acquire", fn);
     }
 
-    public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async getModList(profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(profile.getProfilePath());
         if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
@@ -84,7 +84,7 @@ export default class ProfileModList {
         }
     }
 
-    public static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+    public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
@@ -112,7 +112,7 @@ export default class ProfileModList {
         return null;
     }
 
-    public static async addMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async addMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         mod.setInstalledAtTime(Number(new Date())); // Set InstalledAt to current epoch millis
         let currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
@@ -137,7 +137,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async removeMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async removeMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             return currentModList;
@@ -151,7 +151,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async updateMods(mods: ManifestV2[], profile: Profile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+    public static async updateMods(mods: ManifestV2[], profile: ImmutableProfile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -169,7 +169,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async updateMod(mod: ManifestV2, profile: Profile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
+    public static async updateMod(mod: ManifestV2, profile: ImmutableProfile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -184,7 +184,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    private static async createExport(profile: Profile): Promise<ZipBuilder | R2Error> {
+    private static async createExport(profile: ImmutableProfile): Promise<ZipBuilder | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -219,7 +219,7 @@ export default class ProfileModList {
         return builder;
     }
 
-    public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
+    public static async exportModListToFile(profile: ImmutableProfile): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         try {
             await FileUtils.ensureDirectory(exportDirectory);
@@ -246,7 +246,7 @@ export default class ProfileModList {
         return exportPath;
     }
 
-    public static async exportModListAsCode(profile: Profile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
+    public static async exportModListAsCode(profile: ImmutableProfile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         await FileUtils.ensureDirectory(exportDirectory);
