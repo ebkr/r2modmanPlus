@@ -3,7 +3,6 @@ import ThunderstoreVersion from '../../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
-import ExportMod from '../../../model/exports/ExportMod';
 import { ImmutableProfile } from '../../../model/Profile';
 
 export default abstract class ThunderstoreDownloaderProvider {
@@ -74,15 +73,15 @@ export default abstract class ThunderstoreDownloaderProvider {
     /**
      * A top-level method to download exact versions of exported mods.
      *
-     * @param modList               An array of {@class ExportMod} mods to download.
-     * @param allMods               An array of all mods available from the Thunderstore API.
+     * @param modList               An array of {@class ThunderstoreCombo} mods to download.
      * @param ignoreCache           Download mod even if it already exists in the cache.
      * @param totalProgressCallback Callback to show the combined state of all the downloads.
      */
     public abstract downloadImportedMods(
-        modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+        modList: ThunderstoreCombo[],
+        ignoreCache: boolean,
         totalProgressCallback: (progress: number) => void,
-    ): Promise<ThunderstoreCombo[]>;
+    ): Promise<void>;
 
     /**
      * Generate the current progress across all downloads.
