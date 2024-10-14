@@ -10,7 +10,7 @@ import PathResolver from '../../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import ExportMod from '../../model/exports/ExportMod';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
@@ -117,7 +117,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
+    public async download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
                            allMods: ThunderstoreMod[], ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
@@ -128,7 +128,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         combo.setVersion(modVersion);
         let downloadCount = 0;
 
-        const modList = await ProfileModList.getModList(profile.asImmutableProfile());
+        const modList = await ProfileModList.getModList(profile);
         if (modList instanceof R2Error) {
             return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
         }
