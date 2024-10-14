@@ -409,7 +409,7 @@ import ModalCard from '../components/ModalCard.vue';
 		}
 
         browseProfileFolder() {
-            LinkProvider.instance.openLink('file://' + this.profile.getPathOfProfile());
+            LinkProvider.instance.openLink('file://' + this.profile.getProfilePath());
 		}
 
 		toggleCardExpanded(expanded: boolean) {
@@ -490,13 +490,13 @@ import ModalCard from '../components/ModalCard.vue';
             let logOutputPath = "";
             switch (this.activeGame.packageLoader) {
                 case PackageLoader.BEPINEX:
-                    logOutputPath = path.join(this.profile.getPathOfProfile(), "BepInEx", "LogOutput.log");
+                    logOutputPath = path.join(this.profile.getProfilePath(), "BepInEx", "LogOutput.log");
                     break;
                 case PackageLoader.MELON_LOADER:
-                    logOutputPath = path.join(this.profile.getPathOfProfile(), "MelonLoader", "Latest.log");
+                    logOutputPath = path.join(this.profile.getProfilePath(), "MelonLoader", "Latest.log");
                     break;
 				case PackageLoader.RETURN_OF_MODDING:
-                    logOutputPath = path.join(this.profile.getPathOfProfile(), "ReturnOfModding", "LogOutput.log");
+                    logOutputPath = path.join(this.profile.getProfilePath(), "ReturnOfModding", "LogOutput.log");
                     break;
             }
             const text = (await fs.readFile(logOutputPath)).toString();
