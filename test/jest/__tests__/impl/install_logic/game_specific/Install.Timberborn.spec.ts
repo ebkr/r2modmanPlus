@@ -85,7 +85,7 @@ describe('Timberborn Install Logic', () => {
         GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "Timberborn")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
         // Correct folder name casing conversion should happen within the ProfileInstaller.
         // Tests would get fairly heavily hard-coded if recorded here.

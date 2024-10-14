@@ -26,7 +26,7 @@ describe('ReturnOfModding Installer Tests', () => {
         const expectedAfterUninstall: string[] = [];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
         await expectFilesToBeCopied(sourceToExpectedDestination);
 
         const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
@@ -67,7 +67,7 @@ describe('ReturnOfModding Installer Tests', () => {
         ];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
         await expectFilesToBeCopied(sourceToExpectedDestination);
 
         const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
@@ -86,7 +86,7 @@ describe('ReturnOfModding Installer Tests', () => {
         ];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
         await expectFilesToBeCopied(sourceToExpectedDestination);
 
         const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());

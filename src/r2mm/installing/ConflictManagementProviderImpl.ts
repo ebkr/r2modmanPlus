@@ -12,7 +12,7 @@ import FileUtils from '../../utils/FileUtils';
 export default class ConflictManagementProviderImpl extends ConflictManagementProvider {
 
     // TODO: Override files in conflict management state file to say they belong to the following mod.
-    async overrideInstalledState(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
+    async overrideInstalledState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         let stateFileContents: string | undefined;
         const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
         if (await FsProvider.instance.exists(modStateFilePath)) {
