@@ -788,6 +788,12 @@ export default class GameManager {
             "https://thunderstore.io/c/five-nights-at-freddys-into-the-pit/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2638370")], "FiveNightsAtFreddysIntoThePit.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("GoreBox", "GoreBox", "GoreBox",
+            "GoreBox", ["GoreBox.exe"], "GoreBox_Data",
+            "https://thunderstore.io/c/gorebox/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2027330")], "GoreBox.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
