@@ -1,7 +1,7 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
-import Profile from '../../../model/Profile';
+import Profile, { ImmutableProfile } from '../../../model/Profile';
 
 export default abstract class ConflictManagementProvider {
 
@@ -22,7 +22,7 @@ export default abstract class ConflictManagementProvider {
 
     public abstract overrideInstalledState(mod: ManifestV2, profile: Profile): Promise<R2Error | void>;
 
-    public abstract isFileActive(mod: ManifestV2, profile: Profile, file: string): Promise<boolean>;
+    public abstract isFileActive(mod: ManifestV2, profile: Profile|ImmutableProfile, file: string): Promise<boolean>;
 
 }
 

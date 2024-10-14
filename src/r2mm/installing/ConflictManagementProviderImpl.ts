@@ -6,7 +6,7 @@ import * as path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from '../../model/installing/ModFileTracker';
 import StateTracker from '../../model/installing/StateTracker';
-import Profile from '../../model/Profile';
+import Profile, { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class ConflictManagementProviderImpl extends ConflictManagementProvider {
@@ -98,7 +98,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         } as StateTracker));
     }
 
-    public async isFileActive(mod: ManifestV2, profile: Profile, file: string) {
+    public async isFileActive(mod: ManifestV2, profile: Profile|ImmutableProfile, file: string) {
         const state = await this.getTotalState(profile);
         for (const [stateFile, stateMod] of state.currentState) {
             if (stateFile === file) {
@@ -108,7 +108,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         return false;
     }
 
-    private async getTotalState(profile: Profile): Promise<StateTracker> {
+    private async getTotalState(profile: Profile|ImmutableProfile): Promise<StateTracker> {
         const totalStateFilePath = profile.joinToProfilePath("_state", "installation_state.yml");
         let totalState: StateTracker = {
             currentState: []

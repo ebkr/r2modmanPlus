@@ -180,7 +180,7 @@ export default {
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
-            const profile = getters.activeProfileOrThrow;
+            const profile = getters.activeProfileOrThrow.asImmutableProfile();
             await dispatch('disableModsFromProfile', {...params, profile});
         },
 
@@ -188,7 +188,7 @@ export default {
             {dispatch},
             params: {
                 mods: ManifestV2[],
-                profile: Profile,
+                profile: ImmutableProfile,
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
@@ -211,7 +211,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.disable());
+                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.disable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {
@@ -235,7 +235,7 @@ export default {
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
-            const profile = getters.activeProfileOrThrow;
+            const profile = getters.activeProfileOrThrow.asImmutableProfile();
             await dispatch('enableModsOnProfile', {...params, profile});
         },
 
@@ -243,7 +243,7 @@ export default {
             {dispatch},
             params: {
                 mods: ManifestV2[],
-                profile: Profile,
+                profile: ImmutableProfile,
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
@@ -266,7 +266,7 @@ export default {
                 }
 
                 // Update mod list status to mods.yml.
-                const updatedList = await ProfileModList.updateMods(mods, profile.asImmutableProfile(), (mod) => mod.enable());
+                const updatedList = await ProfileModList.updateMods(mods, profile, (mod) => mod.enable());
                 if (updatedList instanceof R2Error) {
                     throw updatedList;
                 } else {
