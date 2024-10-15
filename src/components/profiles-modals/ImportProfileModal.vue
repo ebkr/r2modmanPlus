@@ -345,7 +345,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
             <p>This profile will store its own mods independently from other profiles.</p>
             <br/>
-            <input class="input" v-model="targetProfileName" ref="profileNameInput" />
+            <input class="input" maxlength="100" v-model="targetProfileName" ref="profileNameInput" />
             <br/><br/>
             <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''">
                 Profile name required
