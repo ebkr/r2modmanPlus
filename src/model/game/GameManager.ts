@@ -795,10 +795,10 @@ export default class GameManager {
             [new StorePlatformMetadata(StorePlatform.STEAM, "2027330")], "GoreBox.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
         
-        new Game("TCG Card Shop Simulator", "TCG Card Shop Simulator", "TCG Card Shop Simulator",
+        new Game("TCG Card Shop Simulator", "TCGCardShopSimulator", "TCG Card Shop Simulator",
             "TCG Card Shop Simulator", ["Card Shop Simulator.exe"], "Card Shop Simulator_Data",
-            "thunderstore.io/c/tcg-card-shop-simulator/api/v1/package/", "https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3070070"), new StorePlatformMetadata(StorePlatform.OTHER)], "TCG Card Shop Simulator.png",
+            "https://thunderstore.io/c/tcg-card-shop-simulator/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3070070"), new StorePlatformMetadata(StorePlatform.OTHER)], "TCGCardShopSimulator.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
