@@ -149,7 +149,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Distance"),
             buildBepInExRules("FiveNightsAtFreddysIntoThePit"),
             buildBepInExRules("GoreBox"),
-            buildBepInExRules("TCG Card Shop Simulator"),
+            buildBepInExRules("TCGCardShopSimulator"),
         ]
     }
 }
