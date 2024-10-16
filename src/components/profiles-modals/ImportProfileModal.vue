@@ -271,13 +271,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <br />
             <br />
             <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
+            <span class="tag is-danger" v-else-if="!isProfileCodeValid(profileImportCode)">Invalid code, check for typos</span>
             <span class="tag is-success" v-else>You may import the profile</span>
         </template>
         <template v-slot:footer>
             <button
                 id="modal-import-profile-from-code-invalid"
                 class="button is-danger"
-                v-if="profileImportCode === ''">
+                v-if="profileImportCode === '' || !isProfileCodeValid(profileImportCode)">
                 Fix issues before importing
             </button>
             <button
