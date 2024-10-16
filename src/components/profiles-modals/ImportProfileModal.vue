@@ -71,6 +71,36 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.$store.commit('closeImportProfileModal');
     }
 
+    // Fired when user selects whether to import a new profile or update existing one.
+    onCreateOrUpdateSelect(mode: 'IMPORT' | 'UPDATE') {
+        this.importUpdateSelection = mode;
+        this.activeStep = 'FILE_CODE_SELECTION';
+    }
+
+    // Fired when user selects to import either from file or code.
+    onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
+        if (mode === 'FILE') {
+            this.activeStep = 'IMPORT_FILE';
+            process.nextTick(() => {
+                InteractionProvider.instance.selectFile({
+                    title: 'Import Profile',
+                    filters: [{
+                        name: "*",
+                        extensions: ["r2z"]
+                    }],
+                    buttonLabel: 'Import'
+                }).then((value: string[]) => {
+                    if (value.length === 0) {
+                        this.closeModal();
+                    }
+                    this.importProfileHandler(value);
+                });
+            });
+        } else {
+            this.activeStep = 'IMPORT_CODE';
+        }
+    }
+
     // User selects importing via code from the UI.
     async importProfileUsingCode() {
         try {
@@ -80,26 +110,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             const err = R2Error.fromThrownValue(e, 'Failed to import profile');
             this.$store.commit('error/handleError', err);
         }
-    }
-
-    // User selects importing from file from the UI.
-    importProfileFromFile() {
-        this.activeStep = 'IMPORT_FILE';
-        process.nextTick(() => {
-            InteractionProvider.instance.selectFile({
-                title: 'Import Profile',
-                filters: [{
-                    name: "*",
-                    extensions: ["r2z"]
-                }],
-                buttonLabel: 'Import'
-            }).then((value: string[]) => {
-                if (value.length === 0) {
-                    this.closeModal();
-                }
-                this.importProfileHandler(value);
-            });
-        });
     }
 
     async importProfileHandler(files: string[] | null) {
@@ -230,12 +240,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:footer>
             <button id="modal-import-new-profile"
                     class="button is-info"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'IMPORT'">
+                    @click="onCreateOrUpdateSelect('IMPORT')">
                 Import new profile
             </button>
             <button id="modal-update-existing-profile"
                     class="button is-primary"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'UPDATE'">
+                    @click="onCreateOrUpdateSelect('UPDATE')">
                 Update existing profile
             </button>
         </template>
@@ -249,10 +259,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:footer>
             <button id="modal-import-profile-file"
                     class="button is-info"
-                    @click="importProfileFromFile()">From file</button>
+                    @click="onFileOrCodeSelect('FILE')">From file</button>
             <button id="modal-import-profile-code"
                     class="button is-primary"
-                    @click="activeStep = 'IMPORT_CODE'">From code</button>
+                    @click="onFileOrCodeSelect('CODE')">From code</button>
         </template>
     </ModalCard>
 
