@@ -46,15 +46,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return this.$store.state.modals.isImportProfileModalOpen;
     }
 
-    get profileToOnlineMods() {
-        if (!this.profileImportContent) {
-            return [];
-        }
-        return this.profileImportContent.getMods()
-            .map(mod => this.$store.getters['tsMods/tsMod'](mod))
-            .filter(mod => !!mod)
-    }
-
     closeModal() {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
         this.listenerId = 0;
@@ -65,6 +56,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.profileImportFilePath = null;
         this.profileImportContent = null;
         this.$store.commit('closeImportProfileModal');
+    }
+
+    get profileToOnlineMods() {
+        if (!this.profileImportContent) {
+            return [];
+        }
+        return this.profileImportContent.getMods()
+            .map(mod => this.$store.getters['tsMods/tsMod'](mod))
+            .filter(mod => !!mod)
     }
 
     // Fired when user selects whether to import a new profile or update existing one.
@@ -87,25 +87,26 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     }],
                     buttonLabel: 'Import'
                 });
-                await this.importProfileHandler(files);
+                await this.validateProfileFile(files);
             });
         } else {
             this.activeStep = 'IMPORT_CODE';
         }
     }
 
-    // User selects importing via code from the UI.
-    async importProfileUsingCode() {
+    // Fired when user has entered a profile code to import.
+    async onProfileCodeEntered() {
         try {
             const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
-            await this.importProfileHandler([filepath]);
+            await this.validateProfileFile([filepath]);
         } catch (e: any) {
             const err = R2Error.fromThrownValue(e, 'Failed to import profile');
             this.$store.commit('error/handleError', err);
         }
     }
 
-    async importProfileHandler(files: string[] | null) {
+    // Check that selected profile zip is valid and proceed.
+    async validateProfileFile(files: string[] | null) {
         if (files === null || files.length === 0) {
             this.closeModal();
             return;
@@ -126,7 +127,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    async installProfileHandler() {
+    // Fired when user has accepted the mods to be imported in the review phase.
+    async onProfileReviewConfirmed() {
         const profileContent = this.profileImportContent;
         const filePath = this.profileImportFilePath;
 
@@ -141,7 +143,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     // Fired when user confirms the import target location (new or existing profile).
-    async importProfileIfStateIsValid() {
+    async onImportTargetSelected() {
         const profileContent = this.profileImportContent;
         const filePath = this.profileImportFilePath;
 
@@ -269,7 +271,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="input"
                 v-model="profileImportCode"
                 ref="profileCodeInput"
-                @keyup.enter="importProfileUsingCode()"
+                @keyup.enter="onProfileCodeEntered()"
             />
             <br />
             <br />
@@ -286,7 +288,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <button
                 id="modal-import-profile-from-code"
                 class="button is-info"
-                @click="importProfileUsingCode();"
+                @click="onProfileCodeEntered();"
                 v-else>
                 Continue
             </button>
@@ -304,7 +306,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <button
                 id="modal-import-profile-from-code-invalid"
                 class="button is-info"
-                @click="installProfileHandler();">
+                @click="onProfileReviewConfirmed();">
                 Import
             </button>
         </template>
@@ -359,11 +361,11 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="importProfileIfStateIsValid()" v-else>Create</button>
+            <button id="modal-create-profile" class="button is-info" @click="onImportTargetSelected()" v-else>Create</button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
             <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(updateProfileName)">Update profile: {{ updateProfileName }}</button>
-            <button id="modal-update-profile" class="button is-info" v-else @click="importProfileIfStateIsValid()">Update profile: {{ updateProfileName }}</button>
+            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">Update profile: {{ updateProfileName }}</button>
         </template>
     </ModalCard>
 
