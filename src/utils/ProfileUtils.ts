@@ -14,7 +14,6 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
-import ProfileModList from "../r2mm/mods/ProfileModList";
 
 export async function exportModsToCombos(exportMods: ExportMod[], community: string): Promise<ThunderstoreCombo[]> {
     const tsMods = await PackageDb.getPackagesByNames(community, exportMods.map((m) => m.getName()));
@@ -44,7 +43,7 @@ export async function exportModsToCombos(exportMods: ExportMod[], community: str
     return combos;
 }
 
-async function extractImportedProfileConfigs(
+async function extractConfigsToImportedProfile(
     file: string,
     profileName: string,
     progressCallback: (status: string) => void
@@ -73,12 +72,16 @@ async function extractImportedProfileConfigs(
             )
         }
 
-        const progress = Math.floor((index/zipEntries.length) * 100);
+        const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
         progressCallback(`Copying configs to profile: ${progress}%`);
     }
 }
 
-async function installModsToProfile(
+/**
+ * Install mods to target profile without syncing changes to mods.yml file.
+ * Syncing is futile, as the mods.yml is copied from the imported profile.
+ */
+async function installModsToImportedProfile(
     comboList: ThunderstoreCombo[],
     modList: ExportMod[],
     profile: ImmutableProfile,
@@ -87,28 +90,18 @@ async function installModsToProfile(
     const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
 
     for (const [index, comboMod] of comboList.entries()) {
-        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
-
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile);
-        if (installError instanceof R2Error) {
-            throw installError;
-        }
-
-        const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile);
-        if (newModList instanceof R2Error) {
-            throw newModList;
-        }
+        const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
+        throwForR2Error(
+            await ProfileInstallerProvider.instance.installMod(manifestMod, profile)
+        );
 
         if (disabledMods.includes(manifestMod.getName())) {
-            await ProfileModList.updateMod(manifestMod, profile, async (modToDisable: ManifestV2) => {
-                // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                modToDisable.enable();
-                await ProfileInstallerProvider.instance.disableMod(modToDisable, profile);
-                modToDisable.disable();
-            });
+            throwForR2Error(
+                await ProfileInstallerProvider.instance.disableMod(manifestMod, profile)
+            );
         }
 
-        const progress = Math.floor((index/comboList.length) * 100);
+        const progress = Math.floor(((index + 1) / comboList.length) * 100);
         progressCallback(`Copying mods to profile: ${progress}%`);
     }
 }
@@ -153,8 +146,8 @@ export async function populateImportedProfile(
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
     }
 
-    await installModsToProfile(comboList, exportModList, profile, progressCallback);
-    await extractImportedProfileConfigs(zipPath, profile.getProfileName(), progressCallback);
+    await installModsToImportedProfile(comboList, exportModList, profile, progressCallback);
+    await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
 
     if (isUpdate) {
         progressCallback('Applying changes to updated profile...');
@@ -177,4 +170,10 @@ export async function readProfileFile(file: string) {
         read = result.toString();
     }
     return read;
+}
+
+function throwForR2Error(maybeError: unknown) {
+    if (maybeError instanceof R2Error) {
+        throw maybeError;
+    }
 }
