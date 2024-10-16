@@ -33,5 +33,10 @@ export default class ProfilesMixin extends Vue {
         return sanitize(nameToSanitize);
     }
 
+    isProfileCodeValid(profileImportCode: string): boolean {
+        const REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return REGEX.test(profileImportCode);
+    }
+
 }
 </script>
