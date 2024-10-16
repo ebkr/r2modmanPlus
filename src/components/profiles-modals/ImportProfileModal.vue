@@ -177,6 +177,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
             await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
         } catch (e) {
+            await this.$store.dispatch('profiles/ensureProfileExists');
             this.closeModal();
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
             return;

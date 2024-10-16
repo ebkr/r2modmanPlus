@@ -37,6 +37,18 @@ export const ProfilesModule = {
             }
         },
 
+        async ensureProfileExists({commit, dispatch, rootGetters, state}) {
+            const activeProfile: Profile = rootGetters['profile/activeProfile'];
+
+            if (!(await FsProvider.instance.exists(activeProfile.getProfilePath()))) {
+                await dispatch('profile/updateActiveProfile', 'Default', { root: true });
+                commit(
+                    'setProfileList',
+                    state.profileList.filter((p) => p !== activeProfile.getProfileName())
+                );
+            }
+        },
+
         async removeSelectedProfile({rootGetters, state, dispatch}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
             const path = activeProfile.getProfilePath();
