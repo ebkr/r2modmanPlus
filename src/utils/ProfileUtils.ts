@@ -146,8 +146,13 @@ export async function populateImportedProfile(
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
     }
 
-    await installModsToImportedProfile(comboList, exportModList, profile, progressCallback);
-    await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
+    try {
+        await installModsToImportedProfile(comboList, exportModList, profile, progressCallback);
+        await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
+    } catch (e) {
+        await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
+        throw e;
+    }
 
     if (isUpdate) {
         progressCallback('Applying changes to updated profile...');
