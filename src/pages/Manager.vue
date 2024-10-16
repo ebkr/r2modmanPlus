@@ -15,7 +15,7 @@
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the Steam directory</h3>
+					<h3 class='title'>Failed to set the Steam folder</h3>
 					<p>The steam executable was not selected.</p>
 					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
 				</div>
@@ -27,7 +27,7 @@
 			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the {{ activeGame.displayName }} directory</h3>
+					<h3 class='title'>Failed to set the {{ activeGame.displayName }} folder</h3>
 					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
 					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
 				</div>
@@ -280,7 +280,7 @@ import ModalCard from '../components/ModalCard.vue';
                             this.showRor2IncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-                        const err = R2Error.fromThrownValue(e, 'Failed to change the game directory');
+                        const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
                         this.$store.commit('error/handleError', err);
                     }
                 }
@@ -304,7 +304,7 @@ import ModalCard from '../components/ModalCard.vue';
 							throw new Error("The selected executable is not gamelaunchhelper.exe");
 						}
 					} catch (e) {
-						const err = R2Error.fromThrownValue(e, 'Failed to change the game directory');
+						const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
 						this.$store.commit('error/handleError', err);
 					}
 				}
@@ -356,7 +356,7 @@ import ModalCard from '../components/ModalCard.vue';
                             this.showSteamIncorrectDirectoryModal = true;
                         }
                     } catch (e) {
-                        const err = R2Error.fromThrownValue(e, 'Failed to change the Steam directory');
+                        const err = R2Error.fromThrownValue(e, 'Failed to change the Steam folder');
                         this.$store.commit('error/handleError', err);
                     }
 				}

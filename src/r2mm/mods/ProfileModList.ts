@@ -225,16 +225,16 @@ export default class ProfileModList {
             await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
             const err: Error = e as Error;
-            return new R2Error('Failed to ensure directory exists', err.message,
+            return new R2Error('Failed to ensure folder exists', err.message,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
         const dir = await InteractionProvider.instance.selectFolder({
-            title: `Select the location to export your profile to`,
+            title: `Select the folder to export your profile to`,
             defaultPath: exportDirectory,
-            buttonLabel: 'Select export directory'
+            buttonLabel: 'Select export folder'
         });
         if (dir.length === 0) {
-            return new R2Error("Failed to export profile", "No export directory was selected", null);
+            return new R2Error("Failed to export profile", "No export folder was selected", null);
         }
         const builder = await this.createExport(profile);
         if (builder instanceof R2Error) {

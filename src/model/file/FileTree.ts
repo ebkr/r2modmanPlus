@@ -35,9 +35,9 @@ export default class FileTree {
             const err: Error = e as Error;
             return Promise.resolve(
                 new R2Error(
-                    `Error reading directory in FileTree build for directory: ${location}`,
+                    `Error reading folder in FileTree build for folder: ${location}`,
                     err.message,
-                    'Relaunch the manager as admin, directory failed to be read.'
+                    'Relaunch the manager as admin, folder failed to be read.'
                 )
             );
         }

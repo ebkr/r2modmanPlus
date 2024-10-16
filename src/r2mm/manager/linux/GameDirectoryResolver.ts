@@ -42,9 +42,9 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch(e) {
             const err: Error = e as Error;
             return new R2Error(
-                'Unable to resolve Steam install directory',
+                'Unable to resolve Steam install folder',
                 err.message,
-                'Try manually setting the Steam directory through the settings'
+                'Try manually setting the Steam folder through the settings'
             )
         }
     }
@@ -73,16 +73,16 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,
-                    `Failed to find directory: ${gamePath}`,
+                    `Failed to find folder: ${gamePath}`,
                     null
                 )
             }
         } catch(e) {
             const err: Error = e as Error;
             return new R2Error(
-                `Unable to resolve the ${game.displayName} install directory`,
+                `Unable to resolve the ${game.displayName} install folder`,
                 err.message,
-                `Try manually locating the ${game.displayName} install directory through the settings`
+                `Try manually locating the ${game.displayName} install folder through the settings`
             )
         }
     }
@@ -168,14 +168,14 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} compatibility data does not exist in Steam's specified location`,
-                    `Failed to find directory: ${compatDataPath}`,
+                    `Failed to find folder: ${compatDataPath}`,
                     `If this happened, it is very likely that you did not start the game at least once. Please do it.`
                 )
             }
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
-                `Unable to resolve the ${game.displayName} compatibility data directory`,
+                `Unable to resolve the ${game.displayName} compatibility data folder`,
                 err.message,
                 `If this happened, it is very likely that you did not start the game at least once. Please do it.`
             )
@@ -307,7 +307,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             }
             const err: Error = e as Error;
             return new FileNotFoundError(
-                'Unable to read directory',
+                'Unable to read folder',
                 err.message,
                 null
             )
@@ -338,7 +338,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
-                `Unable to locate ${game.displayName} Installation Directory`,
+                `Unable to locate ${game.displayName} Installation Folder`,
                 `Searched locations: ${locations}`,
                 null
             )
@@ -355,7 +355,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
-                `An error occured whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
+                `An error occured whilst locating the ${game.displayName} install folder from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

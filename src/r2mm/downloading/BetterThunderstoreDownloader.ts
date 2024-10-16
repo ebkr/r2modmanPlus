@@ -307,7 +307,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         } catch(e) {
             callback(false, new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache directory. \nReason: ${(e as Error).message}`,
+                `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache folder. \nReason: ${(e as Error).message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
         }

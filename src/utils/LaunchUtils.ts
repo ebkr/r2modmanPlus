@@ -47,8 +47,8 @@ export const setGameDirIfUnset = async (game: Game): Promise<void> => {
 export const throwIfNoGameDir = async (game: Game): Promise<void> => {
     const error = new R2Error(
         `Failed to start ${game.displayName}`,
-        `The ${game.displayName} directory does not exist`,
-        `Set the ${game.displayName} directory in the Settings screen`
+        `The ${game.displayName} folder does not exist`,
+        `Set the ${game.displayName} folder in the Settings screen`
     );
 
     const resolverGameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
