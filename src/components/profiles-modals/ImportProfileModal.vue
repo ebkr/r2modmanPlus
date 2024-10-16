@@ -19,7 +19,7 @@ import OnlineModList from "../views/OnlineModList.vue";
     components: { OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
-    private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
+    private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
     private profileImportCode: string = '';
     private listenerId: number = 0;
@@ -60,7 +60,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.listenerId = 0;
         this.newProfileName = '';
         this.updateProfileName = '';
-        this.importUpdateSelection = null;
+        this.importUpdateSelection = 'CREATE';
         this.profileImportCode = '';
         this.profileImportFilePath = null;
         this.profileImportContent = null;
@@ -68,7 +68,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     // Fired when user selects whether to import a new profile or update existing one.
-    onCreateOrUpdateSelect(mode: 'IMPORT' | 'UPDATE') {
+    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
         this.importUpdateSelection = mode;
         this.updateProfileName = this.activeProfileName;
         this.activeStep = 'FILE_CODE_SELECTION';
@@ -173,7 +173,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        if (this.importUpdateSelection === 'IMPORT') {
+        if (this.importUpdateSelection === 'CREATE') {
             try {
                 await this.$store.dispatch('profiles/addProfile', profileName);
             } catch (e) {
@@ -236,7 +236,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:footer>
             <button id="modal-import-new-profile"
                     class="button is-info"
-                    @click="onCreateOrUpdateSelect('IMPORT')">
+                    @click="onCreateOrUpdateSelect('CREATE')">
                 Import new profile
             </button>
             <button id="modal-update-existing-profile"
@@ -249,7 +249,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</h2>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
             <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
         </template>
         <template v-slot:footer>
@@ -342,9 +342,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 v-if="importUpdateSelection === 'IMPORT'" class="modal-title">Import a profile</h2>
+            <h2 v-if="importUpdateSelection === 'CREATE'" class="modal-title">Import a profile</h2>
         </template>
-        <template v-slot:body v-if="importUpdateSelection === 'IMPORT'">
+        <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
             <p>This profile will store its own mods independently from other profiles.</p>
             <br/>
             <input class="input" v-model="newProfileName" ref="profileNameInput" />
@@ -369,7 +369,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
             </select>
         </template>
-        <template v-slot:footer v-if="importUpdateSelection === 'IMPORT'">
+        <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
             <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
         </template>
