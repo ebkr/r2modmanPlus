@@ -304,7 +304,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer>
             <button
-                id="modal-import-profile-from-code-invalid"
+                id="modal-review-confirmed"
                 class="button is-info"
                 @click="onProfileReviewConfirmed();">
                 Import
@@ -322,7 +322,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer>
             <button
-                id="modal-import-profile-from-code-invalid"
+                id="modal-no-mods-to-import"
                 class="button is-info"
                 @click="closeModal">
                 Close
@@ -339,13 +339,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <br/>
             <input class="input" v-model="newProfileName" ref="profileNameInput" />
             <br/><br/>
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
+            <span class="tag is-dark" v-if="makeProfileNameSafe(newProfileName) === ''">
                 Profile name required
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
                 "{{makeProfileNameSafe(newProfileName)}}" is available
             </span>
-            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
+            <span class="tag is-danger" v-else>
                 "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
             </span>
         </template>
@@ -361,7 +361,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="onImportTargetSelected()" v-else>Create</button>
+            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">Create</button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
             <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(updateProfileName)">Update profile: {{ updateProfileName }}</button>
