@@ -123,38 +123,65 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    // Create an EventListener which gets triggered after the user either
-    // creates a new profile or selects an existing one to be updated.
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
         const filePath = this.profileImportFilePath;
 
+        // Check and return early for better UX.
         if (profileContent === null || filePath === null) {
-            this.closeModal();
-            const reason = `content is ${profileContent ? 'not' : ''} null, file path is ${filePath ? 'not' : ''} null`;
-            this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+            this.onContentOrPathNotSet();
             return;
+        }
+
+        this.newProfileName = profileContent.getProfileName();
+        this.activeStep = 'ADDING_PROFILE';
+    }
+
+    // Called when the name for the imported profile is given and confirmed by the user.
+    async createProfile() {
+        await this.importProfileIfStateIsValid(this.newProfileName);
+    }
+
+    // Called when the profile to update is selected and confirmed by the user.
+    async updateProfile() {
+        const profileName = this.activeProfileName;
+        await this.importProfileIfStateIsValid(profileName);
+    }
+
+    async importProfileIfStateIsValid(profileName: string) {
+        const profileContent = this.profileImportContent;
+        const filePath = this.profileImportFilePath;
+
+        // Recheck to ensure values haven't changed and to satisfy TypeScript.
+        if (profileContent === null || filePath === null) {
+            this.onContentOrPathNotSet();
+            return;
+        }
+
+        const targetProfileName = this.makeProfileNameSafe(profileName);
+
+        // Sanity check, should not happen.
+        if (targetProfileName === '') {
+            const err = new R2Error("Can't import profile: unknown target profile", "Please try again");
+            this.$store.commit('error/handleError', err);
+            return;
+        }
+
+        if (this.importUpdateSelection === 'IMPORT') {
+            try {
+                await this.$store.dispatch('profiles/addProfile', profileName);
+            } catch (e) {
+                this.closeModal();
+                const err = R2Error.fromThrownValue(e, 'Error while creating profile');
+                this.$store.commit('error/handleError', err);
+                return;
+            }
         }
 
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
 
-        document.addEventListener(
-            'created-profile',
-            async (event: Event) => {
-                const targetProfile = (event as CustomEvent).detail;
-                if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
-                    await this.importProfile(targetProfile, localListenerId, profileContent.getMods(), filePath);
-                } else {
-                    this.closeModal();
-                    this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
-                }
-            },
-            {once: true}
-        );
-
-        this.newProfileName = profileContent.getProfileName();
-        this.activeStep = 'ADDING_PROFILE';
+        await this.importProfile(targetProfileName, localListenerId, profileContent.getMods(), filePath);
     }
 
     async importProfile(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
@@ -187,24 +214,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.closeModal();
     }
 
-    // Called when the name for the imported profile is given and confirmed by the user.
-    async createProfile() {
-        const safeName = this.makeProfileNameSafe(this.newProfileName);
-        if (safeName === '') {
-            return;
-        }
-        try {
-            await this.$store.dispatch('profiles/addProfile', safeName);
-            document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error importing a profile');
-            this.$store.commit('error/handleError', err);
-        }
-    }
-
-    // Called when the profile to update is selected and confirmed by the user.
-    updateProfile() {
-        document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
+    onContentOrPathNotSet() {
+        this.closeModal();
+        const reason = `content is ${this.profileImportContent ? 'not' : ''} null, file path is ${this.profileImportFilePath ? 'not' : ''} null`;
+        this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
     }
 }
 </script>
