@@ -72,7 +72,7 @@ async function extractConfigsToImportedProfile(
             )
         }
 
-        const progress = Math.floor((index/zipEntries.length) * 100);
+        const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
         progressCallback(`Copying configs to profile: ${progress}%`);
     }
 }
@@ -101,7 +101,7 @@ async function installModsToImportedProfile(
             );
         }
 
-        const progress = Math.floor((index/comboList.length) * 100);
+        const progress = Math.floor(((index + 1) / comboList.length) * 100);
         progressCallback(`Copying mods to profile: ${progress}%`);
     }
 }
