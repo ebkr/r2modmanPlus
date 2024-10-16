@@ -24,6 +24,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private profileImportCode: string = '';
     private listenerId: number = 0;
     private newProfileName: string = '';
+    private updateProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep:
@@ -45,12 +46,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return this.$store.state.modals.isImportProfileModalOpen;
     }
 
-    async profileSelectOnChange(event: Event) {
-        if (event.target instanceof HTMLSelectElement) {
-            this.activeProfileName = event.target.value;
-        }
-    }
-
     get profileToOnlineMods() {
         if (!this.profileImportContent) {
             return [];
@@ -64,6 +59,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
         this.listenerId = 0;
         this.newProfileName = '';
+        this.updateProfileName = '';
         this.importUpdateSelection = null;
         this.profileImportCode = '';
         this.profileImportFilePath = null;
@@ -74,6 +70,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // Fired when user selects whether to import a new profile or update existing one.
     onCreateOrUpdateSelect(mode: 'IMPORT' | 'UPDATE') {
         this.importUpdateSelection = mode;
+        this.updateProfileName = this.activeProfileName;
         this.activeStep = 'FILE_CODE_SELECTION';
     }
 
@@ -154,8 +151,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     // Called when the profile to update is selected and confirmed by the user.
     async updateProfile() {
-        const profileName = this.activeProfileName;
-        await this.importProfileIfStateIsValid(profileName);
+        await this.importProfileIfStateIsValid(this.updateProfileName);
     }
 
     async importProfileIfStateIsValid(profileName: string) {
@@ -369,7 +365,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             </div>
             <p>Select a profile below:</p>
             <br/>
-            <select class="select" :value="activeProfileName" @change="profileSelectOnChange">
+            <select class="select" v-model="updateProfileName">
                 <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
             </select>
         </template>
@@ -378,8 +374,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
-            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(activeProfileName)">Update profile: {{ activeProfileName }}</button>
-            <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ activeProfileName }}</button>
+            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(updateProfileName)">Update profile: {{ updateProfileName }}</button>
+            <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ updateProfileName }}</button>
         </template>
     </ModalCard>
 
