@@ -75,23 +75,19 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     // Fired when user selects to import either from file or code.
-    onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
+    async onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
         if (mode === 'FILE') {
             this.activeStep = 'IMPORT_FILE';
-            process.nextTick(() => {
-                InteractionProvider.instance.selectFile({
+            process.nextTick(async () => {
+                const files = await InteractionProvider.instance.selectFile({
                     title: 'Import Profile',
                     filters: [{
                         name: "*",
                         extensions: ["r2z"]
                     }],
                     buttonLabel: 'Import'
-                }).then((value: string[]) => {
-                    if (value.length === 0) {
-                        this.closeModal();
-                    }
-                    this.importProfileHandler(value);
                 });
+                await this.importProfileHandler(files);
             });
         } else {
             this.activeStep = 'IMPORT_CODE';
