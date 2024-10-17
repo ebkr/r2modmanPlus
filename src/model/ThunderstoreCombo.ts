@@ -1,38 +1,31 @@
+import Game from './game/Game';
 import ThunderstoreMod from './ThunderstoreMod';
 import R2Error from './errors/R2Error';
 import ThunderstoreVersion from './ThunderstoreVersion';
+import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 
 export default class ThunderstoreCombo {
 
     private mod: ThunderstoreMod = new ThunderstoreMod();
     private version: ThunderstoreVersion = new ThunderstoreVersion();
 
-    public static fromProtocol(protocol: string, modList: ThunderstoreMod[]): ThunderstoreCombo | R2Error {
-        // Strip out protocol information
-        const reducedProtocol = protocol.replace(new RegExp("ror2mm://v1/install/([a-zA-Z0-9]+\.)?thunderstore\.io/"), '');
-        const information = reducedProtocol.split('/');
-        const packageName = `${information[0]}-${information[1]}`;
-        const packageVersion = information[2];
-        const foundMod = modList.find((mod: ThunderstoreMod) => mod.getFullName() === packageName);
-        if (foundMod === undefined) {
+    public static async fromProtocol(protocol: string, game: Game): Promise<ThunderstoreCombo | R2Error> {
+        // Remove protocol information and trailing slash, leaving the package version information.
+        const reducedProtocol = protocol
+            .replace(new RegExp('ror2mm://v1/install/([a-zA-Z0-9]+\.)?thunderstore\.io/'), '')
+            .replace(new RegExp('\/$'), '');
+        const dependencyString = reducedProtocol.split('/').join('-');
+        const foundMod = await PackageDb.getCombosByDependencyStrings(game, [dependencyString]);
+
+        if (!foundMod.length) {
             return new R2Error(
                 'Mod does not exist',
-                `Unable to resolve ${packageName} to a suitable Thunderstore mod`,
-                'Relaunch the manager to update the mod list'
+                `Unable to resolve ${dependencyString} to a suitable Thunderstore mod or version`,
+                'Relaunch the manager to update the mod list. Ensure the correct game and profile is selected before opening the link.'
             );
         }
-        const foundVersion = foundMod.getVersions().find((version: ThunderstoreVersion) => version.getVersionNumber().toString() === packageVersion);
-        if (foundVersion === undefined) {
-            return new R2Error(
-                'Mod does not exist',
-                `Unable to find version ${packageVersion} of mod ${packageName}`,
-                'Relaunch the manager to update the mod list'
-            );
-        }
-        const combo = new ThunderstoreCombo();
-        combo.mod = foundMod;
-        combo.version = foundVersion;
-        return combo;
+
+        return foundMod[0];
     }
 
     public getMod(): ThunderstoreMod {

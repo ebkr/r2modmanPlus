@@ -141,7 +141,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Link, Modal, Progress } from '../components/all';
 
-import ThunderstoreMod from '../model/ThunderstoreMod';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import PathResolver from '../r2mm/manager/PathResolver';
@@ -213,10 +212,6 @@ import ModalCard from '../components/ModalCard.vue';
         get profile(): Profile {
             return this.$store.getters['profile/activeProfile'];
         };
-
-		get thunderstoreModList(): ThunderstoreMod[] {
-            return this.$store.state.tsMods.mods;
-        }
 
 		get localModList(): ManifestV2[] {
 			return this.$store.state.profile.modList;
@@ -619,8 +614,9 @@ import ModalCard from '../components/ModalCard.vue';
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 			const ignoreCache = this.settings.getContext().global.ignoreCache;
 
-			InteractionProvider.instance.hookModInstallProtocol(async data => {
-                const combo: ThunderstoreCombo | R2Error = ThunderstoreCombo.fromProtocol(data, this.thunderstoreModList);
+            InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
+                const game = this.$store.state.activeGame;
+                const combo: ThunderstoreCombo | R2Error = await ThunderstoreCombo.fromProtocol(protocolUrl, game);
                 if (combo instanceof R2Error) {
                     this.$store.commit('error/handleError', {
                         error: combo,
