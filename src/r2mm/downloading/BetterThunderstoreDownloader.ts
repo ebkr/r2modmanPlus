@@ -10,7 +10,7 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import { ImmutableProfile } from '../../model/Profile';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreDownloaderProvider, { DependencySetBuilderMode } from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import GameManager from '../../model/game/GameManager';
@@ -18,17 +18,13 @@ import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
-    public async buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void> {
-        await this._buildDependencySet(mod, builder);
-    }
-
-    public async buildDependencySetUsingLatest(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void> {
-        const useLatestVersion = true;
-        await this._buildDependencySet(mod, builder, useLatestVersion);
-    }
-
-    private async _buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[], useLatestVersion=false): Promise<void> {
+    public async buildDependencySet(
+        mod: ThunderstoreVersion,
+        builder: ThunderstoreCombo[],
+        mode: DependencySetBuilderMode
+    ): Promise<void> {
         const game = GameManager.activeGame;
+        const useLatestVersion = Boolean(mode);
         let foundDependencies = await PackageDb.getCombosByDependencyStrings(game, mod.getDependencies(), useLatestVersion);
 
         // Filter out already added AFTER reading packages from the DB to
@@ -41,7 +37,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         foundDependencies.forEach(found => builder.push(found));
 
         for (const dependency of foundDependencies) {
-            await this._buildDependencySet(dependency.getVersion(), builder, useLatestVersion);
+            await this.buildDependencySet(dependency.getVersion(), builder, mode);
         }
     }
 
@@ -62,7 +58,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         const dependencies: ThunderstoreCombo[] = [...modsWithUpdates];
 
         for (const mod of modsWithUpdates) {
-            await this.buildDependencySetUsingLatest(mod.getVersion(), dependencies);
+            await this.buildDependencySet(mod.getVersion(), dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
         }
 
         this.sortDependencyOrder(dependencies);
@@ -91,7 +87,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
         let dependencies: ThunderstoreCombo[] = [];
-        await this.buildDependencySet(modVersion, dependencies);
+        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
         this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
@@ -112,7 +108,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         if (!isModpack) {
             // If not modpack, get latest
             dependencies = [];
-            await this.buildDependencySetUsingLatest(modVersion, dependencies);
+            await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
             dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);

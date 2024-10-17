@@ -5,6 +5,11 @@ import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
 
+export enum DependencySetBuilderMode {
+    USE_EXACT_VERSION = 0,
+    USE_LATEST_VERSION = 1
+};
+
 export default abstract class ThunderstoreDownloaderProvider {
 
     private static provider: () => ThunderstoreDownloaderProvider;
@@ -25,17 +30,9 @@ export default abstract class ThunderstoreDownloaderProvider {
      *
      * @param mod       The current mod to download.
      * @param builder   An array of resolved dependencies. This is mutated in place!
+     * @param mode      Whether to use the exact version in {@param mod} or the latest available version.
      */
-    public abstract buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void>;
-
-    /**
-     * Resolve all downloadable dependencies of a ThunderstoreVersion fetching the latest version of the dependency.
-     * This method is recursive to allow dependency building from nested dependencies.
-     *
-     * @param mod       The current mod to download.
-     * @param builder   An array of resolved dependencies. This is mutated in place!
-     */
-    public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, builder: ThunderstoreCombo[]): Promise<void>;
+    public abstract buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[], mode: DependencySetBuilderMode): Promise<void>;
 
     /**
      * A top-level method to download the latest version of all mods passed in, including their dependencies.
