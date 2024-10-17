@@ -227,10 +227,10 @@ const createStubMod = (
     mod.setFullName(modName);
     mod.setDeprecatedStatus(deprecated);
 
-    const version = new ThunderstoreVersion();
-    version.setFullName(`${mod}-1.0.0`);
-    version.setDependencies(dependencyNames.map((depName) => `${depName}-1.0.0`));
-    mod.setVersions([version]);
+    // const version = new ThunderstoreVersion();
+    // version.setFullName(`${mod}-1.0.0`);
+    // version.setDependencies(dependencyNames.map((depName) => `${depName}-1.0.0`));
+    // mod.setVersions([version]);
 
     return mod;
 }
