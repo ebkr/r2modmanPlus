@@ -14,6 +14,12 @@ export default class ThunderstoreVersion implements ReactiveObjectConverterInter
     private downloads: number = 0;
     private downloadUrl: string = '';
 
+    public static parseFromThunderstoreData(data: any): ThunderstoreVersion {
+        const version = new ThunderstoreVersion();
+        version.make(data);
+        return version;
+    }
+
     public make(version: any): ThunderstoreVersion {
         this.setName(version.name);
         this.setFullName(version.full_name);

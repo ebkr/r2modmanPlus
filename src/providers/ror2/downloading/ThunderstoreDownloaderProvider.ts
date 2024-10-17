@@ -5,6 +5,11 @@ import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
 
+export enum DependencySetBuilderMode {
+    USE_EXACT_VERSION = 0,
+    USE_LATEST_VERSION = 1
+};
+
 export default abstract class ThunderstoreDownloaderProvider {
 
     private static provider: () => ThunderstoreDownloaderProvider;
@@ -24,33 +29,20 @@ export default abstract class ThunderstoreDownloaderProvider {
      * This method is recursive to allow dependency building from nested dependencies.
      *
      * @param mod       The current mod to download.
-     * @param allMods   An array of all mods available from the Thunderstore API.
-     * @param builder   An array of resolved dependencies.
-     * @return          ThunderstoreCombo array of the final result of the builder.
+     * @param builder   An array of resolved dependencies. This is mutated in place!
+     * @param mode      Whether to use the exact version in {@param mod} or the latest available version.
      */
-    public abstract buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
-
-    /**
-     * Resolve all downloadable dependencies of a ThunderstoreVersion fetching the latest version of the dependency.
-     * This method is recursive to allow dependency building from nested dependencies.
-     *
-     * @param mod       The current mod to download.
-     * @param allMods   An array of all mods available from the Thunderstore API.
-     * @param builder   An array of resolved dependencies.
-     * @return          ThunderstoreCombo array of the final result of the builder.
-     */
-    public abstract buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[];
+    public abstract buildDependencySet(mod: ThunderstoreVersion, builder: ThunderstoreCombo[], mode: DependencySetBuilderMode): Promise<void>;
 
     /**
      * A top-level method to download the latest version of all mods passed in, including their dependencies.
      *
      * @param modsWithUpdate    An array of ThunderstoreCombo objects to be updated.
-     * @param allMods           An array of all mods available from the Thunderstore API.
      * @param ignoreCache       Download mod even if it already exists in the cache.
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract downloadLatestOfAll(modsWithUpdate: ThunderstoreCombo[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+    public abstract downloadLatestOfAll(modsWithUpdate: ThunderstoreCombo[], ignoreCache: boolean,
                                callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 
@@ -60,13 +52,12 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param profile           The profile the mod is downloaded for (needed to prevent dependencies from updating existing mods).
      * @param mod               The mod to be downloaded.
      * @param modVersion        The version of the mod to download.
-     * @param allMods           An array of all mods available from the Thunderstore API.
      * @param ignoreCache       Download mod even if it already exists in the cache.
      * @param callback          Callback to show the current state of the downloads.
      * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
     public abstract download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                    allMods: ThunderstoreMod[], ignoreCache: boolean,
+                    ignoreCache: boolean,
                     callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                     completedCallback: (modList: ThunderstoreCombo[]) => void): void;
 

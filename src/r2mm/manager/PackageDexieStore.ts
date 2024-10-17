@@ -1,6 +1,10 @@
 import Dexie, { Table } from 'dexie';
 
+import Game from '../../model/game/Game';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ThunderstoreVersion from '../../model/ThunderstoreVersion';
+import { splitToNameAndVersion } from '../../utils/DependencyUtils';
 
 interface DexieVersion {
     full_name: string;
@@ -121,6 +125,41 @@ export async function getPackagesByNames(community: string, packageNames: string
     // Dexie's anyOfIgnoreCase doesn't support compound indexes.
     const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
+}
+
+/**
+ * @param game Game (community) which package listings should be used in the lookup.
+ * @param dependencies Lookup targets as Thunderstore dependency strings.
+ * @param useLatestVersion Ignore the version number in dependencyString and return the latest known version.
+ * @returns ThunderstoreCombo[], silently omitting unknown packages and versions.
+ */
+export async function getCombosByDependencyStrings(
+    game: Game,
+    dependencyStrings: string[],
+    useLatestVersion=false
+): Promise<ThunderstoreCombo[]> {
+    const community = game.internalFolderName;
+    const split = dependencyStrings.map(splitToNameAndVersion);
+    const keys = split.map((d): [string, string] => [community, d[0]]);
+
+    // Dexie's anyOfIgnoreCase doesn't support compound indexes.
+    const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
+    const versionMap = Object.fromEntries(split);
+
+    return packages.map((rawPackage) => {
+        const rawVersion = useLatestVersion
+            ? rawPackage.versions[0]
+            : rawPackage.versions.find((v) => v.version_number === versionMap[rawPackage.full_name])
+
+        if (!rawVersion) {
+            return undefined;
+        }
+
+        const combo = new ThunderstoreCombo();
+        combo.setMod(ThunderstoreMod.parseFromThunderstoreData(rawPackage));
+        combo.setVersion(ThunderstoreVersion.parseFromThunderstoreData(rawVersion));
+        return combo;
+    }).filter((c): c is ThunderstoreCombo => c !== undefined);
 }
 
 export async function getLastPackageListUpdateTime(community: string) {
