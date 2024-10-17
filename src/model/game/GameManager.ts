@@ -798,7 +798,7 @@ export default class GameManager {
         new Game("TCG Card Shop Simulator", "TCGCardShopSimulator", "TCG Card Shop Simulator",
             "TCG Card Shop Simulator", ["Card Shop Simulator.exe"], "Card Shop Simulator_Data",
             "https://thunderstore.io/c/tcg-card-shop-simulator/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3070070"), new StorePlatformMetadata(StorePlatform.OTHER)], "TCGCardShopSimulator.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3070070")], "TCGCardShopSimulator.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
