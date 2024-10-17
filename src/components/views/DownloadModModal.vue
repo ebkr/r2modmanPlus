@@ -75,9 +75,9 @@
                 <p>The following mods will be downloaded and installed:</p>
                 <br/>
                 <ul class="list">
-                    <li class="list-item" v-for='(key, index) in $store.getters["profile/modsWithUpdates"]'
-                        :key='`to-update-${index}-${key.getVersion().getFullName()}`'>
-                        {{key.getVersion().getName()}} will be updated to: {{key.getVersion().getVersionNumber().toString()}}
+                    <li class="list-item" v-for='(mod, index) in $store.getters["profile/modsWithUpdates"]'
+                        :key='`to-update-${index}-${mod.getFullName()}`'>
+                        {{mod.getName()}} will be updated to: {{mod.getLatestVersion().getVersionNumber().toString()}}
                     </li>
                 </ul>
             </template>
@@ -285,7 +285,7 @@ let assignId = 0;
 
         async downloadLatest() {
             this.closeModal();
-            const modsWithUpdates: ThunderstoreCombo[] = this.$store.getters['profile/modsWithUpdates'];
+            const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
             const currentAssignId = assignId++;
             const progressObject = {
                 progress: 0,
