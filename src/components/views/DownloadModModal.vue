@@ -106,6 +106,7 @@ import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 interface DownloadProgress {
     assignId: number;
@@ -222,26 +223,26 @@ let assignId = 0;
         async getModVersions() {
             this.currentVersion = null;
             if (this.thunderstoreMod !== null) {
-                this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
-                this.versionNumbers = this.thunderstoreMod.getVersions()
-                    .map(value => value.getVersionNumber().toString());
+                this.selectedVersion = this.thunderstoreMod.getLatestVersion().getVersionNumber().toString();
+                this.recommendedVersion = null;
+
+                this.versionNumbers = await PackageDb.getPackageVersionNumbers(
+                    this.activeGame.internalFolderName,
+                    this.thunderstoreMod.getFullName()
+                );
 
                 const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
                     .find(value => value.packageName === this.thunderstoreMod!.getFullName());
 
-                if (foundRecommendedVersion === undefined || foundRecommendedVersion.recommendedVersion === undefined) {
-                    this.recommendedVersion = null;
-                    this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString();
-                } else {
+                if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
                     this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
 
-                    // Bind to recommended version or fall back to latest
-                    const thunderstoreRecommendedVersion = this.thunderstoreMod.getVersions()
-                        .find(value => value.getVersionNumber().isEqualTo(foundRecommendedVersion.recommendedVersion!));
-                    if (thunderstoreRecommendedVersion !== undefined) {
-                        this.selectedVersion = thunderstoreRecommendedVersion.getVersionNumber().toString();
-                    } else {
-                        this.selectedVersion = this.thunderstoreMod.getVersions()[0].getVersionNumber().toString()
+                    // Auto-select recommended version if it's found.
+                    const recommendedVersion = this.versionNumbers.find(
+                        (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
+                    );
+                    if (recommendedVersion) {
+                        this.selectedVersion = recommendedVersion;
                     }
                 }
 
@@ -259,18 +260,26 @@ let assignId = 0;
             this.$store.commit("closeDownloadModModal");
         }
 
-        downloadThunderstoreMod() {
+        async downloadThunderstoreMod() {
             const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
             const refSelectedVersion: string | null = this.selectedVersion;
             if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
                 // Shouldn't happen, but shouldn't throw an error.
                 return;
             }
-            const version = refSelectedThunderstoreMod.getVersions()
-                .find((modVersion: ThunderstoreVersion) => modVersion.getVersionNumber().toString() === refSelectedVersion);
-            if (version === undefined) {
+
+            let version: ThunderstoreVersion;
+
+            try {
+                version = await PackageDb.getVersionAsThunderstoreVersion(
+                    this.activeGame.internalFolderName,
+                    refSelectedThunderstoreMod.getFullName(),
+                    refSelectedVersion
+                );
+            } catch {
                 return;
             }
+
             this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 

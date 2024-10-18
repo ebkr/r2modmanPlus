@@ -127,6 +127,11 @@ export async function getPackagesByNames(community: string, packageNames: string
     return packages.map(ThunderstoreMod.parseFromThunderstoreData);
 }
 
+export async function getPackageVersionNumbers(community: string, packageName: string) {
+    const pkg = await getPackageFromDatabase(community, packageName);
+    return pkg.versions.map((v) => v.version_number);
+}
+
 /**
  * @param game Game (community) which package listings should be used in the lookup.
  * @param dependencies Lookup targets as Thunderstore dependency strings.
@@ -167,6 +172,11 @@ export async function getLastPackageListUpdateTime(community: string) {
     return hash ? hash.date_updated : undefined;
 }
 
+export async function getVersionAsThunderstoreVersion(community: string, packageName: string, versionNumber: string) {
+    const version = await getPackgeVersionFromDatabase(community, packageName, versionNumber);
+    return ThunderstoreVersion.parseFromThunderstoreData(version);
+}
+
 export async function isLatestPackageListIndex(community: string, hash: string) {
     return Boolean(
         await db.indexHashes.where({community, hash}).count()
@@ -175,4 +185,25 @@ export async function isLatestPackageListIndex(community: string, hash: string) 
 
 export async function setLatestPackageListIndex(community: string, hash: string) {
     await db.indexHashes.put({community, hash, date_updated: new Date()});
+}
+
+async function getPackageFromDatabase(community: string, packageName: string) {
+    const pkg = await db.packages.where({community, full_name: packageName}).first();
+
+    if (!pkg) {
+        throw new Error(`Couldn't find package "${packageName}" in ${community} packages`);
+    }
+
+    return pkg;
+}
+
+async function getPackgeVersionFromDatabase(community: string, packageName: string, versionNumber: string) {
+    const pkg = await getPackageFromDatabase(community, packageName);
+    const ver = pkg.versions.find((v) => v.version_number === versionNumber);
+
+    if (!ver) {
+        throw new Error(`Couldn't find version "${versionNumber}" of package "${packageName}" in ${community} packages`);
+    }
+
+    return ver;
 }
