@@ -43,6 +43,10 @@ export default class ExportMod {
         return this.version;
     }
 
+    public getDependencyString(): string {
+        return `${this.name}-${this.version}`;
+    }
+
     public isEnabled(): boolean {
         return this.enabled;
     }
