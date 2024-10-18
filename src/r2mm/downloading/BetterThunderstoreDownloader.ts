@@ -1,6 +1,5 @@
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
 import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -11,69 +10,35 @@ import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import { ImmutableProfile } from '../../model/Profile';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreDownloaderProvider, { DependencySetBuilderMode } from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import GameManager from '../../model/game/GameManager';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
-    public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
-            // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (matchingProvider !== undefined) {
-                const version = new VersionNumber(dependency.substring(matchingProvider.getFullName().length + 1));
-                // Find ThunderstoreVersion with VersionNumber matching ${version}
-                const matchingVersion = matchingProvider.getVersions().find(v => v.getVersionNumber().isEqualTo(version));
-                if (matchingVersion !== undefined) {
-                    let otherVersionAlreadyAdded = false;
-                    builder.forEach(v => {
-                        // If otherVersionAlreadyAdded, or full names are equal
-                        otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
-                    });
-                    if (!otherVersionAlreadyAdded) {
-                        const tsCombo = new ThunderstoreCombo();
-                        tsCombo.setMod(matchingProvider);
-                        tsCombo.setVersion(matchingVersion);
-                        foundDependencies.push(tsCombo);
-                    }
-                }
-            }
-        })
-        foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySet(found.getVersion(), allMods, builder));
-        return builder;
-    }
+    public async buildDependencySet(
+        mod: ThunderstoreVersion,
+        builder: ThunderstoreCombo[],
+        mode: DependencySetBuilderMode
+    ): Promise<void> {
+        const game = GameManager.activeGame;
+        const useLatestVersion = Boolean(mode);
+        let foundDependencies = await PackageDb.getCombosByDependencyStrings(game, mod.getDependencies(), useLatestVersion);
 
-    public buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
-            // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (matchingProvider !== undefined) {
-                // Get latest version of dependency
-                const matchingVersion = matchingProvider.getVersions().reduce((one: ThunderstoreVersion, two: ThunderstoreVersion) => {
-                    if (one.getVersionNumber().isNewerThan(two.getVersionNumber())) {
-                        return one;
-                    } return two;
-                });
-                let otherVersionAlreadyAdded = false;
-                builder.forEach(v => {
-                    // If otherVersionAlreadyAdded, or full names are equal
-                    otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
-                });
-                if (!otherVersionAlreadyAdded) {
-                    const tsCombo = new ThunderstoreCombo();
-                    tsCombo.setMod(matchingProvider);
-                    tsCombo.setVersion(matchingVersion);
-                    foundDependencies.push(tsCombo);
-                }
-            }
-        })
+        // Filter out already added AFTER reading packages from the DB to
+        // ensure the recursion works as expected.
+        const alreadyAdded = builder.map((seenMod) => seenMod.getMod().getFullName());
+        foundDependencies = foundDependencies.filter(
+            (dep) => !alreadyAdded.includes(dep.getMod().getFullName())
+        );
+
         foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySetUsingLatest(found.getVersion(), allMods, builder));
-        return builder;
+
+        for (const dependency of foundDependencies) {
+            await this.buildDependencySet(dependency.getVersion(), builder, mode);
+        }
     }
 
     public sortDependencyOrder(deps: ThunderstoreCombo[]) {
@@ -86,14 +51,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadLatestOfAll(modsWithUpdates: ThunderstoreCombo[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+    public async downloadLatestOfAll(modsWithUpdates: ThunderstoreCombo[], ignoreCache: boolean,
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = [...modsWithUpdates];
-        modsWithUpdates.forEach(value => {
-            this.buildDependencySetUsingLatest(value.getVersion(), allMods, dependencies);
-        });
+
+        for (const mod of modsWithUpdates) {
+            await this.buildDependencySet(mod.getVersion(), dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
+        }
 
         this.sortDependencyOrder(dependencies);
 
@@ -117,10 +83,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     public async download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                           allMods: ThunderstoreMod[], ignoreCache: boolean,
+                           ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
+        let dependencies: ThunderstoreCombo[] = [];
+        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
         this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
@@ -140,7 +107,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
         if (!isModpack) {
             // If not modpack, get latest
-            dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+            dependencies = [];
+            await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
             dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
