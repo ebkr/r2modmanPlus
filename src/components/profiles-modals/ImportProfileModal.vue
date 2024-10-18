@@ -22,7 +22,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
     private profileImportCode: string = '';
-    private listenerId: number = 0;
     private targetProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
@@ -47,7 +46,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     closeModal() {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
-        this.listenerId = 0;
         this.targetProfileName = '';
         this.importUpdateSelection = 'CREATE';
         this.profileImportCode = '';
@@ -178,17 +176,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             }
         }
 
-        const localListenerId = this.listenerId + 1;
-        this.listenerId = localListenerId;
-
-        await this.importProfile(targetProfileName, localListenerId, profileContent.getMods(), filePath);
+        await this.importProfile(targetProfileName, profileContent.getMods(), filePath);
     }
 
-    async importProfile(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
-        if (this.listenerId !== localListenerId) {
-            return;
-        }
-
+    async importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
         this.importPhaseDescription = 'Downloading mods: 0%';
         const progressCallback = (progress: number|string) => typeof progress === "number"
