@@ -455,7 +455,7 @@ export default class GameManager {
         new Game("Shadows of Doubt", "ShadowsofDoubt", "ShadowsofDoubt",
             "Shadows of Doubt", ["Shadows of Doubt.exe"], "ShadowsofDoubt_Data",
             "https://thunderstore.io/c/shadows-of-doubt/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "986130")], "shadows-of-doubt.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "986130"), new StorePlatformMetadata(StorePlatform.OTHER)], "shadows-of-doubt.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["sod"]),
 
         new Game("Garfield Kart - Furious Racing", "GarfieldKartFuriousRacing", "GarfieldKartFuriousRacing",
@@ -794,7 +794,7 @@ export default class GameManager {
             "https://thunderstore.io/c/gorebox/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2027330")], "GoreBox.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
-        
+
         new Game("TCG Card Shop Simulator", "TCGCardShopSimulator", "TCG Card Shop Simulator",
             "TCG Card Shop Simulator", ["Card Shop Simulator.exe"], "Card Shop Simulator_Data",
             "https://thunderstore.io/c/tcg-card-shop-simulator/api/v1/package-listing-index/", EXCLUSIONS,
