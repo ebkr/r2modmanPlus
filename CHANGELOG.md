@@ -1,3 +1,22 @@
+### 3.1.51
+#### Memory and performance improvements
+The TS team have been working hard to improve the following:
+- Application memory usage has been significantly reduced.
+  - Expect the manager to use at least 50% less RAM and in many cases an even greater reduction.
+  - This will stop the white screen issues that have been reported by some people.
+- Mod install performance
+- Profile import performance
+
+#### Games added
+- TCG Card Shop Simulator
+- Distance
+- Five Nights at Freddy's: Into the Pit
+- Tank Team
+- Hard Time III
+- Paquerette Down the Bunburrows
+- Shapez 2
+- Gorebox
+
 ### 3.1.50
 #### Games added
 - Risk of Rain Returns
