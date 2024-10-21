@@ -383,7 +383,7 @@ export default {
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
-            const profile = getters.activeProfileOrThrow;
+            const profile = getters.activeProfileOrThrow.asImmutableProfile();
             await dispatch('uninstallModsFromProfile', {...params, profile});
         },
 
@@ -391,7 +391,7 @@ export default {
             {dispatch},
             params: {
                 mods: ManifestV2[],
-                profile: Profile,
+                profile: ImmutableProfile,
                 onProgress?: (mod: ManifestV2) => void,
             }
         ) {
@@ -411,7 +411,7 @@ export default {
                     // Update mod list status to mods.yml.
                     // TODO: can performance be improved by implementing
                     // a .removeMods(mods, profile) and calling it once outside the loop?
-                    const updatedList = await ProfileModList.removeMod(mod, profile.asImmutableProfile());
+                    const updatedList = await ProfileModList.removeMod(mod, profile);
                     if (updatedList instanceof R2Error) {
                         throw updatedList;
                     } else {
