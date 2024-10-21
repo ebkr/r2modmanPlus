@@ -26,6 +26,12 @@ function formatApiError<T>(e: T, genericTitle: string): R2Error | T {
                 `Server responded with \"404: Not Found\" while trying to download the profile`,
                 `The profile import code entered might either be expired or contain typos.`
             );
+        } else if (e.response.status.toPrecision(1) === "5e+2") { // Status code is 5xx
+            return new R2Error(
+                genericTitle,
+                `Server error while trying to download the profile, Code: ` + e.response.status,
+                `Try switching to an alternative CDN.`
+            );
         } else {
             return new R2Error(
                 genericTitle,
