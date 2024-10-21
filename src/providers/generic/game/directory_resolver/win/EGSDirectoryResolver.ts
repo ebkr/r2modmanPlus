@@ -35,20 +35,20 @@ export default class EGSDirectoryResolver extends GameDirectoryResolverProvider 
                 return new R2Error(
                     `EGS LauncherInstalled.dat file is not valid JSON`,
                     "",
-                    `Try manually locating the ${game.displayName} install directory through the settings`
+                    `Try manually locating the ${game.displayName} install folder through the settings`
                 )
             }
 
         }
         return new R2Error(
-            `Unable to resolve the ${game.displayName} install directory`,
+            `Unable to resolve the ${game.displayName} install folder`,
             "",
-            `Try manually locating the ${game.displayName} install directory through the settings`
+            `Try manually locating the ${game.displayName} install folder through the settings`
         );
     }
 
     public async getSteamDirectory(): Promise<string | R2Error> {
-        return new R2Error("Directory shouldn't be retrieved for a non-steam game", "", null);
+        return new R2Error("Folder shouldn't be retrieved for a non-steam game", "", null);
     }
 
 }

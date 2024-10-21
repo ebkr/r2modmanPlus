@@ -25,15 +25,15 @@ export default class XboxGamePassDirectoryResolver extends GameDirectoryResolver
             }
         } catch (err) {
             return new R2Error(
-                `Unable to resolve the ${game.displayName} install directory`,
+                `Unable to resolve the ${game.displayName} install folder`,
                 `${err}`,
-                `Try manually locating the ${game.displayName} install directory through the settings`
+                `Try manually locating the ${game.displayName} install folder through the settings`
             );
         }
     }
 
     public async getSteamDirectory(): Promise<string | R2Error> {
-        return new R2Error("Directory shouldn't be retrieved for a non-steam game", "", null);
+        return new R2Error("Folder shouldn't be retrieved for a non-steam game", "", null);
     }
 
 }

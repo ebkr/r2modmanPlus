@@ -30,7 +30,7 @@ const def = () => describe('ModLinker (win32)', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
         settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
         await settings.load(true);
@@ -48,20 +48,20 @@ const def = () => describe('ModLinker (win32)', () => {
     });
 
     test('Install, no existing files', async () => {
-        const testFile = path.join(Profile.getActiveProfile().getPathOfProfile(), "test_file");
+        const testFile = Profile.getActiveProfile().joinToProfilePath("test_file");
         await FsProvider.instance.writeFile(testFile, "content");
         expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeFalsy();
-        await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+        await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
         expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
     });
 
     test('Install, file already exists, no overwrite', async () => {
-        const testFile = path.join(Profile.getActiveProfile().getPathOfProfile(), "test_file");
+        const testFile = Profile.getActiveProfile().joinToProfilePath("test_file");
         expect(await FsProvider.instance.exists(testFile)).toBeTruthy();
         const oldStat = await FsProvider.instance.stat(testFile);
         await new Promise(resolve => {
             setTimeout(async () => {
-                await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+                await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).toEqual(oldStat.mtime);
@@ -71,13 +71,13 @@ const def = () => describe('ModLinker (win32)', () => {
     });
 
     test('Install, file already exists, overwritten', async () => {
-        const testFile = path.join(Profile.getActiveProfile().getPathOfProfile(), "test_file");
+        const testFile = Profile.getActiveProfile().joinToProfilePath("test_file");
         expect(await FsProvider.instance.exists(testFile)).toBeTruthy();
         const oldStat = await FsProvider.instance.stat(testFile);
         await FsProvider.instance.writeFile(testFile, "modified");
         await new Promise(resolve => {
             setTimeout(async () => {
-                await ModLinker.link(Profile.getActiveProfile(), GameManager.defaultGame);
+                await ModLinker.link(Profile.getActiveAsImmutableProfile(), GameManager.defaultGame);
                 expect(await FsProvider.instance.exists(path.join(settings.getContext().gameSpecific.gameDirectory!, "test_file"))).toBeTruthy();
                 const newStat = await FsProvider.instance.stat(testFile);
                 expect(newStat.mtime).not.toEqual(oldStat.mtime);

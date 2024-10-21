@@ -72,7 +72,7 @@ describe('BONEWORKS Install Logic', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         InstallationRuleApplicator.apply();
 
         ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
@@ -89,7 +89,7 @@ describe('BONEWORKS Install Logic', () => {
         GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
         // Correct folder name casing conversion should happen within the ProfileInstaller.
         // Tests would get fairly heavily hard-coded if recorded here.
@@ -129,9 +129,10 @@ describe('BONEWORKS Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
-            expect(FsProvider.instance.exists(path.join(Profile.getActiveProfile().getPathOfProfile(), "_state", `${pkg.getName()}.yml`)))
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath(value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
+            expect(FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}.yml`)))
         }
     });
 

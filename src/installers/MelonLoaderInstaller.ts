@@ -14,9 +14,9 @@ export class MelonLoaderInstaller implements PackageInstaller {
         for (const item of (await FsProvider.instance.readdir(packagePath))) {
             if (!basePackageFiles.includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(packagePath, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(packagePath, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFile(path.join(packagePath, item), profile.joinToProfilePath(item));
                 } else {
-                    await FsProvider.instance.copyFolder(path.join(packagePath, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFolder(path.join(packagePath, item), profile.joinToProfilePath(item));
                 }
             }
         }

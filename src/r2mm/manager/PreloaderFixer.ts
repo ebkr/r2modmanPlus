@@ -32,8 +32,8 @@ export default class PreloaderFixer {
         }
 
         if(!exeFound) {
-            return new R2Error(`${game.displayName} directory is invalid`, `could not find either of "${game.exeName.join('", "')}"`,
-                `Set the ${game.displayName} directory in the settings section`);
+            return new R2Error(`${game.displayName} folder is invalid`, `could not find either of "${game.exeName.join('", "')}"`,
+                `Set the ${game.displayName} folder in the settings section`);
         }
 
         try {
@@ -41,7 +41,7 @@ export default class PreloaderFixer {
             await fs.rmdir(path.join(dirResult, game.dataFolderName, 'Managed'));
         } catch(e) {
             const err: Error = e as Error;
-            return new R2Error('Failed to remove Managed directory', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
+            return new R2Error('Failed to remove Managed folder', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
         }
         try {
             LinkProvider.instance.openLink(`steam://validate/${game.activePlatform.storeIdentifier}`);

@@ -147,7 +147,7 @@ export default class OnlineModView extends Vue {
         const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
         if (searchKeys.length > 0) {
             searchableList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getVersions()[0].getDescription())
+                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
             });
         }
         if (!allowNsfw) {
@@ -181,7 +181,7 @@ export default class OnlineModView extends Vue {
 
     @Watch("sortingDirectionModel")
     @Watch("sortingStyleModel")
-    @Watch("tsMods.mods")
+    @Watch("thunderstoreModList")
     sortThunderstoreModList() {
         const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];

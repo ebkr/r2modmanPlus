@@ -32,9 +32,9 @@ export class NorthstarInstaller implements PackageInstaller {
         for (const item of (await FsProvider.instance.readdir(northstarRoot))) {
             if (!basePackageFiles.includes(item.toLowerCase())) {
                 if ((await FsProvider.instance.stat(path.join(northstarRoot, item))).isFile()) {
-                    await FsProvider.instance.copyFile(path.join(northstarRoot, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFile(path.join(northstarRoot, item), profile.joinToProfilePath(item));
                 } else {
-                    await FsProvider.instance.copyFolder(path.join(northstarRoot, item), path.join(profile.getPathOfProfile(), item));
+                    await FsProvider.instance.copyFolder(path.join(northstarRoot, item), profile.joinToProfilePath(item));
                 }
             }
         }

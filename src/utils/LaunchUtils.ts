@@ -1,4 +1,4 @@
-import Profile from "../model/Profile";
+import Profile, { ImmutableProfile } from "../model/Profile";
 import R2Error from "../model/errors/R2Error";
 import Game from "../model/game/Game";
 import FsProvider from "../providers/generic/file/FsProvider";
@@ -19,7 +19,7 @@ export const launch = async (game: Game, profile: Profile, mode: LaunchMode): Pr
     }
 };
 
-export const linkProfileFiles = async (game: Game, profile: Profile): Promise<void> => {
+export const linkProfileFiles = async (game: Game, profile: ImmutableProfile): Promise<void> => {
     const settings = await ManagerSettings.getSingleton(game);
 
     const newLinkedFiles = await ModLinker.link(profile, game);
@@ -47,8 +47,8 @@ export const setGameDirIfUnset = async (game: Game): Promise<void> => {
 export const throwIfNoGameDir = async (game: Game): Promise<void> => {
     const error = new R2Error(
         `Failed to start ${game.displayName}`,
-        `The ${game.displayName} directory does not exist`,
-        `Set the ${game.displayName} directory in the Settings screen`
+        `The ${game.displayName} folder does not exist`,
+        `Set the ${game.displayName} folder in the Settings screen`
     );
 
     const resolverGameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);

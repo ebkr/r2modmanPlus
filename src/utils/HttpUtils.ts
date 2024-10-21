@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 import { DownloadProgressed } from "../providers/generic/connection/ConnectionProvider";
+import { decompressArrayBuffer } from "./GzipUtils";
 
 const newAbortSignal = (timeoutMs: number) => {
     const abortController = new AbortController();
@@ -31,6 +32,8 @@ export const getAxiosWithTimeouts = (responseTimeout = 5000, totalTimeout = 1000
 };
 
 interface LongRunningRequestOptions {
+    /** Values passed as is to Axios constructor */
+    axiosConfig?: AxiosRequestConfig;
     /** Custom function to be called when progress is made. */
     downloadProgressed?: DownloadProgressed;
     /**
@@ -64,6 +67,7 @@ export const makeLongRunningGetRequest = async (
     options: Partial<LongRunningRequestOptions> = {}
 ) => {
     const {
+        axiosConfig = {},
         downloadProgressed = () => null,
         initialTimeout = 30 * 1000,
         totalTimeout = 5 * 60 * 1000,
@@ -87,6 +91,7 @@ export const makeLongRunningGetRequest = async (
     }
 
     const instance = axios.create({
+        ...axiosConfig,
         onDownloadProgress,
         signal: abortController.signal,
     });
@@ -97,6 +102,27 @@ export const makeLongRunningGetRequest = async (
         clearTimeout(sanityTimeout);
         clearTimeout(rollingTimeout);
     }
+}
+
+/**
+ * Download blob files containing gzip compressed JSON strings and
+ * return them as objects. This is used for data that's shared by
+ * all users and can be cached heavily on CDN level.
+ */
+export const fetchAndProcessBlobFile = async (url: string) => {
+    const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
+    const buffer = Buffer.from(response.data);
+    const hash = await getSha256Hash(buffer);
+    const jsonString = await decompressArrayBuffer(buffer);
+    const content = JSON.parse(jsonString);
+    return {content, hash};
+}
+
+async function getSha256Hash(arrayBuffer: ArrayBuffer): Promise<string> {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashByteArray = Array.from(new Uint8Array(hashBuffer));
+    const hexHash = hashByteArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hexHash;
 }
 
 export const isNetworkError = (responseOrError: unknown) =>

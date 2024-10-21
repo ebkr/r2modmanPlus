@@ -27,9 +27,9 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
         } catch(e) {
             const err: Error = e as Error;
             return new R2Error(
-                `Unable to resolve the ${game.displayName} install directory`,
+                `Unable to resolve the ${game.displayName} install folder`,
                 err.message,
-                `Try manually locating the ${game.displayName} install directory through the settings`
+                `Try manually locating the ${game.displayName} install folder through the settings`
             )
         }
     }
@@ -88,7 +88,7 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
             }
             const err: Error = e as Error;
             return new FileNotFoundError(
-                'Unable to read directory',
+                'Unable to read folder',
                 err.message,
                 null
             )
@@ -117,7 +117,7 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
         }
         if (manifestLocation === null) {
             return new FileNotFoundError(
-                `Unable to locate ${game.displayName} Installation Directory`,
+                `Unable to locate ${game.displayName} Installation Folder`,
                 `Searched locations: ${locations}`,
                 null
             )
@@ -138,14 +138,14 @@ export default class DarwinGameDirectoryResolver extends GameDirectoryResolverPr
             } else {
                 return new FileNotFoundError(
                     `${game.displayName} does not exist in Steam\'s specified location`,
-                    `Failed to find directory: ${riskOfRain2Path}`,
+                    `Failed to find folder: ${riskOfRain2Path}`,
                     null
                 )
             }
         } catch(e) {
             const err: Error = e as Error;
             return new R2Error(
-                `An error occurred whilst locating the ${game.displayName} install directory from manifest in ${manifestLocation}`,
+                `An error occurred whilst locating the ${game.displayName} install folder from manifest in ${manifestLocation}`,
                 err.message,
                 null
             )

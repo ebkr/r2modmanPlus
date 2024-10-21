@@ -16,9 +16,10 @@ jobs:
                     - kind: windows
                       os: windows-latest
                       platform: win
-                    - kind: mac
-                      os: macos-11
-                      platform: osx
+                    # Macos-11 is deprecated, macos-12 would require package updates, see PR #1409
+                    # - kind: mac
+                    #   os: macos-11
+                    #   platform: osx
         steps:
             - uses: actions/checkout@v3
 

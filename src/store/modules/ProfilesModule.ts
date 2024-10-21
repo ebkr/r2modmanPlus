@@ -23,6 +23,9 @@ export const ProfilesModule = {
         setProfileList(state: State, profileList: string[]) {
             state.profileList = profileList;
         },
+        reset(state: State) {
+            state.profileList = ['Default'];
+        },
     },
     actions: <ActionTree<State, RootState>>{
         async addProfile({rootGetters, state, dispatch}, name: string) {
@@ -34,9 +37,21 @@ export const ProfilesModule = {
             }
         },
 
+        async ensureProfileExists({commit, dispatch, rootGetters, state}) {
+            const activeProfile: Profile = rootGetters['profile/activeProfile'];
+
+            if (!(await FsProvider.instance.exists(activeProfile.getProfilePath()))) {
+                await dispatch('profile/updateActiveProfile', 'Default', { root: true });
+                commit(
+                    'setProfileList',
+                    state.profileList.filter((p) => p !== activeProfile.getProfileName())
+                );
+            }
+        },
+
         async removeSelectedProfile({rootGetters, state, dispatch}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
-            const path = activeProfile.getPathOfProfile();
+            const path = activeProfile.getProfilePath();
             const profileName = activeProfile.getProfileName();
 
             try {
@@ -65,8 +80,8 @@ export const ProfilesModule = {
 
             try {
                 await FsProvider.instance.rename(
-                    path.join(Profile.getDirectory(), oldName),
-                    path.join(Profile.getDirectory(), params.newName)
+                    path.join(Profile.getRootDir(), oldName),
+                    path.join(Profile.getRootDir(), params.newName)
                 );
             } catch (e) {
                 throw R2Error.fromThrownValue(e, 'Error whilst renaming a profile on disk');
@@ -76,7 +91,7 @@ export const ProfilesModule = {
         },
 
         async updateProfileList({commit, rootGetters}) {
-            const profilesDirectory: string = rootGetters['profile/activeProfile'].getDirectory();
+            const profilesDirectory = Profile.getRootDir();
 
             let profilesDirectoryContents = await FsProvider.instance.readdir(profilesDirectory);
             let promises = profilesDirectoryContents.map(async function(file) {

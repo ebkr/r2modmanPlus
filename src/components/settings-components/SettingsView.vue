@@ -100,7 +100,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             new SettingsRow(
                 'Locations',
                 'Browse data folder',
-                'Open the directory where mods are stored for all games and profiles.',
+                'Open the folder where mods are stored for all games and profiles.',
                 async () => PathResolver.ROOT,
                 'fa-door-open',
                 () => {
@@ -109,8 +109,8 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Locations',
-                `Change ${this.activeGame.displayName} directory`,
-                `Change the location of the ${this.activeGame.displayName} directory that ${this.appName} uses.`,
+                `Change ${this.activeGame.displayName} folder`,
+                `Change the location of the ${this.activeGame.displayName} folder that ${this.appName} uses.`,
                 async () => {
                     if (this.settings.getContext().gameSpecific.gameDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getDirectory(this.activeGame);
@@ -135,15 +135,15 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Browse profile folder',
                 'Open the folder where mods are stored for the current profile.',
                 async () => {
-                    return this.$store.getters['profile/activeProfile'].getPathOfProfile();
+                    return this.$store.getters['profile/activeProfile'].getProfilePath();
                 },
                 'fa-door-open',
                 () => this.emitInvoke('BrowseProfileFolder')
             ),
             new SettingsRow(
                 'Locations',
-                'Change data folder directory',
-                'Change the directory where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
+                'Change data folder folder',
+                'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
                 async () => {
                     return PathResolver.ROOT;
                 },
@@ -375,8 +375,8 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 this.settingsList.push(
                     new SettingsRow(
                         'Locations',
-                        'Change Steam directory',
-                        `Change the location of the Steam directory that ${this.appName} uses.`,
+                        'Change Steam folder',
+                        `Change the location of the Steam folder that ${this.appName} uses.`,
                         async () => {
                             if (this.settings.getContext().global.steamDirectory !== null) {
                                 const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();

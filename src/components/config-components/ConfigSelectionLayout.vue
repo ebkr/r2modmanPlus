@@ -103,7 +103,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 
         async created() {
             const fs = FsProvider.instance;
-            const configLocation = this.$store.getters['profile/activeProfile'].getPathOfProfile();
+            const configLocation = this.$store.getters['profile/activeProfile'].getProfilePath();
             const tree = await FileTree.buildFromLocation(configLocation);
             if (tree instanceof R2Error) {
                 return;

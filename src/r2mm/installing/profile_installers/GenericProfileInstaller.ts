@@ -1,6 +1,6 @@
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
 import ManifestV2 from '../../../model/ManifestV2';
-import Profile from '../../../model/Profile';
+import Profile, { ImmutableProfile } from '../../../model/Profile';
 import FileTree from '../../../model/file/FileTree';
 import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
@@ -35,7 +35,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.legacyInstaller = new InstallRuleInstaller(this.rule);
     }
 
-    private async applyModModeForSubdir(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForSubdir(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
         // TODO: Call through the installer interface. For now we hardcode the only known case because expanding the
         //       installer system is out of scope.
         //
@@ -61,11 +61,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             .filter(value => ["SUBDIR", "SUBDIR_NO_FLATTEN"].includes(value.trackingMethod));
 
         for (const dir of subDirPaths) {
-            if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), dir.route))) {
-                const dirContents = await FsProvider.instance.readdir(path.join(profile.getPathOfProfile(), dir.route));
+            if (await FsProvider.instance.exists(profile.joinToProfilePath(dir.route))) {
+                const dirContents = await FsProvider.instance.readdir(profile.joinToProfilePath(dir.route));
                 for (const namespacedDir of dirContents) {
                     if (namespacedDir === mod.getName()) {
-                        const tree = await FileTree.buildFromLocation(path.join(profile.getPathOfProfile(), dir.route, namespacedDir));
+                        const tree = await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir));
                         if (tree instanceof R2Error) {
                             return tree;
                         }
@@ -82,19 +82,21 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async applyModModeForState(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
+    private async applyModModeForState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
+        profile.getProfilePath()
         try {
-            const modStateFilePath = path.join(location, "_state", `${mod.getName()}-state.yml`);
+            const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
             if (await FsProvider.instance.exists(modStateFilePath)) {
                 const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
                 const tracker: ModFileTracker = yaml.parse(fileContents);
                 for (const [key, value] of tracker.files) {
                     if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        if (await FsProvider.instance.exists(path.join(location, value))) {
-                            await FsProvider.instance.unlink(path.join(location, value));
+                        const filePath = profile.joinToProfilePath(value);
+                        if (await FsProvider.instance.exists(filePath)) {
+                            await FsProvider.instance.unlink(filePath);
                         }
                         if (mode === ModMode.ENABLED) {
-                            await FsProvider.instance.copyFile(key, path.join(location, value));
+                            await FsProvider.instance.copyFile(key, filePath);
                         }
                     }
                 }
@@ -104,41 +106,23 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async applyModMode(mod: ManifestV2, tree: FileTree, profile: Profile, location: string, mode: number): Promise<R2Error | void> {
-        const appliedState = await this.applyModModeForState(mod, tree, profile, location, mode);
+    private async applyModMode(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
+        const appliedState = await this.applyModModeForState(mod, profile, mode);
         if (appliedState instanceof R2Error) {
             return appliedState;
         }
-        const appliedSub = await this.applyModModeForSubdir(mod, tree, profile, location, mode);
+        const appliedSub = await this.applyModModeForSubdir(mod, profile, mode);
         if (appliedSub instanceof R2Error) {
             return appliedSub;
         }
     }
 
-    async disableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.DISABLED);
+    async disableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
+        return this.applyModMode(mod, profile, ModMode.DISABLED);
     }
 
-    async enableMod(mod: ManifestV2, profile: Profile): Promise<R2Error | void> {
-        return this.applyModMode(mod, new FileTree(), profile, profile.getPathOfProfile(), ModMode.ENABLED);
-    }
-
-    async getDescendantFiles(tree: FileTree | null, location: string): Promise<string[]> {
-        const files: string[] = [];
-        if (tree === null) {
-            const newTree = await FileTree.buildFromLocation(location);
-            if (newTree instanceof R2Error) {
-                return files;
-            }
-            tree = newTree;
-        }
-        for (const directory of tree.getDirectories()) {
-            files.push(...(await this.getDescendantFiles(directory, path.join(location, directory.getDirectoryName()))));
-        }
-        tree.getFiles().forEach((file: string) => {
-            files.push(file);
-        })
-        return files;
+    async enableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
+        return this.applyModMode(mod, profile, ModMode.ENABLED);
     }
 
     async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
@@ -150,7 +134,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    async installMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+    async installMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         const args = this.getInstallArgs(mod, profile);
 
         // Installation logic for mod loaders.
@@ -173,10 +157,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(args);
     }
 
-    private getInstallArgs(mod: ManifestV2, profile: Profile): InstallArgs {
+    private getInstallArgs(mod: ManifestV2, profile: Profile|ImmutableProfile): InstallArgs {
+        const immutable = profile instanceof Profile ? profile.asImmutableProfile() : profile;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        return {mod, profile, packagePath};
+        return {mod, profile: immutable, packagePath};
     }
 
     private getModLoader(mod: ManifestV2): ModLoaderPackageMapping|undefined {
@@ -212,7 +197,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             }
         }
 
-        await recursiveDelete(profile.getPathOfProfile(), `${mod.getName()}.ts.zip`);
+        await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
     }
 
     private async uninstallSubDir(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
@@ -223,11 +208,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
-                for (const file of (await fs.readdir(profile.getPathOfProfile()))) {
+                for (const file of (await fs.readdir(profile.getProfilePath()))) {
                     if (file.toLowerCase() === 'mods.yml') {
                         continue;
                     }
-                    const filePath = path.join(profile.getPathOfProfile(), file);
+                    const filePath = profile.joinToProfilePath(file);
                     if ((await fs.lstat(filePath)).isFile()) {
                         await fs.unlink(filePath);
                     }
@@ -241,7 +226,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         // Uninstallation logic for regular mods.
         // TODO: Move to work through the installer interface
-        const profilePath = profile.getPathOfProfile();
+        const profilePath = profile.getProfilePath();
         const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding"];
         for (const searchLocation of searchLocations) {
             const bepInExLocation: string = path.join(profilePath, searchLocation);
@@ -271,19 +256,19 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private async uninstallState(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
-        const stateFilePath = path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`);
+        const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
         if (await FsProvider.instance.exists(stateFilePath)) {
             const read = await FsProvider.instance.readFile(stateFilePath);
             const tracker = (yaml.parse(read.toString()) as ModFileTracker);
             for (const [cacheFile, installFile] of tracker.files) {
-                if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), installFile))) {
-                    await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), installFile));
-                    if ((await FsProvider.instance.readdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)))).length === 0) {
-                        await FsProvider.instance.rmdir(path.dirname(path.join(profile.getPathOfProfile(), installFile)));
+                if (await FsProvider.instance.exists(profile.joinToProfilePath(installFile))) {
+                    await FsProvider.instance.unlink(profile.joinToProfilePath(installFile));
+                    if ((await FsProvider.instance.readdir(path.dirname(profile.joinToProfilePath(installFile)))).length === 0) {
+                        await FsProvider.instance.rmdir(path.dirname(profile.joinToProfilePath(installFile)));
                     }
                 }
             }
-            await FsProvider.instance.unlink(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
+            await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
         }
         return Promise.resolve(null);
     }

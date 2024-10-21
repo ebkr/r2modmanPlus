@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import { InstallRuleInstaller, addToStateFile } from "./InstallRuleInstaller";
+import { addToStateFile } from "./InstallRuleInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 import FileTree from "../model/file/FileTree";
@@ -14,13 +14,12 @@ export class LovelyInstaller implements PackageInstaller {
             profile,
         } = args;
 
-        const profilePath = profile.getPathOfProfile();
         const fs = FsProvider.instance;
         const fileRelocations = new Map<string, string>();
 
         // Manually copy over version.dll
         const dwmSrc = path.join(packagePath, "version.dll");
-        const dwmDest = path.join(profilePath, "version.dll");
+        const dwmDest = profile.joinToProfilePath("version.dll");
         await fs.copyFile(dwmSrc, dwmDest);
         fileRelocations.set(dwmSrc, "version.dll");
 
@@ -33,7 +32,7 @@ export class LovelyInstaller implements PackageInstaller {
         const targets = lovelyTree.getRecursiveFiles().map((x) => x.replace(packagePath, "")).map((x) => [x, path.join("mods", x)]);
         for (const target of targets) {
             const absSrc = path.join(packagePath, target[0]);
-            const absDest = path.join(profilePath, target[1]);
+            const absDest = profile.joinToProfilePath(target[1]);
 
             await FileUtils.ensureDirectory(path.dirname(absDest));
             await fs.copyFile(absSrc, absDest);
@@ -53,7 +52,6 @@ export class LovelyPluginInstaller implements PackageInstaller {
             profile,
         } = args;
 
-        const profilePath = profile.getPathOfProfile();
         const installDir = path.join("mods", mod.getName());
 
         const fs = FsProvider.instance;
@@ -63,11 +61,11 @@ export class LovelyPluginInstaller implements PackageInstaller {
         if (srcTree instanceof R2Error) {
             throw R2Error;
         }
- 
+
         const srcFiles = srcTree.getRecursiveFiles();
         for (const srcFile of srcFiles) {
             const relFile = srcFile.replace(packagePath, "");
-            const destFile = path.join(profilePath, installDir, relFile);
+            const destFile = profile.joinToProfilePath(installDir, relFile);
 
             await FileUtils.ensureDirectory(path.dirname(destFile));
             await fs.copyFile(srcFile, destFile);
