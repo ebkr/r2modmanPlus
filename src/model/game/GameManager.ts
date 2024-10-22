@@ -794,11 +794,23 @@ export default class GameManager {
             "https://thunderstore.io/c/gorebox/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2027330")], "GoreBox.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
-        
+
         new Game("TCG Card Shop Simulator", "TCGCardShopSimulator", "TCG Card Shop Simulator",
             "TCG Card Shop Simulator", ["Card Shop Simulator.exe"], "Card Shop Simulator_Data",
             "https://thunderstore.io/c/tcg-card-shop-simulator/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "3070070")], "TCGCardShopSimulator.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Old Market Simulator", "OldMarketSimulator", "Old Market Simulator",
+            "Old Market Simulator", ["Old Market Simulator.exe"], "Old Market Simulator_Data",
+            "https://thunderstore.io/c/old-market-simulator/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2878420")], "OldMarketSimulator.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Subterranauts", "Subterranauts", "Subterranauts",
+            "Subterranauts", ["Subterranauts.exe"], "Subterranauts_Data",
+            "https://thunderstore.io/c/subterranauts/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3075800")], "Subterranauts.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
