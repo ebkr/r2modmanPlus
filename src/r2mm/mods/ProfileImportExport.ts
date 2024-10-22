@@ -1,5 +1,6 @@
 import FileUtils from '../../utils/FileUtils';
 import path from 'path';
+import R2Error from "../../model/errors/R2Error";
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
@@ -49,8 +50,20 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
  * @returns string The path to the created file
  */
 async function downloadProfileCode(profileCode: string): Promise<string> {
-    const response = await ProfileApiClient.getProfile(profileCode);
-    return saveDownloadedProfile(response.data);
+    try {
+        const response = await ProfileApiClient.getProfile(profileCode);
+        return saveDownloadedProfile(response.data);
+    } catch (e: any) {
+        if (e.message === 'Network Error') {
+            throw new R2Error(
+                "Failed to download the profile.",
+                "\"Network Error\" encountered when trying to download the profile from the server.",
+                "Check your network connection or try switching to an alternative CDN."
+            );
+        } else {
+            throw e;
+        }
+    }
 }
 
 export const ProfileImportExport = {

@@ -278,7 +278,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <button
                 id="modal-import-profile-from-code-invalid"
                 class="button is-danger"
-                v-if="profileImportCode === '' || !isProfileCodeValid(profileImportCode)">
+                v-if="!isProfileCodeValid(profileImportCode)">
                 Fix issues before importing
             </button>
             <button

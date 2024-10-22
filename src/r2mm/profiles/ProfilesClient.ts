@@ -23,20 +23,13 @@ function formatApiError<T>(e: T, genericTitle: string): R2Error | T {
             // Note that this error text is only applicable when importing, but it should be OK as creating a profile shouldn't respond with 404 anyway.
             return new R2Error(
                 genericTitle,
-                `Server responded with \"404: Not Found\" while trying to download the profile`,
-                `The profile import code entered might either be expired or contain typos.`
-            );
-        } else if (e.response.status.toPrecision(1) === "5e+2") { // Status code is 5xx
-            return new R2Error(
-                genericTitle,
-                `Server error while trying to download the profile, Code: ` + e.response.status,
-                `Try switching to an alternative CDN.`
+                "Server responded with \"404: Not Found\".",
+                "The profile import code entered might either be expired or contain typos."
             );
         } else {
             return new R2Error(
                 genericTitle,
-                e.message,
-                `${e.response.status}`
+                `Failed with code: ${e.response.status}.\n${e.message}`,
             );
         }
     }
