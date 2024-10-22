@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import Profile from "../model/Profile";
+import Profile, { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
 import ManifestV2 from "../model/ManifestV2";
@@ -14,7 +14,7 @@ import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 
 type InstallRuleArgs = {
-    profile: Profile,
+    profile: ImmutableProfile,
     coreRule: CoreRuleType,
     rule: ManagedRule,
     installSources: string[],
@@ -22,9 +22,9 @@ type InstallRuleArgs = {
 };
 
 
-async function installUntracked(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installUntracked(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     // Functionally identical to the install method of subdir, minus the subdirectory.
-    const ruleDir = path.join(profile.getPathOfProfile(), rule.route);
+    const ruleDir = profile.joinToProfilePath(rule.route);
     await FileUtils.ensureDirectory(ruleDir);
     for (const source of installSources) {
         if ((await FsProvider.instance.lstat(source)).isFile()) {
@@ -43,12 +43,12 @@ async function installUntracked(profile: Profile, rule: ManagedRule, installSour
 
 
 async function installSubDir(
-    profile: Profile,
+    profile: ImmutableProfile,
     rule: ManagedRule,
     installSources: string[],
     mod: ManifestV2,
 ) {
-    const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
+    const subDir = profile.joinToProfilePath(rule.route, mod.getName());
     await FileUtils.ensureDirectory(subDir);
     for (const source of installSources) {
         if ((await FsProvider.instance.lstat(source)).isFile()) {
@@ -69,13 +69,13 @@ async function installSubDir(
 }
 
 
-async function installPackageZip(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+async function installPackageZip(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     /*
         This install method repackages the entire mod as-is and places it to the
         destination route. Essentially the same as SUBDIR_NO_FLATTEN, but as a
         zip instead of a directory. The zip name will be the mod ID.
      */
-    const destDir = path.join(profile.getPathOfProfile(), rule.route);
+    const destDir = profile.joinToProfilePath(rule.route);
     await FileUtils.ensureDirectory(destDir);
     const destination = path.join(destDir, `${mod.getName()}.ts.zip`);
     const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
@@ -86,8 +86,8 @@ async function installPackageZip(profile: Profile, rule: ManagedRule, installSou
 }
 
 
-async function installSubDirNoFlatten(profile: Profile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
-    const subDir = path.join(profile.getPathOfProfile(), rule.route, mod.getName());
+async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
+    const subDir = profile.joinToProfilePath(rule.route, mod.getName());
     await FileUtils.ensureDirectory(subDir);
     const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
     const cachedLocationOfMod: string = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
@@ -169,11 +169,11 @@ async function buildInstallForRuleSubtype(
 }
 
 
-export async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: Profile) {
-    await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), "_state"));
+export async function addToStateFile(mod: ManifestV2, files: Map<string, string>, profile: ImmutableProfile) {
+    await FileUtils.ensureDirectory(profile.joinToProfilePath("_state"));
     let existing: Map<string, string> = new Map();
-    if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`))) {
-        const read = await FsProvider.instance.readFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`));
+    if (await FsProvider.instance.exists(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`))) {
+        const read = await FsProvider.instance.readFile(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
         const tracker = (yaml.parse(read.toString()) as ModFileTracker);
         existing = new Map(tracker.files);
     }
@@ -184,7 +184,7 @@ export async function addToStateFile(mod: ManifestV2, files: Map<string, string>
         modName: mod.getName(),
         files: Array.from(existing.entries())
     }
-    await FsProvider.instance.writeFile(path.join(profile.getPathOfProfile(), "_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
+    await FsProvider.instance.writeFile(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`), yaml.stringify(mft));
     await ConflictManagementProvider.instance.overrideInstalledState(mod, profile);
 }
 
@@ -209,8 +209,8 @@ async function installState(args: InstallRuleArgs) {
         }
     }
     for (let [source, relative] of fileRelocations.entries()) {
-        await FileUtils.ensureDirectory(path.join(profile.getPathOfProfile(), path.dirname(relative)));
-        await FsProvider.instance.copyFile(source, path.join(profile.getPathOfProfile(), relative));
+        await FileUtils.ensureDirectory(profile.joinToProfilePath(path.dirname(relative)));
+        await FsProvider.instance.copyFile(source, profile.joinToProfilePath(relative));
     }
     await addToStateFile(mod, fileRelocations, profile);
 }
@@ -244,7 +244,7 @@ export class InstallRuleInstaller implements PackageInstaller {
         }
     }
 
-    async resolveBepInExTree(profile: Profile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
+    async resolveBepInExTree(profile: ImmutableProfile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);

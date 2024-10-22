@@ -39,7 +39,7 @@ export class ShimloaderInstaller implements PackageInstaller {
 
         for (const targetPath of targets) {
             const absSrc = path.join(packagePath, targetPath[0]);
-            const absDest = path.join(profile.getPathOfProfile(), targetPath[1]);
+            const absDest = profile.joinToProfilePath(targetPath[1]);
 
             await FileUtils.ensureDirectory(path.dirname(absDest));
             await fs.copyFile(absSrc, absDest);
@@ -48,7 +48,7 @@ export class ShimloaderInstaller implements PackageInstaller {
         }
 
         // The config subdir needs to be created for shimloader (it will get cranky if it's not there).
-        const configDir = path.join(profile.getPathOfProfile(), "shimloader", "cfg");
+        const configDir = profile.joinToProfilePath("shimloader", "cfg");
         if (!await fs.exists(configDir)) {
             await fs.mkdirs(configDir);
         }

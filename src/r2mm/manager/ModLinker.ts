@@ -1,5 +1,5 @@
 import R2Error from '../../model/errors/R2Error';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
 
 import * as path from 'path';
@@ -15,7 +15,7 @@ import { PackageLoader } from "../../model/installing/PackageLoader";
 
 export default class ModLinker {
 
-    public static async link(profile: Profile, game: Game): Promise<string[] | R2Error> {
+    public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
         if (game.packageLoader == PackageLoader.BEPINEX) {
             if (process.platform === 'linux') {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
@@ -56,7 +56,7 @@ export default class ModLinker {
     // Is this 100% needed?
     // Could move to a setting at a later date?
     // TBD: Only apply when starting vanilla?
-    private static async cleanupLinkedFiles(profile: Profile, installDirectory: string, previouslyLinkedFiles: string[]) {
+    private static async cleanupLinkedFiles(profile: ImmutableProfile, installDirectory: string, previouslyLinkedFiles: string[]) {
         const fs = FsProvider.instance;
         await LoggerProvider.instance.Log(LogSeverity.INFO, `Files to remove: \n-> ${previouslyLinkedFiles.join('\n-> ')}`);
         for (const file of previouslyLinkedFiles) {
@@ -68,7 +68,7 @@ export default class ModLinker {
                     await fs.rmdir(file);
                 } else {
                     const fileRelative = path.relative(installDirectory, file);
-                    const fileInProfileDir = path.join(profile.getPathOfProfile(), fileRelative);
+                    const fileInProfileDir = profile.joinToProfilePath(fileRelative);
                     if (!(await this.isFileIdentical(fileInProfileDir, file)) && await fs.exists(file)) {
                         await fs.unlink(file);
                     }
@@ -93,20 +93,20 @@ export default class ModLinker {
         }
     }
 
-    private static async performLink(profile: Profile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
+    private static async performLink(profile: ImmutableProfile, game: Game, installDirectory: string): Promise<string[] | R2Error> {
         const fs = FsProvider.instance;
         const newLinkedFiles: string[] = [];
         try {
-            const profileFiles = await fs.readdir(profile.getPathOfProfile());
+            const profileFiles = await fs.readdir(profile.getProfilePath());
             try {
                 for (const file of profileFiles) {
-                    if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isFile()) {
+                    if ((await fs.lstat(profile.joinToProfilePath(file))).isFile()) {
                         try {
                             const targetDir = ModLinker.getRootFilesDestination(game, file, installDirectory);
                             if (targetDir === null) continue;
 
                             const gameDirFilePath = path.join(targetDir, file);
-                            const profileDirFilePath = path.join(profile.getPathOfProfile(), file);
+                            const profileDirFilePath = profile.joinToProfilePath(file);
 
                             if (!(await this.isFileIdentical(profileDirFilePath, gameDirFilePath))) {
                                 await fs.copyFile(profileDirFilePath, gameDirFilePath);
@@ -117,13 +117,13 @@ export default class ModLinker {
                         } catch (e) {
                             const err: Error = e as Error;
                             throw new FileWriteError(
-                                `Couldn't copy file ${file} to ${game.displayName} directory`,
+                                `Couldn't copy file ${file} to ${game.displayName} folder`,
                                 err.message,
                                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
                             )
                         }
                     } else {
-                        if ((await fs.lstat(path.join(profile.getPathOfProfile(), file))).isDirectory()) {
+                        if ((await fs.lstat(profile.joinToProfilePath(file))).isDirectory()) {
                             const exclusionsList = [
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
@@ -132,13 +132,13 @@ export default class ModLinker {
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {
-                                const fileProfileFolderPath = path.join(profile.getPathOfProfile(), file);
+                                const fileProfileFolderPath = profile.joinToProfilePath(file);
                                 const fileTree = await FileTree.buildFromLocation(fileProfileFolderPath);
                                 if (fileTree instanceof R2Error) {
                                     return fileTree;
                                 }
                                 for (const recursiveFileInFolder of fileTree.getRecursiveFiles()) {
-                                    const fileRelativeToProfileFolder = path.relative(profile.getPathOfProfile(), recursiveFileInFolder);
+                                    const fileRelativeToProfileFolder = path.relative(profile.getProfilePath(), recursiveFileInFolder);
                                     const gameDirFile = path.join(installDirectory, fileRelativeToProfileFolder);
                                     if (!(await this.isFileIdentical(recursiveFileInFolder, gameDirFile))) {
                                         await FileUtils.ensureDirectory(path.join(installDirectory, path.dirname(fileRelativeToProfileFolder)));
@@ -163,7 +163,7 @@ export default class ModLinker {
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error(
-                `Unable to read directory for profile ${profile.getProfileName()}`,
+                `Unable to read folder for profile ${profile.getProfileName()}`,
                 err.message,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             )

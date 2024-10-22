@@ -70,7 +70,7 @@ describe('ROUNDS Install Logic', () => {
         await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
         ProfileProvider.provide(() => new ProfileProviderImpl());
         new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
         InstallationRuleApplicator.apply();
 
         pkg = packageBuilder('test_mod', 'author', new VersionNumber('1.0.0'));
@@ -85,7 +85,7 @@ describe('ROUNDS Install Logic', () => {
         GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "ROUNDS")!;
 
         ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
         // Correct folder name casing conversion should happen within the ProfileInstaller.
         // Tests would get fairly heavily hard-coded if recorded here.
@@ -110,8 +110,9 @@ describe('ROUNDS Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 
@@ -126,8 +127,9 @@ describe('ROUNDS Install Logic', () => {
 
         for (const value of subdirPaths) {
             const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`))).toBeTruthy();
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`)
+            )).toBeTruthy();
         }
     });
 

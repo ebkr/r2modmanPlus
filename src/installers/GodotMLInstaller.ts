@@ -10,7 +10,7 @@ export class GodotMLInstaller implements PackageInstaller {
         const { packagePath, profile } = args;
 
         const copyFrom = path.join(packagePath, "addons", "mod_loader");
-        const copyTo = path.join(profile.getPathOfProfile(), "addons", "mod_loader");
+        const copyTo = profile.joinToProfilePath("addons", "mod_loader");
         const fs = FsProvider.instance;
 
         if (await fs.exists(copyFrom)) {

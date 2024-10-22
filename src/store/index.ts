@@ -68,7 +68,15 @@ export const store = {
             const settings = await ManagerSettings.getSingleton(game);
             commit('setSettings', settings);
             return settings;
-        }
+        },
+
+        async resetLocalState({commit, dispatch}: Context) {
+            commit('profile/reset');
+            commit('profiles/reset');
+            commit('tsMods/reset');
+            commit('modFilters/reset');
+            await dispatch('resetActiveGame');
+        },
     },
     mutations: {
         setActiveGame(state: State, game: Game) {

@@ -2,13 +2,17 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
-import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import VersionNumber from '../../model/VersionNumber';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
+import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
+import { fetchAndProcessBlobFile } from '../../utils/HttpUtils';
 
-interface CachedMod {
+export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
     isLatest: boolean;
 }
@@ -21,6 +25,17 @@ interface State {
     isBackgroundUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
+}
+
+type ProgressCallback = (progress: number) => void;
+type PackageListChunk = {full_name: string}[];
+export type PackageListChunks = PackageListChunk[];
+export type PackageListIndex = {content: string[], hash: string, isLatest: boolean};
+
+function isPackageListChunk(value: unknown): value is PackageListChunk {
+    return Array.isArray(value) && (
+        !value.length || typeof value[0].full_name === "string"
+    );
 }
 
 /**
@@ -66,7 +81,7 @@ export const TsModsModule = {
                 if (tsMod === undefined) {
                     state.cache.set(cacheKey, {tsMod: undefined, isLatest: true});
                 } else {
-                    const latestVersionNumber = tsMod.getLatestVersion().getVersionNumber();
+                    const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
                     const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
                     state.cache.set(cacheKey, {tsMod, isLatest});
                 }
@@ -91,20 +106,6 @@ export const TsModsModule = {
             return getters.cachedMod(mod).isLatest;
         },
 
-        /*** Which locally installed mods have updates in Thunderstore? */
-        modsWithUpdates: (state, getters) => (profileMods: ManifestV2[]) => {
-            return profileMods
-                .filter(mod => !getters.isLatestVersion(mod))
-                .map((mod): ThunderstoreMod | undefined => getters.tsMod(mod))
-                .filter((tsMod): tsMod is ThunderstoreMod => tsMod !== undefined)
-                .map((tsMod) => {
-                    const combo = new ThunderstoreCombo();
-                    combo.setMod(tsMod);
-                    combo.setVersion(tsMod.getLatestVersion());
-                    return combo;
-                });
-        },
-
         /*** Return ThunderstoreMod representation of a ManifestV2 */
         tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
             return getters.cachedMod(mod).tsMod;
@@ -116,6 +117,14 @@ export const TsModsModule = {
     },
 
     mutations: <MutationTree<State>>{
+        reset(state: State) {
+            state.cache = new Map<string, CachedMod>();
+            state.connectionError = '';
+            state.deprecated = new Map<string, boolean>();
+            state.exclusions = [];
+            state.mods = [];
+            state.modsLastUpdated = undefined;
+        },
         clearModCache(state) {
             state.cache.clear();
         },
@@ -148,6 +157,61 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
+        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
+            const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
+
+            if (!isStringArray(index.content)) {
+                throw new Error('Received invalid chunk index from API');
+            }
+            if (isEmptyArray(index.content)) {
+                throw new Error('Received empty chunk index from API');
+            }
+
+            const community = rootState.activeGame.internalFolderName;
+            const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
+
+            // Normally the hash would be updated after the mod list is successfully
+            // fetched and written to IndexedDB, but if the list hasn't changed,
+            // those step are skipped, so update the "last seen" timestamp now.
+            if (isLatest) {
+                await dispatch('updateIndexHash', index.hash);
+            }
+
+            return {...index, isLatest};
+        },
+
+        async fetchPackageListChunks(
+            {},
+            {chunkUrls, progressCallback}: {chunkUrls: string[], progressCallback?: ProgressCallback},
+        ): Promise<PackageListChunks> {
+            // Count index as a chunk for progress bar purposes.
+            const chunkCount = chunkUrls.length + 1;
+            let completed = 1;
+            const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
+            updateProgress();
+
+            // Download chunks serially to avoid slow connections timing
+            // out due to concurrent requests competing for the bandwidth.
+            const chunks = [];
+            for (const [i, chunkUrl] of chunkUrls.entries()) {
+                const url = CdnProvider.replaceCdnHost(chunkUrl);
+                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
+
+                if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
+                    throw new Error(`Chunk #${i} in multichunk response was empty`);
+                } else if (!isPackageListChunk(chunk)) {
+                    throw new Error(`Chunk #${i} was invalid format`);
+                }
+
+                chunks.push(chunk);
+                completed++;
+                updateProgress();
+            }
+
+            return chunks;
+        },
+
         async prewarmCache({getters, rootGetters}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
             profileMods.forEach(getters['cachedMod']);
@@ -155,33 +219,45 @@ export const TsModsModule = {
 
         async updateExclusions(
             {commit},
-            progressCallback?: (progress: number) => void
+            progressCallback?: ProgressCallback
         ) {
             const exclusions = await ConnectionProvider.instance.getExclusions(progressCallback);
             commit('setExclusions', exclusions);
         },
 
-        async updateMods({commit, rootState}) {
+        async updateMods({commit, dispatch, rootState}) {
             const modList = await PackageDb.getPackagesAsThunderstoreMods(rootState.activeGame.internalFolderName);
-            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setMods', modList);
-            commit('setModsLastUpdated', updated);
             commit('updateDeprecated', modList);
             commit('clearModCache');
+            await dispatch('updateModsLastUpdated');
+        },
+
+        async updateModsLastUpdated({commit, rootState}) {
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            commit('setModsLastUpdated', updated);
         },
 
         /*** Save a mod list received from the Thunderstore API to IndexedDB */
         async updatePersistentCache(
             {dispatch, rootState, state},
-            packages: {full_name: string}[]
+            {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
             }
 
-            const filtered = packages.filter((pkg) => !state.exclusions!.includes(pkg.full_name));
+            const filtered = chunks.map((chunk) => chunk.filter(
+                (pkg) => !state.exclusions!.includes(pkg.full_name)
+            ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
-        }
+            await dispatch('updateIndexHash', indexHash);
+        },
+
+        async updateIndexHash({rootState}, indexHash: string) {
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.setLatestPackageListIndex(community, indexHash);
+        },
     }
 }

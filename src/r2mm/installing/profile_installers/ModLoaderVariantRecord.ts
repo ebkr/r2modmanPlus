@@ -193,6 +193,14 @@ const VARIANTS = {
     GoodbyeVolcanoHigh: MODLOADER_PACKAGES,
     SupermarketTogether: MODLOADER_PACKAGES,
     HadesII: MODLOADER_PACKAGES,
+    Shapez2: MODLOADER_PACKAGES,
+    PaqueretteDownTheBunburrows: MODLOADER_PACKAGES,
+    HardTime3: MODLOADER_PACKAGES,
+    TankTeam: MODLOADER_PACKAGES,
+    Distance: MODLOADER_PACKAGES,
+    FiveNightsAtFreddysIntoThePit: MODLOADER_PACKAGES,
+    GoreBox: MODLOADER_PACKAGES,
+    TCGCardShopSimulator: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

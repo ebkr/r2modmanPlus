@@ -34,20 +34,20 @@ export default class GameInstructionParser {
     }
 
     private static async profileDirectoryResolver(game: Game, profile: Profile): Promise<string> {
-        return profile.getPathOfProfile();
+        return profile.getProfilePath();
     }
 
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
             if (["linux"].includes(process.platform.toLowerCase())) {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
-                const corePath = await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "BepInEx", "core"));
+                const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath("BepInEx", "core"));
                 const preloaderPath = path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
                         .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
                 return `${isProton ? 'Z:' : ''}${preloaderPath}`;
             } else {
-                const corePath = path.join(profile.getPathOfProfile(), "BepInEx", "core");
+                const corePath = profile.joinToProfilePath("BepInEx", "core");
                 return path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
                         .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
@@ -60,10 +60,10 @@ export default class GameInstructionParser {
 
     private static async bepInExCorelibsPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            return await FsProvider.instance.realpath(path.join(profile.getPathOfProfile(), "unstripped_corlib"));
+            return await FsProvider.instance.realpath(profile.joinToProfilePath("unstripped_corlib"));
         } catch (e) {
             const err: Error = e as Error;
-            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such directory exists for path: ${Profile.getActiveProfile().getPathOfProfile()}.\nReason: ${err.message}`, null);
+            return new R2Error("Unable to resolver Corelibs folder", `"unstripped_corlib" folder failed. No such folder exists for path: ${Profile.getActiveProfile().getProfilePath()}.\nReason: ${err.message}`, null);
         }
     }
 
@@ -72,7 +72,7 @@ export default class GameInstructionParser {
     }
 
     private static async northstarDirectoryResolver(game: Game, profile: Profile): Promise<string | R2Error> {
-        return path.join(profile.getPathOfProfile(), "R2Northstar");
+        return profile.joinToProfilePath("R2Northstar");
     }
 
 }

@@ -32,7 +32,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             InstallationRuleApplicator.apply();
             InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
@@ -50,12 +50,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), 'loose.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), 'loose.dll'))
+            ).toBeTruthy();
         });
 
         test("Keep override folder structure", async () => {
@@ -71,12 +71,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "Plugins", "static_dir", "structured.dll"))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), "static_dir", "structured.dll"))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), "static_dir", "structured.dll")
+            )).toBeTruthy();
         });
 
         test("Flatten non-override structure", async () => {
@@ -92,12 +92,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, "static_dir", "structured.dll"))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "plugins", pkg.getName(), "structured.dll"))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "plugins", pkg.getName(), "structured.dll")
+            )).toBeTruthy();
         });
 
         test('Default file extension', async () => {
@@ -112,12 +112,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.mm.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "monomod", pkg.getName(), 'loose.mm.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "monomod", pkg.getName(), 'loose.mm.dll')
+            )).toBeTruthy();
         });
 
     });
@@ -132,7 +132,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
             InstallationRuleApplicator.apply();
             ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
@@ -150,16 +150,16 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             const coreRule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
             const defaultRuleSubtype = InstallationRules.getAllManagedPaths(coreRule.rules)
                 .find(value => value.isDefaultLocation)!;
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), defaultRuleSubtype.route, 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath(defaultRuleSubtype.route, 'loose.file')
+            )).toBeTruthy();
         });
 
         test('One-level nested', async () => {
@@ -175,12 +175,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "UserData", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("UserData", 'loose.file')
+            )).toBeTruthy();
         });
 
         test('Two-level nested', async () => {
@@ -196,12 +196,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "UserData", "CustomFolder", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("UserData", "CustomFolder", 'loose.file')
+            )).toBeTruthy();
         });
 
         // .managed.dll rule points to /MelonLoader/Managed
@@ -217,12 +217,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cachePkgRoot, 'loose.managed.dll'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "MelonLoader", "Managed", 'loose.managed.dll'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("MelonLoader", "Managed", 'loose.managed.dll')
+            )).toBeTruthy();
         });
 
     });
@@ -237,7 +237,7 @@ describe('Installer Tests', () => {
             inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
             ProfileProvider.provide(() => new ProfileProviderImpl());
             new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
             GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
             InstallationRuleApplicator.apply();
         });
@@ -255,12 +255,12 @@ describe('Installer Tests', () => {
             expect(await FsProvider.instance.exists(path.join(cacheParentDir, 'loose.file'))).toBeTruthy();
 
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile());
+            await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
             // Expect DLL to be installed as intended
-            expect(await FsProvider.instance.exists(path.join(
-                Profile.getActiveProfile().getPathOfProfile(), "BepInEx", "config", 'loose.file'))).toBeTruthy();
-
+            expect(await FsProvider.instance.exists(
+                Profile.getActiveProfile().joinToProfilePath("BepInEx", "config", 'loose.file')
+            )).toBeTruthy();
         });
 
     });

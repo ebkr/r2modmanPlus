@@ -1,5 +1,5 @@
 import * as yaml from 'yaml';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
@@ -35,15 +35,15 @@ export default class ProfileModList {
         return this.lock.acquire("acquire", fn);
     }
 
-    public static async getModList(profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async getModList(profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
-        await FileUtils.ensureDirectory(profile.getPathOfProfile());
-        if (!await fs.exists(path.join(profile.getPathOfProfile(), 'mods.yml'))) {
-            await fs.writeFile(path.join(profile.getPathOfProfile(), 'mods.yml'), JSON.stringify([]));
+        await FileUtils.ensureDirectory(profile.getProfilePath());
+        if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
+            await fs.writeFile(profile.joinToProfilePath('mods.yml'), JSON.stringify([]));
         }
         try {
             try {
-                const value = (yaml.parse((await fs.readFile(path.join(profile.getPathOfProfile(), 'mods.yml'))).toString()) || []);
+                const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
                 for(let modIndex in value){
                     const mod = new ManifestV2().fromReactive(value[modIndex]);
                     const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
@@ -53,9 +53,9 @@ export default class ProfileModList {
                             .find(x => x.packageName === mod.getName()) !== undefined
                     ) {
                         // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache
-                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "core", "icon.png");
+                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "core", "icon.png");
                     } else {
-                        iconPath = path.resolve(profile.getPathOfProfile(), "BepInEx", "plugins", mod.getName(), "icon.png");
+                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png");
                     }
 
                     if (await fs.exists(iconPath)) {
@@ -84,13 +84,13 @@ export default class ProfileModList {
         }
     }
 
-    public static async saveModList(profile: Profile, modList: ManifestV2[]): Promise<R2Error | null> {
+    public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
             const yamlModList: string = yaml.stringify(modList);
             try {
                 await fs.writeFile(
-                    path.join(profile.getPathOfProfile(), 'mods.yml'),
+                    profile.joinToProfilePath('mods.yml'),
                     yamlModList
                 );
             } catch(e) {
@@ -112,7 +112,7 @@ export default class ProfileModList {
         return null;
     }
 
-    public static async addMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async addMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         mod.setInstalledAtTime(Number(new Date())); // Set InstalledAt to current epoch millis
         let currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
@@ -137,7 +137,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async removeMod(mod: ManifestV2, profile: Profile): Promise<ManifestV2[] | R2Error> {
+    public static async removeMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const currentModList: ManifestV2[] | R2Error = await this.getModList(profile);
         if (currentModList instanceof R2Error) {
             return currentModList;
@@ -151,7 +151,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async updateMods(mods: ManifestV2[], profile: Profile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+    public static async updateMods(mods: ManifestV2[], profile: ImmutableProfile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -169,7 +169,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    public static async updateMod(mod: ManifestV2, profile: Profile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
+    public static async updateMod(mod: ManifestV2, profile: ImmutableProfile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -184,7 +184,7 @@ export default class ProfileModList {
         return this.getModList(profile);
     }
 
-    private static async createExport(profile: Profile): Promise<ZipBuilder | R2Error> {
+    private static async createExport(profile: ImmutableProfile): Promise<ZipBuilder | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
@@ -193,10 +193,10 @@ export default class ProfileModList {
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
         await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
-        if (await FsProvider.instance.exists(path.join(profile.getPathOfProfile(), "BepInEx", "config"))) {
-            await builder.addFolder("config", path.join(profile.getPathOfProfile(), 'BepInEx', 'config'));
+        if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
+            await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
-        const tree = await FileTree.buildFromLocation(profile.getPathOfProfile());
+        const tree = await FileTree.buildFromLocation(profile.getProfilePath());
         if (tree instanceof R2Error) {
             return tree;
         }
@@ -205,7 +205,7 @@ export default class ProfileModList {
         tree.navigateAndPerform(bepInExDir => {
             bepInExDir.removeDirectories("config");
             bepInExDir.navigateAndPerform(pluginDir => {
-                pluginDir.getDirectories().forEach(value => value.removeFiles(path.join(profile.getPathOfProfile(), "BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
+                pluginDir.getDirectories().forEach(value => value.removeFiles(profile.joinToProfilePath("BepInEx", "plugins", value.getDirectoryName(), "manifest.json")));
             }, "plugins");
         }, "BepInEx");
         tree.removeDirectories("MelonLoader");
@@ -213,28 +213,28 @@ export default class ProfileModList {
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
             if (this.SUPPORTED_CONFIG_FILE_EXTENSIONS.filter(value => fileLower.endsWith(value)).length > 0) {
-                await builder.addBuffer(path.relative(profile.getPathOfProfile(), file), await FsProvider.instance.readFile(file));
+                await builder.addBuffer(path.relative(profile.getProfilePath(), file), await FsProvider.instance.readFile(file));
             }
         }
         return builder;
     }
 
-    public static async exportModListToFile(profile: Profile): Promise<R2Error | string> {
+    public static async exportModListToFile(profile: ImmutableProfile): Promise<R2Error | string> {
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         try {
             await FileUtils.ensureDirectory(exportDirectory);
         } catch(e) {
             const err: Error = e as Error;
-            return new R2Error('Failed to ensure directory exists', err.message,
+            return new R2Error('Failed to ensure folder exists', err.message,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`);
         }
         const dir = await InteractionProvider.instance.selectFolder({
-            title: `Select the location to export your profile to`,
+            title: `Select the folder to export your profile to`,
             defaultPath: exportDirectory,
-            buttonLabel: 'Select export directory'
+            buttonLabel: 'Select export folder'
         });
         if (dir.length === 0) {
-            return new R2Error("Failed to export profile", "No export directory was selected", null);
+            return new R2Error("Failed to export profile", "No export folder was selected", null);
         }
         const builder = await this.createExport(profile);
         if (builder instanceof R2Error) {
@@ -246,7 +246,7 @@ export default class ProfileModList {
         return exportPath;
     }
 
-    public static async exportModListAsCode(profile: Profile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
+    public static async exportModListAsCode(profile: ImmutableProfile, callback: (code: string, err: R2Error | null) => void): Promise<R2Error | void> {
         const fs = FsProvider.instance;
         const exportDirectory = path.join(PathResolver.MOD_ROOT, 'exports');
         await FileUtils.ensureDirectory(exportDirectory);
@@ -266,7 +266,7 @@ export default class ProfileModList {
                 const zipSize = FileUtils.humanReadableSize(zipStats.size);
                 const maxSize = FileUtils.humanReadableSize(this.MAX_EXPORT_AS_CODE_SIZE);
                 const fileTypes = this.SUPPORTED_CONFIG_FILE_EXTENSIONS.join(', ');
-                const configFolder = path.join(profile.getPathOfProfile(), 'BepInEx', 'config');
+                const configFolder = profile.joinToProfilePath('BepInEx', 'config');
                 return new R2Error(
                     'The profile is too large to be exported as a code',
                     `Exported profile size is ${zipSize} while the maximum supported size is ${maxSize}.

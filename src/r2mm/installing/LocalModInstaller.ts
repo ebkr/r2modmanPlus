@@ -61,12 +61,12 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                     }
                     await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
                     await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
-                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
+                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
                     if (profileInstallResult instanceof R2Error) {
                         callback(false, profileInstallResult);
                         return Promise.resolve();
                     }
-                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+                    const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
                     if (modListInstallResult instanceof R2Error) {
                         callback(false, modListInstallResult);
                         return Promise.resolve();
@@ -87,12 +87,12 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
             await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
             await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
-            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
+            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
             if (profileInstallResult instanceof R2Error) {
                 callback(false, profileInstallResult);
                 return Promise.resolve();
             }
-            const modListInstallResult = await ProfileModList.addMod(manifest, profile);
+            const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
             if (modListInstallResult instanceof R2Error) {
                 callback(false, modListInstallResult);
                 return Promise.resolve();

@@ -41,7 +41,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
 
     ProfileProvider.provide(() => new ProfileProviderImpl());
     new Profile('TestProfile');
-    inMemoryFs.mkdirs(Profile.getActiveProfile().getPathOfProfile());
+    inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
 
     ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
     InstallationRuleApplicator.apply();
@@ -106,7 +106,7 @@ async function getTree(target: string) {
  */
 export async function expectFilesToBeCopied(sourceToExpectedDestination: Record<string, string>) {
     const fs = FsProvider.instance;
-    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+    const profilePath = Profile.getActiveProfile().getProfilePath();
 
     for (const destPath of Object.values(sourceToExpectedDestination)) {
         const fullPath = path.join(profilePath, destPath);
@@ -128,7 +128,7 @@ export async function expectFilesToBeRemoved(
     expectedAfterUninstall: string[]
 ) {
     const fs = FsProvider.instance;
-    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+    const profilePath = Profile.getActiveProfile().getProfilePath();
 
     for (const destPath of Object.values(sourceToExpectedDestination)) {
         const fullPath = path.join(profilePath, destPath);
@@ -149,7 +149,7 @@ export async function expectFilesToBeRemoved(
 
 export async function createFilesIntoProfile(filePaths: string[]) {
     const fs = FsProvider.instance;
-    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+    const profilePath = Profile.getActiveProfile().getProfilePath();
 
     for (const filePath of filePaths) {
         const destPath = path.join(profilePath, ...filePath.split('/'));
@@ -161,7 +161,7 @@ export async function createFilesIntoProfile(filePaths: string[]) {
 
 export async function expectFilesToExistInProfile(filePaths: string[]) {
     const fs = FsProvider.instance;
-    const profilePath = Profile.getActiveProfile().getPathOfProfile();
+    const profilePath = Profile.getActiveProfile().getProfilePath();
 
     for (const filePath of filePaths) {
         const fullPath = path.join(profilePath, filePath);

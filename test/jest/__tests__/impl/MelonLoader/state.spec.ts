@@ -2,10 +2,9 @@ import Sinon from 'sinon';
 import TestSetup from 'app/test/jest/__tests__/test-setup';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
-import Profile from 'src/model/Profile';
+import Profile, { ImmutableProfile } from 'src/model/Profile';
 import FsProvider from 'src/providers/generic/file/FsProvider';
 import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
-import path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from 'src/model/installing/ModFileTracker';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
@@ -44,13 +43,13 @@ describe("State testing", () => {
             const fileMap = new Map<string, string>(files);
 
             sandbox.stub(ProfileProvider.instance);
-            const profile = new Profile("stub");
+            const profile = new ImmutableProfile("stub");
 
             const fsStub = sandbox.stub(FsProvider.instance);
             FsProvider.provide(() => fsStub);
 
-            fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state")).returns(Promise.resolve(true));
-            fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(false));
+            fsStub.exists.withArgs(profile.joinToProfilePath("_state")).returns(Promise.resolve(true));
+            fsStub.exists.withArgs(profile.joinToProfilePath("_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(false));
 
             await addToStateFile(
                 fakeMod,
@@ -77,12 +76,12 @@ describe("State testing", () => {
             const fsStub = sandbox.stub(FsProvider.instance);
             FsProvider.provide(() => fsStub);
 
-            fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(true));
+            fsStub.exists.withArgs(profile.joinToProfilePath("_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(true));
             files.forEach(([cached, installed]) => {
-                fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), installed)).returns(Promise.resolve(true));
+                fsStub.exists.withArgs(profile.joinToProfilePath(installed)).returns(Promise.resolve(true));
             });
 
-            fsStub.readFile.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(Buffer.from(yaml.stringify(
+            fsStub.readFile.withArgs(profile.joinToProfilePath("_state", `${fakeMod.getName()}-state.yml`)).returns(Promise.resolve(Buffer.from(yaml.stringify(
                 {
                     modName: fakeMod.getName(),
                     files: files
@@ -94,9 +93,9 @@ describe("State testing", () => {
             await mlProfileInstaller.uninstallMod(fakeMod, profile);
 
             files.forEach(([cached, installed]) => {
-                expect(fsStub.unlink.withArgs(path.join(profile.getPathOfProfile(), installed)).callCount).toBe(1);
+                expect(fsStub.unlink.withArgs(profile.joinToProfilePath(installed)).callCount).toBe(1);
             });
-            expect(fsStub.unlink.withArgs(path.join(profile.getPathOfProfile(), "_state", `${fakeMod.getName()}-state.yml`)).callCount).toBe(1);
+            expect(fsStub.unlink.withArgs(profile.joinToProfilePath("_state", `${fakeMod.getName()}-state.yml`)).callCount).toBe(1);
 
         });
     });
@@ -223,21 +222,21 @@ let processConflictManagement = async (modA: ManifestV2, modFileTrackerA: ModFil
 
     // Ensure that on state file check; exists returns true.
     [modA, modB].forEach(value => {
-        fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", `${value.getName()}-state.yml`)).returns(Promise.resolve(true));
+        fsStub.exists.withArgs(profile.joinToProfilePath("_state", `${value.getName()}-state.yml`)).returns(Promise.resolve(true));
     });
 
     // Attach MSTs to readFile.
-    fsStub.readFile.withArgs(path.join(profile.getPathOfProfile(), "_state", `${modA.getName()}-state.yml`))
+    fsStub.readFile.withArgs(profile.joinToProfilePath("_state", `${modA.getName()}-state.yml`))
         .returns(Promise.resolve(Buffer.from(yaml.stringify(modFileTrackerA))));
 
-    fsStub.readFile.withArgs(path.join(profile.getPathOfProfile(), "_state", `${modB.getName()}-state.yml`))
+    fsStub.readFile.withArgs(profile.joinToProfilePath("_state", `${modB.getName()}-state.yml`))
         .returns(Promise.resolve(Buffer.from(yaml.stringify(modFileTrackerB))));
 
     // No need to check if file exists or not.
-    fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state", "installation_state.yml")).returns(Promise.resolve(false));
+    fsStub.exists.withArgs(profile.joinToProfilePath("_state", "installation_state.yml")).returns(Promise.resolve(false));
 
     // No need to create state directory. Ensure no extra stubbing needed.
-    fsStub.exists.withArgs(path.join(profile.getPathOfProfile(), "_state")).returns(Promise.resolve(true));
+    fsStub.exists.withArgs(profile.joinToProfilePath("_state")).returns(Promise.resolve(true));
 
     await conflictManagement.resolveConflicts([modA, modB], profile);
 

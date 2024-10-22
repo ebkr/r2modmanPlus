@@ -34,12 +34,12 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             }
         } else {
             // If sh files aren't executable then the wrapper will fail.
-            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile()))))
+            const shFiles = (await FsProvider.instance.readdir(await FsProvider.instance.realpath(Profile.getActiveProfile().getProfilePath())))
                 .filter(value => value.endsWith(".sh"));
 
             try {
                 for (const shFile of shFiles) {
-                    await FsProvider.instance.chmod(await FsProvider.instance.realpath(path.join(Profile.getActiveProfile().getPathOfProfile(), shFile)), 0o755);
+                    await FsProvider.instance.chmod(await FsProvider.instance.realpath(Profile.getActiveProfile().joinToProfilePath(shFile)), 0o755);
                 }
             } catch (e) {
                 const err: Error = e as Error;
@@ -67,7 +67,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             return steamDir;
         }
 
-        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam directory is: ${steamDir}`);
+        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
 
         const steamCmd = steamDir.indexOf(path.join(homedir(), '.var', 'app', 'com.valvesoftware.Steam')) >= 0 ? `flatpak run com.valvesoftware.Steam` : `"${steamDir}/steam.sh"`;
 
@@ -78,7 +78,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         } catch(err) {
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
             LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
-            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam directory has been set correctly in the settings');
+            throw new R2Error('Error starting Steam', (err as Error).message, 'Ensure that the Steam folder has been set correctly in the settings');
         }
 
     }

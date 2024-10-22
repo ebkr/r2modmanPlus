@@ -1,8 +1,7 @@
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import VersionNumber from '../../model/VersionNumber';
 import StatusEnum from '../../model/enums/StatusEnum';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
@@ -10,71 +9,36 @@ import PathResolver from '../../r2mm/manager/PathResolver';
 import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
-import Profile from '../../model/Profile';
-import ExportMod from '../../model/exports/ExportMod';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import { ImmutableProfile } from '../../model/Profile';
+import ThunderstoreDownloaderProvider, { DependencySetBuilderMode } from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import GameManager from '../../model/game/GameManager';
+import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
-    public buildDependencySet(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
-            // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (matchingProvider !== undefined) {
-                const version = new VersionNumber(dependency.substring(matchingProvider.getFullName().length + 1));
-                // Find ThunderstoreVersion with VersionNumber matching ${version}
-                const matchingVersion = matchingProvider.getVersions().find(v => v.getVersionNumber().isEqualTo(version));
-                if (matchingVersion !== undefined) {
-                    let otherVersionAlreadyAdded = false;
-                    builder.forEach(v => {
-                        // If otherVersionAlreadyAdded, or full names are equal
-                        otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
-                    });
-                    if (!otherVersionAlreadyAdded) {
-                        const tsCombo = new ThunderstoreCombo();
-                        tsCombo.setMod(matchingProvider);
-                        tsCombo.setVersion(matchingVersion);
-                        foundDependencies.push(tsCombo);
-                    }
-                }
-            }
-        })
-        foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySet(found.getVersion(), allMods, builder));
-        return builder;
-    }
+    public async buildDependencySet(
+        mod: ThunderstoreVersion,
+        builder: ThunderstoreCombo[],
+        mode: DependencySetBuilderMode
+    ): Promise<void> {
+        const game = GameManager.activeGame;
+        const useLatestVersion = Boolean(mode);
+        let foundDependencies = await PackageDb.getCombosByDependencyStrings(game, mod.getDependencies(), useLatestVersion);
 
-    public buildDependencySetUsingLatest(mod: ThunderstoreVersion, allMods: ThunderstoreMod[], builder: ThunderstoreCombo[]): ThunderstoreCombo[] {
-        const foundDependencies = new Array<ThunderstoreCombo>();
-        mod.getDependencies().forEach(dependency => {
-            // Find matching ThunderstoreMod.
-            const matchingProvider: ThunderstoreMod | undefined = allMods.find(o => dependency.startsWith(o.getFullName() + "-"));
-            if (matchingProvider !== undefined) {
-                // Get latest version of dependency
-                const matchingVersion = matchingProvider.getVersions().reduce((one: ThunderstoreVersion, two: ThunderstoreVersion) => {
-                    if (one.getVersionNumber().isNewerThan(two.getVersionNumber())) {
-                        return one;
-                    } return two;
-                });
-                let otherVersionAlreadyAdded = false;
-                builder.forEach(v => {
-                    // If otherVersionAlreadyAdded, or full names are equal
-                    otherVersionAlreadyAdded = otherVersionAlreadyAdded || v.getMod().getFullName() === matchingProvider.getFullName();
-                });
-                if (!otherVersionAlreadyAdded) {
-                    const tsCombo = new ThunderstoreCombo();
-                    tsCombo.setMod(matchingProvider);
-                    tsCombo.setVersion(matchingVersion);
-                    foundDependencies.push(tsCombo);
-                }
-            }
-        })
+        // Filter out already added AFTER reading packages from the DB to
+        // ensure the recursion works as expected.
+        const alreadyAdded = builder.map((seenMod) => seenMod.getMod().getFullName());
+        foundDependencies = foundDependencies.filter(
+            (dep) => !alreadyAdded.includes(dep.getMod().getFullName())
+        );
+
         foundDependencies.forEach(found => builder.push(found));
-        foundDependencies.forEach(found => this.buildDependencySetUsingLatest(found.getVersion(), allMods, builder));
-        return builder;
+
+        for (const dependency of foundDependencies) {
+            await this.buildDependencySet(dependency.getVersion(), builder, mode);
+        }
     }
 
     public sortDependencyOrder(deps: ThunderstoreCombo[]) {
@@ -87,14 +51,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadLatestOfAll(modsWithUpdates: ThunderstoreCombo[], allMods: ThunderstoreMod[], ignoreCache: boolean,
+    public async downloadLatestOfAll(modsWithUpdates: ThunderstoreCombo[], ignoreCache: boolean,
                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                                       completedCallback: (modList: ThunderstoreCombo[]) => void) {
 
         const dependencies: ThunderstoreCombo[] = [...modsWithUpdates];
-        modsWithUpdates.forEach(value => {
-            this.buildDependencySetUsingLatest(value.getVersion(), allMods, dependencies);
-        });
+
+        for (const mod of modsWithUpdates) {
+            await this.buildDependencySet(mod.getVersion(), dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
+        }
 
         this.sortDependencyOrder(dependencies);
 
@@ -117,11 +82,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(profile: Profile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                           allMods: ThunderstoreMod[], ignoreCache: boolean,
+    public async download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
+                           ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        let dependencies = this.buildDependencySet(modVersion, allMods, new Array<ThunderstoreCombo>());
+        let dependencies: ThunderstoreCombo[] = [];
+        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
         this.sortDependencyOrder(dependencies);
         const combo = new ThunderstoreCombo();
         combo.setMod(mod);
@@ -141,7 +107,8 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
         if (!isModpack) {
             // If not modpack, get latest
-            dependencies = this.buildDependencySetUsingLatest(modVersion, allMods, new Array<ThunderstoreCombo>());
+            dependencies = [];
+            await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
             this.sortDependencyOrder(dependencies);
             // #270: Remove already-installed dependencies to prevent updating.
             dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
@@ -181,49 +148,48 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         })
     }
 
-    public async downloadImportedMods(modList: ExportMod[], allMods: ThunderstoreMod[], ignoreCache: boolean,
-                                       callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                                       completedCallback: (mods: ThunderstoreCombo[]) => void) {
+    public async downloadImportedMods(
+        modList: ThunderstoreCombo[],
+        ignoreCache: boolean,
+        totalProgressCallback: (progress: number) => void
+    ) {
+        let downloadCount = 0;
 
-        const comboList = allMods.map((mod) => {
-            const targetMod = modList.find((importMod) => mod.getFullName() == importMod.getName());
-            const version = targetMod
-                ? mod.getVersions().find((ver) => ver.getVersionNumber().isEqualTo(targetMod.getVersionNumber()))
-                : undefined;
-
-            if (version) {
-                const combo = new ThunderstoreCombo();
-                combo.setMod(mod);
-                combo.setVersion(version);
-                return combo;
+        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
+        const singleModProgressCallback = (progress: number, status: number, err: R2Error | null) => {
+            if (status === StatusEnum.FAILURE) {
+                throw err;
             }
-        }).filter((combo): combo is ThunderstoreCombo => combo !== undefined);
 
-        if (comboList.length === 0) {
-            const err = new R2Error(
-                'No importable mods found',
-                'None of the mods or versions listed in the shared profile are available on Thunderstore.',
-                'Make sure the shared profile is meant for the currently selected game.'
-            );
-            callback(0, '', StatusEnum.FAILURE, err);
-            return;
+            let totalProgress: number;
+            if (status === StatusEnum.PENDING) {
+                totalProgress = this.generateProgressPercentage(progress * 0.8, downloadCount, modList.length);
+            } else if (status === StatusEnum.SUCCESS) {
+                totalProgress = this.generateProgressPercentage(100, downloadCount, modList.length);
+                downloadCount += 1;
+            } else {
+                console.error(`Ignore unknown status code "${status}"`);
+                return;
+            }
+
+            totalProgressCallback(totalProgress);
         }
 
-        let downloadCount = 0;
-        await this.queueDownloadDependencies(comboList.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-            if (status === StatusEnum.FAILURE) {
-                callback(0, modName, status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, status, err);
-            } else if (status === StatusEnum.SUCCESS) {
-                callback(this.generateProgressPercentage(progress, downloadCount, comboList.length + 1), modName, StatusEnum.PENDING, err);
-                downloadCount += 1;
-                if (downloadCount >= comboList.length) {
-                    callback(100, modName, StatusEnum.PENDING, err);
-                    completedCallback(comboList);
-                }
+        for (const combo of modList) {
+            if (!ignoreCache && await this.isVersionAlreadyDownloaded(combo)) {
+                singleModProgressCallback(100, StatusEnum.SUCCESS, null);
+                continue;
             }
-        });
+
+            try {
+                const response = await this._downloadCombo(combo, singleModProgressCallback);
+                await this._saveDownloadResponse(response, combo, singleModProgressCallback);
+            } catch(e) {
+                throw R2Error.fromThrownValue(e, `Failed to download mod ${combo.getVersion().getFullName()}`);
+            }
+        }
+
+        totalProgressCallback(100);
     }
 
     public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
@@ -256,7 +222,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             callback(100, StatusEnum.SUCCESS, null);
             return;
         }
-        axios.get(combo.getVersion().getDownloadUrl(), {
+        this._downloadCombo(combo, callback)
+            .then(async response => this._saveDownloadResponse(response, combo, callback))
+            .catch((reason: Error) => {
+                callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
+            })
+    }
+
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+        return axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => {
                 callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
             },
@@ -265,19 +239,19 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 'Content-Type': 'application/zip',
                 'Access-Control-Allow-Origin': '*'
             }
-        }).then(async response => {
-            const buf: Buffer = Buffer.from(response.data)
-            callback(100, StatusEnum.PENDING, null);
-            await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
-                if (success) {
-                    callback(100, StatusEnum.SUCCESS, error || null);
-                } else {
-                    callback(100, StatusEnum.FAILURE, error || null);
-                }
-            });
-        }).catch((reason: Error) => {
-            callback(100, StatusEnum.FAILURE, new R2Error(`Failed to download mod ${combo.getVersion().getFullName()}`, reason.message, null));
-        })
+        });
+    }
+
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<void> {
+        const buf: Buffer = Buffer.from(response.data)
+        callback(100, StatusEnum.PENDING, null);
+        await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
+            if (success) {
+                callback(100, StatusEnum.SUCCESS, error || null);
+            } else {
+                callback(100, StatusEnum.FAILURE, error || null);
+            }
+        });
     }
 
     public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
@@ -301,7 +275,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         } catch(e) {
             callback(false, new FileWriteError(
                 'File write error',
-                `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache directory. \nReason: ${(e as Error).message}`,
+                `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache folder. \nReason: ${(e as Error).message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
         }

@@ -1,13 +1,11 @@
 import ThunderstoreVersion from './ThunderstoreVersion';
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
-export default class ThunderstoreMod extends ThunderstoreVersion implements ReactiveObjectConverterInterface {
-    private versions: ThunderstoreVersion[] = [];
+export default class ThunderstoreMod extends ThunderstoreVersion {
     private rating: number = 0;
     private owner: string = '';
     private packageUrl: string = '';
-    private dateCreated: Date = new Date();
-    private dateUpdated: Date = new Date();
+    private dateCreated: string = '';
+    private dateUpdated: string = '';
     private uuid4: string = '';
     private pinned: boolean = false;
     private deprecated: boolean = false;
@@ -15,6 +13,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
     private categories: string[] = [];
     private hasNsfwContent: boolean = false;
     private donationLink: string | undefined;
+    private latestVersion: string = '';
 
     public static parseFromThunderstoreData(data: any): ThunderstoreMod {
         const mod = new ThunderstoreMod();
@@ -25,59 +24,33 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         mod.setDateUpdated(data.date_updated);
         mod.setDeprecatedStatus(data.is_deprecated);
         mod.setPinnedStatus(data.is_pinned);
-        const versions = [];
-        for (const version of data.versions) {
-            versions.push(new ThunderstoreVersion().make(version));
-        }
-        mod.setVersions(versions);
-        mod.setDownloadCount(
-            mod.versions
-                .map(version => version.getDownloadCount())
-                .reduce((x, y) => x + y)
-        );
         mod.setRating(data.rating_score);
         mod.setTotalDownloads(
-            mod.getVersions()
-                .map(x => x.getDownloadCount())
-                .reduce((x, y) => x + y)
+            data.versions.reduce(
+                (x: number, y: {downloads: number}) => x + y.downloads,
+                0
+            )
         );
         mod.setPackageUrl(data.package_url);
         mod.setCategories(data.categories);
         mod.setNsfwFlag(data.has_nsfw_content);
         mod.setDonationLink(data.donation_link);
+        mod.setLatestVersion(data.versions[0].version_number);
+        mod.setDescription(data.versions[0].description);
+        mod.setIcon(data.versions[0].icon);
         return mod;
     }
 
-    public fromReactive(reactive: any): ThunderstoreMod {
-        this.setName(reactive.name);
-        this.setFullName(reactive.fullName);
-        this.setOwner(reactive.owner);
-        this.setPackageUrl(reactive.packageUrl);
-        this.setDateCreated(reactive.dateCreated);
-        this.setDateUpdated(reactive.dateUpdated);
-        this.setDeprecatedStatus(reactive.deprecated);
-        this.setPinnedStatus(reactive.pinned);
-        this.setVersions(reactive.versions.map((x: ThunderstoreVersion) => new ThunderstoreVersion().fromReactive(x)));
-        this.setDownloadCount(reactive.downloadCount);
-        this.setRating(reactive.rating);
-        this.setTotalDownloads(reactive.totalDownloads);
-        this.setUuid4(reactive.uuid4);
-        this.setCategories(reactive.categories);
-        this.setNsfwFlag(reactive.hasNsfwContent);
-        this.setDonationLink(reactive.donationUrl);
-        return this;
+    public getLatestVersion(): string {
+        return this.latestVersion;
     }
 
-    public getVersions(): ThunderstoreVersion[] {
-        return this.versions;
+    public setLatestVersion(versionNumber: string) {
+        this.latestVersion = versionNumber;
     }
 
-    public setVersions(versions: ThunderstoreVersion[]) {
-        this.versions = versions;
-    }
-
-    public getLatestVersion(): ThunderstoreVersion {
-        return this.getVersions().reduce(reduceToNewestVersion);
+    public getLatestDependencyString(): string {
+        return `${this.getFullName()}-${this.getLatestVersion()}`;
     }
 
     public getRating(): number {
@@ -104,19 +77,19 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.packageUrl = url;
     }
 
-    public getDateCreated(): Date {
+    public getDateCreated(): string {
         return this.dateCreated;
     }
 
-    public setDateCreated(date: Date) {
+    public setDateCreated(date: string) {
         this.dateCreated = date;
     }
 
-    public getDateUpdated(): Date {
+    public getDateUpdated(): string {
         return this.dateUpdated;
     }
 
-    public setDateUpdated(date: Date) {
+    public setDateUpdated(date: string) {
         this.dateUpdated = date;
     }
 
@@ -176,7 +149,3 @@ export default class ThunderstoreMod extends ThunderstoreVersion implements Reac
         this.donationLink = url;
     }
 }
-
-function reduceToNewestVersion(v1: ThunderstoreVersion, v2: ThunderstoreVersion) {
-    return v1.getVersionNumber().isNewerThan(v2.getVersionNumber()) ? v1 : v2;
-};

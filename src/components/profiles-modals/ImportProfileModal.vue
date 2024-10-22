@@ -1,33 +1,18 @@
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { ModalCard } from "../all";
-import R2Error from "../../model/errors/R2Error";
-import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
-import ExportMod from "../../model/exports/ExportMod";
-import path from "path";
-import Profile from "../../model/Profile";
-import FileUtils from "../../utils/FileUtils";
-import FsProvider from "../../providers/generic/file/FsProvider";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
-import StatusEnum from "../../model/enums/StatusEnum";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import ManifestV2 from "../../model/ManifestV2";
-import ProfileModList from "../../r2mm/mods/ProfileModList";
-import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
-import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { mixins } from "vue-class-component";
-import ProfilesMixin from "../mixins/ProfilesMixin.vue";
-import ExportFormat from "../../model/exports/ExportFormat";
-import * as yaml from "yaml";
-import VersionNumber from "../../model/VersionNumber";
-import ZipProvider from "../../providers/generic/zip/ZipProvider";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
-import ThunderstoreVersion from "../../model/ThunderstoreVersion";
-import ManagerInformation from "../../_managerinf/ManagerInformation";
-import OnlineModList from "../views/OnlineModList.vue";
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { Component } from 'vue-property-decorator';
 
-let fs: FsProvider;
+import ManagerInformation from "../../_managerinf/ManagerInformation";
+import R2Error from "../../model/errors/R2Error";
+import ExportFormat from "../../model/exports/ExportFormat";
+import ExportMod from "../../model/exports/ExportMod";
+import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
+import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
+import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import * as ProfileUtils from "../../utils/ProfileUtils";
+import { ModalCard } from "../all";
+import ProfilesMixin from "../mixins/ProfilesMixin.vue";
+import OnlineModList from "../views/OnlineModList.vue";
 
 
 @Component({
@@ -35,25 +20,25 @@ let fs: FsProvider;
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
-    private percentageImported: number = 0;
+    private importPhaseDescription: string = 'Downloading mods: 0%';
     private profileImportCode: string = '';
-    private isProfileBeingImported: boolean = false;
     private listenerId: number = 0;
     private newProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
-    private activeStep: 'IMPORT_UPDATE_SELECTION' | 'FILE_SELECTION' | 'FILE_CODE_SELECTION' | 'IMPORT_CODE' | 'IMPORT_FILE' | 'ADDING_PROFILE' | 'REVIEW_IMPORT' | 'NO_PACKAGES_IN_IMPORT' = 'IMPORT_UPDATE_SELECTION';
-
-    async created() {
-        fs = FsProvider.instance;
-    }
+    private activeStep:
+        'IMPORT_UPDATE_SELECTION'
+        | 'FILE_CODE_SELECTION'
+        | 'IMPORT_CODE'
+        | 'IMPORT_FILE'
+        | 'ADDING_PROFILE'
+        | 'REVIEW_IMPORT'
+        | 'NO_PACKAGES_IN_IMPORT'
+        | 'PROFILE_IS_BEING_IMPORTED'
+    = 'IMPORT_UPDATE_SELECTION';
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
-    }
-
-    get activeProfile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
     }
 
     get isOpen(): boolean {
@@ -99,33 +84,35 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     // User selects importing from file from the UI.
     importProfileFromFile() {
-        this.activeStep = 'FILE_SELECTION';
-        InteractionProvider.instance.selectFile({
-            title: 'Import Profile',
-            filters: [{
-                name: "*",
-                extensions: ["r2z"]
-            }],
-            buttonLabel: 'Import'
-        }).then((value: string[]) => {
-            if(value.length === 0) {
-                this.closeModal();
-            }
-            this.importProfileHandler(value);
-        })
+        this.activeStep = 'IMPORT_FILE';
+        process.nextTick(() => {
+            InteractionProvider.instance.selectFile({
+                title: 'Import Profile',
+                filters: [{
+                    name: "*",
+                    extensions: ["r2z"]
+                }],
+                buttonLabel: 'Import'
+            }).then((value: string[]) => {
+                if (value.length === 0) {
+                    this.closeModal();
+                }
+                this.importProfileHandler(value);
+            });
+        });
     }
 
     async importProfileHandler(files: string[] | null) {
         if (files === null || files.length === 0) {
-            this.isProfileBeingImported = false;
+            this.closeModal();
             return;
         }
 
-        let read: string | null = await this.readProfileFile(files[0]);
+        let read: string | null = await ProfileUtils.readProfileFile(files[0]);
 
         if (read !== null) {
             this.profileImportFilePath = files[0];
-            this.profileImportContent = await this.parseYamlToExportFormat(read);
+            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
 
             if (this.profileToOnlineMods.length === 0) {
                 this.activeStep = 'NO_PACKAGES_IN_IMPORT';
@@ -136,184 +123,68 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    // When creating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has created a new profile. The callback then:
-    // 2. Downloads (and extracts) the mods to the profile
-    //
-    // When updating, the flow is:
-    // 1. Creates an EventListener which gets triggered after the user has selected the old profile to be updated. The callback then:
-    // 2. Deletes the temporary profile (called _profile_update) if it exists (leftover from previous failed run etc.)
-    // 3. Downloads (and extracts) the mods to temporary profile
-    // 4. Deletes the old profile (including the folder on disk)
-    // 5. Renames temporary profile to the chosen profile's name
+    // Create an EventListener which gets triggered after the user either
+    // creates a new profile or selects an existing one to be updated.
     async installProfileHandler() {
         const profileContent = this.profileImportContent;
+        const filePath = this.profileImportFilePath;
+
+        if (profileContent === null || filePath === null) {
+            this.closeModal();
+            const reason = `content is ${profileContent ? 'not' : ''} null, file path is ${filePath ? 'not' : ''} null`;
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+            return;
+        }
+
         const localListenerId = this.listenerId + 1;
         this.listenerId = localListenerId;
-        document.addEventListener('created-profile', ((event: CustomEvent) =>
-                this.profileCreatedCallback(event, localListenerId, profileContent!, [this.profileImportFilePath!])
-        ) as EventListener, {once: true});
-        this.newProfileName = profileContent!.getProfileName();
+
+        document.addEventListener(
+            'created-profile',
+            async (event: Event) => {
+                const targetProfile = (event as CustomEvent).detail;
+                if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
+                    await this.importProfile(targetProfile, localListenerId, profileContent.getMods(), filePath);
+                } else {
+                    this.closeModal();
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
+                }
+            },
+            {once: true}
+        );
+
+        this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    async installModAfterDownload(mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | ManifestV2> {
-        const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-        const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, this.activeProfile);
-        if (!(installError instanceof R2Error)) {
-            const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, this.activeProfile);
-            if (newModList instanceof R2Error) {
-                return newModList;
-            }
-            return manifestMod;
-        } else {
-            // (mod failed to be placed in /{profile} directory)
-            return installError;
+    async importProfile(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
+        if (this.listenerId !== localListenerId) {
+            return;
         }
-    }
 
-    async readProfileFile(file: string) {
-        let read = '';
-        if (file.endsWith('.r2x')) {
-            read = (await FsProvider.instance.readFile(file)).toString();
-        } else if (file.endsWith('.r2z')) {
-            const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
-            if (result === null) {
-                return null;
-            }
-            read = result.toString();
-        }
-        return read;
-    }
-
-    profileCreatedCallback(event: CustomEvent, localListenerId: number, parsed: ExportFormat, files: string[]) {
-        if (this.listenerId === localListenerId) {
-            (async () => {
-                let profileName: string = event.detail;
-                if (profileName !== '') {
-                    if (this.importUpdateSelection === 'UPDATE') {
-                        profileName = "_profile_update";
-                        if (await fs.exists(path.join(Profile.getDirectory(), profileName))) {
-                            await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), profileName));
-                            await fs.rmdir(path.join(Profile.getDirectory(), profileName));
-                        }
-                        await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: true });
-                    }
-                    if (parsed.getMods().length > 0) {
-                        this.isProfileBeingImported = true;
-                        setTimeout(async () => {
-                            await this.downloadImportedProfileMods(parsed.getMods(), async () => {
-                                if (files[0].endsWith('.r2z')) {
-                                    await this.extractZippedProfileFile(files[0], profileName);
-                                }
-                                if (this.importUpdateSelection === 'UPDATE') {
-                                    this.activeProfileName = event.detail;
-                                    try {
-                                        await FileUtils.emptyDirectory(path.join(Profile.getDirectory(), event.detail));
-                                    } catch (e) {
-                                        console.log("Failed to empty directory:", e);
-                                    }
-                                    await fs.rmdir(path.join(Profile.getDirectory(), event.detail));
-                                    await fs.rename(path.join(Profile.getDirectory(), profileName), path.join(Profile.getDirectory(), event.detail));
-                                }
-                                await this.$store.dispatch('profiles/setSelectedProfile', { profileName: event.detail, prewarmCache: true });
-                                this.closeModal();
-                            });
-                        }, 100);
-                    }
-                }
-            })();
-        }
-    }
-
-    async extractZippedProfileFile(file: string, profileName: string) {
-        const entries = await ZipProvider.instance.getEntries(file);
-        for (const entry of entries) {
-            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName,
-                        'BepInEx'
-                    )
-                );
-            } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-                await ZipProvider.instance.extractEntryTo(
-                    file,
-                    entry.entryName,
-                    path.join(
-                        Profile.getDirectory(),
-                        profileName
-                    )
-                )
-            }
-        }
-    }
-
-    async downloadImportedProfileMods(modList: ExportMod[], callback?: () => void) {
+        this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
+        this.importPhaseDescription = 'Downloading mods: 0%';
+        const progressCallback = (progress: number|string) => typeof progress === "number"
+            ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
+            : this.importPhaseDescription = progress;
+        const game = this.$store.state.activeGame;
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
-        const allMods = await PackageDb.getPackagesByNames(
-            this.$store.state.activeGame.internalFolderName,
-            modList.map((m) => m.getName())
-        );
+        const isUpdate = this.importUpdateSelection === 'UPDATE';
 
-        this.percentageImported = 0;
-        ThunderstoreDownloaderProvider.instance.downloadImportedMods(
-            modList,
-            allMods,
-            ignoreCache,
-            this.downloadProgressCallback,
-            async (comboList: ThunderstoreCombo[]) => {
-                await this.downloadCompletedCallback(comboList, modList, callback);
-            }
-        );
-    }
-
-    // Called from the downloadImportedProfileMods function
-    downloadProgressCallback(progress: number, modName: string, status: number, err: R2Error | null) {
-        if (status == StatusEnum.FAILURE) {
+        try {
+            const comboList = await ProfileUtils.exportModsToCombos(mods, game);
+            await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
+            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+        } catch (e) {
+            await this.$store.dispatch('profiles/ensureProfileExists');
             this.closeModal();
-            this.isProfileBeingImported = false;
-            if (err instanceof R2Error) {
-                this.$store.commit('error/handleError', err);
-            }
-        } else if (status == StatusEnum.PENDING) {
-            this.percentageImported = Math.floor(progress);
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+            return;
         }
-    }
 
-    // Called from the downloadImportedProfileMods function
-    async downloadCompletedCallback(comboList: ThunderstoreCombo[], modList: ExportMod[], callback?: () => void) {
-        let keepIterating = true;
-        for (const comboMod of comboList) {
-            if (!keepIterating) {
-                return;
-            }
-            const installResult: R2Error | ManifestV2 = await this.installModAfterDownload(comboMod.getMod(), comboMod.getVersion());
-            if (installResult instanceof R2Error) {
-                this.$store.commit('error/handleError', installResult);
-                keepIterating = false;
-                this.isProfileBeingImported = false;
-                return;
-            }
-            for (const imported of modList) {
-                if (imported.getName() == comboMod.getMod().getFullName() && !imported.isEnabled()) {
-                    await ProfileModList.updateMod(installResult, this.activeProfile, async (modToDisable: ManifestV2) => {
-                        // Need to enable temporarily so the manager doesn't think it's re-disabling a disabled mod.
-                        modToDisable.enable();
-                        await ProfileInstallerProvider.instance.disableMod(modToDisable, this.activeProfile);
-                        modToDisable.disable();
-                    });
-                }
-            }
-        }
-        if (callback !== undefined) {
-            callback();
-        }
-        this.isProfileBeingImported = false;
+        await this.$store.dispatch('profiles/setSelectedProfile', {profileName: targetProfileName, prewarmCache: true});
+        this.closeModal();
     }
 
     // Called when the name for the imported profile is given and confirmed by the user.
@@ -335,25 +206,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     updateProfile() {
         document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
     }
-
-    async parseYamlToExportFormat(read: string) {
-        const parsedYaml = await yaml.parse(read);
-        return new ExportFormat(
-            parsedYaml.profileName,
-            parsedYaml.mods.map((mod: any) => {
-                const enabled = mod.enabled === undefined || mod.enabled;
-                return new ExportMod(
-                    mod.name,
-                    new VersionNumber(
-                        `${mod.version.major}.${mod.version.minor}.${mod.version.patch}`
-                    ),
-                    enabled
-                );
-            })
-        );
-    }
 }
-
 </script>
 
 <template>
@@ -387,6 +240,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <button id="modal-import-profile-code"
                     class="button is-primary"
                     @click="activeStep = 'IMPORT_CODE'">From code</button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <h2 class="modal-title">Loading file</h2>
+        </template>
+        <template v-slot:footer>
+            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
         </template>
     </ModalCard>
 
@@ -459,16 +321,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="isProfileBeingImported" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
-        <template v-slot:header>
-            <h2 class="modal-title">{{percentageImported}}% imported</h2>
-        </template>
-        <template v-slot:body>
-            <p>This may take a while, as mods are being downloaded.</p>
-            <p>Please do not close {{appName}}.</p>
-        </template>
-    </ModalCard>
-
     <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 v-if="importUpdateSelection === 'IMPORT'" class="modal-title">Import a profile</h2>
@@ -508,10 +360,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
-        <template v-slot:body>
-            <h3 class="title">Loading file</h3>
-            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+    <ModalCard v-else-if="activeStep === 'PROFILE_IS_BEING_IMPORTED'" key="PROFILE_IS_BEING_IMPORTED" :is-active="isOpen" :canClose="false">
+        <template v-slot:header>
+            <h2 class="modal-title">{{importPhaseDescription}}</h2>
+        </template>
+        <template v-slot:footer>
+            <p>
+                This may take a while, as files are being downloaded, extracted, and copied.
+                <br><br>
+                Please do not close {{appName}}.
+            </p>
         </template>
     </ModalCard>
 </template>
