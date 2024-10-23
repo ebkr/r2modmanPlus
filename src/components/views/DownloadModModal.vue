@@ -408,7 +408,7 @@ let assignId = 0;
                     const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
                     const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                     if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile);
+                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile());
                         if (result instanceof R2Error) {
                             return reject(result);
                         }
