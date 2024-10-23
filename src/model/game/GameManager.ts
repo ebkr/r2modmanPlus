@@ -151,7 +151,12 @@ export default class GameManager {
         new Game("Inscryption", "Inscryption", "Inscryption",
             "Inscryption", ["Inscryption.exe"], "Inscryption_Data",
             "https://thunderstore.io/c/inscryption/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1092790"), new StorePlatformMetadata(StorePlatform.OTHER)], "Inscryption.png",
+            [
+                 new StorePlatformMetadata(StorePlatform.STEAM, "1092790"), 
+                 new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "Inscryption"), 
+                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "DevolverDigitalGames.Inscryption"), 
+                 new StorePlatformMetadata(StorePlatform.OTHER)
+            ], "Inscryption.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX),
 
         new Game("Starsand", "Starsand", "Starsand",
