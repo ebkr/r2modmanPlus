@@ -31,7 +31,8 @@ export async function retry<T>(
     attempts: number = 3,
     interval: number = 5000,
     canRetry: () => boolean = () => true,
-    onError: (e: Error | unknown) => void = console.error
+    onError: (e: Error | unknown) => void = console.error,
+    throwLastErrorAsIs: boolean = false
 ): Promise<T> {
     for (let currentAttempt = 1; currentAttempt <= attempts; currentAttempt++) {
         if (!canRetry()) {
@@ -45,6 +46,9 @@ export async function retry<T>(
 
             if (currentAttempt < attempts) {
                 await sleep(interval);
+            }
+            if (throwLastErrorAsIs && currentAttempt === attempts) {
+                throw e;
             }
         }
     }

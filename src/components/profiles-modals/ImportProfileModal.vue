@@ -21,6 +21,7 @@ import OnlineModList from "../views/OnlineModList.vue";
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
+    private importViaCodeInProgress: boolean = false;
     private profileImportCode: string = '';
     private targetProfileName: string = '';
     private profileImportFilePath: string | null = null;
@@ -48,6 +49,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.activeStep = 'IMPORT_UPDATE_SELECTION';
         this.targetProfileName = '';
         this.importUpdateSelection = 'CREATE';
+        this.importViaCodeInProgress = false;
         this.profileImportCode = '';
         this.profileImportFilePath = null;
         this.profileImportContent = null;
@@ -97,11 +99,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     // Fired when user has entered a profile code to import.
     async onProfileCodeEntered() {
         try {
+            this.importViaCodeInProgress = true;
             const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
             await this.validateProfileFile([filepath]);
         } catch (e: any) {
             const err = R2Error.fromThrownValue(e, 'Failed to import profile');
             this.$store.commit('error/handleError', err);
+        } finally {
+            this.importViaCodeInProgress = false;
         }
     }
 
@@ -256,7 +261,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard :can-close="!importViaCodeInProgress" v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Enter the profile code</h2>
         </template>
@@ -280,6 +285,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="button is-danger"
                 v-if="!isProfileCodeValid(profileImportCode)">
                 Fix issues before importing
+            </button>
+            <button
+                disabled
+                id="modal-import-profile-from-code-loading"
+                class="button is-disabled"
+                v-else-if="importViaCodeInProgress">
+                Loading...
             </button>
             <button
                 id="modal-import-profile-from-code"

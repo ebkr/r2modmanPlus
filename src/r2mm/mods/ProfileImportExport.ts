@@ -1,9 +1,11 @@
+import { retry } from "../../utils/Common";
 import FileUtils from '../../utils/FileUtils';
 import path from 'path';
 import R2Error from "../../model/errors/R2Error";
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
+import {AxiosResponse} from "axios";
 
 const IMPORT_CACHE_DIRNAME = "_import_cache";
 const PROFILE_DATA_PREFIX = "#r2modman";
@@ -51,7 +53,14 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
  */
 async function downloadProfileCode(profileCode: string): Promise<string> {
     try {
-        const response = await ProfileApiClient.getProfile(profileCode);
+        const response: AxiosResponse<string> = await retry(
+            () => ProfileApiClient.getProfile(profileCode),
+            5,
+            1000,
+            undefined,
+            undefined,
+            true
+        );
         return saveDownloadedProfile(response.data);
     } catch (e: any) {
         if (e.message === 'Network Error') {
