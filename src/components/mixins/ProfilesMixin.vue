@@ -4,6 +4,8 @@ import Component from 'vue-class-component';
 
 import sanitize from "sanitize-filename";
 
+const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 @Component
 export default class ProfilesMixin extends Vue {
 
@@ -31,6 +33,10 @@ export default class ProfilesMixin extends Vue {
 
     makeProfileNameSafe(nameToSanitize: string): string {
         return sanitize(nameToSanitize);
+    }
+
+    isProfileCodeValid(profileImportCode: string): boolean {
+        return VALID_PROFILE_CODE_REGEX.test(profileImportCode);
     }
 
 }
