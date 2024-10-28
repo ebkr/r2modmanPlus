@@ -107,7 +107,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import { installModsAfterDownload } from '../../utils/ProfileUtils';
+import { installModsToProfile } from '../../utils/ProfileUtils';
 
 interface DownloadProgress {
     assignId: number;
@@ -374,7 +374,7 @@ let assignId = 0;
                 const profile = this.profile.asImmutableProfile();
 
                 try {
-                    const modList = await installModsAfterDownload(downloadedMods, profile);
+                    const modList = await installModsToProfile(downloadedMods, profile);
                     await this.$store.dispatch('profile/updateModList', modList);
 
                     const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
