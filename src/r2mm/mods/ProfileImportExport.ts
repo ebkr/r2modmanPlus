@@ -53,17 +53,23 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
  */
 async function downloadProfileCode(profileCode: string): Promise<string> {
     try {
+        let is404: boolean = false;
         const response: AxiosResponse<string> = await retry(
             () => ProfileApiClient.getProfile(profileCode),
             5,
             1000,
-            undefined,
-            undefined,
+            () => { return !is404 },
+            (e: any) => {
+                console.error(e);
+                if (e.message.startsWith("404")) {
+                    is404 = true;
+                }
+            },
             true
         );
         return saveDownloadedProfile(response.data);
     } catch (e: any) {
-        if (e.message === 'Network Error') {
+        if (e.message === "Network Error") {
             throw new R2Error(
                 "Failed to download the profile.",
                 "\"Network Error\" encountered when trying to download the profile from the server.",

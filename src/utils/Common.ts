@@ -47,7 +47,7 @@ export async function retry<T>(
             if (currentAttempt < attempts) {
                 await sleep(interval);
             }
-            if (throwLastErrorAsIs && currentAttempt === attempts) {
+            if ((currentAttempt === attempts || !canRetry()) && throwLastErrorAsIs) {
                 throw e;
             }
         }
