@@ -59,17 +59,17 @@ async function downloadProfileCode(profileCode: string): Promise<string> {
             5,
             1000,
             () => { return !is404 },
-            (e: any) => {
+            (e: unknown) => {
                 console.error(e);
-                if (e.message.startsWith("404")) {
+                if (R2Error.fromThrownValue(e).message.startsWith("404")) {
                     is404 = true;
                 }
             },
             true
         );
         return saveDownloadedProfile(response.data);
-    } catch (e: any) {
-        if (e.message === "Network Error") {
+    } catch (e: unknown) {
+        if (e instanceof Error && e.message === "Network Error") {
             throw new R2Error(
                 "Failed to download the profile.",
                 "\"Network Error\" encountered when trying to download the profile from the server.",
