@@ -15,6 +15,7 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
+import ProfileModList from "../r2mm/mods/ProfileModList";
 
 export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
     const dependencyStrings = exportMods.map((m) => m.getDependencyString());
@@ -63,6 +64,66 @@ async function extractConfigsToImportedProfile(
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
         progressCallback(`Copying configs to profile: ${progress}%`);
     }
+}
+
+/**
+ * Install mods to target profile and sync the changes to mods.yml file
+ * This is more performant than calling ProfileModList.addMod() on a
+ * loop, as that causes multiple disc operations per mod.
+ */
+export async function installModsAfterDownload(
+    comboList: ThunderstoreCombo[],
+    profile: ImmutableProfile
+): Promise<ManifestV2[]> {
+    const profileMods = await ProfileModList.getModList(profile);
+    if (profileMods instanceof R2Error) {
+        throw profileMods;
+    }
+
+    const installedVersions = profileMods.map((m) => m.getDependencyString());
+    const disabledMods = profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
+
+    try {
+        for (const comboMod of comboList) {
+            const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
+
+            if (installedVersions.includes(manifestMod.getDependencyString())) {
+                continue;
+            }
+
+            // Uninstall possible different version of the mod before installing the target version.
+            throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
+            throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
+
+            if (disabledMods.includes(manifestMod.getName())) {
+                throwForR2Error(await ProfileInstallerProvider.instance.disableMod(manifestMod, profile));
+                manifestMod.disable();
+            }
+
+            manifestMod.setInstalledAtTime(Number(new Date()));
+            ProfileModList.setIconPath(manifestMod, profile);
+
+            const positionInProfile = profileMods.findIndex((m) => m.getName() === manifestMod.getName());
+            if (positionInProfile >= 0) {
+                profileMods[positionInProfile] = manifestMod;
+            } else {
+                profileMods.push(manifestMod);
+            }
+        }
+    } catch (e) {
+        const originalError = R2Error.fromThrownValue(e);
+        throw new R2Error(
+            'Installing downloaded mods to profile failed',
+            `
+             The mod and its dependencies might not be installed properly.
+             The original error was: ${originalError.name}: ${originalError.message}
+            `,
+            'The original error might provide hints about what went wrong.'
+        );
+    }
+
+    throwForR2Error(await ProfileModList.saveModList(profile, profileMods));
+    return profileMods;
 }
 
 /**
