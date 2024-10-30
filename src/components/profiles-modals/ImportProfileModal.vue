@@ -271,7 +271,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="input"
                 v-model="profileImportCode"
                 ref="profileCodeInput"
-                @keyup.enter="onProfileCodeEntered()"
+                @keyup.enter="isProfileCodeValid(profileImportCode) && onProfileCodeEntered()"
             />
             <br />
             <br />
