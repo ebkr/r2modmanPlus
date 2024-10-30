@@ -71,9 +71,9 @@ async function downloadProfileCode(profileCode: string): Promise<string> {
     } catch (e: unknown) {
         if (e instanceof Error && e.message === "Network Error") {
             throw new R2Error(
-                "Failed to download the profile.",
+                "Failed to download the profile",
                 "\"Network Error\" encountered when trying to download the profile from the server.",
-                "Check your network connection or try switching to an alternative CDN."
+                "Check your network connection or try toggling the preferred Thunderstore CDN in the settings."
             );
         } else {
             throw e;
