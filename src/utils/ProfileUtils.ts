@@ -38,27 +38,17 @@ async function extractConfigsToImportedProfile(
     progressCallback: (status: string) => void
 ) {
     const zipEntries = await ZipProvider.instance.getEntries(file);
+    const excludedFiles = ["export.r2x", "mods.yml"];
 
     for (const [index, entry] of zipEntries.entries()) {
-        if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
-            await ZipProvider.instance.extractEntryTo(
-                file,
-                entry.entryName,
-                path.join(
-                    Profile.getRootDir(),
-                    profileName,
-                    'BepInEx'
-                )
-            );
-        } else if (entry.entryName.toLowerCase() !== "export.r2x") {
-            await ZipProvider.instance.extractEntryTo(
-                file,
-                entry.entryName,
-                path.join(
-                    Profile.getRootDir(),
-                    profileName
-                )
-            )
+        if (!excludedFiles.includes(entry.entryName.toLowerCase())) {
+            let outputPath = path.join(Profile.getRootDir(), profileName);
+
+            if (entry.entryName.startsWith('config/') || entry.entryName.startsWith("config\\")) {
+                outputPath = path.join(outputPath, 'BepInEx');
+            }
+
+            await ZipProvider.instance.extractEntryTo(file, entry.entryName, outputPath);
         }
 
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
@@ -71,9 +61,11 @@ async function extractConfigsToImportedProfile(
  * This is more performant than calling ProfileModList.addMod() on a
  * loop, as that causes multiple disc operations per mod.
  */
-export async function installModsAfterDownload(
+export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
-    profile: ImmutableProfile
+    profile: ImmutableProfile,
+    disabledModsOverride?: string[],
+    progressCallback?: (status: string) => void
 ): Promise<ManifestV2[]> {
     const profileMods = await ProfileModList.getModList(profile);
     if (profileMods instanceof R2Error) {
@@ -81,10 +73,12 @@ export async function installModsAfterDownload(
     }
 
     const installedVersions = profileMods.map((m) => m.getDependencyString());
-    const disabledMods = profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
+    const disabledMods = disabledModsOverride || profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
+    let currentMod;
 
     try {
-        for (const comboMod of comboList) {
+        for (const [index, comboMod] of comboList.entries()) {
+            currentMod = comboMod;
             const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
             if (installedVersions.includes(manifestMod.getDependencyString())) {
@@ -109,50 +103,24 @@ export async function installModsAfterDownload(
             } else {
                 profileMods.push(manifestMod);
             }
+
+            if (typeof progressCallback === "function") {
+                const progress = Math.floor(((index + 1) / comboList.length) * 100);
+                progressCallback(`Copying mods to profile: ${progress}%`);
+            }
         }
     } catch (e) {
         const originalError = R2Error.fromThrownValue(e);
+        const modName = currentMod ? currentMod.getMod().getFullName() : 'Unknown';
         throw new R2Error(
-            'Installing downloaded mods to profile failed',
-            `
-             The mod and its dependencies might not be installed properly.
-             The original error was: ${originalError.name}: ${originalError.message}
-            `,
-            'The original error might provide hints about what went wrong.'
+            `Failed to install mod [${modName}] to profile`,
+            'All mods/dependencies might not be installed properly. Please try again.',
+            `The original error might provide hints about what went wrong: ${originalError.name}: ${originalError.message}`
         );
     }
 
     throwForR2Error(await ProfileModList.saveModList(profile, profileMods));
     return profileMods;
-}
-
-/**
- * Install mods to target profile without syncing changes to mods.yml file.
- * Syncing is futile, as the mods.yml is copied from the imported profile.
- */
-async function installModsToImportedProfile(
-    comboList: ThunderstoreCombo[],
-    modList: ExportMod[],
-    profile: ImmutableProfile,
-    progressCallback: (status: string) => void
-) {
-    const disabledMods = modList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-
-    for (const [index, comboMod] of comboList.entries()) {
-        const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
-        throwForR2Error(
-            await ProfileInstallerProvider.instance.installMod(manifestMod, profile)
-        );
-
-        if (disabledMods.includes(manifestMod.getName())) {
-            throwForR2Error(
-                await ProfileInstallerProvider.instance.disableMod(manifestMod, profile)
-            );
-        }
-
-        const progress = Math.floor(((index + 1) / comboList.length) * 100);
-        progressCallback(`Copying mods to profile: ${progress}%`);
-    }
 }
 
 export async function parseYamlToExportFormat(yamlContent: string) {
@@ -196,7 +164,8 @@ export async function populateImportedProfile(
     }
 
     try {
-        await installModsToImportedProfile(comboList, exportModList, profile, progressCallback);
+        const disabledMods = exportModList.filter((m) => !m.isEnabled()).map((m) => m.getName());
+        await installModsToProfile(comboList, profile, disabledMods, progressCallback);
         await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
     } catch (e) {
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
