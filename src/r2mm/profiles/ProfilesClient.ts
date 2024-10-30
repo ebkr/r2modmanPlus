@@ -19,11 +19,17 @@ function formatApiError<T>(e: T, genericTitle: string): R2Error | T {
                 message,
                 "You were rate limited by the server, wait for a while and try again."
             );
+        } else if (e.response.status === 404) {
+            // Note that this error text is only applicable when importing, but it should be OK as creating a profile shouldn't respond with 404 anyway.
+            return new R2Error(
+                genericTitle,
+                "404: Server responded with \"404: Not Found\".",
+                "The profile import code entered might either be expired or contain typos."
+            );
         } else {
             return new R2Error(
                 genericTitle,
-                e.message,
-                `${e.response.status}`
+                `Failed with code: ${e.response.status}.\n${e.message}`,
             );
         }
     }
