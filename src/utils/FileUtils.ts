@@ -1,3 +1,4 @@
+import R2Error from "../model/errors/R2Error";
 import FsProvider from '../providers/generic/file/FsProvider';
 import path from 'path';
 
@@ -13,7 +14,9 @@ export default class FileUtils {
 
     public static async ensureDirectory(dir: string) {
         const fs = FsProvider.instance;
-        await fs.mkdirs(dir);
+        await fs.mkdirs(dir).catch(function (reason) {
+            throw new R2Error('Ensuring directory failed', reason);
+        });
     }
 
     public static async emptyDirectory(dir: string) {

@@ -340,32 +340,36 @@ let assignId = 0;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
             setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-                    if (status === StatusEnum.FAILURE) {
-                        if (err !== null) {
-                            this.downloadingMod = false;
-                            const existing = DownloadModModal.allVersions[assignIndex]
-                            existing[1].failed = true;
-                            this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            DownloadModModal.addCdnSolutionToError(err);
-                            this.$store.commit('error/handleError', err);
-                            return;
+                try {
+                    ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                        const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
+                        if (status === StatusEnum.FAILURE) {
+                            if (err !== null) {
+                                this.downloadingMod = false;
+                                const existing = DownloadModModal.allVersions[assignIndex]
+                                existing[1].failed = true;
+                                this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
+                                DownloadModModal.addCdnSolutionToError(err);
+                                this.$store.commit('error/handleError', err);
+                                return;
+                            }
+                        } else if (status === StatusEnum.PENDING) {
+                            const obj = {
+                                progress: progress,
+                                initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
+                                modName: modName,
+                                assignId: currentAssignId,
+                                failed: false,
+                            }
+                            if (this.downloadObject!.assignId === currentAssignId) {
+                                this.downloadObject = Object.assign({}, obj);
+                            }
+                            this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
                         }
-                    } else if (status === StatusEnum.PENDING) {
-                        const obj = {
-                            progress: progress,
-                            initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                            modName: modName,
-                            assignId: currentAssignId,
-                            failed: false,
-                        }
-                        if (this.downloadObject!.assignId === currentAssignId) {
-                            this.downloadObject = Object.assign({}, obj);
-                        }
-                        this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
-                    }
-                }, this.downloadCompletedCallback);
+                    }, this.downloadCompletedCallback);
+                } catch (e) {
+                    console.warn(e);
+                }
             }, 1);
         }
 
