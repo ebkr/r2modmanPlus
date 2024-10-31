@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import R2Error from '../../model/errors/R2Error';
 import RequestItem from '../../model/requests/RequestItem';
 import type { PackageListChunks, PackageListIndex } from '../../store/modules/TsModsModule';
 
@@ -11,7 +10,6 @@ import type { PackageListChunks, PackageListIndex } from '../../store/modules/Ts
 export default class SplashMixin extends Vue {
     heroTitle = '';
     heroType: string = 'primary';
-    isOffline = false;
     loadingText = '';
     requests: RequestItem[] = [];
 
@@ -54,32 +52,49 @@ export default class SplashMixin extends Vue {
         await this._getThunderstoreMods();
     }
 
-    // Get the list of Thunderstore mods from API or local cache.
+    // Get the list of Thunderstore mods from local cache or API.
     async _getThunderstoreMods() {
-        const packageListIndex = await this.fetchPackageListIndex();
-        const packageListChunks = await this.fetchPackageListChunksIfUpdated(packageListIndex);
-        this.getRequestItem('ThunderstoreDownload').setProgress(100);
-        await this.writeModsToPersistentCacheIfUpdated(packageListIndex, packageListChunks);
-        const isModListLoaded = await this.readModsToVuex();
+        const hasPriorCache = await this.doesGameHaveLocalCache();
+        let hasUpdatedCache = false;
 
-        // To proceed, the loading of the mod list should result in a non-empty list.
-        // Empty list is allowed if that's actually what the API returned.
-        // API wasn't queried at all if we already had the latest index chunk.
-        const modListHasMods = this.$store.state.tsMods.mods.length;
-        const apiReturnedEmptyList = packageListChunks && packageListChunks[0].length === 0;
-        const apiWasNotQueried = packageListIndex && packageListIndex.isLatest;
-        if (isModListLoaded && (modListHasMods || apiReturnedEmptyList || apiWasNotQueried)) {
-            await this.moveToNextScreen();
-        } else {
-            this.heroTitle = 'Failed to get the list of online mods';
-            this.loadingText = 'You may still use the manager offline, but some features might be unavailable.';
-            this.isOffline = true;
+        if (!hasPriorCache) {
+            const packageListIndex = await this.fetchPackageListIndex();
+            const packageListChunks = await this.fetchPackageListChunksIfUpdated(packageListIndex);
+            this.getRequestItem('ThunderstoreDownload').setProgress(100);
+            hasUpdatedCache = await this.writeModsToPersistentCacheIfUpdated(packageListIndex, packageListChunks);
         }
+
+        if (hasPriorCache || hasUpdatedCache) {
+            await this.triggerStoreModListUpdate();
+        }
+
+        await this.moveToNextScreen();
+    }
+
+    /***
+     * Query IndexedDB for an existing version of package list.
+     */
+    async doesGameHaveLocalCache(): Promise<boolean> {
+        this.loadingText = 'Checking for mod list in local cache';
+        let hasCache = false;
+
+        try {
+            hasCache = await this.$store.dispatch('tsMods/gameHasCachedModList');
+        } catch (e) {
+            console.error('SplashMixin failed to check mod list in local cache', e);
+        }
+
+        if (hasCache) {
+            this.getRequestItem('ThunderstoreDownload').setProgress(100);
+            this.getRequestItem('CacheOperations').setProgress(50);
+            this.loadingText = 'Processing the mod list from cache';
+        }
+
+        return hasCache;
     }
 
     /***
      * Query Thunderstore API for the URLs pointing to parts of the package list.
-     * Fails silently to fallback reading the old values from the IndexedDB cache.
      */
     async fetchPackageListIndex(): Promise<PackageListIndex|undefined> {
         this.loadingText = 'Checking for mod list updates from Thunderstore';
@@ -94,12 +109,10 @@ export default class SplashMixin extends Vue {
 
     /***
      * Load the package list in chunks pointed out by the packageListIndex.
-     * This step is skipped if we can't or don't need to load the chunks.
-     * Fails silently to fallback reading the old values from the IndexedDB cache.
      */
     async fetchPackageListChunksIfUpdated(packageListIndex?: PackageListIndex): Promise<PackageListChunks|undefined> {
-        // Skip loading chunks if loading index failed, or if we already have the latest data.
-        if (!packageListIndex || packageListIndex.isLatest) {
+        // Skip loading chunks if loading index failed.
+        if (!packageListIndex) {
             return undefined;
         }
 
@@ -121,10 +134,12 @@ export default class SplashMixin extends Vue {
 
     /***
      * Update a fresh package list to the IndexedDB cache.
-     * Done only if there was a fresh list to load and it was loaded successfully.
-     * Fails silently to fallback reading the old values from the IndexedDB cache.
+     * Done only if a fresh list was loaded successfully from the API.
      */
-    async writeModsToPersistentCacheIfUpdated(packageListIndex?: PackageListIndex, packageListChunks?: PackageListChunks) {
+    async writeModsToPersistentCacheIfUpdated(
+        packageListIndex?: PackageListIndex,
+        packageListChunks?: PackageListChunks
+    ): Promise<boolean> {
         if (packageListIndex && packageListChunks) {
             this.loadingText = 'Storing the mod list into local cache';
 
@@ -133,50 +148,30 @@ export default class SplashMixin extends Vue {
                     'tsMods/updatePersistentCache',
                     {indexHash: packageListIndex.hash, chunks: packageListChunks}
                 );
+
+                this.loadingText = 'Processing the mod list';
+                this.getRequestItem('CacheOperations').setProgress(50);
+                return true;
             } catch (e) {
                 console.error('SplashMixin failed to cache mod list locally.', e);
             }
-
-            this.loadingText = 'Processing the mod list';
-        } else {
-            this.loadingText = 'Processing the mod list from cache';
         }
 
-        this.getRequestItem('CacheOperations').setProgress(50);
+        return false;
     }
 
     /***
-     * Read mod list from the IndexedDB cache to Vuex so it's kept in memory.
-     * Always read from the IndexedDB since we don't know if the mod list was
-     * queried from the API successfully or not. This also handles the type
-     * casting, since mod manager expects the data to be formatted into objects.
-     *
-     * Failure at this point is no longer silently ignored, instead an error
-     * modal is shown.
-     *
-     * Return value is used to tell whether Vuex might contain an empty list
-     * after calling this because there was an error, or because the package
-     * list is actually empty.
+     * Triggers Vuex store to read and parse the mod list from the
+     * IndexedDB cache and to store it in memory.
      */
-    async readModsToVuex(): Promise<boolean> {
-        let isModListLoaded = false;
-
+    async triggerStoreModListUpdate(): Promise<void> {
         try {
             await this.$store.dispatch('tsMods/updateMods');
-            isModListLoaded = true;
         } catch (e) {
-            this.$store.commit(
-                'error/handleError',
-                R2Error.fromThrownValue(e, `${this.loadingText} failed`)
-            );
+            console.error('Updating the store mod list by SplashMixin failed.', e);
         } finally {
             this.getRequestItem('CacheOperations').setProgress(100);
-            return isModListLoaded;
         }
-    }
-
-    async continueOffline() {
-        await this.moveToNextScreen();
     }
 
     async moveToNextScreen() {
