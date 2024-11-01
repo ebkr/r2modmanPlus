@@ -11,6 +11,7 @@ import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/
 import { exec } from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
+import { PackageLoader } from '../../../../model/installing/PackageLoader';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -27,7 +28,9 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         }
 
         if (isProton) {
-            const promise = await this.ensureWineWillLoadBepInEx(game);
+            // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
+            const proxyDll = game.packageLoader == PackageLoader.GDWEAVE ? "winmm" : "winhttp";
+            const promise = await this.ensureWineWillLoadBepInEx(game, proxyDll);
             if (promise instanceof R2Error) {
                 return promise;
             }
@@ -80,7 +83,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
     }
 
-    private async ensureWineWillLoadBepInEx(game: Game): Promise<void | R2Error>{
+    private async ensureWineWillLoadBepInEx(game: Game, proxyDll: string): Promise<void | R2Error>{
         const fs = FsProvider.instance;
         const compatDataDir = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getCompatDataDirectory(game);
         if(compatDataDir instanceof R2Error)
@@ -90,7 +93,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         const ensuredUserRegData = this.regAddInSection(
             userRegData,
             "[Software\\\\Wine\\\\DllOverrides]",
-            "winhttp",
+            proxyDll,
             "native,builtin"
         );
 

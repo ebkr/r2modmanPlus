@@ -10,6 +10,7 @@ import { AncientVRGameInstructions } from "../../launching/instructions/instruct
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
 import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
+import GDWeaveGameInstructions from './instructions/loader/GDWeaveGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -28,6 +29,7 @@ export default class GameInstructions {
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
         [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
+        [PackageLoader.GDWEAVE, new GDWeaveGameInstructions()]
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {
