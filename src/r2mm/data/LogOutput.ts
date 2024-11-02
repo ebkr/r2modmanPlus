@@ -46,6 +46,10 @@ export default class LogOutput {
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('MelonLoader', 'Latest.log'))
                     .then(value => this._exists = value);
                 break;
+            case PackageLoader.GDWEAVE:
+                fs.exists(Profile.getActiveProfile().joinToProfilePath('GDWeave', 'GDWeave.log'))
+                    .then(value => this._exists = value);
+                break;
         }
     }
 
