@@ -128,7 +128,7 @@ export default class ModLinker {
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
                                 "_state", "userlibs", "qmods", "shimloader",
-                                "returnofmodding"
+                                "returnofmodding", "gdweave"
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {
