@@ -191,6 +191,7 @@ export default class ProfileModList {
             }, "plugins");
         }, "BepInEx");
         tree.removeDirectories("MelonLoader");
+        tree.removeDirectories("GDWeave");
         // Add all tree contents to buffer.
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
