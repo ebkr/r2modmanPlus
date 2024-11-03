@@ -191,7 +191,11 @@ export default class ProfileModList {
             }, "plugins");
         }, "BepInEx");
         tree.removeDirectories("MelonLoader");
-        tree.removeDirectories("GDWeave");
+        tree.navigateAndPerform(gdWeaveDir => {
+            gdWeaveDir.removeDirectories("core");
+            gdWeaveDir.removeDirectories("mods");
+            gdWeaveDir.removeFiles("GDWeave.log");
+        }, "GDWeave");
         // Add all tree contents to buffer.
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
