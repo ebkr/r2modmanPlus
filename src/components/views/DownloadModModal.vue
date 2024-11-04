@@ -174,7 +174,7 @@ let assignId = 0;
                                 const existing = DownloadModModal.allVersions[assignIndex]
                                 existing[1].failed = true;
                                 DownloadModModal.allVersions[assignIndex] = [currentAssignId, existing[1]];
-                                DownloadModModal.addCdnSolutionToError(err);
+                                DownloadModModal.addSolutionsToError(err);
                                 return reject(err);
                             }
                         } else if (status === StatusEnum.PENDING) {
@@ -306,7 +306,7 @@ let assignId = 0;
                         const existing = DownloadModModal.allVersions[assignIndex]
                         existing[1].failed = true;
                         this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                        DownloadModModal.addCdnSolutionToError(err);
+                        DownloadModModal.addSolutionsToError(err);
                         this.$store.commit('error/handleError', err);
                         return;
                     }
@@ -348,7 +348,7 @@ let assignId = 0;
                             const existing = DownloadModModal.allVersions[assignIndex]
                             existing[1].failed = true;
                             this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            DownloadModModal.addCdnSolutionToError(err);
+                            DownloadModModal.addSolutionsToError(err);
                             this.$store.commit('error/handleError', err);
                             return;
                         }
@@ -432,12 +432,21 @@ let assignId = 0;
             });
         }
 
-        static addCdnSolutionToError(err: R2Error): void {
+        static addSolutionsToError(err: R2Error): void {
+            // Sanity check typing.
+            if (!(err instanceof R2Error)) {
+                return;
+            }
+
             if (
                 err.name.includes("Failed to download mod") ||
                 err.name.includes("System.Net.WebException")
             ) {
                 err.solution = "Try toggling the preferred Thunderstore CDN in the settings";
+            }
+
+            if (err.message.includes("System.IO.PathTooLongException")) {
+                err.solution = 'Using "Change data folder" option in the settings to select a shorter path might solve the issue';
             }
         }
     }
