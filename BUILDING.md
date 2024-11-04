@@ -8,9 +8,6 @@
 #### Linux Build
 - rpm builder
 
-#### OSX
-- dmg-license (from npm or yarn)
-
 ### Setting up
 1. Navigate to the root directory, and run `yarn install`.
 2. Navigate to the root directory, and run `yarn upgrade`.
