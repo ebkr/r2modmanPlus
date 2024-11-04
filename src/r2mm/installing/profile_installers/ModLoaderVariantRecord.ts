@@ -70,7 +70,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("Thunderstore-lovely", "", PackageLoader.LOVELY),
     new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
-    new ModLoaderPackageMapping("NotNet-GDWeave", "GDWeave", PackageLoader.GDWEAVE),
+    new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
 ];
 
 

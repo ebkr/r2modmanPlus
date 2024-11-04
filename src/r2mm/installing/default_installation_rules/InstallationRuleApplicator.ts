@@ -19,7 +19,6 @@ import {
 import {
     buildMelonLoaderRules
 } from "../default_installation_rules/game_rules/InstallRules_MelonLoader";
-import { buildGDWeaveRules } from './game_rules/InstallRules_GDWeave';
 
 export default class InstallationRuleApplicator {
 
@@ -153,7 +152,6 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("TCGCardShopSimulator"),
             buildBepInExRules("OldMarketSimulator"),
             buildBepInExRules("Subterranauts"),
-            buildGDWeaveRules("WEBFISHING"),
         ]
     }
 }
