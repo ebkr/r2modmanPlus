@@ -150,6 +150,7 @@ export async function getCombosByDependencyStrings(
     // Dexie's anyOfIgnoreCase doesn't support compound indexes.
     const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
     const versionMap = Object.fromEntries(split);
+    const modOrderMap = new Map(split.map(([name, _ver], i) => [name, i]));
 
     return packages.map((rawPackage) => {
         const rawVersion = useLatestVersion
@@ -164,7 +165,14 @@ export async function getCombosByDependencyStrings(
         combo.setMod(ThunderstoreMod.parseFromThunderstoreData(rawPackage));
         combo.setVersion(ThunderstoreVersion.parseFromThunderstoreData(rawVersion));
         return combo;
-    }).filter((c): c is ThunderstoreCombo => c !== undefined);
+    }).filter(
+        (c): c is ThunderstoreCombo => c !== undefined
+    ).sort((a, b) => {
+        // Sort combos to match the original order of dependency strings.
+        const positionA = modOrderMap.get(a.getMod().getFullName()) || -1;
+        const positionB = modOrderMap.get(b.getMod().getFullName()) || -1;
+        return positionA - positionB;
+    });
 }
 
 export async function getLastPackageListUpdateTime(community: string) {

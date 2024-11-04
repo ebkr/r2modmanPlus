@@ -46,7 +46,7 @@
                 <DonateButton :mod="key"/>
             </template>
             <div class='card-footer-item non-selectable'>
-                <span><i class='fas fa-download'/> {{key.getTotalDownloads()}}</span>
+                <span><i class='fas fa-download'/> {{key.getDownloadCount()}}</span>
             </div>
             <div class='card-footer-item non-selectable'>
                 <span><i class='fas fa-thumbs-up'/> {{key.getRating()}}</span>

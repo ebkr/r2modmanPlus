@@ -150,6 +150,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("FiveNightsAtFreddysIntoThePit"),
             buildBepInExRules("GoreBox"),
             buildBepInExRules("TCGCardShopSimulator"),
+            buildBepInExRules("OldMarketSimulator"),
+            buildBepInExRules("Subterranauts"),
         ]
     }
 }

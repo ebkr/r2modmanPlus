@@ -19,11 +19,11 @@ import OnlineModList from "../views/OnlineModList.vue";
     components: { OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
-    private importUpdateSelection: "IMPORT" | "UPDATE" | null = null;
+    private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
+    private importViaCodeInProgress: boolean = false;
     private profileImportCode: string = '';
-    private listenerId: number = 0;
-    private newProfileName: string = '';
+    private targetProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep:
@@ -45,10 +45,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return this.$store.state.modals.isImportProfileModalOpen;
     }
 
-    async profileSelectOnChange(event: Event) {
-        if (event.target instanceof HTMLSelectElement) {
-            this.activeProfileName = event.target.value;
-        }
+    closeModal() {
+        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+        this.targetProfileName = '';
+        this.importUpdateSelection = 'CREATE';
+        this.importViaCodeInProgress = false;
+        this.profileImportCode = '';
+        this.profileImportFilePath = null;
+        this.profileImportContent = null;
+        this.$store.commit('closeImportProfileModal');
     }
 
     get profileToOnlineMods() {
@@ -60,49 +65,53 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             .filter(mod => !!mod)
     }
 
-    closeModal() {
-        this.activeStep = 'IMPORT_UPDATE_SELECTION';
-        this.listenerId = 0;
-        this.newProfileName = '';
-        this.importUpdateSelection = null;
-        this.profileImportCode = '';
-        this.profileImportFilePath = null;
-        this.profileImportContent = null;
-        this.$store.commit('closeImportProfileModal');
+    // Fired when user selects whether to import a new profile or update existing one.
+    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
+        this.importUpdateSelection = mode;
+
+        if (mode === 'UPDATE') {
+            this.targetProfileName = this.activeProfileName;
+        }
+
+        this.activeStep = 'FILE_CODE_SELECTION';
     }
 
-    // User selects importing via code from the UI.
-    async importProfileUsingCode() {
-        try {
-            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
-            await this.importProfileHandler([filepath]);
-        } catch (e: any) {
-            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
-            this.$store.commit('error/handleError', err);
+    // Fired when user selects to import either from file or code.
+    async onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
+        if (mode === 'FILE') {
+            this.activeStep = 'IMPORT_FILE';
+            process.nextTick(async () => {
+                const files = await InteractionProvider.instance.selectFile({
+                    title: 'Import Profile',
+                    filters: [{
+                        name: "*",
+                        extensions: ["r2z"]
+                    }],
+                    buttonLabel: 'Import'
+                });
+                await this.validateProfileFile(files);
+            });
+        } else {
+            this.activeStep = 'IMPORT_CODE';
         }
     }
 
-    // User selects importing from file from the UI.
-    importProfileFromFile() {
-        this.activeStep = 'IMPORT_FILE';
-        process.nextTick(() => {
-            InteractionProvider.instance.selectFile({
-                title: 'Import Profile',
-                filters: [{
-                    name: "*",
-                    extensions: ["r2z"]
-                }],
-                buttonLabel: 'Import'
-            }).then((value: string[]) => {
-                if (value.length === 0) {
-                    this.closeModal();
-                }
-                this.importProfileHandler(value);
-            });
-        });
+    // Fired when user has entered a profile code to import.
+    async onProfileCodeEntered() {
+        try {
+            this.importViaCodeInProgress = true;
+            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
+            await this.validateProfileFile([filepath]);
+        } catch (e: any) {
+            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+            this.$store.commit('error/handleError', err);
+        } finally {
+            this.importViaCodeInProgress = false;
+        }
     }
 
-    async importProfileHandler(files: string[] | null) {
+    // Check that selected profile zip is valid and proceed.
+    async validateProfileFile(files: string[] | null) {
         if (files === null || files.length === 0) {
             this.closeModal();
             return;
@@ -123,45 +132,59 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
     }
 
-    // Create an EventListener which gets triggered after the user either
-    // creates a new profile or selects an existing one to be updated.
-    async installProfileHandler() {
+    // Fired when user has accepted the mods to be imported in the review phase.
+    async onProfileReviewConfirmed() {
         const profileContent = this.profileImportContent;
         const filePath = this.profileImportFilePath;
 
+        // Check and return early for better UX.
         if (profileContent === null || filePath === null) {
-            this.closeModal();
-            const reason = `content is ${profileContent ? 'not' : ''} null, file path is ${filePath ? 'not' : ''} null`;
-            this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+            this.onContentOrPathNotSet();
             return;
         }
 
-        const localListenerId = this.listenerId + 1;
-        this.listenerId = localListenerId;
+        if (this.importUpdateSelection === 'CREATE') {
+            this.targetProfileName = profileContent.getProfileName();
+        }
 
-        document.addEventListener(
-            'created-profile',
-            async (event: Event) => {
-                const targetProfile = (event as CustomEvent).detail;
-                if (typeof targetProfile === "string" && targetProfile.trim() !== '') {
-                    await this.importProfile(targetProfile, localListenerId, profileContent.getMods(), filePath);
-                } else {
-                    this.closeModal();
-                    this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't import profile: unknown target profile`));
-                }
-            },
-            {once: true}
-        );
-
-        this.newProfileName = profileContent.getProfileName();
         this.activeStep = 'ADDING_PROFILE';
     }
 
-    async importProfile(targetProfileName: string, localListenerId: number, mods: ExportMod[], zipPath: string) {
-        if (this.listenerId !== localListenerId) {
+    // Fired when user confirms the import target location (new or existing profile).
+    async onImportTargetSelected() {
+        const profileContent = this.profileImportContent;
+        const filePath = this.profileImportFilePath;
+
+        // Recheck to ensure values haven't changed and to satisfy TypeScript.
+        if (profileContent === null || filePath === null) {
+            this.onContentOrPathNotSet();
             return;
         }
 
+        const targetProfileName = this.makeProfileNameSafe(this.targetProfileName);
+
+        // Sanity check, should not happen.
+        if (targetProfileName === '') {
+            const err = new R2Error("Can't import profile: unknown target profile", "Please try again");
+            this.$store.commit('error/handleError', err);
+            return;
+        }
+
+        if (this.importUpdateSelection === 'CREATE') {
+            try {
+                await this.$store.dispatch('profiles/addProfile', targetProfileName);
+            } catch (e) {
+                this.closeModal();
+                const err = R2Error.fromThrownValue(e, 'Error while creating profile');
+                this.$store.commit('error/handleError', err);
+                return;
+            }
+        }
+
+        await this.importProfile(targetProfileName, profileContent.getMods(), filePath);
+    }
+
+    async importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
         this.importPhaseDescription = 'Downloading mods: 0%';
         const progressCallback = (progress: number|string) => typeof progress === "number"
@@ -187,24 +210,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.closeModal();
     }
 
-    // Called when the name for the imported profile is given and confirmed by the user.
-    async createProfile() {
-        const safeName = this.makeProfileNameSafe(this.newProfileName);
-        if (safeName === '') {
-            return;
-        }
-        try {
-            await this.$store.dispatch('profiles/addProfile', safeName);
-            document.dispatchEvent(new CustomEvent("created-profile", {detail: safeName}));
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error importing a profile');
-            this.$store.commit('error/handleError', err);
-        }
-    }
-
-    // Called when the profile to update is selected and confirmed by the user.
-    updateProfile() {
-        document.dispatchEvent(new CustomEvent("created-profile", {detail: this.activeProfileName}));
+    onContentOrPathNotSet() {
+        this.closeModal();
+        const reason = `content is ${this.profileImportContent ? 'not' : ''} null, file path is ${this.profileImportFilePath ? 'not' : ''} null`;
+        this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
     }
 }
 </script>
@@ -217,12 +226,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:footer>
             <button id="modal-import-new-profile"
                     class="button is-info"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'IMPORT'">
+                    @click="onCreateOrUpdateSelect('CREATE')">
                 Import new profile
             </button>
             <button id="modal-update-existing-profile"
                     class="button is-primary"
-                    @click="activeStep = 'FILE_CODE_SELECTION'; importUpdateSelection = 'UPDATE'">
+                    @click="onCreateOrUpdateSelect('UPDATE')">
                 Update existing profile
             </button>
         </template>
@@ -230,16 +239,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'IMPORT'">How are you importing a profile?</h2>
+            <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
             <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-profile-file"
                     class="button is-info"
-                    @click="importProfileFromFile()">From file</button>
+                    @click="onFileOrCodeSelect('FILE')">From file</button>
             <button id="modal-import-profile-code"
                     class="button is-primary"
-                    @click="activeStep = 'IMPORT_CODE'">From code</button>
+                    @click="onFileOrCodeSelect('CODE')">From code</button>
         </template>
     </ModalCard>
 
@@ -252,7 +261,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-else-if="activeStep === 'IMPORT_CODE'" :can-close="!importViaCodeInProgress" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Enter the profile code</h2>
         </template>
@@ -262,24 +271,32 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="input"
                 v-model="profileImportCode"
                 ref="profileCodeInput"
-                @keyup.enter="importProfileUsingCode()"
+                @keyup.enter="isProfileCodeValid(profileImportCode) && onProfileCodeEntered()"
             />
             <br />
             <br />
             <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
+            <span class="tag is-danger" v-else-if="!isProfileCodeValid(profileImportCode)">Invalid code, check for typos</span>
             <span class="tag is-success" v-else>You may import the profile</span>
         </template>
         <template v-slot:footer>
             <button
                 id="modal-import-profile-from-code-invalid"
                 class="button is-danger"
-                v-if="profileImportCode === ''">
+                v-if="!isProfileCodeValid(profileImportCode)">
                 Fix issues before importing
+            </button>
+            <button
+                disabled
+                id="modal-import-profile-from-code-loading"
+                class="button is-disabled"
+                v-else-if="importViaCodeInProgress">
+                Loading...
             </button>
             <button
                 id="modal-import-profile-from-code"
                 class="button is-info"
-                @click="importProfileUsingCode();"
+                @click="onProfileCodeEntered();"
                 v-else>
                 Continue
             </button>
@@ -295,9 +312,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer>
             <button
-                id="modal-import-profile-from-code-invalid"
+                id="modal-review-confirmed"
                 class="button is-info"
-                @click="installProfileHandler();">
+                @click="onProfileReviewConfirmed();">
                 Import
             </button>
         </template>
@@ -313,7 +330,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer>
             <button
-                id="modal-import-profile-from-code-invalid"
+                id="modal-no-mods-to-import"
                 class="button is-info"
                 @click="closeModal">
                 Close
@@ -323,21 +340,21 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 v-if="importUpdateSelection === 'IMPORT'" class="modal-title">Import a profile</h2>
+            <h2 v-if="importUpdateSelection === 'CREATE'" class="modal-title">Import a profile</h2>
         </template>
-        <template v-slot:body v-if="importUpdateSelection === 'IMPORT'">
+        <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
             <p>This profile will store its own mods independently from other profiles.</p>
             <br/>
-            <input class="input" v-model="newProfileName" ref="profileNameInput" />
+            <input class="input" v-model="targetProfileName" ref="profileNameInput" />
             <br/><br/>
-            <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
+            <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''">
                 Profile name required
             </span>
-            <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
+            <span class="tag is-success" v-else-if="!doesProfileExist(targetProfileName)">
+                "{{makeProfileNameSafe(targetProfileName)}}" is available
             </span>
-            <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+            <span class="tag is-danger" v-else>
+                "{{makeProfileNameSafe(targetProfileName)}}" is either already in use, or contains invalid characters
             </span>
         </template>
         <template v-slot:body v-else-if="importUpdateSelection === 'UPDATE'">
@@ -346,17 +363,17 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             </div>
             <p>Select a profile below:</p>
             <br/>
-            <select class="select" :value="activeProfileName" @change="profileSelectOnChange">
+            <select class="select" v-model="targetProfileName">
                 <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
             </select>
         </template>
-        <template v-slot:footer v-if="importUpdateSelection === 'IMPORT'">
-            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)">Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" v-else>Create</button>
+        <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
+            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(targetProfileName)">Create</button>
+            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">Create</button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
-            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(activeProfileName)">Update profile: {{ activeProfileName }}</button>
-            <button id="modal-update-profile" class="button is-info" v-else @click="updateProfile()">Update profile: {{ activeProfileName }}</button>
+            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(targetProfileName)">Update profile: {{ targetProfileName }}</button>
+            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">Update profile: {{ targetProfileName }}</button>
         </template>
     </ModalCard>
 

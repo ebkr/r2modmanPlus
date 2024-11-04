@@ -282,4 +282,8 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
     public setInstalledAtTime(installedAtTime: number) {
         this.installedAtTime = installedAtTime;
     }
+
+    public getDependencyString(): string {
+        return `${this.getName()}-${this.getVersionNumber().toString()}`;
+    }
 }

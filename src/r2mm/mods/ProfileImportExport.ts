@@ -1,8 +1,11 @@
+import { retry } from "../../utils/Common";
 import FileUtils from '../../utils/FileUtils';
 import path from 'path';
+import R2Error from "../../model/errors/R2Error";
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
+import {AxiosResponse} from "axios";
 
 const IMPORT_CACHE_DIRNAME = "_import_cache";
 const PROFILE_DATA_PREFIX = "#r2modman";
@@ -49,8 +52,33 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
  * @returns string The path to the created file
  */
 async function downloadProfileCode(profileCode: string): Promise<string> {
-    const response = await ProfileApiClient.getProfile(profileCode);
-    return saveDownloadedProfile(response.data);
+    try {
+        let is404: boolean = false;
+        const response: AxiosResponse<string> = await retry(
+            () => ProfileApiClient.getProfile(profileCode),
+            5,
+            1000,
+            () => { return !is404 },
+            (e: unknown) => {
+                console.error(e);
+                if (R2Error.fromThrownValue(e).message.startsWith("404")) {
+                    is404 = true;
+                }
+            },
+            true
+        );
+        return saveDownloadedProfile(response.data);
+    } catch (e: unknown) {
+        if (e instanceof Error && e.message === "Network Error") {
+            throw new R2Error(
+                "Failed to download the profile",
+                "\"Network Error\" encountered when trying to download the profile from the server.",
+                "Check your network connection or try toggling the preferred Thunderstore CDN in the settings."
+            );
+        } else {
+            throw e;
+        }
+    }
 }
 
 export const ProfileImportExport = {

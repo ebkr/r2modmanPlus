@@ -17,8 +17,6 @@ import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import AsyncLock from 'async-lock';
-import GameManager from '../../model/game/GameManager';
-import { MOD_LOADER_VARIANTS } from '../installing/profile_installers/ModLoaderVariantRecord';
 import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
@@ -46,23 +44,7 @@ export default class ProfileModList {
                 const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
                 for(let modIndex in value){
                     const mod = new ManifestV2().fromReactive(value[modIndex]);
-                    const fallbackPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
-                    let iconPath;
-                    if (
-                        MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName]
-                            .find(x => x.packageName === mod.getName()) !== undefined
-                    ) {
-                        // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache
-                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "core", "icon.png");
-                    } else {
-                        iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png");
-                    }
-
-                    if (await fs.exists(iconPath)) {
-                        mod.setIcon(iconPath);
-                    } else {
-                        mod.setIcon(fallbackPath);
-                    }
+                    await this.setIconPath(mod, profile);
                     value[modIndex] = mod;
                 }
                 return value;
@@ -212,7 +194,10 @@ export default class ProfileModList {
         // Add all tree contents to buffer.
         for (const file of tree.getRecursiveFiles()) {
             const fileLower = file.toLowerCase();
-            if (this.SUPPORTED_CONFIG_FILE_EXTENSIONS.filter(value => fileLower.endsWith(value)).length > 0) {
+            if (
+                this.SUPPORTED_CONFIG_FILE_EXTENSIONS.some(value => fileLower.endsWith(value)) &&
+                !fileLower.endsWith('mods.yml')
+            ) {
                 await builder.addBuffer(path.relative(profile.getProfilePath(), file), await FsProvider.instance.readFile(file));
             }
         }
@@ -289,4 +274,16 @@ export default class ProfileModList {
         return modList.filter(value => !value.isEnabled()).length;
     }
 
+    public static async setIconPath(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
+        let iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png");
+
+        // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache.
+        // Also non-BepInEx games, e.g. ReturnOfModding games, read the icons from cache. This could
+        // be fixed using a different path though.
+        if (!(await FsProvider.instance.exists(iconPath))) {
+            iconPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
+        }
+
+        mod.setIcon(iconPath);
+    }
 }

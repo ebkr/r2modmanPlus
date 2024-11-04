@@ -38,7 +38,7 @@ describe('Shimloader Installer Tests', () => {
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
         await expectFilesToBeCopied(sourceToExpectedDestination);
 
-        const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile());
+        const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile().asImmutableProfile());
         expect(result instanceof R2Error).toBeFalsy();
         expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall)
     });

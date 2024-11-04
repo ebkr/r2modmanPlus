@@ -9,7 +9,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
     private uuid4: string = '';
     private pinned: boolean = false;
     private deprecated: boolean = false;
-    private totalDownloads: number = 0;
     private categories: string[] = [];
     private hasNsfwContent: boolean = false;
     private donationLink: string | undefined;
@@ -25,7 +24,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         mod.setDeprecatedStatus(data.is_deprecated);
         mod.setPinnedStatus(data.is_pinned);
         mod.setRating(data.rating_score);
-        mod.setTotalDownloads(
+        mod.setDownloadCount(
             data.versions.reduce(
                 (x: number, y: {downloads: number}) => x + y.downloads,
                 0
@@ -115,14 +114,6 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
 
     public setDeprecatedStatus(deprecated: boolean) {
         this.deprecated = deprecated;
-    }
-
-    public getTotalDownloads(): number {
-        return this.totalDownloads;
-    }
-
-    public setTotalDownloads(total: number) {
-        this.totalDownloads = total;
     }
 
     public getCategories(): string[] {
