@@ -36,16 +36,20 @@ export default class ZipExtract {
                         }
                     }
                 } catch (e) {
+                    // Cleanup might also fail e.g. for too long file paths on TSMM.
+                    // Show the original error instead of the one caused by the cleanup,
+                    // as the former is probably more informative for debugging.
+                    if (err) {
+                        callback(false, FileWriteError.fromThrownValue(err));
+                        return;
+                    }
+
                     callback(result, new FileWriteError(
                         'Failed to extract zip',
                         (e as Error).message,
                         'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
                     ));
                 }
-                // TODO: Is this needed?
-                // finally {
-                //     callback(result);
-                // }
             }
         });
     }
