@@ -25,7 +25,7 @@ export class GDWeaveInstaller implements PackageInstaller {
 
         const root = path.join(packagePath, mapping.rootFolder);
         const allContents = await FsProvider.instance.readdir(root);
-        const toCopy = allContents.filter((x) => !basePackageFiles.includes(x));
+        const toCopy = allContents.filter((x) => !basePackageFiles.includes(x.toLowerCase()));
 
         for (const fileOrFolder of toCopy) {
             await FileUtils.copyFileOrFolder(
