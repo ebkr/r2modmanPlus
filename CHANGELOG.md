@@ -1,3 +1,11 @@
+### 3.1.52
+#### Small quality of life changes
+- Upgraded from Electron v11 to v24
+  - Credit to (@JonathanSteininger)
+- Mods imported from a profile keep the same order they were exported in
+- Fixed sorting by download count
+- Reduced time taken to install when a mod has a large number of dependencies
+
 ### 3.1.51
 #### Memory and performance improvements
 The TS team have been working hard to improve the following:
