@@ -121,7 +121,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         if (read !== null) {
             this.profileImportFilePath = files[0];
-            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
+            try {
+                this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
+            } catch (e: unknown) {
+                if(e instanceof R2Error) {
+                    this.$store.commit('error/handleError', e);
+                }
+            }
 
             if (this.profileToOnlineMods.length === 0) {
                 this.activeStep = 'NO_PACKAGES_IN_IMPORT';

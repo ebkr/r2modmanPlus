@@ -125,6 +125,13 @@ export async function installModsToProfile(
 
 export async function parseYamlToExportFormat(yamlContent: string) {
     const parsedYaml = await yaml.parse(yamlContent);
+    if (!parsedYaml) {
+        throw new R2Error(
+            'Failed to parse yaml contents of the profile file',
+            'Yaml parsing failed when trying to import profile via file',
+            'Ensure that the profile import file isn\'t corrupted. (The contents of export.r2x file might be invalid.)'
+        )
+    }
     return new ExportFormat(
         parsedYaml.profileName,
         parsedYaml.mods.map((mod: any) => {
