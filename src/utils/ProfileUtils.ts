@@ -127,9 +127,23 @@ export async function parseYamlToExportFormat(yamlContent: string) {
     const parsedYaml = await yaml.parse(yamlContent);
     if (!parsedYaml) {
         throw new R2Error(
-            'Failed to parse yaml contents of the profile file',
-            'Yaml parsing failed when trying to import profile via file',
-            'Ensure that the profile import file isn\'t corrupted. (The contents of export.r2x file might be invalid.)'
+            'Failed to parse yaml contents.',
+            'Yaml parsing failed when trying to import profile via file (The contents of export.r2x file are invalid).',
+            'Ensure that the profile import file isn\'t corrupted.'
+        )
+    }
+    if (!parsedYaml.profileName || typeof parsedYaml.profileName !== 'string') {
+        throw new R2Error(
+            'Failed to read profile name.',
+            'Reading the profile name after parsing the yaml failed (export.r2x is missing the profileName field).',
+            'Ensure that the profile import file isn\'t corrupted.'
+        )
+    }
+    if (!parsedYaml.mods || typeof parsedYaml.mods !== 'object') {
+        throw new R2Error(
+            'Failed to read mod list.',
+            'Reading mods list after parsing the yaml failed (Mod list of export.r2x is invalid).',
+            'Ensure that the profile import file isn\'t corrupted.'
         )
     }
     return new ExportFormat(

@@ -125,7 +125,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
             } catch (e: unknown) {
                 if(e instanceof R2Error) {
-                    this.$store.commit('error/handleError', e);
+                    this.$store.commit('error/handleError', e)
+                    this.closeModal();
+                    return;
                 }
             }
 
