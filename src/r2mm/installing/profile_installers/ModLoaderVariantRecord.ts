@@ -204,6 +204,7 @@ const VARIANTS = {
     TCGCardShopSimulator: MODLOADER_PACKAGES,
     OldMarketSimulator: MODLOADER_PACKAGES,
     Subterranauts: MODLOADER_PACKAGES,
+    SULFUR: MODLOADER_PACKAGES,
     WEBFISHING: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
