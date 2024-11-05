@@ -6,8 +6,6 @@ import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoa
 import { PackageLoader } from '../model/installing/PackageLoader';
 import FileWriteError from '../model/errors/FileWriteError';
 
-const basePackageFiles = ['manifest.json', 'readme.md', 'icon.png'];
-
 export class GDWeaveInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
         const { mod, packagePath, profile } = args;
@@ -38,10 +36,7 @@ export class GDWeaveInstaller implements PackageInstaller {
         const { profile } = args;
 
         try {
-            // ReturnOfModding deletes all files in the root and ignores directories.
-            // We can't do that because GDWeave/core exists, but blanket deleting GDWeave would delete all mods in the process.
-            // This would probably be handled better by a state file, but /shrug.
-
+            // Remove GDWeave/core, but keep mods and config subfolder and the log file.
             const toDelete = [
                 profile.joinToProfilePath('winmm.dll'),
                 profile.joinToProfilePath('GDWeave', 'core'),
