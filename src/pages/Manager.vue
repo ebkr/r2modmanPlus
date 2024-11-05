@@ -490,8 +490,11 @@ import ModalCard from '../components/ModalCard.vue';
                 case PackageLoader.MELON_LOADER:
                     logOutputPath = path.join(this.profile.getProfilePath(), "MelonLoader", "Latest.log");
                     break;
-				case PackageLoader.RETURN_OF_MODDING:
+                case PackageLoader.RETURN_OF_MODDING:
                     logOutputPath = path.join(this.profile.getProfilePath(), "ReturnOfModding", "LogOutput.log");
+                    break;
+                case PackageLoader.GDWEAVE:
+                    logOutputPath = path.join(this.profile.getProfilePath(), "GDWeave", "GDWeave.log");
                     break;
             }
             const text = (await fs.readFile(logOutputPath)).toString();

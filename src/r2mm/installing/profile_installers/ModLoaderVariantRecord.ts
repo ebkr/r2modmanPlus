@@ -70,6 +70,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("Thunderstore-lovely", "", PackageLoader.LOVELY),
     new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
+    new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
 ];
 
 
@@ -204,6 +205,7 @@ const VARIANTS = {
     OldMarketSimulator: MODLOADER_PACKAGES,
     Subterranauts: MODLOADER_PACKAGES,
     SULFUR: MODLOADER_PACKAGES,
+    WEBFISHING: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
