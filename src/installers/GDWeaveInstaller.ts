@@ -24,8 +24,7 @@ export class GDWeaveInstaller implements PackageInstaller {
         }
 
         const root = path.join(packagePath, mapping.rootFolder);
-        const allContents = await FsProvider.instance.readdir(root);
-        const toCopy = allContents.filter((x) => !basePackageFiles.includes(x.toLowerCase()));
+        const toCopy = ['winmm.dll', 'GDWeave'];
 
         for (const fileOrFolder of toCopy) {
             await FileUtils.copyFileOrFolder(
@@ -45,7 +44,7 @@ export class GDWeaveInstaller implements PackageInstaller {
 
             const toDelete = [
                 profile.joinToProfilePath('winmm.dll'),
-                profile.joinToProfilePath('GDWeave/core'),
+                profile.joinToProfilePath('GDWeave', 'core'),
             ];
             for (const fileOrFolder of toDelete) {
                 if (!(await FsProvider.instance.exists(fileOrFolder))) {
@@ -108,15 +107,7 @@ export class GDWeavePluginInstaller implements PackageInstaller {
             'mods',
             mod.getName()
         );
-        await FileUtils.ensureDirectory(root);
-
-        const toCopy = await FsProvider.instance.readdir(modFolder);
-        for (const fileOrFolder of toCopy) {
-            await FileUtils.copyFileOrFolder(
-                path.join(modFolder, fileOrFolder),
-                path.join(root, fileOrFolder)
-            );
-        }
+        await FsProvider.instance.copyFolder(modFolder, root);
     }
 
     async uninstall(args: InstallArgs): Promise<void> {

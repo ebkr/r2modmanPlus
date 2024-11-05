@@ -30,7 +30,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         if (isProton) {
             // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
             const proxyDll = game.packageLoader == PackageLoader.GDWEAVE ? "winmm" : "winhttp";
-            const promise = await this.ensureWineWillLoadBepInEx(game, proxyDll);
+            const promise = await this.ensureWineWillLoadDllOverride(game, proxyDll);
             if (promise instanceof R2Error) {
                 return promise;
             }
@@ -83,7 +83,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
     }
 
-    private async ensureWineWillLoadBepInEx(game: Game, proxyDll: string): Promise<void | R2Error>{
+    private async ensureWineWillLoadDllOverride(game: Game, proxyDll: string): Promise<void | R2Error>{
         const fs = FsProvider.instance;
         const compatDataDir = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getCompatDataDirectory(game);
         if(compatDataDir instanceof R2Error)
