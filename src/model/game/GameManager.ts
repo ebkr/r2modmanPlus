@@ -822,7 +822,7 @@ export default class GameManager {
         new Game("WEBFISHING", "WEBFISHING", "WEBFISHING",
             "WEBFISHING", ["webfishing.exe"], "",
             "https://thunderstore.io/c/webfishing/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3146520")], "WEBFISHING.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3146520")], "WEBFISHING.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.GDWEAVE, [""]),
     ];
 
