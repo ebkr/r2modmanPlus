@@ -1,6 +1,6 @@
 import TestSetup from '../../test-setup';
 import { shallowMount } from '@vue/test-utils';
-import Hero from '../../../../../src/components/Hero.vue';
+import { Hero } from '../../../../../src/components/all';
 
 type MountOptions = {
     propsData: {
