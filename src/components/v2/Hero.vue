@@ -21,7 +21,7 @@ import { computed } from 'vue';
 interface HeroProps {
     title: string;
     subtitle: string;
-    heroType?: 'primary' | 'warning' | 'danger';
+    heroType?: 'primary' | 'warning';
 }
 
 const heroProps = defineProps<HeroProps>();
@@ -35,24 +35,12 @@ const heroTypeClass = computed(() => {
             return 'component__hero--primary';
         case 'warning':
             return 'component__hero--warning';
-        case 'danger':
-            return 'component__hero--danger';
     }
 });
 </script>
 
 <style lang="scss" scoped>
 .component__hero {
-
-    &--primary {
-        background-color: var(--r2-primary-color);
-        color: var(--r2-primary-text-color);
-    }
-
-    &--warning {
-        background-color: var(--r2-warning-color);
-        color: var(--r2-warning-text-color);
-    }
 
     .hero__title {
         // Display as inline due to current CSS imports margins taking precedence.
@@ -67,9 +55,28 @@ const heroTypeClass = computed(() => {
     }
 
     .hero__subtitle {
+        display: block;
         line-height: 1.5;
         font-size: 1.25rem;
-        display: block;
+    }
+
+    &--primary {
+        background-color: var(--r2-primary-background-color);
+        color: var(--r2-primary-text-color);
+
+        .hero__subtitle {
+            color: var(--r2-primary-subtitle-text-color);
+        }
+
+    }
+
+    &--warning {
+        background-color: var(--r2-warning-background-color);
+        color: var(--r2-warning-text-color);
+
+        .hero__subtitle {
+            color: var(--r2-warning-subtitle-text-color);
+        }
     }
 }
 
