@@ -1,4 +1,9 @@
-import { InstallArgs, PackageInstaller } from './PackageInstaller';
+import {
+    disableModByRenamingFiles,
+    enableModByRenamingFiles,
+    InstallArgs,
+    PackageInstaller
+} from './PackageInstaller';
 import path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
@@ -87,36 +92,63 @@ async function searchForManifest(
 }
 
 export class GDWeavePluginInstaller implements PackageInstaller {
-    async install(args: InstallArgs) {
-        const { mod, packagePath, profile } = args;
+    getModFolderInProfile(args: InstallArgs): string {
+        return args.profile.joinToProfilePath(
+            'GDWeave',
+            'mods',
+            args.mod.getName()
+        );
+    }
 
+    async install(args: InstallArgs) {
         // Packaging is all over the place. Find a folder with a manifest.json
         // not at the top level (because the top level is Thunderstore's packaging)
-        const modFolder = await searchForManifest(packagePath);
-        if (!modFolder) {
+        const modFolderInCache = await searchForManifest(args.packagePath);
+        if (!modFolderInCache) {
             throw new Error('Could not find mod folder');
         }
 
-        const root = profile.joinToProfilePath(
-            'GDWeave',
-            'mods',
-            mod.getName()
-        );
-        await FsProvider.instance.copyFolder(modFolder, root);
+        const modFolderInProfile = this.getModFolderInProfile(args);
+
+        try {
+            await FsProvider.instance.copyFolder(modFolderInCache, modFolderInProfile);
+        } catch (e) {
+            const name = 'Failed to copy mod to profile';
+            throw FileWriteError.fromThrownValue(e, name);
+        }
     }
 
     async uninstall(args: InstallArgs): Promise<void> {
-        const { mod, profile } = args;
-        const root = profile.joinToProfilePath(
-            'GDWeave',
-            'mods',
-            mod.getName()
-        );
-
         try {
-            await FileUtils.recursiveRemoveDirectoryIfExists(root);
+            await FileUtils.recursiveRemoveDirectoryIfExists(
+                this.getModFolderInProfile(args)
+            );
         } catch (e) {
             const name = 'Failed to delete mod from profile root';
+            const solution = 'Is the game still running?';
+            throw FileWriteError.fromThrownValue(e, name, solution);
+        }
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        try {
+            await enableModByRenamingFiles(
+                this.getModFolderInProfile(args)
+            );
+        } catch (e) {
+            const name = 'Failed to enable mod';
+            const solution = 'Is the game still running?';
+            throw FileWriteError.fromThrownValue(e, name, solution);
+        }
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        try {
+            await disableModByRenamingFiles(
+                this.getModFolderInProfile(args)
+            );
+        } catch (e) {
+            const name = 'Failed to disable mod';
             const solution = 'Is the game still running?';
             throw FileWriteError.fromThrownValue(e, name, solution);
         }
