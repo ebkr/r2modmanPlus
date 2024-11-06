@@ -124,11 +124,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             try {
                 this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
             } catch (e: unknown) {
-                if(e instanceof R2Error) {
-                    this.$store.commit('error/handleError', e)
-                    this.closeModal();
-                    return;
-                }
+                const err = R2Error.fromThrownValue(e);
+                this.$store.commit('error/handleError', err)
+                this.closeModal();
+                return;
             }
 
             if (this.profileToOnlineMods.length === 0) {

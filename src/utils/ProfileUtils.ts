@@ -132,14 +132,14 @@ export async function parseYamlToExportFormat(yamlContent: string) {
             'Ensure that the profile import file isn\'t corrupted.'
         )
     }
-    if (!parsedYaml.profileName || typeof parsedYaml.profileName !== 'string') {
+    if (typeof parsedYaml.profileName !== 'string') {
         throw new R2Error(
             'Failed to read profile name.',
             'Reading the profile name after parsing the yaml failed (export.r2x is missing the profileName field).',
             'Ensure that the profile import file isn\'t corrupted.'
         )
     }
-    if (!parsedYaml.mods || typeof parsedYaml.mods !== 'object') {
+    if (!Array.isArray(parsedYaml.mods)) {
         throw new R2Error(
             'Failed to read mod list.',
             'Reading mods list after parsing the yaml failed (Mod list of export.r2x is invalid).',
