@@ -117,9 +117,18 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        let read: string | null = await ProfileUtils.readProfileFile(files[0]);
+        let read: string | null = null;
+        try {
+            read = await ProfileUtils.readProfileFile(files[0]);
+        } catch (e: unknown) {
+            if(e instanceof R2Error) {
+                this.$store.commit('error/handleError', e)
+                this.closeModal();
+                return;
+            }
+        }
 
-        if (read !== null) {
+        if (read) {
             this.profileImportFilePath = files[0];
             try {
                 this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);

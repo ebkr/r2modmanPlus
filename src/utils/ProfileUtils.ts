@@ -201,15 +201,18 @@ export async function populateImportedProfile(
     }
 }
 
-//TODO: Check if instead of returning null/empty strings, there's some errors that should be handled
 export async function readProfileFile(file: string) {
     let read = '';
     if (file.endsWith('.r2x')) {
         read = (await FsProvider.instance.readFile(file)).toString();
     } else if (file.endsWith('.r2z')) {
         const result: Buffer | null = await ZipProvider.instance.readFile(file, "export.r2x");
-        if (result === null) {
-            return null;
+        if (!result) {
+            throw new R2Error(
+                'Error when reading file contents',
+                'Reading the .r2z file contents failed. File contents be empty or corrupted.',
+                'Ensure that the imported profile file is valid.'
+            );
         }
         read = result.toString();
     }
