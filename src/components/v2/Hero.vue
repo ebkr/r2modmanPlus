@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-export interface HeroProps {
+interface HeroProps {
     title: string;
     subtitle: string;
     heroType?: string;
