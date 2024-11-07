@@ -171,8 +171,12 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const pluginInstaller = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
 
         if (pluginInstaller !== null) {
-            await PackageInstallers[pluginInstaller].install(args);
-            return Promise.resolve(null);
+            try {
+                await PackageInstallers[pluginInstaller].install(args);
+                return Promise.resolve(null);
+            } catch (e) {
+                return Promise.resolve(R2Error.fromThrownValue(e));
+            }
         }
 
         // Revert to legacy install behavior.
