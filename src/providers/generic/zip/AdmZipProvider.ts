@@ -8,6 +8,7 @@ export default class AdmZipProvider extends ZipProvider {
 
     async extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void> {
         const adm = new AdmZip(zip);
+        outputFolder = outputFolder.replace(/\\/g, '/');
         adm.extractAllTo(outputFolder, true);
     }
 
@@ -23,7 +24,10 @@ export default class AdmZipProvider extends ZipProvider {
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
         const adm = new AdmZip(zip);
-        if(!path.posix.normalize(path.join(outputPath, target)).startsWith(outputPath))
+        target = target.replace(/\\/g, '/');
+        outputPath = outputPath.replace(/\\/g, '/');
+        var fullPath = path.join(outputPath, target).replace(/\\/g, '/');
+        if(!path.posix.normalize(fullPath).startsWith(outputPath))
         {
             throw Error("Entry " + target + " would extract outside of expected folder");
         }
