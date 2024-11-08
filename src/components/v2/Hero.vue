@@ -1,16 +1,12 @@
 <template>
-    <section :class="['component__hero', heroTypeClass]" ref="section">
-        <div class="hero-body non-selectable">
-            <div class="container">
-                <div>
-                    <h1 class="hero__title" ref="title">
-                        {{ title }}
-                    </h1>
-                </div>
-                <h2 class="hero__subtitle" ref="subtitle">
-                    {{ subtitle }}
-                </h2>
-            </div>
+    <section :class="['c-hero', heroTypeClass]" ref="section">
+        <div class="c-hero__container">
+            <h1 class="c-hero__title" ref="title">
+                {{ title }}
+            </h1>
+            <h2 class="c-hero__subtitle" ref="subtitle">
+                {{ subtitle }}
+            </h2>
         </div>
     </section>
 </template>
@@ -32,50 +28,59 @@ const heroTypeClass = computed(() => {
     }
     switch (heroProps.heroType) {
         case 'primary':
-            return 'component__hero--primary';
+            return 'c-hero--primary';
         case 'warning':
-            return 'component__hero--warning';
+            return 'c-hero--warning';
     }
 });
 </script>
 
 <style lang="scss" scoped>
-.component__hero {
+.c-hero {
 
-    .hero__title {
+    $root: &;
+    padding: 3rem;
+
+    &__container {
+        max-width: 1344px;
+        margin: 0 auto;
+    }
+
+    &__title {
         // Display as inline due to current CSS imports margins taking precedence.
         // This is solved by being wrapped in a div.
-        display: inline;
+        display: block;
         user-select: none;
         font-size: 2rem;
         font-weight: 600;
         line-height: 1.125;
         word-break: break-word;
         margin-block-end: 0.83em;
+        margin-bottom: 0;
     }
 
-    .hero__subtitle {
+    &__subtitle {
         display: block;
         line-height: 1.5;
         font-size: 1.25rem;
     }
 
     &--primary {
-        background-color: var(--r2-primary-background-color);
-        color: var(--r2-primary-text-color);
+        background-color: var(--v2-primary-background-color);
+        color: var(--v2-primary-text-color);
 
-        .hero__subtitle {
-            color: var(--r2-primary-subtitle-text-color);
+        #{$root}__subtitle {
+            color: var(--v2-primary-subtitle-text-color);
         }
 
     }
 
     &--warning {
-        background-color: var(--r2-warning-background-color);
-        color: var(--r2-warning-text-color);
+        background-color: var(--v2-warning-background-color);
+        color: var(--v2-warning-text-color);
 
-        .hero__subtitle {
-            color: var(--r2-warning-subtitle-text-color);
+        #{$root}__subtitle {
+            color: var(--v2-warning-subtitle-text-color);
         }
     }
 }
