@@ -8,46 +8,53 @@ import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 
+
 export class SteamInstallationValidator {
 
     public static async validateInstallation(game: Game): Promise<R2Error | void> {
         if (![StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(game.activePlatform.storePlatform)) {
             return new R2Error(
-                "PreloaderFix is not available on non-Steam platforms.",
-                `The preloader fix deletes the ${path.join(game.dataFolderName, 'Managed')} folder and verifies files. You can do the same manually.`,
-                null
+                "This feature is not available on non-Steam platforms.",
+                "The feature deletes the contents of the game folder and verifies files. You can do the same manually."
             );
         }
-        const fs = FsProvider.instance;
-        const dirResult = await GameDirectoryResolverProvider.instance.getDirectory(game);
-        if (dirResult instanceof R2Error)
-            return dirResult;
 
+        const gameFolder = await GameDirectoryResolverProvider.instance.getDirectory(game);
+        if (gameFolder instanceof R2Error) {
+            return gameFolder;
+        }
+
+        // Sanity check we're about to delete something resembling a valid game folder.
         let exeFound = false;
-        for(let exeName of game.exeName) {
-            if (await fs.exists(path.join(dirResult, exeName))) {
+        for (let exeName of game.exeName) {
+            if (await FsProvider.instance.exists(path.join(gameFolder, exeName))) {
                 exeFound = true;
                 break;
             }
         }
 
-        if(!exeFound) {
-            return new R2Error(`${game.displayName} folder is invalid`, `could not find either of "${game.exeName.join('", "')}"`,
-                `Set the ${game.displayName} folder in the settings section`);
+        if (!exeFound) {
+            return new R2Error(
+                `${game.displayName} folder is invalid`,
+                `could not find either of "${game.exeName.join('", "')}"`,
+                `Set the ${game.displayName} folder in the settings section`
+            );
         }
 
         try {
-            await FileUtils.emptyDirectory(path.join(dirResult, game.dataFolderName, 'Managed'));
-            await fs.rmdir(path.join(dirResult, game.dataFolderName, 'Managed'));
+            await FileUtils.emptyDirectory(gameFolder);
         } catch(e) {
-            const err: Error = e as Error;
-            return new R2Error('Failed to remove Managed folder', err.message, `Try launching ${ManagerInformation.APP_NAME} as an administrator`);
+            return R2Error.fromThrownValue(
+                e,
+                'Failed to empty the game folder',
+                `Try launching ${ManagerInformation.APP_NAME} as an administrator`
+            );
         }
+
         try {
             LinkProvider.instance.openLink(`steam://validate/${game.activePlatform.storeIdentifier}`);
         } catch(e) {
-            const err: Error = e as Error;
-            return new R2Error('Failed to start steam://validate', err.message, null);
+            return R2Error.fromThrownValue(e, 'Failed to start steam://validate');
         }
     }
 }
