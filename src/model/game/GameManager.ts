@@ -43,7 +43,7 @@ export default class GameManager {
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1366540"),
                 new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "GameraGame.DysonSphereProgram")
-            ], "DysonSphereProgram.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
+            ], "DysonSphereProgram.png", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["DSP"]),
 
         new Game('Valheim', 'Valheim', 'Valheim',
             'Valheim', ['valheim.exe', 'valheim.x86_64'], 'valheim_Data',
@@ -129,7 +129,7 @@ export default class GameManager {
         new Game("Timberborn", "Timberborn", "Timberborn",
             "Timberborn", ["Timberborn.exe"], "Timberborn_Data",
             "https://thunderstore.io/c/timberborn/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1062090"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "972a4ca2631e43b4ba7bc3b7586ad8c4"), new StorePlatformMetadata(StorePlatform.OTHER)], "Timberborn.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1062090"), new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "972a4ca2631e43b4ba7bc3b7586ad8c4"), new StorePlatformMetadata(StorePlatform.OTHER)], "Timberborn.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TB"]),
 
         new Game("TABS", "TABS", "TotallyAccurateBattleSimulator",
@@ -228,7 +228,7 @@ export default class GameManager {
         new Game("Core Keeper", "CoreKeeper", "CoreKeeper",
             "Core Keeper", ["CoreKeeper.exe"], "CoreKeeper_Data",
             'https://thunderstore.io/c/core-keeper/api/v1/package-listing-index/', EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1621690")], "CoreKeeper.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ck"]),
 
         new Game("Titanfall 2", "Titanfall2", "Titanfall2",
@@ -267,7 +267,7 @@ export default class GameManager {
         new Game("Green Hell VR", "GreenHellVR", "GreenHellVR",
             "Green Hell VR", ["GHVR.exe"], "GHVR_Data",
             "https://thunderstore.io/c/green-hell-vr/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1782330"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "GreenHellVR.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ghvr"]),
 
         new Game("VTOL VR", "VTOL_VR", "VTOL_VR",
@@ -303,7 +303,7 @@ export default class GameManager {
         new Game("Aloft", "Aloft", "Aloft",
             "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
             "https://thunderstore.io/c/aloft/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2051980")], "Aloft.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2051980")], "Aloft.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Cult of the Lamb", "COTL", "COTL",
@@ -341,7 +341,7 @@ export default class GameManager {
         new Game("Across the Obelisk", "AcrossTheObelisk", "AcrossTheObelisk",
             "Across the Obelisk", ["AcrossTheObelisk.exe"], "AcrossTheObelisk_Data",
             "https://thunderstore.io/c/across-the-obelisk/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1385380")], "AcrossTheObelisk.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ato", "ao"]),
 
         new Game("ULTRAKILL", "ULTRAKILL", "ULTRAKILL",
@@ -794,11 +794,23 @@ export default class GameManager {
             "https://thunderstore.io/c/gorebox/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2027330")], "GoreBox.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
-        
+
         new Game("TCG Card Shop Simulator", "TCGCardShopSimulator", "TCG Card Shop Simulator",
             "TCG Card Shop Simulator", ["Card Shop Simulator.exe"], "Card Shop Simulator_Data",
             "https://thunderstore.io/c/tcg-card-shop-simulator/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "3070070")], "TCGCardShopSimulator.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Old Market Simulator", "OldMarketSimulator", "Old Market Simulator",
+            "Old Market Simulator", ["Old Market Simulator.exe"], "Old Market Simulator_Data",
+            "https://thunderstore.io/c/old-market-simulator/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2878420")], "OldMarketSimulator.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Subterranauts", "Subterranauts", "Subterranauts",
+            "Subterranauts", ["Subterranauts.exe"], "Subterranauts_Data",
+            "https://thunderstore.io/c/subterranauts/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3075800")], "Subterranauts.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 

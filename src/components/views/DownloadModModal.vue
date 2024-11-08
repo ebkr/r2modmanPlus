@@ -107,6 +107,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { installModsToProfile } from '../../utils/ProfileUtils';
 
 interface DownloadProgress {
     assignId: number;
@@ -370,24 +371,20 @@ let assignId = 0;
 
         async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
             ProfileModList.requestLock(async () => {
-                for (const combo of downloadedMods) {
-                    try {
-                        await DownloadModModal.installModAfterDownload(this.profile, combo.getMod(), combo.getVersion());
-                    } catch (e) {
-                        this.downloadingMod = false;
-                        const err = R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
-                        this.$store.commit('error/handleError', err);
-                        return;
-                    }
-                }
-                this.downloadingMod = false;
-                const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
-                if (!(modList instanceof R2Error)) {
+                const profile = this.profile.asImmutableProfile();
+
+                try {
+                    const modList = await installModsToProfile(downloadedMods, profile);
                     await this.$store.dispatch('profile/updateModList', modList);
+
                     const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
                     if (err instanceof R2Error) {
-                        this.$store.commit('error/handleError', err);
+                        throw err;
                     }
+                } catch (e) {
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+                } finally {
+                    this.downloadingMod = false;
                 }
             });
         }
@@ -408,7 +405,7 @@ let assignId = 0;
                     const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
                     const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                     if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile);
+                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile());
                         if (result instanceof R2Error) {
                             return reject(result);
                         }

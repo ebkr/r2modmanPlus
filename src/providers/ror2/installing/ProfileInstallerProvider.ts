@@ -1,7 +1,7 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ManifestV2 from '../../../model/ManifestV2';
 import R2Error from '../../../model/errors/R2Error';
-import Profile, { ImmutableProfile } from '../../../model/Profile';
+import { ImmutableProfile } from '../../../model/Profile';
 
 export default abstract class ProfileInstallerProvider {
 
@@ -21,7 +21,7 @@ export default abstract class ProfileInstallerProvider {
      * Removes a mod from the profile. Does not affect the mod list display.
      * @param mod
      */
-    public abstract uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null>;
+    public abstract uninstallMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null>;
 
     /**
      * Disable files to prevent the mod from loading.

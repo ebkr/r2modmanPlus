@@ -1,6 +1,6 @@
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
 import ManifestV2 from '../../../model/ManifestV2';
-import Profile, { ImmutableProfile } from '../../../model/Profile';
+import { ImmutableProfile } from '../../../model/Profile';
 import FileTree from '../../../model/file/FileTree';
 import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
@@ -157,11 +157,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return this.installForManifestV2(args);
     }
 
-    private getInstallArgs(mod: ManifestV2, profile: Profile|ImmutableProfile): InstallArgs {
-        const immutable = profile instanceof Profile ? profile.asImmutableProfile() : profile;
+    private getInstallArgs(mod: ManifestV2, profile: ImmutableProfile): InstallArgs {
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         const packagePath = path.join(cacheDirectory, mod.getName(), mod.getVersionNumber().toString());
-        return {mod, profile: immutable, packagePath};
+        return {mod, profile, packagePath};
     }
 
     private getModLoader(mod: ManifestV2): ModLoaderPackageMapping|undefined {
@@ -182,7 +181,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
     }
 
-    private async uninstallPackageZip(mod: ManifestV2, profile: Profile) {
+    private async uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
         const fs = FsProvider.instance;
 
         const recursiveDelete = async (mainPath: string, match: string) => {
@@ -200,7 +199,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
     }
 
-    private async uninstallSubDir(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+    private async uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
         const fs = FsProvider.instance;
 
@@ -255,7 +254,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return Promise.resolve(null);
     }
 
-    private async uninstallState(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+    private async uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
         if (await FsProvider.instance.exists(stateFilePath)) {
             const read = await FsProvider.instance.readFile(stateFilePath);
@@ -273,7 +272,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return Promise.resolve(null);
     }
 
-    async uninstallMod(mod: ManifestV2, profile: Profile): Promise<R2Error | null> {
+    async uninstallMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         // Support for installer specific uninstall methods are rolled out
         // gradually and therefore might not be defined yet.
         try {
@@ -309,7 +308,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * implements a custom uninstallation method.
      * @return true if mod loader was uninstalled
      */
-    async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
+    async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const modLoader = this.getModLoader(mod);
         const installerId = modLoader ? GetInstallerIdForLoader(modLoader.loaderType) : null;
         return this.uninstallWithInstaller(installerId, mod, profile);
@@ -320,7 +319,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * uninstallation method.
      * @return true if mod was uninstalled
      */
-    async uninstallModWithInstaller(mod: ManifestV2, profile: Profile): Promise<boolean> {
+    async uninstallModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
         return this.uninstallWithInstaller(installerId, mod, profile);
     }
@@ -328,7 +327,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     private async uninstallWithInstaller(
         installerId: PackageInstallerId | null,
         mod: ManifestV2,
-        profile: Profile
+        profile: ImmutableProfile
     ): Promise<boolean> {
         const installer = installerId ? PackageInstallers[installerId] : undefined;
 

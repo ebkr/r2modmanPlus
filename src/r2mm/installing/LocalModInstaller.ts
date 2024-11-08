@@ -60,7 +60,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                         }
                     }
                     await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
-                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
                     const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
                     if (profileInstallResult instanceof R2Error) {
                         callback(false, profileInstallResult);
@@ -86,7 +86,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             const fileSafe = file.split("\\").join("/");
             await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
             await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
-            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
             const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
             if (profileInstallResult instanceof R2Error) {
                 callback(false, profileInstallResult);
