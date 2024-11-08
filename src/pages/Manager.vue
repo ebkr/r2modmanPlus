@@ -144,7 +144,7 @@ import { Hero, Link, Modal, Progress } from '../components/all';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import PathResolver from '../r2mm/manager/PathResolver';
-import PreloaderFixer from '../r2mm/manager/PreloaderFixer';
+import { SteamInstallationValidator} from '../r2mm/manager/SteamInstallationValidator';
 
 import { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
@@ -222,7 +222,7 @@ import ModalCard from '../components/ModalCard.vue';
 		}
 
 		async fixPreloader() {
-			const res = await PreloaderFixer.fix(this.activeGame);
+			const res = await SteamInstallationValidator.validateInstallation(this.activeGame);
 			if (res instanceof R2Error) {
 				this.$store.commit('error/handleError', res);
 			} else {

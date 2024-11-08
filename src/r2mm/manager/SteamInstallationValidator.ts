@@ -8,9 +8,9 @@ import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 
-export default class PreloaderFixer {
+export class SteamInstallationValidator {
 
-    public static async fix(game: Game): Promise<R2Error | void> {
+    public static async validateInstallation(game: Game): Promise<R2Error | void> {
         if (![StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(game.activePlatform.storePlatform)) {
             return new R2Error(
                 "PreloaderFix is not available on non-Steam platforms.",
