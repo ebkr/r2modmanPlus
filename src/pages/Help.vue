@@ -77,9 +77,9 @@
             <div ref="Mods not appearing" v-if="activeTab === 'Mods not appearing'">
                 <h2 class='title is-5'>Potential solutions</h2>
                 <p>The most common issues are solved by following the instructions exactly as listed
-                    <Link target="external" url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
+                    <ExternalLink url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
                         here
-                    </Link>
+                    </ExternalLink>
                 </p>
             </div>
             <div ref="Updating" v-if="activeTab === 'Updating'">
@@ -101,14 +101,14 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {Hero, Link} from '../components/all';
+import { Hero, ExternalLink } from '../components/all';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 
 @Component({
     components: {
-        Link,
+        ExternalLink,
         Hero
     }
 })

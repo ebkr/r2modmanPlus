@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { ExpandableCard, Link } from '../../all';
+import { ExpandableCard, ExternalLink } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import DonateIconButton from '../../buttons/DonateIconButton.vue';
 import R2Error from '../../../model/errors/R2Error';
@@ -17,7 +17,7 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
         DonateButton,
         DonateIconButton,
         ExpandableCard,
-        Link,
+        ExternalLink,
     }
 })
 export default class LocalModCard extends Vue {
@@ -284,10 +284,10 @@ function dependencyStringToModName(x: string) {
             Associated
         </a>
 
-        <Link :url="mod.getWebsiteUrl()" :target="'external'" class="card-footer-item">
+        <ExternalLink :url="mod.getWebsiteUrl()" class="card-footer-item">
             Website
             <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
-        </Link>
+        </ExternalLink>
 
         <a v-if="!isLatestVersion" @click="updateMod()" class='card-footer-item'>
             Update

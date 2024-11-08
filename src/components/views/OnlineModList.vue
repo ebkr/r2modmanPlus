@@ -35,9 +35,9 @@
                 <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
             </template>
             <a class='card-footer-item' v-if="!readOnly" @click='showDownloadModal(key)'>Download</a>
-            <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
+            <ExternalLink :url="key.getPackageUrl()" class='card-footer-item'>
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
-            </Link>
+            </ExternalLink>
             <template v-if="!readOnly">
                 <DonateButton :mod="key"/>
             </template>
@@ -58,7 +58,7 @@ import { Prop, Vue } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-import { ExpandableCard, Link } from '../all';
+import { ExpandableCard, ExternalLink } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
@@ -72,7 +72,7 @@ import { valueToReadableDate } from '../../utils/DateUtils';
         DonateIconButton,
         DownloadModModal,
         ExpandableCard,
-        Link
+        ExternalLink
     }
 })
 export default class OnlineModList extends Vue {
