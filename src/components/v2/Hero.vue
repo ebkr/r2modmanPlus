@@ -17,10 +17,12 @@ import { computed } from 'vue';
 interface HeroProps {
     title: string;
     subtitle: string;
-    heroType?: 'primary' | 'warning';
+    heroType: 'primary' | 'warning';
 }
 
-const heroProps = defineProps<HeroProps>();
+const heroProps = withDefaults(defineProps<HeroProps>(), {
+  heroType: 'primary'
+});
 
 const heroTypeClass = computed(() => {
     if (heroProps.heroType == undefined) {

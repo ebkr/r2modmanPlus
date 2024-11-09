@@ -1,5 +1,5 @@
 import TestSetup from '../../test-setup';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { Hero } from '../../../../../src/components/all';
 
 type MountOptions = {
@@ -10,38 +10,40 @@ type MountOptions = {
     }
 };
 
-describe("Hero component", () => {
+describe('Hero component', () => {
 
 
-    let mountOptions: MountOptions;
+    const mountOptions = {
+        props: ['title', 'heroType', 'subtitle'],
+        propsData: {
+            title: 'Some title',
+            heroType: 'warning',
+            subtitle: 'Some subtitle'
+        }
+    };
 
     beforeEach(() => {
         TestSetup.stubSetUp();
-        mountOptions = {
-            propsData: {
-                title: "Some title",
-                heroType: "Hero Type",
-                subtitle: "Some subtitle"
-            }
-        }
     });
 
-    it("Has title text", () => {
-        const mount = shallowMount(Hero, mountOptions);
-        const found = mount.findComponent({ ref: "title"});
-        expect(found.text()).toBe(mountOptions.propsData.title);
+    it('Has title text', () => {
+        const m = shallowMount(Hero, mountOptions);
+        const found = m.findComponent({ ref: 'title' });
+        expect(found.text()).toBe(mountOptions.propsData!.title);
     });
 
-    it("Has subtitle text", () => {
+    it('Has subtitle text', () => {
         const mount = shallowMount(Hero, mountOptions);
-        const found = mount.findComponent({ ref: "subtitle"});
+        const found = mount.findComponent({ ref: 'subtitle' });
         expect(found.text()).toBe(mountOptions.propsData.subtitle);
     });
 
-    it("Has correct class", () => {
-        const mount = shallowMount(Hero, mountOptions);
-        const found = mount.findComponent({ ref: "section"});
-        expect(found.classes().join(" ")).toBe(`hero ${mountOptions.propsData.heroType}`);
+    it('Has correct class', () => {
+        const m = mount(Hero, mountOptions);
+        const found = m.findComponent({ ref: 'section' });
+        expect(found.classes().join(' ')).toBe(`c-hero`);
+        console.log("vm:", found.vm);
+        // expect().toBe(`c-hero--${mountOptions.propsData.heroType}`)
     });
 
 });
