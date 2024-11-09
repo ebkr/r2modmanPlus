@@ -14,7 +14,6 @@ export default class MelonLoaderGameInstructions extends GameInstructionGenerato
         const mlZeroPointSixAssemblyExists = await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Il2CppAssemblies', 'Assembly-CSharp.dll'));
 
         if (!mlZeroPointFiveAssemblyExists && !mlZeroPointSixAssemblyExists) {
-            console.log('Regenerating AGF');
             moddedParameters += ' --melonloader.agfregenerate';
         }
         return {
