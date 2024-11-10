@@ -20,6 +20,9 @@ export default class DeleteProfileModal extends ProfilesMixin {
     }
 
     async removeProfile() {
+        if (this.deletingInProgress) {
+            return;
+        }
         try {
             this.deletingInProgress = true;
             await this.$store.dispatch('profiles/removeSelectedProfile');

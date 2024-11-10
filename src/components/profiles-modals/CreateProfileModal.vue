@@ -24,6 +24,9 @@ export default class CreateProfileModal extends ProfilesMixin {
 
     // User confirmed creation of a new profile with a name that didn't exist before.
     async createProfile() {
+        if (this.creatingInProgress) {
+            return;
+        }
         const safeName = this.makeProfileNameSafe(this.newProfileName);
         if (safeName !== '') {
             try {

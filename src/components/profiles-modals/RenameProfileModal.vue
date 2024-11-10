@@ -48,6 +48,9 @@ export default class RenameProfileModal extends ProfilesMixin {
     }
 
     async performRename() {
+        if (this.renamingInProgress) {
+            return;
+        }
         try {
             this.renamingInProgress = true;
             await this.$store.dispatch('profiles/renameProfile', {newName: this.newProfileName});
