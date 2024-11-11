@@ -34,9 +34,13 @@ export class SteamInstallationValidator {
         }
 
         if (!exeFound) {
+            const message = game.exeName.length > 1 ?
+                `Could not find any of "${game.exeName.join('", "')}"` :
+                `Could not find "${game.exeName[0]}"`;
+
             return new R2Error(
                 `${game.displayName} folder is invalid`,
-                `could not find either of "${game.exeName.join('", "')}"`,
+                message,
                 `Set the ${game.displayName} folder in the settings section`
             );
         }
