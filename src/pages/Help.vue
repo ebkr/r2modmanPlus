@@ -71,7 +71,7 @@
                 <p>That's because you don't legally own the game. The manager only supports legal copies.</p>
                 <hr/>
                 <h2 class='title is-5'>A text window appears and closes immediately.</h2>
-                <p>Try running the preloader fix on the Settings screen.</p>
+                <p>Try running "Reset {{$store.state.activeGame.displayName}} installation" on the Settings screen.</p>
                 <p>If it persists, force exit Steam and start modded with Steam closed.</p>
             </div>
             <div ref="Mods not appearing" v-if="activeTab === 'Mods not appearing'">

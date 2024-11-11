@@ -35,25 +35,30 @@
 			<button class="modal-close is-large" aria-label="close"
 			        @click="showRor2IncorrectDirectoryModal = false"></button>
 		</div>
-		<ModalCard :is-active="fixingPreloader" @close-modal="closePreloaderFixModal" :can-close="true">
+		<ModalCard :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
 			<template v-slot:header>
-				<h2 class='modal-title'>Attempting to fix preloader issues</h2>
+				<h2 class='modal-title'>Clearing the {{activeGame.displayName}} installation directory</h2>
 			</template>
 			<template v-slot:body>
 				<div class='notification is-warning'>
-					<p>You will not not be able to launch the game until Steam has verified the integrity of the
-						game.
+					<p>
+						You will not not be able to launch the game until
+						Steam has verified the integrity of the game files.
 					</p>
 				</div>
-				<p>Steam will be started, and will attempt to verify the integrity of {{ activeGame.displayName }}.</p>
+				<p>
+					Steam will be started and will attempt to verify the
+					integrity of {{ activeGame.displayName }}.
+				</p>
 				<br/>
-				<p>Please check the Steam window for validation progress. If the window has not yet appeared, please be
-					patient.
+				<p>
+					Please check the Steam window for validation progress.
+					If the window has not yet appeared, please be patient.
 				</p>
 			</template>
 			<template v-slot:footer>
 				<button v-if="dependencyListDisplayType === 'view'" class="button is-info"
-				        @click="closePreloaderFixModal()">
+				        @click="closeSteamInstallationValidationModal()">
 					I understand
 				</button>
 			</template>
@@ -190,7 +195,7 @@ import ModalCard from '../components/ModalCard.vue';
 		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
-		fixingPreloader: boolean = false;
+		isValidatingSteamInstallation: boolean = false;
 		exportCode: string = '';
 		showSteamIncorrectDirectoryModal: boolean = false;
 		showRor2IncorrectDirectoryModal: boolean = false;
@@ -217,16 +222,16 @@ import ModalCard from '../components/ModalCard.vue';
 			return this.$store.state.profile.modList;
 		}
 
-		closePreloaderFixModal() {
-			this.fixingPreloader = false;
+		closeSteamInstallationValidationModal() {
+			this.isValidatingSteamInstallation = false;
 		}
 
-		async fixPreloader() {
+		async validateSteamInstallation() {
 			const res = await SteamInstallationValidator.validateInstallation(this.activeGame);
 			if (res instanceof R2Error) {
 				this.$store.commit('error/handleError', res);
 			} else {
-				this.fixingPreloader = true;
+				this.isValidatingSteamInstallation = true;
 			}
 		}
 
@@ -546,8 +551,8 @@ import ModalCard from '../components/ModalCard.vue';
                 case "ToggleDownloadCache":
                     this.toggleIgnoreCache();
                     break;
-                case "RunPreloaderFix":
-                    this.fixPreloader();
+                case "ValidateSteamInstallation":
+                    this.validateSteamInstallation();
                     break;
                 case "SetLaunchParameters":
                     this.showLaunchParameters();

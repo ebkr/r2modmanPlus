@@ -172,14 +172,6 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Debugging',
-                'Run preloader fix',
-                'Run this to fix most errors mentioning the preloader, or about duplicate assemblies.',
-                async () => `This will delete the ${this.activeGame.dataFolderName}/Managed folder, and verify the files through Steam`,
-                'fa-wrench',
-                () => this.emitInvoke('RunPreloaderFix')
-            ),
-            new SettingsRow(
-                'Debugging',
                 'Set launch parameters',
                 'Provide custom arguments used to start the game.',
                 async () => 'These commands are used against the Steam executable on game startup',
@@ -388,6 +380,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         },
                         'fa-folder-open',
                         () => this.emitInvoke('ChangeSteamDirectory')
+                    ),
+                    new SettingsRow(
+                        'Debugging',
+                        `Reset ${this.activeGame.displayName} installation`,
+                        'Fix problems caused by corrupted files or files left over from manual modding attempts.',
+                        async () => `This will delete all contents of the ${this.activeGame.steamFolderName} folder, and verify the files through Steam`,
+                        'fa-wrench',
+                        () => this.emitInvoke('ValidateSteamInstallation')
                     )
                 )
             }
