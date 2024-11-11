@@ -10,6 +10,7 @@ import FileUtils from '../utils/FileUtils';
 import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import { PackageLoader } from '../model/installing/PackageLoader';
 import FileWriteError from '../model/errors/FileWriteError';
+import R2Error from '../model/errors/R2Error';
 
 export class GDWeaveInstaller implements PackageInstaller {
     async install(args: InstallArgs) {
@@ -105,7 +106,10 @@ export class GDWeavePluginInstaller implements PackageInstaller {
         // not at the top level (because the top level is Thunderstore's packaging)
         const modFolderInCache = await searchForManifest(args.packagePath);
         if (!modFolderInCache) {
-            throw new Error('Could not find mod folder');
+            throw new R2Error(
+                'Could not find mod folder',
+                'Either the mod package is malformed, or the files extracted to cache are corrupted'
+            );
         }
 
         const modFolderInProfile = this.getModFolderInProfile(args);
