@@ -57,8 +57,7 @@
 				</p>
 			</template>
 			<template v-slot:footer>
-				<button v-if="dependencyListDisplayType === 'view'" class="button is-info"
-				        @click="closeSteamInstallationValidationModal()">
+				<button class="button is-info" @click="closeSteamInstallationValidationModal()">
 					I understand
 				</button>
 			</template>
@@ -126,7 +125,7 @@
 				</p>
 			</template>
 			<template v-slot:footer>
-				<button v-if="dependencyListDisplayType === 'view'" class="button is-info" @click="exportCode = ''">
+				<button class="button is-info" @click="exportCode = ''">
 					Done
 				</button>
 			</template>
@@ -155,7 +154,6 @@ import { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import DependencyListDisplayType from '../model/enums/DependencyListDisplayType';
 import R2Error from '../model/errors/R2Error';
 import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
@@ -192,7 +190,6 @@ import ModalCard from '../components/ModalCard.vue';
 		}
 	})
 	export default class Manager extends Vue {
-		dependencyListDisplayType: string = DependencyListDisplayType.DISABLE;
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
 		isValidatingSteamInstallation: boolean = false;
