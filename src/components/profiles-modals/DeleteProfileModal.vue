@@ -8,16 +8,23 @@ import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
     components: {ModalCard}
 })
 export default class DeleteProfileModal extends ProfilesMixin {
+    private deletingInProgress: boolean = false;
+
     get isOpen(): boolean {
         return this.$store.state.modals.isDeleteProfileModalOpen;
     }
 
     closeDeleteProfileModal() {
+        this.deletingInProgress = false;
         this.$store.commit('closeDeleteProfileModal');
     }
 
     async removeProfile() {
+        if (this.deletingInProgress) {
+            return;
+        }
         try {
+            this.deletingInProgress = true;
             await this.$store.dispatch('profiles/removeSelectedProfile');
         } catch (e) {
             const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
@@ -41,6 +48,7 @@ export default class DeleteProfileModal extends ProfilesMixin {
         </template>
         <template v-slot:footer>
             <button
+                :disabled="deletingInProgress"
                 class="button is-danger"
                 @click="removeProfile()"
             >Delete profile</button>
