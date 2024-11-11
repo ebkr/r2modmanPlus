@@ -124,7 +124,7 @@ const VARIANTS = {
     Aloft: MODLOADER_PACKAGES,
     COTL: MODLOADER_PACKAGES,
     ChronoArk: MODLOADER_PACKAGES,
-    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER, new VersionNumber("0.5.7"))],
+    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     TromboneChamp: MODLOADER_PACKAGES,
     RogueGenesia: MODLOADER_PACKAGES,
     AcrossTheObelisk: MODLOADER_PACKAGES,
