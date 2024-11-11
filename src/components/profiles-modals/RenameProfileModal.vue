@@ -75,7 +75,7 @@ export default class RenameProfileModal extends ProfilesMixin {
             <input
                 class="input"
                 v-model="newProfileName"
-                @keyup.enter="!doesProfileExist(newProfileName) && performRename(newProfileName)"
+                @keyup.enter="!doesProfileExist(newProfileName) && performRename()"
                 ref="nameInput"
             />
 
@@ -91,7 +91,7 @@ export default class RenameProfileModal extends ProfilesMixin {
         </template>
         <template v-slot:footer>
             <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename(newProfileName)" :disabled="renamingInProgress" v-else>Rename</button>
+            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>Rename</button>
         </template>
 
     </ModalCard>

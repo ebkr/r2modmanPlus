@@ -56,7 +56,7 @@ export default class CreateProfileModal extends ProfilesMixin {
             <input
                 class="input"
                 v-model="newProfileName"
-                @keyup.enter="!doesProfileExist(newProfileName) && createProfile(newProfileName)"
+                @keyup.enter="!doesProfileExist(newProfileName) && createProfile()"
                 id="create-profile-modal-new-profile-name"
                 ref="nameInput"
             />
@@ -74,7 +74,7 @@ export default class CreateProfileModal extends ProfilesMixin {
 
         <template v-slot:footer>
             <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="createProfile(newProfileName)" :disabled="creatingInProgress" v-else>Create</button>
+            <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>Create</button>
         </template>
 
     </ModalCard>
