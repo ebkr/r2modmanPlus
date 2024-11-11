@@ -142,7 +142,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Locations',
-                'Change data folder folder',
+                'Change data folder',
                 'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
                 async () => {
                     return PathResolver.ROOT;
