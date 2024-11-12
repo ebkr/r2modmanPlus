@@ -90,6 +90,7 @@
 
 <script lang="ts">
 
+import * as ModDownloadUtils from "../../utils/ModDownloadUtils";
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManifestV2 from '../../model/ManifestV2';
@@ -107,7 +108,6 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
-import { installModsToProfile } from '../../utils/ProfileUtils';
 
 interface DownloadProgress {
     assignId: number;
@@ -370,23 +370,8 @@ let assignId = 0;
         }
 
         async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
-            ProfileModList.requestLock(async () => {
-                const profile = this.profile.asImmutableProfile();
-
-                try {
-                    const modList = await installModsToProfile(downloadedMods, profile);
-                    await this.$store.dispatch('profile/updateModList', modList);
-
-                    const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
-                    if (err instanceof R2Error) {
-                        throw err;
-                    }
-                } catch (e) {
-                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-                } finally {
-                    this.downloadingMod = false;
-                }
-            });
+            await ModDownloadUtils.downloadCompletedCallback(this.profile, downloadedMods, this.$store);
+            this.downloadingMod = false;
         }
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
