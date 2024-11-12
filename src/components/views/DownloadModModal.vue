@@ -90,24 +90,24 @@
 
 <script lang="ts">
 
-import * as ModDownloadUtils from "../../utils/ModDownloadUtils";
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
-import ManifestV2 from '../../model/ManifestV2';
-import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import R2Error from '../../model/errors/R2Error';
 import StatusEnum from '../../model/enums/StatusEnum';
-import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
-import ProfileModList from '../../r2mm/mods/ProfileModList';
-import Profile from '../../model/Profile';
-import { Progress } from '../all';
+import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
+import ManifestV2 from '../../model/ManifestV2';
+import Profile from '../../model/Profile';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import * as ModDownloadUtils from "../../utils/ModDownloadUtils";
+import { Progress } from '../all';
+import ModalCard from '../ModalCard.vue';
 
 interface DownloadProgress {
     assignId: number;
