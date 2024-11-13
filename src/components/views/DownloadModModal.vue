@@ -82,7 +82,7 @@
                 </ul>
             </template>
             <template v-slot:footer>
-                <button class="button is-info" @click="downloadLatest()">Update all</button>
+                <button class="button is-info" @click="downloadHandler()">Update all</button>
             </template>
         </ModalCard>
     </div>
@@ -289,78 +289,74 @@ let assignId = 0;
                 return;
             }
 
-            this.downloadHandler(refSelectedThunderstoreMod, version);
+            await this.downloadHandler(refSelectedThunderstoreMod, version);
         }
 
-        async downloadLatest() {
-            this.closeModal();
-            const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
+        //TODO: check if it is feasible to merge this a bit more by using the latest version if no version is given etc.
+        async downloadHandler(
+            tsMod?: ThunderstoreMod,
+            tsVersion?: ThunderstoreVersion
+        ) {
+            let initialMods: string[] = [];
+            let modsWithUpdates: ThunderstoreCombo[] = [];
+            if (tsMod && tsVersion) {
+                initialMods = [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`];
+            } else {
+                modsWithUpdates = await this.$store.dispatch('profile/getCombosWithUpdates');
+                initialMods = modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
+            }
+
             const currentAssignId = assignId++;
-            const progressObject = {
-                progress: 0,
-                initialMods: modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().toString()})`),
-                modName: '',
-                assignId: currentAssignId,
-                failed: false,
-            };
-            this.downloadObject = progressObject;
-            DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
-            this.downloadingMod = true;
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(
-                modsWithUpdates,
-                this.ignoreCache,
-                (progress, modName, status, err) => { ModDownloadUtils.downloadProgressCallback(
+            await this.prepareModalForDownload(initialMods, currentAssignId);
+
+            const callbackFn = (progress: number, modName: string, status: number, err: R2Error | null) => {
+                ModDownloadUtils.downloadProgressCallback(
                     currentAssignId,
                     progress,
                     modName,
                     status,
                     err,
-                    modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`),
+                    initialMods,
                     this.downloadObject,
                     this.setDownloadObject,
                     this.setDownloadingMod,
                     (assignIndex: string | number, value: any) => this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, value]),
                     DownloadModModal.allVersions
-                )},
-                this.downloadCompletedCallback
-            );
+                )
+            };
+
+            if (tsMod && tsVersion) {
+                setTimeout(() => {
+                    ThunderstoreDownloaderProvider.instance.download(
+                        this.profile.asImmutableProfile(),
+                        tsMod,
+                        tsVersion,
+                        this.ignoreCache,
+                        callbackFn,
+                        this.downloadCompletedCallback
+                    );
+                }, 1);
+            } else {
+                ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(
+                    modsWithUpdates,
+                    this.ignoreCache,
+                    callbackFn,
+                    this.downloadCompletedCallback
+                );
+            }
         }
 
-        downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
+        async prepareModalForDownload(initialMods: string[], currentAssignId: number) {
+            this.downloadingMod = true;
             this.closeModal();
-            const currentAssignId = assignId++;
-            const progressObject = {
+            this.downloadObject = {
                 progress: 0,
-                initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
+                initialMods: initialMods,
                 modName: '',
                 assignId: currentAssignId,
                 failed: false,
             };
-            this.downloadObject = progressObject;
             DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
-            this.downloadingMod = true;
-            setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(
-                    this.profile.asImmutableProfile(),
-                    tsMod,
-                    tsVersion,
-                    this.ignoreCache,
-                    (progress, modName, status, err) => { ModDownloadUtils.downloadProgressCallback(
-                        currentAssignId,
-                        progress,
-                        modName,
-                        status,
-                        err,
-                        [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                        this.downloadObject,
-                        this.setDownloadObject,
-                        this.setDownloadingMod,
-                        (assignIndex: string | number, value: any) => this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, value]),
-                        DownloadModModal.allVersions
-                    ) },
-                    this.downloadCompletedCallback
-                );
-            }, 1);
         }
 
         async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
