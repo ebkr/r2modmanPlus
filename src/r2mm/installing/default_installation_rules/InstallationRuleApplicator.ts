@@ -152,6 +152,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("TCGCardShopSimulator"),
             buildBepInExRules("OldMarketSimulator"),
             buildBepInExRules("Subterranauts"),
+            buildBepInExRules("SULFUR"),
         ]
     }
 }

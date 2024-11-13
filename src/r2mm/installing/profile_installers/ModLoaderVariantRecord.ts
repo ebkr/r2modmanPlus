@@ -70,6 +70,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("Thunderstore-lovely", "", PackageLoader.LOVELY),
     new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
+    new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
 ];
 
 
@@ -123,7 +124,7 @@ const VARIANTS = {
     Aloft: MODLOADER_PACKAGES,
     COTL: MODLOADER_PACKAGES,
     ChronoArk: MODLOADER_PACKAGES,
-    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER, new VersionNumber("0.5.7"))],
+    BONELAB: [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)],
     TromboneChamp: MODLOADER_PACKAGES,
     RogueGenesia: MODLOADER_PACKAGES,
     AcrossTheObelisk: MODLOADER_PACKAGES,
@@ -203,9 +204,22 @@ const VARIANTS = {
     TCGCardShopSimulator: MODLOADER_PACKAGES,
     OldMarketSimulator: MODLOADER_PACKAGES,
     Subterranauts: MODLOADER_PACKAGES,
+    SULFUR: MODLOADER_PACKAGES,
+    WEBFISHING: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
 // Casting is done here to ensure the values are ModLoaderPackageMapping[]
 export type GAME_NAME = keyof typeof VARIANTS;
 export const MOD_LOADER_VARIANTS: {[key in GAME_NAME]: ModLoaderPackageMapping[]} = VARIANTS;
+
+export function getModLoaderPackageNames() {
+    const names = MODLOADER_PACKAGES.map((mapping) => mapping.packageName);
+
+    // Hard code MelonLoader to avoid having to iterate over MODLOADER_PACKAGES
+    // for each game separately. Hopefully we'll get rid of this once ML v0.6.6
+    // is released, as it's supposed to fix a bug that forces some games to
+    // currently use the older versions.
+    names.push("LavaGang-MelonLoader");
+    return names;
+}

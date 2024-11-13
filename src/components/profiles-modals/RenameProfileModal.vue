@@ -11,6 +11,7 @@ import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 export default class RenameProfileModal extends ProfilesMixin {
     @Ref() readonly nameInput: HTMLInputElement | undefined;
     private newProfileName: string = '';
+    private renamingInProgress: boolean = false;
 
     @Watch('$store.state.profile.activeProfile')
     activeProfileChanged(newProfile: Profile, oldProfile: Profile|null) {
@@ -41,12 +42,17 @@ export default class RenameProfileModal extends ProfilesMixin {
     }
 
     closeModal() {
+        this.renamingInProgress = false;
         this.newProfileName = this.$store.state.profile.activeProfile.getProfileName();
         this.$store.commit('closeRenameProfileModal');
     }
 
     async performRename() {
+        if (this.renamingInProgress) {
+            return;
+        }
         try {
+            this.renamingInProgress = true;
             await this.$store.dispatch('profiles/renameProfile', {newName: this.newProfileName});
         } catch (e) {
             const err = R2Error.fromThrownValue(e, 'Error whilst renaming profile');
@@ -69,7 +75,7 @@ export default class RenameProfileModal extends ProfilesMixin {
             <input
                 class="input"
                 v-model="newProfileName"
-                @keyup.enter="!doesProfileExist(newProfileName) && performRename(newProfileName)"
+                @keyup.enter="!doesProfileExist(newProfileName) && performRename()"
                 ref="nameInput"
             />
 
@@ -85,7 +91,7 @@ export default class RenameProfileModal extends ProfilesMixin {
         </template>
         <template v-slot:footer>
             <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename(newProfileName)" v-else>Rename</button>
+            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>Rename</button>
         </template>
 
     </ModalCard>

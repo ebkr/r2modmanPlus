@@ -66,6 +66,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.SHIMLOADER]: runners,
         [PackageLoader.LOVELY]: runners,
         [PackageLoader.RETURN_OF_MODDING]: runners,
+        [PackageLoader.GDWEAVE]: runners,
     }
 }
 

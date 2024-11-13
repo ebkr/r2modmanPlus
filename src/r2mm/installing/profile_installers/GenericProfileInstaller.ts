@@ -118,10 +118,32 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async disableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
+        // Support for installer specific disable methods are rolled out
+        // gradually and therefore might not be defined yet. Disabling
+        // mod loader packages are intentionally not supported.
+        try {
+            if (await this.disableModWithInstaller(mod, profile)) {
+                return;
+            }
+        } catch (e) {
+            return R2Error.fromThrownValue(e);
+        }
+
         return this.applyModMode(mod, profile, ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
+        // Support for installer specific enable methods are rolled out
+        // gradually and therefore might not be defined yet. Enabling
+        // mod loader packages are intentionally not supported.
+        try {
+            if (await this.enableModWithInstaller(mod, profile)) {
+                return;
+            }
+        } catch (e) {
+            return R2Error.fromThrownValue(e);
+        }
+
         return this.applyModMode(mod, profile, ModMode.ENABLED);
     }
 
@@ -149,8 +171,12 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         const pluginInstaller = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
 
         if (pluginInstaller !== null) {
-            await PackageInstallers[pluginInstaller].install(args);
-            return Promise.resolve(null);
+            try {
+                await PackageInstallers[pluginInstaller].install(args);
+                return Promise.resolve(null);
+            } catch (e) {
+                return Promise.resolve(R2Error.fromThrownValue(e));
+            }
         }
 
         // Revert to legacy install behavior.
@@ -308,7 +334,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * implements a custom uninstallation method.
      * @return true if mod loader was uninstalled
      */
-    async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
+    private async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const modLoader = this.getModLoader(mod);
         const installerId = modLoader ? GetInstallerIdForLoader(modLoader.loaderType) : null;
         return this.uninstallWithInstaller(installerId, mod, profile);
@@ -319,7 +345,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * uninstallation method.
      * @return true if mod was uninstalled
      */
-    async uninstallModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
+    private async uninstallModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
         return this.uninstallWithInstaller(installerId, mod, profile);
     }
@@ -334,6 +360,54 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         if (installer && installer.uninstall) {
             const args = this.getInstallArgs(mod, profile);
             await installer.uninstall(args);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Enable mod if its registered installer implements a custom
+     * enable method.
+     * @return true if mod was enable
+     */
+    private async enableModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
+        const modLoader = this.getModLoader(mod);
+
+        if (modLoader) {
+            return false;  // Don't process mod loader with plugin installer.
+        }
+
+        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+        const installer = installerId ? PackageInstallers[installerId] : undefined;
+
+        if (installer && installer.enable) {
+            const args = this.getInstallArgs(mod, profile);
+            await installer.enable(args);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Disable mod if its registered installer implements a custom
+     * disable method.
+     * @return true if mod was disabled
+     */
+    private async disableModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
+        const modLoader = this.getModLoader(mod);
+
+        if (modLoader) {
+            return false;  // Don't process mod loader with plugin installer.
+        }
+
+        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+        const installer = installerId ? PackageInstallers[installerId] : undefined;
+
+        if (installer && installer.disable) {
+            const args = this.getInstallArgs(mod, profile);
+            await installer.disable(args);
             return true;
         }
 

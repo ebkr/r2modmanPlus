@@ -812,6 +812,18 @@ export default class GameManager {
             "https://thunderstore.io/c/subterranauts/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "3075800")], "Subterranauts.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("SULFUR", "SULFUR", "SULFUR",
+            "Sulfur", ["Sulfur.exe"], "Sulfur_Data",
+            "https://thunderstore.io/c/sulfur/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2124120")], "SULFUR.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("WEBFISHING", "WEBFISHING", "WEBFISHING",
+            "WEBFISHING", ["webfishing.exe"], "",
+            "https://thunderstore.io/c/webfishing/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3146520")], "WEBFISHING.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.GDWEAVE, [""]),
     ];
 
     static get activeGame(): Game {

@@ -15,7 +15,8 @@ export default class GameInstructionParser {
         [DynamicGameInstruction.PROFILE_DIRECTORY, GameInstructionParser.profileDirectoryResolver],
         [DynamicGameInstruction.BEPINEX_CORLIBS, GameInstructionParser.bepInExCorelibsPathResolver],
         [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
-        [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver]
+        [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver],
+        [DynamicGameInstruction.GDWEAVE_FOLDER, GameInstructionParser.gdweaveFolderResolver]
     ]);
 
     public static async parse(launchString: string, game: Game, profile: Profile): Promise<string | R2Error> {
@@ -75,4 +76,7 @@ export default class GameInstructionParser {
         return profile.joinToProfilePath("R2Northstar");
     }
 
+    private static async gdweaveFolderResolver(game: Game, profile: Profile): Promise<string | R2Error> {
+        return profile.joinToProfilePath("GDWeave");
+    }
 }

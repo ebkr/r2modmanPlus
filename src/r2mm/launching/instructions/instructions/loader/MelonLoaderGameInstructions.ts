@@ -9,9 +9,12 @@ export default class MelonLoaderGameInstructions extends GameInstructionGenerato
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         let moddedParameters = `--melonloader.basedir "${DynamicGameInstruction.PROFILE_DIRECTORY}"`;
-        if (!await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Managed', 'Assembly-CSharp.dll'))) {
-            console.log("Regenerating AGF")
-           moddedParameters += " --melonloader.agfregenerate"
+
+        const mlZeroPointFiveAssemblyExists = await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Managed', 'Assembly-CSharp.dll'));
+        const mlZeroPointSixAssemblyExists = await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Il2CppAssemblies', 'Assembly-CSharp.dll'));
+
+        if (!mlZeroPointFiveAssemblyExists && !mlZeroPointSixAssemblyExists) {
+            moddedParameters += ' --melonloader.agfregenerate';
         }
         return {
             moddedParameters: moddedParameters,

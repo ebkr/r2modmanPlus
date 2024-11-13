@@ -1,18 +1,15 @@
 import ZipProvider from './ZipProvider';
-import AdmZip, { IZipEntry } from 'adm-zip';
+import AdmZip from 'adm-zip';
 import * as path from 'path';
 import ZipBuilder from './ZipBuilder';
 import ZipEntryInterface from './ZipEntryInterface';
-import FileUtils from '../../../utils/FileUtils';
-import FsProvider from '../file/FsProvider';
 
 export default class AdmZipProvider extends ZipProvider {
 
     async extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void> {
         const adm = new AdmZip(zip);
-        for (let entry of adm.getEntries()) {
-            await this.sanitizedExtraction(entry, outputFolder);
-        }
+        outputFolder = outputFolder.replace(/\\/g, '/');
+        adm.extractAllTo(outputFolder, true);
     }
 
     async readFile(zip: string | Buffer, file: string): Promise<Buffer | null> {
@@ -27,16 +24,14 @@ export default class AdmZipProvider extends ZipProvider {
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
         const adm = new AdmZip(zip);
-        return this.sanitizedExtraction(adm.getEntry(target)!, outputPath);
-    }
-
-    private async sanitizedExtraction(entry: IZipEntry, outputPath: string): Promise<void> {
-        const sanitizedTargetName = entry.entryName.split('\\').join('/');
-        await FileUtils.ensureDirectory(path.dirname(path.join(outputPath, sanitizedTargetName)));
-        if (entry.isDirectory)
-            await FileUtils.ensureDirectory(path.join(outputPath, sanitizedTargetName));
-        else
-            await FsProvider.instance.writeFile(path.join(outputPath, sanitizedTargetName), entry.getData());
+        target = target.replace(/\\/g, '/');
+        outputPath = outputPath.replace(/\\/g, '/');
+        var fullPath = path.join(outputPath, target).replace(/\\/g, '/');
+        if(!path.posix.normalize(fullPath).startsWith(outputPath))
+        {
+            throw Error("Entry " + target + " would extract outside of expected folder");
+        }
+        adm.extractEntryTo(target, outputPath, true, true);
     }
 
     zipBuilder(): ZipBuilder {

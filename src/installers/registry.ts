@@ -6,7 +6,7 @@ import { ShimloaderInstaller, ShimloaderPluginInstaller } from './ShimloaderInst
 import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
 import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './ReturnOfModdingInstaller';
-
+import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
 
 const _PackageInstallers = {
     // "legacy": new InstallRuleInstaller(),  // TODO: Enable
@@ -20,6 +20,8 @@ const _PackageInstallers = {
     "lovely-plugin": new LovelyPluginInstaller(),
     "returnofmodding": new ReturnOfModdingInstaller(),
     "returnofmodding-plugin": new ReturnOfModdingPluginInstaller(),
+    "gdweave": new GDWeaveInstaller(),
+    "gdweave-plugin": new GDWeavePluginInstaller(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;
