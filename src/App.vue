@@ -100,6 +100,8 @@ export default class App extends mixins(UtilityMixin) {
         this.$watch('$q.dark.isActive', () => {
             document.documentElement.classList.toggle('html--dark', this.$q.dark.isActive);
         });
+
+        this.$store.commit('updateModLoaderPackageNames');
     }
 
     beforeCreate() {

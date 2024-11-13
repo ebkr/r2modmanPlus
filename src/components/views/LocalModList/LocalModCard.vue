@@ -25,6 +25,12 @@ export default class LocalModCard extends Vue {
     missingDependencies: string[] = [];
     disableChangePending = false;
 
+    get canBeDisabled(): boolean {
+        // Mod loader packages can't be disabled as it's hard to define
+        // what that should even do in all cases.
+        return !this.$store.getters['isModLoader'](this.mod.getName());
+    }
+
     get donationLink() {
         return this.tsMod ? this.tsMod.getDonationLink() : undefined;
     }
@@ -246,7 +252,8 @@ function dependencyStringToModName(x: string) {
                     class='fas fa-exclamation-circle'
                 ></i>
             </span>
-            <span @click.prevent.stop="() => mod.isEnabled() ? disableMod() : enableMod(mod)"
+            <span v-if="canBeDisabled"
+                @click.prevent.stop="() => mod.isEnabled() ? disableMod() : enableMod(mod)"
                 class='card-header-icon'>
                 <div class="field">
                     <input :id="`switch-${mod.getName()}`"
@@ -264,10 +271,10 @@ function dependencyStringToModName(x: string) {
             Uninstall
         </a>
 
-        <a v-if="mod.isEnabled()" @click="disableMod()" class='card-footer-item'>
+        <a v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='card-footer-item'>
             Disable
         </a>
-        <a v-else @click="enableMod(mod)" class='card-footer-item' >
+        <a v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='card-footer-item' >
             Enable
         </a>
 
