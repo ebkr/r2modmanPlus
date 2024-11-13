@@ -70,6 +70,7 @@ export async function downloadProgressCallback (
         vueSetCallback(assignIndex, obj);
     }
 }
+
 function addSolutionsToError(err: R2Error): void {
     // Sanity check typing.
     if (!(err instanceof R2Error)) {
