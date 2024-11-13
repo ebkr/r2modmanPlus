@@ -149,6 +149,14 @@ let assignId = 0;
             return settings.getContext().global.ignoreCache;
         }
 
+        setDownloadObject(downloadObject: DownloadProgress | null) {
+            this.downloadObject = downloadObject;
+        }
+
+        setDownloadingMod(downloadingMod: boolean) {
+            this.downloadingMod = downloadingMod;
+        }
+
         public static async downloadSpecific(
             profile: Profile,
             combo: ThunderstoreCombo,
@@ -301,7 +309,19 @@ let assignId = 0;
             ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(
                 modsWithUpdates,
                 this.ignoreCache,
-                (progress, modName, status, err) => { this.downloadProgressCallback(currentAssignId, progress, modName, status, err, modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)) },
+                (progress, modName, status, err) => { ModDownloadUtils.downloadProgressCallback(
+                    currentAssignId,
+                    progress,
+                    modName,
+                    status,
+                    err,
+                    modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`),
+                    this.downloadObject,
+                    this.setDownloadObject,
+                    this.setDownloadingMod,
+                    (assignIndex: string | number, value: any) => this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, value]),
+                    DownloadModModal.allVersions
+                )},
                 this.downloadCompletedCallback
             );
         }
@@ -325,44 +345,22 @@ let assignId = 0;
                     tsMod,
                     tsVersion,
                     this.ignoreCache,
-                    (progress, modName, status, err) => { this.downloadProgressCallback(currentAssignId, progress, modName, status, err, [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]) },
+                    (progress, modName, status, err) => { ModDownloadUtils.downloadProgressCallback(
+                        currentAssignId,
+                        progress,
+                        modName,
+                        status,
+                        err,
+                        [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
+                        this.downloadObject,
+                        this.setDownloadObject,
+                        this.setDownloadingMod,
+                        (assignIndex: string | number, value: any) => this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, value]),
+                        DownloadModModal.allVersions
+                    ) },
                     this.downloadCompletedCallback
                 );
             }, 1);
-        }
-
-        async downloadProgressCallback(
-            currentAssignId: number,
-            progress: number,
-            modName: string,
-            status: number,
-            err: R2Error | null,
-            initialMods: string[],
-        ) {
-            const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-            if (status === StatusEnum.FAILURE) {
-                if (err !== null) {
-                    this.downloadingMod = false;
-                    const existing = DownloadModModal.allVersions[assignIndex]
-                    existing[1].failed = true;
-                    this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                    DownloadModModal.addSolutionsToError(err);
-                    this.$store.commit('error/handleError', err);
-                    return;
-                }
-            } else if (status === StatusEnum.PENDING) {
-                const obj = {
-                    progress: progress,
-                    initialMods: initialMods,
-                    modName: modName,
-                    assignId: currentAssignId,
-                    failed: false,
-                }
-                if (this.downloadObject!.assignId === currentAssignId) {
-                    this.downloadObject = Object.assign({}, obj);
-                }
-                this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
-            }
         }
 
         async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
