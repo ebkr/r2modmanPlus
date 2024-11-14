@@ -158,7 +158,6 @@ export default class Splash extends mixins(SplashMixin) {
         this.loadingText = 'Preparing';
         ipcRenderer.once('update-done', async () => {
             this.getRequestItem('UpdateCheck').setProgress(100);
-            await this.getExclusions();
             await this.getThunderstoreMods();
         });
         ipcRenderer.send('update-app');
