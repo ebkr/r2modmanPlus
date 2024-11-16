@@ -1,6 +1,11 @@
+### 3.1.54
+#### Bug fix
+- Fixed profile import issue where entries were not found inside zips
+
 ### 3.1.53
 #### Games added
 - WEBFISHING
+- SULFUR
 
 #### Other changes
 - BONELAB support should now function correctly
