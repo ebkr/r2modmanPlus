@@ -24,9 +24,9 @@ export default class AdmZipProvider extends ZipProvider {
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
         const adm = new AdmZip(zip);
-        target = target.replace(/\\/g, '/');
+        const safeTarget = target.replace(/\\/g, '/');
         outputPath = outputPath.replace(/\\/g, '/');
-        var fullPath = path.join(outputPath, target).replace(/\\/g, '/');
+        var fullPath = path.join(outputPath, safeTarget).replace(/\\/g, '/');
         if(!path.posix.normalize(fullPath).startsWith(outputPath))
         {
             throw Error("Entry " + target + " would extract outside of expected folder");
