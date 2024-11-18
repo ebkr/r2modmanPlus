@@ -27,15 +27,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep:
-        'IMPORT_UPDATE_SELECTION'
-        | 'FILE_CODE_SELECTION'
-        | 'IMPORT_CODE'
+        'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
-        | 'ADDING_PROFILE'
+        | 'IMPORT_CODE'
         | 'REVIEW_IMPORT'
         | 'NO_PACKAGES_IN_IMPORT'
+        | 'IMPORT_UPDATE_SELECTION'
+        | 'ADDING_PROFILE'
         | 'PROFILE_IS_BEING_IMPORTED'
-    = 'IMPORT_UPDATE_SELECTION';
+    = 'FILE_CODE_SELECTION';
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
@@ -46,7 +46,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     closeModal() {
-        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+        this.activeStep = 'FILE_CODE_SELECTION';
         this.targetProfileName = '';
         this.importUpdateSelection = 'CREATE';
         this.importViaCodeInProgress = false;
@@ -63,17 +63,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return this.profileImportContent.getMods()
             .map(mod => this.$store.getters['tsMods/tsMod'](mod))
             .filter(mod => !!mod)
-    }
-
-    // Fired when user selects whether to import a new profile or update existing one.
-    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
-        this.importUpdateSelection = mode;
-
-        if (mode === 'UPDATE') {
-            this.targetProfileName = this.activeProfileName;
-        }
-
-        this.activeStep = 'FILE_CODE_SELECTION';
     }
 
     // Fired when user selects to import either from file or code.
@@ -152,8 +141,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        if (this.importUpdateSelection === 'CREATE') {
-            this.targetProfileName = profileContent.getProfileName();
+        this.targetProfileName = profileContent.getProfileName();
+        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+    }
+
+    // Fired when user selects whether to import a new profile or update existing one.
+    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
+        this.importUpdateSelection = mode;
+
+        if (mode === 'UPDATE') {
+            this.targetProfileName = this.activeProfileName;
         }
 
         this.activeStep = 'ADDING_PROFILE';
@@ -228,25 +225,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 </script>
 
 <template>
-    <ModalCard v-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
-        <template v-slot:header>
-            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
-        </template>
-        <template v-slot:footer>
-            <button id="modal-import-new-profile"
-                    class="button is-info"
-                    @click="onCreateOrUpdateSelect('CREATE')">
-                Import new profile
-            </button>
-            <button id="modal-update-existing-profile"
-                    class="button is-primary"
-                    @click="onCreateOrUpdateSelect('UPDATE')">
-                Update existing profile
-            </button>
-        </template>
-    </ModalCard>
-
-    <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
             <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
@@ -343,6 +322,24 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 class="button is-info"
                 @click="closeModal">
                 Close
+            </button>
+        </template>
+    </ModalCard>
+
+    <ModalCard v-else-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
+        <template v-slot:header>
+            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
+        </template>
+        <template v-slot:footer>
+            <button id="modal-import-new-profile"
+                    class="button is-info"
+                    @click="onCreateOrUpdateSelect('CREATE')">
+                Import new profile
+            </button>
+            <button id="modal-update-existing-profile"
+                    class="button is-primary"
+                    @click="onCreateOrUpdateSelect('UPDATE')">
+                Update existing profile
             </button>
         </template>
     </ModalCard>
