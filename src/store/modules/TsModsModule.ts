@@ -19,12 +19,12 @@ export interface CachedMod {
 
 interface State {
     cache: Map<string, CachedMod>;
-    connectionError: string;
     deprecated: Map<string, boolean>;
     exclusions?: string[];
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
+    thunderstoreModListUpdateError: string;
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -49,8 +49,6 @@ export const TsModsModule = {
 
     state: (): State => ({
         cache: new Map<string, CachedMod>(),
-        /*** Error shown on UI after manual mod list refresh fails */
-        connectionError: '',
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: undefined,
@@ -59,7 +57,9 @@ export const TsModsModule = {
         /*** All mods available through API for the current active game */
         mods: [],
         /*** When was the mod list last refreshed from the API? */
-        modsLastUpdated: undefined
+        modsLastUpdated: undefined,
+        /*** Error shown on UI after manual mod list refresh fails */
+        thunderstoreModListUpdateError: ''
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -119,25 +119,17 @@ export const TsModsModule = {
     mutations: <MutationTree<State>>{
         reset(state: State) {
             state.cache = new Map<string, CachedMod>();
-            state.connectionError = '';
             state.deprecated = new Map<string, boolean>();
             state.exclusions = undefined;
             state.mods = [];
             state.modsLastUpdated = undefined;
+            state.thunderstoreModListUpdateError = '';
         },
         clearModCache(state) {
             state.cache.clear();
         },
         finishThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = false;
-        },
-        setConnectionError(state, error: string|unknown) {
-            if (typeof error === 'string') {
-                state.connectionError = error;
-            } else {
-                const msg = error instanceof Error ? error.message : "Unknown error";
-                state.connectionError = msg;
-            }
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
@@ -147,6 +139,14 @@ export const TsModsModule = {
         },
         setExclusions(state, payload: string[]) {
             state.exclusions = payload;
+        },
+        setThunderstoreModListUpdateError(state, error: string|unknown) {
+            if (typeof error === 'string') {
+                state.thunderstoreModListUpdateError = error;
+            } else {
+                const msg = error instanceof Error ? error.message : "Unknown error";
+                state.thunderstoreModListUpdateError = msg;
+            }
         },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
