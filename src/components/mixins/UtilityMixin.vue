@@ -59,12 +59,12 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
-        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
             return;
         }
 
         try {
-            this.$store.commit("tsMods/startBackgroundUpdate");
+            this.$store.commit("tsMods/startThunderstoreModListUpdate");
             await this.refreshThunderstoreModList();
         } catch (e) {
             if (this.tsBackgroundRefreshFailed) {
@@ -75,7 +75,7 @@ export default class UtilityMixin extends Vue {
             this.tsBackgroundRefreshFailed = true;
             return;
         } finally {
-            this.$store.commit("tsMods/finishBackgroundUpdate");
+            this.$store.commit("tsMods/finishThunderstoreModListUpdate");
         }
 
         this.tsBackgroundRefreshFailed = false;
