@@ -9,10 +9,10 @@ import { PackageListIndex } from '../../store/modules/TsModsModule';
 @Component
 export default class UtilityMixin extends Vue {
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
-    private tsRefreshFailed = false;
+    private tsBackgroundRefreshFailed = false;
 
-    hookThunderstoreModListRefresh() {
-        setInterval(this.tryRefreshThunderstoreModList, this.REFRESH_INTERVAL);
+    hookBackgroundUpdateThunderstoreModList() {
+        setInterval(this.backgroundRefreshThunderstoreModList, this.REFRESH_INTERVAL);
     }
 
     // Wrapper to allow TSMM to inject telemetry gathering.
@@ -42,12 +42,14 @@ export default class UtilityMixin extends Vue {
     }
 
     /**
+     * Periodically refresh the Thunderstore mod list in the background.
+     *
      * Thunderstore's Sentry gets regular errors about this failing with
      * HTTP status code 0. The assumption is that it's caused by users
      * closing the window while update is in progress. Ignore the first
      * failure to see how this affects the number of reported errors.
      */
-    private async tryRefreshThunderstoreModList() {
+    private async backgroundRefreshThunderstoreModList() {
         // Don't do background update on index route since the game
         // isn't really chosen yet, nor in the splash screen since it
         // proactively updates the package list.
@@ -65,18 +67,18 @@ export default class UtilityMixin extends Vue {
             this.$store.commit("tsMods/startBackgroundUpdate");
             await this.refreshThunderstoreModList();
         } catch (e) {
-            if (this.tsRefreshFailed) {
+            if (this.tsBackgroundRefreshFailed) {
                 console.error("Two consecutive background refresh attempts failed");
                 throw e;
             }
 
-            this.tsRefreshFailed = true;
+            this.tsBackgroundRefreshFailed = true;
             return;
         } finally {
             this.$store.commit("tsMods/finishBackgroundUpdate");
         }
 
-        this.tsRefreshFailed = false;
+        this.tsBackgroundRefreshFailed = false;
     }
 
     /**
