@@ -302,8 +302,8 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                             return "Checking for new releases";
                         }
-                        if (this.$store.state.tsMods.connectionError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
+                        if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
+                            return "Error getting new mods: " + this.$store.state.tsMods.thunderstoreModListUpdateError;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
@@ -317,12 +317,12 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                     }
 
                     this.$store.commit("tsMods/startThunderstoreModListUpdate");
-                    this.$store.commit("tsMods/setConnectionError", "");
+                    this.$store.commit("tsMods/setThunderstoreModListUpdateError", "");
 
                     try {
                         await this.refreshThunderstoreModList();
                     } catch (e) {
-                        this.$store.commit("tsMods/setConnectionError", e);
+                        this.$store.commit("tsMods/setThunderstoreModListUpdateError", e);
                     } finally {
                         this.$store.commit("tsMods/finishThunderstoreModListUpdate");
                     }
