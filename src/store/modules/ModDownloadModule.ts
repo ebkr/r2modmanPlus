@@ -17,6 +17,7 @@ interface ProgressItem {
 
 interface State {
     downloads: ProgressItem[];
+    dependencyDownloads: ProgressItem[];
 }
 
 /**
@@ -27,6 +28,7 @@ export default {
 
     state: (): State => ({
         downloads: [],
+        dependencyDownloads: [],
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -37,18 +39,26 @@ export default {
             return state.downloads.slice(-1)[0]; // Last element of the array
         },
         activeDownloadProgress(state): number | undefined {
-            if(state.downloads.length > 0) {
+            if (state.downloads.length > 0) {
                 return state.downloads.slice(-1)[0].downloadProgress; // Last element of the array
             }
         },
-        downloadsInProgress(state): ProgressItem[] {
-            return state.downloads.filter((progressItem) => progressItem.status = StatusEnum.PENDING);
+        activeDownloadModName(state): string | undefined {
+            if (state.downloads.length > 0) {
+                return state.downloads.slice(-1)[0].modName; // Last element of the array
+            }
         },
-        finishedDownloads(state): ProgressItem[] {
-            return state.downloads.filter((progressItem) => progressItem.status = StatusEnum.SUCCESS);
+        activeDownloadProgressItem(state): ProgressItem | undefined {
+            if (state.downloads.length > 0) {
+                return state.downloads.slice(-1)[0]; // Last element of the array
+            }
         },
     },
     mutations: {
+        reset(state: State) {
+            state.downloads = [];
+            state.dependencyDownloads = [];
+        },
         addDownload(state: State, modName: string) {
             state.downloads.push({
                 modName: modName,
@@ -57,6 +67,28 @@ export default {
                 status: StatusEnum.PENDING,
                 error: null
             });
+        },
+        updateDownloadProgress(state: State, params: { progress: number, modName: string, status: number, err: R2Error | null }) {
+            let downloadMod = state.downloads.find((progressItem) => progressItem.modName === params.modName);
+
+            if (!downloadMod) {
+                state.dependencyDownloads.push({
+                    modName: params.modName,
+                    installProgress: 0,
+                    downloadProgress: 0,
+                    status: StatusEnum.PENDING,
+                    error: null
+                });
+                downloadMod = state.dependencyDownloads.find((progressItem) => progressItem.modName === params.modName);
+            }
+
+            if (downloadMod) {
+                downloadMod.downloadProgress = params.progress;
+                downloadMod.status = params.status;
+                if (params.status === StatusEnum.FAILURE && params.err) {
+                    downloadMod.error = params.err;
+                }
+            }
         }
     },
     actions: <ActionTree<State, RootState>>{
@@ -77,46 +109,23 @@ export default {
                 error: null
             });
 
-            return new Promise((resolve, reject) => {
-                ThunderstoreDownloaderProvider.instance.download(
-                    params.profile,
-                    params.mod.getMod(),
-                    params.mod.getVersion(),
-                    true,
-                    (progress, modName, status, err) => {
-                        let downloadMod = state.downloads.find((progressItem) => progressItem.modName === modName);
-
-                        if (!downloadMod) {
-                            commit('addDownload', modName);
-                            downloadMod = state.downloads.find((progressItem) => progressItem.modName === modName);
-                        }
-                        if (!downloadMod) {
-                            reject(err);
-                            return;
-                        }
-
-                        if (status === StatusEnum.FAILURE && err) {
-                            downloadMod.error = err;
-                        }
-                        if (status === StatusEnum.PENDING) {
-                            downloadMod.downloadProgress = progress;
-                        }
-                    },
-                    (mods) => {
-                        mods.forEach((mod) => {
-                            const downloadMod = state.downloads.find((progressItem) => progressItem.modName === mod.getMod().getName());
-
-                            if (!downloadMod) {
-                                reject();
-                                return;
-                            }
-                            downloadMod.downloadProgress = 100;
-                            downloadMod.status = StatusEnum.SUCCESS;
-                        });
-                        resolve(mods);
-                    }
-                );
-            });
+            ThunderstoreDownloaderProvider.instance.download(
+                params.profile,
+                params.mod.getMod(),
+                params.mod.getVersion(),
+                true,
+                (progress, modName, status, err) => {
+                    commit('updateDownloadProgress', { progress, modName, status, err });
+                },
+                (mods) => {
+                    mods.forEach((mod) => {
+                        commit(
+                            'updateDownloadProgress',
+                            { progress: 100, modName: mod.getMod().getName(), status: StatusEnum.SUCCESS, err: null }
+                        );
+                    });
+                }
+            );
         },
     },
 }
