@@ -18,7 +18,7 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
     }
 
     get isUpdateInProgress(): boolean {
-        return this.$store.state.tsMods.isBackgroundUpdateInProgress;
+        return this.$store.state.tsMods.isThunderstoreModListUpdateInProgress;
     }
 
     @Watch('isUpdateInProgress')
@@ -34,7 +34,7 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
             return;
         }
 
-        this.$store.commit('tsMods/startBackgroundUpdate');
+        this.$store.commit('tsMods/startThunderstoreModListUpdate');
         this.updateError = '';
 
         try {
@@ -48,7 +48,7 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
         } catch (e) {
             this.updateError = `${e}`;
         } finally {
-            this.$store.commit('tsMods/finishBackgroundUpdate');
+            this.$store.commit('tsMods/finishThunderstoreModListUpdate');
         }
     }
 }

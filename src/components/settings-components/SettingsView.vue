@@ -299,7 +299,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+                        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                             return "Checking for new releases";
                         }
                         if (this.$store.state.tsMods.connectionError.length > 0) {
@@ -312,11 +312,11 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                     },
                 'fa-exchange-alt',
                 async () => {
-                    if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
+                    if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                         return;
                     }
 
-                    this.$store.commit("tsMods/startBackgroundUpdate");
+                    this.$store.commit("tsMods/startThunderstoreModListUpdate");
                     this.$store.commit("tsMods/setConnectionError", "");
 
                     try {
@@ -324,7 +324,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                     } catch (e) {
                         this.$store.commit("tsMods/setConnectionError", e);
                     } finally {
-                        this.$store.commit("tsMods/finishBackgroundUpdate");
+                        this.$store.commit("tsMods/finishThunderstoreModListUpdate");
                     }
                 }
             ),
