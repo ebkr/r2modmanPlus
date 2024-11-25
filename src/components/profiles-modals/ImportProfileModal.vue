@@ -6,6 +6,7 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
+import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
@@ -31,7 +32,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         | 'IMPORT_FILE'
         | 'IMPORT_CODE'
         | 'REVIEW_IMPORT'
-        | 'NO_PACKAGES_IN_IMPORT'
         | 'IMPORT_UPDATE_SELECTION'
         | 'ADDING_PROFILE'
         | 'PROFILE_IS_BEING_IMPORTED'
@@ -56,13 +56,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.$store.commit('closeImportProfileModal');
     }
 
-    get profileToOnlineMods() {
-        if (!this.profileImportContent) {
-            return [];
+    get profileMods(): {known: ThunderstoreMod[], unknown: string[]} {
+        const profileMods = this.profileImportContent ? this.profileImportContent.getMods() : [];
+        const known: ThunderstoreMod[] = [];
+        const unknown: string[] = [];
+
+        for (const mod of profileMods) {
+            const tsMod = this.$store.getters['tsMods/tsMod'](mod);
+            if (tsMod) {
+                known.push(tsMod);
+            } else {
+                unknown.push(mod.getName());
+            }
         }
-        return this.profileImportContent.getMods()
-            .map(mod => this.$store.getters['tsMods/tsMod'](mod))
-            .filter(mod => !!mod)
+
+        unknown.sort();
+        return {known, unknown};
     }
 
     // Fired when user selects to import either from file or code.
@@ -126,8 +135,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        this.activeStep = this.profileToOnlineMods.length ? 'REVIEW_IMPORT' : 'NO_PACKAGES_IN_IMPORT';
-        return;
+        this.activeStep = 'REVIEW_IMPORT';
     }
 
     // Fired when user has accepted the mods to be imported in the review phase.
@@ -296,33 +304,43 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <h2 class="modal-title">Packages to be installed</h2>
         </template>
         <template v-slot:body>
-            <OnlineModList :paged-mod-list="profileToOnlineMods" :read-only="true" />
-        </template>
-        <template v-slot:footer>
-            <button
-                id="modal-review-confirmed"
-                class="button is-info"
-                @click="onProfileReviewConfirmed();">
-                Import
-            </button>
-        </template>
-    </ModalCard>
+            <OnlineModList :paged-mod-list="profileMods.known" :read-only="true" />
+            <div v-if="!profileMods.known.length || profileMods.unknown.length" class="notification is-warning margin-top">
+                <p v-if="!profileMods.known.length">
+                    None of the packages in the profile were found on Thunderstore:
+                </p>
+                <p v-else>
+                    Some of the packages in the profile were not found on Thunderstore:
+                </p>
 
-    <ModalCard v-else-if="activeStep === 'NO_PACKAGES_IN_IMPORT'" key="NO_PACKAGES_IN_IMPORT" :is-active="isOpen" @close-modal="closeModal">
-        <template v-slot:header>
-            <h2 class="modal-title">There was a problem importing the profile</h2>
-        </template>
-        <template v-slot:body>
-            <p>None of the packages inside the export were found on Thunderstore.</p>
-            <p>There is nothing to import.</p>
+                <p class="margin-top">{{ profileMods.unknown.join(", ") }}</p>
+
+                <p v-if="profileMods.known.length" class="margin-top">
+                    These packages will not be installed.
+                </p>
+                <p v-else class="margin-top">
+                    Ensure the profile is intended for the currently selected game.
+                </p>
+            </div>
         </template>
         <template v-slot:footer>
-            <button
-                id="modal-no-mods-to-import"
-                class="button is-info"
-                @click="closeModal">
-                Close
-            </button>
+            <div class="container is-flex is-justify-content-space-between">
+                <button
+                    id="modal-no-mods-to-import"
+                    class="button is-danger"
+                    @click="closeModal"
+                >
+                    Cancel import
+                </button>
+                <button
+                    id="modal-review-confirmed"
+                    class="button is-info"
+                    :disabled="!profileMods.known.length"
+                    @click="onProfileReviewConfirmed"
+                >
+                    Import
+                </button>
+            </div>
         </template>
     </ModalCard>
 
