@@ -1,11 +1,14 @@
-import {ActionTree, GetterTree} from 'vuex';
+import { ActionTree, GetterTree } from 'vuex';
 
 import StatusEnum from '../../model/enums/StatusEnum';
-import {ImmutableProfile} from '../../model/Profile';
+import R2Error from "../../model/errors/R2Error";
+import ManifestV2 from "../../model/ManifestV2";
+import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import {State as RootState} from '../index';
-import R2Error from "../../model/errors/R2Error";
+import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
+import ProfileModList from "../../r2mm/mods/ProfileModList";
+import { State as RootState } from '../index';
 
 interface ProgressItem {
     modName: string;
@@ -48,9 +51,9 @@ export default {
                 return state.downloads.slice(-1)[0].modName; // Last element of the array
             }
         },
-        activeDownloadProgressItem(state): ProgressItem | undefined {
+        activeInstallProgress(state): number | undefined {
             if (state.downloads.length > 0) {
-                return state.downloads.slice(-1)[0]; // Last element of the array
+                return state.downloads.slice(-1)[0].installProgress; // Last element of the array
             }
         },
     },
@@ -89,11 +92,24 @@ export default {
                     downloadMod.error = params.err;
                 }
             }
+        },
+        updateInstallProgress(state: State, params: { progress: number, modName: string, status: number, err: R2Error | null }) {
+            let installMod = state.downloads.find((progressItem) => progressItem.modName === params.modName);
+
+            if (!installMod) {
+                installMod = state.dependencyDownloads.find((progressItem) => progressItem.modName === params.modName);
+            }
+
+            if (installMod) {
+                installMod.installProgress = params.progress;
+                installMod.status = params.status;
+                if (params.status === StatusEnum.FAILURE && params.err) {
+                    installMod.error = params.err;
+                }
+            }
         }
     },
     actions: <ActionTree<State, RootState>>{
-
-        //TODO: Do the installation
         async downloadAndInstallMod(
             {dispatch, getters, state, commit},
             params: {
@@ -109,23 +125,75 @@ export default {
                 error: null
             });
 
-            ThunderstoreDownloaderProvider.instance.download(
+            const mods: ThunderstoreCombo[] = await ThunderstoreDownloaderProvider.instance.download(
                 params.profile,
                 params.mod.getMod(),
                 params.mod.getVersion(),
                 true,
                 (progress, modName, status, err) => {
-                    commit('updateDownloadProgress', { progress, modName, status, err });
-                },
-                (mods) => {
-                    mods.forEach((mod) => {
-                        commit(
-                            'updateDownloadProgress',
-                            { progress: 100, modName: mod.getMod().getName(), status: StatusEnum.SUCCESS, err: null }
-                        );
-                    });
+                    commit('updateDownloadProgress', {progress, modName, status, err});
                 }
             );
+            for (const mod of mods) {
+                await commit(
+                    'updateDownloadProgress',
+                    { progress: 100, modName: mod.getMod().getName(), status: StatusEnum.SUCCESS, err: null }
+                );
+                await dispatch('installModAfterDownload', { profile: params.profile, mod: params.mod }).then(() => {
+                    commit(
+                        'updateInstallProgress',
+                        { progress: 100, modName: mod.getMod().getName(), status: StatusEnum.SUCCESS, err: null }
+                    );
+                });
+            }
         },
+        async installModAfterDownload(
+            {dispatch, getters, state, commit},
+            params: {
+                profile: ImmutableProfile,
+                mod: ThunderstoreCombo,
+            }
+        ): Promise<void> {
+            return new Promise(async (resolve, reject) => {
+                const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(params.mod.getMod(), params.mod.getVersion());
+                const profileModList = await ProfileModList.getModList(params.profile);
+                if (profileModList instanceof R2Error) {
+                    return reject(profileModList);
+                }
+                const modAlreadyInstalled = profileModList.find(
+                    value => value.getName() === params.mod.getMod().getFullName()
+                        && value.getVersionNumber().isEqualTo(params.mod.getVersion().getVersionNumber())
+                );
+
+                if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
+                    const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
+                    const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
+                    if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
+                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, params.profile);
+                        if (result instanceof R2Error) {
+                            return reject(result);
+                        }
+                    }
+                    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, params.profile);
+                    if (!(installError instanceof R2Error)) {
+                        const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, params.profile);
+                        if (newModList instanceof R2Error) {
+                            return reject(newModList);
+                        }
+                    } else {
+                        return reject(installError);
+                    }
+                    if (olderInstallOfMod !== undefined) {
+                        if (!olderInstallOfMod.isEnabled()) {
+                            await ProfileModList.updateMod(manifestMod, params.profile, async mod => {
+                                mod.disable();
+                            });
+                            await ProfileInstallerProvider.instance.disableMod(manifestMod, params.profile);
+                        }
+                    }
+                }
+                return resolve();
+            });
+        }
     },
 }
