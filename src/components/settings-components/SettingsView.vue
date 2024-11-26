@@ -45,8 +45,8 @@
 
 <script lang="ts">
 
-import { Watch } from 'vue-property-decorator';
-import Component, { mixins } from 'vue-class-component';
+import { Vue, Watch } from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -62,7 +62,6 @@ import ManifestV2 from '../../model/ManifestV2';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
-import UtilityMixin from '../mixins/UtilityMixin.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
@@ -71,7 +70,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             Hero
         }
     })
-    export default class SettingsView extends mixins(UtilityMixin) {
+    export default class SettingsView extends Vue {
 
         private activeTab: string = 'All';
         private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
@@ -320,7 +319,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                     this.$store.commit("tsMods/setThunderstoreModListUpdateError", "");
 
                     try {
-                        await this.refreshThunderstoreModList();
+                        await this.$store.dispatch("tsMods/fetchAndProcessPackageList");
                     } catch (e) {
                         this.$store.commit("tsMods/setThunderstoreModListUpdateError", e);
                     } finally {

@@ -4,7 +4,6 @@ import Component from 'vue-class-component';
 
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { PackageListIndex } from '../../store/modules/TsModsModule';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -13,32 +12,6 @@ export default class UtilityMixin extends Vue {
 
     hookBackgroundUpdateThunderstoreModList() {
         setInterval(this.backgroundRefreshThunderstoreModList, this.REFRESH_INTERVAL);
-    }
-
-    // Wrapper to allow TSMM to inject telemetry gathering.
-    async refreshThunderstoreModList() {
-        await this._refreshThunderstoreModList();
-    }
-
-    async _refreshThunderstoreModList() {
-        const packageListIndex: PackageListIndex = await this.$store.dispatch("tsMods/fetchPackageListIndex");
-
-        if (packageListIndex.isLatest) {
-            await this.$store.dispatch("tsMods/updateModsLastUpdated");
-            return;
-        }
-
-        const packageListChunks = await this.$store.dispatch(
-            "tsMods/fetchPackageListChunks",
-            {chunkUrls: packageListIndex.content},
-        );
-        await this.$store.dispatch(
-            "tsMods/updatePersistentCache",
-            {chunks: packageListChunks, indexHash: packageListIndex.hash},
-        );
-        await this.$store.dispatch("tsMods/updateMods");
-        await this.$store.dispatch("profile/tryLoadModListFromDisk");
-        await this.$store.dispatch("tsMods/prewarmCache");
     }
 
     /**
@@ -65,7 +38,7 @@ export default class UtilityMixin extends Vue {
 
         try {
             this.$store.commit("tsMods/startThunderstoreModListUpdate");
-            await this.refreshThunderstoreModList();
+            await this.$store.dispatch('tsMods/fetchAndProcessPackageList');
         } catch (e) {
             if (this.tsBackgroundRefreshFailed) {
                 console.error("Two consecutive background refresh attempts failed");

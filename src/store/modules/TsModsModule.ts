@@ -157,6 +157,27 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
+        async fetchAndProcessPackageList({dispatch}) {
+            const packageListIndex: PackageListIndex = await dispatch('fetchPackageListIndex');
+
+            if (packageListIndex.isLatest) {
+                await dispatch('updateModsLastUpdated');
+                return;
+            }
+
+            const packageListChunks = await dispatch(
+                'fetchPackageListChunks',
+                {chunkUrls: packageListIndex.content},
+            );
+            await dispatch(
+                'updatePersistentCache',
+                {chunks: packageListChunks, indexHash: packageListIndex.hash},
+            );
+            await dispatch('updateMods');
+            await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
+            await dispatch('prewarmCache');
+        },
+
         async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
