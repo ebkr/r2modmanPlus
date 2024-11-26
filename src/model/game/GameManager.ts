@@ -659,9 +659,9 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["act"]),
 
         new Game("Gladio Mori", "GladioMori", "GladioMori",
-            "Gladio Mori Demo", ["Gladio Mori.exe"], "Gladio Mori_Data",
+            "Gladio Mori", ["Gladio Mori.exe"], "Gladio Mori_Data",
             "https://thunderstore.io/c/gladio-mori/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2908480")], "GladioMori.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2689120")], "GladioMori.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gm"]),
 
         new Game("Slipstream: Rogue Space", "SlipstreamRogueSpace", "SlipstreamRogueSpace",
