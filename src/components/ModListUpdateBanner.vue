@@ -1,11 +1,8 @@
 <script lang="ts">
-import { mixins } from 'vue-class-component';
-import { Component, Watch } from 'vue-property-decorator';
-
-import UtilityMixin from './mixins/UtilityMixin.vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
 @Component({})
-export default class ModListUpdateBanner extends mixins(UtilityMixin) {
+export default class ModListUpdateBanner extends Vue {
     updateError = '';
 
     get isModListLoaded(): boolean {
@@ -36,10 +33,10 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
             // Invalidate hash to force a refresh. Otherwise a scenario where
             // the latest index hash is already present in IndexedDB but loading
             // the package list into Vuex store has failed would cause the banner
-            // to just disappear when refreshThunderstoreModList skips the actual
+            // to just disappear when fetchAndProcessPackageList skips the actual
             // update but updates the timestamp of the hash.
             await this.$store.dispatch('tsMods/updateIndexHash', 'invalidated');
-            await this.refreshThunderstoreModList();
+            await this.$store.dispatch('tsMods/fetchAndProcessPackageList');
         } catch (e) {
             this.updateError = `${e}`;
         } finally {
