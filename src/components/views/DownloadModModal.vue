@@ -11,6 +11,15 @@
                         :value='activeDownloadProgress'
                         :className="['is-dark']"
                     />
+                    <div v-if="activeInstallProgress > 0">
+                        <h3 class='title'>Installing {{activeDownloadModName}}</h3>
+                        <p>{{Math.floor(activeInstallProgress)}}% complete</p>
+                        <Progress
+                            :max='100'
+                            :value='activeInstallProgress'
+                            :className="['is-dark']"
+                        />
+                    </div>
                 </div>
             </div>
             <button class="modal-close is-large" aria-label="close" @click="closeModal();"></button>
@@ -145,6 +154,10 @@ let assignId = 0;
             return this.$store.getters['modDownload/activeDownloadModName'];
         }
 
+        get activeInstallProgress(): number {
+            return this.$store.getters['modDownload/activeInstallProgress'];
+        }
+
         get activeGame(): Game {
             return this.$store.state.activeGame;
         }
@@ -175,8 +188,8 @@ let assignId = 0;
                     failed: false,
                 };
                 DownloadModModal.allVersions.push([currentAssignId, progressObject]);
-                setTimeout(() => {
-                    ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+                setTimeout(async () => {
+                    const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                         const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
                         if (status === StatusEnum.FAILURE) {
                             if (err !== null) {
@@ -196,28 +209,29 @@ let assignId = 0;
                             }
                             DownloadModModal.allVersions[assignIndex] = [currentAssignId, obj];
                         }
-                    }, async (downloadedMods: ThunderstoreCombo[]) => {
-                        ProfileModList.requestLock(async () => {
-                            for (const combo of downloadedMods) {
-                                try {
-                                    await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
-                                } catch (e) {
-                                    return reject(
-                                        R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
-                                    );
-                                }
+                    });
+                    await ProfileModList.requestLock(async () => {
+                        for (const combo of downloadedMods) {
+                            try {
+                                await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
+                            } catch (e) {
+                                return reject(
+                                    R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
+                                );
                             }
-                            const modList = await ProfileModList.getModList(profile.asImmutableProfile());
-                            if (!(modList instanceof R2Error)) {
-                                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
-                                if (err instanceof R2Error) {
-                                    return reject(err);
-                                }
+                        }
+                        const modList = await ProfileModList.getModList(profile.asImmutableProfile());
+                        if (!(modList instanceof R2Error)) {
+                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
+                            if (err instanceof R2Error) {
+                                return reject(err);
                             }
-                            return resolve();
-                        });
+                        }
+                        return resolve();
                     });
                 }, 1);
+
+
             });
         }
 

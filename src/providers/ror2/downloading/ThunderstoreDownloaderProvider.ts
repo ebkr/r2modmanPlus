@@ -54,12 +54,12 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param modVersion        The version of the mod to download.
      * @param ignoreCache       Download mod even if it already exists in the cache.
      * @param callback          Callback to show the current state of the downloads.
-     * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
      */
-    public abstract download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                    ignoreCache: boolean,
-                    callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                    completedCallback: (modList: ThunderstoreCombo[]) => void): void;
+    public abstract download(
+        profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
+        ignoreCache: boolean,
+        callback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+    ): Promise<ThunderstoreCombo[]>;
 
     /**
      * A top-level method to download exact versions of exported mods.
@@ -87,11 +87,11 @@ export default abstract class ThunderstoreDownloaderProvider {
      * Iterate the {@class ThunderstoreCombo} array to perform the download for each mod.
      * Progress to the next one recursively once the callback received has been successful.
      *
-     * @param entries      IterableIterator of entries for {@class ThunderstoreCombo} mods to download.
+     * @param entries      The {@class ThunderstoreCombo} mods to download.
      * @param ignoreCache  Should mod be downloaded even if it already exists in the cache?
      * @param callback     See {@method download}
      */
-    public abstract queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, ignoreCache: boolean, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void): void
+    public abstract queueDownloadDependencies(entries: ThunderstoreCombo[], ignoreCache: boolean, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void): void
 
     /**
      * Generate the total count of mods to be downloaded. Cached mods are not included in this count unless download cache is disabled.
