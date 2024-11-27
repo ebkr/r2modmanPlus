@@ -1,3 +1,20 @@
+### 3.1.54
+#### Bug fix
+- Fixed profile import issue where entries were not found inside zips
+
+### 3.1.53
+#### Games added
+- WEBFISHING
+- SULFUR
+
+#### Other changes
+- BONELAB support should now function correctly
+  - Assemblies will no longer be regenerated on every launch
+- "Preloader fix" has been replaced with "Reset \<game\> installation"
+  - This will delete the entire game directory and prompt Steam to re-validate files
+  - The preloader fix was originally a solution for old Risk of Rain 2 modded installations using SeikoML failing to
+    launch
+
 ### 3.1.52
 #### Small quality of life changes
 - Upgraded from Electron v11 to v24
@@ -5,6 +22,10 @@
 - Mods imported from a profile keep the same order they were exported in
 - Fixed sorting by download count
 - Reduced time taken to install when a mod has a large number of dependencies
+
+#### Games added
+- Old Market Simulator
+- Subterranauts
 
 ### 3.1.51
 #### Memory and performance improvements

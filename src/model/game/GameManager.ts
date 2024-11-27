@@ -659,9 +659,9 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["act"]),
 
         new Game("Gladio Mori", "GladioMori", "GladioMori",
-            "Gladio Mori Demo", ["Gladio Mori.exe"], "Gladio Mori_Data",
+            "Gladio Mori", ["Gladio Mori.exe"], "Gladio Mori_Data",
             "https://thunderstore.io/c/gladio-mori/api/v1/package-listing-index/", EXCLUSIONS,
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2908480")], "GladioMori.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2689120")], "GladioMori.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gm"]),
 
         new Game("Slipstream: Rogue Space", "SlipstreamRogueSpace", "SlipstreamRogueSpace",
@@ -829,6 +829,12 @@ export default class GameManager {
             "ATLYSS", ["ATLYSS.exe"], "ATLYSS_Data",
             "https://thunderstore.io/c/atlyss/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2768430")], "ATLYSS.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("STRAFTAT", "STRAFTAT", "STRAFTAT",
+            "STRAFTAT", ["STRAFTAT.exe"], "STRAFTAT_Data",
+            "https://thunderstore.io/c/straftat/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2386720")], "STRAFTAT.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 

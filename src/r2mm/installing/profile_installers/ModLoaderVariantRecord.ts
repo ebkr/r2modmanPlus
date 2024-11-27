@@ -207,6 +207,7 @@ const VARIANTS = {
     SULFUR: MODLOADER_PACKAGES,
     WEBFISHING: MODLOADER_PACKAGES,
     ATLYSS: MODLOADER_PACKAGES,
+    STRAFTAT: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
