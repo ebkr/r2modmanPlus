@@ -7,13 +7,13 @@ import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
 import { ProfilesModule } from './modules/ProfilesModule';
 import { TsModsModule } from './modules/TsModsModule';
+import { DownloadModule } from './modules/DownloadModule';
 import { FolderMigration } from '../migrations/FolderMigration';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import R2Error from '../model/errors/R2Error';
 import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import ModDownloadModule from "../store/modules/ModDownloadModule";
 
 Vue.use(Vuex);
 
@@ -129,7 +129,7 @@ export const store = {
         profile: ProfileModule,
         profiles: ProfilesModule,
         tsMods: TsModsModule,
-        modDownload: ModDownloadModule,
+        download: DownloadModule,
     },
 
     // enable strict mode (adds overhead!)

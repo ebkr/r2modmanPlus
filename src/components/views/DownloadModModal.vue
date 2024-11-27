@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':activeDownloadModName}]" v-if="activeDownloadModName">
+        <div id='downloadProgressModal' :class="['modal', {'is-active':activeDownload}]" v-if="activeDownload">
             <div class="modal-background" @click="closeModal();"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{activeDownloadModName}}</h3>
-                    <p>{{Math.floor(activeDownloadProgress)}}% complete</p>
+                    <h3 class='title'>Downloading {{activeDownload.modName}}</h3>
+                    <p>{{Math.floor(activeDownload.downloadProgress)}}% complete</p>
                     <Progress
                         :max='100'
-                        :value='activeDownloadProgress'
+                        :value='activeDownload.downloadProgress'
                         :className="['is-dark']"
                     />
                 </div>
@@ -107,6 +107,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { ProgressItem } from "../../store/modules/DownloadModule";
 import { installModsToProfile } from '../../utils/ProfileUtils';
 
 interface DownloadProgress {
@@ -137,12 +138,8 @@ let assignId = 0;
         static allVersions: [number, DownloadProgress][] = [];
 
 
-        get activeDownloadProgress(): number {
-            return this.$store.getters['modDownload/activeDownloadProgress'];
-        }
-
-        get activeDownloadModName() {
-            return this.$store.getters['modDownload/activeDownloadModName'];
+        get activeDownload(): ProgressItem | undefined {
+            return this.$store.getters['download/activeDownload'];
         }
 
         get activeGame(): Game {
@@ -268,7 +265,6 @@ let assignId = 0;
 
         closeModal() {
             this.$store.commit("closeDownloadModModal");
-            this.$store.commit("modDownload/reset");
         }
 
         async downloadThunderstoreMod() {
@@ -340,12 +336,15 @@ let assignId = 0;
             this.closeModal();
             this.downloadingMod = true;
 
-            let tsCombo: ThunderstoreCombo = new ThunderstoreCombo();
+            let tsCombo = new ThunderstoreCombo();
             tsCombo.setMod(tsMod);
             tsCombo.setVersion(tsVersion);
 
+            //TODO: Remove the completedCallback and await instead
+            //TODO: Once the above is done, close the modal when the downloading and installation are completed.
+
             await this.$store.dispatch(
-                'modDownload/downloadAndInstallMod',
+                'download/downloadAndInstallMod',
                 { profile: this.profile.asImmutableProfile(), mod: tsCombo }
             ).catch((reason) => this.$store.commit('error/handleError', R2Error.fromThrownValue(reason)));
         }
