@@ -218,9 +218,7 @@ export function getModLoaderPackageNames() {
     const names = MODLOADER_PACKAGES.map((mapping) => mapping.packageName);
 
     // Hard code MelonLoader to avoid having to iterate over MODLOADER_PACKAGES
-    // for each game separately. Hopefully we'll get rid of this once ML v0.6.6
-    // is released, as it's supposed to fix a bug that forces some games to
-    // currently use the older versions.
+    // for each game separately.
     names.push("LavaGang-MelonLoader");
     return names;
 }
