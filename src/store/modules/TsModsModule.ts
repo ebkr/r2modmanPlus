@@ -157,28 +157,40 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async fetchAndProcessPackageList({dispatch}) {
+        async fetchAndProcessPackageList({dispatch, state}) {
             const packageListIndex: PackageListIndex = await dispatch('fetchPackageListIndex');
 
+            // If the package list is up to date, only update the timestamp. Otherwise,
+            // fetch the new one and store it into IndexedDB.
             if (packageListIndex.isLatest) {
-                await dispatch('updateModsLastUpdated');
-                return;
+                await dispatch('updateIndexHash', packageListIndex.hash);
+            } else {
+                const packageListChunks = await dispatch(
+                    'fetchPackageListChunks',
+                    {chunkUrls: packageListIndex.content},
+                );
+                await dispatch(
+                    'updatePersistentCache',
+                    {chunks: packageListChunks, indexHash: packageListIndex.hash},
+                );
             }
 
-            const packageListChunks = await dispatch(
-                'fetchPackageListChunks',
-                {chunkUrls: packageListIndex.content},
-            );
-            await dispatch(
-                'updatePersistentCache',
-                {chunks: packageListChunks, indexHash: packageListIndex.hash},
-            );
-            await dispatch('updateMods');
-            await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
-            await dispatch('prewarmCache');
+            // If the package list was up to date and the mod list is already loaded to
+            // Vuex, just update the timestamp. Otherwise, load the list from IndexedDB
+            // to Vuex. This needs to be done even if the index hasn't updated when the
+            // mod list in Vuex is empty, as this indicates an error state and otherwise
+            // the user would be stuck with empty list until a new index hash is
+            // available via the API.
+            if (packageListIndex.isLatest && state.mods.length > 0) {
+                await dispatch('updateModsLastUpdated');
+            } else {
+                await dispatch('updateMods');
+                await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
+                await dispatch('prewarmCache');
+            }
         },
 
-        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
+        async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
 
@@ -191,14 +203,6 @@ export const TsModsModule = {
 
             const community = rootState.activeGame.internalFolderName;
             const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
-
-            // Normally the hash would be updated after the mod list is successfully
-            // fetched and written to IndexedDB, but if the list hasn't changed,
-            // those step are skipped, so update the "last seen" timestamp now.
-            if (isLatest) {
-                await dispatch('updateIndexHash', index.hash);
-            }
-
             return {...index, isLatest};
         },
 
