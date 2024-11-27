@@ -73,6 +73,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
 ];
 
+const DEFAULT_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
 
 /**
  * While this object is a bit silly given that all the keys are pointing to the
@@ -113,11 +114,11 @@ const VARIANTS = {
     Titanfall2: MODLOADER_PACKAGES,
     Peglin: MODLOADER_PACKAGES,
     VRising: MODLOADER_PACKAGES,
-    HardBullet: MODLOADER_PACKAGES,
+    HardBullet: DEFAULT_MELONLOADER_MAPPING,
     GreenHellVR: MODLOADER_PACKAGES,
     "20MinutesTillDawn": MODLOADER_PACKAGES,
     VTOL_VR: MODLOADER_PACKAGES,
-    BackpackHero: MODLOADER_PACKAGES,
+    BackpackHero: DEFAULT_MELONLOADER_MAPPING,
     Stacklands: MODLOADER_PACKAGES,
     ETG: MODLOADER_PACKAGES,
     Ravenfield: MODLOADER_PACKAGES,
@@ -133,7 +134,7 @@ const VARIANTS = {
     AtrioTheDarkWild: MODLOADER_PACKAGES,
     AncientDungeonVR: MODLOADER_PACKAGES,
     Brotato: MODLOADER_PACKAGES,
-    RUMBLE: MODLOADER_PACKAGES,
+    RUMBLE: DEFAULT_MELONLOADER_MAPPING,
     DomeKeeper: MODLOADER_PACKAGES,
     SkulTheHeroSlayer: MODLOADER_PACKAGES,
     SonsOfTheForest: MODLOADER_PACKAGES,
@@ -141,7 +142,7 @@ const VARIANTS = {
     WrestlingEmpire: MODLOADER_PACKAGES,
     Receiver2: MODLOADER_PACKAGES,
     ThePlanetCrafter: MODLOADER_PACKAGES,
-    PatchQuest: MODLOADER_PACKAGES,
+    PatchQuest: DEFAULT_MELONLOADER_MAPPING,
     ShadowsOverLoathing: MODLOADER_PACKAGES,
     WestofLoathing: MODLOADER_PACKAGES,
     SunHaven: MODLOADER_PACKAGES,
