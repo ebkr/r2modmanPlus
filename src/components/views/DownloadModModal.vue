@@ -15,56 +15,14 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
-        <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
-            <template v-slot:header>
-                <h2 class='modal-title' v-if="thunderstoreMod !== null">
-                    Select a version of {{thunderstoreMod.getName()}} to download
-                </h2>
-            </template>
-            <template v-slot:body>
-                <p>It's recommended to select the latest version of all mods.</p>
-                <p>Using outdated versions may cause problems.</p>
-                <br/>
-                <div class="columns is-vcentered">
-                    <template v-if="currentVersion !== null">
-                        <div class="column is-narrow">
-                            <select class="select" disabled="true">
-                                <option selected>
-                                    {{currentVersion}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="column is-narrow">
-                            <span class="margin-right margin-right--half-width"><span class="margin-right margin-right--half-width"/> <i class='fas fa-long-arrow-alt-right'></i></span>
-                        </div>
-                    </template>
-                    <div class="column is-narrow">
-                        <select class='select' v-model='selectedVersion'>
-                            <option v-for='(value, index) in versionNumbers' :key='index' v-bind:value='value'>
-                                {{value}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="column is-narrow">
-                        <span class="tag is-dark" v-if='selectedVersion === null'>
-                            You need to select a version
-                        </span>
-                        <span class="tag is-success" v-else-if='recommendedVersion === selectedVersion'>
-                            {{selectedVersion}} is the recommended version
-                        </span>
-                        <span class="tag is-success" v-else-if='versionNumbers[0] === selectedVersion'>
-                            {{selectedVersion}} is the latest version
-                        </span>
-                        <span class="tag is-danger" v-else-if='versionNumbers[0] !== selectedVersion'>
-                            {{selectedVersion}} is an outdated version
-                        </span>
-                    </div>
-                </div>
-            </template>
-            <template v-slot:footer>
-                <button class="button is-info" @click="downloadThunderstoreMod()">Download with dependencies</button>
-            </template>
-        </ModalCard>
+        <DownloadModVersionSelectModal
+            :versionNumbers="versionNumbers"
+            :selected-version="selectedVersion"
+            :currentVersion="currentVersion"
+            :recommendedVersion="recommendedVersion"
+            :download-thunderstore-mod="downloadThunderstoreMod"
+            :set-selected-version="setSelectedVersion"
+        />
         <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
             <template v-slot:header>
                 <h2 class='modal-title'>Update all installed mods</h2>
@@ -90,7 +48,8 @@
 
 <script lang="ts">
 
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { mixins } from "vue-class-component";
+import { Component, Watch } from 'vue-property-decorator';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -108,6 +67,8 @@ import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/Mo
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { installModsToProfile } from '../../utils/ProfileUtils';
+import DownloadMixin from "../mixins/DownloadMixin.vue";
+import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 
 interface DownloadProgress {
     assignId: number;
@@ -121,11 +82,12 @@ let assignId = 0;
 
     @Component({
         components: {
+            DownloadModVersionSelectModal,
             ModalCard,
             Progress
         }
     })
-    export default class DownloadModModal extends Vue {
+    export default class DownloadModModal extends mixins(DownloadMixin) {
 
         versionNumbers: string[] = [];
         recommendedVersion: string | null = null;
@@ -140,13 +102,13 @@ let assignId = 0;
             return this.$store.state.activeGame;
         }
 
-        get profile(): Profile {
-            return this.$store.getters['profile/activeProfile'];
-        }
-
         get ignoreCache(): boolean {
             const settings = this.$store.getters['settings'];
             return settings.getContext().global.ignoreCache;
+        }
+
+        setSelectedVersion(newSelectedVersion: string) {
+            this.selectedVersion = newSelectedVersion;
         }
 
         public static async downloadSpecific(
@@ -212,14 +174,6 @@ let assignId = 0;
             });
         }
 
-        get thunderstoreMod(): ThunderstoreMod | null {
-            return this.$store.state.modals.downloadModModalMod;
-        }
-
-        get isOpen(): boolean {
-            return this.$store.state.modals.isDownloadModModalOpen;
-        }
-
         @Watch('$store.state.modals.downloadModModalMod')
         async getModVersions() {
             this.currentVersion = null;
@@ -255,10 +209,6 @@ let assignId = 0;
                     }
                 }
             }
-        }
-
-        closeModal() {
-            this.$store.commit("closeDownloadModModal");
         }
 
         async downloadThunderstoreMod() {
