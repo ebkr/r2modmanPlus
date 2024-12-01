@@ -81,9 +81,13 @@ import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
 import ModListUpdateBanner from "../ModListUpdateBanner.vue";
+import OnlinePreviewPanel from 'components/v2/OnlinePreviewPanel.vue';
+import OnlineModListWithPanel from 'components/views/OnlineModListWithPanel.vue';
 
 @Component({
     components: {
+        OnlineModListWithPanel,
+        OnlinePreviewPanel,
         DeferredInput,
         ModListUpdateBanner,
         OnlineModList: OnlineModListProvider.provider,
@@ -100,6 +104,7 @@ export default class OnlineModView extends Vue {
     sortingDirectionModel = SortingDirection.STANDARD;
     sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
+    previewMod: ThunderstoreMod | null = null;
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
@@ -226,8 +231,58 @@ export default class OnlineModView extends Vue {
         });
     }
 
+    openPreviewForMod(mod: ThunderstoreMod) {
+        if (this.previewMod === mod) {
+            this.previewMod = null;
+        } else {
+            this.previewMod = mod;
+        }
+    }
+
     async created() {
         this.sortThunderstoreModList();
     }
 };
 </script>
+
+<style lang="scss" scoped>
+#online-view {
+    flex: 1;
+    min-width: 300px;
+
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    overflow: hidden;
+
+    #controls {
+        flex: 0;
+    }
+
+    #pagination {
+        flex: 0;
+    }
+
+    #view-content {
+        flex: 1;
+        overflow: hidden;
+        overflow-y: scroll;
+        padding-right: 1rem;
+    }
+}
+
+#mod-preview {
+    flex: 0;
+    display: none;
+}
+
+.split-pane {
+    display: flex;
+
+    &--with-active-second-pane {
+        #mod-preview {
+            display: flex;
+        }
+    }
+}
+</style>

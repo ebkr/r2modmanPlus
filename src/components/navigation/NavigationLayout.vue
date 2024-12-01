@@ -23,3 +23,16 @@ import GameRunningModal from '../modals/GameRunningModal.vue';
 export default class NavigationLayout extends Vue {}
 
 </script>
+
+<style>
+.column {
+    padding: 0.75rem;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+html {
+    overflow: hidden;
+    overflow-y: auto;
+}
+</style>
