@@ -9,6 +9,7 @@ import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameD
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import { exec } from 'child_process';
+import path from 'path'
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -32,16 +33,39 @@ export default class DirectGameRunner extends GameRunnerProvider {
 
     async start(game: Game, args: string): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
+            const fs = FsProvider.instance;
             const settings = await ManagerSettings.getSingleton(game);
             let gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
             if (gameDir instanceof R2Error) {
                 return resolve(gameDir);
             }
 
-            gameDir = await FsProvider.instance.realpath(gameDir);
+            // Search through the registered game executable *relative* paths until a valid match has been found.
+            // Note that this doesn't do any validation to assert that the file is an actual executable, but that's ok.
+            let gameExecutable = undefined;
+            for (const exeItem of game.exeName) {
+                const absExePath = path.join(gameDir, exeItem);
+                if (!(await fs.exists(absExePath))) {
+                    continue;
+                }
 
-            const gameExecutable = (await FsProvider.instance.readdir(gameDir))
-                .filter((x: string) => game.exeName.includes(x))[0];
+                const stat = await fs.lstat(absExePath);
+                if (!stat.isFile()) {
+                    continue;
+                }
+
+                gameExecutable = absExePath;
+                break; 
+            }
+
+            if (gameExecutable == undefined) {
+                const err = new R2Error(
+                    "Error finding game executable",
+                    "Failed to find a valid game executable within the game directory",
+                    `Ensure that one of the following executables exists within ${gameDir}: ${game.exeName}`,
+                );
+                return reject(err);
+            }
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
