@@ -1,19 +1,19 @@
 <template>
     <div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="downloadObject !== null">
-            <div class="modal-background" @click="downloadingMod = false;"></div>
+        <div id='downloadProgressModal' :class="['modal', {'is-active':activeDownload}]" v-if="activeDownload">
+            <div class="modal-background" @click="closeModal();"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{downloadObject.modName}}</h3>
-                    <p>{{Math.floor(downloadObject.progress)}}% complete</p>
+                    <h3 class='title'>Downloading {{activeDownload.modName}}</h3>
+                    <p>{{Math.floor(activeDownload.downloadProgress)}}% complete</p>
                     <Progress
                         :max='100'
-                        :value='downloadObject.progress'
+                        :value='activeDownload.downloadProgress'
                         :className="['is-dark']"
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
+            <button class="modal-close is-large" aria-label="close" @click="closeModal();"></button>
         </div>
         <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
             <template v-slot:header>
@@ -107,6 +107,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { ProgressItem } from "../../store/modules/DownloadModule";
 import { installModsToProfile } from '../../utils/ProfileUtils';
 
 interface DownloadProgress {
@@ -135,6 +136,11 @@ let assignId = 0;
         currentVersion: string | null = null;
 
         static allVersions: [number, DownloadProgress][] = [];
+
+
+        get activeDownload(): ProgressItem | undefined {
+            return this.$store.getters['download/activeDownload'];
+        }
 
         get activeGame(): Game {
             return this.$store.state.activeGame;
@@ -326,47 +332,21 @@ let assignId = 0;
             }, this.downloadCompletedCallback);
         }
 
-        downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
+        async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
-            const currentAssignId = assignId++;
-            const progressObject = {
-                progress: 0,
-                initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                modName: '',
-                assignId: currentAssignId,
-                failed: false,
-            };
-            this.downloadObject = progressObject;
-            DownloadModModal.allVersions.push([currentAssignId, this.downloadObject]);
             this.downloadingMod = true;
-            setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    const assignIndex = DownloadModModal.allVersions.findIndex(([number, val]) => number === currentAssignId);
-                    if (status === StatusEnum.FAILURE) {
-                        if (err !== null) {
-                            this.downloadingMod = false;
-                            const existing = DownloadModModal.allVersions[assignIndex]
-                            existing[1].failed = true;
-                            this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, existing[1]]);
-                            DownloadModModal.addSolutionsToError(err);
-                            this.$store.commit('error/handleError', err);
-                            return;
-                        }
-                    } else if (status === StatusEnum.PENDING) {
-                        const obj = {
-                            progress: progress,
-                            initialMods: [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`],
-                            modName: modName,
-                            assignId: currentAssignId,
-                            failed: false,
-                        }
-                        if (this.downloadObject!.assignId === currentAssignId) {
-                            this.downloadObject = Object.assign({}, obj);
-                        }
-                        this.$set(DownloadModModal.allVersions, assignIndex, [currentAssignId, obj]);
-                    }
-                }, this.downloadCompletedCallback);
-            }, 1);
+
+            let tsCombo = new ThunderstoreCombo();
+            tsCombo.setMod(tsMod);
+            tsCombo.setVersion(tsVersion);
+
+            //TODO: Remove the completedCallback and await instead
+            //TODO: Once the above is done, close the modal when the downloading and installation are completed.
+
+            await this.$store.dispatch(
+                'download/downloadAndInstallMod',
+                { profile: this.profile.asImmutableProfile(), mod: tsCombo }
+            ).catch((reason) => this.$store.commit('error/handleError', R2Error.fromThrownValue(reason)));
         }
 
         async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
