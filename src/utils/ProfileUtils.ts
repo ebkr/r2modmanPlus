@@ -201,23 +201,18 @@ export async function populateImportedProfile(
     }
 }
 
-export async function readProfileFile(file: string): Promise<string> {
-    let read: string | null | undefined;
-    if (file.endsWith('.r2x')) {
-        read = (await FsProvider.instance.readFile(file)).toString();
-    } else if (file.endsWith('.r2z')) {
-        await ZipProvider.instance.readFile(file, "export.r2x")
-            .then((value) => { read = value ? value.toString() : null; })
-            .catch(() => { read = null });
-    }
+export async function readProfileFile(zipPath: string): Promise<string> {
+    const profileContent = await ZipProvider.instance.readFile(zipPath, 'export.r2x')
+        .then((value) => value ? value.toString() : null)
+        .catch(() => null);
 
-    if (!read) {
+    if (!profileContent) {
         throw new R2Error(
             'Error when reading file contents',
             'Reading the .r2x file contents failed. The contents might be empty or corrupted.',
         );
     }
-    return read;
+    return profileContent;
 }
 
 function throwForR2Error(maybeError: unknown) {
