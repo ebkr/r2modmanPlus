@@ -1,6 +1,4 @@
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
-
-export default class VersionNumber implements ReactiveObjectConverterInterface {
+export default class VersionNumber {
     private major: number = 0;
     private minor: number = 0;
     private patch: number = 0;
