@@ -17,11 +17,11 @@
         </div>
         <DownloadModVersionSelectModal
             :versionNumbers="versionNumbers"
-            :selected-version="selectedVersion"
+            :selectedVersion="selectedVersion"
             :currentVersion="currentVersion"
             :recommendedVersion="recommendedVersion"
-            :download-thunderstore-mod="downloadThunderstoreMod"
-            :set-selected-version="setSelectedVersion"
+            :download-handler="downloadHandler"
+            @selected-version="selectedVersionChanged"
         />
         <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
             <template v-slot:header>
@@ -61,7 +61,6 @@ import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileIns
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import Profile from '../../model/Profile';
 import { Progress } from '../all';
-import Game from '../../model/game/Game';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
@@ -98,17 +97,17 @@ let assignId = 0;
 
         static allVersions: [number, DownloadProgress][] = [];
 
-        get activeGame(): Game {
-            return this.$store.state.activeGame;
-        }
-
         get ignoreCache(): boolean {
             const settings = this.$store.getters['settings'];
             return settings.getContext().global.ignoreCache;
         }
 
-        setSelectedVersion(newSelectedVersion: string) {
-            this.selectedVersion = newSelectedVersion;
+        selectedVersionChanged(event: Event) {
+            if (!(event.target instanceof HTMLSelectElement)) {
+                return;
+            }
+
+            this.selectedVersion = event.target.value;
         }
 
         public static async downloadSpecific(
@@ -211,28 +210,6 @@ let assignId = 0;
             }
         }
 
-        async downloadThunderstoreMod() {
-            const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
-            const refSelectedVersion: string | null = this.selectedVersion;
-            if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
-                // Shouldn't happen, but shouldn't throw an error.
-                return;
-            }
-
-            let version: ThunderstoreVersion;
-
-            try {
-                version = await PackageDb.getVersionAsThunderstoreVersion(
-                    this.activeGame.internalFolderName,
-                    refSelectedThunderstoreMod.getFullName(),
-                    refSelectedVersion
-                );
-            } catch {
-                return;
-            }
-
-            this.downloadHandler(refSelectedThunderstoreMod, version);
-        }
 
         async downloadLatest() {
             this.closeModal();

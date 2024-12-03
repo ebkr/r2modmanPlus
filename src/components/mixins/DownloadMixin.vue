@@ -3,14 +3,15 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import ThunderstoreMod from "../../model/ThunderstoreMod";
+import Game from "../../model/game/Game";
 import Profile from "../../model/Profile";
 
 
 @Component
 export default class DownloadMixin extends Vue {
-    get ignoreCache(): boolean {
-        const settings = this.$store.getters['settings'];
-        return settings.getContext().global.ignoreCache;
+
+    get activeGame(): Game {
+        return this.$store.state.activeGame;
     }
 
     closeModal() {
