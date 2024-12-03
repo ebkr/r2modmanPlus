@@ -5,13 +5,12 @@ import ThunderstoreVersion from './ThunderstoreVersion';
 import InstallMode from './enums/InstallMode';
 import PackageType from './enums/PackageType';
 import NetworkMode from './enums/NetworkMode';
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 import * as path from 'path';
 import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
 
-export default class ManifestV2 implements ReactiveObjectConverterInterface {
+export default class ManifestV2 {
 
     private manifestVersion: number = 1;
 
