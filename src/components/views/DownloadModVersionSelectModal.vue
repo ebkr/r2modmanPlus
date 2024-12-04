@@ -46,7 +46,7 @@
             </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="downloadThunderstoreMod">Download with dependencies</button>
+            <button class="button is-info" @click="downloadMod">Download with dependencies</button>
         </template>
     </ModalCard>
 </template>
@@ -115,11 +115,12 @@ export default class DownloadModVersionSelectModal extends mixins(DownloadMixin)
         }
     }
 
-    async downloadThunderstoreMod() {
-        const refSelectedThunderstoreMod: ThunderstoreMod | null = this.thunderstoreMod;
-        const refSelectedVersion: string | null = this.selectedVersion;
-        if (refSelectedThunderstoreMod === null || refSelectedVersion === null) {
+    async downloadMod() {
+        const mod = this.thunderstoreMod;
+        const versionString = this.selectedVersion;
+        if (mod === null || versionString === null) {
             // Shouldn't happen, but shouldn't throw an error.
+            console.log(`Download initiated with null mod [${mod}] or version [${versionString}]`);
             return;
         }
 
@@ -128,14 +129,15 @@ export default class DownloadModVersionSelectModal extends mixins(DownloadMixin)
         try {
             version = await PackageDb.getVersionAsThunderstoreVersion(
                 this.activeGame.internalFolderName,
-                refSelectedThunderstoreMod.getFullName(),
-                refSelectedVersion
+                mod.getFullName(),
+                versionString
             );
         } catch {
+            console.log(`Failed to get version [${versionString}] for mod [${mod.getFullName()}]`);
             return;
         }
 
-        this.$emit("download-mod", refSelectedThunderstoreMod, version);  // Delegate to DownloadModModal.
+        this.$emit("download-mod", mod, version);  // Delegate to DownloadModModal.
     }
 }
 
