@@ -15,14 +15,7 @@
             </div>
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
-        <DownloadModVersionSelectModal
-            :versionNumbers="versionNumbers"
-            :selectedVersion="selectedVersion"
-            :currentVersion="currentVersion"
-            :recommendedVersion="recommendedVersion"
-            :download-handler="downloadHandler"
-            @selected-version="selectedVersionChanged"
-        />
+        <DownloadModVersionSelectModal @download-mod="downloadHandler" />
         <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
             <template v-slot:header>
                 <h2 class='modal-title'>Update all installed mods</h2>
@@ -49,7 +42,7 @@
 <script lang="ts">
 
 import { mixins } from "vue-class-component";
-import { Component, Watch } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -62,9 +55,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import Profile from '../../model/Profile';
 import { Progress } from '../all';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import { MOD_LOADER_VARIANTS } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ModalCard from '../ModalCard.vue';
-import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { installModsToProfile } from '../../utils/ProfileUtils';
 import DownloadMixin from "../mixins/DownloadMixin.vue";
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
@@ -88,26 +79,14 @@ let assignId = 0;
     })
     export default class DownloadModModal extends mixins(DownloadMixin) {
 
-        versionNumbers: string[] = [];
-        recommendedVersion: string | null = null;
         downloadObject: DownloadProgress | null = null;
         downloadingMod: boolean = false;
-        selectedVersion: string | null = null;
-        currentVersion: string | null = null;
 
         static allVersions: [number, DownloadProgress][] = [];
 
         get ignoreCache(): boolean {
             const settings = this.$store.getters['settings'];
             return settings.getContext().global.ignoreCache;
-        }
-
-        selectedVersionChanged(event: Event) {
-            if (!(event.target instanceof HTMLSelectElement)) {
-                return;
-            }
-
-            this.selectedVersion = event.target.value;
         }
 
         public static async downloadSpecific(
@@ -172,44 +151,6 @@ let assignId = 0;
                 }, 1);
             });
         }
-
-        @Watch('$store.state.modals.downloadModModalMod')
-        async getModVersions() {
-            this.currentVersion = null;
-            if (this.thunderstoreMod !== null) {
-                this.selectedVersion = this.thunderstoreMod.getLatestVersion();
-                this.recommendedVersion = null;
-
-                this.versionNumbers = await PackageDb.getPackageVersionNumbers(
-                    this.activeGame.internalFolderName,
-                    this.thunderstoreMod.getFullName()
-                );
-
-                const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
-                    .find(value => value.packageName === this.thunderstoreMod!.getFullName());
-
-                if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
-                    this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
-
-                    // Auto-select recommended version if it's found.
-                    const recommendedVersion = this.versionNumbers.find(
-                        (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
-                    );
-                    if (recommendedVersion) {
-                        this.selectedVersion = recommendedVersion;
-                    }
-                }
-
-                const modListResult = await ProfileModList.getModList(this.profile.asImmutableProfile());
-                if (!(modListResult instanceof R2Error)) {
-                    const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
-                    if (manifestMod !== undefined) {
-                        this.currentVersion = manifestMod.getVersionNumber().toString();
-                    }
-                }
-            }
-        }
-
 
         async downloadLatest() {
             this.closeModal();

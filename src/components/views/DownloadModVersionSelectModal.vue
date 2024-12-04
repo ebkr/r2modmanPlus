@@ -23,7 +23,7 @@
                     </div>
                 </template>
                 <div class="column is-narrow">
-                    <select class='select' :value="selectedVersion" @change="emitSelected">
+                    <select class='select' v-model="selectedVersion">
                         <option v-for='(value, index) in versionNumbers' :key='index' :value='value'>
                             {{value}}
                         </option>
@@ -54,13 +54,17 @@
 <script lang="ts">
 
 import { mixins } from "vue-class-component";
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Watch } from "vue-property-decorator";
 
-import ModalCard from '../ModalCard.vue';
+import ModalCard from "../ModalCard.vue";
 import DownloadMixin from "../../components/mixins/DownloadMixin.vue";
+import R2Error from "../../model/errors/R2Error";
+import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
+import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
+import ProfileModList from "../../r2mm/mods/ProfileModList";
 
 
 @Component({
@@ -69,27 +73,46 @@ import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
     },
 })
 export default class DownloadModVersionSelectModal extends mixins(DownloadMixin) {
-    @Prop({ required: true })
-    private currentVersion!: string;
+    versionNumbers: string[] = [];
+    recommendedVersion: string | null = null;
+    selectedVersion: string | null = null;
+    currentVersion: string | null = null;
 
-    @Prop({ required: true })
-    private recommendedVersion!: string;
+    @Watch("$store.state.modals.downloadModModalMod")
+    async updateModVersionState() {
+        this.currentVersion = null;
+        if (this.thunderstoreMod !== null) {
+            this.selectedVersion = this.thunderstoreMod.getLatestVersion();
+            this.recommendedVersion = null;
 
-    @Prop({required: true})
-    private versionNumbers!: string[]
+            this.versionNumbers = await PackageDb.getPackageVersionNumbers(
+                this.activeGame.internalFolderName,
+                this.thunderstoreMod.getFullName()
+            );
 
-    @Prop({ required: false })
-    private selectedVersion!: string | null;
+            const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
+                .find(value => value.packageName === this.thunderstoreMod!.getFullName());
 
-    @Prop({ required: true })
-    private downloadHandler!: (tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) => void;
+            if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
+                this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
 
-    @Prop({ required: false })
-    private setSelectedVersion!: (selectedVersion: string) => void;
+                // Auto-select recommended version if it's found.
+                const recommendedVersion = this.versionNumbers.find(
+                    (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
+                );
+                if (recommendedVersion) {
+                    this.selectedVersion = recommendedVersion;
+                }
+            }
 
-
-    emitSelected(event: Event) {
-        this.$emit("selected-version", event);
+            const modListResult = await ProfileModList.getModList(this.profile.asImmutableProfile());
+            if (!(modListResult instanceof R2Error)) {
+                const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
+                if (manifestMod !== undefined) {
+                    this.currentVersion = manifestMod.getVersionNumber().toString();
+                }
+            }
+        }
     }
 
     async downloadThunderstoreMod() {
@@ -112,7 +135,7 @@ export default class DownloadModVersionSelectModal extends mixins(DownloadMixin)
             return;
         }
 
-        this.downloadHandler(refSelectedThunderstoreMod, version);
+        this.$emit("download-mod", refSelectedThunderstoreMod, version);  // Delegate to DownloadModModal.
     }
 }
 
