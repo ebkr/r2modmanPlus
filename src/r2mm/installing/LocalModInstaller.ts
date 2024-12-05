@@ -12,21 +12,21 @@ import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    private async initialiseCacheDirectory(manifest: ManifestV2) {
-        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-        if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()))) {
-            await FileUtils.emptyDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+    private async initialiseCacheDirectory(manifest: ManifestV2): Promise<string> {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache', manifest.getName(), manifest.getVersionNumber().toString());
+        if (await FsProvider.instance.exists(cacheDirectory)) {
+            await FileUtils.emptyDirectory(cacheDirectory);
         } else {
-            await FileUtils.ensureDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+            await FileUtils.ensureDirectory(cacheDirectory);
         }
+        return cacheDirectory;
     }
 
     public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
-        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-        await this.initialiseCacheDirectory(manifest);
+        const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
         await ZipExtract.extractOnly(
             zipFile,
-            path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()),
+            cacheDirectory,
             async success => {
                 if (success) {
                     await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
@@ -49,11 +49,9 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
 
     public async placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
         try {
-            const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-            await this.initialiseCacheDirectory(manifest);
-            const modCacheDirectory = path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString());
+            const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
             const fileSafe = file.split("\\").join("/");
-            await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
+            await FsProvider.instance.copyFile(fileSafe, path.join(cacheDirectory, path.basename(fileSafe)));
             await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
             const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
             if (profileInstallResult instanceof R2Error) {
