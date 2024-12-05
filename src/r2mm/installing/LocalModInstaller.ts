@@ -29,15 +29,6 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()),
             async success => {
                 if (success) {
-                    if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"))) {
-                        try {
-                            await FsProvider.instance.unlink(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"));
-                        } catch (e) {
-                            const err: Error = e as Error;
-                            callback(false, new R2Error("Failed to unlink manifest from cache", err.message, null));
-                        }
-                    }
-                    await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
                     await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
                     const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
                     if (profileInstallResult instanceof R2Error) {
@@ -63,7 +54,6 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             const modCacheDirectory = path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString());
             const fileSafe = file.split("\\").join("/");
             await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
-            await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
             await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
             const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
             if (profileInstallResult instanceof R2Error) {
