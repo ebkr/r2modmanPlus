@@ -35,13 +35,6 @@ export default class VersionNumber {
         return this;
     }
 
-    public fromReactive(reactive: any): VersionNumber {
-        this.major = reactive.major;
-        this.minor = reactive.minor;
-        this.patch = reactive.patch;
-        return this;
-    }
-
     public isNewerThan(version: VersionNumber): boolean {
         const majorCompare = Math.sign(this.major - version.major);
         const minorCompare = Math.sign(this.minor - version.minor);
