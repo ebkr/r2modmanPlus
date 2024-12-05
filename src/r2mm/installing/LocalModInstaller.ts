@@ -7,32 +7,10 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
-import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
-
-    public async extractToCache(profile: ImmutableProfile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void) {
-        const result: Buffer | null = await ZipProvider.instance.readFile(zipFile,'manifest.json');
-        if (result !== null) {
-            const fileContents = result.toString();
-            try {
-                const parsed = JSON.parse(fileContents.trim());
-                const mod: R2Error | ManifestV2 = new ManifestV2().makeSafe(parsed);
-                if (mod instanceof R2Error) {
-                    return mod;
-                }
-                return await this.extractToCacheWithManifestData(profile, zipFile, mod, callback);
-            } catch(e) {
-                const err: Error = e as Error;
-                return new R2Error('Failed to convert manifest to JSON', err.message, null);
-            }
-        } else {
-            return new R2Error('No manifest provided', 'No file found in zip with name "manifest.json". Contact the mod author, or create your own.', null);
-        }
-        return Promise.resolve();
-    }
 
     private async initialiseCacheDirectory(manifest: ManifestV2) {
         const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
