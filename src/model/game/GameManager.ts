@@ -836,6 +836,12 @@ export default class GameManager {
             "https://thunderstore.io/c/atlyss/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2768430")], "ATLYSS.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Peaks of Yore", "PeaksOfYore", "Peaks of Yore",
+            "Peaks of Yore", ["Peaks of Yore.exe"], "Peaks of Yore_Data",
+            "https://thunderstore.io/c/peaks-of-yore/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2236070")], "PeaksOfYore.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["poy"]),
     ];
 
     static get activeGame(): Game {
