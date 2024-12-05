@@ -238,7 +238,7 @@ let processConflictManagement = async (modA: ManifestV2, modFileTrackerA: ModFil
     // No need to create state directory. Ensure no extra stubbing needed.
     fsStub.exists.withArgs(profile.joinToProfilePath("_state")).returns(Promise.resolve(true));
 
-    await conflictManagement.resolveConflicts([modA, modB], profile);
+    await conflictManagement.resolveConflicts([modA, modB], profile.asImmutableProfile());
 
     return yaml.parse(fsStub.writeFile.args[0][1] as unknown as string) as StateTracker;
 }
