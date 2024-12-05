@@ -200,7 +200,7 @@ let assignId = 0;
                             }
                             const modList = await ProfileModList.getModList(profile.asImmutableProfile());
                             if (!(modList instanceof R2Error)) {
-                                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
+                                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
                                 if (err instanceof R2Error) {
                                     return reject(err);
                                 }
@@ -377,7 +377,7 @@ let assignId = 0;
                     const modList = await installModsToProfile(downloadedMods, profile);
                     await this.$store.dispatch('profile/updateModList', modList);
 
-                    const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile);
+                    const err = await ConflictManagementProvider.instance.resolveConflicts(modList, this.profile.asImmutableProfile());
                     if (err instanceof R2Error) {
                         throw err;
                     }
