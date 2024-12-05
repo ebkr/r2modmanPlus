@@ -43,7 +43,7 @@ export default class ProfileModList {
             try {
                 const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
                 for(let modIndex in value){
-                    const mod = new ManifestV2().fromReactive(value[modIndex]);
+                    const mod = new ManifestV2().fromJsObject(value[modIndex]);
                     await this.setIconPath(mod, profile);
                     value[modIndex] = mod;
                 }

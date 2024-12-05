@@ -1,6 +1,4 @@
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
-
-export default class VersionNumber implements ReactiveObjectConverterInterface {
+export default class VersionNumber {
     private major: number = 0;
     private minor: number = 0;
     private patch: number = 0;
@@ -34,13 +32,6 @@ export default class VersionNumber implements ReactiveObjectConverterInterface {
             // If an error was thrown, log reason.
             return new VersionNumber('0.0.0');
         }
-        return this;
-    }
-
-    public fromReactive(reactive: any): VersionNumber {
-        this.major = reactive.major;
-        this.minor = reactive.minor;
-        this.patch = reactive.patch;
         return this;
     }
 
