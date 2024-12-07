@@ -25,7 +25,7 @@
                     ? 'Which game are you managing your mods for?'
                     : 'Which dedicated server are you managing your mods for?'
             "
-            :heroType="activeTab === 'Game' ? 'is-info' : 'is-warning'"
+            :heroType="activeTab === 'Game' ? 'primary' : 'warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -164,7 +164,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
-import Hero from '../components/v2/Hero.vue';
+import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';

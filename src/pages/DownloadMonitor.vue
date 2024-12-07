@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="is-info"/>
+        <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="primary"/>
         <template v-if="activeDownloads.length === 0">
             <div class='text-center top'>
                 <div class="margin-right">

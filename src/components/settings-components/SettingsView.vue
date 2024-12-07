@@ -2,7 +2,7 @@
     <div>
         <Hero title='Settings'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
-              heroType='is-info'/>
+              heroType='primary'/>
         <div class="margin-right">
             <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
                 <div class='border-at-bottom'>

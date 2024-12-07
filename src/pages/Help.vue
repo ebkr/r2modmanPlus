@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="is-info"/>
+        <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
         <div
             class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
             <ul>

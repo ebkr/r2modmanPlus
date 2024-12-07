@@ -10,7 +10,7 @@ import type { PackageListChunks, PackageListIndex } from '../../store/modules/Ts
 @Component
 export default class SplashMixin extends Vue {
     heroTitle = '';
-    heroType: string = 'is-info';
+    heroType: string = 'primary';
     isOffline = false;
     loadingText = '';
     requests: RequestItem[] = [];

@@ -1,4 +1,4 @@
-import Hero from './Hero.vue';
+import Hero from './v2/Hero.vue';
 import Progress from './Progress.vue';
 import ExpandableCard from './ExpandableCard.vue';
 import Modal from './Modal.vue';
