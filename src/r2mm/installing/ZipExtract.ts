@@ -9,61 +9,46 @@ export default class ZipExtract {
 
     public static async extractAndDelete(zipFolder: string, filename: string, outputFolderName: string, callback: (success: boolean, error?: R2Error) => void): Promise<void> {
         const fs = FsProvider.instance;
-        return await this.extractOnly(path.join(zipFolder, filename), path.join(zipFolder, outputFolderName), async (result, err?) => {
-            if (result) {
-                try {
-                    await fs.unlink(path.join(zipFolder, filename));
-                    callback(result);
-                } catch (e) {
-                    const err: Error = e as Error;
-                    callback(result, new FileWriteError(
-                        'Failed to delete file',
-                        err.message,
-                        null
-                    ));
-                }
-            } else {
-                try {
-                    // Clear from cache as failed.
-                    await FileUtils.emptyDirectory(path.join(zipFolder, outputFolderName));
-                    await fs.rmdir(path.join(zipFolder, outputFolderName));
-                    await fs.unlink(path.join(zipFolder, filename));
-                    if (err !== undefined) {
-                        if (err instanceof R2Error) {
-                            callback(result, err);
-                        } else {
-                            throw err;
-                        }
-                    }
-                } catch (e) {
-                    // Cleanup might also fail e.g. for too long file paths on TSMM.
-                    // Show the original error instead of the one caused by the cleanup,
-                    // as the former is probably more informative for debugging.
-                    if (err) {
-                        callback(false, FileWriteError.fromThrownValue(err));
-                        return;
-                    }
+        const source = path.join(zipFolder, filename);
+        const destination = path.join(zipFolder, outputFolderName);
 
-                    callback(result, new FileWriteError(
-                        'Failed to extract zip',
-                        (e as Error).message,
-                        'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
-                    ));
-                }
+        try {
+            await this.extractOnly(source, destination);
+        } catch (originalError) {
+            try {
+                await FileUtils.emptyDirectory(destination);
+                await fs.rmdir(destination);
+                await fs.unlink(source);
+            } catch (cleanupError) {
+                // Cleanup might also fail e.g. for too long file paths on TSMM.
+                // Show the original error instead of the one caused by the cleanup,
+                // as the former is probably more informative for debugging.
+            } finally {
+                callback(false, FileWriteError.fromThrownValue(
+                    originalError instanceof R2Error ? originalError.message : `${originalError}`,
+                    `Failed to extract ${source}`,
+                    'Try to re-download the mod. If the issue persists, ask for help in the Thunderstore modding discord.'
+                ));
+                return;
             }
-        });
+        }
+
+        try {
+            await fs.unlink(source);
+        } catch (e) {
+            callback(false, FileWriteError.fromThrownValue(e, `Failed to delete ${source} after extraction`));
+            return;
+        }
+
+        callback(true);
     }
 
-    public static async extractOnly(zip: string, outputFolder: string, callback: (success: boolean, error?: Error) => void): Promise<void> {
+    public static async extractOnly(zip: string, outputFolder: string): Promise<void> {
         try {
             await ZipProvider.instance.extractAllTo(zip, outputFolder);
-            callback(true);
         } catch (e) {
             console.log("extractOnly failed:", e);
-            callback(false, new R2Error("Extraction failed", (e as Error).message, null));
+            throw R2Error.fromThrownValue(e, `Extracting ${zip} failed`);
         }
     }
-
-
-
 }
