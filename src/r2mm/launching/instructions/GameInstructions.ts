@@ -23,6 +23,7 @@ export default class GameInstructions {
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
+        [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
         [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
