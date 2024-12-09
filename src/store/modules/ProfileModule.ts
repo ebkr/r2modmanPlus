@@ -322,7 +322,7 @@ export default {
             {},
             params: {
                 mods: ManifestV2[] | undefined,
-                profile: Profile,
+                profile: ImmutableProfile,
             }
         ) {
             const {mods, profile} = params;
