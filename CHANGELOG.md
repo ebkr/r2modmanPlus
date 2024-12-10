@@ -1,3 +1,9 @@
+### 3.1.55
+#### Games added
+- ATLYSS
+- STRAFTAT
+- Peaks of Yore
+
 ### 3.1.54
 #### Bug fix
 - Fixed profile import issue where entries were not found inside zips
