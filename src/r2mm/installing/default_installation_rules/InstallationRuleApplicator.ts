@@ -153,6 +153,9 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("OldMarketSimulator"),
             buildBepInExRules("Subterranauts"),
             buildBepInExRules("SULFUR"),
+            buildBepInExRules("STRAFTAT"),
+            buildBepInExRules("ATLYSS"),
+            buildBepInExRules("PeaksOfYore"),
         ]
     }
 }

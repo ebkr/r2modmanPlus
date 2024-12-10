@@ -5,13 +5,12 @@ import ThunderstoreVersion from './ThunderstoreVersion';
 import InstallMode from './enums/InstallMode';
 import PackageType from './enums/PackageType';
 import NetworkMode from './enums/NetworkMode';
-import ReactiveObjectConverterInterface from './safety/ReactiveObjectConverter';
 
 import * as path from 'path';
 import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
 
-export default class ManifestV2 implements ReactiveObjectConverterInterface {
+export default class ManifestV2 {
 
     private manifestVersion: number = 1;
 
@@ -108,27 +107,27 @@ export default class ManifestV2 implements ReactiveObjectConverterInterface {
         return this;
     }
 
-    public fromReactive(reactive: any): ManifestV2 {
-        this.setManifestVersion(reactive.manifestVersion);
-        this.setName(reactive.name);
-        this.setAuthorName(reactive.authorName);
-        this.setWebsiteUrl(reactive.websiteUrl);
-        this.setDisplayName(reactive.displayName);
-        this.setDescription(reactive.description);
-        this.setGameVersion(reactive.gameVersion);
-        this.setNetworkMode(reactive.networkMode);
-        this.setPackageType(reactive.packageType);
-        this.setInstallMode(reactive.installMode);
-        this.setLoaders(reactive.loaders);
-        this.setDependencies(reactive.dependencies);
-        this.setIncompatibilities(reactive.incompatibilities);
-        this.setOptionalDependencies(reactive.optionalDependencies);
-        const versionNumber = reactive.versionNumber;
+    public fromJsObject(jsManifestObject: any): ManifestV2 {
+        this.setManifestVersion(jsManifestObject.manifestVersion);
+        this.setName(jsManifestObject.name);
+        this.setAuthorName(jsManifestObject.authorName);
+        this.setWebsiteUrl(jsManifestObject.websiteUrl);
+        this.setDisplayName(jsManifestObject.displayName);
+        this.setDescription(jsManifestObject.description);
+        this.setGameVersion(jsManifestObject.gameVersion);
+        this.setNetworkMode(jsManifestObject.networkMode);
+        this.setPackageType(jsManifestObject.packageType);
+        this.setInstallMode(jsManifestObject.installMode);
+        this.setLoaders(jsManifestObject.loaders);
+        this.setDependencies(jsManifestObject.dependencies);
+        this.setIncompatibilities(jsManifestObject.incompatibilities);
+        this.setOptionalDependencies(jsManifestObject.optionalDependencies);
+        const versionNumber = jsManifestObject.versionNumber;
         this.setVersionNumber(new VersionNumber(`${versionNumber.major}.${versionNumber.minor}.${versionNumber.patch}`));
-        this.setGameVersion(reactive.gameVersion);
+        this.setGameVersion(jsManifestObject.gameVersion);
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
-        this.setInstalledAtTime(reactive.installedAtTime || 0);
-        if (!reactive.enabled) {
+        this.setInstalledAtTime(jsManifestObject.installedAtTime || 0);
+        if (!jsManifestObject.enabled) {
             this.disable();
         }
         return this;
