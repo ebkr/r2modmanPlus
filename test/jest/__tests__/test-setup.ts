@@ -1,4 +1,3 @@
-import 'mocha';
 import PathResolver from '../../../src/r2mm/manager/PathResolver';
 import FsProvider from '../../../src/providers/generic/file/FsProvider';
 import Profile from '../../../src/model/Profile';

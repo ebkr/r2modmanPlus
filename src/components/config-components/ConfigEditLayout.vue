@@ -3,7 +3,7 @@
         <Hero
             :title="configFile.getName()"
             subtitle="Editing config file"
-            hero-type="is-info"
+            hero-type="primary"
         />
         <br/>
         <div class="sticky-top sticky-top--buttons margin-right">
@@ -73,7 +73,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import ConfigLine from '../../model/file/ConfigLine';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ConfigFile from '../../model/file/ConfigFile';
-import Hero from '../Hero.vue';
+import { Hero } from '../all';
 import QuillEditor from '../QuillEditor.vue';
 import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 

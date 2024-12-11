@@ -3,7 +3,7 @@
         <Hero
             title="Config editor"
             subtitle="Select a configuration file to edit"
-            hero-type="is-info"
+            hero-type="primary"
         />
         <div class="notification is-warning is-square">
             <div class="container">

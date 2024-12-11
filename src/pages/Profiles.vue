@@ -8,7 +8,7 @@
     <hero
       title="Profile selection"
       subtitle="Profiles help to organise mods easily"
-      heroType="is-info"
+      heroType="primary"
     />
     <div class="columns">
       <div class="column is-full">
