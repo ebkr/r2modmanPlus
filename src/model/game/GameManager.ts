@@ -842,6 +842,12 @@ export default class GameManager {
             "https://thunderstore.io/c/peaks-of-yore/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2236070")], "PeaksOfYore.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["poy"]),
+
+        new Game("Dale & Dawson Stationery Supplies", "DaleAndDawson", "DaleAndDawson",
+            "Dale&Dawson", ["DDSS.exe"], "DDSS_Data",
+            "https://thunderstore.io/c/dale-and-dawson/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2920570")], "DaleAndDawson.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NEW_MELON_LOADER, [""]),
     ];
 
     static get activeGame(): Game {
