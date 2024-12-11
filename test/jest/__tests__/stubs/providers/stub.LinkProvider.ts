@@ -6,6 +6,10 @@ export default class StubLinkProvider extends LinkProvider {
         throw new Error("Stub access must be mocked or spied");
     }
 
+    openWebOnlyLink(url: string): void {
+        throw new Error("Stub access must be mocked or spied");
+    }
+
     selectFile(url: string): void {
         throw new Error("Stub access must be mocked or spied");
     }
