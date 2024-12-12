@@ -6,7 +6,7 @@ import * as path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from '../../model/installing/ModFileTracker';
 import StateTracker from '../../model/installing/StateTracker';
-import Profile, { ImmutableProfile } from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class ConflictManagementProviderImpl extends ConflictManagementProvider {
@@ -39,7 +39,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
     }
 
     // TODO: Iterate through mods array and look for anything out of place.
-    async resolveConflicts(mods: ManifestV2[], profile: Profile): Promise<R2Error | void> {
+    async resolveConflicts(mods: ManifestV2[], profile: ImmutableProfile): Promise<R2Error | void> {
         const overallState = new Map<string, string>();
         const modStates = new Map<string, ModFileTracker>();
         const modNameToManifestV2 = new Map<string, ManifestV2>();
@@ -98,7 +98,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         } as StateTracker));
     }
 
-    public async isFileActive(mod: ManifestV2, profile: Profile|ImmutableProfile, file: string) {
+    public async isFileActive(mod: ManifestV2, profile: ImmutableProfile, file: string) {
         const state = await this.getTotalState(profile);
         for (const [stateFile, stateMod] of state.currentState) {
             if (stateFile === file) {
@@ -108,7 +108,7 @@ export default class ConflictManagementProviderImpl extends ConflictManagementPr
         return false;
     }
 
-    private async getTotalState(profile: Profile|ImmutableProfile): Promise<StateTracker> {
+    private async getTotalState(profile: ImmutableProfile): Promise<StateTracker> {
         const totalStateFilePath = profile.joinToProfilePath("_state", "installation_state.yml");
         let totalState: StateTracker = {
             currentState: []

@@ -72,7 +72,7 @@ import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ModalCard from '../ModalCard.vue';
@@ -279,7 +279,9 @@ export default class LocalFileImportModal extends Vue {
             return;
         }
 
-        const profile: Profile|null = this.$store.state.profile.activeProfile;
+        const profile: ImmutableProfile|null = this.$store.state.profile.activeProfile
+            ? this.$store.state.profile.activeProfile.asImmutableProfile()
+            : null;
 
         if (profile === null) {
             this.validationMessage = "Profile is not selected";
@@ -297,7 +299,7 @@ export default class LocalFileImportModal extends Vue {
                 this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
                 return;
             }
-            const updatedModListResult = await ProfileModList.getModList(profile.asImmutableProfile());
+            const updatedModListResult = await ProfileModList.getModList(profile);
             if (updatedModListResult instanceof R2Error) {
                 this.$store.commit("error/handleError", updatedModListResult);
                 return;
