@@ -1,5 +1,4 @@
 import ProviderUtils from '../../generic/ProviderUtils';
-import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
 import ManifestV2 from '../../../model/ManifestV2';
 
@@ -25,7 +24,7 @@ export default abstract class LocalModInstallerProvider {
      * @param zipFile   Path to the zip file.
      * @param callback  Callback to report if the extraction was successful.
      */
-    public abstract extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<void>;
-    public abstract placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<void>;
+    public abstract extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2): Promise<void>;
+    public abstract placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2): Promise<void>;
 
 }
