@@ -1,4 +1,4 @@
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
@@ -64,11 +64,5 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
         throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
         throwForR2Error(await ProfileModList.addMod(manifest, profile));
-    }
-}
-
-function throwForR2Error(maybeError: unknown) {
-    if (maybeError instanceof R2Error) {
-        throw maybeError;
     }
 }

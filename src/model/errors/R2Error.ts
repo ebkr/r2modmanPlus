@@ -27,3 +27,12 @@ export default class R2Error extends Error {
         }
     }
 }
+
+/**
+ * Throws the given value if it's an instance of R2Error.
+ */
+export function throwForR2Error(maybeError: unknown) {
+    if (maybeError instanceof R2Error) {
+        throw maybeError;
+    }
+}
