@@ -3,7 +3,7 @@ import path from "path";
 import * as yaml from "yaml";
 
 import FileUtils from "./FileUtils";
-import R2Error from "../model/errors/R2Error";
+import R2Error, { throwForR2Error } from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";
 import ExportMod from "../model/exports/ExportMod";
 import Game from "../model/game/Game";
@@ -218,10 +218,4 @@ export async function readProfileFile(file: string): Promise<string> {
         );
     }
     return read;
-}
-
-function throwForR2Error(maybeError: unknown) {
-    if (maybeError instanceof R2Error) {
-        throw maybeError;
-    }
 }
