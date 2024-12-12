@@ -279,7 +279,9 @@ export default class LocalFileImportModal extends Vue {
             return;
         }
 
-        const profile: ImmutableProfile|null = this.$store.state.profile.activeProfile.asImmutableProfile();
+        const profile: ImmutableProfile|null = this.$store.state.profile.activeProfile
+            ? this.$store.state.profile.activeProfile.asImmutableProfile()
+            : null;
 
         if (profile === null) {
             this.validationMessage = "Profile is not selected";

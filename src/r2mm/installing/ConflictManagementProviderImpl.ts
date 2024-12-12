@@ -6,7 +6,7 @@ import * as path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from '../../model/installing/ModFileTracker';
 import StateTracker from '../../model/installing/StateTracker';
-import Profile, { ImmutableProfile } from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class ConflictManagementProviderImpl extends ConflictManagementProvider {
