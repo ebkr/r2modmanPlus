@@ -1,5 +1,3 @@
-import Vue from "vue";
-
 export interface DownloadProgress {
     assignId: number;
     initialMods: string[];
@@ -29,13 +27,15 @@ export const DownloadModule = {
 
     mutations: {
         setDownloadObject(state: State, downloadObject: DownloadProgress) {
-            state.downloadObject = Object.assign({}, downloadObject);
+            state.downloadObject = {...downloadObject};
         },
         pushDownloadObjectToAllVersions(state: State, params: { assignId: number, downloadObject: DownloadProgress }) {
-            state.allVersions.push([params.assignId, params.downloadObject]);
+            state.allVersions = [...state.allVersions, [params.assignId, params.downloadObject]];
         },
-        updateDownloadObject(state: State, params: { assignId: number, downloadObject: DownloadProgress }) {
-            Vue.set(state.allVersions, params.assignId, params.downloadObject);
+        updateDownloadObject(state: State, params: { assignId: number, downloadVersion: [number, DownloadProgress]}) {
+            const newVersions = [...state.allVersions];
+            newVersions[params.assignId] = params.downloadVersion;
+            state.allVersions = newVersions;
         },
         increaseAssignId(state: State) {
             state.assignId++;
