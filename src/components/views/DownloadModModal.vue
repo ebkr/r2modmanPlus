@@ -106,7 +106,11 @@ interface DownloadProgress {
                     failed: false,
                 };
 
-                store.commit('download/pushDownloadObjectToAllVersions', progressObject);
+                store.commit('download/pushDownloadObjectToAllVersions', {
+                    assignId: currentAssignId,
+                    downloadObject: progressObject
+                });
+
                 setTimeout(() => {
                     ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                         const assignIndex = store.state.download.allVersions.findIndex(([number, val]: [number, DownloadProgress]) => number === currentAssignId);
@@ -116,7 +120,7 @@ interface DownloadProgress {
                                 existing[1].failed = true;
                                 store.commit('download/updateDownloadObject', {
                                     assignId: assignIndex,
-                                    downloadObject: [currentAssignId, existing[1]]
+                                    downloadVersion: [currentAssignId, existing[1]]
                                 });
                                 DownloadModModal.addSolutionsToError(err);
                                 return reject(err);
@@ -131,7 +135,7 @@ interface DownloadProgress {
                             }
                             store.commit('download/updateDownloadObject', {
                                 assignId: assignIndex,
-                                downloadObject: [currentAssignId, obj]
+                                downloadVersion: [currentAssignId, obj]
                             });
                         }
                     }, async (downloadedMods: ThunderstoreCombo[]) => {
@@ -188,7 +192,7 @@ interface DownloadProgress {
                         existing[1].failed = true;
                         this.$store.commit('download/updateDownloadObject', {
                             assignId: assignIndex,
-                            downloadObject: [currentAssignId, existing[1]]
+                            downloadVersion: [currentAssignId, existing[1]]
                         });
                         DownloadModModal.addSolutionsToError(err);
                         this.$store.commit('error/handleError', err);
@@ -207,7 +211,7 @@ interface DownloadProgress {
                     }
                     this.$store.commit('download/updateDownloadObject', {
                         assignId: assignIndex,
-                        downloadObject: [currentAssignId, obj]
+                        downloadVersion: [currentAssignId, obj]
                     });
                 }
             }, this.downloadCompletedCallback);
@@ -242,7 +246,7 @@ interface DownloadProgress {
                             existing[1].failed = true;
                             this.$store.commit('download/updateDownloadObject', {
                                 assignId: assignIndex,
-                                downloadObject: [currentAssignId, existing[1]]
+                                downloadVersion: [currentAssignId, existing[1]]
                             });
                             DownloadModModal.addSolutionsToError(err);
                             this.$store.commit('error/handleError', err);
@@ -261,7 +265,7 @@ interface DownloadProgress {
                         }
                         this.$store.commit('download/updateDownloadObject', {
                             assignId: assignIndex,
-                            downloadObject: [currentAssignId, obj]
+                            downloadVersion: [currentAssignId, obj]
                         });
                     }
                 }, this.downloadCompletedCallback);
