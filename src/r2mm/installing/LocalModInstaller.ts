@@ -1,4 +1,4 @@
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
@@ -22,51 +22,25 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         return cacheDirectory;
     }
 
-    public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
+    public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2) {
         const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
-        await ZipExtract.extractOnly(
-            zipFile,
-            cacheDirectory,
-            async success => {
-                if (success) {
-                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
-                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
-                    if (profileInstallResult instanceof R2Error) {
-                        callback(false, profileInstallResult);
-                        return Promise.resolve();
-                    }
-                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
-                    if (modListInstallResult instanceof R2Error) {
-                        callback(false, modListInstallResult);
-                        return Promise.resolve();
-                    }
-                    callback(true, null);
-                    return Promise.resolve();
-                }
-            }
-        );
+        await ZipExtract.extractOnly(zipFile, cacheDirectory);
+        await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+        throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
+        throwForR2Error(await ProfileModList.addMod(manifest, profile));
     }
 
-    public async placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
+    public async placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2) {
         try {
             const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
             const fileSafe = file.split("\\").join("/");
             await FsProvider.instance.copyFile(fileSafe, path.join(cacheDirectory, path.basename(fileSafe)));
-            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
-            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
-            if (profileInstallResult instanceof R2Error) {
-                callback(false, profileInstallResult);
-                return Promise.resolve();
-            }
-            const modListInstallResult = await ProfileModList.addMod(manifest, profile);
-            if (modListInstallResult instanceof R2Error) {
-                callback(false, modListInstallResult);
-                return Promise.resolve();
-            }
-            callback(true, null);
-            return Promise.resolve();
         } catch (e) {
-            callback(false, new R2Error("Error moving file to cache", (e as Error).message, null));
+            throw R2Error.fromThrownValue(e, "Error moving file to cache");
         }
+
+        await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+        throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
+        throwForR2Error(await ProfileModList.addMod(manifest, profile));
     }
 }
