@@ -8,12 +8,12 @@ import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void) {
+    public async extractToCache(profile: ImmutableProfile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void) {
         const result: Buffer | null = await ZipProvider.instance.readFile(zipFile,'manifest.json');
         if (result !== null) {
             const fileContents = result.toString();
@@ -43,7 +43,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         }
     }
 
-    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
+    public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
         const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
         await this.initialiseCacheDirectory(manifest);
         await ZipExtract.extractOnly(
@@ -60,13 +60,13 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
                         }
                     }
                     await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
-                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
-                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
+                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
                     if (profileInstallResult instanceof R2Error) {
                         callback(false, profileInstallResult);
                         return Promise.resolve();
                     }
-                    const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
+                    const modListInstallResult = await ProfileModList.addMod(manifest, profile);
                     if (modListInstallResult instanceof R2Error) {
                         callback(false, modListInstallResult);
                         return Promise.resolve();
@@ -78,7 +78,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
         );
     }
 
-    public async placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
+    public async placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
         try {
             const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
             await this.initialiseCacheDirectory(manifest);
@@ -86,13 +86,13 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             const fileSafe = file.split("\\").join("/");
             await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
             await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
-            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
-            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
+            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile);
             if (profileInstallResult instanceof R2Error) {
                 callback(false, profileInstallResult);
                 return Promise.resolve();
             }
-            const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
+            const modListInstallResult = await ProfileModList.addMod(manifest, profile);
             if (modListInstallResult instanceof R2Error) {
                 callback(false, modListInstallResult);
                 return Promise.resolve();
