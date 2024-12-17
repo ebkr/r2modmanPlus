@@ -156,6 +156,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("STRAFTAT"),
             buildBepInExRules("ATLYSS"),
             buildBepInExRules("PeaksOfYore"),
+            buildBepInExRules("Subterror"),
         ]
     }
 }

@@ -843,6 +843,12 @@ export default class GameManager {
             "https://thunderstore.io/c/peaks-of-yore/api/v1/package-listing-index/", EXCLUSIONS,
             [new StorePlatformMetadata(StorePlatform.STEAM, "2236070")], "PeaksOfYore.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["poy"]),
+
+        new Game("Subterror", "Subterror", "Subterror",
+            "Subterror", ["Subterror.exe"], "Subterror_Data",
+            "https://thunderstore.io/c/subterror/api/v1/package-listing-index/", EXCLUSIONS,
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2846060")], "Subterror.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["st"]),
     ];
 
     static get activeGame(): Game {
