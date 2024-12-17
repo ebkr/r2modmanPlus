@@ -57,7 +57,6 @@ import Profile from '../../model/Profile';
 import { Progress } from '../all';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import ModalCard from '../ModalCard.vue';
-import { installModsAndResolveConflicts } from '../../utils/ProfileUtils';
 import DownloadMixin from "../mixins/DownloadMixin.vue";
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 
@@ -214,7 +213,10 @@ interface DownloadProgress {
                         downloadVersion: [currentAssignId, obj]
                     });
                 }
-            }, this.downloadCompletedCallback);
+            }, (downloadedMods) => {
+                this.downloadCompletedCallback(downloadedMods);
+                this.downloadingMod = false;
+            });
         }
 
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
@@ -268,17 +270,11 @@ interface DownloadProgress {
                             downloadVersion: [currentAssignId, obj]
                         });
                     }
-                }, this.downloadCompletedCallback);
+                }, (downloadedMods) => {
+                    this.downloadCompletedCallback(downloadedMods);
+                    this.downloadingMod = false;
+                });
             }, 1);
-        }
-
-        async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]) {
-            try {
-                await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store);
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
-            this.downloadingMod = false;
         }
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {

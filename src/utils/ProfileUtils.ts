@@ -12,11 +12,11 @@ import Profile, { ImmutableProfile } from "../model/Profile";
 import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
+import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
-import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import {Store} from "vuex";
 
 export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
