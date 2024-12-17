@@ -16,6 +16,8 @@ import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
+import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
+import {Store} from "vuex";
 
 export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
     const dependencyStrings = exportMods.map((m) => m.getDependencyString());
@@ -54,6 +56,22 @@ async function extractConfigsToImportedProfile(
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
         progressCallback(`Copying configs to profile: ${progress}%`);
     }
+}
+
+export async function installModsAndResolveConflicts(
+    downloadedMods: ThunderstoreCombo[],
+    profile: ImmutableProfile,
+    store: Store<any>
+): Promise<void> {
+    await ProfileModList.requestLock(async () => {
+        try {
+            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile);
+            await store.dispatch('profile/updateModList', modList);
+            throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
+        } catch (e: any) {
+            throw e;
+        }
+    });
 }
 
 /**
