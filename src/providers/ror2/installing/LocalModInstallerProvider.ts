@@ -25,7 +25,6 @@ export default abstract class LocalModInstallerProvider {
      * @param zipFile   Path to the zip file.
      * @param callback  Callback to report if the extraction was successful.
      */
-    public abstract extractToCache(profile: ImmutableProfile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void): Promise<R2Error | void>;
     public abstract extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<void>;
     public abstract placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void): Promise<void>;
 
