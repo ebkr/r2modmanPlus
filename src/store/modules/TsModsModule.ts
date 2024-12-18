@@ -25,6 +25,7 @@ interface State {
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
     thunderstoreModListUpdateError: string;
+    thunderstoreModListUpdateStatus: string;
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -58,8 +59,10 @@ export const TsModsModule = {
         mods: [],
         /*** When was the mod list last refreshed from the API? */
         modsLastUpdated: undefined,
-        /*** Error shown on UI after manual mod list refresh fails */
-        thunderstoreModListUpdateError: ''
+        /*** Error shown on UI after mod list refresh fails */
+        thunderstoreModListUpdateError: '',
+        /*** Status shown on UI during mod list refresh */
+        thunderstoreModListUpdateStatus: ''
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -124,12 +127,14 @@ export const TsModsModule = {
             state.mods = [];
             state.modsLastUpdated = undefined;
             state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
             state.cache.clear();
         },
         finishThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = false;
+            state.thunderstoreModListUpdateStatus = '';
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
@@ -148,8 +153,12 @@ export const TsModsModule = {
                 state.thunderstoreModListUpdateError = msg;
             }
         },
+        setThunderstoreModListUpdateStatus(state, status: string) {
+            state.thunderstoreModListUpdateStatus = status;
+        },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
+            state.thunderstoreModListUpdateError = '';
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
@@ -157,36 +166,69 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async fetchAndProcessPackageList({dispatch, state}) {
-            const packageListIndex: PackageListIndex = await dispatch('fetchPackageListIndex');
-
-            // If the package list is up to date, only update the timestamp. Otherwise,
-            // fetch the new one and store it into IndexedDB.
-            if (packageListIndex.isLatest) {
-                await dispatch('updateIndexHash', packageListIndex.hash);
-            } else {
-                const packageListChunks = await dispatch(
-                    'fetchPackageListChunks',
-                    {chunkUrls: packageListIndex.content},
-                );
-                await dispatch(
-                    'updatePersistentCache',
-                    {chunks: packageListChunks, indexHash: packageListIndex.hash},
-                );
+        /**
+         * Complete update process of the mod list, to be used after
+         * passing the splash screen.
+         */
+        async fetchAndProcessPackageList({commit, dispatch, state}): Promise<void> {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return;
             }
 
-            // If the package list was up to date and the mod list is already loaded to
-            // Vuex, just update the timestamp. Otherwise, load the list from IndexedDB
-            // to Vuex. This needs to be done even if the index hasn't updated when the
-            // mod list in Vuex is empty, as this indicates an error state and otherwise
-            // the user would be stuck with empty list until a new index hash is
-            // available via the API.
-            if (packageListIndex.isLatest && state.mods.length > 0) {
-                await dispatch('updateModsLastUpdated');
-            } else {
-                await dispatch('updateMods');
-                await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
-                await dispatch('prewarmCache');
+            commit('startThunderstoreModListUpdate');
+
+            try {
+                commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
+                let packageListIndex: PackageListIndex;
+
+                try {
+                    packageListIndex = await dispatch('fetchPackageListIndex');
+                } catch {
+                    throw new Error('Failed to check for updates from Thunderstore');
+                }
+
+                // If the package list is up to date, only update the timestamp. Otherwise,
+                // fetch the new one and store it into IndexedDB.
+                if (packageListIndex.isLatest) {
+                    await dispatch('updateIndexHash', packageListIndex.hash);
+                } else {
+                    const packageListChunks = await dispatch(
+                        'fetchPackageListChunks',
+                        {
+                            chunkUrls: packageListIndex.content,
+                            progressCallback: (progress: number) => commit(
+                                'setThunderstoreModListUpdateStatus',
+                                `Loading latest mod list from Thunderstore: ${progress}%`
+                            ),
+                        },
+                    );
+
+                    commit('setThunderstoreModListUpdateStatus', 'Storing the mod list into local cache...');
+                    await dispatch(
+                        'updatePersistentCache',
+                        {chunks: packageListChunks, indexHash: packageListIndex.hash},
+                    );
+                }
+
+                // If the package list was up to date and the mod list is already loaded to
+                // Vuex, just update the timestamp. Otherwise, load the list from IndexedDB
+                // to Vuex. This needs to be done even if the index hasn't updated when the
+                // mod list in Vuex is empty, as this indicates an error state and otherwise
+                // the user would be stuck with empty list until a new index hash is
+                // available via the API.
+                if (packageListIndex.isLatest && state.mods.length > 0) {
+                    await dispatch('updateModsLastUpdated');
+                } else {
+                    commit('setThunderstoreModListUpdateStatus', 'Processing the mod list...');
+                    await dispatch('updateMods');
+                    commit('setThunderstoreModListUpdateStatus', 'Almost done...');
+                    await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
+                    await dispatch('prewarmCache');
+                }
+            } catch (e) {
+                commit('setThunderstoreModListUpdateError', e);
+            } finally {
+                commit('finishThunderstoreModListUpdate');
             }
         },
 
