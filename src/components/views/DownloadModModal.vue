@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="$store.state.download.downloadObject !== null">
+        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="$store.getters['download/currentDownload'] !== null">
             <div class="modal-background" @click="downloadingMod = false;"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{$store.state.download.downloadObject.modName}}</h3>
-                    <p>{{Math.floor($store.state.download.downloadObject.progress)}}% complete</p>
+                    <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
+                    <p>{{Math.floor($store.getters['download/currentDownload'].progress)}}% complete</p>
                     <Progress
                         :max='100'
-                        :value='$store.state.download.downloadObject.progress'
+                        :value="$store.getters['download/currentDownload'].progress"
                         :className="['is-dark']"
                     />
                 </div>
@@ -60,14 +60,7 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
-
-interface DownloadProgress {
-    assignId: number;
-    initialMods: string[];
-    modName: string;
-    progress: number;
-    failed: boolean;
-}
+import { DownloadProgress } from "../../store/modules/DownloadModule";
 
     @Component({
         components: {
@@ -95,8 +88,9 @@ interface DownloadProgress {
                 const tsMod = combo.getMod();
                 const tsVersion = combo.getVersion();
 
-                store.commit('download/increaseAssignId');
-                const currentAssignId = store.state.download.assignId;
+                const currentAssignId = store.getters["download/currentDownload"]
+                    ? store.getters["download/currentDownload"].assignId + 1
+                    : 0;
 
                 const progressObject = {
                     progress: 0,
@@ -106,22 +100,17 @@ interface DownloadProgress {
                     failed: false,
                 };
 
-                store.commit('download/pushDownloadObjectToAllVersions', {
-                    assignId: currentAssignId,
-                    downloadObject: progressObject
-                });
+                store.commit('download/addDownload', progressObject);
 
                 setTimeout(() => {
                     ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                        const assignIndex = store.state.download.allVersions.findIndex(([number, val]: [number, DownloadProgress]) => number === currentAssignId);
                         if (status === StatusEnum.FAILURE) {
                             if (err !== null) {
-                                const existing = store.state.download.allVersions[assignIndex]
-                                existing[1].failed = true;
-                                store.commit('download/updateDownloadObject', {
-                                    assignId: assignIndex,
-                                    downloadVersion: [currentAssignId, existing[1]]
+                                const existing = store.state.download.allDownloads.find((dlObj: DownloadProgress) => {
+                                    return dlObj.assignId === currentAssignId;
                                 });
+                                existing.failed = true;
+                                store.commit('download/updateDownload', existing);
                                 DownloadModModal.addSolutionsToError(err);
                                 return reject(err);
                             }
@@ -133,10 +122,7 @@ interface DownloadProgress {
                                 assignId: currentAssignId,
                                 failed: false,
                             }
-                            store.commit('download/updateDownloadObject', {
-                                assignId: assignIndex,
-                                downloadVersion: [currentAssignId, obj]
-                            });
+                            store.commit('download/updateDownload', obj);
                         }
                     }, async (downloadedMods: ThunderstoreCombo[]) => {
                         ProfileModList.requestLock(async () => {
@@ -167,8 +153,9 @@ interface DownloadProgress {
             this.closeModal();
             const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
 
-            this.$store.commit('download/increaseAssignId');
-            const currentAssignId = this.$store.state.download.assignId;
+            const currentAssignId = this.$store.getters["download/currentDownload"]
+                ? this.$store.getters["download/currentDownload"].assignId + 1
+                : 0;
 
             const progressObject = {
                 progress: 0,
@@ -177,23 +164,17 @@ interface DownloadProgress {
                 assignId: currentAssignId,
                 failed: false,
             };
-            this.$store.commit('download/setDownloadObject', progressObject);
-            this.$store.commit('download/pushDownloadObjectToAllVersions', {
-                assignId: currentAssignId,
-                downloadObject: progressObject
-            });
+            this.$store.commit('download/addDownload', progressObject);
             this.downloadingMod = true;
             ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                const assignIndex = this.$store.state.download.allVersions.findIndex(([number, val]: [number, DownloadProgress]) => number === currentAssignId);
                 if (status === StatusEnum.FAILURE) {
                     if (err !== null) {
                         this.downloadingMod = false;
-                        const existing = this.$store.state.download.allVersions[assignIndex];
-                        existing[1].failed = true;
-                        this.$store.commit('download/updateDownloadObject', {
-                            assignId: assignIndex,
-                            downloadVersion: [currentAssignId, existing[1]]
+                        const existing = this.$store.state.download.allDownloads.find((dlObj: DownloadProgress) => {
+                            return dlObj.assignId === currentAssignId;
                         });
+                        existing.failed = true;
+                        this.$store.commit('download/updateDownload', existing);
                         DownloadModModal.addSolutionsToError(err);
                         this.$store.commit('error/handleError', err);
                         return;
@@ -206,13 +187,7 @@ interface DownloadProgress {
                         assignId: currentAssignId,
                         failed: false,
                     }
-                    if (this.$store.state.download.downloadObject!.assignId === currentAssignId) {
-                        this.$store.commit('download/setDownloadObject', obj);
-                    }
-                    this.$store.commit('download/updateDownloadObject', {
-                        assignId: assignIndex,
-                        downloadVersion: [currentAssignId, obj]
-                    });
+                    this.$store.commit('download/updateDownload', obj);
                 }
             }, (downloadedMods) => {
                 this.downloadCompletedCallback(downloadedMods);
@@ -223,8 +198,9 @@ interface DownloadProgress {
         downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
 
-            this.$store.commit('download/increaseAssignId');
-            const currentAssignId = this.$store.state.download.assignId;
+            const currentAssignId = this.$store.getters["download/currentDownload"]
+                ? this.$store.getters["download/currentDownload"].assignId + 1
+                : 0;
 
             const progressObject = {
                 progress: 0,
@@ -233,24 +209,19 @@ interface DownloadProgress {
                 assignId: currentAssignId,
                 failed: false,
             };
-            this.$store.commit('download/setDownloadObject', progressObject);
-            this.$store.commit('download/pushDownloadObjectToAllVersions', {
-                assignId: currentAssignId,
-                downloadObject: this.$store.state.download.downloadObject
-            });
+            this.$store.commit('download/addDownload', progressObject);
+
             this.downloadingMod = true;
             setTimeout(() => {
                 ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    const assignIndex = this.$store.state.download.allVersions.findIndex(([number, val]: [number, DownloadProgress]) => number === currentAssignId);
                     if (status === StatusEnum.FAILURE) {
                         if (err !== null) {
                             this.downloadingMod = false;
-                            const existing = this.$store.state.download.allVersions[assignIndex];
-                            existing[1].failed = true;
-                            this.$store.commit('download/updateDownloadObject', {
-                                assignId: assignIndex,
-                                downloadVersion: [currentAssignId, existing[1]]
+                            const existing = this.$store.state.download.allDownloads.find((dlObj: DownloadProgress) => {
+                                return dlObj.assignId === currentAssignId;
                             });
+                            existing.failed = true;
+                            this.$store.commit('download/updateDownload', existing);
                             DownloadModModal.addSolutionsToError(err);
                             this.$store.commit('error/handleError', err);
                             return;
@@ -263,13 +234,7 @@ interface DownloadProgress {
                             assignId: currentAssignId,
                             failed: false,
                         }
-                        if (this.$store.state.download.downloadObject!.assignId === currentAssignId) {
-                            this.$store.commit('download/setDownloadObject', obj);
-                        }
-                        this.$store.commit('download/updateDownloadObject', {
-                            assignId: assignIndex,
-                            downloadVersion: [currentAssignId, obj]
-                        });
+                        this.$store.commit('download/updateDownload', obj);
                     }
                 }, (downloadedMods) => {
                     this.downloadCompletedCallback(downloadedMods);
