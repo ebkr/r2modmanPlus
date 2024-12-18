@@ -1,6 +1,7 @@
 import path from "path";
 
 import * as yaml from "yaml";
+import { Store } from "vuex";
 
 import FileUtils from "./FileUtils";
 import R2Error from "../model/errors/R2Error";
@@ -17,7 +18,6 @@ import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
-import {Store} from "vuex";
 
 export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
     const dependencyStrings = exportMods.map((m) => m.getDependencyString());
