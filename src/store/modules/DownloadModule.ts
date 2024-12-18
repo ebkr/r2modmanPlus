@@ -1,5 +1,7 @@
 import { GetterTree } from "vuex";
+
 import { State as RootState } from "../../store";
+import R2Error from "../../model/errors/R2Error";
 
 export interface DownloadProgress {
     assignId: number;
@@ -11,9 +13,7 @@ export interface DownloadProgress {
 
 
 interface State {
-    allVersions: [number, DownloadProgress][],
-    assignId: number,
-    downloadObject: DownloadProgress | null,
+    allDownloads: DownloadProgress[],
 }
 
 /**
@@ -23,34 +23,39 @@ export const DownloadModule = {
     namespaced: true,
 
     state: (): State => ({
-        allVersions: [],
-        assignId: 0,
-        downloadObject: null, // TODO: Check if the last element of allVersions can be used instead of this
+        allDownloads: [],
     }),
 
     getters: <GetterTree<State, RootState>>{
         activeDownloadCount(state) {
-            const active = state.allVersions.filter(
-                dl => !dl[1].failed && dl[1].progress < 100
+            const active = state.allDownloads.filter(
+                dl => !dl.failed && dl.progress < 100
             );
             return active.length;
+        },
+        currentDownload(state) {
+            return state.allDownloads[state.allDownloads.length-1] || null;
         },
     },
 
     mutations: {
-        setDownloadObject(state: State, downloadObject: DownloadProgress) {
-            state.downloadObject = {...downloadObject};
+        addDownload(state: State, downloadObject: DownloadProgress) {
+            state.allDownloads = [...state.allDownloads, downloadObject];
         },
-        pushDownloadObjectToAllVersions(state: State, params: { assignId: number, downloadObject: DownloadProgress }) {
-            state.allVersions = [...state.allVersions, [params.assignId, params.downloadObject]];
+        updateDownload(state: State, downloadObject: DownloadProgress) {
+            const newVersions = [...state.allDownloads];
+            const index = newVersions.findIndex((oldDownloadObject: DownloadProgress) => {
+                return oldDownloadObject.assignId === downloadObject.assignId;
+            });
+            if (index === -1) {
+                throw new R2Error(
+                    'Failed to update download status.',
+                    'Download status object with a specified index was not found, which means that there\'s a mismatch between the download statuses in memory and what\'s being iterated over.',
+                    'Try initiating the download again or restarting the app.'
+                );
+            }
+            newVersions[index] = downloadObject;
+            state.allDownloads = newVersions;
         },
-        updateDownloadObject(state: State, params: { assignId: number, downloadVersion: [number, DownloadProgress]}) {
-            const newVersions = [...state.allVersions];
-            newVersions[params.assignId] = params.downloadVersion;
-            state.allVersions = newVersions;
-        },
-        increaseAssignId(state: State) {
-            state.assignId++;
-        }
     },
 }
