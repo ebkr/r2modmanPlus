@@ -299,10 +299,10 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Check for any new mod releases.',
                 async () => {
                         if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                            return "Checking for new releases";
+                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
                         }
                         if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.tsMods.thunderstoreModListUpdateError;
+                            return "Error updating the mod list: " + this.$store.state.tsMods.thunderstoreModListUpdateError;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
@@ -310,22 +310,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         return "No API information available";
                     },
                 'fa-exchange-alt',
-                async () => {
-                    if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                        return;
-                    }
-
-                    this.$store.commit("tsMods/startThunderstoreModListUpdate");
-                    this.$store.commit("tsMods/setThunderstoreModListUpdateError", "");
-
-                    try {
-                        await this.$store.dispatch("tsMods/fetchAndProcessPackageList");
-                    } catch (e) {
-                        this.$store.commit("tsMods/setThunderstoreModListUpdateError", e);
-                    } finally {
-                        this.$store.commit("tsMods/finishThunderstoreModListUpdate");
-                    }
-                }
+                async () => await this.$store.dispatch("tsMods/fetchAndProcessPackageList")
             ),
             new SettingsRow(
               'Other',

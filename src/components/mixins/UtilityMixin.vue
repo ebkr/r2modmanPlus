@@ -32,23 +32,16 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
-        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-            return;
-        }
+        await this.$store.dispatch("tsMods/fetchAndProcessPackageList");
 
-        try {
-            this.$store.commit("tsMods/startThunderstoreModListUpdate");
-            await this.$store.dispatch('tsMods/fetchAndProcessPackageList');
-        } catch (e) {
+        if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
             if (this.tsBackgroundRefreshFailed) {
                 console.error("Two consecutive background refresh attempts failed");
-                throw e;
+                throw new Error(this.$store.state.tsMods.thunderstoreModListUpdateError);
             }
 
             this.tsBackgroundRefreshFailed = true;
             return;
-        } finally {
-            this.$store.commit("tsMods/finishThunderstoreModListUpdate");
         }
 
         this.tsBackgroundRefreshFailed = false;
