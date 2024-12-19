@@ -44,7 +44,6 @@
 
 import { Component, Vue } from 'vue-property-decorator';
 import { Hero } from '../components/all';
-import DownloadModModal from '../components/views/DownloadModModal.vue';
 import Progress from '../components/Progress.vue';
 import Timeout = NodeJS.Timeout;
 
@@ -59,9 +58,9 @@ export default class DownloadMonitor extends Vue {
     private activeDownloads: [number, any][] = [];
 
     created() {
-        this.activeDownloads = [...DownloadModModal.allVersions].reverse();
+        this.activeDownloads = [...this.$store.state.download.allVersions].reverse();
         this.refreshInterval = setInterval(() => {
-            this.activeDownloads = [...DownloadModModal.allVersions].reverse();
+            this.activeDownloads = [...this.$store.state.download.allVersions].reverse();
         }, 100);
     }
 

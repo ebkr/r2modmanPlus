@@ -2,9 +2,12 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import ThunderstoreMod from "../../model/ThunderstoreMod";
+import R2Error from "../../model/errors/R2Error";
 import Game from "../../model/game/Game";
 import Profile from "../../model/Profile";
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
+import ThunderstoreMod from "../../model/ThunderstoreMod";
+import { installModsAndResolveConflicts } from "../../utils/ProfileUtils";
 
 
 @Component
@@ -28,6 +31,14 @@ export default class DownloadMixin extends Vue {
 
     get profile(): Profile {
         return this.$store.getters['profile/activeProfile'];
+    }
+
+    async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]): Promise<void> {
+        try {
+            await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store);
+        } catch (e) {
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+        }
     }
 }
 </script>
