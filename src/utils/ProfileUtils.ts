@@ -64,13 +64,9 @@ export async function installModsAndResolveConflicts(
     store: Store<any>
 ): Promise<void> {
     await ProfileModList.requestLock(async () => {
-        try {
-            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile);
-            await store.dispatch('profile/updateModList', modList);
-            throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
-        } catch (e: any) {
-            throw e;
-        }
+        const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile);
+        await store.dispatch('profile/updateModList', modList);
+        throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
     });
 }
 
