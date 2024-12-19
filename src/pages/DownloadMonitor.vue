@@ -13,7 +13,7 @@
             </div>
         </template>
         <template v-else>
-            <div v-for="([assignId, downloadObject], index) of activeDownloads" :key="`download-progress-${index}`">
+            <div v-for="(downloadObject, index) of activeDownloads" :key="`download-progress-${index}`">
                 <div>
                     <div class="container margin-right">
                         <div class="border-at-bottom pad pad--sides">
@@ -42,10 +42,12 @@
 
 <script lang="ts">
 
+import Timeout = NodeJS.Timeout;
 import { Component, Vue } from 'vue-property-decorator';
+
 import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
-import Timeout = NodeJS.Timeout;
+import { DownloadProgress } from "../store/modules/DownloadModule";
 
 @Component({
     components: {
@@ -55,12 +57,12 @@ import Timeout = NodeJS.Timeout;
 })
 export default class DownloadMonitor extends Vue {
     private refreshInterval!: Timeout;
-    private activeDownloads: [number, any][] = [];
+    private activeDownloads: DownloadProgress[] = [];
 
     created() {
-        this.activeDownloads = [...this.$store.state.download.allVersions].reverse();
+        this.activeDownloads = [...this.$store.state.download.allDownloads].reverse();
         this.refreshInterval = setInterval(() => {
-            this.activeDownloads = [...this.$store.state.download.allVersions].reverse();
+            this.activeDownloads = [...this.$store.state.download.allDownloads].reverse();
         }, 100);
     }
 
