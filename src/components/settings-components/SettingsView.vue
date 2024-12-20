@@ -331,7 +331,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             new SettingsRow(
               'Other',
               'Change game',
-              'Change the current game (restarts the manager)',
+              'Change the current game',
               async () => "",
                 'fa-gamepad',
                 async () => {
