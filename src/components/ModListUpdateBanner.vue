@@ -1,14 +1,10 @@
 <script lang="ts">
-import { mixins } from 'vue-class-component';
-import { Component, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-import UtilityMixin from './mixins/UtilityMixin.vue';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 
 @Component({})
-export default class ModListUpdateBanner extends mixins(UtilityMixin) {
-    updateError = '';
-
+export default class ModListUpdateBanner extends Vue {
     get appName(): string {
         return ManagerInformation.APP_NAME;
     }
@@ -18,38 +14,15 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
     }
 
     get isUpdateInProgress(): boolean {
-        return this.$store.state.tsMods.isBackgroundUpdateInProgress;
+        return this.$store.state.tsMods.isThunderstoreModListUpdateInProgress;
     }
 
-    @Watch('isUpdateInProgress')
-    onLoadingProgressChange(newVal: boolean, oldVal: boolean) {
-        // React to background update as well as the manual update from the banner.
-        if (!oldVal && newVal) {
-            this.updateError = '';
-        }
+    get updateError(): string {
+        return this.$store.state.tsMods.thunderstoreModListUpdateError;
     }
 
     async updateModList() {
-        if (this.isUpdateInProgress) {
-            return;
-        }
-
-        this.$store.commit('tsMods/startBackgroundUpdate');
-        this.updateError = '';
-
-        try {
-            // Invalidate hash to force a refresh. Otherwise a scenario where
-            // the latest index hash is already present in IndexedDB but loading
-            // the package list into Vuex store has failed would cause the banner
-            // to just disappear when refreshThunderstoreModList skips the actual
-            // update but updates the timestamp of the hash.
-            await this.$store.dispatch('tsMods/updateIndexHash', 'invalidated');
-            await this.refreshThunderstoreModList();
-        } catch (e) {
-            this.updateError = `${e}`;
-        } finally {
-            this.$store.commit('tsMods/finishBackgroundUpdate');
-        }
+        await this.$store.dispatch('tsMods/fetchAndProcessPackageList');
     }
 }
 </script>
@@ -58,10 +31,10 @@ export default class ModListUpdateBanner extends mixins(UtilityMixin) {
     <div v-if="!isModListLoaded" id="mod-list-update-banner" class="margin-bottom">
         <div class="notification is-warning margin-right">
             <span v-if="isUpdateInProgress">
-                Updating mod list from Thunderstore...
+                {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
             </span>
             <span v-else-if="updateError">
-                Error updating the mod list: {{ updateError }}<br />
+                Error updating the mod list: {{ updateError }}.<br />
                 {{ appName }} will keep trying to update the mod list in the background.
             </span>
             <span v-else>
