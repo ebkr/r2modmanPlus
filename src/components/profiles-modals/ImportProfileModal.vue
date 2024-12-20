@@ -10,6 +10,7 @@ import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
@@ -20,6 +21,7 @@ import OnlineModList from "../views/OnlineModList.vue";
     components: { OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
+    valueToReadableDate = valueToReadableDate;
     private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
     private importViaCodeInProgress: boolean = false;
@@ -320,6 +322,29 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 </p>
                 <p v-else class="margin-top">
                     Ensure the profile is intended for the currently selected game.
+                </p>
+
+                <p class="margin-top">
+                    Updating the mod list from Thunderstore might solve this issue.
+
+                    <span v-if="$store.state.tsMods.modsLastUpdated">
+                        The mod list was last updated on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
+                    </span>
+
+                    <br />
+
+                    <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
+                        {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
+                    </span>
+                    <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
+                        Error updating the mod list:
+                        {{ $store.state.tsMods.thunderstoreModListUpdateError }}.
+                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">Retry</a>?
+                    </span>
+                    <span v-else>
+                        Would you like to
+                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">update now</a>?
+                    </span>
                 </p>
             </div>
         </template>
