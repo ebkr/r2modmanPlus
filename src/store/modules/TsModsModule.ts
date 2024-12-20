@@ -53,7 +53,7 @@ export const TsModsModule = {
         connectionError: '',
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
-        exclusions: [],
+        exclusions: undefined,
         /*** Mod list is automatically and periodically updated in the background */
         isBackgroundUpdateInProgress: false,
         /*** All mods available through API for the current active game */
@@ -121,7 +121,7 @@ export const TsModsModule = {
             state.cache = new Map<string, CachedMod>();
             state.connectionError = '';
             state.deprecated = new Map<string, boolean>();
-            state.exclusions = [];
+            state.exclusions = undefined;
             state.mods = [];
             state.modsLastUpdated = undefined;
         },
@@ -248,6 +248,8 @@ export const TsModsModule = {
             {dispatch, rootState, state},
             {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
+            // Splash screen skipped this if there was no need to update the
+            // package list. It may be needed later by e.g. the background update.
             if (state.exclusions === undefined) {
                 await dispatch('updateExclusions');
             }
