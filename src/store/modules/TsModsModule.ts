@@ -293,6 +293,16 @@ export const TsModsModule = {
             return updated !== undefined;
         },
 
+        async getActiveGameCacheStatus({state, rootState}) {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return "Online mod list is currently updating, please wait for the operation to complete";
+            }
+
+            return (await PackageDb.hasEntries(rootState.activeGame.internalFolderName))
+                ? `${rootState.activeGame.displayName} has a local copy of online mod list`
+                : `${rootState.activeGame.displayName} has no local copy stored`;
+        },
+
         async prewarmCache({getters, rootGetters}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
             profileMods.forEach(getters['cachedMod']);
@@ -301,6 +311,22 @@ export const TsModsModule = {
         async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.pruneRemovedMods(community, cutoff);
+        },
+
+        async resetActiveGameCache({commit, rootState, state}) {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return;
+            }
+
+            commit('startThunderstoreModListUpdate');
+            const community = rootState.activeGame.internalFolderName;
+
+            try {
+                commit('setThunderstoreModListUpdateStatus', 'Resetting mod list cache...');
+                await PackageDb.resetCommunity(community);
+            } finally {
+                commit('finishThunderstoreModListUpdate');
+            }
         },
 
         async updateExclusions({commit}) {

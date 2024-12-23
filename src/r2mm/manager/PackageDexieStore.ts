@@ -141,6 +141,18 @@ export async function getVersionAsThunderstoreVersion(community: string, package
     return ThunderstoreVersion.parseFromThunderstoreData(version);
 }
 
+export async function hasEntries(community: string): Promise<boolean> {
+    if (await db.indexHashes.where({community}).count()) {
+        return true;
+    }
+
+    if (await db.packages.where({community}).count()) {
+        return true;
+    }
+
+    return false;
+}
+
 export async function isLatestPackageListIndex(community: string, hash: string) {
     return Boolean(
         await db.indexHashes.where({community, hash}).count()
@@ -157,6 +169,14 @@ export async function pruneRemovedMods(community: string, cutoff: Date) {
         .between([community, 0], [community, cutoff])
         .primaryKeys();
     await db.packages.bulkDelete(oldIds);
+}
+
+export async function resetCommunity(community: string) {
+    await db.transaction('rw', db.packages, db.indexHashes, async () => {
+        const packageIds = await db.packages.where({community}).primaryKeys();
+        await db.packages.bulkDelete(packageIds);
+        await db.indexHashes.where({community}).delete();
+    });
 }
 
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
