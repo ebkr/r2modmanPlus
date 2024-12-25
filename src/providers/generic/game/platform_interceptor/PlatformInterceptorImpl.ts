@@ -122,6 +122,7 @@ export default class PlatformInterceptorImpl extends PlatformInterceptorProvider
         if (RUNNERS[platform][loader][process.platform] !== undefined) {
             return RUNNERS[platform][loader][process.platform];
         }
+        console.error(`No runner for platform [${platform}] and loader [${loader}]`);
         return undefined;
     }
 
@@ -129,6 +130,7 @@ export default class PlatformInterceptorImpl extends PlatformInterceptorProvider
         if (RESOLVERS[platform][process.platform] !== undefined) {
             return RESOLVERS[platform][process.platform];
         }
+        console.error(`No resolver for platform [${platform}]`);
         return undefined;
     }
 
