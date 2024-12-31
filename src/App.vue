@@ -44,8 +44,6 @@ import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstall
 import InstallationRules from './r2mm/installing/InstallationRules';
 import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
-import ConnectionProviderImpl from './r2mm/connection/ConnectionProviderImpl';
-import ConnectionProvider from './providers/generic/connection/ConnectionProvider';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
 
@@ -102,11 +100,10 @@ export default class App extends mixins(UtilityMixin) {
         });
 
         this.$store.commit('updateModLoaderPackageNames');
+        this.$store.dispatch('tsMods/updateExclusions');
     }
 
     beforeCreate() {
-
-        ConnectionProvider.provide(() => new ConnectionProviderImpl());
         FsProvider.provide(() => new NodeFs());
 
         ProfileProvider.provide(() => new ProfileImpl());
