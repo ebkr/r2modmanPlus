@@ -39,6 +39,8 @@ function isPackageListChunk(value: unknown): value is PackageListChunk {
     );
 }
 
+const EXCLUSIONS = 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md';
+
 /**
  * For dealing with mods listed in communities, i.e. available through
  * the Thunderstore API. Mods received from the API are stored in
@@ -289,7 +291,7 @@ export const TsModsModule = {
             profileMods.forEach(getters['cachedMod']);
         },
 
-        async updateExclusions({commit, rootState}) {
+        async updateExclusions({commit}) {
             // Read exclusion list from a bundled file to have some values available ASAP.
             const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
             commit('setExclusions', exclusionList.exclusions);
@@ -301,11 +303,7 @@ export const TsModsModule = {
             // Check for exclusion list updates from online.
             try {
                 const axios = getAxiosWithTimeouts(timeout, timeout);
-                const response = await retry(
-                    () => axios.get(rootState.activeGame.exclusionsUrl),
-                    attempts,
-                    interval
-                );
+                const response = await retry(() => axios.get(EXCLUSIONS), attempts, interval);
 
                 if (typeof response.data === 'string') {
                     commit('setExclusions', response.data);
