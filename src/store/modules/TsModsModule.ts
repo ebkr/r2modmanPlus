@@ -20,7 +20,7 @@ export interface CachedMod {
 interface State {
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
-    exclusions?: string[];
+    exclusions: string[];
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
@@ -54,7 +54,7 @@ export const TsModsModule = {
         cache: new Map<string, CachedMod>(),
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
-        exclusions: undefined,
+        exclusions: [],
         /*** Mod list is updated from the API automatically and by user action */
         isThunderstoreModListUpdateInProgress: false,
         /*** All mods available through API for the current active game */
@@ -334,7 +334,7 @@ export const TsModsModule = {
             {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
             const filtered = chunks.map((chunk) => chunk.filter(
-                (pkg) => !state.exclusions!.includes(pkg.full_name)
+                (pkg) => !state.exclusions.includes(pkg.full_name)
             ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
