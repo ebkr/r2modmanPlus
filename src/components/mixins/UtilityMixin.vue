@@ -32,7 +32,7 @@ export default class UtilityMixin extends Vue {
             return;
         }
 
-        await this.$store.dispatch("tsMods/fetchAndProcessPackageList");
+        await this.$store.dispatch("tsMods/syncPackageList");
 
         if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
             if (this.tsBackgroundRefreshFailed) {

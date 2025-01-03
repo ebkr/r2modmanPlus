@@ -107,7 +107,7 @@ export default class SplashMixin extends Vue {
 
         try {
             return await this.$store.dispatch(
-                'tsMods/fetchPackageListChunks',
+                'tsMods/fetchAndCachePackageListChunks',
                 {packageListIndex, progressCallback}
             );
         } catch (e) {
@@ -135,7 +135,7 @@ export default class SplashMixin extends Vue {
         this.loadingText = 'Pruning removed mods from local cache';
 
         try {
-            await this.$store.dispatch('tsMods/pruneRemovedMods', packageListIndex.dateFetched);
+            await this.$store.dispatch('tsMods/pruneRemovedModsFromCache', packageListIndex.dateFetched);
         } catch (e) {
             console.error('SplashMixin failed to delete outdated mods from local cache.', e);
         }

@@ -310,7 +310,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         return "No API information available";
                     },
                 'fa-exchange-alt',
-                async () => await this.$store.dispatch("tsMods/fetchAndProcessPackageList")
+                async () => await this.$store.dispatch("tsMods/syncPackageList")
             ),
             new SettingsRow(
               'Other',

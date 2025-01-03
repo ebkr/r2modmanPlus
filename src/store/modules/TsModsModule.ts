@@ -176,7 +176,7 @@ export const TsModsModule = {
          * Full update process of the mod list, to be used after
          * passing the splash screen.
          */
-        async fetchAndProcessPackageList({commit, dispatch, state}): Promise<void> {
+        async syncPackageList({commit, dispatch, state}): Promise<void> {
             if (state.isThunderstoreModListUpdateInProgress) {
                 return;
             }
@@ -196,10 +196,10 @@ export const TsModsModule = {
                 // If the package list is up to date, only update the timestamp. Otherwise,
                 // fetch the new one and store it into IndexedDB.
                 if (packageListIndex.isLatest) {
-                    await dispatch('updateIndexHash', packageListIndex.hash);
+                    await dispatch('cacheIndexHash', packageListIndex.hash);
                 } else {
                     const areAllChunksProcessedSuccessfully = await dispatch(
-                        'fetchPackageListChunks',
+                        'fetchAndCachePackageListChunks',
                         {
                             packageListIndex,
                             progressCallback: (progress: number) => commit(
@@ -211,7 +211,7 @@ export const TsModsModule = {
 
                     if (areAllChunksProcessedSuccessfully) {
                         commit('setThunderstoreModListUpdateStatus', 'Pruning removed mods from local cache...');
-                        await dispatch('pruneRemovedMods', packageListIndex.dateFetched);
+                        await dispatch('pruneRemovedModsFromCache', packageListIndex.dateFetched);
                     }
                 }
 
@@ -253,7 +253,7 @@ export const TsModsModule = {
             return {...index, isLatest};
         },
 
-        async fetchPackageListChunks(
+        async fetchAndCachePackageListChunks(
             {dispatch},
             {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
         ): Promise<boolean> {
@@ -264,7 +264,7 @@ export const TsModsModule = {
 
             for (const chunkUrl of packageListIndex.content) {
                 try {
-                    await dispatch('fetchPackageListChunk', chunkUrl);
+                    await dispatch('fetchAndCachePackageListChunk', chunkUrl);
                     successes++;
                 } catch (e) {
                     console.error('Processing package list chunk failed.', e);
@@ -278,13 +278,13 @@ export const TsModsModule = {
             // Otherwise user wouldn't be able to attempt a retry until the index
             // hash is updated in the API.
             if (successes === chunkCount) {
-                await dispatch('updateIndexHash', packageListIndex.hash);
+                await dispatch('cacheIndexHash', packageListIndex.hash);
             }
 
             return successes === chunkCount;
         },
 
-        async fetchPackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
+        async fetchAndCachePackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
             const url = CdnProvider.replaceCdnHost(chunkUrl);
             const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
 
@@ -307,7 +307,7 @@ export const TsModsModule = {
             profileMods.forEach(getters['cachedMod']);
         },
 
-        async pruneRemovedMods({rootState}, cutoff: Date) {
+        async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.pruneRemovedMods(community, cutoff);
         },
@@ -349,7 +349,7 @@ export const TsModsModule = {
             commit('setModsLastUpdated', updated);
         },
 
-        async updateIndexHash({rootState}, indexHash: string) {
+        async cacheIndexHash({rootState}, indexHash: string) {
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.setLatestPackageListIndex(community, indexHash);
         },
