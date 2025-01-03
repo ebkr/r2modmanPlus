@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import RequestItem from '../../model/requests/RequestItem';
-import type { PackageListChunks, PackageListIndex } from '../../store/modules/TsModsModule';
+import type { PackageListIndex } from '../../store/modules/TsModsModule';
 
 
 @Component
@@ -41,21 +41,14 @@ export default class SplashMixin extends Vue {
     // Get the list of Thunderstore mods from local cache or API.
     async _getThunderstoreMods() {
         const hasPriorCache = await this.doesGameHaveLocalCache();
-        let hasUpdatedCache = false;
 
         if (!hasPriorCache) {
             const packageListIndex = await this.fetchPackageListIndex();
-            const packageListChunks = await this.fetchPackageListChunksIfUpdated(packageListIndex);
-            this.getRequestItem('ThunderstoreDownload').setProgress(100);
-            hasUpdatedCache = await this.writeModsToPersistentCacheIfUpdated(packageListIndex, packageListChunks);
+            const areAllChunksProcessedSuccessfully = await this.fetchPackageListChunksIfUpdated(packageListIndex);
+            await this.pruneRemovedMods(packageListIndex, areAllChunksProcessedSuccessfully);
         }
 
-        this.getRequestItem('ThunderstoreDownload').setProgress(100);
-
-        if (hasPriorCache || hasUpdatedCache) {
-            await this.triggerStoreModListUpdate();
-        }
-
+        await this.triggerStoreModListUpdate();
         await this.moveToNextScreen();
     }
 
@@ -73,9 +66,8 @@ export default class SplashMixin extends Vue {
         }
 
         if (hasCache) {
-            this.getRequestItem('ThunderstoreDownload').setProgress(100);
-            this.getRequestItem('CacheOperations').setProgress(50);
-            this.loadingText = 'Processing the mod list from cache';
+            this.getRequestItem('PackageListIndex').setProgress(100);
+            this.getRequestItem('PackageListChunks').setProgress(100);
         }
 
         return hasCache;
@@ -92,60 +84,61 @@ export default class SplashMixin extends Vue {
         } catch (e) {
             console.error('SplashMixin failed to fetch mod list index from API.', e);
             return undefined;
+        } finally {
+            this.getRequestItem('PackageListIndex').setProgress(100);
         }
     }
 
     /***
-     * Load the package list in chunks pointed out by the packageListIndex.
+     * Load the package list chunks pointed out by the packageListIndex.
+     * Chunks are stored in IndexedDB for persistent caching
      */
-    async fetchPackageListChunksIfUpdated(packageListIndex?: PackageListIndex): Promise<PackageListChunks|undefined> {
+    async fetchPackageListChunksIfUpdated(packageListIndex?: PackageListIndex): Promise<boolean> {
         // Skip loading chunks if loading index failed.
         if (!packageListIndex) {
-            return undefined;
+            return false;
         }
 
+        this.loadingText = 'Loading latest mod list from Thunderstore';
+
         const progressCallback = (progress: number) => {
-            this.loadingText = 'Loading latest mod list from Thunderstore';
-            this.getRequestItem('ThunderstoreDownload').setProgress(progress);
+            this.getRequestItem('PackageListChunks').setProgress(progress);
         };
 
         try {
             return await this.$store.dispatch(
                 'tsMods/fetchPackageListChunks',
-                {chunkUrls: packageListIndex.content, progressCallback}
+                {packageListIndex, progressCallback}
             );
         } catch (e) {
             console.error('SplashMixin failed to fetch mod list from API.', e);
-            return undefined;
+            return false;
+        } finally {
+            progressCallback(100);
         }
     }
 
     /***
-     * Update a fresh package list to the IndexedDB cache.
-     * Done only if a fresh list was loaded successfully from the API.
+     * Delete mods no longer returned by the Thunderstore API from the IndexedDB cache.
      */
-    async writeModsToPersistentCacheIfUpdated(
+    async pruneRemovedMods(
         packageListIndex?: PackageListIndex,
-        packageListChunks?: PackageListChunks
-    ): Promise<boolean> {
-        if (packageListIndex && packageListChunks) {
-            this.loadingText = 'Storing the mod list into local cache';
-
-            try {
-                await this.$store.dispatch(
-                    'tsMods/updatePersistentCache',
-                    {indexHash: packageListIndex.hash, chunks: packageListChunks}
-                );
-
-                this.loadingText = 'Processing the mod list';
-                this.getRequestItem('CacheOperations').setProgress(50);
-                return true;
-            } catch (e) {
-                console.error('SplashMixin failed to cache mod list locally.', e);
-            }
+        areAllChunksProcessedSuccessfully?: boolean
+    ): Promise<void> {
+        // Deletion depends on all mods in the persistent cache having a fresh
+        // timestamp, which isn't the case if one or more chunks failed to be
+        // downloaded or processed.
+        if (!packageListIndex || !areAllChunksProcessedSuccessfully) {
+            return;
         }
 
-        return false;
+        this.loadingText = 'Pruning removed mods from local cache';
+
+        try {
+            await this.$store.dispatch('tsMods/pruneRemovedMods', packageListIndex.dateFetched);
+        } catch (e) {
+            console.error('SplashMixin failed to delete outdated mods from local cache.', e);
+        }
     }
 
     /***
@@ -153,12 +146,14 @@ export default class SplashMixin extends Vue {
      * IndexedDB cache and to store it in memory.
      */
     async triggerStoreModListUpdate(): Promise<void> {
+        this.loadingText = 'Processing the mod list';
+
         try {
             await this.$store.dispatch('tsMods/updateMods');
         } catch (e) {
             console.error('Updating the store mod list by SplashMixin failed.', e);
         } finally {
-            this.getRequestItem('CacheOperations').setProgress(100);
+            this.getRequestItem('Vuex').setProgress(100);
         }
     }
 

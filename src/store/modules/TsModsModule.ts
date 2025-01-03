@@ -30,8 +30,12 @@ interface State {
 
 type ProgressCallback = (progress: number) => void;
 type PackageListChunk = {full_name: string}[];
-export type PackageListChunks = PackageListChunk[];
-export type PackageListIndex = {content: string[], hash: string, isLatest: boolean};
+export type PackageListIndex = {
+    content: string[],
+    dateFetched: Date,
+    hash: string,
+    isLatest: boolean
+};
 
 function isPackageListChunk(value: unknown): value is PackageListChunk {
     return Array.isArray(value) && (
@@ -169,7 +173,7 @@ export const TsModsModule = {
 
     actions: <ActionTree<State, RootState>>{
         /**
-         * Complete update process of the mod list, to be used after
+         * Full update process of the mod list, to be used after
          * passing the splash screen.
          */
         async fetchAndProcessPackageList({commit, dispatch, state}): Promise<void> {
@@ -194,10 +198,10 @@ export const TsModsModule = {
                 if (packageListIndex.isLatest) {
                     await dispatch('updateIndexHash', packageListIndex.hash);
                 } else {
-                    const packageListChunks = await dispatch(
+                    const areAllChunksProcessedSuccessfully = await dispatch(
                         'fetchPackageListChunks',
                         {
-                            chunkUrls: packageListIndex.content,
+                            packageListIndex,
                             progressCallback: (progress: number) => commit(
                                 'setThunderstoreModListUpdateStatus',
                                 `Loading latest mod list from Thunderstore: ${progress}%`
@@ -205,11 +209,10 @@ export const TsModsModule = {
                         },
                     );
 
-                    commit('setThunderstoreModListUpdateStatus', 'Storing the mod list into local cache...');
-                    await dispatch(
-                        'updatePersistentCache',
-                        {chunks: packageListChunks, indexHash: packageListIndex.hash},
-                    );
+                    if (areAllChunksProcessedSuccessfully) {
+                        commit('setThunderstoreModListUpdateStatus', 'Pruning removed mods from local cache...');
+                        await dispatch('pruneRemovedMods', packageListIndex.dateFetched);
+                    }
                 }
 
                 // If the package list was up to date and the mod list is already loaded to
@@ -251,34 +254,47 @@ export const TsModsModule = {
         },
 
         async fetchPackageListChunks(
-            {},
-            {chunkUrls, progressCallback}: {chunkUrls: string[], progressCallback?: ProgressCallback},
-        ): Promise<PackageListChunks> {
-            // Count index as a chunk for progress bar purposes.
-            const chunkCount = chunkUrls.length + 1;
-            let completed = 1;
-            const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
-            updateProgress();
+            {dispatch},
+            {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
+        ): Promise<boolean> {
+            const chunkCount = packageListIndex.content.length;
+            let completed = 0;
+            let successes = 0;
+            const updateProgress = () => progressCallback && progressCallback(Math.floor((completed / chunkCount) * 100));
 
-            // Download chunks serially to avoid slow connections timing
-            // out due to concurrent requests competing for the bandwidth.
-            const chunks = [];
-            for (const [i, chunkUrl] of chunkUrls.entries()) {
-                const url = CdnProvider.replaceCdnHost(chunkUrl);
-                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
-
-                if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
-                    throw new Error(`Chunk #${i} in multichunk response was empty`);
-                } else if (!isPackageListChunk(chunk)) {
-                    throw new Error(`Chunk #${i} was invalid format`);
+            for (const chunkUrl of packageListIndex.content) {
+                try {
+                    await dispatch('fetchPackageListChunk', chunkUrl);
+                    successes++;
+                } catch (e) {
+                    console.error('Processing package list chunk failed.', e);
+                } finally {
+                    completed++;
+                    updateProgress();
                 }
-
-                chunks.push(chunk);
-                completed++;
-                updateProgress();
             }
 
-            return chunks;
+            // Only store the index hash if all chunks were processed successfully.
+            // Otherwise user wouldn't be able to attempt a retry until the index
+            // hash is updated in the API.
+            if (successes === chunkCount) {
+                await dispatch('updateIndexHash', packageListIndex.hash);
+            }
+
+            return successes === chunkCount;
+        },
+
+        async fetchPackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
+            const url = CdnProvider.replaceCdnHost(chunkUrl);
+            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
+
+            if (!isPackageListChunk(chunk)) {
+                throw new Error(`Received invalid chunk from URL "${url}"`);
+            }
+
+            const filtered = chunk.filter((pkg) => !state.exclusions.includes(pkg.full_name));
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.upsertPackageListChunk(community, filtered);
         },
 
         async gameHasCachedModList({rootState}): Promise<boolean> {
@@ -289,6 +305,11 @@ export const TsModsModule = {
         async prewarmCache({getters, rootGetters}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
             profileMods.forEach(getters['cachedMod']);
+        },
+
+        async pruneRemovedMods({rootState}, cutoff: Date) {
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.pruneRemovedMods(community, cutoff);
         },
 
         async updateExclusions({commit}) {
@@ -326,19 +347,6 @@ export const TsModsModule = {
         async updateModsLastUpdated({commit, rootState}) {
             const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             commit('setModsLastUpdated', updated);
-        },
-
-        /*** Save a mod list received from the Thunderstore API to IndexedDB */
-        async updatePersistentCache(
-            {dispatch, rootState, state},
-            {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
-        ) {
-            const filtered = chunks.map((chunk) => chunk.filter(
-                (pkg) => !state.exclusions.includes(pkg.full_name)
-            ));
-            const community = rootState.activeGame.internalFolderName;
-            await PackageDb.updateFromApiResponse(community, filtered);
-            await dispatch('updateIndexHash', indexHash);
         },
 
         async updateIndexHash({rootState}, indexHash: string) {
