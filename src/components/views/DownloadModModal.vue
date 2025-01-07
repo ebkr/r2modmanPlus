@@ -155,7 +155,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.$store.commit('download/updateDownload', {assignId, progress, modName});
                     }
                 } catch (e) {
-                    this.$store.commit('error/handleError', e);
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                 }
             }, async (downloadedMods) => {
                 await this.downloadCompletedCallback(downloadedMods);
@@ -186,7 +186,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             this.$store.commit('download/updateDownload', {assignId, progress, modName});
                         }
                     } catch (e) {
-                        this.$store.commit('error/handleError', e);
+                        this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     }
                 }, async (downloadedMods) => {
                     await this.downloadCompletedCallback(downloadedMods);

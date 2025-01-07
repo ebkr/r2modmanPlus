@@ -62,13 +62,30 @@ export const DownloadModule = {
     mutations: {
         updateDownload(state: State, update: UpdateObject) {
             const newDownloads = [...state.allDownloads];
-            if (newDownloads[update.assignId].assignId !== update.assignId) {
-                throw new R2Error(
+            const index = newDownloads.findIndex((old: DownloadProgress) => {
+                return old.assignId === update.assignId;
+            });
+
+            if (index === -1) {
+                // The DownloadProgress by the ID from the update wasn't found at all.
+                const err = new R2Error(
                     'Failed to update download status.',
-                    `DownloadProgress with id of ${update.assignId} didn't have the correct assignId.`,
+                    `DownloadProgress with assign id of ${update.assignId} wasn't found.`,
                     'Try initiating the download again or restarting the app.'
                 );
+                // Only throw if the download failed, otherwise just console.log() it.
+                if (update.failed) {
+                    throw err;
+                }
+                console.warn(err);
+                return;
             }
+
+            if (index !== update.assignId) {
+                // Just as a bonus, log if the DownloadProgress by the ID was located at the corresponding index of the array.
+                console.log(`There was a mismatch between download update\'s assign ID (${update.assignId}) and the index it was found at (${index}).`);
+            }
+
             newDownloads[update.assignId] = {...newDownloads[update.assignId], ...update};
             state.allDownloads = newDownloads;
         },
