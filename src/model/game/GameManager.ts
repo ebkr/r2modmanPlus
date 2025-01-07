@@ -853,6 +853,12 @@ export default class GameManager {
             "https://thunderstore.io/c/i-am-your-beast/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1876590")], "IAmYourBeast.webp",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["iayb"]),
+
+        new Game("MiSide", "MiSide", "MiSide",
+            "MiSide", ["MiSide.exe"], "MiSideFull_Data",
+            "https://thunderstore.io/c/miside/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2527500")], "MiSide.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
