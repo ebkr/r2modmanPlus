@@ -105,9 +105,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                                 store.commit('download/updateDownload', {assignId, progress, modName});
                             }
                         } catch (e) {
-                            if (e instanceof R2Error) {
-                                store.commit('error/handleError', e);
-                            }
+                            return reject(e);
                         }
                     }, async (downloadedMods: ThunderstoreCombo[]) => {
                         ProfileModList.requestLock(async () => {
@@ -151,15 +149,13 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.$store.commit('download/updateDownload', {assignId, failed: true});
                         if (err !== null) {
                             DownloadModModal.addSolutionsToError(err);
-                            this.$store.commit('error/handleError', err);
+                            throw err;
                         }
                     } else if (status === StatusEnum.PENDING) {
                         this.$store.commit('download/updateDownload', {assignId, progress, modName});
                     }
                 } catch (e) {
-                    if (e instanceof R2Error) {
-                        this.$store.commit('error/handleError', e);
-                    }
+                    this.$store.commit('error/handleError', e);
                 }
             }, async (downloadedMods) => {
                 await this.downloadCompletedCallback(downloadedMods);
@@ -184,15 +180,13 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             this.$store.commit('download/updateDownload', {assignId, failed: true});
                             if (err !== null) {
                                 DownloadModModal.addSolutionsToError(err);
-                                this.$store.commit('error/handleError', err);
+                                throw err;
                             }
                         } else if (status === StatusEnum.PENDING) {
                             this.$store.commit('download/updateDownload', {assignId, progress, modName});
                         }
                     } catch (e) {
-                        if (e instanceof R2Error) {
-                            this.$store.commit('error/handleError', e);
-                        }
+                        this.$store.commit('error/handleError', e);
                     }
                 }, async (downloadedMods) => {
                     await this.downloadCompletedCallback(downloadedMods);

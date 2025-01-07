@@ -68,10 +68,9 @@ export const DownloadModule = {
                     `DownloadProgress with id of ${update.assignId} didn't have the correct assignId.`,
                     'Try initiating the download again or restarting the app.'
                 );
-            } else {
-                newDownloads[update.assignId] = {...newDownloads[update.assignId], ...update};
-                state.allDownloads = newDownloads;
             }
+            newDownloads[update.assignId] = {...newDownloads[update.assignId], ...update};
+            state.allDownloads = newDownloads;
         },
     },
 }
