@@ -28,12 +28,21 @@ export const getPropertyFromPath = (object: Mappable, path: string | string[]): 
 
 export async function retry<T>(
     fn: () => Promise<T>,
-    attempts: number = 3,
-    interval: number = 5000,
-    canRetry: () => boolean = () => true,
-    onError: (e: Error | unknown) => void = console.error,
-    throwLastErrorAsIs: boolean = false
+    options?: {
+        attempts?: number,
+        interval?: number,
+        canRetry?: () => boolean,
+        onError?: (e: Error | unknown) => void,
+        throwLastErrorAsIs?: boolean
+    }
 ): Promise<T> {
+    const opts = options || {};
+    const attempts = opts.attempts || 3;
+    const interval = opts.interval || 5000;
+    const canRetry = opts.canRetry || (() => true);
+    const onError = opts.onError || console.error;
+    const throwLastErrorAsIs = opts.throwLastErrorAsIs || false;
+
     for (let currentAttempt = 1; currentAttempt <= attempts; currentAttempt++) {
         if (!canRetry()) {
             throw new Error("Retry interrupted");

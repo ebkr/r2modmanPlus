@@ -234,7 +234,8 @@ export const TsModsModule = {
 
         async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
-            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
+            const options = {attempts: 5, interval: 2000};
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
 
             if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
@@ -319,7 +320,7 @@ export const TsModsModule = {
             // Check for exclusion list updates from online.
             try {
                 const axios = getAxiosWithTimeouts(timeout, timeout);
-                const response = await retry(() => axios.get(EXCLUSIONS), attempts, interval);
+                const response = await retry(() => axios.get(EXCLUSIONS), {attempts, interval});
 
                 if (typeof response.data === 'string') {
                     commit('setExclusions', response.data);

@@ -56,16 +56,18 @@ async function downloadProfileCode(profileCode: string): Promise<string> {
         let is404: boolean = false;
         const response: AxiosResponse<string> = await retry(
             () => ProfileApiClient.getProfile(profileCode),
-            5,
-            1000,
-            () => { return !is404 },
-            (e: unknown) => {
-                console.error(e);
-                if (R2Error.fromThrownValue(e).message.startsWith("404")) {
-                    is404 = true;
-                }
-            },
-            true
+            {
+                attempts: 5,
+                interval: 1000,
+                canRetry: () => { return !is404 },
+                onError: (e: unknown) => {
+                    console.error(e);
+                    if (R2Error.fromThrownValue(e).message.startsWith("404")) {
+                        is404 = true;
+                    }
+                },
+                throwLastErrorAsIs: true
+            }
         );
         return saveDownloadedProfile(response.data);
     } catch (e: unknown) {
