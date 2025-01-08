@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':downloadingMod}]" v-if="$store.getters['download/currentDownload'] !== null">
-            <div class="modal-background" @click="downloadingMod = false;"></div>
+        <div id='downloadProgressModal' :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]" v-if="$store.getters['download/currentDownload'] !== null">
+            <div class="modal-background" @click="$store.commit('download/setIsModProgressModalOpen', false);"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
@@ -13,7 +13,7 @@
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
+            <button class="modal-close is-large" aria-label="close" @click="$store.commit('download/setIsModProgressModalOpen', false);"></button>
         </div>
         <DownloadModVersionSelectModal @download-mod="downloadHandler" />
         <UpdateAllInstalledModsModal />
@@ -116,12 +116,12 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
             );
 
-            this.downloadingMod = true;
+            this.$store.commit('download/setIsModProgressModalOpen', true);
             setTimeout(() => {
                 ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
                     try {
                         if (status === StatusEnum.FAILURE) {
-                            this.downloadingMod = false;
+                            this.$store.commit('download/setIsModProgressModalOpen', false);
                             this.$store.commit('download/updateDownload', {assignId, failed: true});
                             if (err !== null) {
                                 DownloadMixin.addSolutionsToError(err);
@@ -135,7 +135,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     }
                 }, async (downloadedMods) => {
                     await this.downloadCompletedCallback(downloadedMods);
-                    this.downloadingMod = false;
+                    this.$store.commit('download/setIsModProgressModalOpen', false);
                 });
             }, 1);
         }

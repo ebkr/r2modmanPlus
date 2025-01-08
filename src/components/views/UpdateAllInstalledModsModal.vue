@@ -16,7 +16,7 @@
             </ul>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="downloadLatest()">Update all</button>
+            <button class="button is-info" @click="updateAllToLatestVersion()">Update all</button>
         </template>
     </ModalCard>
 </template>
@@ -39,7 +39,7 @@ import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/Thu
 export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  {
 
 
-    async downloadLatest() {
+    async updateAllToLatestVersion() {
         this.closeModal();
         const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
 
@@ -48,11 +48,11 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().toString()})`)
         );
 
-        this.downloadingMod = true;
+        this.$store.commit('download/setIsModProgressModalOpen', true);
         ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
             try {
                 if (status === StatusEnum.FAILURE) {
-                    this.downloadingMod = false;
+                    this.$store.commit('download/setIsModProgressModalOpen', false);
                     this.$store.commit('download/updateDownload', {assignId, failed: true});
                     if (err !== null) {
                         DownloadMixin.addSolutionsToError(err);
@@ -66,7 +66,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             }
         }, async (downloadedMods) => {
             await this.downloadCompletedCallback(downloadedMods);
-            this.downloadingMod = false;
+            this.$store.commit('download/setIsModProgressModalOpen', false);
         });
     }
 }

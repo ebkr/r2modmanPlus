@@ -13,8 +13,6 @@ import { installModsAndResolveConflicts } from "../../utils/ProfileUtils";
 @Component
 export default class DownloadMixin extends Vue {
 
-    downloadingMod: boolean = false;
-
     get activeGame(): Game {
         return this.$store.state.activeGame;
     }

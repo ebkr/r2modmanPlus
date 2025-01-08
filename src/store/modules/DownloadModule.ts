@@ -20,6 +20,7 @@ interface UpdateObject {
 
 interface State {
     allDownloads: DownloadProgress[],
+    isModProgressModalOpen: boolean,
 }
 
 /**
@@ -30,6 +31,7 @@ export const DownloadModule = {
 
     state: (): State => ({
         allDownloads: [],
+        isModProgressModalOpen: false,
     }),
 
     actions: <ActionTree<State, RootState>>{
@@ -79,5 +81,8 @@ export const DownloadModule = {
             newDownloads[index] = {...newDownloads[index], ...update};
             state.allDownloads = newDownloads;
         },
+        setIsModProgressModalOpen(state: State, isModProgressModalOpen: boolean) {
+            state.isModProgressModalOpen = isModProgressModalOpen;
+        }
     },
 }
