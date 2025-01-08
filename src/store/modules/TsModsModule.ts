@@ -180,13 +180,7 @@ export const TsModsModule = {
 
             try {
                 commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
-                let packageListIndex: PackageListIndex;
-
-                try {
-                    packageListIndex = await dispatch('fetchPackageListIndex');
-                } catch {
-                    throw new Error('Failed to check for updates from Thunderstore');
-                }
+                const packageListIndex = await dispatch('fetchPackageListIndex');
 
                 // If the package list is up to date, only update the timestamp. Otherwise,
                 // fetch the new one and store it into IndexedDB.
@@ -234,7 +228,7 @@ export const TsModsModule = {
 
         async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
-            const options = {attempts: 5, interval: 2000};
+            const options = {attempts: 5, interval: 2000, throwLastErrorAsIs: true};
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
 
             if (!isStringArray(index.content)) {
@@ -282,7 +276,8 @@ export const TsModsModule = {
 
         async fetchAndCachePackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
             const url = CdnProvider.replaceCdnHost(chunkUrl);
-            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
+            const options = {throwLastErrorAsIs: true};
+            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url), options);
 
             if (!isPackageListChunk(chunk)) {
                 throw new Error(`Received invalid chunk from URL "${url}"`);
@@ -313,14 +308,13 @@ export const TsModsModule = {
             const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
             commit('setExclusions', exclusionList.exclusions);
 
-            const attempts = 5;
-            const interval = 1000;
             const timeout = 20000;
+            const options = {attempts: 5, interval: 1000, throwLastErrorAsIs: true};
 
             // Check for exclusion list updates from online.
             try {
                 const axios = getAxiosWithTimeouts(timeout, timeout);
-                const response = await retry(() => axios.get(EXCLUSIONS), {attempts, interval});
+                const response = await retry(() => axios.get(EXCLUSIONS), options);
 
                 if (typeof response.data === 'string') {
                     commit('setExclusions', response.data);
