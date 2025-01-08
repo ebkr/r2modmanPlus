@@ -68,25 +68,15 @@ export const DownloadModule = {
 
             if (index === -1) {
                 // The DownloadProgress by the ID from the update wasn't found at all.
-                const err = new R2Error(
-                    'Failed to update download status.',
-                    `DownloadProgress with assign id of ${update.assignId} wasn't found.`,
-                    'Try initiating the download again or restarting the app.'
-                );
-                // Only throw if the download failed, otherwise just console.log() it.
-                if (update.failed) {
-                    throw err;
-                }
-                console.warn(err);
+                console.warn(`Couldn\'t find DownloadProgress object with assignId ${update.assignId}.`);
                 return;
             }
 
             if (index !== update.assignId) {
-                // Just as a bonus, log if the DownloadProgress by the ID was located at the corresponding index of the array.
                 console.log(`There was a mismatch between download update\'s assign ID (${update.assignId}) and the index it was found at (${index}).`);
             }
 
-            newDownloads[update.assignId] = {...newDownloads[update.assignId], ...update};
+            newDownloads[index] = {...newDownloads[index], ...update};
             state.allDownloads = newDownloads;
         },
     },
