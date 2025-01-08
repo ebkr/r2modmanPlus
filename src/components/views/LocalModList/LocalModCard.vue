@@ -5,9 +5,11 @@ import DonateButton from '../../buttons/DonateButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
+import VersionNumber from '../../../model/VersionNumber';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import { valueToReadableDate } from '../../../utils/DateUtils';
+import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 
 @Component({
     components: {
@@ -161,9 +163,11 @@ export default class LocalModCard extends Vue {
     }
 
     downloadDependency(dependencyString: string) {
-        const packages: ThunderstoreMod[] = this.$store.state.thunderstoreModList;
-        const lowerCaseName = dependencyStringToModName(dependencyString).toLowerCase();
-        const dependency = packages.find((m) => m.getFullName().toLowerCase() === lowerCaseName);
+        const [name, version] = splitToNameAndVersion(dependencyString);
+        const partialManifest = new ManifestV2();
+        partialManifest.setName(name);
+        partialManifest.setVersionNumber(new VersionNumber(version));
+        const dependency = this.$store.getters['tsMods/tsMod'](partialManifest);
 
         if (dependency === undefined) {
             const error = new R2Error(
