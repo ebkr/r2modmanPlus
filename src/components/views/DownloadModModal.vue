@@ -16,26 +16,7 @@
             <button class="modal-close is-large" aria-label="close" @click="downloadingMod = false;"></button>
         </div>
         <DownloadModVersionSelectModal @download-mod="downloadHandler" />
-        <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
-            <template v-slot:header>
-                <h2 class='modal-title'>Update all installed mods</h2>
-            </template>
-            <template v-slot:body>
-                <p>All installed mods will be updated to their latest versions.</p>
-                <p>Any missing dependencies will be installed.</p>
-                <p>The following mods will be downloaded and installed:</p>
-                <br/>
-                <ul class="list">
-                    <li class="list-item" v-for='(mod, index) in $store.getters["profile/modsWithUpdates"]'
-                        :key='`to-update-${index}-${mod.getFullName()}`'>
-                        {{mod.getName()}} will be updated to: {{mod.getLatestVersion()}}
-                    </li>
-                </ul>
-            </template>
-            <template v-slot:footer>
-                <button class="button is-info" @click="downloadLatest()">Update all</button>
-            </template>
-        </ModalCard>
+        <UpdateAllInstalledModsModal />
     </div>
 </template>
 
@@ -48,6 +29,7 @@ import { Store } from "vuex";
 import { Progress } from '../all';
 import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
+import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
 import StatusEnum from '../../model/enums/StatusEnum';
 import R2Error from '../../model/errors/R2Error';
@@ -64,18 +46,12 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
     @Component({
         components: {
             DownloadModVersionSelectModal,
+            UpdateAllInstalledModsModal,
             ModalCard,
             Progress
         }
     })
     export default class DownloadModModal extends mixins(DownloadMixin) {
-
-        downloadingMod: boolean = false;
-
-        get ignoreCache(): boolean {
-            const settings = this.$store.getters['settings'];
-            return settings.getContext().global.ignoreCache;
-        }
 
         public static async downloadSpecific(
             profile: Profile,
@@ -98,7 +74,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             if (status === StatusEnum.FAILURE) {
                                 store.commit('download/updateDownload', {assignId, failed: true});
                                 if (err !== null) {
-                                    DownloadModModal.addSolutionsToError(err);
+                                    DownloadMixin.addSolutionsToError(err);
                                     return reject(err);
                                 }
                             } else if (status === StatusEnum.PENDING) {
@@ -132,37 +108,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             });
         }
 
-        async downloadLatest() {
-            this.closeModal();
-            const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
-
-            const assignId = await this.$store.dispatch(
-                'download/addDownload',
-                modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().toString()})`)
-            );
-
-            this.downloadingMod = true;
-            ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                try {
-                    if (status === StatusEnum.FAILURE) {
-                        this.downloadingMod = false;
-                        this.$store.commit('download/updateDownload', {assignId, failed: true});
-                        if (err !== null) {
-                            DownloadModModal.addSolutionsToError(err);
-                            throw err;
-                        }
-                    } else if (status === StatusEnum.PENDING) {
-                        this.$store.commit('download/updateDownload', {assignId, progress, modName});
-                    }
-                } catch (e) {
-                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-                }
-            }, async (downloadedMods) => {
-                await this.downloadCompletedCallback(downloadedMods);
-                this.downloadingMod = false;
-            });
-        }
-
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
 
@@ -179,7 +124,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             this.downloadingMod = false;
                             this.$store.commit('download/updateDownload', {assignId, failed: true});
                             if (err !== null) {
-                                DownloadModModal.addSolutionsToError(err);
+                                DownloadMixin.addSolutionsToError(err);
                                 throw err;
                             }
                         } else if (status === StatusEnum.PENDING) {
@@ -236,24 +181,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 }
                 return resolve();
             });
-        }
-
-        static addSolutionsToError(err: R2Error): void {
-            // Sanity check typing.
-            if (!(err instanceof R2Error)) {
-                return;
-            }
-
-            if (
-                err.name.includes("Failed to download mod") ||
-                err.name.includes("System.Net.WebException")
-            ) {
-                err.solution = "Try toggling the preferred Thunderstore CDN in the settings";
-            }
-
-            if (err.message.includes("System.IO.PathTooLongException")) {
-                err.solution = 'Using "Change data folder" option in the settings to select a shorter path might solve the issue';
-            }
         }
     }
 

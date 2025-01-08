@@ -13,6 +13,8 @@ import { installModsAndResolveConflicts } from "../../utils/ProfileUtils";
 @Component
 export default class DownloadMixin extends Vue {
 
+    downloadingMod: boolean = false;
+
     get activeGame(): Game {
         return this.$store.state.activeGame;
     }
@@ -23,6 +25,11 @@ export default class DownloadMixin extends Vue {
 
     get isOpen(): boolean {
         return this.$store.state.modals.isDownloadModModalOpen;
+    }
+
+    get ignoreCache(): boolean {
+        const settings = this.$store.getters['settings'];
+        return settings.getContext().global.ignoreCache;
     }
 
     get thunderstoreMod(): ThunderstoreMod | null {
@@ -38,6 +45,24 @@ export default class DownloadMixin extends Vue {
             await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store);
         } catch (e) {
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+        }
+    }
+
+    static addSolutionsToError(err: R2Error): void {
+        // Sanity check typing.
+        if (!(err instanceof R2Error)) {
+            return;
+        }
+
+        if (
+            err.name.includes("Failed to download mod") ||
+            err.name.includes("System.Net.WebException")
+        ) {
+            err.solution = "Try toggling the preferred Thunderstore CDN in the settings";
+        }
+
+        if (err.message.includes("System.IO.PathTooLongException")) {
+            err.solution = 'Using "Change data folder" option in the settings to select a shorter path might solve the issue';
         }
     }
 }
