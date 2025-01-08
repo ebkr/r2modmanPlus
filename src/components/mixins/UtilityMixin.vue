@@ -34,10 +34,10 @@ export default class UtilityMixin extends Vue {
 
         await this.$store.dispatch("tsMods/syncPackageList");
 
-        if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
+        if (this.$store.state.tsMods.thunderstoreModListUpdateError) {
             if (this.tsBackgroundRefreshFailed) {
                 console.error("Two consecutive background refresh attempts failed");
-                throw new Error(this.$store.state.tsMods.thunderstoreModListUpdateError);
+                throw this.$store.state.tsMods.thunderstoreModListUpdateError;
             }
 
             this.tsBackgroundRefreshFailed = true;

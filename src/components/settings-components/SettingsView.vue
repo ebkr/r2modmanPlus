@@ -301,8 +301,8 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                             return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
                         }
-                        if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
-                            return "Error updating the mod list: " + this.$store.state.tsMods.thunderstoreModListUpdateError;
+                        if (this.$store.state.tsMods.thunderstoreModListUpdateError) {
+                            return `Error updating the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");

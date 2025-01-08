@@ -24,7 +24,7 @@ interface State {
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
-    thunderstoreModListUpdateError: string;
+    thunderstoreModListUpdateError: Error|undefined;
     thunderstoreModListUpdateStatus: string;
 }
 
@@ -66,7 +66,7 @@ export const TsModsModule = {
         /*** When was the mod list last refreshed from the API? */
         modsLastUpdated: undefined,
         /*** Error shown on UI after mod list refresh fails */
-        thunderstoreModListUpdateError: '',
+        thunderstoreModListUpdateError: undefined,
         /*** Status shown on UI during mod list refresh */
         thunderstoreModListUpdateStatus: ''
     }),
@@ -131,7 +131,7 @@ export const TsModsModule = {
             state.deprecated = new Map<string, boolean>();
             state.mods = [];
             state.modsLastUpdated = undefined;
-            state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateError = undefined;
             state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
@@ -151,20 +151,15 @@ export const TsModsModule = {
             const exclusions_ = Array.isArray(payload) ? payload : payload.split('\n');
             state.exclusions = exclusions_.map((e) => e.trim()).filter(Boolean);
         },
-        setThunderstoreModListUpdateError(state, error: string|unknown) {
-            if (typeof error === 'string') {
-                state.thunderstoreModListUpdateError = error;
-            } else {
-                const msg = error instanceof Error ? error.message : "Unknown error";
-                state.thunderstoreModListUpdateError = msg;
-            }
+        setThunderstoreModListUpdateError(state, error: Error) {
+            state.thunderstoreModListUpdateError = error instanceof Error ? error : new Error(error);
         },
         setThunderstoreModListUpdateStatus(state, status: string) {
             state.thunderstoreModListUpdateStatus = status;
         },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
-            state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateError = undefined;
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
