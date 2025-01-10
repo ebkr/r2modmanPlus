@@ -41,7 +41,14 @@
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                        <input
+                                            v-model="filterText"
+                                            id="game-selection-list-search"
+                                            class="input margin-right"
+                                            type="text"
+                                            placeholder="Search for a game"
+                                            autocomplete="off"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +69,14 @@
                             <div class="level-item">
                                 <div class="card-header-title">
                                     <div class="input-group input-group--flex margin-right">
-                                        <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for a game"/>
+                                        <input
+                                            v-model="filterText"
+                                            id="game-selection-cards-search"
+                                            class="input margin-right"
+                                            type="text"
+                                            placeholder="Search for a game"
+                                            autocomplete="off"
+                                        />
                                     </div>
                                 </div>
                             </div>

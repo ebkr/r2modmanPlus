@@ -16,8 +16,15 @@
             <div class='no-padding-left card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="local-search" class="non-selectable">Search</label>
-                    <input id="local-search" v-model='filterText' class="input margin-right" type="text" placeholder="Search for config files"/>
+                    <label for="config-search" class="non-selectable">Search</label>
+                    <input
+                        v-model="filterText"
+                        id="config-search"
+                        class="input margin-right"
+                        type="text"
+                        placeholder="Search for config files"
+                        autocomplete="off"
+                    />
                 </div>
 
                 <div class="input-group margin-right">

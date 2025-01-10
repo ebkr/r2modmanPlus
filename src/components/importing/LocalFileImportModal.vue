@@ -27,17 +27,41 @@
                 </div>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-name" class="non-selectable">Mod name</label>
-                    <input id="mod-name" ref="mod-name" class="input margin-right" type="text" v-model="modName" placeholder="Enter the name of the mod"/>
+                    <input
+                        v-model="modName"
+                        id="mod-name"
+                        class="input margin-right"
+                        ref="mod-name"
+                        type="text"
+                        placeholder="Enter the name of the mod"
+                        autocomplete="off"
+                    />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-author" class="non-selectable">Author</label>
-                    <input id="mod-author" ref="mod-author" class="input margin-right" type="text" v-model="modAuthor" placeholder="Enter the author name"/>
+                    <input
+                        v-model="modAuthor"
+                        id="mod-author"
+                        class="input margin-right"
+                        ref="mod-author"
+                        type="text"
+                        placeholder="Enter the author name"
+                        autocomplete="off"
+                    />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-author" class="non-selectable">Description (optional)</label>
-                    <input id="mod-description" ref="mod-description" class="input margin-right" type="text" v-model="modDescription" placeholder="Enter a description"/>
+                    <input
+                        v-model="modDescription"
+                        id="mod-description"
+                        class="input margin-right"
+                        ref="mod-description"
+                        type="text"
+                        placeholder="Enter a description"
+                        autocomplete="off"
+                    />
                 </div>
                 <hr/>
                 <h3 class="title is-6">Version</h3>

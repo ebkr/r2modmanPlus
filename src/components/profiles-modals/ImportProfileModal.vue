@@ -276,11 +276,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:body>
             <input
-                type="text"
-                class="input"
                 v-model="profileImportCode"
-                ref="profileCodeInput"
                 @keyup.enter="isProfileCodeValid(profileImportCode) && onProfileCodeEntered()"
+                id="import-profile-modal-profile-code"
+                class="input"
+                type="text"
+                ref="profileCodeInput"
+                autocomplete="off"
             />
             <br />
             <br />
@@ -354,7 +356,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
             <p>This profile will store its own mods independently from other profiles.</p>
             <br/>
-            <input class="input" v-model="targetProfileName" ref="profileNameInput" />
+            <input
+                v-model="targetProfileName"
+                id="import-profile-modal-new-profile-name"
+                class="input"
+                type="text"
+                ref="profileNameInput"
+                autocomplete="off"
+            />
             <br/><br/>
             <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''">
                 Profile name required

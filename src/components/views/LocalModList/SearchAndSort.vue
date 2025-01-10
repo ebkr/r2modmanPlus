@@ -67,13 +67,14 @@ export default class SearchAndSort extends Vue {
             <div class="no-padding-left card-header-title">
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="local-search" class="non-selectable">Search</label>
+                    <label for="installed-search" class="non-selectable">Search</label>
                     <DeferredInput
                         v-model="search"
-                        id="local-search"
+                        id="installed-search"
                         class="input margin-right"
                         type="text"
                         placeholder="Search for an installed mod"
+                        autocomplete="off"
                     />
                 </div>
 
