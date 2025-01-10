@@ -3,7 +3,7 @@ import { ActionTree, GetterTree } from "vuex";
 import { State as RootState } from "../../store";
 import R2Error from "../../model/errors/R2Error";
 
-export interface DownloadProgress {
+interface DownloadProgress {
     assignId: number;
     initialMods: string[];
     modName: string;
@@ -58,6 +58,9 @@ export const DownloadModule = {
         },
         currentDownload(state) {
             return state.allDownloads[state.allDownloads.length-1] || null;
+        },
+        newestFirst(state) {
+            return Array.from(state.allDownloads).reverse();
         },
     },
 
