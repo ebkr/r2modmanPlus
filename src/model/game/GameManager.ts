@@ -494,7 +494,6 @@ export default class GameManager {
             "https://thunderstore.io/c/bomb-rush-cyberfunk/api/v1/package-listing-index/", EXCLUSIONS,
             [
                 new StorePlatformMetadata(StorePlatform.STEAM, "1353230"),
-                new StorePlatformMetadata(StorePlatform.XBOX_GAME_PASS, "TeamReptile.BombRushCyberfunk"),
                 new StorePlatformMetadata(StorePlatform.OTHER)
             ], "BombRushCyberfunk.jpg", GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["brc"]),
 
