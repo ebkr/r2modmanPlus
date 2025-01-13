@@ -339,11 +339,11 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
                         Error updating the mod list:
                         {{ $store.state.tsMods.thunderstoreModListUpdateError }}.
-                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">Retry</a>?
+                        <a @click="$store.dispatch('tsMods/syncPackageList')">Retry</a>?
                     </span>
                     <span v-else>
                         Would you like to
-                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">update now</a>?
+                        <a @click="$store.dispatch('tsMods/syncPackageList')">update now</a>?
                     </span>
                 </p>
             </div>

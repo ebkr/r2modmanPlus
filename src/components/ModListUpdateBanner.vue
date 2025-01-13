@@ -16,7 +16,7 @@ export default class ModListUpdateBanner extends Vue {
     }
 
     async updateModList() {
-        await this.$store.dispatch('tsMods/fetchAndProcessPackageList');
+        await this.$store.dispatch('tsMods/syncPackageList');
     }
 }
 </script>

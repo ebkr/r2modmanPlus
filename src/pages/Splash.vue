@@ -148,8 +148,9 @@ export default class Splash extends mixins(SplashMixin) {
 
     requests = [
         new RequestItem('UpdateCheck', 0),
-        new RequestItem('ThunderstoreDownload', 0),
-        new RequestItem('CacheOperations', 0)
+        new RequestItem('PackageListIndex', 0),
+        new RequestItem('PackageListChunks', 0),
+        new RequestItem('Vuex', 0)
     ];
 
     // Ensure that r2modman isn't outdated.

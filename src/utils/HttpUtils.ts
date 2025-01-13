@@ -109,12 +109,13 @@ export const makeLongRunningGetRequest = async (
  * all users and can be cached heavily on CDN level.
  */
 export const fetchAndProcessBlobFile = async (url: string) => {
+    const dateFetched = new Date();
     const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
     const buffer = Buffer.from(response.data);
     const hash = await getSha256Hash(buffer);
     const jsonString = await decompressArrayBuffer(buffer);
     const content = JSON.parse(jsonString);
-    return {content, hash};
+    return {content, hash, dateFetched};
 }
 
 async function getSha256Hash(arrayBuffer: ArrayBuffer): Promise<string> {
