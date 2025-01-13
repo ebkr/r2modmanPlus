@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-import { DownloadProgressed } from "../providers/generic/connection/ConnectionProvider";
 import { decompressArrayBuffer } from "./GzipUtils";
 
 const newAbortSignal = (timeoutMs: number) => {
@@ -35,7 +34,7 @@ interface LongRunningRequestOptions {
     /** Values passed as is to Axios constructor */
     axiosConfig?: AxiosRequestConfig;
     /** Custom function to be called when progress is made. */
-    downloadProgressed?: DownloadProgressed;
+    downloadProgressed?: (percentDownloaded: number) => void;
     /**
      * Time (in ms) the request has to trigger the first download
      * progress event. This can be used to timeout early if a connection

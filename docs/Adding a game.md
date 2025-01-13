@@ -37,8 +37,6 @@
     - Required for Unreal games relying on unreal-shimloader.
   - **TsUrl**
     - The Thunderstore API endpoint for the listing.
-  - **ExclusionsUrl**
-    - The URL used to load package exclusions. Generally just kept the same. No real reason to change until it becomes a large file as extra overhead to maintain.
   - **Platforms**
     - Array of `StorePlatformMetadata` for the different supported storefronts. Identifier is not required, however is expected for Steam and EGS (more potentially in future).
   - **GameImage**

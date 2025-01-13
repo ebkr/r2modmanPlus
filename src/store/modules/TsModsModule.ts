@@ -6,12 +6,11 @@ import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
 import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
-import { fetchAndProcessBlobFile } from '../../utils/HttpUtils';
+import { fetchAndProcessBlobFile, getAxiosWithTimeouts } from '../../utils/HttpUtils';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -21,7 +20,7 @@ export interface CachedMod {
 interface State {
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
-    exclusions?: string[];
+    exclusions: string[];
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
@@ -40,6 +39,8 @@ function isPackageListChunk(value: unknown): value is PackageListChunk {
     );
 }
 
+const EXCLUSIONS = 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md';
+
 /**
  * For dealing with mods listed in communities, i.e. available through
  * the Thunderstore API. Mods received from the API are stored in
@@ -53,7 +54,7 @@ export const TsModsModule = {
         cache: new Map<string, CachedMod>(),
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
-        exclusions: undefined,
+        exclusions: [],
         /*** Mod list is updated from the API automatically and by user action */
         isThunderstoreModListUpdateInProgress: false,
         /*** All mods available through API for the current active game */
@@ -124,7 +125,6 @@ export const TsModsModule = {
         reset(state: State) {
             state.cache = new Map<string, CachedMod>();
             state.deprecated = new Map<string, boolean>();
-            state.exclusions = undefined;
             state.mods = [];
             state.modsLastUpdated = undefined;
             state.thunderstoreModListUpdateError = '';
@@ -143,8 +143,9 @@ export const TsModsModule = {
         setModsLastUpdated(state, payload: Date|undefined) {
             state.modsLastUpdated = payload;
         },
-        setExclusions(state, payload: string[]) {
-            state.exclusions = payload;
+        setExclusions(state, payload: string|string[]) {
+            const exclusions_ = Array.isArray(payload) ? payload : payload.split('\n');
+            state.exclusions = exclusions_.map((e) => e.trim()).filter(Boolean);
         },
         setThunderstoreModListUpdateError(state, error: string|unknown) {
             if (typeof error === 'string') {
@@ -290,12 +291,28 @@ export const TsModsModule = {
             profileMods.forEach(getters['cachedMod']);
         },
 
-        async updateExclusions(
-            {commit},
-            progressCallback?: ProgressCallback
-        ) {
-            const exclusions = await ConnectionProvider.instance.getExclusions(progressCallback);
-            commit('setExclusions', exclusions);
+        async updateExclusions({commit}) {
+            // Read exclusion list from a bundled file to have some values available ASAP.
+            const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
+            commit('setExclusions', exclusionList.exclusions);
+
+            const attempts = 5;
+            const interval = 1000;
+            const timeout = 20000;
+
+            // Check for exclusion list updates from online.
+            try {
+                const axios = getAxiosWithTimeouts(timeout, timeout);
+                const response = await retry(() => axios.get(EXCLUSIONS), attempts, interval);
+
+                if (typeof response.data === 'string') {
+                    commit('setExclusions', response.data);
+                } else {
+                    throw new Error(`Received invalid exclusion list response from API: ${response.data}`);
+                }
+            } catch (e) {
+                console.error(e);
+            }
         },
 
         async updateMods({commit, dispatch, rootState}) {
@@ -316,14 +333,8 @@ export const TsModsModule = {
             {dispatch, rootState, state},
             {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
         ) {
-            // Splash screen skipped this if there was no need to update the
-            // package list. It may be needed later by e.g. the background update.
-            if (state.exclusions === undefined) {
-                await dispatch('updateExclusions');
-            }
-
             const filtered = chunks.map((chunk) => chunk.filter(
-                (pkg) => !state.exclusions!.includes(pkg.full_name)
+                (pkg) => !state.exclusions.includes(pkg.full_name)
             ));
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.updateFromApiResponse(community, filtered);
