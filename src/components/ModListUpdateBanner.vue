@@ -1,6 +1,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
+import R2Error from '../model/errors/R2Error';
+
 @Component({})
 export default class ModListUpdateBanner extends Vue {
     get isModListLoaded(): boolean {
@@ -11,12 +13,19 @@ export default class ModListUpdateBanner extends Vue {
         return this.$store.state.tsMods.isThunderstoreModListUpdateInProgress;
     }
 
-    get updateError(): string {
+    get updateError(): Error|undefined {
         return this.$store.state.tsMods.thunderstoreModListUpdateError;
     }
 
     async updateModList() {
         await this.$store.dispatch('tsMods/syncPackageList');
+    }
+
+    openErrorModal() {
+        this.$store.commit('error/handleError', R2Error.fromThrownValue(
+            this.updateError,
+            'Error updating the mod list from Thunderstore',
+        ));
     }
 }
 </script>
@@ -28,7 +37,9 @@ export default class ModListUpdateBanner extends Vue {
                 {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
             </span>
             <span v-else-if="updateError">
-                Error updating the mod list: {{ updateError }}.<br />
+                Error updating the mod list.
+                <a @click="openErrorModal">View error details</a>.
+                <br />
                 The manager will keep trying to update the mod list in the background.
             </span>
             <span v-else>

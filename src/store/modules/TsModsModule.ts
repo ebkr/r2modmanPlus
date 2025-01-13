@@ -24,7 +24,7 @@ interface State {
     isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
-    thunderstoreModListUpdateError: string;
+    thunderstoreModListUpdateError: Error|undefined;
     thunderstoreModListUpdateStatus: string;
 }
 
@@ -66,7 +66,7 @@ export const TsModsModule = {
         /*** When was the mod list last refreshed from the API? */
         modsLastUpdated: undefined,
         /*** Error shown on UI after mod list refresh fails */
-        thunderstoreModListUpdateError: '',
+        thunderstoreModListUpdateError: undefined,
         /*** Status shown on UI during mod list refresh */
         thunderstoreModListUpdateStatus: ''
     }),
@@ -131,7 +131,7 @@ export const TsModsModule = {
             state.deprecated = new Map<string, boolean>();
             state.mods = [];
             state.modsLastUpdated = undefined;
-            state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateError = undefined;
             state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
@@ -151,20 +151,15 @@ export const TsModsModule = {
             const exclusions_ = Array.isArray(payload) ? payload : payload.split('\n');
             state.exclusions = exclusions_.map((e) => e.trim()).filter(Boolean);
         },
-        setThunderstoreModListUpdateError(state, error: string|unknown) {
-            if (typeof error === 'string') {
-                state.thunderstoreModListUpdateError = error;
-            } else {
-                const msg = error instanceof Error ? error.message : "Unknown error";
-                state.thunderstoreModListUpdateError = msg;
-            }
+        setThunderstoreModListUpdateError(state, error: Error) {
+            state.thunderstoreModListUpdateError = error instanceof Error ? error : new Error(error);
         },
         setThunderstoreModListUpdateStatus(state, status: string) {
             state.thunderstoreModListUpdateStatus = status;
         },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
-            state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateError = undefined;
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
@@ -185,13 +180,7 @@ export const TsModsModule = {
 
             try {
                 commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
-                let packageListIndex: PackageListIndex;
-
-                try {
-                    packageListIndex = await dispatch('fetchPackageListIndex');
-                } catch {
-                    throw new Error('Failed to check for updates from Thunderstore');
-                }
+                const packageListIndex = await dispatch('fetchPackageListIndex');
 
                 // If the package list is up to date, only update the timestamp. Otherwise,
                 // fetch the new one and store it into IndexedDB.
@@ -239,7 +228,8 @@ export const TsModsModule = {
 
         async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
-            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
+            const options = {attempts: 5, interval: 2000, throwLastErrorAsIs: true};
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
 
             if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
@@ -286,7 +276,8 @@ export const TsModsModule = {
 
         async fetchAndCachePackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
             const url = CdnProvider.replaceCdnHost(chunkUrl);
-            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
+            const options = {throwLastErrorAsIs: true};
+            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url), options);
 
             if (!isPackageListChunk(chunk)) {
                 throw new Error(`Received invalid chunk from URL "${url}"`);
@@ -317,14 +308,13 @@ export const TsModsModule = {
             const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
             commit('setExclusions', exclusionList.exclusions);
 
-            const attempts = 5;
-            const interval = 1000;
             const timeout = 20000;
+            const options = {attempts: 5, interval: 1000, throwLastErrorAsIs: true};
 
             // Check for exclusion list updates from online.
             try {
                 const axios = getAxiosWithTimeouts(timeout, timeout);
-                const response = await retry(() => axios.get(EXCLUSIONS), attempts, interval);
+                const response = await retry(() => axios.get(EXCLUSIONS), options);
 
                 if (typeof response.data === 'string') {
                     commit('setExclusions', response.data);
