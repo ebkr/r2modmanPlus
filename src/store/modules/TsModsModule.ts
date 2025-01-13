@@ -212,6 +212,11 @@ export const TsModsModule = {
             return chunks;
         },
 
+        async gameHasCachedModList({rootState}): Promise<boolean> {
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            return updated !== undefined;
+        },
+
         async prewarmCache({getters, rootGetters}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
             profileMods.forEach(getters['cachedMod']);
