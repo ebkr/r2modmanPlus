@@ -19,12 +19,13 @@ export interface CachedMod {
 
 interface State {
     cache: Map<string, CachedMod>;
-    connectionError: string;
     deprecated: Map<string, boolean>;
     exclusions?: string[];
-    isBackgroundUpdateInProgress: boolean;
+    isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
+    thunderstoreModListUpdateError: string;
+    thunderstoreModListUpdateStatus: string;
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -49,17 +50,19 @@ export const TsModsModule = {
 
     state: (): State => ({
         cache: new Map<string, CachedMod>(),
-        /*** Error shown on UI after manual mod list refresh fails */
-        connectionError: '',
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: undefined,
-        /*** Mod list is automatically and periodically updated in the background */
-        isBackgroundUpdateInProgress: false,
+        /*** Mod list is updated from the API automatically and by user action */
+        isThunderstoreModListUpdateInProgress: false,
         /*** All mods available through API for the current active game */
         mods: [],
         /*** When was the mod list last refreshed from the API? */
-        modsLastUpdated: undefined
+        modsLastUpdated: undefined,
+        /*** Error shown on UI after mod list refresh fails */
+        thunderstoreModListUpdateError: '',
+        /*** Status shown on UI during mod list refresh */
+        thunderstoreModListUpdateStatus: ''
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -119,25 +122,19 @@ export const TsModsModule = {
     mutations: <MutationTree<State>>{
         reset(state: State) {
             state.cache = new Map<string, CachedMod>();
-            state.connectionError = '';
             state.deprecated = new Map<string, boolean>();
             state.exclusions = undefined;
             state.mods = [];
             state.modsLastUpdated = undefined;
+            state.thunderstoreModListUpdateError = '';
+            state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
             state.cache.clear();
         },
-        finishBackgroundUpdate(state) {
-            state.isBackgroundUpdateInProgress = false;
-        },
-        setConnectionError(state, error: string|unknown) {
-            if (typeof error === 'string') {
-                state.connectionError = error;
-            } else {
-                const msg = error instanceof Error ? error.message : "Unknown error";
-                state.connectionError = msg;
-            }
+        finishThunderstoreModListUpdate(state) {
+            state.isThunderstoreModListUpdateInProgress = false;
+            state.thunderstoreModListUpdateStatus = '';
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
@@ -148,8 +145,20 @@ export const TsModsModule = {
         setExclusions(state, payload: string[]) {
             state.exclusions = payload;
         },
-        startBackgroundUpdate(state) {
-            state.isBackgroundUpdateInProgress = true;
+        setThunderstoreModListUpdateError(state, error: string|unknown) {
+            if (typeof error === 'string') {
+                state.thunderstoreModListUpdateError = error;
+            } else {
+                const msg = error instanceof Error ? error.message : "Unknown error";
+                state.thunderstoreModListUpdateError = msg;
+            }
+        },
+        setThunderstoreModListUpdateStatus(state, status: string) {
+            state.thunderstoreModListUpdateStatus = status;
+        },
+        startThunderstoreModListUpdate(state) {
+            state.isThunderstoreModListUpdateInProgress = true;
+            state.thunderstoreModListUpdateError = '';
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
@@ -157,7 +166,73 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
+        /**
+         * Complete update process of the mod list, to be used after
+         * passing the splash screen.
+         */
+        async fetchAndProcessPackageList({commit, dispatch, state}): Promise<void> {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return;
+            }
+
+            commit('startThunderstoreModListUpdate');
+
+            try {
+                commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
+                let packageListIndex: PackageListIndex;
+
+                try {
+                    packageListIndex = await dispatch('fetchPackageListIndex');
+                } catch {
+                    throw new Error('Failed to check for updates from Thunderstore');
+                }
+
+                // If the package list is up to date, only update the timestamp. Otherwise,
+                // fetch the new one and store it into IndexedDB.
+                if (packageListIndex.isLatest) {
+                    await dispatch('updateIndexHash', packageListIndex.hash);
+                } else {
+                    const packageListChunks = await dispatch(
+                        'fetchPackageListChunks',
+                        {
+                            chunkUrls: packageListIndex.content,
+                            progressCallback: (progress: number) => commit(
+                                'setThunderstoreModListUpdateStatus',
+                                `Loading latest mod list from Thunderstore: ${progress}%`
+                            ),
+                        },
+                    );
+
+                    commit('setThunderstoreModListUpdateStatus', 'Storing the mod list into local cache...');
+                    await dispatch(
+                        'updatePersistentCache',
+                        {chunks: packageListChunks, indexHash: packageListIndex.hash},
+                    );
+                }
+
+                // If the package list was up to date and the mod list is already loaded to
+                // Vuex, just update the timestamp. Otherwise, load the list from IndexedDB
+                // to Vuex. This needs to be done even if the index hasn't updated when the
+                // mod list in Vuex is empty, as this indicates an error state and otherwise
+                // the user would be stuck with empty list until a new index hash is
+                // available via the API.
+                if (packageListIndex.isLatest && state.mods.length > 0) {
+                    await dispatch('updateModsLastUpdated');
+                } else {
+                    commit('setThunderstoreModListUpdateStatus', 'Processing the mod list...');
+                    await dispatch('updateMods');
+                    commit('setThunderstoreModListUpdateStatus', 'Almost done...');
+                    await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
+                    await dispatch('prewarmCache');
+                }
+            } catch (e) {
+                commit('setThunderstoreModListUpdateError', e);
+            } finally {
+                commit('finishThunderstoreModListUpdate');
+            }
+        },
+
+        async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
 
@@ -170,14 +245,6 @@ export const TsModsModule = {
 
             const community = rootState.activeGame.internalFolderName;
             const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
-
-            // Normally the hash would be updated after the mod list is successfully
-            // fetched and written to IndexedDB, but if the list hasn't changed,
-            // those step are skipped, so update the "last seen" timestamp now.
-            if (isLatest) {
-                await dispatch('updateIndexHash', index.hash);
-            }
-
             return {...index, isLatest};
         },
 

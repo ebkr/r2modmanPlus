@@ -45,8 +45,8 @@
 
 <script lang="ts">
 
-import { Watch } from 'vue-property-decorator';
-import Component, { mixins } from 'vue-class-component';
+import { Vue, Watch } from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -62,7 +62,6 @@ import ManifestV2 from '../../model/ManifestV2';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
-import UtilityMixin from '../mixins/UtilityMixin.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
@@ -71,7 +70,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             Hero
         }
     })
-    export default class SettingsView extends mixins(UtilityMixin) {
+    export default class SettingsView extends Vue {
 
         private activeTab: string = 'All';
         private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
@@ -299,11 +298,11 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
-                            return "Checking for new releases";
+                        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
                         }
-                        if (this.$store.state.tsMods.connectionError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
+                        if (this.$store.state.tsMods.thunderstoreModListUpdateError.length > 0) {
+                            return "Error updating the mod list: " + this.$store.state.tsMods.thunderstoreModListUpdateError;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
@@ -311,22 +310,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         return "No API information available";
                     },
                 'fa-exchange-alt',
-                async () => {
-                    if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
-                        return;
-                    }
-
-                    this.$store.commit("tsMods/startBackgroundUpdate");
-                    this.$store.commit("tsMods/setConnectionError", "");
-
-                    try {
-                        await this.refreshThunderstoreModList();
-                    } catch (e) {
-                        this.$store.commit("tsMods/setConnectionError", e);
-                    } finally {
-                        this.$store.commit("tsMods/finishBackgroundUpdate");
-                    }
-                }
+                async () => await this.$store.dispatch("tsMods/fetchAndProcessPackageList")
             ),
             new SettingsRow(
               'Other',
