@@ -43,6 +43,7 @@
                 </div>
             </div>
         </div>
+        <ModListUpdateBanner />
         <OnlineModList
             :local-mod-list="localModList"
             :paged-mod-list="pagedThunderstoreModList"
@@ -78,10 +79,12 @@ import OnlineModListProvider from '../../providers/components/loaders/OnlineModL
 import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
+import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 
 @Component({
     components: {
         DeferredInput,
+        ModListUpdateBanner,
         OnlineModList: OnlineModListProvider.provider,
         PaginationButtons,
     }
