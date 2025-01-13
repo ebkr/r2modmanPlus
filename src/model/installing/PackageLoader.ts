@@ -1,4 +1,5 @@
 import { PackageInstallerId } from '../../installers/registry';
+import R2Error from '../errors/R2Error';
 
 export enum PackageLoader {
     BEPINEX,
@@ -41,4 +42,26 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
     }
 
     return null;
+}
+
+/**
+ * Return the PackageLoader enum variant from the provided ecosystem-schema package loader name.
+ * @param name The all lowercase, no underscores, schema name of the package loader
+ * @returns The matching PackageLoader variant, if a valid one exists
+ */
+export function installerVariantFromString(name: string): PackageLoader {
+    const keys = Object.keys(PackageLoader)
+        .filter((x): x is keyof typeof PackageLoader => isNaN(Number(x)));
+
+    for (const loaderName of keys) {
+        const schemaName = loaderName.toLowerCase().split("_").join("");
+        if (schemaName == name) {
+            return PackageLoader[loaderName];
+        }
+    }
+
+    throw new R2Error(
+        "Invalid schema installer identifier",
+        `"${name}" is not a valid installer identifier.`
+    );
 }
