@@ -33,20 +33,6 @@ export default class SplashMixin extends Vue {
         this.requests.forEach((request) => request.setProgress(0));
     }
 
-    // Get the list of game-specific packages to exclude.
-    async getExclusions() {
-        this.loadingText = 'Connecting to GitHub repository';
-
-        const showProgress = (progress: number) => {
-            this.loadingText = 'Downloading exclusions';
-            this.getRequestItem('ExclusionsList').setProgress(progress);
-        };
-
-        await this.$store.dispatch('tsMods/updateExclusions', showProgress);
-
-        this.getRequestItem('ExclusionsList').setProgress(100);
-    }
-
     // Wrapper to allow TSMM to inject telemetry gathering.
     async getThunderstoreMods() {
         await this._getThunderstoreMods();
@@ -61,8 +47,12 @@ export default class SplashMixin extends Vue {
             const packageListIndex = await this.fetchPackageListIndex();
             const packageListChunks = await this.fetchPackageListChunksIfUpdated(packageListIndex);
             this.getRequestItem('ThunderstoreDownload').setProgress(100);
+            await this.updateExclusionsIfNeeded(packageListIndex, packageListChunks);
             hasUpdatedCache = await this.writeModsToPersistentCacheIfUpdated(packageListIndex, packageListChunks);
         }
+
+        this.getRequestItem('ThunderstoreDownload').setProgress(100);
+        this.getRequestItem('ExclusionsList').setProgress(100);
 
         if (hasPriorCache || hasUpdatedCache) {
             await this.triggerStoreModListUpdate();
@@ -130,6 +120,25 @@ export default class SplashMixin extends Vue {
             console.error('SplashMixin failed to fetch mod list from API.', e);
             return undefined;
         }
+    }
+
+    /***
+     * Update community specific mod exclusion list into Vuex.
+     * This is needed only if we are about to update the package list into IndedexDB.
+     */
+    async updateExclusionsIfNeeded(
+        packageListIndex?: PackageListIndex,
+        packageListChunks?: PackageListChunks
+    ) {
+        if (packageListIndex && packageListChunks) {
+            const showProgress = (progress: number) => {
+                this.loadingText = 'Updating mod exclusion list';
+                this.getRequestItem('ExclusionsList').setProgress(progress);
+            };
+            await this.$store.dispatch('tsMods/updateExclusions', showProgress);
+        }
+
+        this.getRequestItem('ExclusionsList').setProgress(100);
     }
 
     /***
