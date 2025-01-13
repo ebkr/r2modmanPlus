@@ -1,0 +1,384 @@
+{
+    "$defs": {
+        "DistributionPlatform": {
+            "enum": [
+                "steam",
+                "steam-direct",
+                "epic-games-store",
+                "oculus",
+                "origin",
+                "xbox-game-pass",
+                "other"
+            ],
+            "title": "DistributionPlatform",
+            "type": "string"
+        },
+        "EntryDist": {
+            "properties": {
+                "platform": {
+                    "$ref": "#/$defs/DistributionPlatform"
+                },
+                "identifier": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Identifier"
+                }
+            },
+            "required": [
+                "platform"
+            ],
+            "title": "EntryDist",
+            "type": "object"
+        },
+        "EntryMeta": {
+            "properties": {
+                "displayName": {
+                    "title": "Displayname",
+                    "type": "string"
+                },
+                "iconUrl": {
+                    "title": "Iconurl",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "displayName",
+                "iconUrl"
+            ],
+            "title": "EntryMeta",
+            "type": "object"
+        },
+        "EntryR2": {
+            "properties": {
+                "internalFolderName": {
+                    "title": "Internalfoldername",
+                    "type": "string"
+                },
+                "dataFolderName": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Datafoldername"
+                },
+                "settingsIdentifier": {
+                    "title": "Settingsidentifier",
+                    "type": "string"
+                },
+                "packageIndex": {
+                    "title": "Packageindex",
+                    "type": "string"
+                },
+                "exclusionsUrl": {
+                    "title": "Exclusionsurl",
+                    "type": "string"
+                },
+                "steamFolderName": {
+                    "title": "Steamfoldername",
+                    "type": "string"
+                },
+                "exeNames": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Exenames",
+                    "type": "array"
+                },
+                "gameInstanceType": {
+                    "$ref": "#/$defs/GameInstanceType"
+                },
+                "gameSelectionDisplayMode": {
+                    "$ref": "#/$defs/GameSelectionDisplayMode"
+                },
+                "packageLoader": {
+                    "$ref": "#/$defs/ModLoaderPackageRef"
+                },
+                "additionalSearchStrings": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Additionalsearchstrings",
+                    "type": "array"
+                },
+                "installRules": {
+                    "items": {
+                        "$ref": "#/$defs/InstallRule"
+                    },
+                    "title": "Installrules",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "internalFolderName",
+                "settingsIdentifier",
+                "packageIndex",
+                "exclusionsUrl",
+                "steamFolderName",
+                "exeNames",
+                "gameInstanceType",
+                "gameSelectionDisplayMode",
+                "packageLoader",
+                "additionalSearchStrings",
+                "installRules"
+            ],
+            "title": "EntryR2",
+            "type": "object"
+        },
+        "EntryThunderstore": {
+            "properties": {
+                "displayName": {
+                    "title": "Displayname",
+                    "type": "string"
+                },
+                "discordUrl": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Discordurl"
+                },
+                "wikiUrl": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Wikiurl"
+                },
+                "categories": {
+                    "title": "Categories",
+                    "type": "object"
+                },
+                "sections": {
+                    "title": "Sections",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "displayName",
+                "categories",
+                "sections"
+            ],
+            "title": "EntryThunderstore",
+            "type": "object"
+        },
+        "GameInstanceType": {
+            "enum": [
+                "game",
+                "server"
+            ],
+            "title": "GameInstanceType",
+            "type": "string"
+        },
+        "GameSelectionDisplayMode": {
+            "enum": [
+                "visible",
+                "hidden"
+            ],
+            "title": "GameSelectionDisplayMode",
+            "type": "string"
+        },
+        "InstallRule": {
+            "properties": {
+                "route": {
+                    "title": "Route",
+                    "type": "string"
+                },
+                "defaultFileExtensions": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Defaultfileextensions",
+                    "type": "array"
+                },
+                "trackingMethod": {
+                    "$ref": "#/$defs/TrackingMethod"
+                },
+                "subRoutes": {
+                    "items": {
+                        "$ref": "#/$defs/InstallRule"
+                    },
+                    "title": "Subroutes",
+                    "type": "array"
+                },
+                "isDefaultLocation": {
+                    "title": "Isdefaultlocation",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "route",
+                "defaultFileExtensions",
+                "trackingMethod",
+                "subRoutes",
+                "isDefaultLocation"
+            ],
+            "title": "InstallRule",
+            "type": "object"
+        },
+        "ModLoaderPackageRef": {
+            "enum": [
+                "bepinex",
+                "melonloader",
+                "northstar",
+                "godotml",
+                "ancientdungeonvr",
+                "shimloader",
+                "lovely",
+                "returnofmodding",
+                "gdweave"
+            ],
+            "title": "ModLoaderPackageRef",
+            "type": "string"
+        },
+        "ModloaderPackage": {
+            "properties": {
+                "identifier": {
+                    "title": "Identifier",
+                    "type": "string"
+                },
+                "rootFolder": {
+                    "title": "Rootfolder",
+                    "type": "string"
+                },
+                "variant": {
+                    "title": "Variant",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "identifier",
+                "rootFolder",
+                "variant"
+            ],
+            "title": "ModloaderPackage",
+            "type": "object"
+        },
+        "SchemaEntry": {
+            "properties": {
+                "uuid": {
+                    "format": "uuid",
+                    "title": "Uuid",
+                    "type": "string"
+                },
+                "label": {
+                    "title": "Label",
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/$defs/EntryMeta"
+                },
+                "distributions": {
+                    "items": {
+                        "$ref": "#/$defs/EntryDist"
+                    },
+                    "title": "Distributions",
+                    "type": "array"
+                },
+                "thunderstore": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/EntryThunderstore"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "r2modman": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/EntryR2"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                }
+            },
+            "required": [
+                "uuid",
+                "label",
+                "meta",
+                "distributions"
+            ],
+            "title": "SchemaEntry",
+            "type": "object"
+        },
+        "TrackingMethod": {
+            "enum": [
+                "subdir",
+                "subdir-no-flatten",
+                "state",
+                "package-zip",
+                "none"
+            ],
+            "title": "TrackingMethod",
+            "type": "string"
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+        },
+        "games": {
+            "additionalProperties": {
+                "$ref": "#/$defs/SchemaEntry"
+            },
+            "title": "Games",
+            "type": "object"
+        },
+        "communities": {
+            "additionalProperties": {
+                "$ref": "#/$defs/EntryThunderstore"
+            },
+            "title": "Communities",
+            "type": "object"
+        },
+        "package_installers": {
+            "items": {},
+            "title": "Package Installers",
+            "type": "array"
+        },
+        "modloader_packages": {
+            "items": {
+                "$ref": "#/$defs/ModloaderPackage"
+            },
+            "title": "Modloader Packages",
+            "type": "array"
+        }
+    },
+    "required": [
+        "schema_version",
+        "games",
+        "communities",
+        "package_installers",
+        "modloader_packages"
+    ],
+    "title": "Schema",
+    "type": "object"
+}
