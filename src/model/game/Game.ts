@@ -3,12 +3,11 @@ import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
 import { GameInstanceType } from '../../model/game/GameInstanceType';
 import { PackageLoader } from '../../model/installing/PackageLoader';
-import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 
 export default class Game {
 
     private readonly _displayName: string;
-    private readonly _internalFolderName: GAME_NAME;
+    private readonly _internalFolderName: string;
     private readonly _steamFolderName: string;
     private readonly _settingsIdentifier: string;
     private readonly _exeName: string[];
@@ -24,7 +23,7 @@ export default class Game {
 
     private _activePlatform: StorePlatformMetadata;
 
-    constructor(displayName: string, internalFolderName: GAME_NAME, settingsIdentifier: string,
+    constructor(displayName: string, internalFolderName: string, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
                 displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader, additionalSearchStrings?: string[]) {
@@ -49,7 +48,7 @@ export default class Game {
         return this._displayName;
     }
 
-    get internalFolderName(): GAME_NAME {
+    get internalFolderName(): string {
         return this._internalFolderName;
     }
 

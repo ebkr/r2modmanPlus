@@ -1,8 +1,7 @@
-import { GAME_NAME } from "../../profile_installers/ModLoaderVariantRecord";
 import { CoreRuleType } from "../../InstallationRules";
 import * as path from 'path';
 
-export function buildGodotMLRules(gameName: GAME_NAME): CoreRuleType {
+export function buildGodotMLRules(gameName: string): CoreRuleType {
     return {
         gameName: gameName,
         rules: [
