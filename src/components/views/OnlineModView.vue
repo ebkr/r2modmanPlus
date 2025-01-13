@@ -4,13 +4,14 @@
             <div class="is-shadowless is-square">
                 <div class="no-padding-left card-header-title">
                     <div class="input-group input-group--flex margin-right">
-                        <label for="thunderstore-search-filter">Search</label>
+                        <label for="online-search">Search</label>
                         <DeferredInput
                             v-model="thunderstoreSearchFilter"
-                            id="thunderstore-search-filter"
+                            id="online-search"
                             class="input"
                             type="text"
                             placeholder="Search for a mod"
+                            autocomplete="off"
                         />
                     </div>
                     <div class="input-group margin-right">

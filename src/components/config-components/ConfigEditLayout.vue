@@ -54,7 +54,13 @@
                                     </option>
                                 </select>
                             </template>
-                            <input class="input" v-model="line.value" v-else/>
+                            <input
+                                v-else
+                                v-model="line.value"
+                                :id="`${key.toString().replace(/\s+/g, '-')}-${variable.toString().replace(/\s+/g, '-')}`"
+                                class="input"
+                                autocomplete="off"
+                            />
                         </div>
                     </div>
                 </div>

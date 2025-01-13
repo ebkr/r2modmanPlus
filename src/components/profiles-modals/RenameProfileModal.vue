@@ -73,10 +73,12 @@ export default class RenameProfileModal extends ProfilesMixin {
             <p>This profile will store its own mods independently from other profiles.</p>
 
             <input
-                class="input"
                 v-model="newProfileName"
                 @keyup.enter="!doesProfileExist(newProfileName) && performRename()"
+                id="rename-profile-modal-new-profile-name"
+                class="input"
                 ref="nameInput"
+                autocomplete="off"
             />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">

@@ -107,7 +107,13 @@
 						entering custom launch parameters.</strong>
 				</p>
 				<br/>
-				<input class='input' v-model='launchParametersModel' placeholder='Enter parameters'/>
+				<input
+					v-model='launchParametersModel'
+					id='launch-parameters-modal-input'
+					class='input'
+					placeholder='Enter parameters'
+					autocomplete='off'
+				/>
 			</template>
 			<template v-slot:footer>
 				<button class='button is-info' @click='updateLaunchParameters()'>

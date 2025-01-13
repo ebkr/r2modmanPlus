@@ -54,11 +54,12 @@ export default class CreateProfileModal extends ProfilesMixin {
             <p>This profile will store its own mods independently from other profiles.</p>
             <br/>
             <input
-                class="input"
                 v-model="newProfileName"
                 @keyup.enter="!doesProfileExist(newProfileName) && createProfile()"
                 id="create-profile-modal-new-profile-name"
+                class="input"
                 ref="nameInput"
+                autocomplete="off"
             />
             <br/><br/>
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
