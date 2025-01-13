@@ -6,9 +6,11 @@ import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
+import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
@@ -19,6 +21,7 @@ import OnlineModList from "../views/OnlineModList.vue";
     components: { OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
+    valueToReadableDate = valueToReadableDate;
     private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
     private importViaCodeInProgress: boolean = false;
@@ -27,15 +30,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private activeStep:
-        'IMPORT_UPDATE_SELECTION'
-        | 'FILE_CODE_SELECTION'
-        | 'IMPORT_CODE'
+        'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
-        | 'ADDING_PROFILE'
+        | 'IMPORT_CODE'
         | 'REVIEW_IMPORT'
-        | 'NO_PACKAGES_IN_IMPORT'
+        | 'IMPORT_UPDATE_SELECTION'
+        | 'ADDING_PROFILE'
         | 'PROFILE_IS_BEING_IMPORTED'
-    = 'IMPORT_UPDATE_SELECTION';
+    = 'FILE_CODE_SELECTION';
 
     get appName(): string {
         return ManagerInformation.APP_NAME;
@@ -46,7 +48,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     }
 
     closeModal() {
-        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+        this.activeStep = 'FILE_CODE_SELECTION';
         this.targetProfileName = '';
         this.importUpdateSelection = 'CREATE';
         this.importViaCodeInProgress = false;
@@ -56,24 +58,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.$store.commit('closeImportProfileModal');
     }
 
-    get profileToOnlineMods() {
-        if (!this.profileImportContent) {
-            return [];
-        }
-        return this.profileImportContent.getMods()
-            .map(mod => this.$store.getters['tsMods/tsMod'](mod))
-            .filter(mod => !!mod)
-    }
+    get profileMods(): {known: ThunderstoreMod[], unknown: string[]} {
+        const profileMods = this.profileImportContent ? this.profileImportContent.getMods() : [];
+        const known: ThunderstoreMod[] = [];
+        const unknown: string[] = [];
 
-    // Fired when user selects whether to import a new profile or update existing one.
-    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
-        this.importUpdateSelection = mode;
-
-        if (mode === 'UPDATE') {
-            this.targetProfileName = this.activeProfileName;
+        for (const mod of profileMods) {
+            const tsMod = this.$store.getters['tsMods/tsMod'](mod);
+            if (tsMod) {
+                known.push(tsMod);
+            } else {
+                unknown.push(mod.getName());
+            }
         }
 
-        this.activeStep = 'FILE_CODE_SELECTION';
+        unknown.sort();
+        return {known, unknown};
     }
 
     // Fired when user selects to import either from file or code.
@@ -137,8 +137,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        this.activeStep = this.profileToOnlineMods.length ? 'REVIEW_IMPORT' : 'NO_PACKAGES_IN_IMPORT';
-        return;
+        this.activeStep = 'REVIEW_IMPORT';
     }
 
     // Fired when user has accepted the mods to be imported in the review phase.
@@ -152,8 +151,16 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        if (this.importUpdateSelection === 'CREATE') {
-            this.targetProfileName = profileContent.getProfileName();
+        this.targetProfileName = profileContent.getProfileName();
+        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+    }
+
+    // Fired when user selects whether to import a new profile or update existing one.
+    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
+        this.importUpdateSelection = mode;
+
+        if (mode === 'UPDATE') {
+            this.targetProfileName = this.activeProfileName;
         }
 
         this.activeStep = 'ADDING_PROFILE';
@@ -228,25 +235,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 </script>
 
 <template>
-    <ModalCard v-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
-        <template v-slot:header>
-            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
-        </template>
-        <template v-slot:footer>
-            <button id="modal-import-new-profile"
-                    class="button is-info"
-                    @click="onCreateOrUpdateSelect('CREATE')">
-                Import new profile
-            </button>
-            <button id="modal-update-existing-profile"
-                    class="button is-primary"
-                    @click="onCreateOrUpdateSelect('UPDATE')">
-                Update existing profile
-            </button>
-        </template>
-    </ModalCard>
-
-    <ModalCard v-else-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
             <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
@@ -317,32 +306,83 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <h2 class="modal-title">Packages to be installed</h2>
         </template>
         <template v-slot:body>
-            <OnlineModList :paged-mod-list="profileToOnlineMods" :read-only="true" />
+            <OnlineModList :paged-mod-list="profileMods.known" :read-only="true" />
+            <div v-if="!profileMods.known.length || profileMods.unknown.length" class="notification is-warning margin-top">
+                <p v-if="!profileMods.known.length">
+                    None of the packages in the profile were found on Thunderstore:
+                </p>
+                <p v-else>
+                    Some of the packages in the profile were not found on Thunderstore:
+                </p>
+
+                <p class="margin-top">{{ profileMods.unknown.join(", ") }}</p>
+
+                <p v-if="profileMods.known.length" class="margin-top">
+                    These packages will not be installed.
+                </p>
+                <p v-else class="margin-top">
+                    Ensure the profile is intended for the currently selected game.
+                </p>
+
+                <p class="margin-top">
+                    Updating the mod list from Thunderstore might solve this issue.
+
+                    <span v-if="$store.state.tsMods.modsLastUpdated">
+                        The mod list was last updated on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
+                    </span>
+
+                    <br />
+
+                    <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
+                        {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
+                    </span>
+                    <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
+                        Error updating the mod list:
+                        {{ $store.state.tsMods.thunderstoreModListUpdateError }}.
+                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">Retry</a>?
+                    </span>
+                    <span v-else>
+                        Would you like to
+                        <a @click="$store.dispatch('tsMods/fetchAndProcessPackageList')">update now</a>?
+                    </span>
+                </p>
+            </div>
         </template>
         <template v-slot:footer>
-            <button
-                id="modal-review-confirmed"
-                class="button is-info"
-                @click="onProfileReviewConfirmed();">
-                Import
-            </button>
+            <div class="container is-flex is-justify-content-space-between">
+                <button
+                    id="modal-no-mods-to-import"
+                    class="button is-danger"
+                    @click="closeModal"
+                >
+                    Cancel import
+                </button>
+                <button
+                    id="modal-review-confirmed"
+                    class="button is-info"
+                    :disabled="!profileMods.known.length"
+                    @click="onProfileReviewConfirmed"
+                >
+                    Import
+                </button>
+            </div>
         </template>
     </ModalCard>
 
-    <ModalCard v-else-if="activeStep === 'NO_PACKAGES_IN_IMPORT'" key="NO_PACKAGES_IN_IMPORT" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard v-else-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">There was a problem importing the profile</h2>
-        </template>
-        <template v-slot:body>
-            <p>None of the packages inside the export were found on Thunderstore.</p>
-            <p>There is nothing to import.</p>
+            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
         </template>
         <template v-slot:footer>
-            <button
-                id="modal-no-mods-to-import"
-                class="button is-info"
-                @click="closeModal">
-                Close
+            <button id="modal-import-new-profile"
+                    class="button is-info"
+                    @click="onCreateOrUpdateSelect('CREATE')">
+                Import new profile
+            </button>
+            <button id="modal-update-existing-profile"
+                    class="button is-primary"
+                    @click="onCreateOrUpdateSelect('UPDATE')">
+                Update existing profile
             </button>
         </template>
     </ModalCard>
