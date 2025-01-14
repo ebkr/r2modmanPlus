@@ -847,6 +847,12 @@ export default class GameManager {
             "https://thunderstore.io/c/subterror/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2846060")], "Subterror.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["st"]),
+
+        new Game("I Am Your Beast", "IAmYourBeast", "I Am Your Beast",
+            "I Am Your Beast", ["I Am Your Beast.exe"], "I Am Your Beast_Data",
+            "https://thunderstore.io/c/i-am-your-beast/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1876590")], "IAmYourBeast.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["iayb"]),
     ];
 
     static get activeGame(): Game {
