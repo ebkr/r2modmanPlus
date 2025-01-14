@@ -1,3 +1,4 @@
+import ManifestV2 from "src/model/ManifestV2";
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import StatusEnum from '../../model/enums/StatusEnum';
@@ -86,35 +87,23 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                            ignoreCache: boolean,
                            callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
                            completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        let dependencies: ThunderstoreCombo[] = [];
-        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
-        this.sortDependencyOrder(dependencies);
-        const combo = new ThunderstoreCombo();
-        combo.setMod(mod);
-        combo.setVersion(modVersion);
-        let downloadCount = 0;
 
         const modList = await ProfileModList.getModList(profile);
         if (modList instanceof R2Error) {
             return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
         }
 
+        let dependencies: ThunderstoreCombo[] = [];
+        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
+        this.sortDependencyOrder(dependencies);
+        const combo = new ThunderstoreCombo();
+        combo.setMod(mod);
+        combo.setVersion(modVersion);
+
+        dependencies = await this.determineDependencyVersions(dependencies, combo, modVersion, modList);
         let downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
 
-        // Determine if modpack
-        // If modpack, use specified dependencies as retrieved above
-        // If not, get latest version of dependencies.
-        let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
-        if (!isModpack) {
-            // If not modpack, get latest
-            dependencies = [];
-            await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
-            this.sortDependencyOrder(dependencies);
-            // #270: Remove already-installed dependencies to prevent updating.
-            dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
-            downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
-        }
-
+        let downloadCount = 0;
         await this.downloadAndSave(combo, ignoreCache, async (progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 callback(0, mod.getName(), status, err);
@@ -146,6 +135,19 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 });
             }
         })
+    }
+
+    // If combo is a modpack, use the modpack's dependency versions. If it isn't, get the latest versions.
+    public async determineDependencyVersions(dependencies: ThunderstoreCombo[], combo: ThunderstoreCombo, modVersion: ThunderstoreVersion, modList: ManifestV2[]) {
+        let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
+        if (isModpack) {
+            return dependencies;
+        }
+        dependencies = [];
+        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
+        this.sortDependencyOrder(dependencies);
+        // #270: Remove already-installed dependencies to prevent updating.
+        return dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
     }
 
     public async downloadImportedMods(
