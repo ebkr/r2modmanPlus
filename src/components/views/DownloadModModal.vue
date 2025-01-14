@@ -144,6 +144,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
+                    this.$store.commit('download/updateDownload', { assignId: assignId, failed: true });
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }
