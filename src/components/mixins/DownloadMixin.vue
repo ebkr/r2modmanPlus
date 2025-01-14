@@ -21,6 +21,10 @@ export default class DownloadMixin extends Vue {
         this.$store.commit("closeDownloadModModal");
     }
 
+    setIsModProgressModalOpen(open: boolean): void {
+        this.$store.commit('download/setIsModProgressModalOpen', open);
+    }
+
     get isOpen(): boolean {
         return this.$store.state.modals.isDownloadModModalOpen;
     }
