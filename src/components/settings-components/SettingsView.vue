@@ -187,6 +187,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Debugging',
+                'Clean online mod list',
+                'Deletes local copy of mod list, forcing the next refresh to fetch a new one.',
+                async () => this.$store.dispatch('tsMods/getActiveGameCacheStatus'),
+                'fa-trash',
+                () => this.$store.dispatch('tsMods/resetActiveGameCache')
+            ),
+            new SettingsRow(
+                'Debugging',
                 'Toggle preferred Thunderstore CDN',
                 'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
                 async () => `Current: ${CdnProvider.current.label} (${CdnProvider.current.url})`,
