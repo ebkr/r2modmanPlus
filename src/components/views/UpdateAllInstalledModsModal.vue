@@ -45,7 +45,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
 
         const assignId = await this.$store.dispatch(
             'download/addDownload',
-            modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().toString()})`)
+            modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
         );
 
         this.$store.commit('download/setIsModProgressModalOpen', true);
