@@ -268,7 +268,7 @@ export default class LocalFileImportModal extends Vue {
         this.$emit("close-modal");
     }
 
-    private importFile() {
+    private async importFile() {
         if (this.fileToImport === null) {
             return;
         }
@@ -318,27 +318,25 @@ export default class LocalFileImportModal extends Vue {
         this.resultingManifest.setDescription(this.modDescription.trim());
         this.resultingManifest.setAuthorName(this.modAuthor.trim());
 
-        const installCallback = (async (success: boolean, error: any | null) => {
-            if (!success && error !== null) {
-                this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
-                return;
+        try {
+            if (this.fileToImport.endsWith(".zip")) {
+                await LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest);
+            } else {
+                await LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest);
             }
-            const updatedModListResult = await ProfileModList.getModList(profile);
-            if (updatedModListResult instanceof R2Error) {
-                this.$store.commit("error/handleError", updatedModListResult);
-                return;
-            }
+        } catch (e) {
+            this.$store.commit("error/handleError", R2Error.fromThrownValue(e));
+            return;
+        }
+
+        const updatedModListResult = await ProfileModList.getModList(profile);
+        if (updatedModListResult instanceof R2Error) {
+            this.$store.commit("error/handleError", updatedModListResult);
+        } else {
             await this.$store.dispatch("profile/updateModList", updatedModListResult);
             this.emitClose();
-        });
-
-        if (this.fileToImport.endsWith(".zip")) {
-            LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest, installCallback);
-        } else {
-            LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest, installCallback);
         }
     }
-
 }
 
 interface ImportFieldAttributes {
