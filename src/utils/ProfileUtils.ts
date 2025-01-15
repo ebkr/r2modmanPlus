@@ -1,6 +1,7 @@
 import path from "path";
 
 import * as yaml from "yaml";
+import { Store } from "vuex";
 
 import FileUtils from "./FileUtils";
 import R2Error from "../model/errors/R2Error";
@@ -12,6 +13,7 @@ import Profile, { ImmutableProfile } from "../model/Profile";
 import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
+import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
@@ -54,6 +56,18 @@ async function extractConfigsToImportedProfile(
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
         progressCallback(`Copying configs to profile: ${progress}%`);
     }
+}
+
+export async function installModsAndResolveConflicts(
+    downloadedMods: ThunderstoreCombo[],
+    profile: ImmutableProfile,
+    store: Store<any>
+): Promise<void> {
+    await ProfileModList.requestLock(async () => {
+        const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile);
+        await store.dispatch('profile/updateModList', modList);
+        throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
+    });
 }
 
 /**
