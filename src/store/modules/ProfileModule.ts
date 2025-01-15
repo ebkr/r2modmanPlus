@@ -231,8 +231,7 @@ export default {
                 }
             }
 
-            // IDK but sounds important.
-            await dispatch('resolveConflicts', params);
+            await dispatch('resolveConflicts', {mods: lastSuccessfulUpdate, profile});
         },
 
         async enableModsOnActiveProfile(
@@ -286,7 +285,7 @@ export default {
                 }
             }
 
-            await dispatch('resolveConflicts', params);
+            await dispatch('resolveConflicts', {mods: lastSuccessfulUpdate, profile});
         },
 
         // Return ThunderstoreCombos pointing to the latest available version.
@@ -425,7 +424,7 @@ export default {
                 }
             }
 
-            await dispatch('resolveConflicts', params);
+            await dispatch('resolveConflicts', {mods: lastSuccessfulUpdate, profile});
         },
 
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
