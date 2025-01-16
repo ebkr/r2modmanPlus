@@ -18,6 +18,7 @@ export interface CachedMod {
 }
 
 interface State {
+    activeGameCacheStatus: string|undefined;
     cache: Map<string, CachedMod>;
     deprecated: Map<string, boolean>;
     exclusions: string[];
@@ -55,6 +56,8 @@ export const TsModsModule = {
     namespaced: true,
 
     state: (): State => ({
+        /*** Does the active game have a mod list stored in IndexedDB? */
+        activeGameCacheStatus: undefined,
         cache: new Map<string, CachedMod>(),
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
@@ -127,6 +130,7 @@ export const TsModsModule = {
 
     mutations: <MutationTree<State>>{
         reset(state: State) {
+            state.activeGameCacheStatus = undefined;
             state.cache = new Map<string, CachedMod>();
             state.deprecated = new Map<string, boolean>();
             state.mods = [];
@@ -140,6 +144,9 @@ export const TsModsModule = {
         finishThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = false;
             state.thunderstoreModListUpdateStatus = '';
+        },
+        setActiveGameCacheStatus(state, status: string|undefined) {
+            state.activeGameCacheStatus = status;
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
@@ -222,6 +229,7 @@ export const TsModsModule = {
             } catch (e) {
                 commit('setThunderstoreModListUpdateError', e);
             } finally {
+                commit('setActiveGameCacheStatus', undefined);
                 commit('finishThunderstoreModListUpdate');
             }
         },
@@ -293,14 +301,28 @@ export const TsModsModule = {
             return updated !== undefined;
         },
 
-        async getActiveGameCacheStatus({state, rootState}) {
+        async getActiveGameCacheStatus({commit, state, rootState}): Promise<string> {
             if (state.isThunderstoreModListUpdateInProgress) {
                 return "Online mod list is currently updating, please wait for the operation to complete";
             }
 
-            return (await PackageDb.hasEntries(rootState.activeGame.internalFolderName))
-                ? `${rootState.activeGame.displayName} has a local copy of online mod list`
-                : `${rootState.activeGame.displayName} has no local copy stored`;
+            // Only check the status once, as this is used in the settings
+            // where the value is polled on one second intervals.
+            if (state.activeGameCacheStatus === undefined) {
+                let status = '';
+                try {
+                    status = (await PackageDb.hasEntries(rootState.activeGame.internalFolderName))
+                        ? `${rootState.activeGame.displayName} has a local copy of online mod list`
+                        : `${rootState.activeGame.displayName} has no local copy stored`;
+                } catch (e) {
+                    console.error(e);
+                    status = 'Error occurred while checking mod list status';
+                }
+
+                commit('setActiveGameCacheStatus', status);
+            }
+
+            return state.activeGameCacheStatus || 'Unknown status';
         },
 
         async prewarmCache({getters, rootGetters}) {
@@ -326,6 +348,7 @@ export const TsModsModule = {
                 await PackageDb.resetCommunity(community);
                 commit('setModsLastUpdated', undefined);
             } finally {
+                commit('setActiveGameCacheStatus', undefined);
                 commit('finishThunderstoreModListUpdate');
             }
         },
