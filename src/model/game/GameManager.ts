@@ -855,7 +855,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["iayb"]),
 
         new Game("MiSide", "MiSide", "MiSide",
-            "MiSide", ["MiSide.exe"], "MiSideFull_Data",
+            "MiSide", ["MiSideFull.exe"], "MiSideFull_Data",
             "https://thunderstore.io/c/miside/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2527500")], "MiSide.webp",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
