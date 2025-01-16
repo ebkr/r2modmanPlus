@@ -324,6 +324,7 @@ export const TsModsModule = {
             try {
                 commit('setThunderstoreModListUpdateStatus', 'Resetting mod list cache...');
                 await PackageDb.resetCommunity(community);
+                commit('setModsLastUpdated', undefined);
             } finally {
                 commit('finishThunderstoreModListUpdate');
             }
