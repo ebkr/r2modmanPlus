@@ -76,6 +76,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         return {known, unknown};
     }
 
+    get unknownProfileModNames(): string {
+        return this.profileMods.unknown.join(', ');
+    }
+
     // Fired when user selects to import either from file or code.
     async onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
         if (mode === 'FILE') {
@@ -309,17 +313,17 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:body>
             <OnlineModList :paged-mod-list="profileMods.known" :read-only="true" />
-            <div v-if="!profileMods.known.length || profileMods.unknown.length" class="notification is-warning margin-top">
-                <p v-if="!profileMods.known.length">
+            <div v-if="profileMods.known.length === 0 || profileMods.unknown.length > 0" class="notification is-warning margin-top">
+                <p v-if="profileMods.known.length === 0">
                     None of the packages in the profile were found on Thunderstore:
                 </p>
                 <p v-else>
                     Some of the packages in the profile were not found on Thunderstore:
                 </p>
 
-                <p class="margin-top">{{ profileMods.unknown.join(", ") }}</p>
+                <p class="margin-top">{{ unknownProfileModNames }}</p>
 
-                <p v-if="profileMods.known.length" class="margin-top">
+                <p v-if="profileMods.known.length > 0" class="margin-top">
                     These packages will not be installed.
                 </p>
                 <p v-else class="margin-top">
@@ -351,23 +355,14 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             </div>
         </template>
         <template v-slot:footer>
-            <div class="container is-flex is-justify-content-space-between">
-                <button
-                    id="modal-no-mods-to-import"
-                    class="button is-danger"
-                    @click="closeModal"
-                >
-                    Cancel import
-                </button>
-                <button
-                    id="modal-review-confirmed"
-                    class="button is-info"
-                    :disabled="!profileMods.known.length"
-                    @click="onProfileReviewConfirmed"
-                >
-                    Import
-                </button>
-            </div>
+            <button
+                id="modal-review-confirmed"
+                class="button is-info"
+                :disabled="profileMods.known.length === 0"
+                @click="onProfileReviewConfirmed"
+            >
+                Import
+            </button>
         </template>
     </ModalCard>
 
