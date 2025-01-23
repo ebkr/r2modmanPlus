@@ -4,11 +4,18 @@
             <div class="modal-background" @click="setIsModProgressModalOpen(false);"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
-                    <p>{{Math.floor($store.getters['download/currentDownload'].downloadProgress)}}% complete</p>
+                    <h3 class='title'>Downloading and installing {{$store.getters['download/currentDownload'].modName}}</h3>
+                    <p>Downloading: {{Math.floor($store.getters['download/currentDownload'].downloadProgress)}}% complete</p>
                     <Progress
                         :max='100'
                         :value="$store.getters['download/currentDownload'].downloadProgress"
+                        :className="['is-dark']"
+                    />
+                    <p v-if="$store.getters['download/currentDownload'].installationProgress">Installation: {{$store.getters['download/currentDownload'].installationProgress}}% complete</p>
+                    <p v-else>Installation: waiting for download to finish</p>
+                    <Progress
+                        :max='100'
+                        :value="$store.getters['download/currentDownload'].installationProgress"
                         :className="['is-dark']"
                     />
                 </div>
@@ -135,7 +142,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }
-                await this.downloadCompletedCallback(downloadedMods);
+                await this.downloadCompletedCallback(downloadedMods, assignId);
                 this.setIsModProgressModalOpen(false);
             }, 1);
         }

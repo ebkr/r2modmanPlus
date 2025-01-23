@@ -212,9 +212,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     async importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
         this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
         this.importPhaseDescription = 'Downloading mods: 0%';
-        const progressCallback = (progress: number|string) => typeof progress === "number"
-            ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
-            : this.importPhaseDescription = progress;
+        const progressCallback = (progressText: string) => this.importPhaseDescription = progressText;
         const game = this.$store.state.activeGame;
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
@@ -222,8 +220,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         try {
             const comboList = await ProfileUtils.exportModsToCombos(mods, game);
-            await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
-            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+            await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, (progress) => {
+                progressCallback(`Downloading mods: ${Math.floor(progress)}%`)
+            });
+            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, (progress) => {
+                progressCallback(`Copying mods to profile: ${progress}%`)
+            });
         } catch (e) {
             await this.$store.dispatch('profiles/ensureProfileExists');
             this.closeModal();

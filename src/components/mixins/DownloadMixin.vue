@@ -44,9 +44,9 @@ export default class DownloadMixin extends Vue {
         return this.$store.getters['profile/activeProfile'];
     }
 
-    async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[]): Promise<void> {
+    async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[], assignId: number): Promise<void> {
         try {
-            await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store);
+            await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store, assignId);
         } catch (e) {
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
         }

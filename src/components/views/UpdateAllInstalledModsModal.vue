@@ -65,7 +65,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
                 this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
             }
         }, async (downloadedMods) => {
-            await this.downloadCompletedCallback(downloadedMods);
+            await this.downloadCompletedCallback(downloadedMods, assignId);
             this.setIsModProgressModalOpen(false);
         });
     }

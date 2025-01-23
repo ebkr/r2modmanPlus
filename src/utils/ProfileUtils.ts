@@ -37,7 +37,7 @@ export async function exportModsToCombos(exportMods: ExportMod[], game: Game): P
 async function extractConfigsToImportedProfile(
     file: string,
     profileName: string,
-    progressCallback: (status: string) => void
+    progressCallback: (status: number) => void
 ) {
     const zipEntries = await ZipProvider.instance.getEntries(file);
     const excludedFiles = ["export.r2x", "mods.yml"];
@@ -54,17 +54,20 @@ async function extractConfigsToImportedProfile(
         }
 
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
-        progressCallback(`Copying configs to profile: ${progress}%`);
+        progressCallback(progress);
     }
 }
 
 export async function installModsAndResolveConflicts(
     downloadedMods: ThunderstoreCombo[],
     profile: ImmutableProfile,
-    store: Store<any>
+    store: Store<any>,
+    assignId: number
 ): Promise<void> {
     await ProfileModList.requestLock(async () => {
-        const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile);
+        const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined, (installationProgress) => {
+            store.commit('download/updateDownload', {assignId, installationProgress});
+        });
         await store.dispatch('profile/updateModList', modList);
         throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
     });
@@ -79,7 +82,7 @@ export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
     profile: ImmutableProfile,
     disabledModsOverride?: string[],
-    progressCallback?: (status: string) => void
+    progressCallback?: (status: number) => void
 ): Promise<ManifestV2[]> {
     const profileMods = await ProfileModList.getModList(profile);
     if (profileMods instanceof R2Error) {
@@ -120,7 +123,7 @@ export async function installModsToProfile(
 
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
-                progressCallback(`Copying mods to profile: ${progress}%`);
+                progressCallback(progress);
             }
         }
     } catch (e) {
@@ -200,8 +203,12 @@ export async function populateImportedProfile(
 
     try {
         const disabledMods = exportModList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-        await installModsToProfile(comboList, profile, disabledMods, progressCallback);
-        await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
+        await installModsToProfile(comboList, profile, disabledMods, (progress) => {
+            progressCallback(`Copying mods to profile: ${progress}%`);
+        });
+        await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), (progress) => {
+            progressCallback(`Copying configs to profile: ${progress}%`);
+        });
     } catch (e) {
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
         throw e;

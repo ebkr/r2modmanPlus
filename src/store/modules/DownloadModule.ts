@@ -8,6 +8,7 @@ interface DownloadProgress {
     initialMods: string[];
     modName: string;
     downloadProgress: number;
+    installationProgress: number;
     failed: boolean;
 }
 
@@ -42,6 +43,7 @@ export const DownloadModule = {
                 initialMods,
                 modName: '',
                 downloadProgress: 0,
+                installationProgress: 0,
                 failed: false,
             };
             state.allDownloads = [...state.allDownloads, downloadObject];
@@ -52,7 +54,7 @@ export const DownloadModule = {
     getters: <GetterTree<State, RootState>>{
         activeDownloadCount(state) {
             const active = state.allDownloads.filter(
-                dl => !dl.failed && dl.downloadProgress < 100
+                dl => !dl.failed && dl.downloadProgress < 100 && dl.installationProgress < 100
             );
             return active.length;
         },
