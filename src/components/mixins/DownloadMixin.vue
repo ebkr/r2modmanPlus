@@ -52,7 +52,7 @@ export default class DownloadMixin extends Vue {
         }
     }
 
-    downloadProgressCallback(assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+    downloadProgressCallback(assignId: number, downloadProgress: number, modName: string, status: number, err: R2Error | null) {
         try {
             if (status === StatusEnum.FAILURE) {
                 this.setIsModProgressModalOpen(false);
@@ -62,14 +62,14 @@ export default class DownloadMixin extends Vue {
                     throw err;
                 }
             } else if (status === StatusEnum.PENDING) {
-                this.$store.commit('download/updateDownload', {assignId, progress, modName});
+                this.$store.commit('download/updateDownload', {assignId, downloadProgress, modName});
             }
         } catch (e) {
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
         }
     };
 
-    static downloadProgressCallback(store: Store<any>, assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+    static downloadProgressCallback(store: Store<any>, assignId: number, downloadProgress: number, modName: string, status: number, err: R2Error | null) {
         if (status === StatusEnum.FAILURE) {
             store.commit('download/updateDownload', {assignId, failed: true});
             if (err !== null) {
@@ -77,7 +77,7 @@ export default class DownloadMixin extends Vue {
                 throw err;
             }
         } else if (status === StatusEnum.PENDING) {
-            store.commit('download/updateDownload', {assignId, progress, modName});
+            store.commit('download/updateDownload', {assignId, downloadProgress, modName});
         }
     }
 

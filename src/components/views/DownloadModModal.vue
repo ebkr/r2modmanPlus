@@ -5,10 +5,10 @@
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
-                    <p>{{Math.floor($store.getters['download/currentDownload'].progress)}}% complete</p>
+                    <p>{{Math.floor($store.getters['download/currentDownload'].downloadProgress)}}% complete</p>
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].progress"
+                        :value="$store.getters['download/currentDownload'].downloadProgress"
                         :className="['is-dark']"
                     />
                 </div>
@@ -72,9 +72,9 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             profile.asImmutableProfile(),
                             combo,
                             ignoreCache,
-                            (progress: number, modName: string, status: number, err: R2Error | null) => {
+                            (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
                                 try {
-                                    DownloadMixin.downloadProgressCallback(store, assignId, progress, modName, status, err);
+                                    DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
                                 } catch (e) {
                                     reject(e);
                                 }
@@ -127,7 +127,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.profile.asImmutableProfile(),
                         tsCombo,
                         this.ignoreCache,
-                        (progress, modName, status, err) => { this.downloadProgressCallback(assignId, progress, modName, status, err); }
+                        (downloadProgress, modName, status, err) => { this.downloadProgressCallback(assignId, downloadProgress, modName, status, err); }
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
