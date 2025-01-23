@@ -2,12 +2,14 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
+import StatusEnum from "../../model/enums/StatusEnum";
 import R2Error from "../../model/errors/R2Error";
 import Game from "../../model/game/Game";
 import Profile from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import { installModsAndResolveConflicts } from "../../utils/ProfileUtils";
+import { Store } from "vuex";
 
 
 @Component
@@ -47,6 +49,35 @@ export default class DownloadMixin extends Vue {
             await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store);
         } catch (e) {
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+        }
+    }
+
+    downloadProgressCallback(assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+        try {
+            if (status === StatusEnum.FAILURE) {
+                this.setIsModProgressModalOpen(false);
+                this.$store.commit('download/updateDownload', {assignId, failed: true});
+                if (err !== null) {
+                    DownloadMixin.addSolutionsToError(err);
+                    throw err;
+                }
+            } else if (status === StatusEnum.PENDING) {
+                this.$store.commit('download/updateDownload', {assignId, progress, modName});
+            }
+        } catch (e) {
+            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+        }
+    };
+
+    static downloadProgressCallback(store: Store<any>, assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+        if (status === StatusEnum.FAILURE) {
+            store.commit('download/updateDownload', {assignId, failed: true});
+            if (err !== null) {
+                DownloadMixin.addSolutionsToError(err);
+                throw err;
+            }
+        } else if (status === StatusEnum.PENDING) {
+            store.commit('download/updateDownload', {assignId, progress, modName});
         }
     }
 

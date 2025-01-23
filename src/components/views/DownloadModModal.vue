@@ -31,7 +31,6 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import StatusEnum from '../../model/enums/StatusEnum';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import Profile from '../../model/Profile';
@@ -75,7 +74,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             ignoreCache,
                             (progress: number, modName: string, status: number, err: R2Error | null) => {
                                 try {
-                                    DownloadModModal.downloadProgressCallback(store, assignId, progress, modName, status, err);
+                                    DownloadMixin.downloadProgressCallback(store, assignId, progress, modName, status, err);
                                 } catch (e) {
                                     reject(e);
                                 }
@@ -105,18 +104,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     });
                 }, 1);
             });
-        }
-
-        static downloadProgressCallback(store: Store<any>, assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
-            if (status === StatusEnum.FAILURE) {
-                store.commit('download/updateDownload', {assignId, failed: true});
-                if (err !== null) {
-                    DownloadMixin.addSolutionsToError(err);
-                    throw err;
-                }
-            } else if (status === StatusEnum.PENDING) {
-                store.commit('download/updateDownload', {assignId, progress, modName});
-            }
         }
 
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
@@ -151,25 +138,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 await this.downloadCompletedCallback(downloadedMods);
                 this.setIsModProgressModalOpen(false);
             }, 1);
-
         }
-
-        downloadProgressCallback(assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
-            try {
-                if (status === StatusEnum.FAILURE) {
-                    this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', {assignId, failed: true});
-                    if (err !== null) {
-                        DownloadMixin.addSolutionsToError(err);
-                        throw err;
-                    }
-                } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {assignId, progress, modName});
-                }
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
-        };
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             return new Promise(async (resolve, reject) => {
