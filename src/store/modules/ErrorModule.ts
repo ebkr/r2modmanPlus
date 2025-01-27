@@ -3,6 +3,7 @@ import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/Logger
 
 interface State {
     error: R2Error | null;
+    stage: "VIEW_ERROR" | "VIEW_SUGGESTION";
 }
 
 interface ErrorWithLogging {
@@ -16,11 +17,22 @@ export default {
 
     state: (): State => ({
         error: null,
+        stage: "VIEW_ERROR",
     }),
 
     mutations: {
         discardError: function(state: State): void {
             state.error = null;
+            state.stage = "VIEW_ERROR";
+        },
+
+        progressErrorStage: function(state: State): void {
+          if (state.stage === "VIEW_ERROR" && state.error && state.error.solution) {
+              state.stage = "VIEW_SUGGESTION";
+          } else {
+              state.error = null;
+              state.stage = "VIEW_ERROR";
+          }
         },
 
         handleError: function(
@@ -28,6 +40,7 @@ export default {
             error: R2Error | ErrorWithLogging
         ): void {
             state.error = error instanceof R2Error ? error : error.error;
+            state.stage = "VIEW_ERROR";
 
             if (error instanceof R2Error) {
                 LoggerProvider.instance.Log(LogSeverity.ERROR, `[${error.name}]: ${error.message}`);

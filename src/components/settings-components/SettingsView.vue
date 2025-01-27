@@ -88,7 +88,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
         };
 
         get localModList(): ManifestV2[] {
-            return this.$store.state.profile.modList;
+            return this.$store.state.profile.modList || [];
         }
 
         get appName(): string {
