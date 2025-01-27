@@ -120,6 +120,15 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 null
             )
         }
+
+        // Filter to only locations that exist on the drive
+        for (const location of locations) {
+            if (!await fs.exists(location)) {
+                var index = locations.indexOf(location);
+                locations.splice(index, 1);
+            }
+        }
+
         // Look through given directories for ${appManifest}
         let manifestLocation: string | null = null;
         try {
