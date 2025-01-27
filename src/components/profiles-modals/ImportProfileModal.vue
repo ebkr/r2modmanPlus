@@ -16,6 +16,7 @@ import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
 import OnlineModList from "../views/OnlineModList.vue";
 
+const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 @Component({
     components: { OnlineModList, ModalCard}
@@ -78,6 +79,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     get unknownProfileModNames(): string {
         return this.profileMods.unknown.join(', ');
+    }
+
+    get isProfileCodeValid(): boolean {
+        return VALID_PROFILE_CODE_REGEX.test(this.profileImportCode);
     }
 
     // Fired when user selects to import either from file or code.
@@ -270,39 +275,27 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         <template v-slot:body>
             <input
                 v-model="profileImportCode"
-                @keyup.enter="isProfileCodeValid(profileImportCode) && onProfileCodeEntered()"
+                @keyup.enter="isProfileCodeValid && !importViaCodeInProgress && onProfileCodeEntered()"
                 id="import-profile-modal-profile-code"
                 class="input"
                 type="text"
                 ref="profileCodeInput"
+                placeholder="Enter the profile code"
                 autocomplete="off"
             />
             <br />
             <br />
-            <span class="tag is-dark" v-if="profileImportCode === ''">You haven't entered a code</span>
-            <span class="tag is-danger" v-else-if="!isProfileCodeValid(profileImportCode)">Invalid code, check for typos</span>
-            <span class="tag is-success" v-else>You may import the profile</span>
+            <span class="tag is-danger" v-if="profileImportCode !== '' && !isProfileCodeValid">
+                Invalid code, check for typos
+            </span>
         </template>
         <template v-slot:footer>
             <button
-                id="modal-import-profile-from-code-invalid"
-                class="button is-danger"
-                v-if="!isProfileCodeValid(profileImportCode)">
-                Fix issues before importing
-            </button>
-            <button
-                disabled
-                id="modal-import-profile-from-code-loading"
-                class="button is-disabled"
-                v-else-if="importViaCodeInProgress">
-                Loading...
-            </button>
-            <button
+                :disabled="!isProfileCodeValid || importViaCodeInProgress"
                 id="modal-import-profile-from-code"
                 class="button is-info"
-                @click="onProfileCodeEntered();"
-                v-else>
-                Continue
+                @click="onProfileCodeEntered();">
+                {{importViaCodeInProgress ? 'Loading...' : 'Continue'}}
             </button>
         </template>
     </ModalCard>
