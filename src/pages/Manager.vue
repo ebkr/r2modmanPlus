@@ -513,6 +513,11 @@ import ModalCard from '../components/ModalCard.vue';
             }
 		}
 
+        async copyTroubleshootingInfoToClipboard() {
+            const content = await this.$store.dispatch('profile/generateTroubleshootingString');
+            InteractionProvider.instance.copyToClipboard('```' + content + '```');
+        }
+
         async changeDataFolder() {
             try {
                 const folder = await DataFolderProvider.instance.showSelectionDialog();
@@ -550,6 +555,9 @@ import ModalCard from '../components/ModalCard.vue';
                     break;
                 case "CopyLogToClipboard":
                     this.copyLogToClipboard();
+                    break;
+                case "CopyTroubleshootingInfoToClipboard":
+                    this.copyTroubleshootingInfoToClipboard();
                     break;
                 case "ToggleDownloadCache":
                     this.toggleIgnoreCache();

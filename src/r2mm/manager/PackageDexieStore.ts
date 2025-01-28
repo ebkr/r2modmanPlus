@@ -88,6 +88,10 @@ export async function getPackageVersionNumbers(community: string, packageName: s
     return pkg.versions.map((v) => v.version_number);
 }
 
+export async function getPackageCount(community: string) {
+    return await db.packages.where({community}).count();
+}
+
 /**
  * @param game Game (community) which package listings should be used in the lookup.
  * @param dependencies Lookup targets as Thunderstore dependency strings.
