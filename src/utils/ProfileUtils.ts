@@ -1,7 +1,6 @@
 import path from "path";
 
 import * as yaml from "yaml";
-import { Store } from "vuex";
 
 import FileUtils from "./FileUtils";
 import R2Error, { throwForR2Error } from "../model/errors/R2Error";
@@ -13,7 +12,6 @@ import Profile, { ImmutableProfile } from "../model/Profile";
 import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import VersionNumber from "../model/VersionNumber";
 import FsProvider from "../providers/generic/file/FsProvider";
-import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
 import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstallerProvider";
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
@@ -37,7 +35,7 @@ export async function exportModsToCombos(exportMods: ExportMod[], game: Game): P
 async function extractConfigsToImportedProfile(
     file: string,
     profileName: string,
-    progressCallback: (status: number) => void
+    progressCallback: (status: string) => void
 ) {
     const zipEntries = await ZipProvider.instance.getEntries(file);
     const excludedFiles = ["export.r2x", "mods.yml"];
@@ -54,23 +52,8 @@ async function extractConfigsToImportedProfile(
         }
 
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
-        progressCallback(progress);
+        progressCallback(`Copying configs to profile: ${progress}%`);
     }
-}
-
-export async function installModsAndResolveConflicts(
-    downloadedMods: ThunderstoreCombo[],
-    profile: ImmutableProfile,
-    store: Store<any>,
-    assignId: number
-): Promise<void> {
-    await ProfileModList.requestLock(async () => {
-        const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined, (installationProgress) => {
-            store.commit('download/updateDownload', {assignId, installationProgress});
-        });
-        await store.dispatch('profile/updateModList', modList);
-        throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
-    });
 }
 
 /**
@@ -82,7 +65,7 @@ export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
     profile: ImmutableProfile,
     disabledModsOverride?: string[],
-    progressCallback?: (status: number) => void
+    progressCallback?: (status: string, progress?: number) => void
 ): Promise<ManifestV2[]> {
     const profileMods = await ProfileModList.getModList(profile);
     if (profileMods instanceof R2Error) {
@@ -123,7 +106,7 @@ export async function installModsToProfile(
 
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
-                progressCallback(progress);
+                progressCallback(`Copying mods to profile: ${progress}%`, progress);
             }
         }
     } catch (e) {
@@ -137,6 +120,9 @@ export async function installModsToProfile(
     }
 
     throwForR2Error(await ProfileModList.saveModList(profile, profileMods));
+    if (typeof progressCallback === "function") {
+        progressCallback("Copying mods to profile: 100%", 100);
+    }
     return profileMods;
 }
 
@@ -203,12 +189,8 @@ export async function populateImportedProfile(
 
     try {
         const disabledMods = exportModList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-        await installModsToProfile(comboList, profile, disabledMods, (progress) => {
-            progressCallback(`Copying mods to profile: ${progress}%`);
-        });
-        await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), (progress) => {
-            progressCallback(`Copying configs to profile: ${progress}%`);
-        });
+        await installModsToProfile(comboList, profile, disabledMods, progressCallback);
+        await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
     } catch (e) {
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
         throw e;

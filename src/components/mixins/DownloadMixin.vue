@@ -1,15 +1,18 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Store } from "vuex";
 
 import StatusEnum from "../../model/enums/StatusEnum";
-import R2Error from "../../model/errors/R2Error";
+import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import Game from "../../model/game/Game";
-import Profile from "../../model/Profile";
+import ManifestV2 from "../../model/ManifestV2";
+import Profile, { ImmutableProfile } from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
-import { installModsAndResolveConflicts } from "../../utils/ProfileUtils";
-import { Store } from "vuex";
+import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
+import ProfileModList from "../../r2mm/mods/ProfileModList";
+import { installModsToProfile } from "../../utils/ProfileUtils";
 
 
 @Component
@@ -46,39 +49,48 @@ export default class DownloadMixin extends Vue {
 
     async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[], assignId: number): Promise<void> {
         try {
-            await installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), this.$store, assignId);
+            await this.installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), assignId);
         } catch (e) {
+            this.$store.commit('download/updateDownload', {assignId, failed: true});
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
         }
     }
 
-    downloadProgressCallback(assignId: number, downloadProgress: number, modName: string, status: number, err: R2Error | null) {
-        try {
-            if (status === StatusEnum.FAILURE) {
-                this.setIsModProgressModalOpen(false);
-                this.$store.commit('download/updateDownload', {assignId, failed: true});
-                if (err !== null) {
-                    DownloadMixin.addSolutionsToError(err);
-                    throw err;
-                }
-            } else if (status === StatusEnum.PENDING) {
-                this.$store.commit('download/updateDownload', {assignId, downloadProgress, modName});
-            }
-        } catch (e) {
-            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-        }
-    };
-
-    static downloadProgressCallback(store: Store<any>, assignId: number, downloadProgress: number, modName: string, status: number, err: R2Error | null) {
+    static downloadProgressCallback(
+        store: Store<any>,
+        assignId: number,
+        downloadProgress: number,
+        modName: string,
+        status: number,
+        err: R2Error | null,
+        closeModProgressModal?: () => void,
+    ) {
         if (status === StatusEnum.FAILURE) {
+            if (closeModProgressModal !== undefined) {
+                closeModProgressModal();
+            }
             store.commit('download/updateDownload', {assignId, failed: true});
             if (err !== null) {
                 DownloadMixin.addSolutionsToError(err);
                 throw err;
             }
-        } else if (status === StatusEnum.PENDING) {
+        } else if (status === StatusEnum.PENDING || status === StatusEnum.SUCCESS) {
             store.commit('download/updateDownload', {assignId, downloadProgress, modName});
         }
+    }
+
+    async installModsAndResolveConflicts(
+        downloadedMods: ThunderstoreCombo[],
+        profile: ImmutableProfile,
+        assignId: number
+    ): Promise<void> {
+        await ProfileModList.requestLock(async () => {
+            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined,(status, progress) => {
+                this.$store.commit('download/updateDownload', {assignId, installProgress: progress});
+            });
+            await this.$store.dispatch('profile/updateModList', modList);
+            throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
+        });
     }
 
     static addSolutionsToError(err: R2Error): void {

@@ -59,7 +59,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
                         throw err;
                     }
                 } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {assignId, progress, modName});
+                    this.$store.commit('download/updateDownload', {assignId, downloadProgress: progress, modName});
                 }
             } catch (e) {
                 this.$store.commit('error/handleError', R2Error.fromThrownValue(e));

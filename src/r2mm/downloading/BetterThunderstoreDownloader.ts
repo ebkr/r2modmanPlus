@@ -99,7 +99,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         const allModsToDownload = [...dependencies, combo];
 
         let downloadCount = 0;
-        const singleModProgressCallback = (progress: number, status: number, err: R2Error | null) => {
+        const singleModProgressCallback = (modName: string, progress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 throw err;
             }
@@ -114,7 +114,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 console.error(`Ignore unknown status code "${status}"`);
                 return;
             }
-            totalProgressCallback(totalProgress, combo.getMod().getName(), status, err);
+            totalProgressCallback(totalProgress, modName, status, err);
         }
 
         for (const combo of allModsToDownload) {
@@ -124,8 +124,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             }
 
             try {
-                const response = await this._downloadCombo(combo, singleModProgressCallback);
-                await this._saveDownloadResponse(response, combo, singleModProgressCallback);
+                const response = await this._downloadCombo(combo, (progress, status, err) => {
+                    singleModProgressCallback(combo.getMod().getName(), progress, status, err)
+                });
+                await this._saveDownloadResponse(response, combo, (progress, status, err) => {
+                    singleModProgressCallback(combo.getMod().getName(), progress, status, err)
+                });
             } catch(e) {
                 throw R2Error.fromThrownValue(e, `Failed to download mod ${combo.getVersion().getFullName()}`);
             }

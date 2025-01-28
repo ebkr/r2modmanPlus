@@ -11,11 +11,11 @@
                         :value="$store.getters['download/currentDownload'].downloadProgress"
                         :className="['is-dark']"
                     />
-                    <p v-if="$store.getters['download/currentDownload'].installationProgress">Installation: {{$store.getters['download/currentDownload'].installationProgress}}% complete</p>
-                    <p v-else>Installation: waiting for download to finish</p>
+                    <p v-if="$store.getters['download/currentDownload'].installProgress">Installing: {{$store.getters['download/currentDownload'].installProgress}}% complete</p>
+                    <p v-else>Installing: waiting for download to finish</p>
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].installationProgress"
+                        :value="$store.getters['download/currentDownload'].installProgress"
                         :className="['is-dark']"
                     />
                 </div>
@@ -134,7 +134,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.profile.asImmutableProfile(),
                         tsCombo,
                         this.ignoreCache,
-                        (downloadProgress, modName, status, err) => { this.downloadProgressCallback(assignId, downloadProgress, modName, status, err); }
+                        (downloadProgress, modName, status, err) => { DownloadMixin.downloadProgressCallback(this.$store, assignId, downloadProgress, modName, status, err, () => this.setIsModProgressModalOpen(false)); }
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
