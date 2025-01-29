@@ -18,6 +18,7 @@ import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import FileUtils from '../../utils/FileUtils';
 import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
@@ -301,9 +302,9 @@ export default {
 
         async generateTroubleshootingString({dispatch, getters, rootGetters, rootState}): Promise<string> {
             const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-            const steamPath = steamDirectory instanceof R2Error ? '-' : steamDirectory;
+            const steamPath = steamDirectory instanceof R2Error ? '-' : FileUtils.hideWindowsUsername(steamDirectory);
             const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(rootState.activeGame);
-            const gamePath = gameDirectory instanceof R2Error ? '-' : gameDirectory;
+            const gamePath = gameDirectory instanceof R2Error ? '-' : FileUtils.hideWindowsUsername(gameDirectory);
             const packageCacheDate = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
             const packageCacheSize = await PackageDb.getPackageCount(rootState.activeGame.internalFolderName);
             const packageVuexState: string = await dispatch('tsMods/generateTroubleshootingString', null, {root: true});
@@ -313,7 +314,7 @@ export default {
                 Game: ${rootState.activeGame.displayName} (${rootState.activeGame.activePlatform.storePlatform})
                 Steam path: ${steamPath}
                 Game path: ${gamePath}
-                Profile path: ${getters.activeProfile.getProfilePath()}
+                Profile path: ${FileUtils.hideWindowsUsername(getters.activeProfile.getProfilePath())}
                 Custom launch arguments: ${rootGetters.settings.getContext().gameSpecific.launchParameters || '-'}
                 Mod list in cache: ${packageCacheSize} mods, hash updated ${packageCacheDate || 'never'}
                 Mod list in memory: ${packageVuexState}
