@@ -71,6 +71,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack", PackageLoader.BEPINEX),
 ];
 
 const DEFAULT_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
