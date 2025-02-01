@@ -166,17 +166,26 @@ export default class Splash extends mixins(SplashMixin) {
     async moveToNextScreen() {
         if (process.platform === 'linux') {
             const activeGame: Game = this.$store.state.activeGame;
+            const gdrp : GameDirectoryResolverProvider = GameDirectoryResolverProvider.instance;
 
-            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
-                console.log('Not proton game');
-                await this.ensureWrapperInGameFolder();
-                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
-                console.log(`Launch arguments for this game:`, launchArgs);
-                if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                    this.$router.push({name: 'linux'});
-                    return;
+            if (gdrp instanceof LinuxGameDirectoryResolver)
+            {
+                if (!await (gdrp as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
+                    console.log('Not proton game');
+                    await this.ensureWrapperInGameFolder();
+                    const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
+                    console.log(`Launch arguments for this game:`, launchArgs);
+                    if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+                        this.$router.push({name: 'linux'});
+                        return;
+                    }
                 }
             }
+            else
+            {
+                // no idea what we need to do
+            }
+
         } else if (process.platform === 'darwin') {
             await this.ensureWrapperInGameFolder();
             this.$router.push({name: 'linux'});
