@@ -49,7 +49,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
         );
 
         this.setIsModProgressModalOpen(true);
-        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
+        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);
@@ -59,7 +59,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
                         throw err;
                     }
                 } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {assignId, downloadProgress: progress, modName});
+                    this.$store.commit('download/updateDownload', {assignId, modName, downloadProgress});
                 }
             } catch (e) {
                 this.$store.commit('error/handleError', R2Error.fromThrownValue(e));

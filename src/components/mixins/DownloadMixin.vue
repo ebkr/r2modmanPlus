@@ -75,7 +75,7 @@ export default class DownloadMixin extends Vue {
                 throw err;
             }
         } else if (status === StatusEnum.PENDING || status === StatusEnum.SUCCESS) {
-            store.commit('download/updateDownload', {assignId, downloadProgress, modName});
+            store.commit('download/updateDownload', {assignId, modName, downloadProgress});
         }
     }
 
@@ -85,8 +85,8 @@ export default class DownloadMixin extends Vue {
         assignId: number
     ): Promise<void> {
         await ProfileModList.requestLock(async () => {
-            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined,(status, progress) => {
-                this.$store.commit('download/updateDownload', {assignId, installProgress: progress});
+            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined,(status, modName, installProgress) => {
+                this.$store.commit('download/updateDownload', {assignId, modName, installProgress});
             });
             await this.$store.dispatch('profile/updateModList', modList);
             throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));

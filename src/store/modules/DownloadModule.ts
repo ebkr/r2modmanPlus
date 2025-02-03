@@ -1,7 +1,6 @@
 import { ActionTree, GetterTree } from "vuex";
 
 import { State as RootState } from "../../store";
-import R2Error from "../../model/errors/R2Error";
 
 interface DownloadProgress {
     assignId: number;
@@ -14,7 +13,8 @@ interface DownloadProgress {
 
 interface UpdateObject {
     assignId: number;
-    progress?: number;
+    downloadProgress?: number;
+    installProgress?: number;
     modName?: string;
     failed?: boolean;
 }

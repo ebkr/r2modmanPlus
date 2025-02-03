@@ -134,11 +134,21 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.profile.asImmutableProfile(),
                         tsCombo,
                         this.ignoreCache,
-                        (downloadProgress, modName, status, err) => { DownloadMixin.downloadProgressCallback(this.$store, assignId, downloadProgress, modName, status, err, () => this.setIsModProgressModalOpen(false)); }
+                        (downloadProgress, modName, status, err) => {
+                            DownloadMixin.downloadProgressCallback(
+                                this.$store,
+                                assignId,
+                                downloadProgress,
+                                modName,
+                                status,
+                                err,
+                                () => this.setIsModProgressModalOpen(false)
+                            );
+                        }
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', { assignId: assignId, failed: true });
+                    this.$store.commit('download/updateDownload', { assignId, failed: true });
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }

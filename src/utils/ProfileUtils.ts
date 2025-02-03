@@ -65,7 +65,7 @@ export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
     profile: ImmutableProfile,
     disabledModsOverride?: string[],
-    progressCallback?: (status: string, progress?: number) => void
+    progressCallback?: (status: string, modName?: string, progress?: number) => void
 ): Promise<ManifestV2[]> {
     const profileMods = await ProfileModList.getModList(profile);
     if (profileMods instanceof R2Error) {
@@ -75,10 +75,12 @@ export async function installModsToProfile(
     const installedVersions = profileMods.map((m) => m.getDependencyString());
     const disabledMods = disabledModsOverride || profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
     let currentMod;
-
+    let modName = 'Unknown';
     try {
         for (const [index, comboMod] of comboList.entries()) {
             currentMod = comboMod;
+            modName = currentMod.getMod().getFullName();
+
             const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
             if (installedVersions.includes(manifestMod.getDependencyString())) {
@@ -106,12 +108,11 @@ export async function installModsToProfile(
 
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
-                progressCallback(`Copying mods to profile: ${progress}%`, progress);
+                progressCallback(`Copying mods to profile: ${progress}%`, modName, progress);
             }
         }
     } catch (e) {
         const originalError = R2Error.fromThrownValue(e);
-        const modName = currentMod ? currentMod.getMod().getFullName() : 'Unknown';
         throw new R2Error(
             `Failed to install mod [${modName}] to profile`,
             'All mods/dependencies might not be installed properly. Please try again.',
@@ -121,7 +122,7 @@ export async function installModsToProfile(
 
     throwForR2Error(await ProfileModList.saveModList(profile, profileMods));
     if (typeof progressCallback === "function") {
-        progressCallback("Copying mods to profile: 100%", 100);
+        progressCallback("Copying mods to profile: 100%", modName, 100);
     }
     return profileMods;
 }
