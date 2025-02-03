@@ -96,10 +96,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
 
         const dependencies = await this.getDependenciesWithCorrectVersions(combo, modList);
-        const allModsToDownload = [...dependencies, combo];
+        const allModsToDownload = [combo, ...dependencies];
 
         let modInProgressName = combo.getMod().getName();
         let downloadCount = 0;
+        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
         const singleModProgressCallback = (downloadProgress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 throw err;
@@ -107,7 +108,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
             let totalDownloadProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalDownloadProgress = this.generateProgressPercentage(downloadProgress, downloadCount, allModsToDownload.length);
+                totalDownloadProgress = this.generateProgressPercentage(downloadProgress * 0.8, downloadCount, allModsToDownload.length);
             } else if (status === StatusEnum.SUCCESS) {
                 totalDownloadProgress = this.generateProgressPercentage(100, downloadCount, allModsToDownload.length);
                 downloadCount += 1;

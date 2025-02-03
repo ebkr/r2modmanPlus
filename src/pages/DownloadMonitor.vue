@@ -29,6 +29,15 @@
                                     />
                                 </div>
 
+                                <div v-else-if="downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100">
+                                    <p>Download complete</p>
+                                    <Progress
+                                        :max='100'
+                                        :value='100'
+                                        :className="['is-success']"
+                                    />
+                                </div>
+
                                 <div v-else class="row">
 
                                     <div class="col">
@@ -42,24 +51,23 @@
                                         />
                                     </div>
 
-                                    <div v-if="downloadObject.installProgress < 100" class="col">
-                                        <div v-if="downloadObject.downloadProgress < 100">
-                                            <p>Installing:</p>
-                                            <p v-if="downloadObject.downloadProgress < 100">Waiting for download to finish</p>
-                                            <Progress
-                                                :max='100'
-                                                :className="['is-info']"
-                                            />
-                                        </div>
-                                        <div v-else>
-                                            <p>Installing: {{ downloadObject.modName }}</p>
-                                            <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
-                                            <Progress
-                                                :max='100'
-                                                :value='downloadObject.installProgress'
-                                                :className="['is-info']"
-                                            />
-                                        </div>
+                                    <div v-if="downloadObject.downloadProgress < 100" class="col">
+                                        <p>Installing:</p>
+                                        <p>Waiting for download to finish</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='0'
+                                            :className="['is-info']"
+                                        />
+                                    </div>
+                                    <div v-else class="col">
+                                        <p>Installing: {{ downloadObject.modName }}</p>
+                                        <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='downloadObject.installProgress'
+                                            :className="['is-info']"
+                                        />
                                     </div>
 
                                 </div>

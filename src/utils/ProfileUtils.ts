@@ -74,12 +74,11 @@ export async function installModsToProfile(
 
     const installedVersions = profileMods.map((m) => m.getDependencyString());
     const disabledMods = disabledModsOverride || profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
-    let currentMod;
     let modName = 'Unknown';
+
     try {
         for (const [index, comboMod] of comboList.entries()) {
-            currentMod = comboMod;
-            modName = currentMod.getMod().getFullName();
+            modName = comboMod.getMod().getName();
 
             const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
 
