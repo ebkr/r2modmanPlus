@@ -31,6 +31,15 @@ export default class FileUtils {
         return Promise.resolve();
     }
 
+    // Obfuscates the Windows username if it's part of the path.
+    public static hideWindowsUsername(dir: string) {
+        const separator = dir.includes('/') ? '/' : '\\';
+        return dir.replace(
+            /([A-Za-z]:)[\\\/]Users[\\\/][^\\\/]+[\\\/]/,
+            `$1${separator}Users${separator}***${separator}`
+        );
+    }
+
     public static humanReadableSize(bytes: number) {
         // NumberFormat renders GBs as BBs ("billion bytes") when using "byte" unit type.
         if (bytes > 999999999 && bytes < 1000000000000) {

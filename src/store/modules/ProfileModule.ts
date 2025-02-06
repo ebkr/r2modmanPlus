@@ -2,6 +2,7 @@ import { ActionTree, GetterTree } from 'vuex';
 
 import { CachedMod } from './TsModsModule';
 import { State as RootState } from '../index';
+import ManagerInformation from '../../_managerinf/ManagerInformation';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import Profile, { ImmutableProfile } from "../../model/Profile";
@@ -11,11 +12,13 @@ import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import FileUtils from '../../utils/FileUtils';
 import SearchUtils from '../../utils/SearchUtils';
 
 interface State {
@@ -297,6 +300,27 @@ export default {
             return await PackageDb.getCombosByDependencyStrings(game, outdated, useLatestVersion);
         },
 
+        async generateTroubleshootingString({dispatch, getters, rootGetters, rootState}): Promise<string> {
+            const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+            const steamPath = steamDirectory instanceof R2Error ? '-' : FileUtils.hideWindowsUsername(steamDirectory);
+            const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(rootState.activeGame);
+            const gamePath = gameDirectory instanceof R2Error ? '-' : FileUtils.hideWindowsUsername(gameDirectory);
+            const packageCacheDate = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            const packageCacheSize = await PackageDb.getPackageCount(rootState.activeGame.internalFolderName);
+            const packageVuexState: string = await dispatch('tsMods/generateTroubleshootingString', null, {root: true});
+
+            const content = `
+                App: ${ManagerInformation.APP_NAME} v${ManagerInformation.VERSION}
+                Game: ${rootState.activeGame.displayName} (${rootState.activeGame.activePlatform.storePlatform})
+                Steam path: ${steamPath}
+                Game path: ${gamePath}
+                Profile path: ${FileUtils.hideWindowsUsername(getters.activeProfile.getProfilePath())}
+                Custom launch arguments: ${rootGetters.settings.getContext().gameSpecific.launchParameters || '-'}
+                Mod list in cache: ${packageCacheSize} mods, hash updated ${packageCacheDate || 'never'}
+                Mod list in memory: ${packageVuexState}
+            `;
+            return content.replace(/(\n)\s+/g, '$1');  // Remove indentation but keep newlines
+        },
 
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;

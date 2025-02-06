@@ -301,6 +301,10 @@ export const TsModsModule = {
             return updated !== undefined;
         },
 
+        async generateTroubleshootingString({state}): Promise<string> {
+            return `${state.mods.length} mods, updated ${state.modsLastUpdated || 'never'}`;
+        },
+
         async getActiveGameCacheStatus({commit, state, rootState}): Promise<string> {
             if (state.isThunderstoreModListUpdateInProgress) {
                 return "Online mod list is currently updating, please wait for the operation to complete";

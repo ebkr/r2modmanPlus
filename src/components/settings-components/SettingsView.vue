@@ -159,6 +159,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Debugging',
+                'Copy troubleshooting information to clipboard',
+                'Copy settings and other information to the clipboard, with Discord formatting.',
+                async () => 'Share this information when requesting support on Discord.',
+                'fa-clipboard',
+                () => this.emitInvoke('CopyTroubleshootingInfoToClipboard')
+            ),
+            new SettingsRow(
+                'Debugging',
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
