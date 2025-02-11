@@ -118,6 +118,12 @@ export const TsModsModule = {
             return getters.cachedMod(mod).isLatest;
         },
 
+        /*** Was the last successful mod list update more than an hour ago? */
+        isModListOutdated(state) {
+            return state.modsLastUpdated instanceof Date
+                && (Date.now() - state.modsLastUpdated.getTime()) > (1000 * 60 * 60);
+        },
+
         /*** Return ThunderstoreMod representation of a ManifestV2 */
         tsMod: (_state, getters) => (mod: ExportMod|ManifestV2): ThunderstoreMod | undefined => {
             return getters.cachedMod(mod).tsMod;
