@@ -2,6 +2,7 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
 import ManifestV2 from '../../model/ManifestV2';
+import R2Error from "../../model/errors/R2Error";
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
@@ -9,7 +10,7 @@ import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
 import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
-import { fetchAndProcessBlobFile, getAxiosWithTimeouts } from '../../utils/HttpUtils';
+import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -44,6 +45,7 @@ function isPackageListChunk(value: unknown): value is PackageListChunk {
 }
 
 const EXCLUSIONS = 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md';
+const PARTIAL_UPDATE_ERROR = 'Failed to fully refresh the online mod list. Some mod versions might be unavailable.';
 
 /**
  * For dealing with mods listed in communities, i.e. available through
@@ -121,6 +123,21 @@ export const TsModsModule = {
         isModListOutdated(state) {
             return state.modsLastUpdated instanceof Date
                 && (Date.now() - state.modsLastUpdated.getTime()) > (1000 * 60 * 60);
+        },
+
+        /*** A more concise version of the error message */
+        conciseThunderstoreModListUpdateErrorMessage(state): string|undefined {
+            if (!state.thunderstoreModListUpdateError) {
+                return undefined;
+            }
+
+            let conciseError = "Failed to load mod list";
+            if (isNetworkError(state.thunderstoreModListUpdateError)) {
+                conciseError = "Failed to fully refresh the online mod list due to network error"
+            } else if (state.thunderstoreModListUpdateError.name === PARTIAL_UPDATE_ERROR) {
+                conciseError = "Failed to fully refresh the online mod list";
+            }
+            return conciseError;
         },
 
         /*** Return ThunderstoreMod representation of a ManifestV2 */
@@ -257,7 +274,7 @@ export const TsModsModule = {
         },
 
         async fetchAndCachePackageListChunks(
-            {dispatch},
+            {commit, dispatch},
             {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
         ): Promise<boolean> {
             const chunkCount = packageListIndex.content.length;
@@ -282,6 +299,13 @@ export const TsModsModule = {
             // hash is updated in the API.
             if (successes === chunkCount) {
                 await dispatch('cacheIndexHash', packageListIndex.hash);
+            } else {
+                commit('setThunderstoreModListUpdateError',
+                    new R2Error(
+                        PARTIAL_UPDATE_ERROR,
+                        `Only ${successes} out of ${chunkCount} parts of the list were updated successfully`,
+                    )
+                );
             }
 
             return successes === chunkCount;
