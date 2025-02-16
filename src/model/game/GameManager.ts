@@ -301,7 +301,7 @@ export default class GameManager {
         new Game("Aloft", "Aloft", "Aloft",
             "Aloft Demo", ["Aloft.exe"], "Aloft_Data",
             "https://thunderstore.io/c/aloft/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "2051980")], "Aloft.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1660080")], "Aloft.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
 
         new Game("Cult of the Lamb", "COTL", "COTL",
