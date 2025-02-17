@@ -93,7 +93,7 @@ export default class NodeFs extends FsProvider {
 
     async rename(path: string, newPath: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            NodeFs.lock.acquire(path, async () => {
+            NodeFs.lock.acquire([path, newPath], async () => {
                 try {
                     await fs.promises.rename(path, newPath);
                     resolve();
@@ -110,7 +110,7 @@ export default class NodeFs extends FsProvider {
 
     async copyFile(from: string, to: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            NodeFs.lock.acquire(from, async () => {
+            NodeFs.lock.acquire([from, to], async () => {
                 try {
                     await fs.promises.copyFile(from, to);
                     resolve();
