@@ -28,7 +28,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
      * be used in troubleshooting, telling us that the version of the mod isn't
      * necessarily the same that's available via Thunderstore API.
      */
-    private async writeManifestToCache(cacheDirectory: string, manifest: ManifestV2) {
+    private async writeCustomManifestToCache(cacheDirectory: string, manifest: ManifestV2) {
         const manifestPath: string = path.join(cacheDirectory, 'mm_v2_manifest.json');
 
         if (await FsProvider.instance.exists(manifestPath)) {
@@ -45,7 +45,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
     public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2) {
         const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
         await ZipExtract.extractOnly(zipFile, cacheDirectory);
-        await this.writeManifestToCache(cacheDirectory, manifest);
+        await this.writeCustomManifestToCache(cacheDirectory, manifest);
         await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
         throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
         throwForR2Error(await ProfileModList.addMod(manifest, profile));
@@ -56,7 +56,7 @@ export default class LocalModInstaller extends LocalModInstallerProvider {
             const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
             const fileSafe = file.split("\\").join("/");
             await FsProvider.instance.copyFile(fileSafe, path.join(cacheDirectory, path.basename(fileSafe)));
-            await this.writeManifestToCache(cacheDirectory, manifest);
+            await this.writeCustomManifestToCache(cacheDirectory, manifest);
         } catch (e) {
             throw R2Error.fromThrownValue(e, "Error moving file to cache");
         }
