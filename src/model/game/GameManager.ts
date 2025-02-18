@@ -883,6 +883,12 @@ export default class GameManager {
             "https://thunderstore.io/c/zort/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3121110")], "zort.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Disco Elysium", "DiscoElysium", "Disco Elysium",
+            "Disco Elysium", ["disco.exe"], "disco_Data",
+            "https://thunderstore.io/c/disco-elysium/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "632470")], "DiscoElysium.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["de"]),
     ];
 
     static get activeGame(): Game {
