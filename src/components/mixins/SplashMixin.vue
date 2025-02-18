@@ -149,7 +149,9 @@ export default class SplashMixin extends Vue {
         this.loadingText = 'Processing the mod list';
 
         try {
+            await this.$store.commit('tsMods/startThunderstoreModListUpdate');
             await this.$store.dispatch('tsMods/updateMods');
+            await this.$store.commit('tsMods/finishThunderstoreModListUpdate');
         } catch (e) {
             console.error('Updating the store mod list by SplashMixin failed.', e);
         } finally {
