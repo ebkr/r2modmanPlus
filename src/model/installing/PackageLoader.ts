@@ -10,6 +10,7 @@ export enum PackageLoader {
     LOVELY,
     RETURN_OF_MODDING,
     GDWEAVE,
+    RECURSIVE_MELON_LOADER,
 }
 
 export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstallerId | null {
@@ -24,6 +25,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.LOVELY: return "lovely";
         case PackageLoader.RETURN_OF_MODDING: return "returnofmodding";
         case PackageLoader.GDWEAVE: return "gdweave";
+        case PackageLoader.RECURSIVE_MELON_LOADER: return "recursive-melonloader";
         case PackageLoader.ANCIENT_DUNGEON_VR: return null;
     }
 }
@@ -34,6 +36,7 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
         case PackageLoader.LOVELY: return "lovely-plugin";
         case PackageLoader.RETURN_OF_MODDING: return "returnofmodding-plugin";
         case PackageLoader.GDWEAVE: return "gdweave-plugin";
+        case PackageLoader.RECURSIVE_MELON_LOADER: return "recursive-melonloader-plugin";
     }
 
     return null;
