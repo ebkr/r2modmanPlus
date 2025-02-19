@@ -859,6 +859,12 @@ export default class GameManager {
             "https://thunderstore.io/c/miside/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2527500")], "MiSide.webp",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Dale & Dawson Stationery Supplies", "DaleAndDawson", "DaleAndDawson",
+            "Dale&Dawson", ["DDSS.exe"], "DDSS_Data",
+            "https://thunderstore.io/c/dale-dawson-stationery-supplies/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2920570")], "DaleAndDawson.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
     ];
 
     static get activeGame(): Game {
