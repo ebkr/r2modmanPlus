@@ -1,19 +1,20 @@
 import { ActionTree, GetterTree } from "vuex";
 
 import { State as RootState } from "../../store";
-import R2Error from "../../model/errors/R2Error";
 
 interface DownloadProgress {
     assignId: number;
     initialMods: string[];
     modName: string;
-    progress: number;
+    downloadProgress: number;
+    installProgress: number;
     failed: boolean;
 }
 
 interface UpdateObject {
     assignId: number;
-    progress?: number;
+    downloadProgress?: number;
+    installProgress?: number;
     modName?: string;
     failed?: boolean;
 }
@@ -41,7 +42,8 @@ export const DownloadModule = {
                 assignId,
                 initialMods,
                 modName: '',
-                progress: 0,
+                downloadProgress: 0,
+                installProgress: 0,
                 failed: false,
             };
             state.allDownloads = [...state.allDownloads, downloadObject];
@@ -52,7 +54,7 @@ export const DownloadModule = {
     getters: <GetterTree<State, RootState>>{
         activeDownloadCount(state) {
             const active = state.allDownloads.filter(
-                dl => !dl.failed && dl.progress < 100
+                dl => !dl.failed && dl.downloadProgress < 100 && dl.installProgress < 100
             );
             return active.length;
         },

@@ -1,14 +1,37 @@
 <template>
     <div>
-        <div id='downloadProgressModal' :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]" v-if="$store.getters['download/currentDownload'] !== null">
+        <div
+            id='downloadProgressModal'
+            :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]"
+            v-if="$store.getters['download/currentDownload'] !== null"
+        >
             <div class="modal-background" @click="setIsModProgressModalOpen(false);"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
-                    <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
-                    <p>{{Math.floor($store.getters['download/currentDownload'].progress)}}% complete</p>
+
+                    <h3 v-if="$store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
+                        Downloading {{$store.getters['download/currentDownload'].modName}}
+                    </h3>
+                    <h3 v-else class='title'>
+                        Installing {{$store.getters['download/currentDownload'].modName}}
+                    </h3>
+
+                    <p>Downloading: {{Math.floor($store.getters['download/currentDownload'].downloadProgress)}}% complete</p>
+
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].progress"
+                        :value="$store.getters['download/currentDownload'].downloadProgress"
+                        :className="['is-dark']"
+                    />
+
+                    <p v-if="$store.getters['download/currentDownload'].installProgress">
+                        Installing: {{Math.floor($store.getters['download/currentDownload'].installProgress)}}% complete
+                    </p>
+                    <p v-else>Installing: waiting for download to finish</p>
+
+                    <Progress
+                        :max='100'
+                        :value="$store.getters['download/currentDownload'].installProgress"
                         :className="['is-dark']"
                     />
                 </div>
@@ -31,7 +54,6 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import StatusEnum from '../../model/enums/StatusEnum';
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import Profile from '../../model/Profile';
@@ -73,9 +95,9 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             profile.asImmutableProfile(),
                             combo,
                             ignoreCache,
-                            (progress: number, modName: string, status: number, err: R2Error | null) => {
+                            (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
                                 try {
-                                    DownloadModModal.downloadProgressCallback(store, assignId, progress, modName, status, err);
+                                    DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
                                 } catch (e) {
                                     reject(e);
                                 }
@@ -95,28 +117,17 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             }
                         }
                         const modList = await ProfileModList.getModList(profile.asImmutableProfile());
-                        if (!(modList instanceof R2Error)) {
-                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
-                            if (err instanceof R2Error) {
-                                return reject(err);
-                            }
+                        if (modList instanceof R2Error) {
+                            return reject(modList);
+                        }
+                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
+                        if (err instanceof R2Error) {
+                            return reject(err);
                         }
                         return resolve();
                     });
                 }, 1);
             });
-        }
-
-        static downloadProgressCallback(store: Store<any>, assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
-            if (status === StatusEnum.FAILURE) {
-                store.commit('download/updateDownload', {assignId, failed: true});
-                if (err !== null) {
-                    DownloadMixin.addSolutionsToError(err);
-                    throw err;
-                }
-            } else if (status === StatusEnum.PENDING) {
-                store.commit('download/updateDownload', {assignId, progress, modName});
-            }
         }
 
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
@@ -140,35 +151,28 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         this.profile.asImmutableProfile(),
                         tsCombo,
                         this.ignoreCache,
-                        (progress, modName, status, err) => { this.downloadProgressCallback(assignId, progress, modName, status, err); }
+                        (downloadProgress, modName, status, err) => {
+                            DownloadMixin.downloadProgressCallback(
+                                this.$store,
+                                assignId,
+                                downloadProgress,
+                                modName,
+                                status,
+                                err,
+                                () => this.setIsModProgressModalOpen(false)
+                            );
+                        }
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
+                    this.$store.commit('download/updateDownload', { assignId, failed: true });
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }
-                await this.downloadCompletedCallback(downloadedMods);
+                await this.downloadCompletedCallback(downloadedMods, assignId);
                 this.setIsModProgressModalOpen(false);
             }, 1);
-
         }
-
-        downloadProgressCallback(assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
-            try {
-                if (status === StatusEnum.FAILURE) {
-                    this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', {assignId, failed: true});
-                    if (err !== null) {
-                        DownloadMixin.addSolutionsToError(err);
-                        throw err;
-                    }
-                } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {assignId, progress, modName});
-                }
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
-        };
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             return new Promise(async (resolve, reject) => {

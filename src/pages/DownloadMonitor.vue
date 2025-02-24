@@ -19,18 +19,58 @@
                         <div class="border-at-bottom pad pad--sides">
                             <div class="card is-shadowless">
                                 <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
-                                <p v-if="downloadObject.progress < 100">Downloading: {{ downloadObject.modName }}</p>
-                                <p>{{Math.min(Math.floor(downloadObject.progress), 100)}}% complete</p>
-                                <Progress v-if="!downloadObject.failed"
-                                    :max='100'
-                                    :value='downloadObject.progress'
-                                    :className="['is-info']"
-                                />
-                                <Progress v-else-if="downloadObject.failed"
-                                    :max='100'
-                                    :value='100'
-                                    :className="['is-danger']"
-                                />
+
+                                <div v-if="downloadObject.failed">
+                                    <p>Download failed</p>
+                                    <Progress
+                                        :max='100'
+                                        :value='100'
+                                        :className="['is-danger']"
+                                    />
+                                </div>
+
+                                <div v-else-if="downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100">
+                                    <p>Download complete</p>
+                                    <Progress
+                                        :max='100'
+                                        :value='100'
+                                        :className="['is-success']"
+                                    />
+                                </div>
+
+                                <div v-else class="row">
+
+                                    <div class="col">
+                                        <p v-if="downloadObject.downloadProgress < 100">Downloading: {{ downloadObject.modName }}</p>
+                                        <p v-else>Downloading:</p>
+                                        <p>{{Math.min(Math.floor(downloadObject.downloadProgress), 100)}}% complete</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='downloadObject.downloadProgress'
+                                            :className="['is-info']"
+                                        />
+                                    </div>
+
+                                    <div v-if="downloadObject.downloadProgress < 100" class="col">
+                                        <p>Installing:</p>
+                                        <p>Waiting for download to finish</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='0'
+                                            :className="['is-info']"
+                                        />
+                                    </div>
+                                    <div v-else class="col">
+                                        <p>Installing: {{ downloadObject.modName }}</p>
+                                        <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='downloadObject.installProgress'
+                                            :className="['is-info']"
+                                        />
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>

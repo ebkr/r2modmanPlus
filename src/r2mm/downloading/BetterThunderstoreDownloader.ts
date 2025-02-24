@@ -96,38 +96,42 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
 
         const dependencies = await this.getDependenciesWithCorrectVersions(combo, modList);
-        const allModsToDownload = [...dependencies, combo];
+        const allModsToDownload = [combo, ...dependencies];
 
+        let modInProgressName = combo.getMod().getName();
         let downloadCount = 0;
-        const singleModProgressCallback = (progress: number, status: number, err: R2Error | null) => {
+        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
+        const singleModProgressCallback = (downloadProgress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
                 throw err;
             }
 
-            let totalProgress: number;
+            let totalDownloadProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalProgress = this.generateProgressPercentage(progress, downloadCount, allModsToDownload.length);
+                totalDownloadProgress = this.generateProgressPercentage(downloadProgress * 0.8, downloadCount, allModsToDownload.length);
             } else if (status === StatusEnum.SUCCESS) {
-                totalProgress = this.generateProgressPercentage(100, downloadCount, allModsToDownload.length);
+                totalDownloadProgress = this.generateProgressPercentage(100, downloadCount, allModsToDownload.length);
                 downloadCount += 1;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
                 return;
             }
-            totalProgressCallback(totalProgress, combo.getMod().getName(), status, err);
+            totalProgressCallback(Math.round(totalDownloadProgress), modInProgressName, status, err);
         }
 
-        for (const combo of allModsToDownload) {
-            if (!ignoreCache && await this.isVersionAlreadyDownloaded(combo)) {
-                totalProgressCallback(100, combo.getMod().getName(), StatusEnum.SUCCESS, null);
+        for (const comboInProgress of allModsToDownload) {
+            modInProgressName = comboInProgress.getMod().getName();
+
+            if (!ignoreCache && await this.isVersionAlreadyDownloaded(comboInProgress)) {
+                totalProgressCallback(100, modInProgressName, StatusEnum.SUCCESS, null);
                 continue;
             }
 
             try {
-                const response = await this._downloadCombo(combo, singleModProgressCallback);
-                await this._saveDownloadResponse(response, combo, singleModProgressCallback);
+                const response = await this._downloadCombo(comboInProgress, singleModProgressCallback);
+                await this._saveDownloadResponse(response, comboInProgress, singleModProgressCallback);
             } catch(e) {
-                throw R2Error.fromThrownValue(e, `Failed to download mod ${combo.getVersion().getFullName()}`);
+                throw R2Error.fromThrownValue(e, `Failed to download mod ${comboInProgress.getVersion().getFullName()}`);
             }
         }
         return allModsToDownload;
