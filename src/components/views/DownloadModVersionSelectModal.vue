@@ -60,7 +60,6 @@ import ModalCard from "../ModalCard.vue";
 import DownloadMixin from "../../components/mixins/DownloadMixin.vue";
 import R2Error from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";

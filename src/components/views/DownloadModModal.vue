@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id='downloadProgressModal' :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]" v-if="$store.getters['download/currentDownload'] !== null">
-            <div class="modal-background" @click="$store.commit('download/setIsModProgressModalOpen', false);"></div>
+            <div class="modal-background" @click="setIsModProgressModalOpen(false);"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
                     <h3 class='title'>Downloading {{$store.getters['download/currentDownload'].modName}}</h3>
@@ -13,7 +13,7 @@
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="$store.commit('download/setIsModProgressModalOpen', false);"></button>
+            <button class="modal-close is-large" aria-label="close" @click="setIsModProgressModalOpen(false);"></button>
         </div>
         <DownloadModVersionSelectModal @download-mod="downloadHandler" />
         <UpdateAllInstalledModsModal />
@@ -60,52 +60,63 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             store: Store<any>
         ): Promise<void> {
             return new Promise(async (resolve, reject) => {
-                const tsMod = combo.getMod();
-                const tsVersion = combo.getVersion();
 
                 const assignId = await store.dispatch(
                     'download/addDownload',
-                    [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
+                    [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
                 );
 
-                setTimeout(() => {
-                    ThunderstoreDownloaderProvider.instance.download(profile.asImmutableProfile(), tsMod, tsVersion, ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                        try {
-                            if (status === StatusEnum.FAILURE) {
-                                store.commit('download/updateDownload', {assignId, failed: true});
-                                if (err !== null) {
-                                    DownloadMixin.addSolutionsToError(err);
-                                    return reject(err);
-                                }
-                            } else if (status === StatusEnum.PENDING) {
-                                store.commit('download/updateDownload', {assignId, progress, modName});
-                            }
-                        } catch (e) {
-                            return reject(e);
-                        }
-                    }, async (downloadedMods: ThunderstoreCombo[]) => {
-                        ProfileModList.requestLock(async () => {
-                            for (const combo of downloadedMods) {
+                setTimeout(async () => {
+                    let downloadedMods: ThunderstoreCombo[] = [];
+                    try {
+                        downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
+                            profile.asImmutableProfile(),
+                            combo,
+                            ignoreCache,
+                            (progress: number, modName: string, status: number, err: R2Error | null) => {
                                 try {
-                                    await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
+                                    DownloadModModal.downloadProgressCallback(store, assignId, progress, modName, status, err);
                                 } catch (e) {
-                                    return reject(
-                                        R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
-                                    );
+                                    reject(e);
                                 }
                             }
-                            const modList = await ProfileModList.getModList(profile.asImmutableProfile());
-                            if (!(modList instanceof R2Error)) {
-                                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
-                                if (err instanceof R2Error) {
-                                    return reject(err);
-                                }
+                        );
+                    } catch (e) {
+                        return reject(e);
+                    }
+                    await ProfileModList.requestLock(async () => {
+                        for (const combo of downloadedMods) {
+                            try {
+                                await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
+                            } catch (e) {
+                                return reject(
+                                    R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
+                                );
                             }
-                            return resolve();
-                        });
+                        }
+                        const modList = await ProfileModList.getModList(profile.asImmutableProfile());
+                        if (!(modList instanceof R2Error)) {
+                            const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
+                            if (err instanceof R2Error) {
+                                return reject(err);
+                            }
+                        }
+                        return resolve();
                     });
                 }, 1);
             });
+        }
+
+        static downloadProgressCallback(store: Store<any>, assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+            if (status === StatusEnum.FAILURE) {
+                store.commit('download/updateDownload', {assignId, failed: true});
+                if (err !== null) {
+                    DownloadMixin.addSolutionsToError(err);
+                    throw err;
+                }
+            } else if (status === StatusEnum.PENDING) {
+                store.commit('download/updateDownload', {assignId, progress, modName});
+            }
         }
 
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
@@ -116,29 +127,48 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
             );
 
-            this.$store.commit('download/setIsModProgressModalOpen', true);
-            setTimeout(() => {
-                ThunderstoreDownloaderProvider.instance.download(this.profile.asImmutableProfile(), tsMod, tsVersion, this.ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    try {
-                        if (status === StatusEnum.FAILURE) {
-                            this.$store.commit('download/setIsModProgressModalOpen', false);
-                            this.$store.commit('download/updateDownload', {assignId, failed: true});
-                            if (err !== null) {
-                                DownloadMixin.addSolutionsToError(err);
-                                throw err;
-                            }
-                        } else if (status === StatusEnum.PENDING) {
-                            this.$store.commit('download/updateDownload', {assignId, progress, modName});
-                        }
-                    } catch (e) {
-                        this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-                    }
-                }, async (downloadedMods) => {
-                    await this.downloadCompletedCallback(downloadedMods);
-                    this.$store.commit('download/setIsModProgressModalOpen', false);
-                });
+            this.setIsModProgressModalOpen(true);
+
+            const tsCombo = new ThunderstoreCombo();
+            tsCombo.setMod(tsMod);
+            tsCombo.setVersion(tsVersion);
+
+            setTimeout(async () => {
+                let downloadedMods: ThunderstoreCombo[] = [];
+                try {
+                    downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
+                        this.profile.asImmutableProfile(),
+                        tsCombo,
+                        this.ignoreCache,
+                        (progress, modName, status, err) => { this.downloadProgressCallback(assignId, progress, modName, status, err); }
+                    );
+                } catch (e) {
+                    this.setIsModProgressModalOpen(false);
+                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+                    return;
+                }
+                await this.downloadCompletedCallback(downloadedMods);
+                this.setIsModProgressModalOpen(false);
             }, 1);
+
         }
+
+        downloadProgressCallback(assignId: number, progress: number, modName: string, status: number, err: R2Error | null) {
+            try {
+                if (status === StatusEnum.FAILURE) {
+                    this.setIsModProgressModalOpen(false);
+                    this.$store.commit('download/updateDownload', {assignId, failed: true});
+                    if (err !== null) {
+                        DownloadMixin.addSolutionsToError(err);
+                        throw err;
+                    }
+                } else if (status === StatusEnum.PENDING) {
+                    this.$store.commit('download/updateDownload', {assignId, progress, modName});
+                }
+            } catch (e) {
+                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+            }
+        };
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
             return new Promise(async (resolve, reject) => {
