@@ -200,8 +200,8 @@ export const TsModsModule = {
          * Full update process of the mod list, to be used after
          * passing the splash screen.
          */
-        async syncPackageList({commit, dispatch, state}): Promise<void> {
-            if (state.isThunderstoreModListUpdateInProgress) {
+        async syncPackageList({commit, dispatch, state, rootGetters}): Promise<void> {
+            if (state.isThunderstoreModListUpdateInProgress || rootGetters['download/activeDownloadCount'] > 0) {
                 return;
             }
 
