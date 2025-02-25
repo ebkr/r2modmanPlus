@@ -54,7 +54,9 @@ export const DownloadModule = {
     getters: <GetterTree<State, RootState>>{
         activeDownloadCount(state) {
             const active = state.allDownloads.filter(
-                dl => !dl.failed && dl.downloadProgress < 100 && dl.installProgress < 100
+                dl =>
+                    !dl.failed &&
+                    !(dl.downloadProgress >= 100 && dl.installProgress >= 100)
             );
             return active.length;
         },
