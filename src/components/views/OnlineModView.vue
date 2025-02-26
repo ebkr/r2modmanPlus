@@ -154,6 +154,15 @@ export default class OnlineModView extends Vue {
                 return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
             });
         }
+        exactMatches = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+            return searchKeys.indexOf(x.getFullName().toLowerCase()) > -1;
+        });
+        unexactMatches = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
+            return searchKeys.indexOf(x.getFullName().toLowerCase()) == -1;
+        });
+        if (exactMatches.length > 0) {
+            this.searchableThunderstoreModList = exactMatches.concat(unexactMatches);
+        }
         if (!allowNsfw) {
             searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
         }
