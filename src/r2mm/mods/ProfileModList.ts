@@ -22,6 +22,8 @@ import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
 
+const FALLBACK_ICON = require("../../../public/unknown.png");
+
 export default class ProfileModList {
 
     public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml", ".ini"];
@@ -280,15 +282,18 @@ export default class ProfileModList {
     }
 
     public static async setIconPath(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
-        let iconPath = path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png");
+        const paths = [
+            path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
+            path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"),
+        ]
 
-        // BepInEx is not a plugin, and so the only place where we can get its icon is from the cache.
-        // Also non-BepInEx games, e.g. ReturnOfModding games, read the icons from cache. This could
-        // be fixed using a different path though.
-        if (!(await FsProvider.instance.exists(iconPath))) {
-            iconPath = path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png");
+        for (const iconPath of paths) {
+            if (await FsProvider.instance.exists(iconPath)) {
+                mod.setIcon(iconPath);
+                return;
+            }
         }
 
-        mod.setIcon(iconPath);
+        mod.setIcon(FALLBACK_ICON);
     }
 }

@@ -5,7 +5,6 @@
             <p>Game updates may break mods. If a new update has been released, please be patient.</p>
         </div>
         <progress-bar
-            v-if="!isOffline"
             :max='requests.length * 100'
             :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
             :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
@@ -25,16 +24,6 @@
                 </aside>
             </div>
             <div class='column is-three-quarters'>
-                <div class='container'>
-                    <br />
-                    <nav class='level' v-if='isOffline'>
-                        <div class='level-item'>
-                            <a class='button is-info margin-right margin-right--half-width' @click='continueOffline()'>Continue offline</a>
-                            <a class='button' @click='retryConnection()'>Try to reconnect</a>
-                        </div>
-                        <br /><br />
-                    </nav>
-                </div>
                 <div>
                     <article class='media'>
                         <div class='media-content'>
@@ -159,9 +148,9 @@ export default class Splash extends mixins(SplashMixin) {
 
     requests = [
         new RequestItem('UpdateCheck', 0),
-        new RequestItem('ThunderstoreDownload', 0),
-        new RequestItem('ExclusionsList', 0),
-        new RequestItem('CacheOperations', 0)
+        new RequestItem('PackageListIndex', 0),
+        new RequestItem('PackageListChunks', 0),
+        new RequestItem('Vuex', 0)
     ];
 
     // Ensure that r2modman isn't outdated.
@@ -169,7 +158,6 @@ export default class Splash extends mixins(SplashMixin) {
         this.loadingText = 'Preparing';
         ipcRenderer.once('update-done', async () => {
             this.getRequestItem('UpdateCheck').setProgress(100);
-            await this.getExclusions();
             await this.getThunderstoreMods();
         });
         ipcRenderer.send('update-app');
@@ -195,12 +183,6 @@ export default class Splash extends mixins(SplashMixin) {
             return;
         }
         this.$router.push({name: 'profiles'});
-    }
-
-    retryConnection() {
-        this.resetRequestProgresses();
-        this.isOffline = false;
-        this.checkForUpdates();
     }
 
     private async ensureWrapperInGameFolder() {

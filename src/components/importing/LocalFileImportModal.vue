@@ -27,17 +27,41 @@
                 </div>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-name" class="non-selectable">Mod name</label>
-                    <input id="mod-name" ref="mod-name" class="input margin-right" type="text" v-model="modName" placeholder="Enter the name of the mod"/>
+                    <input
+                        v-model="modName"
+                        id="mod-name"
+                        class="input margin-right"
+                        ref="mod-name"
+                        type="text"
+                        placeholder="Enter the name of the mod"
+                        autocomplete="off"
+                    />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-author" class="non-selectable">Author</label>
-                    <input id="mod-author" ref="mod-author" class="input margin-right" type="text" v-model="modAuthor" placeholder="Enter the author name"/>
+                    <input
+                        v-model="modAuthor"
+                        id="mod-author"
+                        class="input margin-right"
+                        ref="mod-author"
+                        type="text"
+                        placeholder="Enter the author name"
+                        autocomplete="off"
+                    />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
                     <label for="mod-author" class="non-selectable">Description (optional)</label>
-                    <input id="mod-description" ref="mod-description" class="input margin-right" type="text" v-model="modDescription" placeholder="Enter a description"/>
+                    <input
+                        v-model="modDescription"
+                        id="mod-description"
+                        class="input margin-right"
+                        ref="mod-description"
+                        type="text"
+                        placeholder="Enter a description"
+                        autocomplete="off"
+                    />
                 </div>
                 <hr/>
                 <h3 class="title is-6">Version</h3>
@@ -72,7 +96,7 @@ import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ModalCard from '../ModalCard.vue';
@@ -244,7 +268,7 @@ export default class LocalFileImportModal extends Vue {
         this.$emit("close-modal");
     }
 
-    private importFile() {
+    private async importFile() {
         if (this.fileToImport === null) {
             return;
         }
@@ -279,7 +303,9 @@ export default class LocalFileImportModal extends Vue {
             return;
         }
 
-        const profile: Profile|null = this.$store.state.profile.activeProfile;
+        const profile: ImmutableProfile|null = this.$store.state.profile.activeProfile
+            ? this.$store.state.profile.activeProfile.asImmutableProfile()
+            : null;
 
         if (profile === null) {
             this.validationMessage = "Profile is not selected";
@@ -292,27 +318,25 @@ export default class LocalFileImportModal extends Vue {
         this.resultingManifest.setDescription(this.modDescription.trim());
         this.resultingManifest.setAuthorName(this.modAuthor.trim());
 
-        const installCallback = (async (success: boolean, error: any | null) => {
-            if (!success && error !== null) {
-                this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
-                return;
+        try {
+            if (this.fileToImport.endsWith(".zip")) {
+                await LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest);
+            } else {
+                await LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest);
             }
-            const updatedModListResult = await ProfileModList.getModList(profile.asImmutableProfile());
-            if (updatedModListResult instanceof R2Error) {
-                this.$store.commit("error/handleError", updatedModListResult);
-                return;
-            }
+        } catch (e) {
+            this.$store.commit("error/handleError", R2Error.fromThrownValue(e));
+            return;
+        }
+
+        const updatedModListResult = await ProfileModList.getModList(profile);
+        if (updatedModListResult instanceof R2Error) {
+            this.$store.commit("error/handleError", updatedModListResult);
+        } else {
             await this.$store.dispatch("profile/updateModList", updatedModListResult);
             this.emitClose();
-        });
-
-        if (this.fileToImport.endsWith(".zip")) {
-            LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest, installCallback);
-        } else {
-            LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest, installCallback);
         }
     }
-
 }
 
 interface ImportFieldAttributes {

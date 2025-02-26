@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-import { DownloadProgressed } from "../providers/generic/connection/ConnectionProvider";
 import { decompressArrayBuffer } from "./GzipUtils";
 
 const newAbortSignal = (timeoutMs: number) => {
@@ -35,7 +34,7 @@ interface LongRunningRequestOptions {
     /** Values passed as is to Axios constructor */
     axiosConfig?: AxiosRequestConfig;
     /** Custom function to be called when progress is made. */
-    downloadProgressed?: DownloadProgressed;
+    downloadProgressed?: (percentDownloaded: number) => void;
     /**
      * Time (in ms) the request has to trigger the first download
      * progress event. This can be used to timeout early if a connection
@@ -110,12 +109,13 @@ export const makeLongRunningGetRequest = async (
  * all users and can be cached heavily on CDN level.
  */
 export const fetchAndProcessBlobFile = async (url: string) => {
+    const dateFetched = new Date();
     const response = await makeLongRunningGetRequest(url, {axiosConfig: {responseType: 'arraybuffer'}});
     const buffer = Buffer.from(response.data);
     const hash = await getSha256Hash(buffer);
     const jsonString = await decompressArrayBuffer(buffer);
     const content = JSON.parse(jsonString);
-    return {content, hash};
+    return {content, hash, dateFetched};
 }
 
 async function getSha256Hash(arrayBuffer: ArrayBuffer): Promise<string> {

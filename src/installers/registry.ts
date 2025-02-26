@@ -7,6 +7,7 @@ import { LovelyInstaller, LovelyPluginInstaller } from './LovelyInstaller';
 import { NorthstarInstaller } from './NorthstarInstaller';
 import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './ReturnOfModdingInstaller';
 import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
+import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } from './RecursiveMelonLoaderInstaller';
 
 const _PackageInstallers = {
     // "legacy": new InstallRuleInstaller(),  // TODO: Enable
@@ -22,6 +23,8 @@ const _PackageInstallers = {
     "returnofmodding-plugin": new ReturnOfModdingPluginInstaller(),
     "gdweave": new GDWeaveInstaller(),
     "gdweave-plugin": new GDWeavePluginInstaller(),
+    "recursive-melonloader": new RecursiveMelonLoaderInstaller(),
+    "recursive-melonloader-plugin": new RecursiveMelonLoaderPluginInstaller(),
 }
 
 export type PackageInstallerId = keyof typeof _PackageInstallers;

@@ -71,9 +71,11 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("ReturnOfModding-ReturnOfModding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack_AmongUs", PackageLoader.BEPINEX),
 ];
 
-const DEFAULT_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
+const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
+const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
 
 /**
  * While this object is a bit silly given that all the keys are pointing to the
@@ -114,11 +116,11 @@ const VARIANTS = {
     Titanfall2: MODLOADER_PACKAGES,
     Peglin: MODLOADER_PACKAGES,
     VRising: MODLOADER_PACKAGES,
-    HardBullet: DEFAULT_MELONLOADER_MAPPING,
+    HardBullet: LEGACY_MELONLOADER_MAPPING,
     GreenHellVR: MODLOADER_PACKAGES,
     "20MinutesTillDawn": MODLOADER_PACKAGES,
     VTOL_VR: MODLOADER_PACKAGES,
-    BackpackHero: DEFAULT_MELONLOADER_MAPPING,
+    BackpackHero: LEGACY_MELONLOADER_MAPPING,
     Stacklands: MODLOADER_PACKAGES,
     ETG: MODLOADER_PACKAGES,
     Ravenfield: MODLOADER_PACKAGES,
@@ -134,7 +136,7 @@ const VARIANTS = {
     AtrioTheDarkWild: MODLOADER_PACKAGES,
     AncientDungeonVR: MODLOADER_PACKAGES,
     Brotato: MODLOADER_PACKAGES,
-    RUMBLE: DEFAULT_MELONLOADER_MAPPING,
+    RUMBLE: LEGACY_MELONLOADER_MAPPING,
     DomeKeeper: MODLOADER_PACKAGES,
     SkulTheHeroSlayer: MODLOADER_PACKAGES,
     SonsOfTheForest: MODLOADER_PACKAGES,
@@ -142,7 +144,7 @@ const VARIANTS = {
     WrestlingEmpire: MODLOADER_PACKAGES,
     Receiver2: MODLOADER_PACKAGES,
     ThePlanetCrafter: MODLOADER_PACKAGES,
-    PatchQuest: DEFAULT_MELONLOADER_MAPPING,
+    PatchQuest: LEGACY_MELONLOADER_MAPPING,
     ShadowsOverLoathing: MODLOADER_PACKAGES,
     WestofLoathing: MODLOADER_PACKAGES,
     SunHaven: MODLOADER_PACKAGES,
@@ -210,6 +212,10 @@ const VARIANTS = {
     STRAFTAT: MODLOADER_PACKAGES,
     ATLYSS: MODLOADER_PACKAGES,
     PeaksOfYore: MODLOADER_PACKAGES,
+    Subterror: MODLOADER_PACKAGES,
+    IAmYourBeast: MODLOADER_PACKAGES,
+    MiSide: MODLOADER_PACKAGES,
+    DaleAndDawson: RECURSIVE_MELONLOADER_MAPPING,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

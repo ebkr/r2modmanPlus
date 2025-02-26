@@ -107,7 +107,13 @@
 						entering custom launch parameters.</strong>
 				</p>
 				<br/>
-				<input class='input' v-model='launchParametersModel' placeholder='Enter parameters'/>
+				<input
+					v-model='launchParametersModel'
+					id='launch-parameters-modal-input'
+					class='input'
+					placeholder='Enter parameters'
+					autocomplete='off'
+				/>
 			</template>
 			<template v-slot:footer>
 				<button class='button is-info' @click='updateLaunchParameters()'>
@@ -507,6 +513,11 @@ import ModalCard from '../components/ModalCard.vue';
             }
 		}
 
+        async copyTroubleshootingInfoToClipboard() {
+            const content = await this.$store.dispatch('profile/generateTroubleshootingString');
+            InteractionProvider.instance.copyToClipboard('```' + content + '```');
+        }
+
         async changeDataFolder() {
             try {
                 const folder = await DataFolderProvider.instance.showSelectionDialog();
@@ -544,6 +555,9 @@ import ModalCard from '../components/ModalCard.vue';
                     break;
                 case "CopyLogToClipboard":
                     this.copyLogToClipboard();
+                    break;
+                case "CopyTroubleshootingInfoToClipboard":
+                    this.copyTroubleshootingInfoToClipboard();
                     break;
                 case "ToggleDownloadCache":
                     this.toggleIgnoreCache();
@@ -629,7 +643,7 @@ import ModalCard from '../components/ModalCard.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.profile, combo, ignoreCache)
+                DownloadModModal.downloadSpecific(this.profile, combo, ignoreCache, this.$store)
                     .then(async value => {
                         const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                         if (!(modList instanceof R2Error)) {

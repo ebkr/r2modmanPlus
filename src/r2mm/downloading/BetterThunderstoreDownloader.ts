@@ -1,7 +1,7 @@
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
 import StatusEnum from '../../model/enums/StatusEnum';
 import axios, { AxiosResponse } from 'axios';
+import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
@@ -82,70 +82,73 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                           ignoreCache: boolean,
-                           callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                           completedCallback: (modList: ThunderstoreCombo[]) => void) {
-        let dependencies: ThunderstoreCombo[] = [];
-        await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_EXACT_VERSION);
-        this.sortDependencyOrder(dependencies);
-        const combo = new ThunderstoreCombo();
-        combo.setMod(mod);
-        combo.setVersion(modVersion);
-        let downloadCount = 0;
+    public async download(
+        profile: ImmutableProfile,
+        combo: ThunderstoreCombo,
+        ignoreCache: boolean,
+        totalProgressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+    ): Promise<ThunderstoreCombo[]> {
 
         const modList = await ProfileModList.getModList(profile);
         if (modList instanceof R2Error) {
-            return callback(0, mod.getName(), StatusEnum.FAILURE, modList);
+            totalProgressCallback(0, combo.getMod().getName(), StatusEnum.FAILURE, modList);
+            throw modList;
         }
 
-        let downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
+        const dependencies = await this.getDependenciesWithCorrectVersions(combo, modList);
+        const allModsToDownload = [combo, ...dependencies];
 
-        // Determine if modpack
-        // If modpack, use specified dependencies as retrieved above
-        // If not, get latest version of dependencies.
-        let isModpack = combo.getMod().getCategories().find(value => value === "Modpacks") !== undefined;
-        if (!isModpack) {
-            // If not modpack, get latest
-            dependencies = [];
-            await this.buildDependencySet(modVersion, dependencies, DependencySetBuilderMode.USE_LATEST_VERSION);
-            this.sortDependencyOrder(dependencies);
-            // #270: Remove already-installed dependencies to prevent updating.
-            dependencies = dependencies.filter(dep => modList.find(installed => installed.getName() === dep.getMod().getFullName()) === undefined);
-            downloadableDependencySize = this.calculateInitialDownloadSize(dependencies);
-        }
-
-        await this.downloadAndSave(combo, ignoreCache, async (progress: number, status: number, err: R2Error | null) => {
+        let modInProgressName = combo.getMod().getName();
+        let downloadCount = 0;
+        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
+        const singleModProgressCallback = (downloadProgress: number, status: number, err: R2Error | null) => {
             if (status === StatusEnum.FAILURE) {
-                callback(0, mod.getName(), status, err);
-            } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), mod.getName(), status, err);
-            } else if (status === StatusEnum.SUCCESS) {
-                downloadCount += 1;
-                // If no dependencies, end here.
-                if (dependencies.length === 0) {
-                    callback(100, mod.getName(), StatusEnum.PENDING, err);
-                    completedCallback([combo]);
-                    return;
-                }
-
-                // If dependencies, queue and download.
-                await this.queueDownloadDependencies(dependencies.entries(), ignoreCache, (progress: number, modName: string, status: number, err: R2Error | null) => {
-                    if (status === StatusEnum.FAILURE) {
-                        callback(0, modName, status, err);
-                    } else if (status === StatusEnum.PENDING) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
-                    } else if (status === StatusEnum.SUCCESS) {
-                        callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
-                        downloadCount += 1;
-                        if (downloadCount >= dependencies.length + 1) {
-                            callback(100, modName, StatusEnum.PENDING, err);
-                            completedCallback([...dependencies, combo]);
-                        }
-                    }
-                });
+                throw err;
             }
-        })
+
+            let totalDownloadProgress: number;
+            if (status === StatusEnum.PENDING) {
+                totalDownloadProgress = this.generateProgressPercentage(downloadProgress * 0.8, downloadCount, allModsToDownload.length);
+            } else if (status === StatusEnum.SUCCESS) {
+                totalDownloadProgress = this.generateProgressPercentage(100, downloadCount, allModsToDownload.length);
+                downloadCount += 1;
+            } else {
+                console.error(`Ignore unknown status code "${status}"`);
+                return;
+            }
+            totalProgressCallback(Math.round(totalDownloadProgress), modInProgressName, status, err);
+        }
+
+        for (const comboInProgress of allModsToDownload) {
+            modInProgressName = comboInProgress.getMod().getName();
+
+            if (!ignoreCache && await this.isVersionAlreadyDownloaded(comboInProgress)) {
+                totalProgressCallback(100, modInProgressName, StatusEnum.SUCCESS, null);
+                continue;
+            }
+
+            try {
+                const response = await this._downloadCombo(comboInProgress, singleModProgressCallback);
+                await this._saveDownloadResponse(response, comboInProgress, singleModProgressCallback);
+            } catch(e) {
+                throw R2Error.fromThrownValue(e, `Failed to download mod ${comboInProgress.getVersion().getFullName()}`);
+            }
+        }
+        return allModsToDownload;
+    }
+
+    // If combo is a modpack, use the modpack's dependency versions. If it isn't, get the latest versions.
+    private async getDependenciesWithCorrectVersions(combo: ThunderstoreCombo, modList: ManifestV2[]) {
+        const dependencies: ThunderstoreCombo[] = [];
+        const isModpack = combo.getMod().getCategories().some(value => value === "Modpacks");
+        const versionMode = isModpack ? DependencySetBuilderMode.USE_EXACT_VERSION : DependencySetBuilderMode.USE_LATEST_VERSION;
+
+        await this.buildDependencySet(combo.getVersion(), dependencies, versionMode);
+        this.sortDependencyOrder(dependencies);
+        // #270: Remove already-installed dependencies to prevent updating.
+        return dependencies.filter((dep) => {
+            return !(modList.some(installed => installed.getName() === dep.getMod().getFullName()));
+        });
     }
 
     public async downloadImportedMods(

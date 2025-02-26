@@ -6,8 +6,8 @@
 2. Install NVM (Node Version Manager)
 3. Open Git Bash as admin
 4. Go into repo root folder
-5. Run `nvm install 14`
-6. Run `nvm use 14.X.X` with "X" replaced with the version NVM installed. e.g. `nvm use 14.21.1`
+5. Run `nvm install 20`
+6. Run `nvm use 20.X.X` with "X" replaced with the version NVM installed. e.g. `nvm use 20.21.1`
 7. Run `npm install --global yarn`
 8. Exit Git Bash
 9. Open PowerShell as Admin

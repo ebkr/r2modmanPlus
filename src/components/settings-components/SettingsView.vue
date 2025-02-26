@@ -2,7 +2,7 @@
     <div>
         <Hero title='Settings'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
-              heroType='is-info'/>
+              heroType='primary'/>
         <div class="margin-right">
             <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
                 <div class='border-at-bottom'>
@@ -45,8 +45,8 @@
 
 <script lang="ts">
 
-import { Watch } from 'vue-property-decorator';
-import Component, { mixins } from 'vue-class-component';
+import { Vue, Watch } from 'vue-property-decorator';
+import Component from 'vue-class-component';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -62,7 +62,6 @@ import ManifestV2 from '../../model/ManifestV2';
 import Game from '../../model/game/Game';
 import { StorePlatform } from '../../model/game/StorePlatform';
 import moment from 'moment';
-import UtilityMixin from '../mixins/UtilityMixin.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
 @Component({
@@ -71,7 +70,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             Hero
         }
     })
-    export default class SettingsView extends mixins(UtilityMixin) {
+    export default class SettingsView extends Vue {
 
         private activeTab: string = 'All';
         private tabs = ['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other'];
@@ -160,6 +159,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Debugging',
+                'Copy troubleshooting information to clipboard',
+                'Copy settings and other information to the clipboard, with Discord formatting.',
+                async () => 'Share this information when requesting support on Discord.',
+                'fa-clipboard',
+                () => this.emitInvoke('CopyTroubleshootingInfoToClipboard')
+            ),
+            new SettingsRow(
+                'Debugging',
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
@@ -185,6 +192,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 async () => 'Check all profiles for unused mods and clear cache',
                 'fa-trash',
                 () => this.emitInvoke('CleanCache')
+            ),
+            new SettingsRow(
+                'Debugging',
+                'Clean online mod list',
+                'Deletes local copy of mod list, forcing the next refresh to fetch a new one.',
+                async () => this.$store.dispatch('tsMods/getActiveGameCacheStatus'),
+                'fa-trash',
+                () => this.$store.dispatch('tsMods/resetActiveGameCache')
             ),
             new SettingsRow(
                 'Debugging',
@@ -299,11 +314,11 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
-                            return "Checking for new releases";
+                        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
                         }
-                        if (this.$store.state.tsMods.connectionError.length > 0) {
-                            return "Error getting new mods: " + this.$store.state.tsMods.connectionError;
+                        if (this.$store.state.tsMods.thunderstoreModListUpdateError) {
+                            return `Error updating the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
@@ -311,27 +326,12 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                         return "No API information available";
                     },
                 'fa-exchange-alt',
-                async () => {
-                    if (this.$store.state.tsMods.isBackgroundUpdateInProgress) {
-                        return;
-                    }
-
-                    this.$store.commit("tsMods/startBackgroundUpdate");
-                    this.$store.commit("tsMods/setConnectionError", "");
-
-                    try {
-                        await this.refreshThunderstoreModList();
-                    } catch (e) {
-                        this.$store.commit("tsMods/setConnectionError", e);
-                    } finally {
-                        this.$store.commit("tsMods/finishBackgroundUpdate");
-                    }
-                }
+                async () => await this.$store.dispatch("tsMods/syncPackageList")
             ),
             new SettingsRow(
               'Other',
               'Change game',
-              'Change the current game (restarts the manager)',
+              'Change the current game',
               async () => "",
                 'fa-gamepad',
                 async () => {

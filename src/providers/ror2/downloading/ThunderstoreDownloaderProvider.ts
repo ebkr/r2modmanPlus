@@ -1,6 +1,5 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ThunderstoreVersion from '../../../model/ThunderstoreVersion';
-import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
 import { ImmutableProfile } from '../../../model/Profile';
@@ -49,17 +48,17 @@ export default abstract class ThunderstoreDownloaderProvider {
     /**
      * A top-level method to download the latest version of a mod including its dependencies.
      *
-     * @param profile           The profile the mod is downloaded for (needed to prevent dependencies from updating existing mods).
-     * @param mod               The mod to be downloaded.
-     * @param modVersion        The version of the mod to download.
-     * @param ignoreCache       Download mod even if it already exists in the cache.
-     * @param callback          Callback to show the current state of the downloads.
-     * @param completedCallback Callback to perform final actions against. Only called if {@param callback} has not returned a failed status.
+     * @param profile                   The profile the mod is downloaded for (needed to prevent dependencies from updating existing mods).
+     * @param combo                     The combo to be downloaded.
+     * @param ignoreCache               Download mod even if it already exists in the cache.
+     * @param totalProgressCallback     Callback to show the combined state of all the downloads.
      */
-    public abstract download(profile: ImmutableProfile, mod: ThunderstoreMod, modVersion: ThunderstoreVersion,
-                    ignoreCache: boolean,
-                    callback: (progress: number, modName: string, status: number, err: R2Error | null) => void,
-                    completedCallback: (modList: ThunderstoreCombo[]) => void): void;
+    public abstract download(
+        profile: ImmutableProfile,
+        combo: ThunderstoreCombo,
+        ignoreCache: boolean,
+        totalProgressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+    ): Promise<ThunderstoreCombo[]>;
 
     /**
      * A top-level method to download exact versions of exported mods.

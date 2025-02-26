@@ -67,6 +67,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.LOVELY]: runners,
         [PackageLoader.RETURN_OF_MODDING]: runners,
         [PackageLoader.GDWEAVE]: runners,
+        [PackageLoader.RECURSIVE_MELON_LOADER]: runners,
     }
 }
 

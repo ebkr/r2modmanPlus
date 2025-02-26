@@ -1,4 +1,4 @@
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
@@ -7,100 +7,86 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
-import ZipProvider from '../../providers/generic/zip/ZipProvider';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 
-    public async extractToCache(profile: Profile, zipFile: string, callback: (success: boolean, error: R2Error | null) => void) {
-        const result: Buffer | null = await ZipProvider.instance.readFile(zipFile,'manifest.json');
-        if (result !== null) {
-            const fileContents = result.toString();
+    private async initialiseCacheDirectory(manifest: ManifestV2): Promise<string> {
+        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache', manifest.getName(), manifest.getVersionNumber().toString());
+        if (await FsProvider.instance.exists(cacheDirectory)) {
+            await FileUtils.emptyDirectory(cacheDirectory);
+        } else {
+            await FileUtils.ensureDirectory(cacheDirectory);
+        }
+        return cacheDirectory;
+    }
+
+    /**
+     * Store custom file into cache to indicate the mod is installed locally.
+     * When the mod is installed, the file also gets copied to profile, which can
+     * be used in troubleshooting, telling us that the version of the mod isn't
+     * necessarily the same that's available via Thunderstore API.
+     */
+    private async writeCustomManifestToCache(cacheDirectory: string, manifest: ManifestV2) {
+        const manifestPath: string = path.join(cacheDirectory, 'mm_v2_manifest.json');
+
+        if (await FsProvider.instance.exists(manifestPath)) {
             try {
-                const parsed = JSON.parse(fileContents.trim());
-                const mod: R2Error | ManifestV2 = new ManifestV2().makeSafe(parsed);
-                if (mod instanceof R2Error) {
-                    return mod;
-                }
-                return await this.extractToCacheWithManifestData(profile, zipFile, mod, callback);
-            } catch(e) {
-                const err: Error = e as Error;
-                return new R2Error('Failed to convert manifest to JSON', err.message, null);
+                await FsProvider.instance.unlink(manifestPath);
+            } catch (e) {
+                throw R2Error.fromThrownValue(e, 'Failed to unlink manifest from cache');
             }
-        } else {
-            return new R2Error('No manifest provided', 'No file found in zip with name "manifest.json". Contact the mod author, or create your own.', null);
         }
-        return Promise.resolve();
+
+        await FsProvider.instance.writeFile(manifestPath, JSON.stringify(manifest));
     }
 
-    private async initialiseCacheDirectory(manifest: ManifestV2) {
-        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-        if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()))) {
-            await FileUtils.emptyDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
-        } else {
-            await FileUtils.ensureDirectory(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()));
+    /**
+     * Write Thunderstore compatible manifest.json to cache if one wasn't provided
+     * with the upload. This is done to have consistency between all installed
+     * mods, regardless of how they were installed. Having the manifest present
+     * allows e.g. other mods to sniff out what other mods are installed.
+     */
+    private async writeManifestToCache(cacheDirectory: string, manifest: ManifestV2) {
+        const manifestPath: string = path.join(cacheDirectory, 'manifest.json');
+
+        if (!(await FsProvider.instance.exists(manifestPath))) {
+            const content = {
+                'name': manifest.getDisplayName(),  // getName() returns "author-modname" here
+                'description': manifest.getDescription(),
+                'version_number': manifest.getVersionNumber().toString(),
+                'dependencies': manifest.getDependencies(),
+                'website_url': ''
+            };
+
+            await FsProvider.instance.writeFile(manifestPath, JSON.stringify(content, null, 4));
         }
     }
 
-    public async extractToCacheWithManifestData(profile: Profile, zipFile: string, manifest: ManifestV2, callback: (success: boolean, error: R2Error | null) => void) {
-        const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-        await this.initialiseCacheDirectory(manifest);
-        await ZipExtract.extractOnly(
-            zipFile,
-            path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString()),
-            async success => {
-                if (success) {
-                    if (await FsProvider.instance.exists(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"))) {
-                        try {
-                            await FsProvider.instance.unlink(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"));
-                        } catch (e) {
-                            const err: Error = e as Error;
-                            callback(false, new R2Error("Failed to unlink manifest from cache", err.message, null));
-                        }
-                    }
-                    await FsProvider.instance.writeFile(path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString(), "mm_v2_manifest.json"), JSON.stringify(manifest));
-                    await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
-                    const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
-                    if (profileInstallResult instanceof R2Error) {
-                        callback(false, profileInstallResult);
-                        return Promise.resolve();
-                    }
-                    const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
-                    if (modListInstallResult instanceof R2Error) {
-                        callback(false, modListInstallResult);
-                        return Promise.resolve();
-                    }
-                    callback(true, null);
-                    return Promise.resolve();
-                }
-            }
-        );
+    public async extractToCacheWithManifestData(profile: ImmutableProfile, zipFile: string, manifest: ManifestV2) {
+        const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
+        await ZipExtract.extractOnly(zipFile, cacheDirectory);
+        await this.writeManifestToCache(cacheDirectory, manifest);
+        await this.writeCustomManifestToCache(cacheDirectory, manifest);
+        await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+        throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
+        throwForR2Error(await ProfileModList.addMod(manifest, profile));
     }
 
-    public async placeFileInCache(profile: Profile, file: string, manifest: ManifestV2, callback: (success: boolean, error: (R2Error | null)) => void) {
+    public async placeFileInCache(profile: ImmutableProfile, file: string, manifest: ManifestV2) {
         try {
-            const cacheDirectory: string = path.join(PathResolver.MOD_ROOT, 'cache');
-            await this.initialiseCacheDirectory(manifest);
-            const modCacheDirectory = path.join(cacheDirectory, manifest.getName(), manifest.getVersionNumber().toString());
+            const cacheDirectory: string = await this.initialiseCacheDirectory(manifest);
             const fileSafe = file.split("\\").join("/");
-            await FsProvider.instance.copyFile(fileSafe, path.join(modCacheDirectory, path.basename(fileSafe)));
-            await FsProvider.instance.writeFile(path.join(modCacheDirectory, "mm_v2_manifest.json"), JSON.stringify(manifest));
-            await ProfileInstallerProvider.instance.uninstallMod(manifest, profile.asImmutableProfile());
-            const profileInstallResult = await ProfileInstallerProvider.instance.installMod(manifest, profile.asImmutableProfile());
-            if (profileInstallResult instanceof R2Error) {
-                callback(false, profileInstallResult);
-                return Promise.resolve();
-            }
-            const modListInstallResult = await ProfileModList.addMod(manifest, profile.asImmutableProfile());
-            if (modListInstallResult instanceof R2Error) {
-                callback(false, modListInstallResult);
-                return Promise.resolve();
-            }
-            callback(true, null);
-            return Promise.resolve();
+            await FsProvider.instance.copyFile(fileSafe, path.join(cacheDirectory, path.basename(fileSafe)));
+            await this.writeManifestToCache(cacheDirectory, manifest);
+            await this.writeCustomManifestToCache(cacheDirectory, manifest);
         } catch (e) {
-            callback(false, new R2Error("Error moving file to cache", (e as Error).message, null));
+            throw R2Error.fromThrownValue(e, "Error moving file to cache");
         }
+
+        await ProfileInstallerProvider.instance.uninstallMod(manifest, profile);
+        throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifest, profile));
+        throwForR2Error(await ProfileModList.addMod(manifest, profile));
     }
 }

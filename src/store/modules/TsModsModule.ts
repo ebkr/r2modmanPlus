@@ -1,16 +1,16 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
+import ExportMod from '../../model/exports/ExportMod';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import ConnectionProvider from '../../providers/generic/connection/ConnectionProvider';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
 import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
-import { fetchAndProcessBlobFile } from '../../utils/HttpUtils';
+import { fetchAndProcessBlobFile, getAxiosWithTimeouts } from '../../utils/HttpUtils';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -18,25 +18,33 @@ export interface CachedMod {
 }
 
 interface State {
+    activeGameCacheStatus: string|undefined;
     cache: Map<string, CachedMod>;
-    connectionError: string;
     deprecated: Map<string, boolean>;
-    exclusions?: string[];
-    isBackgroundUpdateInProgress: boolean;
+    exclusions: string[];
+    isThunderstoreModListUpdateInProgress: boolean;
     mods: ThunderstoreMod[];
     modsLastUpdated?: Date;
+    thunderstoreModListUpdateError: Error|undefined;
+    thunderstoreModListUpdateStatus: string;
 }
 
 type ProgressCallback = (progress: number) => void;
 type PackageListChunk = {full_name: string}[];
-export type PackageListChunks = PackageListChunk[];
-export type PackageListIndex = {content: string[], hash: string, isLatest: boolean};
+export type PackageListIndex = {
+    content: string[],
+    dateFetched: Date,
+    hash: string,
+    isLatest: boolean
+};
 
 function isPackageListChunk(value: unknown): value is PackageListChunk {
     return Array.isArray(value) && (
         !value.length || typeof value[0].full_name === "string"
     );
 }
+
+const EXCLUSIONS = 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md';
 
 /**
  * For dealing with mods listed in communities, i.e. available through
@@ -48,18 +56,22 @@ export const TsModsModule = {
     namespaced: true,
 
     state: (): State => ({
+        /*** Does the active game have a mod list stored in IndexedDB? */
+        activeGameCacheStatus: undefined,
         cache: new Map<string, CachedMod>(),
-        /*** Error shown on UI after manual mod list refresh fails */
-        connectionError: '',
         deprecated: new Map<string, boolean>(),
         /*** Packages available through API that should be ignored by the manager */
         exclusions: [],
-        /*** Mod list is automatically and periodically updated in the background */
-        isBackgroundUpdateInProgress: false,
+        /*** Mod list is updated from the API automatically and by user action */
+        isThunderstoreModListUpdateInProgress: false,
         /*** All mods available through API for the current active game */
         mods: [],
         /*** When was the mod list last refreshed from the API? */
-        modsLastUpdated: undefined
+        modsLastUpdated: undefined,
+        /*** Error shown on UI after mod list refresh fails */
+        thunderstoreModListUpdateError: undefined,
+        /*** Status shown on UI during mod list refresh */
+        thunderstoreModListUpdateStatus: ''
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -69,7 +81,7 @@ export const TsModsModule = {
          *  time this happens slows down the LocalModList, cache the
          *  data in a Map.
          */
-        cachedMod: (state) => (mod: ManifestV2): CachedMod => {
+        cachedMod: (state) => (mod: ExportMod|ManifestV2): CachedMod => {
             const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
             if (state.cache.get(cacheKey) === undefined) {
@@ -107,7 +119,7 @@ export const TsModsModule = {
         },
 
         /*** Return ThunderstoreMod representation of a ManifestV2 */
-        tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
+        tsMod: (_state, getters) => (mod: ExportMod|ManifestV2): ThunderstoreMod | undefined => {
             return getters.cachedMod(mod).tsMod;
         },
 
@@ -118,26 +130,23 @@ export const TsModsModule = {
 
     mutations: <MutationTree<State>>{
         reset(state: State) {
+            state.activeGameCacheStatus = undefined;
             state.cache = new Map<string, CachedMod>();
-            state.connectionError = '';
             state.deprecated = new Map<string, boolean>();
-            state.exclusions = [];
             state.mods = [];
             state.modsLastUpdated = undefined;
+            state.thunderstoreModListUpdateError = undefined;
+            state.thunderstoreModListUpdateStatus = '';
         },
         clearModCache(state) {
             state.cache.clear();
         },
-        finishBackgroundUpdate(state) {
-            state.isBackgroundUpdateInProgress = false;
+        finishThunderstoreModListUpdate(state) {
+            state.isThunderstoreModListUpdateInProgress = false;
+            state.thunderstoreModListUpdateStatus = '';
         },
-        setConnectionError(state, error: string|unknown) {
-            if (typeof error === 'string') {
-                state.connectionError = error;
-            } else {
-                const msg = error instanceof Error ? error.message : "Unknown error";
-                state.connectionError = msg;
-            }
+        setActiveGameCacheStatus(state, status: string|undefined) {
+            state.activeGameCacheStatus = status;
         },
         setMods(state, payload: ThunderstoreMod[]) {
             state.mods = payload;
@@ -145,11 +154,19 @@ export const TsModsModule = {
         setModsLastUpdated(state, payload: Date|undefined) {
             state.modsLastUpdated = payload;
         },
-        setExclusions(state, payload: string[]) {
-            state.exclusions = payload;
+        setExclusions(state, payload: string|string[]) {
+            const exclusions_ = Array.isArray(payload) ? payload : payload.split('\n');
+            state.exclusions = exclusions_.map((e) => e.trim()).filter(Boolean);
         },
-        startBackgroundUpdate(state) {
-            state.isBackgroundUpdateInProgress = true;
+        setThunderstoreModListUpdateError(state, error: Error) {
+            state.thunderstoreModListUpdateError = error instanceof Error ? error : new Error(error);
+        },
+        setThunderstoreModListUpdateStatus(state, status: string) {
+            state.thunderstoreModListUpdateStatus = status;
+        },
+        startThunderstoreModListUpdate(state) {
+            state.isThunderstoreModListUpdateInProgress = true;
+            state.thunderstoreModListUpdateError = undefined;
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
@@ -157,9 +174,70 @@ export const TsModsModule = {
     },
 
     actions: <ActionTree<State, RootState>>{
-        async fetchPackageListIndex({dispatch, rootState}): Promise<PackageListIndex> {
+        /**
+         * Full update process of the mod list, to be used after
+         * passing the splash screen.
+         */
+        async syncPackageList({commit, dispatch, state}): Promise<void> {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return;
+            }
+
+            commit('startThunderstoreModListUpdate');
+
+            try {
+                commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
+                const packageListIndex = await dispatch('fetchPackageListIndex');
+
+                // If the package list is up to date, only update the timestamp. Otherwise,
+                // fetch the new one and store it into IndexedDB.
+                if (packageListIndex.isLatest) {
+                    await dispatch('cacheIndexHash', packageListIndex.hash);
+                } else {
+                    const areAllChunksProcessedSuccessfully = await dispatch(
+                        'fetchAndCachePackageListChunks',
+                        {
+                            packageListIndex,
+                            progressCallback: (progress: number) => commit(
+                                'setThunderstoreModListUpdateStatus',
+                                `Loading latest mod list from Thunderstore: ${progress}%`
+                            ),
+                        },
+                    );
+
+                    if (areAllChunksProcessedSuccessfully) {
+                        commit('setThunderstoreModListUpdateStatus', 'Pruning removed mods from local cache...');
+                        await dispatch('pruneRemovedModsFromCache', packageListIndex.dateFetched);
+                    }
+                }
+
+                // If the package list was up to date and the mod list is already loaded to
+                // Vuex, just update the timestamp. Otherwise, load the list from IndexedDB
+                // to Vuex. This needs to be done even if the index hasn't updated when the
+                // mod list in Vuex is empty, as this indicates an error state and otherwise
+                // the user would be stuck with empty list until a new index hash is
+                // available via the API.
+                if (packageListIndex.isLatest && state.mods.length > 0) {
+                    await dispatch('updateModsLastUpdated');
+                } else {
+                    commit('setThunderstoreModListUpdateStatus', 'Processing the mod list...');
+                    await dispatch('updateMods');
+                    commit('setThunderstoreModListUpdateStatus', 'Almost done...');
+                    await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
+                    await dispatch('prewarmCache');
+                }
+            } catch (e) {
+                commit('setThunderstoreModListUpdateError', e);
+            } finally {
+                commit('setActiveGameCacheStatus', undefined);
+                commit('finishThunderstoreModListUpdate');
+            }
+        },
+
+        async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
             const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
-            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), 5, 2000);
+            const options = {attempts: 5, interval: 2000, throwLastErrorAsIs: true};
+            const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
 
             if (!isStringArray(index.content)) {
                 throw new Error('Received invalid chunk index from API');
@@ -170,46 +248,85 @@ export const TsModsModule = {
 
             const community = rootState.activeGame.internalFolderName;
             const isLatest = await PackageDb.isLatestPackageListIndex(community, index.hash);
-
-            // Normally the hash would be updated after the mod list is successfully
-            // fetched and written to IndexedDB, but if the list hasn't changed,
-            // those step are skipped, so update the "last seen" timestamp now.
-            if (isLatest) {
-                await dispatch('updateIndexHash', index.hash);
-            }
-
             return {...index, isLatest};
         },
 
-        async fetchPackageListChunks(
-            {},
-            {chunkUrls, progressCallback}: {chunkUrls: string[], progressCallback?: ProgressCallback},
-        ): Promise<PackageListChunks> {
-            // Count index as a chunk for progress bar purposes.
-            const chunkCount = chunkUrls.length + 1;
-            let completed = 1;
-            const updateProgress = () => progressCallback && progressCallback((completed / chunkCount) * 100);
-            updateProgress();
+        async fetchAndCachePackageListChunks(
+            {dispatch},
+            {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
+        ): Promise<boolean> {
+            const chunkCount = packageListIndex.content.length;
+            let completed = 0;
+            let successes = 0;
+            const updateProgress = () => progressCallback && progressCallback(Math.floor((completed / chunkCount) * 100));
 
-            // Download chunks serially to avoid slow connections timing
-            // out due to concurrent requests competing for the bandwidth.
-            const chunks = [];
-            for (const [i, chunkUrl] of chunkUrls.entries()) {
-                const url = CdnProvider.replaceCdnHost(chunkUrl);
-                const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url));
-
-                if (chunkUrls.length > 1 && isEmptyArray(chunk)) {
-                    throw new Error(`Chunk #${i} in multichunk response was empty`);
-                } else if (!isPackageListChunk(chunk)) {
-                    throw new Error(`Chunk #${i} was invalid format`);
+            for (const chunkUrl of packageListIndex.content) {
+                try {
+                    await dispatch('fetchAndCachePackageListChunk', chunkUrl);
+                    successes++;
+                } catch (e) {
+                    console.error('Processing package list chunk failed.', e);
+                } finally {
+                    completed++;
+                    updateProgress();
                 }
-
-                chunks.push(chunk);
-                completed++;
-                updateProgress();
             }
 
-            return chunks;
+            // Only store the index hash if all chunks were processed successfully.
+            // Otherwise user wouldn't be able to attempt a retry until the index
+            // hash is updated in the API.
+            if (successes === chunkCount) {
+                await dispatch('cacheIndexHash', packageListIndex.hash);
+            }
+
+            return successes === chunkCount;
+        },
+
+        async fetchAndCachePackageListChunk({rootState, state}, chunkUrl: string): Promise<void> {
+            const url = CdnProvider.replaceCdnHost(chunkUrl);
+            const options = {throwLastErrorAsIs: true};
+            const {content: chunk} = await retry(() => fetchAndProcessBlobFile(url), options);
+
+            if (!isPackageListChunk(chunk)) {
+                throw new Error(`Received invalid chunk from URL "${url}"`);
+            }
+
+            const filtered = chunk.filter((pkg) => !state.exclusions.includes(pkg.full_name));
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.upsertPackageListChunk(community, filtered);
+        },
+
+        async gameHasCachedModList({rootState}): Promise<boolean> {
+            const updated = await PackageDb.getLastPackageListUpdateTime(rootState.activeGame.internalFolderName);
+            return updated !== undefined;
+        },
+
+        async generateTroubleshootingString({state}): Promise<string> {
+            return `${state.mods.length} mods, updated ${state.modsLastUpdated || 'never'}`;
+        },
+
+        async getActiveGameCacheStatus({commit, state, rootState}): Promise<string> {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return "Online mod list is currently updating, please wait for the operation to complete";
+            }
+
+            // Only check the status once, as this is used in the settings
+            // where the value is polled on one second intervals.
+            if (state.activeGameCacheStatus === undefined) {
+                let status = '';
+                try {
+                    status = (await PackageDb.hasEntries(rootState.activeGame.internalFolderName))
+                        ? `${rootState.activeGame.displayName} has a local copy of online mod list`
+                        : `${rootState.activeGame.displayName} has no local copy stored`;
+                } catch (e) {
+                    console.error(e);
+                    status = 'Error occurred while checking mod list status';
+                }
+
+                commit('setActiveGameCacheStatus', status);
+            }
+
+            return state.activeGameCacheStatus || 'Unknown status';
         },
 
         async prewarmCache({getters, rootGetters}) {
@@ -217,12 +334,50 @@ export const TsModsModule = {
             profileMods.forEach(getters['cachedMod']);
         },
 
-        async updateExclusions(
-            {commit},
-            progressCallback?: ProgressCallback
-        ) {
-            const exclusions = await ConnectionProvider.instance.getExclusions(progressCallback);
-            commit('setExclusions', exclusions);
+        async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
+            const community = rootState.activeGame.internalFolderName;
+            await PackageDb.pruneRemovedMods(community, cutoff);
+        },
+
+        async resetActiveGameCache({commit, rootState, state}) {
+            if (state.isThunderstoreModListUpdateInProgress) {
+                return;
+            }
+
+            commit('startThunderstoreModListUpdate');
+            const community = rootState.activeGame.internalFolderName;
+
+            try {
+                commit('setThunderstoreModListUpdateStatus', 'Resetting mod list cache...');
+                await PackageDb.resetCommunity(community);
+                commit('setModsLastUpdated', undefined);
+            } finally {
+                commit('setActiveGameCacheStatus', undefined);
+                commit('finishThunderstoreModListUpdate');
+            }
+        },
+
+        async updateExclusions({commit}) {
+            // Read exclusion list from a bundled file to have some values available ASAP.
+            const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
+            commit('setExclusions', exclusionList.exclusions);
+
+            const timeout = 20000;
+            const options = {attempts: 5, interval: 1000, throwLastErrorAsIs: true};
+
+            // Check for exclusion list updates from online.
+            try {
+                const axios = getAxiosWithTimeouts(timeout, timeout);
+                const response = await retry(() => axios.get(EXCLUSIONS), options);
+
+                if (typeof response.data === 'string') {
+                    commit('setExclusions', response.data);
+                } else {
+                    throw new Error(`Received invalid exclusion list response from API: ${response.data}`);
+                }
+            } catch (e) {
+                console.error(e);
+            }
         },
 
         async updateMods({commit, dispatch, rootState}) {
@@ -238,24 +393,7 @@ export const TsModsModule = {
             commit('setModsLastUpdated', updated);
         },
 
-        /*** Save a mod list received from the Thunderstore API to IndexedDB */
-        async updatePersistentCache(
-            {dispatch, rootState, state},
-            {chunks, indexHash}: {chunks: PackageListChunks, indexHash: string}
-        ) {
-            if (state.exclusions === undefined) {
-                await dispatch('updateExclusions');
-            }
-
-            const filtered = chunks.map((chunk) => chunk.filter(
-                (pkg) => !state.exclusions!.includes(pkg.full_name)
-            ));
-            const community = rootState.activeGame.internalFolderName;
-            await PackageDb.updateFromApiResponse(community, filtered);
-            await dispatch('updateIndexHash', indexHash);
-        },
-
-        async updateIndexHash({rootState}, indexHash: string) {
+        async cacheIndexHash({rootState}, indexHash: string) {
             const community = rootState.activeGame.internalFolderName;
             await PackageDb.setLatestPackageListIndex(community, indexHash);
         },

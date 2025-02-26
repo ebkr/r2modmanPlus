@@ -1,9 +1,9 @@
 # Setting Up
 ### Prerequisites
-- Node.js (>=18.0.0)
+- Node.js (>=20.0.0)
 - Yarn
 - Quasar CLI (Install using `yarn global add @quasar/cli`)
-- Python2 (EOL for 4 years. Goodluck!)
+- Python 2
 
 #### Linux Build
 - rpm builder
