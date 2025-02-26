@@ -120,17 +120,20 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
                 null
             )
         }
+
         // Look through given directories for ${appManifest}
         let manifestLocation: string | null = null;
         try {
             for (const location of locations) {
-                (await fs.readdir(location))
-                    .forEach((file: string) => {
-                        if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
-                            manifestLocation = location;
-                        }
-                    });
-            }
+                if (await fs.exists(location)) {
+                    (await fs.readdir(location))
+                        .forEach((file: string) => {
+                            if (file.toLowerCase() === `appmanifest_${game.activePlatform.storeIdentifier}.acf`) {
+                                manifestLocation = location;
+                            }
+                        });
+                    }
+                }
         } catch(e) {
             if (e instanceof R2Error) {
                 return e;
