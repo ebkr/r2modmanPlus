@@ -37,13 +37,18 @@ export default class ModListUpdateBanner extends Vue {
                 {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
             </span>
             <span v-else-if="updateError">
-                Error updating the mod list.
+                Error refreshing the mod list.
                 <a @click="openErrorModal">View error details</a>.
                 <br />
-                The manager will keep trying to update the mod list in the background.
+                The manager will keep trying to refresh the mod list in the background.
+            </span>
+            <span v-else-if="$store.getters['download/activeDownloadCount'] > 0">
+                An error occurred when refreshing the mod list from Thunderstore.<br />
+                However, the mod list can't be refreshed while the are mod downloads in progress.<br />
+                Please wait for the downloads to finish before continuing.
             </span>
             <span v-else>
-                An error occurred when updating the mod list from Thunderstore.
+                An error occurred when refreshing the mod list from Thunderstore.
                 Would you like to
                 <a @click="updateModList">try again now</a>?
             </span>
