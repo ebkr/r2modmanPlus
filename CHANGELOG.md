@@ -1,3 +1,17 @@
+### 3.1.56
+#### Games added
+- Subterror
+- MiSide
+- Dale & Dawson
+- I Am Your Beast
+- Bomb Rush Cyberfunk
+  - Added "Other" option
+- Aloft
+  - Correct AppID is used to launch on Steam
+
+#### Notable changes
+- Faster access to the profile selection screen
+
 ### 3.1.55
 #### Games added
 - ATLYSS
