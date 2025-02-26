@@ -1,71 +1,84 @@
 <template>
-    <div>
-        <div class="inherit-background-colour sticky-top sticky-top--search non-selectable">
-            <div class="is-shadowless is-square">
-                <div class="no-padding-left card-header-title">
-                    <div class="input-group input-group--flex margin-right">
-                        <label for="online-search">Search</label>
-                        <DeferredInput
-                            v-model="thunderstoreSearchFilter"
-                            id="online-search"
-                            class="input"
-                            type="text"
-                            placeholder="Search for a mod"
-                            autocomplete="off"
-                        />
-                    </div>
-                    <div class="input-group margin-right">
-                        <label for="thunderstore-sort">Sort</label>
-                        <select v-model="sortingStyleModel"
-                                id="thunderstore-sort"
-                                class="select select--content-spacing margin-right margin-right--half-width"
-                        >
-                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-                        </select>
-                        <select v-model="sortingDirectionModel"
-                                class="select select--content-spacing"
-                                :disabled="sortingStyleModel === 'Default'"
-                        >
-                            <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group input-group--flex">
-                            <label for="thunderstore-category-filter">Additional filters</label>
-                            <button
-                                id="thunderstore-category-filter"
-                                class="button"
-                                @click="$store.commit('openCategoryFilterModal')"
-                            >
-                                Filter categories
-                            </button>
+    <div class="split-pane" :class="[{'split-pane--with-active-second-pane': previewMod !== null}]">
+        <div id="online-view">
+            <div id="controls">
+                <div class="inherit-background-colour non-selectable">
+                    <div class="is-shadowless is-square">
+                        <div class="no-padding-left card-header-title">
+                            <div class="input-group input-group--flex margin-right">
+                                <label for="thunderstore-search-filter">Search</label>
+                                <DeferredInput
+                                    v-model="thunderstoreSearchFilter"
+                                    id="thunderstore-search-filter"
+                                    class="input"
+                                    type="text"
+                                    placeholder="Search"
+                                />
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group input-group--flex">
+                                    <label for="thunderstore-category-filter">&nbsp;</label>
+                                    <button
+                                        id="thunderstore-category-filter"
+                                        class="button"
+                                        @click="$store.commit('openCategoryFilterModal')"
+                                    >
+                                        Sort
+                                    </button>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="input-group">
+                                <div class="input-group input-group--flex">
+                                    <label for="thunderstore-category-filter">&nbsp;</label>
+                                    <button
+                                        id="thunderstore-category-filter"
+                                        class="button"
+                                        @click="$store.commit('openCategoryFilterModal')"
+                                    >
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <ModListUpdateBanner />
+            <div id="view-content">
+                <OnlineModListWithPanel
+                    :local-mod-list="localModList"
+                    :paged-mod-list="pagedThunderstoreModList"
+                    :selected-mod="previewMod"
+                    @selected-mod="openPreviewForMod"
+                />
+                <div class="in-mod-list" v-if="getPaginationSize() > 1">
+                    <p class="notification margin-right">
+                        Use the numbers below to change page
+                    </p>
+                </div>
+                <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
+                    <p class="notification margin-right">
+                        {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                    </p>
+                </div>
+            </div>
+            <div id="pagination">
+                <PaginationButtons
+                    :current-page="pageNumber"
+                    :page-count="getPaginationSize()"
+                    :context-size="3"
+                    :on-click="updatePageNumber"
+                />
+            </div>
         </div>
-        <ModListUpdateBanner />
-        <OnlineModList
-            :local-mod-list="localModList"
-            :paged-mod-list="pagedThunderstoreModList"
-        />
-        <div class="in-mod-list" v-if="getPaginationSize() > 1">
-            <p class="notification margin-right">
-                Use the numbers below to change page
-            </p>
+        <div id="mod-preview">
+            <template v-if="previewMod !== null">
+                <OnlinePreviewPanel :mod="previewMod">
+                    <h1>aaaaaaa</h1>
+                </OnlinePreviewPanel>
+            </template>
         </div>
-        <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
-            <p class="notification margin-right">
-                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
-            </p>
-        </div>
-        <br/>
-        <PaginationButtons
-            :current-page="pageNumber"
-            :page-count="getPaginationSize()"
-            :context-size="3"
-            :on-click="updatePageNumber"
-        />
     </div>
 </template>
 
@@ -116,14 +129,6 @@ export default class OnlineModView extends Vue {
 
     getPaginationSize() {
         return Math.ceil(this.searchableThunderstoreModList.length / this.pageSize);
-    }
-
-    getSortDirections() {
-        return Object.values(SortingDirection);
-    }
-
-    getSortOptions() {
-        return Object.values(SortingStyle);
     }
 
     @Watch("pageNumber")

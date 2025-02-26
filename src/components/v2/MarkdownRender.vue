@@ -40,5 +40,16 @@ function captureClick(e: Event) {
     .markdown-body {
         padding: 1rem;
         overflow-y: auto;
+        background-color: rgba(0, 0, 0, 0);
+    }
+</style>
+
+<style lang="scss">
+    table th {
+        color: inherit;
+    }
+
+    .markdown-body {
+        color: var(--v2-primary-text-color);
     }
 </style>
