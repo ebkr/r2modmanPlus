@@ -52,16 +52,32 @@ export const DownloadModule = {
     },
 
     getters: <GetterTree<State, RootState>>{
-        activeDownloadCount(state) {
-            const active = state.allDownloads.filter(
+        activeDownloadCount(_state, getters) {
+            return getters.activeDownloads.length;
+        },
+        activeDownloads(state) {
+            return state.allDownloads.filter(
                 dl =>
                     !dl.failed &&
                     !(dl.downloadProgress >= 100 && dl.installProgress >= 100)
             );
-            return active.length;
+        },
+        conciseDownloadStatus(_state, getters) {
+            if (getters.activeDownloadCount === 1 && getters.newestActiveDownload) {
+                if (getters.newestActiveDownload.downloadProgress < 100) {
+                    return `Downloading mods (${getters.newestActiveDownload.downloadProgress}%)`;
+                } else {
+                    return `Installing mods (${getters.newestActiveDownload.installProgress}%)`;
+                }
+            } else if (getters.activeDownloadCount > 1) {
+                return `Downloading and installing ${getters.activeDownloadCount} mods...`;
+            }
         },
         currentDownload(state) {
             return state.allDownloads[state.allDownloads.length-1] || null;
+        },
+        newestActiveDownload(_state, getters) {
+            return getters.activeDownloads[getters.activeDownloads.length-1] || null;
         },
         newestFirst(state) {
             return Array.from(state.allDownloads).reverse();
