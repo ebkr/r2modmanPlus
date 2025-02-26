@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           # The talk on the street says this might be a good version for building.
-          node-version: 19.2.0
+          node-version: 20.11.0
           cache: yarn
 
       - name: Install Yarn dependencies
