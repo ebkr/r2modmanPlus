@@ -865,6 +865,12 @@ export default class GameManager {
             "https://thunderstore.io/c/dale-dawson-stationery-supplies/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2920570")], "DaleAndDawson.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Disco Elysium", "DiscoElysium", "Disco Elysium",
+            "Disco Elysium", ["disco.exe"], "disco_Data",
+            "https://thunderstore.io/c/disco-elysium/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "632470")], "DiscoElysium.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["de"]),
     ];
 
     static get activeGame(): Game {
