@@ -1,7 +1,6 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
-import ExportMod from '../../model/exports/ExportMod';
 import ManifestV2 from '../../model/ManifestV2';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
@@ -81,7 +80,7 @@ export const TsModsModule = {
          *  time this happens slows down the LocalModList, cache the
          *  data in a Map.
          */
-        cachedMod: (state) => (mod: ExportMod|ManifestV2): CachedMod => {
+        cachedMod: (state) => (mod: ManifestV2): CachedMod => {
             const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
             if (state.cache.get(cacheKey) === undefined) {
@@ -119,7 +118,7 @@ export const TsModsModule = {
         },
 
         /*** Return ThunderstoreMod representation of a ManifestV2 */
-        tsMod: (_state, getters) => (mod: ExportMod|ManifestV2): ThunderstoreMod | undefined => {
+        tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
             return getters.cachedMod(mod).tsMod;
         },
 

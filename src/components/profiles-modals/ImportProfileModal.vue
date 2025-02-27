@@ -1,11 +1,12 @@
 <script lang="ts">
 import { mixins } from "vue-class-component";
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
@@ -30,6 +31,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private targetProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
+    private profileMods: {known: ThunderstoreCombo[], unknown: string[]} = {known: [], unknown: []};
     private activeStep:
         'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
@@ -56,29 +58,30 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.profileImportCode = '';
         this.profileImportFilePath = null;
         this.profileImportContent = null;
+        this.profileMods = {known: [], unknown: []};
         this.$store.commit('closeImportProfileModal');
     }
 
-    get profileMods(): {known: ThunderstoreMod[], unknown: string[]} {
-        const profileMods = this.profileImportContent ? this.profileImportContent.getMods() : [];
-        const known: ThunderstoreMod[] = [];
-        const unknown: string[] = [];
-
-        for (const mod of profileMods) {
-            const tsMod = this.$store.getters['tsMods/tsMod'](mod);
-            if (tsMod) {
-                known.push(tsMod);
-            } else {
-                unknown.push(mod.getName());
-            }
-        }
-
-        unknown.sort();
-        return {known, unknown};
+    get knownProfileMods(): ThunderstoreMod[] {
+        return this.profileMods.known.map((combo) => combo.getMod());
     }
 
     get unknownProfileModNames(): string {
         return this.profileMods.unknown.join(', ');
+    }
+
+    // Required to trigger a re-render of the modlist in preview step
+    // when the online modlist is refreshed.
+    @Watch('$store.state.tsMods.mods')
+    async updateProfileModsOnOnlineModListRefresh() {
+        if (this.profileImportContent === null) {
+            return;
+        }
+
+        this.profileMods = await ProfileUtils.exportModsToCombos(
+            this.profileImportContent.getMods(),
+            this.$store.state.activeGame
+        );
     }
 
     get isProfileCodeValid(): boolean {
@@ -126,9 +129,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        let read: string = '';
         try {
-            read = await ProfileUtils.readProfileFile(files[0]);
+            const yamlContent = await ProfileUtils.readProfileFile(files[0]);
+            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(yamlContent);
+            this.profileMods = await ProfileUtils.exportModsToCombos(
+                this.profileImportContent.getMods(),
+                this.$store.state.activeGame
+            );
         } catch (e: unknown) {
             const err = R2Error.fromThrownValue(e);
             this.$store.commit('error/handleError', err);
@@ -137,15 +144,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         this.profileImportFilePath = files[0];
-        try {
-            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
-        } catch (e: unknown) {
-            const err = R2Error.fromThrownValue(e);
-            this.$store.commit('error/handleError', err)
-            this.closeModal();
-            return;
-        }
-
         this.activeStep = 'REVIEW_IMPORT';
     }
 
@@ -215,13 +213,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         const progressCallback = (progress: number|string) => typeof progress === "number"
             ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
             : this.importPhaseDescription = progress;
-        const game = this.$store.state.activeGame;
         const settings = this.$store.getters['settings'];
         const ignoreCache = settings.getContext().global.ignoreCache;
         const isUpdate = this.importUpdateSelection === 'UPDATE';
 
         try {
-            const comboList = await ProfileUtils.exportModsToCombos(mods, game);
+            const comboList = this.profileMods.known;
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
             await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
         } catch (e) {
@@ -305,7 +302,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <h2 class="modal-title">Packages to be installed</h2>
         </template>
         <template v-slot:body>
-            <OnlineModList :paged-mod-list="profileMods.known" :read-only="true" />
+            <OnlineModList :paged-mod-list="knownProfileMods" :read-only="true" />
             <div v-if="profileMods.known.length === 0 || profileMods.unknown.length > 0" class="notification is-warning margin-top">
                 <p v-if="profileMods.known.length === 0">
                     None of the packages in the profile were found on Thunderstore:
