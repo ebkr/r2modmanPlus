@@ -347,6 +347,23 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'fa-file-alt',
                 () => this.emitInvoke('ShowDependencyStrings')
             ),
+            new SettingsRow(
+                'Other',
+                'Launch as Flatpak (Linux)',
+                'Launch Steam via flatpak',
+                async () => {
+                    switch (this.settings.getContext().global.linuxUseFlatpak) {
+                        case null:
+                            return 'Automatic';
+                        case true:
+                            return 'Flatpak';
+                        case false:
+                            return 'Native';
+                    }
+                },
+                'fa-exchange-alt',
+                () => this.emitInvoke('ToggleLinuxUseFlatpak')
+            ),
         ];
 
         @Watch('search')
