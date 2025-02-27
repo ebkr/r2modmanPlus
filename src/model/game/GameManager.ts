@@ -871,6 +871,12 @@ export default class GameManager {
             "https://thunderstore.io/c/gang-beasts/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "285900")], "GangBeasts.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["gb"]),
+
+        new Game("R.E.P.O.", "REPO", "REPO",
+            "REPO", ["REPO.exe"], "REPO_Data",
+            "https://thunderstore.io/c/repo/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "repo.jpg",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["repo"]),
     ];
 
     static get activeGame(): Game {

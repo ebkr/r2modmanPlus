@@ -159,6 +159,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Subterror"),
             buildBepInExRules("IAmYourBeast"),
             buildBepInExRules("MiSide"),
+            buildBepInExRules("REPO"),
         ]
     }
 }
