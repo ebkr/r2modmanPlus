@@ -216,6 +216,7 @@ const VARIANTS = {
     IAmYourBeast: MODLOADER_PACKAGES,
     MiSide: MODLOADER_PACKAGES,
     DaleAndDawson: RECURSIVE_MELONLOADER_MAPPING,
+    GangBeasts: RECURSIVE_MELONLOADER_MAPPING,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

@@ -865,6 +865,12 @@ export default class GameManager {
             "https://thunderstore.io/c/dale-dawson-stationery-supplies/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2920570")], "DaleAndDawson.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Gang Beasts", "GangBeasts", "GangBeasts",
+            "Gang Beasts", ["Gang Beasts.exe"], "Gang Beasts_Data",
+            "https://thunderstore.io/c/gang-beasts/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "285900")], "GangBeasts.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["gb"]),
     ];
 
     static get activeGame(): Game {
