@@ -17,19 +17,23 @@ import ProfileInstallerProvider from "../providers/ror2/installing/ProfileInstal
 import * as PackageDb from '../r2mm/manager/PackageDexieStore';
 import ProfileModList from "../r2mm/mods/ProfileModList";
 
-export async function exportModsToCombos(exportMods: ExportMod[], game: Game): Promise<ThunderstoreCombo[]> {
-    const dependencyStrings = exportMods.map((m) => m.getDependencyString());
-    const combos = await PackageDb.getCombosByDependencyStrings(game, dependencyStrings);
+export async function exportModsToCombos(
+    exportMods: ExportMod[],
+    game: Game
+): Promise<{known: ThunderstoreCombo[], unknown: string[]}> {
+    const allDependencyStrings = exportMods.map((m) => m.getDependencyString());
+    const known = await PackageDb.getCombosByDependencyStrings(game, allDependencyStrings);
+    const knownDependencyStrings = known.map((c) => c.getDependencyString());
+    let unknown: string[] = [];
 
-    if (combos.length === 0) {
-        throw new R2Error(
-            'No importable mods found',
-            'None of the mods or versions listed in the shared profile are available on Thunderstore.',
-            'Make sure the shared profile is meant for the currently selected game.'
-        );
+    for (const dependencyString of allDependencyStrings) {
+        if (!knownDependencyStrings.includes(dependencyString)) {
+            unknown.push(dependencyString);
+        }
     }
 
-    return combos;
+    unknown.sort();
+    return {known, unknown};
 }
 
 async function extractConfigsToImportedProfile(
