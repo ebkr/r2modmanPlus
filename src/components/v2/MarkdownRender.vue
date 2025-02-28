@@ -19,18 +19,19 @@ const markdownToRender = computed(() => {
 function captureClick(e: Event) {
     if (e.target && e.target instanceof HTMLElement) {
         if (e.target.tagName.toLowerCase() === "a") {
-            if (e.target.getAttribute("href").startsWith("#")) {
-                return e;
-            } else {
+            const href = e.target.getAttribute("href") || "";
+            if (!href.startsWith("#")) {
+                e.preventDefault();
                 LinkProvider.instance.openLink(e.target.getAttribute("href")!);
             }
         }
     }
+    return e;
 }
 </script>
 
 <template>
-    <p class="markdown-body" v-html="markdownToRender" @click.prevent="captureClick"></p>
+    <p class="markdown-body" v-html="markdownToRender" @click="captureClick"></p>
 </template>
 
 <style lang="scss" scoped>
