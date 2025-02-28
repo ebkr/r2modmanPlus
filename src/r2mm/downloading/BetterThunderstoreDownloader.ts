@@ -137,7 +137,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         return allModsToDownload;
     }
 
-    // If combo is a modpack, use the modpack's dependency versions. If it isn't, get the latest versions.
+    /**
+     * When installing a modpack ensure compatibility by installing the exact versions of dependencies,
+     * even if it means upgrading/downgrading already installed mods.
+     * When installing a regular mod, install the latest versions of dependencies,
+     * but don't change already installed mods.
+     */
     private async getDependenciesWithCorrectVersions(combo: ThunderstoreCombo, modList: ManifestV2[]) {
         const dependencies: ThunderstoreCombo[] = [];
         const isModpack = combo.getMod().getCategories().some(value => value === "Modpacks");
@@ -145,10 +150,11 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         await this.buildDependencySet(combo.getVersion(), dependencies, versionMode);
         this.sortDependencyOrder(dependencies);
-        // #270: Remove already-installed dependencies to prevent updating.
-        return dependencies.filter((dep) => {
-            return !(modList.some(installed => installed.getName() === dep.getMod().getFullName()));
-        });
+
+        return isModpack ? dependencies :
+            dependencies.filter((dep) => {
+                return !(modList.some(installed => installed.getName() === dep.getMod().getFullName()));
+            });
     }
 
     public async downloadImportedMods(
