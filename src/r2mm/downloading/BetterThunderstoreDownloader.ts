@@ -145,10 +145,12 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         await this.buildDependencySet(combo.getVersion(), dependencies, versionMode);
         this.sortDependencyOrder(dependencies);
-        // #270: Remove already-installed dependencies to prevent updating.
-        return dependencies.filter((dep) => {
-            return !(modList.some(installed => installed.getName() === dep.getMod().getFullName()));
-        });
+
+        return !isModpack ? dependencies :
+            // #270: Remove already-installed dependencies to prevent updating.
+            dependencies.filter((dep) => {
+                return !(modList.some(installed => installed.getName() === dep.getMod().getFullName()));
+            });
     }
 
     public async downloadImportedMods(
