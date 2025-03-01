@@ -1,19 +1,32 @@
 <script lang="ts" setup>
 import ThunderstoreMod from 'src/model/ThunderstoreMod';
-import { ref, watch } from 'vue';
-import GameManager from 'src/model/game/GameManager';
+import { computed, ref, watch } from 'vue';
 import MarkdownRender from 'components/v2/MarkdownRender.vue';
 import { valueToReadableDate } from 'src/utils/DateUtils';
+import OnlineModList from 'components/views/OnlineModList.vue';
+import useStore from '../../store';
+import ThunderstoreDownloaderProvider, {
+    DependencySetBuilderMode
+} from 'src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
+import { getVersionAsThunderstoreVersion } from 'src/r2mm/manager/PackageDexieStore';
+
+const store = useStore();
 
 interface ModPreviewPanelProps {
     mod: ThunderstoreMod;
 }
 
-const activeGame = GameManager.activeGame;
-
 const props = defineProps<ModPreviewPanelProps>();
-let readme = ref<string | null>(null);
-let changelog = ref<string | null>(null);
+const readme = ref<string | null>(null);
+const changelog = ref<string | null>(null);
+const activeTab = ref<"README" | "CHANGELOG" | "Dependencies">("README");
+const loadingPanel = ref<boolean>(true);
+const dependencies = ref<ThunderstoreMod[]>([]);
+
+function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
+    activeTab.value = tab;
+}
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
     return fetch(`https://thunderstore.dev/api/experimental/package/${mod.getOwner()}/${mod.getName()}/${mod.getLatestVersion()}/${type}/`)
@@ -22,18 +35,45 @@ function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promi
 }
 
 function fetchReadme() {
-    fetchDataFor(props.mod, "readme").then(res => readme.value = res);
+    return fetchDataFor(props.mod, "readme").then(res => readme.value = res);
 }
 
 function fetchChangelog() {
-    // TODO - Make this work
-    fetchDataFor(props.mod, "changelog").then(res => changelog.value = res);
-    console.log("Changelog:", changelog.value)
+    return fetchDataFor(props.mod, "changelog").then(res => changelog.value = res);
 }
 
-fetchReadme();
-fetchChangelog();
-watch(() => props.mod, fetchReadme);
+function fetchAll(modToLoad: ThunderstoreMod) {
+    loadingPanel.value = true;
+    buildDependencies(modToLoad)
+        .then(value => dependencies.value = value)
+        .then(fetchReadme)
+        .then(fetchChangelog)
+        .then(() => {
+            if (props.mod === modToLoad) {
+                loadingPanel.value = false;
+            }
+        });
+}
+
+async function buildDependencies(mod: ThunderstoreMod) {
+    const builder: ThunderstoreCombo[] = [];
+    const tsVersion = await getVersionAsThunderstoreVersion(
+        store.state.activeGame.internalFolderName,
+        mod.getFullName(),
+        mod.getLatestVersion()
+    )
+    await ThunderstoreDownloaderProvider.instance.buildDependencySet(
+        tsVersion,
+        builder,
+        DependencySetBuilderMode.USE_LATEST_VERSION
+    );
+    return builder.map(value => value.getMod());
+}
+
+fetchAll(props.mod);
+watch(() => props.mod, (newValue) => {
+    fetchAll(newValue);
+});
 
 function getReadableDate(date: string): string {
     return valueToReadableDate(new Date(date));
@@ -42,6 +82,14 @@ function getReadableDate(date: string): string {
 function getReadableCategories(mod: ThunderstoreMod) {
     return mod.getCategories().join(", ");
 }
+
+const markdownToRender = computed(() => {
+    switch (activeTab.value) {
+        case "README": return readme.value || "No README content found";
+        case 'CHANGELOG': return changelog.value || `No CHANGELOG has been uploaded for ${props.mod.getFullName()}`;
+        default: return null;
+    }
+});
 
 </script>
 
@@ -63,21 +111,26 @@ function getReadableCategories(mod: ThunderstoreMod) {
             </div>
             <div class="tabs margin-top">
                 <ul>
-                    <li class="is-active"><a>README</a></li>
-                    <li><a>CHANGELOG</a></li>
-                    <li><a>Dependencies</a></li>
+                    <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
+                    <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
+                    <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies</a></li>
                 </ul>
             </div>
         </div>
         <div class="c-preview-panel__content">
-            <template v-if="readme == null">
-                <p>Loading README</p>
+            <template v-if="loadingPanel">
+                <p>Getting content</p>
             </template>
-            <template v-else-if="readme.trim().length === 0">
-                <MarkdownRender markdown="No README content" />
+            <template v-else-if="activeTab === 'Dependencies'">
+                <template v-if="dependencies.length > 0">
+                    <OnlineModList :paged-mod-list="dependencies" :read-only="true" />
+                </template>
+                <template v-else>
+                    <p>No dependencies</p>
+                </template>
             </template>
             <template v-else>
-                <MarkdownRender :markdown="readme" />
+                <MarkdownRender :markdown="markdownToRender" />
             </template>
         </div>
     </div>
@@ -85,23 +138,24 @@ function getReadableCategories(mod: ThunderstoreMod) {
 
 <style lang="scss" scoped>
 .c-preview-panel {
-    width: 100%;
     height: calc(100vh - 2.75rem);
     display: flex;
     flex-flow: column;
     margin: 1rem;
+    width: 100%;
 
     &__container {
-        margin: 1rem;
-        padding: 1rem;
         flex: 0;
     }
 
     &__content {
         flex: 1;
+        padding: 1rem;
         display: block;
         height: max-content;
         overflow-y: auto;
+        overflow-x: hidden;
+        min-width: 500px;
     }
 }
 </style>
