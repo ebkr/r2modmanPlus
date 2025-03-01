@@ -52,5 +52,10 @@ function captureClick(e: Event) {
 
     .markdown-body {
         color: var(--v2-primary-text-color);
+        width: 500px;
+        overflow-x: auto;
+        overflow-y: auto;
+        height: max(200px, 100%);
+        overscroll-behavior: contain;
     }
 </style>

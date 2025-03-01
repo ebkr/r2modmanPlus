@@ -45,6 +45,7 @@ function createWindow() {
             nodeIntegrationInWorker: true,
             webSecurity: false,
             contextIsolation: false,
+            disableBlinkFeatures: "Auxclick"
         },
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD

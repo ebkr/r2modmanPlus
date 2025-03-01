@@ -127,4 +127,8 @@ export default class NavigationMenu extends Vue {
     padding: 0;
 }
 
+.tagged-link__content {
+    padding-right: 0.75rem;
+}
+
 </style>
