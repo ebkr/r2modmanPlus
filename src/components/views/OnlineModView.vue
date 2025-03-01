@@ -259,6 +259,7 @@ export default class OnlineModView extends Vue {
     flex-direction: column;
     max-height: 100vh;
     overflow: hidden;
+    padding-left: 0.75rem;
 
     #controls {
         flex: 0;
@@ -270,7 +271,6 @@ export default class OnlineModView extends Vue {
 
     #view-content {
         flex: 1;
-        overflow: hidden;
         overflow-y: scroll;
         padding-right: 1rem;
     }
@@ -287,6 +287,7 @@ export default class OnlineModView extends Vue {
     &--with-active-second-pane {
         #mod-preview {
             display: flex;
+            flex: 0;
         }
     }
 }
