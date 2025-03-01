@@ -1,6 +1,8 @@
 <template>
     <div>
-        <router-view v-if="visible"/>
+        <div class="router-view">
+            <router-view v-if="visible"/>
+        </div>
         <ErrorModal />
     </div>
 </template>
@@ -48,6 +50,14 @@ import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
 import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
 import baseStore from './store';
+
+document.addEventListener('auxclick', e => {
+    const target = e.target! as any;
+    if (target.localName == 'a') {
+        LinkProvider.instance.openLink(target.getAttribute("href"))
+    }
+    e.preventDefault();
+}, false)
 
 @Component({
     components: {
@@ -133,3 +143,10 @@ export default class App extends mixins(UtilityMixin) {
 
 }
 </script>
+
+<style lang="scss">
+html {
+    overflow: hidden;
+    overflow-y: auto;
+}
+</style>

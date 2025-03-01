@@ -127,8 +127,9 @@
         <ProfileCodeExportModal />
         <DownloadModModal />
 
-        <router-view name="subview"
-                     v-on:setting-invoked="handleSettingsCallbacks($event)" />
+        <div class="router-view">
+            <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
+        </div>
     </div>
 </template>
 
