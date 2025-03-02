@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Vuex, { ActionContext } from 'vuex';
+import Vuex, { ActionContext, Store } from 'vuex';
 
 import ErrorModule from './modules/ErrorModule';
 import { DownloadModule } from './modules/DownloadModule';
@@ -143,5 +143,11 @@ export const store = {
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
+let singletonStore!: Store<State>;
 
-export default (/* { ssrContext } */) => new Vuex.Store<State>(store);
+export default (/* { ssrContext } */) => {
+    if (!singletonStore) {
+        singletonStore = new Store<State>(store);
+    }
+    return singletonStore;
+};
