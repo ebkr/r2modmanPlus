@@ -39,7 +39,7 @@ function captureClick(e: Event) {
     @import "~github-markdown-css/github-markdown.css";
 
     .markdown-body {
-        padding: 1rem;
+        padding-right: 1rem;
         overflow-y: auto;
         background-color: rgba(0, 0, 0, 0);
     }
@@ -52,8 +52,7 @@ function captureClick(e: Event) {
 
     .markdown-body {
         color: var(--v2-primary-text-color);
-        width: 500px;
-        overflow-x: auto;
+        margin: 0 0px 0 auto;
         overflow-y: auto;
         height: max(200px, 100%);
         overscroll-behavior: contain;
