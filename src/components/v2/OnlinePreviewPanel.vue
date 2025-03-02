@@ -85,8 +85,8 @@ function getReadableCategories(mod: ThunderstoreMod) {
 
 const markdownToRender = computed(() => {
     switch (activeTab.value) {
-        case "README": return readme.value || "No README content found";
-        case 'CHANGELOG': return changelog.value || `No CHANGELOG has been uploaded for ${props.mod.getFullName()}`;
+        case "README": return readme.value;
+        case 'CHANGELOG': return changelog.value;
         default: return null;
     }
 });
@@ -113,7 +113,7 @@ const markdownToRender = computed(() => {
                 <ul>
                     <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
                     <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
-                    <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies</a></li>
+                    <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies ({{ dependencies.length }})</a></li>
                 </ul>
             </div>
         </div>
@@ -130,7 +130,19 @@ const markdownToRender = computed(() => {
                 </template>
             </template>
             <template v-else>
-                <MarkdownRender :markdown="markdownToRender" />
+                <template v-if="markdownToRender !== null">
+                    <MarkdownRender :markdown="markdownToRender" />
+                </template>
+                <template v-else>
+                    <div class="notification">
+                        <div class="container">
+                            <p>
+                                <template v-if="activeTab === 'README'">Unable to fetch README</template>
+                                <template v-else-if="activeTab === 'CHANGELOG'">No CHANGELOG available for {{ props.mod.getFullName() }}</template>
+                            </p>
+                        </div>
+                    </div>
+                </template>
             </template>
         </div>
     </div>
@@ -142,7 +154,7 @@ const markdownToRender = computed(() => {
     display: flex;
     flex-flow: column;
     margin: 1rem;
-    width: 100%;
+    width: 500px;
 
     &__container {
         flex: 0;
@@ -155,7 +167,6 @@ const markdownToRender = computed(() => {
         height: max-content;
         overflow-y: auto;
         overflow-x: hidden;
-        min-width: 500px;
     }
 }
 </style>
