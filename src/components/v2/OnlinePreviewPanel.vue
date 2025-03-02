@@ -10,6 +10,7 @@ import ThunderstoreDownloaderProvider, {
 } from 'src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
 import { getVersionAsThunderstoreVersion } from 'src/r2mm/manager/PackageDexieStore';
+import Link from 'components/Link.vue';
 
 const store = useStore();
 
@@ -51,6 +52,7 @@ function fetchChangelog(modToLoad: ThunderstoreMod) {
 }
 
 function fetchAll(modToLoad: ThunderstoreMod) {
+    setActiveTab("README");
     loadingPanel.value = true;
     buildDependencies(modToLoad)
         .then(value => dependencies.value = value)
@@ -88,7 +90,7 @@ function getReadableDate(date: string): string {
 }
 
 function getReadableCategories(mod: ThunderstoreMod) {
-    return mod.getCategories().join(", ");
+    return mod.getCategories().join(", ") || "None";
 }
 
 const markdownToRender = computed(() => {
@@ -105,9 +107,15 @@ const markdownToRender = computed(() => {
     <div class="c-preview-panel">
         <div class="c-preview-panel__header">
             <h1 class="title">{{ mod.getName() }}</h1>
-            <h2 class="subtitle">By {{ mod.getOwner() }}</h2>
+            <h2 class="subtitle">
+                By {{ mod.getOwner() }}
+            </h2>
+            <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
             <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
             <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
+            <p class="card-timestamp">
+                <Link target="_blank" tag="a" :url="props.mod.getPackageUrl()">View on Thunderstore</Link>
+            </p>
             <div class="margin-top">
                 <p class="description">{{ mod.getDescription() }}</p>
             </div>
