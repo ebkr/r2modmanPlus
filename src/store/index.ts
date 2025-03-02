@@ -146,7 +146,6 @@ export const store = {
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
-
 let singletonStore!: Store<State>;
 
 export default (/* { ssrContext } */) => {

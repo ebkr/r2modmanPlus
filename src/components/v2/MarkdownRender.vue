@@ -16,15 +16,21 @@ const markdownToRender = computed(() => {
     return md.render(props.markdown);
 })
 
+function capturePropagationParentLink(target: HTMLElement, originalEvent: Event) {
+    if (target.tagName.toLowerCase() === "a") {
+        const href = target.getAttribute("href") || "";
+        if (!href.startsWith("#")) {
+            originalEvent.preventDefault();
+            LinkProvider.instance.openLink(target.getAttribute("href")!);
+        }
+    } else if (target.parentElement) {
+        capturePropagationParentLink(target.parentElement, originalEvent);
+    }
+}
+
 function captureClick(e: Event) {
     if (e.target && e.target instanceof HTMLElement) {
-        if (e.target.tagName.toLowerCase() === "a") {
-            const href = e.target.getAttribute("href") || "";
-            if (!href.startsWith("#")) {
-                e.preventDefault();
-                LinkProvider.instance.openLink(e.target.getAttribute("href")!);
-            }
-        }
+        capturePropagationParentLink(e.target, e);
     }
     return e;
 }

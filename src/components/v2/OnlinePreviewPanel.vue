@@ -34,20 +34,28 @@ function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promi
         .then(res => res.markdown);
 }
 
-function fetchReadme() {
-    return fetchDataFor(props.mod, "readme").then(res => readme.value = res);
+function fetchReadme(modToLoad: ThunderstoreMod) {
+    return fetchDataFor(props.mod, "readme").then(res => {
+        if (props.mod === modToLoad) {
+            readme.value = res;
+        }
+    });
 }
 
-function fetchChangelog() {
-    return fetchDataFor(props.mod, "changelog").then(res => changelog.value = res);
+function fetchChangelog(modToLoad: ThunderstoreMod) {
+    return fetchDataFor(props.mod, "changelog").then(res => {
+        if (props.mod === modToLoad) {
+            changelog.value = res;
+        }
+    });
 }
 
 function fetchAll(modToLoad: ThunderstoreMod) {
     loadingPanel.value = true;
     buildDependencies(modToLoad)
         .then(value => dependencies.value = value)
-        .then(fetchReadme)
-        .then(fetchChangelog)
+        .then(() => fetchReadme(modToLoad))
+        .then(() => fetchChangelog(modToLoad))
         .then(() => {
             if (props.mod === modToLoad) {
                 loadingPanel.value = false;
@@ -119,7 +127,11 @@ const markdownToRender = computed(() => {
         </div>
         <div class="c-preview-panel__content">
             <template v-if="loadingPanel">
-                <p>Getting content</p>
+                <div class="notification">
+                    <div class="container">
+                        <p>Fetching {{ activeTab }} for {{ props.mod.getFullName() }}</p>
+                    </div>
+                </div>
             </template>
             <template v-else-if="activeTab === 'Dependencies'">
                 <template v-if="dependencies.length > 0">
