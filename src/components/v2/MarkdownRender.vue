@@ -61,6 +61,5 @@ function captureClick(e: Event) {
         margin: 0 0px 0 auto;
         overflow-y: auto;
         height: max(200px, 100%);
-        overscroll-behavior: contain;
     }
 </style>
