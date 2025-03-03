@@ -877,6 +877,12 @@ export default class GameManager {
             "https://thunderstore.io/c/repo/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "repo.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["repo"]),
+
+        new Game("Odd Remedy", "OddRemedy", "OddRemedy",
+            "OddRemedy", ["OddRemedy.exe"], "OddRemedy_Data",
+            "https://thunderstore.io/c/odd-remedy/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1745680")], "OddRemedy.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["or"]),
     ];
 
     static get activeGame(): Game {
