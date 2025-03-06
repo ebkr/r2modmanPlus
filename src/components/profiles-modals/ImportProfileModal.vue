@@ -15,12 +15,13 @@ import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
+import Progress from "../Progress.vue";
 import OnlineModList from "../views/OnlineModList.vue";
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 @Component({
-    components: { OnlineModList, ModalCard}
+    components: {Progress, OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     valueToReadableDate = valueToReadableDate;
@@ -36,6 +37,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
         | 'IMPORT_CODE'
+        | 'REFRESH_MOD_LIST'
         | 'REVIEW_IMPORT'
         | 'IMPORT_UPDATE_SELECTION'
         | 'ADDING_PROFILE'
@@ -144,10 +146,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         this.profileImportFilePath = files[0];
+
         if (this.profileMods.known.length === 0 || this.profileMods.unknown.length > 0) {
-            console.log("Possibly outdated local mod list detected, refreshing...");
+            this.activeStep = 'REFRESH_MOD_LIST';
             await this.$store.dispatch('tsMods/syncPackageList');
-            console.log("Mod list refresh completed");
         }
 
         this.activeStep = 'REVIEW_IMPORT';
@@ -303,6 +305,22 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
+    <ModalCard v-else-if="activeStep === 'REFRESH_MOD_LIST'" key="REFRESH_MOD_LIST" :is-active="isOpen" :can-close="false">
+        <template v-slot:header>
+            <h2 class="modal-title">Refreshing mod list</h2>
+        </template>
+        <template v-slot:footer>
+            <div>
+                <p v-if="profileMods.known.length === 0">
+                    At least some of the packages were not found. We're trying to fix this by refreshing the online mod list:
+                </p>
+                <p>
+                    {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
+                </p>
+            </div>
+        </template>
+    </ModalCard>
+
     <ModalCard v-else-if="activeStep === 'REVIEW_IMPORT'" key="REVIEW_IMPORT" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Packages to be installed</h2>
@@ -324,38 +342,6 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 </p>
                 <p v-else class="margin-top">
                     Ensure the profile is intended for the currently selected game.
-                </p>
-
-                <p class="margin-top">
-                    Refreshing the mod list from Thunderstore might solve this issue.
-
-                    <div v-if="$store.getters['download/activeDownloadCount'] > 0">
-                        <span>
-                            However, the mod list can't be refreshed while the are mod downloads in progress.
-                            Please wait for the downloads to finish before continuing.
-                        </span>
-                    </div>
-
-                    <div v-else>
-                        <span v-if="$store.state.tsMods.modsLastUpdated">
-                            The mod list was last refreshed on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
-                        </span>
-
-                        <br />
-
-                        <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
-                            {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
-                        </span>
-                        <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
-                            Error refreshing the mod list:
-                            {{ $store.state.tsMods.thunderstoreModListUpdateError.message }}.
-                            <a @click="$store.dispatch('tsMods/syncPackageList')">Retry</a>?
-                        </span>
-                        <span v-else>
-                            Would you like to
-                            <a @click="$store.dispatch('tsMods/syncPackageList')">refresh now</a>?
-                        </span>
-                    </div>
                 </p>
             </div>
         </template>
