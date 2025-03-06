@@ -144,6 +144,12 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         this.profileImportFilePath = files[0];
+        if (this.profileMods.known.length === 0 || this.profileMods.unknown.length > 0) {
+            console.log("Possibly outdated local mod list detected, refreshing...");
+            await this.$store.dispatch('tsMods/syncPackageList');
+            console.log("Mod list refresh completed");
+        }
+
         this.activeStep = 'REVIEW_IMPORT';
     }
 
