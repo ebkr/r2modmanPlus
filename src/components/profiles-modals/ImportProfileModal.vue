@@ -147,9 +147,18 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
         this.profileImportFilePath = files[0];
 
-        if (this.profileMods.known.length === 0 || this.profileMods.unknown.length > 0) {
-            this.activeStep = 'REFRESH_MOD_LIST';
-            await this.$store.dispatch('tsMods/syncPackageList');
+        if (this.profileMods.unknown.length > 0) {
+            // Sometimes the reason some packages are unknown is that
+            // the mod list is out of date, so let's try refreshing it
+            try {
+                this.activeStep = 'REFRESH_MOD_LIST';
+                await this.$store.dispatch('tsMods/syncPackageList');
+            } catch (e: unknown) {
+                const err = R2Error.fromThrownValue(e);
+                this.$store.commit('error/handleError', err);
+                this.closeModal();
+                return;
+            }
         }
 
         this.activeStep = 'REVIEW_IMPORT';
@@ -311,10 +320,8 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
         <template v-slot:footer>
             <div>
-                <p v-if="profileMods.known.length === 0">
-                    At least some of the packages were not found. We're trying to fix this by refreshing the online mod list:
-                </p>
                 <p>
+                    Some of the packages in the profile are not recognized by the mod manager. Refreshing the online mod list might fix the problem.
                     {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
             </div>
@@ -326,30 +333,27 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             <h2 class="modal-title">Packages to be installed</h2>
         </template>
         <template v-slot:body>
-            <OnlineModList :paged-mod-list="knownProfileMods" :read-only="true" />
-            <div v-if="profileMods.known.length === 0 || profileMods.unknown.length > 0" class="notification is-warning margin-top">
-                <p v-if="profileMods.known.length === 0">
-                    None of the packages in the profile were found on Thunderstore:
-                </p>
-                <p v-else>
-                    Some of the packages in the profile were not found on Thunderstore:
-                </p>
-
+            <div v-if="knownProfileMods.length === 0 || profileMods.unknown.length > 0" class="notification is-warning">
+                <p>These packages in the profile were not found on Thunderstore and will not be installed:</p>
                 <p class="margin-top">{{ unknownProfileModNames }}</p>
 
-                <p v-if="profileMods.known.length > 0" class="margin-top">
-                    These packages will not be installed.
-                </p>
-                <p v-else class="margin-top">
+                <p v-if="knownProfileMods.length === 0" class="margin-top">
                     Ensure the profile is intended for the currently selected game.
                 </p>
             </div>
+
+            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">These packages will be installed:</p>
+            <OnlineModList
+                v-if="knownProfileMods.length > 0"
+                :paged-mod-list="knownProfileMods"
+                :read-only="true"
+            />
         </template>
         <template v-slot:footer>
             <button
                 id="modal-review-confirmed"
                 class="button is-info"
-                :disabled="profileMods.known.length === 0"
+                :disabled="knownProfileMods.length === 0"
                 @click="onProfileReviewConfirmed"
             >
                 Import
