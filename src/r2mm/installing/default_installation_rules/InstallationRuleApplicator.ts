@@ -160,6 +160,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("IAmYourBeast"),
             buildBepInExRules("MiSide"),
             buildBepInExRules("REPO"),
+            buildBepInExRules("Zort"),
         ]
     }
 }
