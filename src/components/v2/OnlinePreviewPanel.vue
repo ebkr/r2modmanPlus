@@ -111,6 +111,7 @@ const markdownToRender = computed(() => {
                 By {{ mod.getOwner() }}
             </h2>
             <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
+            <p class='card-timestamp'><strong>Ratings:</strong> {{mod.getRating()}}</p>
             <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
             <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
             <p class="card-timestamp">
