@@ -49,6 +49,11 @@ export default class SplashMixin extends Vue {
         }
 
         await this.triggerStoreModListUpdate();
+
+        if (hasPriorCache) {
+            this.$store.dispatch('tsMods/syncPackageList');
+        }
+
         await this.moveToNextScreen();
     }
 
