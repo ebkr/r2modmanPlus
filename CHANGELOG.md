@@ -1,3 +1,12 @@
+### 3.1.57
+#### Games added
+- R.E.P.O
+- Gang Beasts
+
+#### Fixes
+- Cached Thunderstore mod list refresh occurs immediately in the background again.
+- Prevented certain mods from not being included in profile imports if the cache is not up-to-date.
+
 ### 3.1.56
 #### Games added
 - Subterror
