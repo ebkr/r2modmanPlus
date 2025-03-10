@@ -895,6 +895,24 @@ export default class GameManager {
             "https://thunderstore.io/c/odd-remedy/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1745680")], "OddRemedy.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["or"]),
+
+        new Game("DUSK", "DUSK", "DUSK",
+            "Dusk", ["Dusk.exe"], "Dusk_Data",
+            "https://thunderstore.io/c/dusk/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "519860")], "DUSK.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("My Dream Setup", "MyDreamSetup", "MyDreamSetup",
+            path.join("My dream setup", "MDS"), ["MDS.exe"], "MDS_Data",
+            "https://thunderstore.io/c/my-dream-setup/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2200780")], "MyDreamSetup.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["MDS"]),
+
+        new Game("Monster Train 2", "MonsterTrain2", "MonsterTrain2",
+            "Monster Train 2 Demo", ["MonsterTrain2-Demo.exe"], "MonsterTrain2-Demo_Data",
+            "https://thunderstore.io/c/monster-train-2/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3296150")], "MonsterTrain2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mt2"]),
     ];
 
     static get activeGame(): Game {
