@@ -875,13 +875,13 @@ export default class GameManager {
         new Game("R.E.P.O.", "REPO", "REPO",
             "REPO", ["REPO.exe"], "REPO_Data",
             "https://thunderstore.io/c/repo/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "repo.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "repo.webp",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["repo"]),
 
         new Game("Zort", "Zort", "Zort",
             "Zort", ["Zort.exe"], "Zort_Data",
             "https://thunderstore.io/c/zort/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3121110")], "zort.jpg",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3121110")], "zort.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
