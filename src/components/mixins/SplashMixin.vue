@@ -51,6 +51,7 @@ export default class SplashMixin extends Vue {
         await this.triggerStoreModListUpdate();
 
         if (hasPriorCache) {
+            // We want this to trigger in the background to ensure that the user gets an up-to-date modlist as soon as possible.
             this.$store.dispatch('tsMods/syncPackageList');
         }
 
