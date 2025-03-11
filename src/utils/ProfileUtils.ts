@@ -68,6 +68,7 @@ async function extractConfigsToImportedProfile(
 export async function installModsToProfile(
     comboList: ThunderstoreCombo[],
     profile: ImmutableProfile,
+    reloadModList: () => void,
     disabledModsOverride?: string[],
     progressCallback?: (status: string, modName?: string, progress?: number) => void
 ): Promise<ManifestV2[]> {
@@ -92,6 +93,9 @@ export async function installModsToProfile(
 
             // Uninstall possible different version of the mod before installing the target version.
             throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
+            throwForR2Error(await ProfileModList.removeMod(manifestMod, profile));
+            reloadModList();
+
             throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
 
             if (disabledMods.includes(manifestMod.getName())) {
@@ -181,6 +185,7 @@ export async function populateImportedProfile(
     exportModList: ExportMod[],
     profileName: string,
     isUpdate: boolean,
+    reloadModList: () => void,
     zipPath: string,
     progressCallback: (status: string) => void
 ) {
@@ -193,7 +198,7 @@ export async function populateImportedProfile(
 
     try {
         const disabledMods = exportModList.filter((m) => !m.isEnabled()).map((m) => m.getName());
-        await installModsToProfile(comboList, profile, disabledMods, progressCallback);
+        await installModsToProfile(comboList, profile, reloadModList, disabledMods, progressCallback);
         await extractConfigsToImportedProfile(zipPath, profile.getProfileName(), progressCallback);
     } catch (e) {
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());

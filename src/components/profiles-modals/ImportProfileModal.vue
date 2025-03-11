@@ -220,7 +220,9 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         try {
             const comboList = this.profileMods.known;
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
-            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+
+            const reloadModList = () => this.$store.dispatch('profile/tryLoadModListFromDisk');
+            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, reloadModList, zipPath, progressCallback);
         } catch (e) {
             await this.$store.dispatch('profiles/ensureProfileExists');
             this.closeModal();

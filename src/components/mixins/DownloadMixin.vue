@@ -85,7 +85,8 @@ export default class DownloadMixin extends Vue {
         assignId: number
     ): Promise<void> {
         await ProfileModList.requestLock(async () => {
-            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined,(status, modName, installProgress) => {
+            const reloadModList = () => this.$store.dispatch('profile/tryLoadModListFromDisk');
+            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, reloadModList, undefined,(status, modName, installProgress) => {
                 this.$store.commit('download/updateDownload', {assignId, modName, installProgress});
             });
             await this.$store.dispatch('profile/updateModList', modList);
