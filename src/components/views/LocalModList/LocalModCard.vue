@@ -2,6 +2,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { ExpandableCard, Link } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
+import DonateIconButton from '../../buttons/DonateIconButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
 import ThunderstoreMod from '../../../model/ThunderstoreMod';
@@ -14,6 +15,7 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 @Component({
     components: {
         DonateButton,
+        DonateIconButton,
         ExpandableCard,
         Link,
     }
@@ -238,13 +240,9 @@ function dependencyStringToModName(x: string) {
             <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
         </template>
 
+        <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
-            <!-- Show update and missing dependency icons -->
-            <span v-if="donationLink" class='card-header-icon'>
-                <Link :url="donationLink" target="external" tag="span">
-                    <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
-                </Link>
-            </span>
+            <DonateIconButton :mod="tsMod"/>
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
                 class='card-header-icon'>
