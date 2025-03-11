@@ -33,7 +33,7 @@ interface DexiePackage {
     is_pinned: boolean;
     is_deprecated: boolean;
     has_nsfw_content: boolean;
-    donation_link: string | undefined;
+    donation_link: string | null;
     date_created: Date;
     date_updated: Date;
     versions: DexieVersion[];

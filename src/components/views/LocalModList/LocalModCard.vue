@@ -34,7 +34,7 @@ export default class LocalModCard extends Vue {
     }
 
     get donationLink() {
-        return this.tsMod ? this.tsMod.getDonationLink() : undefined;
+        return this.tsMod ? this.tsMod.getDonationLink() : null;
     }
 
     get isDeprecated() {
@@ -307,7 +307,7 @@ function dependencyStringToModName(x: string) {
             Enable {{disabledDependencies[0].getDisplayName()}}
         </a>
 
-        <DonateButton v-if="donationLink" :mod="tsMod"/>
+        <DonateButton :mod="tsMod"/>
     </expandable-card>
 </template>
 

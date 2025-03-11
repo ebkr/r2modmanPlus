@@ -42,7 +42,7 @@
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </Link>
-            <template v-if="key.getDonationLink() !== undefined && !readOnly">
+            <template v-if="!readOnly">
                 <DonateButton :mod="key"/>
             </template>
             <div class='card-footer-item non-selectable'>

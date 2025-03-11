@@ -11,7 +11,7 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
     private deprecated: boolean = false;
     private categories: string[] = [];
     private hasNsfwContent: boolean = false;
-    private donationLink: string | undefined;
+    private donationLink: string | null = null;
     private latestVersion: string = '';
 
     // Imitate the order where mods are returned from Thunderstore package listing API.
@@ -148,11 +148,11 @@ export default class ThunderstoreMod extends ThunderstoreVersion {
         this.hasNsfwContent = isNsfw;
     }
 
-    public getDonationLink(): string | undefined {
+    public getDonationLink(): string | null {
         return this.donationLink;
     }
 
-    public setDonationLink(url: string | undefined) {
-        this.donationLink = url;
+    public setDonationLink(url: string | null | undefined) {
+        this.donationLink = url || null;
     }
 }
