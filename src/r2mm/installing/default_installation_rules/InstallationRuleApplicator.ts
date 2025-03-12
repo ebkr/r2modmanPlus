@@ -162,6 +162,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("REPO"),
             buildBepInExRules("Zort"),
             buildBepInExRules("DiscoElysium"),
+            buildBepInExRules("OddRemedy"),
         ]
     }
 }

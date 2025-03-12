@@ -889,6 +889,12 @@ export default class GameManager {
             "https://thunderstore.io/c/disco-elysium/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "632470")], "DiscoElysium.webp",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["de"]),
+
+        new Game("Odd Remedy", "OddRemedy", "OddRemedy",
+            "OddRemedy", ["OddRemedy.exe"], "OddRemedy_Data",
+            "https://thunderstore.io/c/odd-remedy/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1745680")], "OddRemedy.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["or"]),
     ];
 
     static get activeGame(): Game {
