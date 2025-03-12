@@ -163,6 +163,9 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Zort"),
             buildBepInExRules("DiscoElysium"),
             buildBepInExRules("OddRemedy"),
+            buildBepInExRules("DUSK"),
+            buildBepInExRules("MyDreamSetup"),
+            buildBepInExRules("MonsterTrain2"),
         ]
     }
 }
