@@ -840,7 +840,7 @@ export default class GameManager {
             "Peaks of Yore", ["Peaks of Yore.exe"], "Peaks of Yore_Data",
             "https://thunderstore.io/c/peaks-of-yore/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2236070")], "PeaksOfYore.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["poy"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["poy"]),
 
         new Game("Subterror", "Subterror", "Subterror",
             "Subterror", ["Subterror.exe"], "Subterror_Data",
