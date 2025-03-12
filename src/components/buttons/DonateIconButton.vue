@@ -23,7 +23,7 @@ export default class DonateIconButton extends Vue {
     mod: ThunderstoreMod | undefined;
 
     @Prop({default: true})
-    extraRenderCondition: boolean = true;
+    extraRenderCondition!: boolean;
 
 }
 
