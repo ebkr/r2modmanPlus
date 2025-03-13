@@ -314,14 +314,14 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Refresh online mod list',
                 'Check for any new mod releases.',
                 async () => {
-                        if (this.$store.getters['download/activeDownloadCount'] > 0) {
-                            return "Updating the mod list is disabled while there are active downloads.";
+                        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Refreshing...";
                         }
                         if (this.$store.state.tsMods.thunderstoreModListUpdateError) {
-                            return `Error updating the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
+                            return `Error refreshing the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
                         }
-                        if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
+                        if (this.$store.getters['download/activeDownloadCount'] > 0) {
+                            return "Refreshing the mod list is disabled while there are active downloads.";
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
