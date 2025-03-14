@@ -63,6 +63,9 @@ export default class AssociatedModsModal extends Vue {
                     </li>
                 </ul>
             </div>
+            <div v-if="dependencies.size === 0 && dependants.size === 0">
+                <p>This mod has no dependencies or dependants.</p>
+            </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="onClose">
