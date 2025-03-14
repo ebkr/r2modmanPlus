@@ -321,26 +321,35 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                 </p>
 
                 <p class="margin-top">
-                    Updating the mod list from Thunderstore might solve this issue.
+                    Refreshing the mod list from Thunderstore might solve this issue.
 
-                    <span v-if="$store.state.tsMods.modsLastUpdated">
-                        The mod list was last updated on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
-                    </span>
+                    <div v-if="$store.getters['download/activeDownloadCount'] > 0">
+                        <span>
+                            However, the mod list can't be refreshed while the are mod downloads in progress.
+                            Please wait for the downloads to finish before continuing.
+                        </span>
+                    </div>
 
-                    <br />
+                    <div v-else>
+                        <span v-if="$store.state.tsMods.modsLastUpdated">
+                            The mod list was last refreshed on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
+                        </span>
 
-                    <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
-                        {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
-                    </span>
-                    <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
-                        Error updating the mod list:
-                        {{ $store.state.tsMods.thunderstoreModListUpdateError.message }}.
-                        <a @click="$store.dispatch('tsMods/syncPackageList')">Retry</a>?
-                    </span>
-                    <span v-else>
-                        Would you like to
-                        <a @click="$store.dispatch('tsMods/syncPackageList')">update now</a>?
-                    </span>
+                        <br />
+
+                        <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
+                            {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
+                        </span>
+                        <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
+                            Error refreshing the mod list:
+                            {{ $store.state.tsMods.thunderstoreModListUpdateError.message }}.
+                            <a @click="$store.dispatch('tsMods/syncPackageList')">Retry</a>?
+                        </span>
+                        <span v-else>
+                            Would you like to
+                            <a @click="$store.dispatch('tsMods/syncPackageList')">refresh now</a>?
+                        </span>
+                    </div>
                 </p>
             </div>
         </template>
