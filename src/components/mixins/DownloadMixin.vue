@@ -6,7 +6,6 @@ import { Store } from "vuex";
 import StatusEnum from "../../model/enums/StatusEnum";
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import Game from "../../model/game/Game";
-import ManifestV2 from "../../model/ManifestV2";
 import Profile, { ImmutableProfile } from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
@@ -85,11 +84,19 @@ export default class DownloadMixin extends Vue {
         assignId: number
     ): Promise<void> {
         await ProfileModList.requestLock(async () => {
-            const modList: ManifestV2[] = await installModsToProfile(downloadedMods, profile, undefined,(status, modName, installProgress) => {
-                this.$store.commit('download/updateDownload', {assignId, modName, installProgress});
-            });
-            await this.$store.dispatch('profile/updateModList', modList);
-            throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
+            try {
+                const modList = await installModsToProfile(downloadedMods, profile, undefined, (status, modName, installProgress) => {
+                    this.$store.commit('download/updateDownload', {assignId, modName, installProgress});
+                });
+                throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, profile));
+            } catch (e) {
+                throw e;
+            } finally {
+                // Update the mod list shown in the UI. installModsToProfile()
+                // attempted to save partial changes to disk even if some of
+                // the (un)installations failed.
+                this.$store.dispatch('profile/tryLoadModListFromDisk');
+            }
         });
     }
 
