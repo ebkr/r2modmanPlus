@@ -40,18 +40,10 @@ function captureClick(e: Event) {
     <p class="markdown-body" v-html="markdownToRender" @click="captureClick"></p>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
     @import '~modern-normalize/modern-normalize.css';
     @import "~github-markdown-css/github-markdown.css";
 
-    .markdown-body {
-        padding-right: 1rem;
-        overflow-y: auto;
-        background-color: rgba(0, 0, 0, 0);
-    }
-</style>
-
-<style lang="scss">
     table th {
         color: inherit;
     }
@@ -61,5 +53,13 @@ function captureClick(e: Event) {
         margin: 0 0px 0 auto;
         overflow-y: auto;
         height: max(200px, 100%);
+
+        padding-right: 1rem;
+        background-color: rgba(0, 0, 0, 0);
+
+        details {
+            border-left: 5px solid var(--v2-primary-text-color);
+            padding-left: 1rem;
+        }
     }
 </style>
