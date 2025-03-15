@@ -101,6 +101,10 @@ const markdownToRender = computed(() => {
     }
 });
 
+function showDownloadModal(mod: ThunderstoreMod) {
+    store.commit("openDownloadModModal", mod);
+}
+
 </script>
 
 <template>
@@ -111,20 +115,17 @@ const markdownToRender = computed(() => {
                 By {{ mod.getOwner() }}
             </h2>
             <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
-            <p class='card-timestamp'><strong>Ratings:</strong> {{mod.getRating()}}</p>
+            <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
             <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
             <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
-            <p class="card-timestamp">
-                <Link target="_blank" tag="a" :url="props.mod.getPackageUrl()">View on Thunderstore</Link>
-            </p>
             <div class="margin-top">
                 <p class="description">{{ mod.getDescription() }}</p>
             </div>
         </div>
         <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
             <div class="pad pad--top">
-                <button class="button is-info margin-right">Download</button>
-                <button class="button">Donate</button>
+                <button class="button is-info margin-right" @click="showDownloadModal(mod)">Download</button>
+                <Link target="_blank" tag="button" class="button" :url="props.mod.getPackageUrl()">View online</Link>
             </div>
             <div class="tabs margin-top">
                 <ul>

@@ -46,7 +46,7 @@
             </div>
             <ModListUpdateBanner />
             <div id="view-content">
-                <OnlineModListWithPanel
+                <OnlineModList
                     :local-mod-list="localModList"
                     :paged-mod-list="pagedThunderstoreModList"
                     :selected-mod="previewMod"
