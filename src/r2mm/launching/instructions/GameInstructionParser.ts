@@ -55,7 +55,7 @@ export default class GameInstructionParser {
             }
         } catch (e) {
             const err: Error = e as Error;
-            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not installed correctly. Further help may be required.");
+            return new R2Error("Failed to find preloader dll", err.message, "BepInEx may not be installed correctly. Further help may be required.");
         }
     }
 
