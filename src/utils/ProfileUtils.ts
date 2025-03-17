@@ -79,6 +79,7 @@ export async function installModsToProfile(
     const installedVersions = profileMods.map((m) => m.getDependencyString());
     const disabledMods = disabledModsOverride || profileMods.filter((m) => !m.isEnabled()).map((m) => m.getName());
     let modName = 'Unknown';
+    let preDiskSaveError: R2Error | undefined;
 
     try {
         for (const [index, comboMod] of comboList.entries()) {
@@ -90,9 +91,20 @@ export async function installModsToProfile(
                 continue;
             }
 
+            const positionInProfile = profileMods.findIndex((m) => m.getName() === manifestMod.getName());
+
             // Uninstall possible different version of the mod before installing the target version.
             throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
+            if (positionInProfile >= 0) {
+                profileMods.splice(positionInProfile, 1);  // Remove from list in case the install throws.
+            }
+
             throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
+            if (positionInProfile >= 0) {
+                profileMods.splice(positionInProfile, 0, manifestMod);  // Inject back to original position.
+            } else {
+                profileMods.push(manifestMod);
+            }
 
             if (disabledMods.includes(manifestMod.getName())) {
                 throwForR2Error(await ProfileInstallerProvider.instance.disableMod(manifestMod, profile));
@@ -102,13 +114,6 @@ export async function installModsToProfile(
             manifestMod.setInstalledAtTime(Number(new Date()));
             ProfileModList.setIconPath(manifestMod, profile);
 
-            const positionInProfile = profileMods.findIndex((m) => m.getName() === manifestMod.getName());
-            if (positionInProfile >= 0) {
-                profileMods[positionInProfile] = manifestMod;
-            } else {
-                profileMods.push(manifestMod);
-            }
-
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
                 progressCallback(`Copying mods to profile: ${progress}%`, modName, progress);
@@ -116,17 +121,21 @@ export async function installModsToProfile(
         }
     } catch (e) {
         const originalError = R2Error.fromThrownValue(e);
-        throw new R2Error(
+        preDiskSaveError = new R2Error(
             `Failed to install mod [${modName}] to profile`,
             'All mods/dependencies might not be installed properly. Please try again.',
             `The original error might provide hints about what went wrong: ${originalError.name}: ${originalError.message}`
         );
     }
 
-    throwForR2Error(await ProfileModList.saveModList(profile, profileMods));
+    // Always try to save to disk to sync any changes made before preDiskSaveError.
+    const diskSaveError = await ProfileModList.saveModList(profile, profileMods);
+    throwForR2Error(preDiskSaveError || diskSaveError);
+
     if (typeof progressCallback === "function") {
         progressCallback("Copying mods to profile: 100%", modName, 100);
     }
+
     return profileMods;
 }
 
