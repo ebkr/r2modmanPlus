@@ -153,7 +153,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             // the mod list is out of date, so let's try refreshing it
             this.activeStep = 'REFRESH_MOD_LIST';
 
-            // Awaiting the sync doesn't work here as the function will immeadiately
+            // Mod downloads in progress will prevent mod list refresh, so wait
+            // them out first.
+            while (this.$store.getters['download/activeDownloadCount'] > 0) {
+                await sleep(100);
+            }
+
+            // Awaiting the sync doesn't work here as the function will immediately
             // return if the process is already in progress, e.g. when the splash
             // screen has started the process in the background. Use while-loop
             // instead to wait in this screen.
@@ -334,7 +340,10 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
                     Some of the packages in the profile are not recognized by the mod manager.
                     Refreshing the online mod list might fix the problem. Please wait...
                 </p>
-                <p class="margin-top">
+                <p v-if="$store.getters['download/activeDownloadCount'] > 0" class="margin-top">
+                    Waiting for mod downloads to finish before refreshing the online mod list...
+                </p>
+                <p v-else class="margin-top"></p>
                     {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
             </div>
