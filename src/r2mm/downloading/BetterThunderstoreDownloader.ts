@@ -123,7 +123,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             modInProgressName = comboInProgress.getMod().getName();
 
             if (!ignoreCache && await this.isVersionAlreadyDownloaded(comboInProgress)) {
-                totalProgressCallback(100, modInProgressName, StatusEnum.SUCCESS, null);
+                singleModProgressCallback(100, StatusEnum.SUCCESS, null);
                 continue;
             }
 
