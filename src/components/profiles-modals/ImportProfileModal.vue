@@ -11,6 +11,7 @@ import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import { sleep } from "../../utils/Common";
 import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
@@ -150,14 +151,23 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         if (this.profileMods.unknown.length > 0) {
             // Sometimes the reason some packages are unknown is that
             // the mod list is out of date, so let's try refreshing it
+            this.activeStep = 'REFRESH_MOD_LIST';
+
+            // Awaiting the sync doesn't work here as the function will immeadiately
+            // return if the process is already in progress, e.g. when the splash
+            // screen has started the process in the background. Use while-loop
+            // instead to wait in this screen.
             try {
-                this.activeStep = 'REFRESH_MOD_LIST';
                 await this.$store.dispatch('tsMods/syncPackageList');
             } catch (e: unknown) {
                 const err = R2Error.fromThrownValue(e);
                 this.$store.commit('error/handleError', err);
                 this.closeModal();
                 return;
+            }
+
+            while (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+                await sleep(100);
             }
         }
 
@@ -316,12 +326,15 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     <ModalCard v-else-if="activeStep === 'REFRESH_MOD_LIST'" key="REFRESH_MOD_LIST" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
-            <h2 class="modal-title">Refreshing mod list</h2>
+            <h2 class="modal-title">Refreshing online mod list</h2>
         </template>
         <template v-slot:footer>
             <div>
                 <p>
-                    Some of the packages in the profile are not recognized by the mod manager. Refreshing the online mod list might fix the problem.
+                    Some of the packages in the profile are not recognized by the mod manager.
+                    Refreshing the online mod list might fix the problem. Please wait...
+                </p>
+                <p class="margin-top">
                     {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
             </div>
