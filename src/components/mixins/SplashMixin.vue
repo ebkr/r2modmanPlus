@@ -40,6 +40,7 @@ export default class SplashMixin extends Vue {
 
     // Get the list of Thunderstore mods from local cache or API.
     async _getThunderstoreMods() {
+        this.$store.commit('tsMods/startThunderstoreModListUpdate');
         const hasPriorCache = await this.doesGameHaveLocalCache();
 
         if (!hasPriorCache) {
@@ -49,6 +50,7 @@ export default class SplashMixin extends Vue {
         }
 
         await this.triggerStoreModListUpdate();
+        this.$store.commit('tsMods/finishThunderstoreModListUpdate');
 
         if (hasPriorCache) {
             // We want this to trigger in the background to ensure that the user gets an up-to-date modlist as soon as possible.
