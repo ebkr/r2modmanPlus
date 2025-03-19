@@ -127,6 +127,10 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public getIgnoreCache(): boolean {
+        return ManagerSettings.CONTEXT.global.ignoreCache;
+    }
+
     public getInstalledSortBy() {
         try {
             return Object.entries(SortNaming).filter(value => value[0] === ManagerSettings.CONTEXT.gameSpecific.installedSortBy)[0][1];

@@ -150,7 +150,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
                         this.profile.asImmutableProfile(),
                         tsCombo,
-                        this.ignoreCache,
+                        this.ignoreCache(),
                         (downloadProgress, modName, status, err) => {
                             DownloadMixin.downloadProgressCallback(
                                 this.$store,

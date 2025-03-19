@@ -49,7 +49,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
         );
 
         this.setIsModProgressModalOpen(true);
-        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
+        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache(), (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);

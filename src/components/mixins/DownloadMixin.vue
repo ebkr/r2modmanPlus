@@ -10,12 +10,15 @@ import Profile, { ImmutableProfile } from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
+import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
 import { installModsToProfile } from "../../utils/ProfileUtils";
 
 
 @Component
 export default class DownloadMixin extends Vue {
+
+    private settings: ManagerSettings | null = null;
 
     get activeGame(): Game {
         return this.$store.state.activeGame;
@@ -33,9 +36,20 @@ export default class DownloadMixin extends Vue {
         return this.$store.state.modals.isDownloadModModalOpen;
     }
 
-    get ignoreCache(): boolean {
-        const settings = this.$store.getters['settings'];
-        return settings.getContext().global.ignoreCache;
+    ignoreCache(): boolean {
+        this.loadSettings();
+        if (!this.settings) {
+            console.error("Settings couldn't be loaded when getting ignoreCache value. Falling back to the value in Vuex store, which might be outdated.");
+            const settings = this.$store.getters['settings'];
+            return settings.getContext().global.ignoreCache;
+        }
+        return this.settings.getIgnoreCache();
+    }
+
+    loadSettings(): void {
+        ManagerSettings.getSingleton(this.activeGame).then(settings => {
+            this.settings = settings;
+        });
     }
 
     get thunderstoreMod(): ThunderstoreMod | null {
