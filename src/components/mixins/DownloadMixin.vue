@@ -33,11 +33,6 @@ export default class DownloadMixin extends Vue {
         return this.$store.state.modals.isDownloadModModalOpen;
     }
 
-    get ignoreCache(): boolean {
-        const settings = this.$store.getters['settings'];
-        return settings.getContext().global.ignoreCache;
-    }
-
     get thunderstoreMod(): ThunderstoreMod | null {
         return this.$store.state.modals.downloadModModalMod;
     }

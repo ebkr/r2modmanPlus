@@ -1,5 +1,6 @@
 import { ActionTree, GetterTree } from "vuex";
 
+import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 import { State as RootState } from "../../store";
 
 interface DownloadProgress {
@@ -21,6 +22,7 @@ interface UpdateObject {
 
 interface State {
     allDownloads: DownloadProgress[],
+    ignoreCache: boolean,
     isModProgressModalOpen: boolean,
 }
 
@@ -32,6 +34,7 @@ export const DownloadModule = {
 
     state: (): State => ({
         allDownloads: [],
+        ignoreCache: false,
         isModProgressModalOpen: false,
     }),
 
@@ -48,6 +51,11 @@ export const DownloadModule = {
             };
             state.allDownloads = [...state.allDownloads, downloadObject];
             return assignId;
+        },
+        async toggleIgnoreCache({commit, rootGetters}) {
+            const settings: ManagerSettings = rootGetters['settings'];
+            settings.setIgnoreCache(!settings.getContext().global.ignoreCache);
+            commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
         },
     },
 
@@ -103,6 +111,10 @@ export const DownloadModule = {
 
             newDownloads[index] = {...newDownloads[index], ...update};
             state.allDownloads = newDownloads;
+        },
+        // Use actions.toggleIngoreCache to store the setting persistently.
+        setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
+            state.ignoreCache = ignoreCache;
         },
         setIsModProgressModalOpen(state: State, isModProgressModalOpen: boolean) {
             state.isModProgressModalOpen = isModProgressModalOpen;
