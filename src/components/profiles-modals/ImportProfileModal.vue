@@ -246,8 +246,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         const progressCallback = (progress: number|string) => typeof progress === "number"
             ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
             : this.importPhaseDescription = progress;
-        const settings = this.$store.getters['settings'];
-        const ignoreCache = settings.getContext().global.ignoreCache;
+        const ignoreCache = this.$store.state.download.ignoreCache;
         const isUpdate = this.importUpdateSelection === 'UPDATE';
 
         try {

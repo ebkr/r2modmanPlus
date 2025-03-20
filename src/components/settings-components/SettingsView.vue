@@ -170,7 +170,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
-                    return this.settings.getContext().global.ignoreCache
+                    return this.$store.state.download.ignoreCache
                         ? 'Current: cache is disabled'
                         : 'Current: cache is enabled (recommended)';
                 },

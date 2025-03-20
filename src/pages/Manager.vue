@@ -484,10 +484,6 @@ import ModalCard from '../components/ModalCard.vue';
 			this.showLaunchParameterModal = false;
 		}
 
-		toggleIgnoreCache() {
-			this.settings.setIgnoreCache(!this.settings.getContext().global.ignoreCache);
-		}
-
 		async copyLogToClipboard() {
             const fs = FsProvider.instance;
             let logOutputPath = "";
@@ -560,7 +556,7 @@ import ModalCard from '../components/ModalCard.vue';
                     this.copyTroubleshootingInfoToClipboard();
                     break;
                 case "ToggleDownloadCache":
-                    this.toggleIgnoreCache();
+                    await this.$store.dispatch('download/toggleIgnoreCache');
                     break;
                 case "ValidateSteamInstallation":
                     this.validateSteamInstallation();
@@ -631,7 +627,6 @@ import ModalCard from '../components/ModalCard.vue';
 
 		async created() {
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			const ignoreCache = this.settings.getContext().global.ignoreCache;
 
             InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
                 const game = this.$store.state.activeGame;
@@ -643,7 +638,7 @@ import ModalCard from '../components/ModalCard.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.profile, combo, ignoreCache, this.$store)
+                DownloadModModal.downloadSpecific(this.profile, combo, this.$store)
                     .then(async value => {
                         const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                         if (!(modList instanceof R2Error)) {

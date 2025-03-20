@@ -78,7 +78,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
         public static async downloadSpecific(
             profile: Profile,
             combo: ThunderstoreCombo,
-            ignoreCache: boolean,
             store: Store<any>
         ): Promise<void> {
             return new Promise(async (resolve, reject) => {
@@ -94,7 +93,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
                             profile.asImmutableProfile(),
                             combo,
-                            ignoreCache,
+                            store.state.download.ignoreCache,
                             (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
                                 try {
                                     DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
@@ -150,7 +149,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
                         this.profile.asImmutableProfile(),
                         tsCombo,
-                        this.ignoreCache,
+                        this.$store.state.download.ignoreCache,
                         (downloadProgress, modName, status, err) => {
                             DownloadMixin.downloadProgressCallback(
                                 this.$store,
