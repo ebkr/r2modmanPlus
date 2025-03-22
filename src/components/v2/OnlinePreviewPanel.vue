@@ -177,6 +177,7 @@ function showDownloadModal(mod: ThunderstoreMod) {
     flex-flow: column;
     margin: 1rem;
     width: 500px;
+    color: var(--v2-primary-text-color);
 
     &__container {
         flex: 0;

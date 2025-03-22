@@ -61,5 +61,28 @@ function captureClick(e: Event) {
             border-left: 5px solid var(--v2-primary-text-color);
             padding-left: 1rem;
         }
+
+        table {
+
+            tr:nth-child(odd) {
+                background-color: var(--v2-table-row-background-color);
+                color: var(--v2-table-row-text-color);
+            }
+
+            tr:nth-child(even) {
+                background-color: var(--v2-table-row-alt-background-color);
+                color: var(--v2-table-row-text-color);
+            }
+
+            th, td {
+                border-color: var(--v2-table-row-border-color);
+            }
+        }
+
+        pre {
+            background-color: var(--v2-table-row-background-color);
+            color: var(--v2-table-row-text-color);
+            border: 1px solid var(--v2-table-row-border-color);
+        }
     }
 </style>
