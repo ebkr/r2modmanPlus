@@ -21,7 +21,7 @@
                                     <button
                                         id="thunderstore-category-filter"
                                         class="button"
-                                        @click="$store.commit('openCategoryFilterModal')"
+                                        @click="$store.commit('openOnlineSortModal')"
                                     >
                                         Sort
                                     </button>
@@ -191,15 +191,15 @@ export default class OnlineModView extends Vue {
         this.changePage();
     }
 
-    @Watch("sortingDirectionModel")
-    @Watch("sortingStyleModel")
+    @Watch("$store.state.modFilters.sortDirection")
+    @Watch("$store.state.modFilters.sortBehaviour")
     @Watch("thunderstoreModList")
     sortThunderstoreModList() {
-        const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
+        const sortDescending = this.$store.state.modFilters.sortDirection == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];
         sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
             let result: boolean;
-            switch (this.sortingStyleModel) {
+            switch (this.$store.state.modFilters.sortBehaviour) {
                 case SortingStyle.LAST_UPDATED:
                     result = sortDescending ? a.getDateUpdated() < b.getDateUpdated() : a.getDateUpdated() > b.getDateUpdated();
                     break;
@@ -269,7 +269,7 @@ export default class OnlineModView extends Vue {
 
     #view-content {
         flex: 1;
-        overflow-y: scroll;
+        overflow-y: auto;
         padding-right: 1rem;
     }
 }
