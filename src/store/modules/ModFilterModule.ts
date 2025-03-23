@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex';
 
 import { State as RootState } from '../index';
-import { SortDirection } from 'src/model/real_enums/sort/SortDirection';
-import SortingStyle from 'src/model/enums/SortingStyle';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import SortingStyle from '../../model/enums/SortingStyle';
 
 interface State {
     allowNsfw: boolean;
