@@ -138,6 +138,7 @@
 		</ModalCard>
 
         <CategoryFilterModal />
+        <SortModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <DownloadModModal />
 
@@ -183,9 +184,11 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
+import SortModal from 'components/modals/SortModal.vue';
 
 @Component({
 		components: {
+            SortModal,
             ModalCard,
             LocalFileImportModal,
             CategoryFilterModal,
