@@ -11,8 +11,11 @@ interface MarkdownRenderProps {
 const props = defineProps<MarkdownRenderProps>();
 
 const markdownToRender = computed(() => {
-    const md = markdownit("commonmark", {}) as any;
-    md.use(markdownItTable)
+    const md = markdownit("commonmark", {
+        linkify: true
+    }) as any;
+    md.use(markdownItTable);
+    md.enable(['linkify', 'strikethrough']);
     return md.render(props.markdown);
 })
 
@@ -83,6 +86,14 @@ function captureClick(e: Event) {
             background-color: var(--v2-table-row-background-color);
             color: var(--v2-table-row-text-color);
             border: 1px solid var(--v2-table-row-border-color);
+        }
+
+        ul > li {
+            list-style-type: disc;
+        }
+
+        ol > li {
+            list-style: decimal;
         }
     }
 </style>
