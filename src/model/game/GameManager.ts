@@ -27,7 +27,7 @@ export default class GameManager {
             'Risk of Rain 2', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
             'https://thunderstore.dev/c/riskofrain2/api/v1/package-listing-index/',
             [new StorePlatformMetadata(StorePlatform.STEAM, "632360")], "ThunderstoreBeta.jpg",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TS Dev"]),
+            GameSelectionDisplayMode.HIDDEN, GameInstanceType.GAME, PackageLoader.BEPINEX, ["TS Dev"]),
 
         new Game('Risk of Rain 2 Dedicated Server', 'RiskOfRain2', 'RiskOfRain2Server',
             'Risk of Rain 2 Dedicated Server', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
