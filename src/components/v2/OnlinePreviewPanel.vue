@@ -30,7 +30,7 @@ function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
 }
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
-    return fetch(`https://thunderstore.dev/api/experimental/package/${mod.getOwner()}/${mod.getName()}/${mod.getLatestVersion()}/${type}/`)
+    return fetch(`https://thunderstore.io/api/experimental/package/${mod.getOwner()}/${mod.getName()}/${mod.getLatestVersion()}/${type}/`)
         .then(res => res.json())
         .then(res => res.markdown);
 }
