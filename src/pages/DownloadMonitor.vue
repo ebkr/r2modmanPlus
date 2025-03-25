@@ -20,22 +20,40 @@
                             <div class="card is-shadowless">
                                 <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
 
-                                <div v-if="downloadObject.failed">
-                                    <p>Download failed</p>
-                                    <Progress
-                                        :max='100'
-                                        :value='100'
-                                        :className="['is-danger']"
-                                    />
+                                <div class="row" v-if="downloadObject.failed">
+                                    <div class="col">
+                                        <p>Download failed</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='100'
+                                            :className="['is-danger']"
+                                        />
+                                    </div>
+                                    <button
+                                        class="button ghost"
+                                        v-tooltip.left="'Remove'"
+                                        @click="$store.commit('download/remove', downloadObject)"
+                                    >
+                                        <i class="fas fa-times" />
+                                    </button>
                                 </div>
 
-                                <div v-else-if="downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100">
-                                    <p>Download complete</p>
-                                    <Progress
-                                        :max='100'
-                                        :value='100'
-                                        :className="['is-success']"
-                                    />
+                                <div class="row" v-else-if="downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100">
+                                    <div class="col">
+                                        <p>Download complete</p>
+                                        <Progress
+                                            :max='100'
+                                            :value='100'
+                                            :className="['is-success']"
+                                        />
+                                    </div>
+                                    <button
+                                        class="button ghost"
+                                        v-tooltip.left="'Remove'"
+                                        @click="$store.commit('download/removeDownload', downloadObject.assignId)"
+                                    >
+                                        <i class="fas fa-times" />
+                                    </button>
                                 </div>
 
                                 <div v-else class="row">
