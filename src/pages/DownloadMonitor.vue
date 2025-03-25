@@ -13,6 +13,14 @@
             </div>
         </template>
         <template v-else>
+            <div class="download-monitor-action-buttons border-at-bottom">
+                <button
+                    class="button ghost"
+                    @click="$store.commit('download/removeAllInactive')"
+                >
+                    <i class="fas fa-times mr-2" />Clear finished
+                </button>
+            </div>
             <div v-for="(downloadObject, index) of $store.getters['download/newestFirst']" :key="`download-progress-${index}`">
                 <div class="container">
                     <div class="row border-at-bottom pad pad--sides">
@@ -115,5 +123,13 @@ export default class DownloadMonitor extends Vue {
     height: 1em;
     margin: auto 1rem;
     border: none;
+}
+
+.download-monitor-action-buttons {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0.5rem;
+    text-align: right;
 }
 </style>

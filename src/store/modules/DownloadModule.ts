@@ -64,11 +64,7 @@ export const DownloadModule = {
             return getters.activeDownloads.length;
         },
         activeDownloads(state) {
-            return state.allDownloads.filter(
-                dl =>
-                    !dl.failed &&
-                    !(dl.downloadProgress >= 100 && dl.installProgress >= 100)
-            );
+            return getOnlyActiveDownloads(state.allDownloads);
         },
         conciseDownloadStatus(_state, getters) {
             if (getters.activeDownloadCount === 1 && getters.newestActiveDownload) {
@@ -113,6 +109,9 @@ export const DownloadModule = {
         },
         setIsModProgressModalOpen(state: State, isModProgressModalOpen: boolean) {
             state.isModProgressModalOpen = isModProgressModalOpen;
+        },
+        removeAllInactive(state: State) {
+            state.allDownloads = getOnlyActiveDownloads(state.allDownloads);
         }
     },
 }
@@ -125,4 +124,11 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], assignId: 
     }
 
     return index;
+}
+
+function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
+    return downloads.filter(dl =>
+        !dl.failed &&
+        !(dl.downloadProgress >= 100 && dl.installProgress >= 100)
+    );
 }
