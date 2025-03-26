@@ -6,7 +6,7 @@ import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameIn
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
 import { GodotMLGameInstructions } from "../../launching/instructions/instructions/loader/GodotMLGameInstructions";
-import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
+import { ModsPathInstructions } from "../../launching/instructions/instructions/loader/ModsPathInstructions";
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
 import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
@@ -26,7 +26,7 @@ export default class GameInstructions {
         [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
-        [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
+        [PackageLoader.ANCIENT_DUNGEON_VR, new ModsPathInstructions()],
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
         [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
