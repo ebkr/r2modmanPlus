@@ -103,24 +103,35 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             }
                         );
                     } catch (e) {
+                        store.commit('download/updateDownload', { assignId, failed: true });
                         return reject(e);
                     }
                     await ProfileModList.requestLock(async () => {
+                        let currentDownloadIndex = 0;
                         for (const combo of downloadedMods) {
                             try {
                                 await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
                             } catch (e) {
+                                store.commit('download/updateDownload', { assignId, failed: true });
                                 return reject(
                                     R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
                                 );
                             }
+                            store.commit('download/updateDownload', {
+                                assignId,
+                                modName: combo.getMod().getName(),
+                                installProgress: ThunderstoreDownloaderProvider.instance.generateProgressPercentage(100, currentDownloadIndex, downloadedMods.length)
+                            });
+                            currentDownloadIndex++;
                         }
                         const modList = await ProfileModList.getModList(profile.asImmutableProfile());
                         if (modList instanceof R2Error) {
+                            store.commit('download/updateDownload', { assignId, failed: true });
                             return reject(modList);
                         }
                         const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
                         if (err instanceof R2Error) {
+                            store.commit('download/updateDownload', { assignId, failed: true });
                             return reject(err);
                         }
                         return resolve();
