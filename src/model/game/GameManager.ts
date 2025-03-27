@@ -989,6 +989,24 @@ export default class GameManager {
             "https://thunderstore.io/c/labyrinthine/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1302240")], "Labyrinthine.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Starship", "Starship", "Starship",
+            "", ["Starship.exe"], "",
+            "https://thunderstore.io/c/starship/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.OTHER)], "Starship.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, [""]),
+
+        new Game("Ship of Harkinian", "ShipOfHarkinian", "ShipOfHarkinian",
+            "", ["soh.exe"], "",
+            "https://thunderstore.io/c/ship-of-harkinian/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.OTHER)], "ShipOfHarkinian.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, [""]),
+
+        new Game("2Ship2Harkinian", "2Ship2Harkinian", "2Ship2Harkinian",
+            "", ["2ship.exe"], "",
+            "https://thunderstore.io/c/2-ship-2-harkinian/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.OTHER)], "2Ship2Harkinian.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, [""]),
     ];
 
     static get activeGame(): Game {
