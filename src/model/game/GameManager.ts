@@ -919,6 +919,13 @@ export default class GameManager {
             "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+            // TODO: use proper cover image, add other ported games.
+        new Game("Starship", "Starship", "Starship",
+            "", ["Starship.exe"], "",
+            "https://thunderstore.io/c/starship/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.OTHER)], "MonsterTrain2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, [""]),
     ];
 
     static get activeGame(): Game {
