@@ -26,7 +26,7 @@ export default class GameInstructions {
         [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
-        [PackageLoader.ANCIENT_DUNGEON_VR, new ModsPathInstructions()],
+        [PackageLoader.NONE, new ModsPathInstructions()],
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
         [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],

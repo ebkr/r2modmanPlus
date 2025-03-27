@@ -370,7 +370,7 @@ export default class GameManager {
             "Ancient Dungeon VR", ["Ancient_Dungeon.exe"], "Ancient_Dungeon_Data",
             "https://thunderstore.io/c/ancient-dungeon-vr/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1125240"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "ancient-dungeon-vr.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.ANCIENT_DUNGEON_VR, ["adv"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, ["adv"]),
 
         new Game("RUMBLE", "RUMBLE", "RUMBLE",
             "RUMBLE", ["RUMBLE.exe"], "RUMBLE_Data",
