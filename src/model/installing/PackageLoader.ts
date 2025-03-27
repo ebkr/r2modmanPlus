@@ -37,6 +37,7 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
         case PackageLoader.RETURN_OF_MODDING: return "returnofmodding-plugin";
         case PackageLoader.GDWEAVE: return "gdweave-plugin";
         case PackageLoader.RECURSIVE_MELON_LOADER: return "recursive-melonloader-plugin";
+        case PackageLoader.NONE: return "direct-copy";
     }
 
     return null;
