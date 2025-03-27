@@ -78,6 +78,7 @@ export const MODLOADER_PACKAGES = [
 
 export const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
 export const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+export const LOADERLESS_GAME: ModLoaderPackageMapping[] = [];
 
 export const ALL_MODLOADER_MAPPINGS = [
     ...MODLOADER_PACKAGES,
@@ -142,7 +143,7 @@ const VARIANTS = {
     ULTRAKILL: MODLOADER_PACKAGES,
     UltimateChickenHorse: MODLOADER_PACKAGES,
     AtrioTheDarkWild: MODLOADER_PACKAGES,
-    AncientDungeonVR: MODLOADER_PACKAGES,
+    AncientDungeonVR: LOADERLESS_GAME,
     Brotato: MODLOADER_PACKAGES,
     RUMBLE: LEGACY_MELONLOADER_MAPPING,
     DomeKeeper: MODLOADER_PACKAGES,
