@@ -436,6 +436,19 @@ code {
     outline-color: yellow !important;
 }
 
+.button:focus-visible {
+    outline: yellow auto 1px;
+}
+
+.button:focus {
+    box-shadow: none !important;
+}
+
+.button:focus:not(.focus-visible):not(:active) {
+    color: var(--button-color, var(--text-strong, #363636));
+    border-color: var(--button-border-color, var(--border, #e1e1e1));
+}
+
 .pad {
     &--sides {
         padding: 1em;
