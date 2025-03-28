@@ -913,6 +913,12 @@ export default class GameManager {
             "https://thunderstore.io/c/monster-train-2/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3296150")], "MonsterTrain2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mt2"]),
+
+        new Game("Schedule I", "ScheduleI", "ScheduleI",
+            "Schedule I", ["Schedule I.exe"], "Schedule I_Data",
+            "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
     ];
 
     static get activeGame(): Game {
