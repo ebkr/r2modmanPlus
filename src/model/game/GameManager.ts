@@ -917,7 +917,7 @@ export default class GameManager {
         new Game("Schedule I", "ScheduleI", "ScheduleI",
             "Schedule I", ["Schedule I.exe"], "Schedule I_Data",
             "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
     ];
 
