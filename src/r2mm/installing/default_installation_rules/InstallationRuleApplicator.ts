@@ -166,6 +166,10 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("DUSK"),
             buildBepInExRules("MyDreamSetup"),
             buildBepInExRules("MonsterTrain2"),
+            buildBepInExRules("Gatekeeper"),
+            buildBepInExRules("PulsarLostColony"),
+            buildBepInExRules("SongsOfConquest"),
+            buildBepInExRules("WhiteKnuckle"),
         ]
     }
 }
