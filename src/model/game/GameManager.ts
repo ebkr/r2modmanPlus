@@ -370,7 +370,7 @@ export default class GameManager {
             "Ancient Dungeon VR", ["Ancient_Dungeon.exe"], "Ancient_Dungeon_Data",
             "https://thunderstore.io/c/ancient-dungeon-vr/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1125240"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "ancient-dungeon-vr.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.ANCIENT_DUNGEON_VR, ["adv"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, ["adv"]),
 
         new Game("RUMBLE", "RUMBLE", "RUMBLE",
             "RUMBLE", ["RUMBLE.exe"], "RUMBLE_Data",
@@ -923,6 +923,13 @@ export default class GameManager {
             "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+            // TODO: use proper cover image, add other ported games.
+        new Game("Starship", "Starship", "Starship",
+            "", ["Starship.exe"], "",
+            "https://thunderstore.io/c/starship/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.OTHER)], "MonsterTrain2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, [""]),
     ];
 
     static get activeGame(): Game {

@@ -5,7 +5,7 @@ import * as path from 'path';
 import { GameInstruction } from "../../GameInstructions";
 import { DynamicGameInstruction } from "../../DynamicGameInstruction";
 
-export class AncientVRGameInstructions extends GameInstructionGenerator {
+export class ModsPathInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {

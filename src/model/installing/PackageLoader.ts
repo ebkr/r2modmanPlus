@@ -5,7 +5,7 @@ export enum PackageLoader {
     MELON_LOADER,
     NORTHSTAR,
     GODOT_ML,
-    ANCIENT_DUNGEON_VR,
+    NONE,
     SHIMLOADER,
     LOVELY,
     RETURN_OF_MODDING,
@@ -26,7 +26,7 @@ export function GetInstallerIdForLoader(loader: PackageLoader): PackageInstaller
         case PackageLoader.RETURN_OF_MODDING: return "returnofmodding";
         case PackageLoader.GDWEAVE: return "gdweave";
         case PackageLoader.RECURSIVE_MELON_LOADER: return "recursive-melonloader";
-        case PackageLoader.ANCIENT_DUNGEON_VR: return null;
+        case PackageLoader.NONE: return null;
     }
 }
 
@@ -37,6 +37,7 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
         case PackageLoader.RETURN_OF_MODDING: return "returnofmodding-plugin";
         case PackageLoader.GDWEAVE: return "gdweave-plugin";
         case PackageLoader.RECURSIVE_MELON_LOADER: return "recursive-melonloader-plugin";
+        case PackageLoader.NONE: return "direct-copy";
     }
 
     return null;

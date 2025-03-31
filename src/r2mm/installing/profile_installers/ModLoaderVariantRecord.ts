@@ -76,6 +76,7 @@ export const MODLOADER_PACKAGES = [
 
 const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
 const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+const LOADERLESS_GAME: ModLoaderPackageMapping[] = [];
 
 /**
  * While this object is a bit silly given that all the keys are pointing to the
@@ -134,7 +135,7 @@ const VARIANTS = {
     ULTRAKILL: MODLOADER_PACKAGES,
     UltimateChickenHorse: MODLOADER_PACKAGES,
     AtrioTheDarkWild: MODLOADER_PACKAGES,
-    AncientDungeonVR: MODLOADER_PACKAGES,
+    AncientDungeonVR: LOADERLESS_GAME,
     Brotato: MODLOADER_PACKAGES,
     RUMBLE: LEGACY_MELONLOADER_MAPPING,
     DomeKeeper: MODLOADER_PACKAGES,
@@ -225,6 +226,7 @@ const VARIANTS = {
     MyDreamSetup: MODLOADER_PACKAGES,
     MonsterTrain2: MODLOADER_PACKAGES,
     ScheduleI: RECURSIVE_MELONLOADER_MAPPING,
+    Starship: LOADERLESS_GAME,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
