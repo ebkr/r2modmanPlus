@@ -749,7 +749,11 @@ export default class GameManager {
         new Game("Hades II", "HadesII", "HadesII",
             path.join("Hades II", "Ship"), ["Hades2.exe"], "",
             "https://thunderstore.io/c/hades-ii/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1145350"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "07c634c7291a49b5b2455e14b9a83950")
+            ],
+            "Hades2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
 
         new Game("Shapez 2", "Shapez2", "Shapez2",
