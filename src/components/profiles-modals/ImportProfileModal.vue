@@ -34,6 +34,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
     private profileMods: {known: ThunderstoreCombo[], unknown: string[]} = {known: [], unknown: []};
+    private isPartialImportAllowed: boolean = false;
     private activeStep:
         'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
@@ -371,14 +372,26 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             />
         </template>
         <template v-slot:footer>
+
+            <div v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="is-flex-grow-1">
+                <input
+                    v-model="isPartialImportAllowed"
+                    id="partialImportAllowedCheckbox"
+                    class="is-checkradio has-background-color"
+                    type="checkbox"
+                >
+                <label for="partialImportAllowedCheckbox">I understand that some of the mods won't be imported</label>
+            </div>
+
             <button
                 id="modal-review-confirmed"
                 class="button is-info"
-                :disabled="knownProfileMods.length === 0"
+                :disabled="knownProfileMods.length === 0 || (profileMods.unknown.length > 0 && !isPartialImportAllowed)"
                 @click="onProfileReviewConfirmed"
             >
                 Import
             </button>
+
         </template>
     </ModalCard>
 
