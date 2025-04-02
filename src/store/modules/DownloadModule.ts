@@ -93,24 +93,19 @@ export const DownloadModule = {
     },
 
     mutations: {
+        removeDownload(state: State, download: UpdateObject) {
+            const index = getIndexOfDownloadProgress(state.allDownloads, download.assignId);
+            if (index > -1) {
+                state.allDownloads.splice(index, 1);
+            }
+        },
         updateDownload(state: State, update: UpdateObject) {
-            const newDownloads = [...state.allDownloads];
-            const index = newDownloads.findIndex((old: DownloadProgress) => {
-                return old.assignId === update.assignId;
-            });
-
-            if (index === -1) {
-                // The DownloadProgress by the ID from the update wasn't found at all.
-                console.warn(`Couldn\'t find DownloadProgress object with assignId ${update.assignId}.`);
-                return;
+            const index: number = getIndexOfDownloadProgress(state.allDownloads, update.assignId);
+            if (index > -1) {
+                const newDownloads = [...state.allDownloads];
+                newDownloads[index] = {...newDownloads[index], ...update};
+                state.allDownloads = newDownloads;
             }
-
-            if (index !== update.assignId) {
-                console.log(`There was a mismatch between download update\'s assign ID (${update.assignId}) and the index it was found at (${index}).`);
-            }
-
-            newDownloads[index] = {...newDownloads[index], ...update};
-            state.allDownloads = newDownloads;
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
@@ -120,4 +115,14 @@ export const DownloadModule = {
             state.isModProgressModalOpen = isModProgressModalOpen;
         }
     },
+}
+
+function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], assignId: number): number {
+    const index = [...allDownloads].findIndex((downloadProgress) => downloadProgress.assignId === assignId);
+
+    if (index === -1) {
+        console.warn(`Couldn't find DownloadProgress object with assignId ${assignId}.`);
+    }
+
+    return index;
 }
