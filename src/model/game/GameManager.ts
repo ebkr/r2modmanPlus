@@ -923,6 +923,30 @@ export default class GameManager {
             "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.jpg",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Gatekeeper", "Gatekeeper", "Gatekeeper",
+            "Gatekeeper", ["Gatekeeper.exe"], "Gatekeeper_Data",
+            "https://thunderstore.io/c/gatekeeper/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2106670")], "Gatekeeper.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gk"]),
+
+        new Game("Pulsar: Lost Colony", "PulsarLostColony", "PulsarLostColony",
+            "PULSARLostColony", ["PULSAR_LostColony.exe"], "PULSAR_LostColony_Data",
+            "https://thunderstore.io/c/pulsar-lost-colony/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "252870")], "PulsarLostColony.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["plc"]),
+
+        new Game("Songs of Conquest", "SongsOfConquest", "SongsOfConquest",
+            "SongsOfConquest", ["SongsOfConquest.exe"], "SongsOfConquest_Data",
+            "https://thunderstore.io/c/songs-of-conquest/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "867210")], "SongsOfConquest.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["soc"]),
+
+        new Game("White Knuckle", "WhiteKnuckle", "WhiteKnuckle",
+            "White Knuckle Demo", ["White Knuckle.exe"], "White Knuckle_Data",
+            "https://thunderstore.io/c/white-knuckles/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
     ];
 
     static get activeGame(): Game {
