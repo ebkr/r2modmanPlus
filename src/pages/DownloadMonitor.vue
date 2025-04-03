@@ -25,7 +25,7 @@
                 <div class="container">
                     <div class="row border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
-                            <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
+                            <p><strong>{{ downloadObject.initialMods.map(tsCombo => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
 
                             <div class="row" v-if="downloadObject.failed">
                                 <div class="col">
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
 
-                            <div v-else class="row">
+                            <div v-else class="row no-wrap">
 
                                 <div class="col">
                                     <p v-if="downloadObject.downloadProgress < 100">Downloading: {{ downloadObject.modName }}</p>
@@ -83,6 +83,14 @@
 
                             </div>
                         </div>
+                        <button
+                            v-if="downloadObject.failed"
+                            class="button download-item-action-button"
+                            v-tooltip.left="'Retry'"
+                            @click="$store.dispatch('download/retryDownload', downloadObject)"
+                        >
+                            <i class="fas fa-redo" />
+                        </button>
                         <button
                             v-if="downloadObject.failed || (downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100)"
                             class="button download-item-action-button"

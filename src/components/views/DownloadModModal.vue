@@ -84,7 +84,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 
                 const assignId = await store.dispatch(
                     'download/addDownload',
-                    [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
+                    [combo]
                 );
 
                 setTimeout(async () => {
@@ -143,16 +143,16 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
 
-            const assignId = await this.$store.dispatch(
-                'download/addDownload',
-                [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
-            );
-
-            this.setIsModProgressModalOpen(true);
-
             const tsCombo = new ThunderstoreCombo();
             tsCombo.setMod(tsMod);
             tsCombo.setVersion(tsVersion);
+
+            const assignId = await this.$store.dispatch(
+                'download/addDownload',
+                [tsCombo]
+            );
+
+            this.setIsModProgressModalOpen(true);
 
             setTimeout(async () => {
                 let downloadedMods: ThunderstoreCombo[] = [];

@@ -45,7 +45,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
 
         const assignId = await this.$store.dispatch(
             'download/addDownload',
-            modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
+            modsWithUpdates
         );
 
         const ignoreCache = this.$store.state.download.ignoreCache;

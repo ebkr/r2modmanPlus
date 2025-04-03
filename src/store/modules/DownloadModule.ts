@@ -1,11 +1,13 @@
 import { ActionTree, GetterTree } from "vuex";
 
+import DownloadModModal from "../../components/views/DownloadModModal.vue";
 import ManagerSettings from "../../r2mm/manager/ManagerSettings";
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import { State as RootState } from "../../store";
 
 interface DownloadProgress {
     assignId: number;
-    initialMods: string[];
+    initialMods: ThunderstoreCombo[];
     modName: string;
     downloadProgress: number;
     installProgress: number;
@@ -39,7 +41,7 @@ export const DownloadModule = {
     }),
 
     actions: <ActionTree<State, RootState>>{
-        addDownload({state}, initialMods: string[]): number {
+        addDownload({state}, initialMods: ThunderstoreCombo[]): number {
             const assignId = state.allDownloads.length;
             const downloadObject: DownloadProgress = {
                 assignId,
@@ -56,6 +58,13 @@ export const DownloadModule = {
             const settings: ManagerSettings = rootGetters['settings'];
             settings.setIgnoreCache(!settings.getContext().global.ignoreCache);
             commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
+        },
+        async retryDownload({commit, rootGetters}, download: DownloadProgress) {
+            commit('removeDownload', download);
+
+            download.initialMods.forEach(combo => {
+                DownloadModModal.downloadSpecific(rootGetters['profile/activeProfile'], combo, this);
+            });
         },
     },
 
