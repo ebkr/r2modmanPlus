@@ -15,9 +15,34 @@ interface Cdn {
     weight: number;
 }
 
-const CDNS = [
-    "gcdn.thunderstore.io",
-    "hcdn-1.hcdn.thunderstore.io"
+const isCdnConfig = (obj: unknown): obj is Cdn[] => {
+    if (!Array.isArray(obj)) {
+        return false;
+    }
+
+    const cumulativeWeight = obj.reduce((acc, cdn) => {
+        return cdn.type === "mirror" ? acc : acc + cdn.weight;
+    }, 0);
+
+    if (cumulativeWeight !== 1) {
+        return false;
+    }
+
+    return obj.every((cdn) => {
+        return typeof cdn === "object" &&
+            cdn !== null &&
+            typeof cdn.domain === "string" &&
+            typeof cdn.type === "string" &&
+            typeof cdn.weight === "number" &&
+            (cdn.type === "main" || cdn.type === "main_alt" || cdn.type === "mirror") &&
+            (cdn.weight >= 0 && cdn.weight <= 1);
+    });
+}
+
+const CDN_CONFIG_URL = "https://thunderstore.io/api/experimental/cdn-config/prod/latest/";
+const FALLBACK_CDNS: Cdn[] = [
+    {domain: "gcdn.thunderstore.io", type: "main", weight: 1},
+    {domain: "hcdn-1.hcdn.thunderstore.io", type: "mirror", weight: 0}
 ]
 const TEST_FILE = "healthz";
 
@@ -31,38 +56,19 @@ const CONNECTION_ERROR = new R2Error(
      issue.`
 );
 
-// TODO: Read real data from online.
-const TEMP_DEFINITIONS: Cdn[] = [
-    {
-        domain: "gcdn.thunderstore.io",
-        type: "main",
-        weight: 0.9
-    },
-    {
-        domain: "test.thunderstore.io",
-        type: "main_alt",
-        weight: 0.1
-    },
-    {
-        domain: "hcdn-1.hcdn.thunderstore.io",
-        type: "mirror",
-        weight: 0
-    }
-];
-
 export default class CdnProvider {
     private static axios = getAxiosWithTimeouts(5000, 5000);
+    private static cdnConfig = FALLBACK_CDNS;
     private static preferredCdn = "";
 
     public static get mainCdn(): Cdn {
-        // TODO: error handling
-        return TEMP_DEFINITIONS.find((cdn) => cdn.type === "main")!;
+        return CdnProvider.cdnConfig.find((cdn) => cdn.type === "main")!;
     }
 
     // "main_alt" CDNs are used only for downloading packages
     // during the gradual rollout process and thus ignored here.
     public static get mainAndMirrors(): Cdn[] {
-        return TEMP_DEFINITIONS.filter((cdn) => cdn.type !== "main_alt");
+        return CdnProvider.cdnConfig.filter((cdn) => cdn.type !== "main_alt");
     }
 
     public static get current() {
@@ -71,6 +77,20 @@ export default class CdnProvider {
             label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
             url: CdnProvider.preferredCdn
         };
+    }
+
+    public static async fetchCdnDefinitions() {
+        try {
+            const response = await CdnProvider.axios.get(CDN_CONFIG_URL);
+
+            if (!isCdnConfig(response.data)) {
+                throw new Error("Invalid CDN configuration");
+            }
+
+            CdnProvider.cdnConfig = response.data;
+        } catch (e) {
+            CdnProvider.cdnConfig = FALLBACK_CDNS;
+        }
     }
 
     public static async checkCdnConnection() {
@@ -135,7 +155,7 @@ export default class CdnProvider {
     }
 
     private static selectWeightedCdn(): Cdn {
-        const eligibleCdns = TEMP_DEFINITIONS.filter(cdn => cdn.type !== "mirror");
+        const eligibleCdns = CdnProvider.cdnConfig.filter(cdn => cdn.type !== "mirror");
         const random = Math.random();
         let cumulativeWeight = 0;
 
