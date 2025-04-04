@@ -2,6 +2,19 @@ import R2Error from '../../../model/errors/R2Error';
 import { getAxiosWithTimeouts } from '../../../utils/HttpUtils';
 import { addOrReplaceSearchParams, replaceHost } from '../../../utils/UrlUtils';
 
+/**
+ * Assumptions about the data:
+ * - There's exactly one CDN with type "main"
+ * - There are 0..n CDNs with type of "main_alt" and "mirror", each
+ * - Weights of "main" and "main_alt" CDNs must sum 1
+ * - Weights of "mirror" CDNs are ignored
+ */
+interface Cdn {
+    domain: string;
+    type: "main" | "main_alt" | "mirror";
+    weight: number;
+}
+
 const CDNS = [
     "gcdn.thunderstore.io",
     "hcdn-1.hcdn.thunderstore.io"
@@ -18,12 +31,42 @@ const CONNECTION_ERROR = new R2Error(
      issue.`
 );
 
+// TODO: Read real data from online.
+const TEMP_DEFINITIONS: Cdn[] = [
+    {
+        domain: "gcdn.thunderstore.io",
+        type: "main",
+        weight: 0.9
+    },
+    {
+        domain: "test.thunderstore.io",
+        type: "main_alt",
+        weight: 0.1
+    },
+    {
+        domain: "hcdn-1.hcdn.thunderstore.io",
+        type: "mirror",
+        weight: 0
+    }
+];
+
 export default class CdnProvider {
     private static axios = getAxiosWithTimeouts(5000, 5000);
     private static preferredCdn = "";
 
+    public static get mainCdn(): Cdn {
+        // TODO: error handling
+        return TEMP_DEFINITIONS.find((cdn) => cdn.type === "main")!;
+    }
+
+    // "main_alt" CDNs are used only for downloading packages
+    // during the gradual rollout process and thus ignored here.
+    public static get mainAndMirrors(): Cdn[] {
+        return TEMP_DEFINITIONS.filter((cdn) => cdn.type !== "main_alt");
+    }
+
     public static get current() {
-        const i = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const i = CdnProvider.mainAndMirrors.findIndex((cdn) => cdn.domain === CdnProvider.preferredCdn);
         return {
             label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
             url: CdnProvider.preferredCdn
@@ -39,8 +82,8 @@ export default class CdnProvider {
         const params = {"disableCache": new Date().getTime()};
         let res;
 
-        for await (const cdn of CDNS) {
-            const url = `https://${cdn}/${TEST_FILE}`;
+        for await (const cdn of CdnProvider.mainAndMirrors) {
+            const url = `https://${cdn.domain}/${TEST_FILE}`;
 
             try {
                 res = await CdnProvider.axios.get(url, {headers, params});
@@ -49,7 +92,7 @@ export default class CdnProvider {
             }
 
             if (res.status === 200) {
-                CdnProvider.preferredCdn = cdn;
+                CdnProvider.preferredCdn = cdn.domain;
                 return;
             }
         };
@@ -70,12 +113,13 @@ export default class CdnProvider {
     }
 
     public static togglePreferredCdn() {
-        let currentIndex = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const domains = CdnProvider.mainAndMirrors.map((cdn) => cdn.domain);
+        let currentIndex = domains.findIndex((d) => d === CdnProvider.preferredCdn);
 
         if (currentIndex === -1) {
             currentIndex = 0;
         }
 
-        CdnProvider.preferredCdn = CDNS[currentIndex + 1] || CDNS[0];
+        CdnProvider.preferredCdn = domains[currentIndex + 1] || domains[0];
     }
 }
