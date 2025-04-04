@@ -944,7 +944,7 @@ export default class GameManager {
 
         new Game("White Knuckle", "WhiteKnuckle", "WhiteKnuckle",
             "White Knuckle Demo", ["White Knuckle.exe"], "White Knuckle_Data",
-            "https://thunderstore.io/c/white-knuckles/api/v1/package-listing-index/",
+            "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
     ];
