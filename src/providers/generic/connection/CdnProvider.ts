@@ -112,6 +112,17 @@ export default class CdnProvider {
             : url;
     }
 
+    // Direct proportion of package download requests from the main CDN
+    // to the main_alt CDNs.
+    public static addCdnQueryParameterForPackageDownload(url: string) {
+        if (CdnProvider.preferredCdn === CdnProvider.mainCdn.domain) {
+            const cdn = CdnProvider.selectWeightedCdn();
+            return addOrReplaceSearchParams(url, `cdn=${cdn.domain}`);
+        }
+
+        return CdnProvider.addCdnQueryParameter(url);
+    }
+
     public static togglePreferredCdn() {
         const domains = CdnProvider.mainAndMirrors.map((cdn) => cdn.domain);
         let currentIndex = domains.findIndex((d) => d === CdnProvider.preferredCdn);
@@ -121,5 +132,20 @@ export default class CdnProvider {
         }
 
         CdnProvider.preferredCdn = domains[currentIndex + 1] || domains[0];
+    }
+
+    private static selectWeightedCdn(): Cdn {
+        const eligibleCdns = TEMP_DEFINITIONS.filter(cdn => cdn.type !== "mirror");
+        const random = Math.random();
+        let cumulativeWeight = 0;
+
+        for (const cdn of eligibleCdns) {
+            cumulativeWeight += cdn.weight;
+            if (random <= cumulativeWeight) {
+                return cdn;
+            }
+        }
+
+        return CdnProvider.mainCdn;  // Shouldn't happen if weights sum to 1.
     }
 }
