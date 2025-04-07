@@ -54,7 +54,7 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import Profile from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
@@ -184,47 +184,35 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             }, 1);
         }
 
-        static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<R2Error | void> {
-            return new Promise(async (resolve, reject) => {
-                const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
-                const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
-                if (profileModList instanceof R2Error) {
-                    return reject(profileModList);
-                }
-                const modAlreadyInstalled = profileModList.find(
-                    value => value.getName() === mod.getFullName()
-                        && value.getVersionNumber().isEqualTo(version.getVersionNumber())
-                );
+        static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<void> {
+            const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
+            if (profileModList instanceof R2Error) {
+                throw profileModList;
+            }
 
-                if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
-                    const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
-                    const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
-                    if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                        const result = await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile());
-                        if (result instanceof R2Error) {
-                            return reject(result);
-                        }
-                    }
-                    const installError: R2Error | null = await ProfileInstallerProvider.instance.installMod(manifestMod, profile.asImmutableProfile());
-                    if (!(installError instanceof R2Error)) {
-                        const newModList: ManifestV2[] | R2Error = await ProfileModList.addMod(manifestMod, profile.asImmutableProfile());
-                        if (newModList instanceof R2Error) {
-                            return reject(newModList);
-                        }
-                    } else {
-                        return reject(installError);
-                    }
-                    if (olderInstallOfMod !== undefined) {
-                        if (!olderInstallOfMod.isEnabled()) {
-                            await ProfileModList.updateMod(manifestMod, profile.asImmutableProfile(), async mod => {
-                                mod.disable();
-                            });
-                            await ProfileInstallerProvider.instance.disableMod(manifestMod, profile.asImmutableProfile());
-                        }
+            const modAlreadyInstalled = profileModList.find(
+                value => value.getName() === mod.getFullName()
+                    && value.getVersionNumber().isEqualTo(version.getVersionNumber())
+            );
+
+            if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
+                const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+                const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
+                const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
+                if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
+                    throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile()));
+                }
+                throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile.asImmutableProfile()));
+                throwForR2Error(await ProfileModList.addMod(manifestMod, profile.asImmutableProfile()));
+                if (olderInstallOfMod !== undefined) {
+                    if (!olderInstallOfMod.isEnabled()) {
+                        await ProfileModList.updateMod(manifestMod, profile.asImmutableProfile(), async mod => {
+                            mod.disable();
+                        });
+                        await ProfileInstallerProvider.instance.disableMod(manifestMod, profile.asImmutableProfile());
                     }
                 }
-                return resolve();
-            });
+            }
         }
     }
 
