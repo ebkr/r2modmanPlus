@@ -173,7 +173,6 @@ import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
-import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
