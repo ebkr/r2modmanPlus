@@ -59,9 +59,6 @@ export default class App extends mixins(UtilityMixin) {
         // Load settings using the default game before the actual game is selected.
         const settings: ManagerSettings = await this.$store.dispatch('resetActiveGame');
 
-        this.hookBackgroundUpdateThunderstoreModList();
-        await this.checkCdnConnection();
-
         InstallationRuleApplicator.apply();
         InstallationRules.validate();
 
@@ -99,6 +96,8 @@ export default class App extends mixins(UtilityMixin) {
             document.documentElement.classList.toggle('html--dark', this.$q.dark.isActive);
         });
 
+        this.hookBackgroundUpdateThunderstoreModList();
+        await this.checkCdnConnection();
         this.$store.commit('updateModLoaderPackageNames');
         this.$store.dispatch('tsMods/updateExclusions');
     }
