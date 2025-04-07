@@ -110,7 +110,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         let currentDownloadIndex = 0;
                         for (const combo of downloadedMods) {
                             try {
-                                await DownloadModModal.installModAfterDownload(profile, combo.getMod(), combo.getVersion());
+                                await DownloadModModal.installModAfterDownload(profile, combo);
                             } catch (e) {
                                 store.commit('download/updateDownload', { assignId, failed: true });
                                 return reject(
@@ -184,17 +184,17 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             }, 1);
         }
 
-        static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<void> {
+        static async installModAfterDownload(profile: Profile, combo: ThunderstoreCombo): Promise<void> {
             const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
             throwForR2Error(profileModList);
 
             const modAlreadyInstalled = (profileModList as ManifestV2[]).find(
-                value => value.getName() === mod.getFullName()
-                    && value.getVersionNumber().isEqualTo(version.getVersionNumber())
+                value => value.getName() === combo.getMod().getFullName()
+                    && value.getVersionNumber().isEqualTo(combo.getVersion().getVersionNumber())
             );
 
             if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
-                const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
+                const manifestMod = new ManifestV2().fromThunderstoreCombo(combo);
                 const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
                 const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
