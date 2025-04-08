@@ -186,11 +186,9 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 
         static async installModAfterDownload(profile: Profile, mod: ThunderstoreMod, version: ThunderstoreVersion): Promise<void> {
             const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
-            if (profileModList instanceof R2Error) {
-                throw profileModList;
-            }
+            throwForR2Error(profileModList);
 
-            const modAlreadyInstalled = profileModList.find(
+            const modAlreadyInstalled = (profileModList as ManifestV2[]).find(
                 value => value.getName() === mod.getFullName()
                     && value.getVersionNumber().isEqualTo(version.getVersionNumber())
             );
@@ -198,7 +196,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
                 const manifestMod: ManifestV2 = new ManifestV2().fromThunderstoreMod(mod, version);
                 const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
-                const olderInstallOfMod = profileModList.find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
+                const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
                     throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile()));
                 }
