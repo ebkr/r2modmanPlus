@@ -56,7 +56,7 @@ import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstall
 import DownloadMixin from "../mixins/DownloadMixin.vue";
 import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
-import Profile from '../../model/Profile';
+import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -76,7 +76,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
     export default class DownloadModModal extends mixins(DownloadMixin) {
 
         public static async downloadSpecific(
-            profile: Profile,
+            profile: ImmutableProfile,
             combo: ThunderstoreCombo,
             store: Store<any>
         ): Promise<void> {
@@ -91,7 +91,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     let downloadedMods: ThunderstoreCombo[] = [];
                     try {
                         downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
-                            profile.asImmutableProfile(),
+                            profile,
                             combo,
                             store.state.download.ignoreCache,
                             (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
@@ -124,12 +124,12 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                             });
                             currentDownloadIndex++;
                         }
-                        const modList = await ProfileModList.getModList(profile.asImmutableProfile());
+                        const modList = await ProfileModList.getModList(profile);
                         if (modList instanceof R2Error) {
                             store.commit('download/updateDownload', { assignId, failed: true });
                             return reject(modList);
                         }
-                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile.asImmutableProfile());
+                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
                         if (err instanceof R2Error) {
                             store.commit('download/updateDownload', { assignId, failed: true });
                             return reject(err);
@@ -184,8 +184,8 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             }, 1);
         }
 
-        static async installModAfterDownload(profile: Profile, combo: ThunderstoreCombo): Promise<void> {
-            const profileModList = await ProfileModList.getModList(profile.asImmutableProfile());
+        static async installModAfterDownload(profile: ImmutableProfile, combo: ThunderstoreCombo): Promise<void> {
+            const profileModList = await ProfileModList.getModList(profile);
             throwForR2Error(profileModList);
 
             const modAlreadyInstalled = (profileModList as ManifestV2[]).find(
@@ -198,16 +198,16 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
                 const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
                 if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                    throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile.asImmutableProfile()));
+                    throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
                 }
-                throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile.asImmutableProfile()));
-                throwForR2Error(await ProfileModList.addMod(manifestMod, profile.asImmutableProfile()));
+                throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
+                throwForR2Error(await ProfileModList.addMod(manifestMod, profile));
                 if (olderInstallOfMod !== undefined) {
                     if (!olderInstallOfMod.isEnabled()) {
-                        await ProfileModList.updateMod(manifestMod, profile.asImmutableProfile(), async mod => {
+                        await ProfileModList.updateMod(manifestMod, profile, async mod => {
                             mod.disable();
                         });
-                        await ProfileInstallerProvider.instance.disableMod(manifestMod, profile.asImmutableProfile());
+                        await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
                     }
                 }
             }
