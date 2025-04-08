@@ -170,6 +170,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("PulsarLostColony"),
             buildBepInExRules("SongsOfConquest"),
             buildBepInExRules("WhiteKnuckle"),
+            buildBepInExRules("ASKA"),
         ]
     }
 }

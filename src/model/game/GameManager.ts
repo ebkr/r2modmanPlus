@@ -947,6 +947,12 @@ export default class GameManager {
             "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
+
+        new Game("ASKA", "ASKA", "ASKA",
+            "ASKA", ["Aska.exe"], "ASKA_Data",
+            "https://thunderstore.io/c/aska/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1898300")], "ASKA.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
