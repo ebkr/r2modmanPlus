@@ -74,8 +74,14 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack_AmongUs", PackageLoader.BEPINEX),
 ];
 
-const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
-const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+export const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
+export const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+
+export const ALL_MODLOADER_MAPPINGS = [
+    ...MODLOADER_PACKAGES,
+    ...LEGACY_MELONLOADER_MAPPING,
+    ...RECURSIVE_MELONLOADER_MAPPING
+];
 
 /**
  * While this object is a bit silly given that all the keys are pointing to the
