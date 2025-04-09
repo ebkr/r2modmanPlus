@@ -197,9 +197,8 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 const manifestMod = new ManifestV2().fromThunderstoreCombo(combo);
                 const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
                 const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
-                if (manifestMod.getName().toLowerCase() !== 'bbepis-bepinexpack') {
-                    throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
-                }
+
+                throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
                 throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
                 throwForR2Error(await ProfileModList.addMod(manifestMod, profile));
                 if (olderInstallOfMod !== undefined) {
