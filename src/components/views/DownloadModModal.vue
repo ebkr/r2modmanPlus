@@ -193,23 +193,25 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     && value.getVersionNumber().isEqualTo(combo.getVersion().getVersionNumber())
             );
 
-            if (modAlreadyInstalled === undefined || !modAlreadyInstalled) {
-                const manifestMod = new ManifestV2().fromThunderstoreCombo(combo);
-                const resolvedAuthorModNameString = `${manifestMod.getAuthorName()}-${manifestMod.getDisplayName()}`;
-                const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => `${value.getAuthorName()}-${value.getDisplayName()}` === resolvedAuthorModNameString);
-
-                throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
-                throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
-                throwForR2Error(await ProfileModList.addMod(manifestMod, profile));
-                if (olderInstallOfMod !== undefined) {
-                    if (!olderInstallOfMod.isEnabled()) {
-                        await ProfileModList.updateMod(manifestMod, profile, async mod => {
-                            mod.disable();
-                        });
-                        await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
-                    }
-                }
+            if (modAlreadyInstalled !== undefined && modAlreadyInstalled) {
+                return;
             }
+            
+            const manifestMod = new ManifestV2().fromThunderstoreCombo(combo);
+            const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => value.getName() === manifestMod.getName());
+
+            throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
+            throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
+            throwForR2Error(await ProfileModList.addMod(manifestMod, profile));
+
+            if (olderInstallOfMod === undefined || olderInstallOfMod.isEnabled()) {
+                return;
+            }
+
+            await ProfileModList.updateMod(manifestMod, profile, async mod => {
+                mod.disable();
+            });
+            await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
         }
     }
 
