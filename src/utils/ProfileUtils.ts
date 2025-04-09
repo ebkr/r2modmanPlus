@@ -85,7 +85,7 @@ export async function installModsToProfile(
         for (const [index, comboMod] of comboList.entries()) {
             modName = comboMod.getMod().getName();
 
-            const manifestMod = new ManifestV2().fromThunderstoreMod(comboMod.getMod(), comboMod.getVersion());
+            const manifestMod = new ManifestV2().fromThunderstoreCombo(comboMod);
 
             if (installedVersions.includes(manifestMod.getDependencyString())) {
                 continue;

@@ -637,7 +637,7 @@ import ModalCard from '../components/ModalCard.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.profile, combo, this.$store)
+                DownloadModModal.downloadSpecific(this.profile.asImmutableProfile(), combo, this.$store)
                     .then(async value => {
                         const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                         if (!(modList instanceof R2Error)) {
