@@ -54,14 +54,12 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
-import ManifestV2 from '../../model/ManifestV2';
+import R2Error from '../../model/errors/R2Error';
 import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 
@@ -110,7 +108,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         let currentDownloadIndex = 0;
                         for (const combo of downloadedMods) {
                             try {
-                                await DownloadModModal.installModAfterDownload(profile, combo);
+                                await store.dispatch('download/installModAfterDownload', {profile, combo});
                             } catch (e) {
                                 store.commit('download/updateDownload', { assignId, failed: true });
                                 return reject(
@@ -182,36 +180,6 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                 await this.downloadCompletedCallback(downloadedMods, assignId);
                 this.setIsModProgressModalOpen(false);
             }, 1);
-        }
-
-        static async installModAfterDownload(profile: ImmutableProfile, combo: ThunderstoreCombo): Promise<void> {
-            const profileModList = await ProfileModList.getModList(profile);
-            throwForR2Error(profileModList);
-
-            const modAlreadyInstalled = (profileModList as ManifestV2[]).find(
-                value => value.getName() === combo.getMod().getFullName()
-                    && value.getVersionNumber().isEqualTo(combo.getVersion().getVersionNumber())
-            );
-
-            if (modAlreadyInstalled !== undefined && modAlreadyInstalled) {
-                return;
-            }
-            
-            const manifestMod = new ManifestV2().fromThunderstoreCombo(combo);
-            const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => value.getName() === manifestMod.getName());
-
-            throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, profile));
-            throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, profile));
-            throwForR2Error(await ProfileModList.addMod(manifestMod, profile));
-
-            if (olderInstallOfMod === undefined || olderInstallOfMod.isEnabled()) {
-                return;
-            }
-
-            await ProfileModList.updateMod(manifestMod, profile, async mod => {
-                mod.disable();
-            });
-            await ProfileInstallerProvider.instance.disableMod(manifestMod, profile);
         }
     }
 
