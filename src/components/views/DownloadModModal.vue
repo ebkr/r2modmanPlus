@@ -54,14 +54,12 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
-import ManifestV2 from '../../model/ManifestV2';
+import R2Error from '../../model/errors/R2Error';
 import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 

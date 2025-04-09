@@ -1,8 +1,8 @@
 import { ActionTree, GetterTree } from "vuex";
 
+import { throwForR2Error } from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
-import Profile, { ImmutableProfile } from "../../model/Profile";
-import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
+import { ImmutableProfile } from "../../model/Profile";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import ManagerSettings from "../../r2mm/manager/ManagerSettings";
@@ -75,7 +75,7 @@ export const DownloadModule = {
             if (modAlreadyInstalled !== undefined && modAlreadyInstalled) {
                 return;
             }
-            
+
             const manifestMod = new ManifestV2().fromThunderstoreCombo(params.combo);
             const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => value.getName() === manifestMod.getName());
 
