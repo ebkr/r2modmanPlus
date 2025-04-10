@@ -5,7 +5,9 @@ import ManifestV2 from "../../model/ManifestV2";
 import { ImmutableProfile } from "../../model/Profile";
 import StatusEnum from "../../model/enums/StatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
+import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
 import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
+import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
 import { State as RootState } from "../../store";
@@ -60,12 +62,14 @@ export const DownloadModule = {
             state.allDownloads = [...state.allDownloads, downloadObject];
             return assignId;
         },
+
         async toggleIgnoreCache({commit, rootGetters}) {
             const settings: ManagerSettings = rootGetters['settings'];
             settings.setIgnoreCache(!settings.getContext().global.ignoreCache);
             commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
         },
-        async installModAfterDownload({}, params: {profile: ImmutableProfile, combo: ThunderstoreCombo}) {
+
+        async installMod({}, params: {profile: ImmutableProfile, combo: ThunderstoreCombo}) {
             const profileModList = await ProfileModList.getModList(params.profile);
             throwForR2Error(profileModList);
 
@@ -94,6 +98,34 @@ export const DownloadModule = {
             });
             await ProfileInstallerProvider.instance.disableMod(manifestMod, params.profile);
         },
+
+        async installMods({commit, dispatch}, params: {
+            downloadedMods: ThunderstoreCombo[],
+            assignId: number,
+            profile: ImmutableProfile,
+        }) {
+            await ProfileModList.requestLock(async () => {
+                let currentDownloadIndex = 0;
+                for (const combo of params.downloadedMods) {
+                    try {
+                        await dispatch('installMod', {profile: params.profile, combo});
+                    } catch (e) {
+                        throw R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
+                    }
+                    commit('updateDownload', {
+                        assignId: params.assignId,
+                        modName: combo.getMod().getName(),
+                        installProgress: ThunderstoreDownloaderProvider.instance.generateProgressPercentage(100, currentDownloadIndex, params.downloadedMods.length)
+                    });
+                    currentDownloadIndex++;
+                }
+
+                const modList = await ProfileModList.getModList(params.profile);
+                throwForR2Error(modList);
+                throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts((modList as ManifestV2[]), params.profile));
+            });
+        },
+
         async downloadProgressCallback({commit}, params: {
             assignId: number,
             downloadProgress: number,
@@ -111,7 +143,8 @@ export const DownloadModule = {
             } else if (params.status === StatusEnum.PENDING || params.status === StatusEnum.SUCCESS) {
                 commit('updateDownload', {assignId: params.assignId, modName: params.modName, downloadProgress: params.downloadProgress});
             }
-        }
+        },
+
     },
 
     getters: <GetterTree<State, RootState>>{
