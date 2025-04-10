@@ -78,63 +78,55 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
             combo: ThunderstoreCombo,
             store: Store<any>
         ): Promise<void> {
-            return new Promise(async (resolve, reject) => {
+            const assignId = await store.dispatch(
+                'download/addDownload',
+                [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
+            );
 
-                const assignId = await store.dispatch(
-                    'download/addDownload',
-                    [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
+            let downloadedMods: ThunderstoreCombo[] = [];
+            try {
+                downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
+                    profile,
+                    combo,
+                    store.state.download.ignoreCache,
+                    (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
+                        try {
+                            DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
+                        } catch (e) {
+                            throw e;
+                        }
+                    }
                 );
-
-                setTimeout(async () => {
-                    let downloadedMods: ThunderstoreCombo[] = [];
+            } catch (e) {
+                store.commit('download/updateDownload', { assignId, failed: true });
+                throw e;
+            }
+            await ProfileModList.requestLock(async () => {
+                let currentDownloadIndex = 0;
+                for (const combo of downloadedMods) {
                     try {
-                        downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
-                            profile,
-                            combo,
-                            store.state.download.ignoreCache,
-                            (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
-                                try {
-                                    DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
-                                } catch (e) {
-                                    reject(e);
-                                }
-                            }
-                        );
+                        await store.dispatch('download/installModAfterDownload', {profile, combo});
                     } catch (e) {
                         store.commit('download/updateDownload', { assignId, failed: true });
-                        return reject(e);
+                        throw R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
                     }
-                    await ProfileModList.requestLock(async () => {
-                        let currentDownloadIndex = 0;
-                        for (const combo of downloadedMods) {
-                            try {
-                                await store.dispatch('download/installModAfterDownload', {profile, combo});
-                            } catch (e) {
-                                store.commit('download/updateDownload', { assignId, failed: true });
-                                return reject(
-                                    R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`)
-                                );
-                            }
-                            store.commit('download/updateDownload', {
-                                assignId,
-                                modName: combo.getMod().getName(),
-                                installProgress: ThunderstoreDownloaderProvider.instance.generateProgressPercentage(100, currentDownloadIndex, downloadedMods.length)
-                            });
-                            currentDownloadIndex++;
-                        }
-                        const modList = await ProfileModList.getModList(profile);
-                        if (modList instanceof R2Error) {
-                            store.commit('download/updateDownload', { assignId, failed: true });
-                            return reject(modList);
-                        }
-                        const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
-                        if (err instanceof R2Error) {
-                            store.commit('download/updateDownload', { assignId, failed: true });
-                            return reject(err);
-                        }
-                        return resolve();
+                    store.commit('download/updateDownload', {
+                        assignId,
+                        modName: combo.getMod().getName(),
+                        installProgress: ThunderstoreDownloaderProvider.instance.generateProgressPercentage(100, currentDownloadIndex, downloadedMods.length)
                     });
-                }, 1);
+                    currentDownloadIndex++;
+                }
+                const modList = await ProfileModList.getModList(profile);
+                if (modList instanceof R2Error) {
+                    store.commit('download/updateDownload', { assignId, failed: true });
+                    throw modList;
+                }
+                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
+                if (err instanceof R2Error) {
+                    store.commit('download/updateDownload', { assignId, failed: true });
+                    throw err;
+                }
             });
         }
 
