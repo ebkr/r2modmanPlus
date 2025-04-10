@@ -54,7 +54,8 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
+import ManifestV2 from "../../model/ManifestV2";
 import { ImmutableProfile } from '../../model/Profile';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -73,7 +74,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
     })
     export default class DownloadModModal extends mixins(DownloadMixin) {
 
-        public static async downloadSpecific(
+        public static async downloadAndInstallSpecific(
             profile: ImmutableProfile,
             combo: ThunderstoreCombo,
             store: Store<any>
@@ -97,17 +98,25 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         }
                     }
                 );
+                await this.installSpecific(downloadedMods, assignId, profile, store);
             } catch (e) {
                 store.commit('download/updateDownload', { assignId, failed: true });
                 throw e;
             }
+        }
+
+        static async installSpecific(
+            downloadedMods: ThunderstoreCombo[],
+            assignId: number,
+            profile: ImmutableProfile,
+            store: Store<any>
+        ): Promise<void> {
             await ProfileModList.requestLock(async () => {
                 let currentDownloadIndex = 0;
                 for (const combo of downloadedMods) {
                     try {
                         await store.dispatch('download/installModAfterDownload', {profile, combo});
                     } catch (e) {
-                        store.commit('download/updateDownload', { assignId, failed: true });
                         throw R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
                     }
                     store.commit('download/updateDownload', {
@@ -117,17 +126,12 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     });
                     currentDownloadIndex++;
                 }
+
                 const modList = await ProfileModList.getModList(profile);
-                if (modList instanceof R2Error) {
-                    store.commit('download/updateDownload', { assignId, failed: true });
-                    throw modList;
-                }
-                const err = await ConflictManagementProvider.instance.resolveConflicts(modList, profile);
-                if (err instanceof R2Error) {
-                    store.commit('download/updateDownload', { assignId, failed: true });
-                    throw err;
-                }
+                throwForR2Error(modList);
+                throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts((modList as ManifestV2[]), profile));
             });
+
         }
 
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {

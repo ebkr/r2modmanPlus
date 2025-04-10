@@ -639,7 +639,7 @@ import ModalCard from '../components/ModalCard.vue';
                 }
 
 				try {
-                	await DownloadModModal.downloadSpecific(this.profile.asImmutableProfile(), combo, this.$store);
+                	await DownloadModModal.downloadAndInstallSpecific(this.profile.asImmutableProfile(), combo, this.$store);
 				} catch (err) {
 					this.$store.commit('error/handleError', err as R2Error);
 					return;
