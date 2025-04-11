@@ -81,18 +81,13 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
                 [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
             );
 
-            let downloadedMods: ThunderstoreCombo[] = [];
             try {
-                downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
+                const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
                     profile,
                     combo,
                     store.state.download.ignoreCache,
                     (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
-                        try {
-                            store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
-                        } catch (e) {
-                            throw e;
-                        }
+                        store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
                     }
                 );
                 await store.dispatch('download/installMod', {downloadedMods, assignId, profile});

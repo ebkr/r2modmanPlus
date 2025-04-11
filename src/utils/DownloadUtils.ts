@@ -17,5 +17,3 @@ export function addSolutionsToError(err: R2Error): void {
         err.solution = 'Using "Change data folder" option in the settings to select a shorter path might solve the issue';
     }
 }
-
-// TODO: move generateProgressPercentage to DownloadUtils
