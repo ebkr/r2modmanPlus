@@ -879,7 +879,7 @@ export default class GameManager {
         new Game("R.E.P.O.", "REPO", "REPO",
             "REPO", ["REPO.exe"], "REPO_Data",
             "https://thunderstore.io/c/repo/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "repo.webp",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "REPO.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["repo"]),
 
         new Game("Zort", "Zort", "Zort",
