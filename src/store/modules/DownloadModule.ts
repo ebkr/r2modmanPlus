@@ -126,6 +126,28 @@ export const DownloadModule = {
             });
         },
 
+        async downloadAndInstallSpecific({state, commit, dispatch}, params: {
+            combo: ThunderstoreCombo,
+            profile: ImmutableProfile
+        }) {
+            const assignId = await dispatch('addDownload', [`${params.combo.getMod().getName()} (${params.combo.getVersion().getVersionNumber().toString()})`]);
+
+            try {
+                const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
+                    params.profile,
+                    params.combo,
+                    state.ignoreCache,
+                    (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
+                        dispatch('downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
+                    }
+                );
+                await dispatch('installMods', {downloadedMods, assignId, profile: params.profile});
+            } catch (e) {
+                commit('updateDownload', { assignId, failed: true });
+                throw e;
+            }
+        },
+
         async downloadProgressCallback({commit}, params: {
             assignId: number,
             downloadProgress: number,

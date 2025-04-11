@@ -639,7 +639,7 @@ import ModalCard from '../components/ModalCard.vue';
                 }
 
 				try {
-                	await DownloadModModal.downloadAndInstallSpecific(this.profile.asImmutableProfile(), combo, this.$store);
+                	await this.$store.dispatch('download/downloadAndInstallSpecific', {profile: this.profile.asImmutableProfile(), combo});
 				    const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
                     if (modList instanceof R2Error) {
                         throw modList;

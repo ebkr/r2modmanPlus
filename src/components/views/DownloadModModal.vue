@@ -47,14 +47,12 @@
 
 import { mixins } from "vue-class-component";
 import { Component } from 'vue-property-decorator';
-import { Store } from "vuex";
 
 import { Progress } from '../all';
 import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import { ImmutableProfile } from '../../model/Profile';
 import R2Error from '../../model/errors/R2Error';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -70,32 +68,6 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
         }
     })
     export default class DownloadModModal extends mixins(DownloadMixin) {
-
-        public static async downloadAndInstallSpecific(
-            profile: ImmutableProfile,
-            combo: ThunderstoreCombo,
-            store: Store<any>
-        ): Promise<void> {
-            const assignId = await store.dispatch(
-                'download/addDownload',
-                [`${combo.getMod().getName()} (${combo.getVersion().getVersionNumber().toString()})`]
-            );
-
-            try {
-                const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
-                    profile,
-                    combo,
-                    store.state.download.ignoreCache,
-                    (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
-                        store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
-                    }
-                );
-                await store.dispatch('download/installMod', {downloadedMods, assignId, profile});
-            } catch (e) {
-                store.commit('download/updateDownload', { assignId, failed: true });
-                throw e;
-            }
-        }
 
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
