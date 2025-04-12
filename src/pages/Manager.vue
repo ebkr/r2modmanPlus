@@ -334,7 +334,9 @@ import ModalCard from '../components/ModalCard.vue';
 				case 'win32':
 					return path.basename(file).toLowerCase() === "steam.exe"
 				case 'linux':
-                    return path.basename(file).toLowerCase() === "steam.sh"
+                    const basename = path.basename(file).toLowerCase();
+                    // Accept both steam.sh and plain 'steam' executable (including ELF binaries)
+                    return basename === "steam.sh" || basename === "steam"
                 case 'darwin':
                     return path.basename(file).toLowerCase() === 'steam.app'
                 default:
@@ -347,7 +349,7 @@ import ModalCard from '../components/ModalCard.vue';
 			InteractionProvider.instance.selectFile({
                 title: 'Locate Steam Executable',
                 defaultPath: steamDir,
-                filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
+                filters: [{name: "steam", extensions: process.platform === 'linux' ? ["sh", ""] : ["exe", "sh", "app"]}],
                 buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {
