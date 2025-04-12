@@ -335,8 +335,10 @@ import ModalCard from '../components/ModalCard.vue';
 					return path.basename(file).toLowerCase() === "steam.exe"
 				case 'linux':
                     const basename = path.basename(file).toLowerCase();
-                    // Accept both steam.sh and plain 'steam' executable (including ELF binaries)
-                    return basename === "steam.sh" || basename === "steam"
+                    // Accept steam.sh script, plain 'steam' executable, or any file named 'steam' (for ELF binaries)
+                    return basename === "steam.sh" || basename === "steam" || 
+                           // Check if file exists and is executable
+                           (basename.includes("steam") && await this.isFileExecutable(file))
                 case 'darwin':
                     return path.basename(file).toLowerCase() === 'steam.app'
                 default:
@@ -349,7 +351,11 @@ import ModalCard from '../components/ModalCard.vue';
 			InteractionProvider.instance.selectFile({
                 title: 'Locate Steam Executable',
                 defaultPath: steamDir,
-                filters: [{name: "steam", extensions: process.platform === 'linux' ? ["sh", ""] : ["exe", "sh", "app"]}],
+                filters: process.platform === 'linux' 
+                    ? [
+                        { name: "All Files", extensions: ["*"] }
+                      ]
+                    : [{ name: "Steam", extensions: ["exe", "sh", "app"] }],
                 buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {
@@ -655,6 +661,20 @@ import ModalCard from '../components/ModalCard.vue';
 
 			this.isManagerUpdateAvailable();
 		}
+
+        async isFileExecutable(file: string): Promise<boolean> {
+            try {
+                // Check if file exists
+                const exists = await FsProvider.instance.exists(file);
+                if (!exists) return false;
+                
+                // Get file stats and check if it's a valid file
+                const stats = await FsProvider.instance.stat(file);
+                return stats.isFile();
+            } catch (e) {
+                return false;
+            }
+        }
 	}
 
 </script>
