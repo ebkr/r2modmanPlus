@@ -12,6 +12,7 @@ export function buildGodotMLRules(gameName: string): CoreRuleType {
                 trackingMethod: 'PACKAGE_ZIP',
                 subRoutes: []
             },
-        ]
+        ],
+        relativeFileExclusions: null
     }
 }

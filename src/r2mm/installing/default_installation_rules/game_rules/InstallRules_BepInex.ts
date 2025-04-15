@@ -39,5 +39,6 @@ export function buildBepInExRules(gameName: string, extraRules?: RuleSubtype[]):
             },
             ...(extraRules ? extraRules : []),
         ],
+        relativeFileExclusions: null
     }
 }

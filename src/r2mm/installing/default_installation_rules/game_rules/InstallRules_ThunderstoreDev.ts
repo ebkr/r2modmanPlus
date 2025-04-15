@@ -44,7 +44,8 @@ export default function(): CoreRuleType {
                 subRoutes: [],
                 isDefaultLocation: true
             }
-        ]
+        ],
+        relativeFileExclusions: null
     }
 
 }
