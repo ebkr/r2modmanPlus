@@ -78,7 +78,8 @@ export class ShimloaderPluginInstaller implements PackageInstaller {
                 trackingMethod: "NONE",
                 subRoutes: [],
             }
-        ]
+        ],
+        relativeFileExclusions: null
     });
 
     async install(args: InstallArgs) {
