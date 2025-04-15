@@ -5,7 +5,7 @@ import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
 export type CoreRuleType = {
     gameName: string,
     rules: RuleSubtype[],
-    relativeFileExclusions?: string[],
+    relativeFileExclusions: string[] | null,
 }
 
 export type RuleSubtype = {
