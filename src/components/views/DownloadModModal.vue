@@ -92,7 +92,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                     store.state.download.ignoreCache,
                     (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
                         try {
-                            DownloadMixin.downloadProgressCallback(store, assignId, downloadProgress, modName, status, err);
+                            store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
                         } catch (e) {
                             throw e;
                         }
@@ -156,15 +156,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
                         tsCombo,
                         this.$store.state.download.ignoreCache,
                         (downloadProgress, modName, status, err) => {
-                            DownloadMixin.downloadProgressCallback(
-                                this.$store,
-                                assignId,
-                                downloadProgress,
-                                modName,
-                                status,
-                                err,
-                                () => this.setIsModProgressModalOpen(false)
-                            );
+                            this.$store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
                         }
                     );
                 } catch (e) {

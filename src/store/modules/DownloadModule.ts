@@ -1,13 +1,15 @@
 import { ActionTree, GetterTree } from "vuex";
 
-import { throwForR2Error } from "../../model/errors/R2Error";
+import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
 import { ImmutableProfile } from "../../model/Profile";
+import StatusEnum from "../../model/enums/StatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ProfileInstallerProvider from "../../providers/ror2/installing/ProfileInstallerProvider";
 import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
 import { State as RootState } from "../../store";
+import * as DownloadUtils from "../../utils/DownloadUtils";
 
 interface DownloadProgress {
     assignId: number;
@@ -91,6 +93,24 @@ export const DownloadModule = {
                 mod.disable();
             });
             await ProfileInstallerProvider.instance.disableMod(manifestMod, params.profile);
+        },
+        async downloadProgressCallback({commit}, params: {
+            assignId: number,
+            downloadProgress: number,
+            modName: string,
+            status: number,
+            err: R2Error | null
+        }) {
+            if (params.status === StatusEnum.FAILURE) {
+                commit('setIsModProgressModalOpen', false);
+                commit('updateDownload', {assignId: params.assignId, failed: true});
+                if (params.err !== null) {
+                    DownloadUtils.addSolutionsToError(params.err);
+                    throw params.err;
+                }
+            } else if (params.status === StatusEnum.PENDING || params.status === StatusEnum.SUCCESS) {
+                commit('updateDownload', {assignId: params.assignId, modName: params.modName, downloadProgress: params.downloadProgress});
+            }
         }
     },
 
