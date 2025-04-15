@@ -160,7 +160,7 @@ import { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import R2Error, { throwForR2Error } from '../model/errors/R2Error';
+import R2Error from '../model/errors/R2Error';
 import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThemeManager from '../r2mm/manager/ThemeManager';
@@ -640,17 +640,14 @@ import ModalCard from '../components/ModalCard.vue';
 
 				try {
                 	await DownloadModModal.downloadAndInstallSpecific(this.profile.asImmutableProfile(), combo, this.$store);
+				    const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
+                    if (modList instanceof R2Error) {
+                        throw modList;
+                    }
+                    await this.$store.dispatch('profile/updateModList', modList);
 				} catch (err) {
-					this.$store.commit('error/handleError', err as R2Error);
-					return;
+					this.$store.commit('error/handleError', R2Error.fromThrownValue(err));
 				}
-
-				const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
-				if (modList instanceof R2Error) {
-					this.$store.commit('error/handleError', modList);
-					return;
-				}
-				await this.$store.dispatch('profile/updateModList', modList);
             });
 
 			this.isManagerUpdateAvailable();
