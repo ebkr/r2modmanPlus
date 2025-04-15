@@ -160,7 +160,7 @@ import { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';
-import R2Error from '../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../model/errors/R2Error';
 import ManifestV2 from '../model/ManifestV2';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThemeManager from '../r2mm/manager/ThemeManager';
@@ -637,18 +637,20 @@ import ModalCard from '../components/ModalCard.vue';
                     });
                     return;
                 }
-                DownloadModModal.downloadSpecific(this.profile.asImmutableProfile(), combo, this.$store)
-                    .then(async value => {
-                        const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
-                        if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('profile/updateModList', modList);
-                        } else {
-                            this.$store.commit('error/handleError', modList);
-                        }
-                    })
-                    .catch(
-                        (err: R2Error) => this.$store.commit('error/handleError', err)
-                    );
+
+				try {
+                	await DownloadModModal.downloadSpecific(this.profile.asImmutableProfile(), combo, this.$store);
+				} catch (err) {
+					this.$store.commit('error/handleError', err as R2Error);
+					return;
+				}
+
+				const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
+				if (modList instanceof R2Error) {
+					this.$store.commit('error/handleError', modList);
+					return;
+				}
+				await this.$store.dispatch('profile/updateModList', modList);
             });
 
 			this.isManagerUpdateAvailable();
