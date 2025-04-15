@@ -627,29 +627,6 @@ import ModalCard from '../components/ModalCard.vue';
 		async created() {
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
 
-            InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
-                const game = this.$store.state.activeGame;
-                const combo: ThunderstoreCombo | R2Error = await ThunderstoreCombo.fromProtocol(protocolUrl, game);
-                if (combo instanceof R2Error) {
-                    this.$store.commit('error/handleError', {
-                        error: combo,
-                        severity: LogSeverity.ACTION_STOPPED
-                    });
-                    return;
-                }
-
-				try {
-                	await this.$store.dispatch('download/downloadAndInstallSpecific', {profile: this.profile.asImmutableProfile(), combo});
-				    const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
-                    if (modList instanceof R2Error) {
-                        throw modList;
-                    }
-                    await this.$store.dispatch('profile/updateModList', modList);
-				} catch (err) {
-					this.$store.commit('error/handleError', R2Error.fromThrownValue(err));
-				}
-            });
-
 			this.isManagerUpdateAvailable();
 		}
 	}
