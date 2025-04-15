@@ -100,7 +100,7 @@ export default class ThunderstoreVersion  {
     }
 
     public getDownloadUrl(): string {
-        return CdnProvider.addCdnQueryParameter(this.downloadUrl);
+        return CdnProvider.addCdnQueryParameterForPackageDownload(this.downloadUrl);
     }
 
     public setDownloadUrl(url: string) {

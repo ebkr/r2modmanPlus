@@ -53,6 +53,7 @@ export default class UtilityMixin extends Vue {
      */
     async checkCdnConnection() {
         try {
+            await CdnProvider.fetchCdnDefinitions();
             await CdnProvider.checkCdnConnection();
         } catch (error: unknown) {
             if (error instanceof R2Error) {
