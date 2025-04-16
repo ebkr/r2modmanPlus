@@ -1,7 +1,9 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import ecosystem from "../../../ecosystem.json";
-import jsonSchema from "../../../ecosystemJsonSchema.json";
+
+import { ThunderstoreEcosystem }  from "../../assets/data/ecosystem.d";
+import ecosystem from "../../assets/data/ecosystem.json";
+import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
 
@@ -11,9 +13,9 @@ export class EcosystemSchema {
     /**
      * Get a validated instance of the ecosystem schema.
      */
-    static get get() {
+    private static get ecosystem(): ThunderstoreEcosystem {
         if (this._isValidated) {
-            return ecosystem;
+            return ecosystem as ThunderstoreEcosystem;
         }
 
         // Validate the schema via its schema schema.
@@ -28,17 +30,19 @@ export class EcosystemSchema {
         }
 
         this._isValidated = true;
-        return ecosystem;
+        return ecosystem as ThunderstoreEcosystem;
     }
 
     /**
      * Get a list of games which have valid r2mm entries.
      */
     static get supportedGames() {
-        return Object.values(this.get.games).filter((x) => x.r2modman != null);
+        return Object.values(this.ecosystem.games).filter(
+            (x): x is typeof x & {r2modman: NonNullable<typeof x["r2modman"]>} => x.r2modman != null
+        );
     }
 
     static get modloaderPackages() {
-        return this.get.modloader_packages;
+        return this.ecosystem.modloaderPackages;
     }
 }
