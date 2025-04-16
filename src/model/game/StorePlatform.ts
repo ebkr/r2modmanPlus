@@ -15,7 +15,7 @@ export function getStorePlatformFromName(name: string): StorePlatform {
         case "steam": return StorePlatform.STEAM;
         case "steam-direct": return StorePlatform.STEAM_DIRECT;
         case "epic-games-store": return StorePlatform.EPIC_GAMES_STORE;
-        case "oculus": return StorePlatform.OCULUS_STORE;
+        case "oculus-store": return StorePlatform.OCULUS_STORE;
         case "origin": return StorePlatform.ORIGIN;
         case "xbox-game-pass": return StorePlatform.XBOX_GAME_PASS;
         case "other": return StorePlatform.OTHER;
