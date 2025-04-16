@@ -28,11 +28,9 @@ export default class GameManager {
 
     static get gameList(): Game[] {
         return EcosystemSchema.supportedGames.map((game) => {
-            const r2mm = game.r2modman!;
+            const r2mm = game.r2modman;
 
-            // Map distribution values onto the r2mm StorePlatformMetadata type.
-            // The `identifier` property may not be present, so we check it beforehand to avoid JSON import lint errors.
-            const distributions = game.distributions.map((x: any) => new StorePlatformMetadata(
+            const distributions = game.distributions.map((x) => new StorePlatformMetadata(
                     getStorePlatformFromName(x.platform),
                     x.identifier || undefined,
                 )
@@ -40,14 +38,14 @@ export default class GameManager {
 
             return new Game(
                 game.meta.displayName,
-                r2mm.internalFolderName as string,
+                r2mm.internalFolderName,
                 r2mm.settingsIdentifier,
                 r2mm.steamFolderName,
                 r2mm.exeNames,
-                r2mm.dataFolderName || "",
+                r2mm.dataFolderName,
                 r2mm.packageIndex,
                 distributions,
-                game.meta.iconUrl,
+                game.meta.iconUrl || "ThunderstoreBeta.jpg",
                 displayModeFromString(r2mm.gameSelectionDisplayMode),
                 gameInstanceTypeFromString(r2mm.gameInstanceType),
                 installerVariantFromString(r2mm.packageLoader),
