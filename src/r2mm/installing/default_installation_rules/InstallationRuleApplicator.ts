@@ -173,6 +173,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("HumanFallFlat"),
             buildBepInExRules("Magicite"),
             buildBepInExRules("ENADreamBBQ"),
+            buildBepInExRules("ASKA"),
         ]
     }
 }

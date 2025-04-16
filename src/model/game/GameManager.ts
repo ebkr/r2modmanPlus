@@ -965,6 +965,12 @@ export default class GameManager {
             "https://thunderstore.io/c/ena-dream-bbq/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2134320")], "ENADreamBBQ.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["edbbq"]),
+
+        new Game("ASKA", "ASKA", "ASKA",
+            "ASKA", ["Aska.exe"], "ASKA_Data",
+            "https://thunderstore.io/c/aska/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1898300")], "ASKA.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
