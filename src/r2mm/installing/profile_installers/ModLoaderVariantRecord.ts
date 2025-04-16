@@ -11,13 +11,17 @@ import { EcosystemSchema } from '../../../model/schema/ThunderstoreSchema';
  */
 export const MODLOADER_PACKAGES = EcosystemSchema.modloaderPackages.map((x) =>
     new ModLoaderPackageMapping(
-        x.identifier,
+        x.packageId,
         x.rootFolder,
-        installerVariantFromString(x.variant),
+        installerVariantFromString(x.loader),
     ),
 );
 
-const OVERRIDES: { [key: string]: [ModLoaderPackageMapping] } = {
+type Modloaders = Record<string, ModLoaderPackageMapping[]>;
+
+// Overrides are needed as the "recommended version" information
+// is not available in the ecosystem data.
+const OVERRIDES: Modloaders = {
     BONEWORKS: [
         new ModLoaderPackageMapping(
             'LavaGang-MelonLoader',
@@ -26,33 +30,19 @@ const OVERRIDES: { [key: string]: [ModLoaderPackageMapping] } = {
             new VersionNumber('0.5.4'),
         ),
     ],
-    BONELAB: [
-        new ModLoaderPackageMapping(
-            'LavaGang-MelonLoader',
-            '',
-            PackageLoader.MELON_LOADER,
-        ),
-    ],
 }
 
-// TODO:
-// - Overrides for BONELAB and BONEWORKS.
-// - Better type?
-export const MOD_LOADER_VARIANTS = Object.fromEntries(
+export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
     EcosystemSchema.supportedGames
         .map((game) => [
-            game.r2modman!.internalFolderName,
-            OVERRIDES[game.r2modman!.internalFolderName] || MODLOADER_PACKAGES
+            game.r2modman.internalFolderName,
+            OVERRIDES[game.r2modman.internalFolderName] || MODLOADER_PACKAGES
         ])
 );
 
-export function getModLoaderPackageNames() {
-    const names = MODLOADER_PACKAGES.map((mapping) => mapping.packageName);
-
-    // Hard code MelonLoader to avoid having to iterate over MODLOADER_PACKAGES
-    // for each game separately. Hopefully we'll get rid of this once ML v0.6.6
-    // is released, as it's supposed to fix a bug that forces some games to
-    // currently use the older versions.
-    names.push('LavaGang-MelonLoader');
+export const getModLoaderPackageNames = () => {
+    const deduplicated = new Set(EcosystemSchema.modloaderPackages.map((x) => x.packageId));
+    const names = Array.from(deduplicated);
+    names.sort();
     return names;
 }
