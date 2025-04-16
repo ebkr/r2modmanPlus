@@ -72,7 +72,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
 
-            const assignId = await this.$store.dispatch(
+            const downloadId = await this.$store.dispatch(
                 'download/addDownload',
                 [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
             );
@@ -91,16 +91,16 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
                         tsCombo,
                         this.$store.state.download.ignoreCache,
                         (downloadProgress, modName, status, err) => {
-                            this.$store.dispatch('download/downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
+                            this.$store.dispatch('download/downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
                         }
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', { assignId, failed: true });
+                    this.$store.commit('download/updateDownload', { downloadId, failed: true });
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }
-                await this.downloadCompletedCallback(downloadedMods, assignId);
+                await this.downloadCompletedCallback(downloadedMods, downloadId);
                 this.setIsModProgressModalOpen(false);
             }, 1);
         }

@@ -44,7 +44,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
         this.closeModal();
         const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
 
-        const assignId = await this.$store.dispatch(
+        const downloadId = await this.$store.dispatch(
             'download/addDownload',
             modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
         );
@@ -55,19 +55,19 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', {assignId, failed: true});
+                    this.$store.commit('download/updateDownload', {downloadId, failed: true});
                     if (err !== null) {
                         DownloadUtils.addSolutionsToError(err);
                         throw err;
                     }
                 } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {assignId, modName, downloadProgress});
+                    this.$store.commit('download/updateDownload', {downloadId, modName, downloadProgress});
                 }
             } catch (e) {
                 this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
             }
         }, async (downloadedMods) => {
-            await this.downloadCompletedCallback(downloadedMods, assignId);
+            await this.downloadCompletedCallback(downloadedMods, downloadId);
             this.setIsModProgressModalOpen(false);
         });
     }
