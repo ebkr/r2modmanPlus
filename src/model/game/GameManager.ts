@@ -1,9 +1,9 @@
 import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { getStorePlatformFromName, StorePlatform } from '../../model/game/StorePlatform';
-import { displayModeFromString } from '../../model/game/GameSelectionDisplayMode';
-import { gameInstanceTypeFromString } from '../../model/game/GameInstanceType';
-import { installerVariantFromString } from '../../model/installing/PackageLoader';
+import { displayModeFromString, GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
+import { GameInstanceType, gameInstanceTypeFromString } from '../../model/game/GameInstanceType';
+import { installerVariantFromString, PackageLoader } from '../../model/installing/PackageLoader';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
 import * as path from 'path';
@@ -52,6 +52,23 @@ export default class GameManager {
                 r2mm.additionalSearchStrings,
             );
         });
+    }
+
+    // Server definitions aren't available via Thunderstore ecosystem declarations.
+    static get serverList(): Game[] {
+        return [
+            new Game('Risk of Rain 2 Dedicated Server', 'RiskOfRain2', 'RiskOfRain2Server',
+                'Risk of Rain 2 Dedicated Server', ['Risk of Rain 2.exe'], 'Risk of Rain 2_Data',
+                'https://thunderstore.io/c/riskofrain2/api/v1/package-listing-index/',
+                [new StorePlatformMetadata(StorePlatform.STEAM, "1180760")], "RiskOfRain2.jpg",
+                GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX, ["ROR2"]),
+
+            new Game('Valheim Dedicated Server', 'Valheim', 'ValheimServer',
+                'Valheim dedicated server', ['valheim_server.exe', 'valheim_server.x86_64'], 'valheim_server_Data',
+                'https://thunderstore.io/c/valheim/api/v1/package-listing-index/',
+                [new StorePlatformMetadata(StorePlatform.STEAM, "896660")], "Valheim.jpg",
+                GameSelectionDisplayMode.VISIBLE, GameInstanceType.SERVER, PackageLoader.BEPINEX),
+        ];
     }
 
     public static async activate(game: Game, platform: StorePlatform) {
