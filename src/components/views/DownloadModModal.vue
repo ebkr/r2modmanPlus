@@ -73,7 +73,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
             this.closeModal();
 
             const downloadId = await this.$store.dispatch(
-                'download/addDownload',
+                'download/addDownloadProgressTracking',
                 [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
             );
 
