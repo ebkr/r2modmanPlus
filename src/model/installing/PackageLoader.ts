@@ -44,20 +44,19 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
     return null;
 }
 
-/**
- * Return the PackageLoader enum variant from the provided ecosystem-schema package loader name.
- * @param name The all lowercase, no underscores, schema name of the package loader
- * @returns The matching PackageLoader variant, if a valid one exists
- */
-export function installerVariantFromString(name: string): PackageLoader {
-    const keys = Object.keys(PackageLoader)
-        .filter((x): x is keyof typeof PackageLoader => isNaN(Number(x)));
-
-    for (const loaderName of keys) {
-        const schemaName = loaderName.toLowerCase().split("_").join("");
-        if (schemaName == name) {
-            return PackageLoader[loaderName];
-        }
+// Return the PackageLoader enum variant from the provided ecosystem-schema package loader name.
+export function installerVariantFromString(name: string|null): PackageLoader {
+    switch (name) {
+        case null: return PackageLoader.NONE;
+        case "bepinex": return PackageLoader.BEPINEX;
+        case "melonloader": return PackageLoader.MELON_LOADER;
+        case "northstar": return PackageLoader.NORTHSTAR;
+        case "godotml": return PackageLoader.GODOT_ML;
+        case "shimloader": return PackageLoader.SHIMLOADER;
+        case "lovely": return PackageLoader.LOVELY;
+        case "returnofmodding": return PackageLoader.RETURN_OF_MODDING;
+        case "gdweave": return PackageLoader.GDWEAVE;
+        case "recursive-melonloader": return PackageLoader.RECURSIVE_MELON_LOADER;
     }
 
     throw new R2Error(
