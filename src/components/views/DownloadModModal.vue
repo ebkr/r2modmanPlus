@@ -53,6 +53,7 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
+import { DownloadStatusEnum } from "../../model/enums/DownloadStatusEnum";
 import R2Error from '../../model/errors/R2Error';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
@@ -96,7 +97,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', { downloadId, failed: true });
+                    this.$store.commit('download/updateDownload', { downloadId, status: DownloadStatusEnum.FAILED });
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }

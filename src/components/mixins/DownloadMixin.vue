@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
+import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import Game from "../../model/game/Game";
 import Profile, { ImmutableProfile } from "../../model/Profile";
@@ -41,9 +42,11 @@ export default class DownloadMixin extends Vue {
 
     async downloadCompletedCallback(downloadedMods: ThunderstoreCombo[], downloadId: number): Promise<void> {
         try {
+            this.$store.commit('download/updateDownload', {downloadId, status: DownloadStatusEnum.INSTALLING});
             await this.installModsAndResolveConflicts(downloadedMods, this.profile.asImmutableProfile(), downloadId);
+            this.$store.commit('download/updateDownload', {downloadId, status: DownloadStatusEnum.DONE});
         } catch (e) {
-            this.$store.commit('download/updateDownload', {downloadId, failed: true});
+            this.$store.commit('download/updateDownload', {downloadId, status: DownloadStatusEnum.FAILED});
             this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
         }
     }
