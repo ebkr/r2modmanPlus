@@ -15,6 +15,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import GameManager from '../../model/game/GameManager';
 import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
+import { generateProgressPercentage } from '../../utils/DownloadUtils';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -70,9 +71,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             if (status === StatusEnum.FAILURE) {
                 callback(0, modName, status, err);
             } else if (status === StatusEnum.PENDING) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
+                callback(generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, status, err);
             } else if (status === StatusEnum.SUCCESS) {
-                callback(this.generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
+                callback(generateProgressPercentage(progress, downloadCount, downloadableDependencySize + 1), modName, StatusEnum.PENDING, err);
                 downloadCount += 1;
                 if (downloadCount >= dependencies.length) {
                     callback(100, modName, StatusEnum.PENDING, err);
@@ -108,9 +109,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
             let totalDownloadProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalDownloadProgress = this.generateProgressPercentage(downloadProgress * 0.8, downloadCount, allModsToDownload.length);
+                totalDownloadProgress = generateProgressPercentage(downloadProgress * 0.8, downloadCount, allModsToDownload.length);
             } else if (status === StatusEnum.SUCCESS) {
-                totalDownloadProgress = this.generateProgressPercentage(100, downloadCount, allModsToDownload.length);
+                totalDownloadProgress = generateProgressPercentage(100, downloadCount, allModsToDownload.length);
                 downloadCount += 1;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
@@ -172,9 +173,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
             let totalProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalProgress = this.generateProgressPercentage(progress * 0.8, downloadCount, modList.length);
+                totalProgress = generateProgressPercentage(progress * 0.8, downloadCount, modList.length);
             } else if (status === StatusEnum.SUCCESS) {
-                totalProgress = this.generateProgressPercentage(100, downloadCount, modList.length);
+                totalProgress = generateProgressPercentage(100, downloadCount, modList.length);
                 downloadCount += 1;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
@@ -199,11 +200,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
 
         totalProgressCallback(100);
-    }
-
-    public generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
-        const completedProgress = (currentIndex / total) * 100;
-        return completedProgress + (progress * 1/total);
     }
 
     public async queueDownloadDependencies(entries: IterableIterator<[number, ThunderstoreCombo]>, ignoreCache: boolean, callback: (progress: number, modName: string, status: number, err: R2Error | null) => void) {
