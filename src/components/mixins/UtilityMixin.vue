@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
@@ -28,29 +28,20 @@ export default class UtilityMixin extends Vue {
                         "Unable to install mod(s)",
                         "Mod installation via a link is not possible when a game and a profile are not selected",
                         "Please select a game and a profile before attempting to install a mod via a link."
-                    ), 
-                    severity: LogSeverity.ACTION_STOPPED
-                });
-                return;
-            }
-
-            const game = this.$store.state.activeGame;
-            const combo: ThunderstoreCombo | R2Error = await ThunderstoreCombo.fromProtocol(protocolUrl, game);
-            if (combo instanceof R2Error) {
-                this.$store.commit('error/handleError', {
-                    error: combo,
+                    ),
                     severity: LogSeverity.ACTION_STOPPED
                 });
                 return;
             }
 
             try {
+                const game = this.$store.state.activeGame;
                 const profile = this.$store.getters['profile/activeProfile'].asImmutableProfile();
+                const combo = throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game));
+
                 await this.$store.dispatch('download/downloadAndInstallSpecific', {profile, combo});
-                const modList = await ProfileModList.getModList(profile);
-                if (modList instanceof R2Error) {
-                    throw modList;
-                }
+
+                const modList = throwForR2Error(await ProfileModList.getModList(profile));
                 await this.$store.dispatch('profile/updateModList', modList);
             } catch (err) {
                 this.$store.commit('error/handleError', {
