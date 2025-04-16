@@ -947,6 +947,24 @@ export default class GameManager {
             "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
+
+        new Game("Human Fall Flat", "HumanFallFlat", "HumanFallFlat",
+            "Human", ["Human.exe"], "Human_Data",
+            "https://thunderstore.io/c/human-fall-flat/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "477160")], "HumanFallFlat.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["hff"]),
+
+        new Game("Magicite", "Magicite", "Magicite",
+            "Magicite", ["Magicite.exe"], "Magicite_Data",
+            "https://thunderstore.io/c/magicite/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "268750")], "Magicite.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("ENA: Dream BBQ", "ENADreamBBQ", "ENADreamBBQ",
+            "ENA-4-DreamBBQ", ["ENA-4-DreamBBQ.exe"], "ENA-4-DreamBBQ_Data",
+            "https://thunderstore.io/c/ena-dream-bbq/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2134320")], "ENADreamBBQ.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["edbbq"]),
     ];
 
     static get activeGame(): Game {
