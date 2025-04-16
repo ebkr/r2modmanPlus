@@ -45,7 +45,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
         const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
 
         const downloadId = await this.$store.dispatch(
-            'download/addDownload',
+            'download/addDownloadProgressTracking',
             modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
         );
 

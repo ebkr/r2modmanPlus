@@ -49,7 +49,7 @@ export const DownloadModule = {
     }),
 
     actions: <ActionTree<State, RootState>>{
-        addDownload({state}, initialMods: string[]): number {
+        addDownloadProgressTracking({state}, initialMods: string[]): number {
             const downloadId = state.allDownloads.length;
             const downloadObject: DownloadProgress = {
                 downloadId: downloadId,
@@ -69,7 +69,7 @@ export const DownloadModule = {
             commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
         },
 
-        async installMod({}, params: {profile: ImmutableProfile, combo: ThunderstoreCombo}) {
+        async install({}, params: {profile: ImmutableProfile, combo: ThunderstoreCombo}) {
             const profileModList = throwForR2Error(await ProfileModList.getModList(params.profile));
 
             const modAlreadyInstalled = profileModList.find(
@@ -98,7 +98,7 @@ export const DownloadModule = {
             await ProfileInstallerProvider.instance.disableMod(manifestMod, params.profile);
         },
 
-        async installMods({commit, dispatch}, params: {
+        async installMultiple({commit, dispatch}, params: {
             downloadedMods: ThunderstoreCombo[],
             downloadId: number,
             profile: ImmutableProfile,
@@ -107,7 +107,7 @@ export const DownloadModule = {
                 let currentDownloadIndex = 0;
                 for (const combo of params.downloadedMods) {
                     try {
-                        await dispatch('installMod', {profile: params.profile, combo});
+                        await dispatch('install', {profile: params.profile, combo});
                     } catch (e) {
                         throw R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
                     }
@@ -124,11 +124,11 @@ export const DownloadModule = {
             });
         },
 
-        async downloadAndInstallSpecific({state, commit, dispatch}, params: {
+        async downloadAndInstall({state, commit, dispatch}, params: {
             combo: ThunderstoreCombo,
             profile: ImmutableProfile
         }) {
-            const downloadId = await dispatch('addDownload', [`${params.combo.getMod().getName()} (${params.combo.getVersion().getVersionNumber().toString()})`]);
+            const downloadId = await dispatch('addDownloadProgressTracking', [`${params.combo.getMod().getName()} (${params.combo.getVersion().getVersionNumber().toString()})`]);
 
             try {
                 const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
@@ -139,7 +139,7 @@ export const DownloadModule = {
                         dispatch('downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
                     }
                 );
-                await dispatch('installMods', {downloadedMods, downloadId, profile: params.profile});
+                await dispatch('installMultiple', {downloadedMods, downloadId, profile: params.profile});
             } catch (e) {
                 commit('updateDownload', { downloadId, failed: true });
                 throw e;
