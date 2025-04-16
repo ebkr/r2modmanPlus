@@ -70,10 +70,9 @@ export const DownloadModule = {
         },
 
         async installMod({}, params: {profile: ImmutableProfile, combo: ThunderstoreCombo}) {
-            const profileModList = await ProfileModList.getModList(params.profile);
-            throwForR2Error(profileModList);
+            const profileModList = throwForR2Error(await ProfileModList.getModList(params.profile));
 
-            const modAlreadyInstalled = (profileModList as ManifestV2[]).find(
+            const modAlreadyInstalled = profileModList.find(
                 value => value.getName() === params.combo.getMod().getFullName()
                     && value.getVersionNumber().isEqualTo(params.combo.getVersion().getVersionNumber())
             );
@@ -83,7 +82,7 @@ export const DownloadModule = {
             }
 
             const manifestMod = new ManifestV2().fromThunderstoreCombo(params.combo);
-            const olderInstallOfMod = (profileModList as ManifestV2[]).find(value => value.getName() === manifestMod.getName());
+            const olderInstallOfMod = profileModList.find(value => value.getName() === manifestMod.getName());
 
             throwForR2Error(await ProfileInstallerProvider.instance.uninstallMod(manifestMod, params.profile));
             throwForR2Error(await ProfileInstallerProvider.instance.installMod(manifestMod, params.profile));
@@ -120,9 +119,8 @@ export const DownloadModule = {
                     currentDownloadIndex++;
                 }
 
-                const modList = await ProfileModList.getModList(params.profile);
-                throwForR2Error(modList);
-                throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts((modList as ManifestV2[]), params.profile));
+                const modList = throwForR2Error(await ProfileModList.getModList(params.profile));
+                throwForR2Error(await ConflictManagementProvider.instance.resolveConflicts(modList, params.profile));
             });
         },
 
