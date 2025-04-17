@@ -13,7 +13,7 @@ const props = defineProps<MarkdownRenderProps>();
 const markdownToRender = computed(() => {
     const md = markdownit("commonmark", {
         linkify: true
-    }) as any;
+    });
     md.use(markdownItTable);
     md.enable(['linkify', 'strikethrough']);
     return md.render(props.markdown);
