@@ -114,13 +114,13 @@ function showDownloadModal(mod: ThunderstoreMod) {
             <h2 class="subtitle">
                 By {{ mod.getOwner() }}
             </h2>
+            <div class="margin-top margin-bottom">
+                <p class="description">{{ mod.getDescription() }}</p>
+            </div>
             <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
             <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
             <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
             <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
-            <div class="margin-top">
-                <p class="description">{{ mod.getDescription() }}</p>
-            </div>
         </div>
         <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
             <div class="pad pad--top">
