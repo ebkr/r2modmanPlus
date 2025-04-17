@@ -27,6 +27,7 @@ import { Component } from "vue-property-decorator";
 
 import ModalCard from "../ModalCard.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
+import * as DownloadUtils from "../../utils/DownloadUtils";
 import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import StatusEnum from "../../model/enums/StatusEnum";
@@ -48,14 +49,15 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
         );
 
+        const ignoreCache = this.$store.state.download.ignoreCache;
         this.setIsModProgressModalOpen(true);
-        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, this.ignoreCache, (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
+        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, ignoreCache, (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);
                     this.$store.commit('download/updateDownload', {assignId, failed: true});
                     if (err !== null) {
-                        DownloadMixin.addSolutionsToError(err);
+                        DownloadUtils.addSolutionsToError(err);
                         throw err;
                     }
                 } else if (status === StatusEnum.PENDING) {

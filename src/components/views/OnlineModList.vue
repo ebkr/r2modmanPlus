@@ -25,11 +25,7 @@
                 </span>
             </template>
             <template v-slot:other-icons>
-                <span class='card-header-icon' v-if="key.getDonationLink() && !readOnly">
-                    <Link :url="key.getDonationLink()" target="external" tag="span">
-                        <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
-                    </Link>
-                </span>
+                <DonateIconButton :mod="key" :extraRenderCondition="!readOnly"/>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
                     <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
                 </span>
@@ -42,7 +38,7 @@
             <Link :url="key.getPackageUrl()" :target="'external'" class='card-footer-item'>
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </Link>
-            <template v-if="key.getDonationLink() !== undefined && !readOnly">
+            <template v-if="!readOnly">
                 <DonateButton :mod="key"/>
             </template>
             <div class='card-footer-item non-selectable'>
@@ -66,12 +62,14 @@ import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
+import DonateIconButton from '../../components/buttons/DonateIconButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { valueToReadableDate } from '../../utils/DateUtils';
 
 @Component({
     components: {
         DonateButton,
+        DonateIconButton,
         DownloadModModal,
         ExpandableCard,
         Link

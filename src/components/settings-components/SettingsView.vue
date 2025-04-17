@@ -170,7 +170,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Toggle download cache',
                 'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
                 async () => {
-                    return this.settings.getContext().global.ignoreCache
+                    return this.$store.state.download.ignoreCache
                         ? 'Current: cache is disabled'
                         : 'Current: cache is enabled (recommended)';
                 },
@@ -315,10 +315,13 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Check for any new mod releases.',
                 async () => {
                         if (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Updating...";
+                            return this.$store.state.tsMods.thunderstoreModListUpdateStatus || "Refreshing...";
                         }
                         if (this.$store.state.tsMods.thunderstoreModListUpdateError) {
-                            return `Error updating the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
+                            return `Error refreshing the mod list: ${this.$store.state.tsMods.thunderstoreModListUpdateError.message}`;
+                        }
+                        if (this.$store.getters['download/activeDownloadCount'] > 0) {
+                            return "Refreshing the mod list is disabled while there are active downloads.";
                         }
                         if (this.$store.state.tsMods.modsLastUpdated !== undefined) {
                             return "Cache date: " + moment(this.$store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");

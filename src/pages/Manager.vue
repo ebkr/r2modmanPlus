@@ -173,7 +173,6 @@ import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
-import 'bulma-checkradio/dist/css/bulma-checkradio.min.css';
 import LinkProvider from '../providers/components/LinkProvider';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
@@ -484,10 +483,6 @@ import ModalCard from '../components/ModalCard.vue';
 			this.showLaunchParameterModal = false;
 		}
 
-		toggleIgnoreCache() {
-			this.settings.setIgnoreCache(!this.settings.getContext().global.ignoreCache);
-		}
-
 		async copyLogToClipboard() {
             const fs = FsProvider.instance;
             let logOutputPath = "";
@@ -560,7 +555,7 @@ import ModalCard from '../components/ModalCard.vue';
                     this.copyTroubleshootingInfoToClipboard();
                     break;
                 case "ToggleDownloadCache":
-                    this.toggleIgnoreCache();
+                    await this.$store.dispatch('download/toggleIgnoreCache');
                     break;
                 case "ValidateSteamInstallation":
                     this.validateSteamInstallation();
@@ -631,31 +626,6 @@ import ModalCard from '../components/ModalCard.vue';
 
 		async created() {
 			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			const ignoreCache = this.settings.getContext().global.ignoreCache;
-
-            InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
-                const game = this.$store.state.activeGame;
-                const combo: ThunderstoreCombo | R2Error = await ThunderstoreCombo.fromProtocol(protocolUrl, game);
-                if (combo instanceof R2Error) {
-                    this.$store.commit('error/handleError', {
-                        error: combo,
-                        severity: LogSeverity.ACTION_STOPPED
-                    });
-                    return;
-                }
-                DownloadModModal.downloadSpecific(this.profile, combo, ignoreCache, this.$store)
-                    .then(async value => {
-                        const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
-                        if (!(modList instanceof R2Error)) {
-                            await this.$store.dispatch('profile/updateModList', modList);
-                        } else {
-                            this.$store.commit('error/handleError', modList);
-                        }
-                    })
-                    .catch(
-                        (err: R2Error) => this.$store.commit('error/handleError', err)
-                    );
-            });
 
 			this.isManagerUpdateAvailable();
 		}

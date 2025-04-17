@@ -1,7 +1,6 @@
 import InvalidManifestError from './errors/Manifest/InvalidManifestError';
 import VersionNumber from './VersionNumber';
-import ThunderstoreMod from './ThunderstoreMod';
-import ThunderstoreVersion from './ThunderstoreVersion';
+import ThunderstoreCombo from './ThunderstoreCombo';
 import InstallMode from './enums/InstallMode';
 import PackageType from './enums/PackageType';
 import NetworkMode from './enums/NetworkMode';
@@ -90,18 +89,18 @@ export default class ManifestV2 {
         return this;
     }
 
-    public fromThunderstoreMod(mod: ThunderstoreMod, version: ThunderstoreVersion): ManifestV2 {
+    public fromThunderstoreCombo(combo: ThunderstoreCombo): ManifestV2 {
         this.setManifestVersion(1);
-        this.setAuthorName(mod.getOwner());
-        this.setDisplayName(mod.getName());
-        this.setName(mod.getFullName());
-        this.setDescription(version.getDescription());
+        this.setAuthorName(combo.getMod().getOwner());
+        this.setDisplayName(combo.getMod().getName());
+        this.setName(combo.getMod().getFullName());
+        this.setDescription(combo.getVersion().getDescription());
         this.setNetworkMode(NetworkMode.BOTH);
         this.setPackageType(PackageType.OTHER);
         this.setInstallMode(InstallMode.MANAGED);
-        this.setDependencies(version.getDependencies());
-        this.setVersionNumber(version.getVersionNumber());
-        this.setWebsiteUrl(mod.getPackageUrl());
+        this.setDependencies(combo.getVersion().getDependencies());
+        this.setVersionNumber(combo.getVersion().getVersionNumber());
+        this.setWebsiteUrl(combo.getMod().getPackageUrl());
         this.setGameVersion('0');
         this.icon = path.join(PathResolver.MOD_ROOT, 'cache', this.getName(), this.versionNumber.toString(), 'icon.png');
         return this;

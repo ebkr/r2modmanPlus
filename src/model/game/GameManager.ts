@@ -749,7 +749,11 @@ export default class GameManager {
         new Game("Hades II", "HadesII", "HadesII",
             path.join("Hades II", "Ship"), ["Hades2.exe"], "",
             "https://thunderstore.io/c/hades-ii/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "1145350")], "Hades2.png",
+            [
+                new StorePlatformMetadata(StorePlatform.STEAM, "1145350"),
+                new StorePlatformMetadata(StorePlatform.EPIC_GAMES_STORE, "07c634c7291a49b5b2455e14b9a83950")
+            ],
+            "Hades2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RETURN_OF_MODDING, ["h2"]),
 
         new Game("Shapez 2", "Shapez2", "Shapez2",
@@ -865,6 +869,108 @@ export default class GameManager {
             "https://thunderstore.io/c/dale-dawson-stationery-supplies/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2920570")], "DaleAndDawson.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Gang Beasts", "GangBeasts", "GangBeasts",
+            "Gang Beasts", ["Gang Beasts.exe"], "Gang Beasts_Data",
+            "https://thunderstore.io/c/gang-beasts/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "285900")], "GangBeasts.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["gb"]),
+
+        new Game("R.E.P.O.", "REPO", "REPO",
+            "REPO", ["REPO.exe"], "REPO_Data",
+            "https://thunderstore.io/c/repo/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3241660")], "REPO.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["repo"]),
+
+        new Game("Zort", "Zort", "Zort",
+            "Zort", ["Zort.exe"], "Zort_Data",
+            "https://thunderstore.io/c/zort/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3121110")], "zort.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Disco Elysium", "DiscoElysium", "Disco Elysium",
+            "Disco Elysium", ["disco.exe"], "disco_Data",
+            "https://thunderstore.io/c/disco-elysium/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "632470")], "DiscoElysium.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["de"]),
+
+        new Game("Odd Remedy", "OddRemedy", "OddRemedy",
+            "OddRemedy", ["OddRemedy.exe"], "OddRemedy_Data",
+            "https://thunderstore.io/c/odd-remedy/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1745680")], "OddRemedy.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["or"]),
+
+        new Game("DUSK", "DUSK", "DUSK",
+            "Dusk", ["Dusk.exe"], "Dusk_Data",
+            "https://thunderstore.io/c/dusk/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "519860")], "DUSK.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("My Dream Setup", "MyDreamSetup", "MyDreamSetup",
+            path.join("My dream setup", "MDS"), ["MDS.exe"], "MDS_Data",
+            "https://thunderstore.io/c/my-dream-setup/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2200780")], "MyDreamSetup.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["MDS"]),
+
+        new Game("Monster Train 2", "MonsterTrain2", "MonsterTrain2",
+            "Monster Train 2 Demo", ["MonsterTrain2-Demo.exe"], "MonsterTrain2-Demo_Data",
+            "https://thunderstore.io/c/monster-train-2/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3296150")], "MonsterTrain2.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mt2"]),
+
+        new Game("Schedule I", "ScheduleI", "ScheduleI",
+            "Schedule I", ["Schedule I.exe"], "Schedule I_Data",
+            "https://thunderstore.io/c/schedule-i/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3164500")], "ScheduleI.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Gatekeeper", "Gatekeeper", "Gatekeeper",
+            "Gatekeeper", ["Gatekeeper.exe"], "Gatekeeper_Data",
+            "https://thunderstore.io/c/gatekeeper/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2106670")], "Gatekeeper.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gk"]),
+
+        new Game("Pulsar: Lost Colony", "PulsarLostColony", "PulsarLostColony",
+            "PULSARLostColony", ["PULSAR_LostColony.exe"], "PULSAR_LostColony_Data",
+            "https://thunderstore.io/c/pulsar-lost-colony/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "252870")], "PulsarLostColony.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["plc"]),
+
+        new Game("Songs of Conquest", "SongsOfConquest", "SongsOfConquest",
+            "SongsOfConquest", ["SongsOfConquest.exe"], "SongsOfConquest_Data",
+            "https://thunderstore.io/c/songs-of-conquest/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "867210")], "SongsOfConquest.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["soc"]),
+
+        new Game("White Knuckle", "WhiteKnuckle", "WhiteKnuckle",
+            "White Knuckle Demo", ["White Knuckle.exe"], "White Knuckle_Data",
+            "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
+
+        new Game("Human Fall Flat", "HumanFallFlat", "HumanFallFlat",
+            "Human", ["Human.exe"], "Human_Data",
+            "https://thunderstore.io/c/human-fall-flat/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "477160")], "HumanFallFlat.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["hff"]),
+
+        new Game("Magicite", "Magicite", "Magicite",
+            "Magicite", ["Magicite.exe"], "Magicite_Data",
+            "https://thunderstore.io/c/magicite/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "268750")], "Magicite.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("ENA: Dream BBQ", "ENADreamBBQ", "ENADreamBBQ",
+            "ENA-4-DreamBBQ", ["ENA-4-DreamBBQ.exe"], "ENA-4-DreamBBQ_Data",
+            "https://thunderstore.io/c/ena-dream-bbq/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2134320")], "ENADreamBBQ.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["edbbq"]),
+
+        new Game("ASKA", "ASKA", "ASKA",
+            "ASKA", ["Aska.exe"], "ASKA_Data",
+            "https://thunderstore.io/c/aska/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1898300")], "ASKA.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {

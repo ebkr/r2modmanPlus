@@ -74,8 +74,14 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack_AmongUs", PackageLoader.BEPINEX),
 ];
 
-const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
-const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+export const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
+export const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+
+export const ALL_MODLOADER_MAPPINGS = [
+    ...MODLOADER_PACKAGES,
+    ...LEGACY_MELONLOADER_MAPPING,
+    ...RECURSIVE_MELONLOADER_MAPPING
+];
 
 /**
  * While this object is a bit silly given that all the keys are pointing to the
@@ -216,6 +222,23 @@ const VARIANTS = {
     IAmYourBeast: MODLOADER_PACKAGES,
     MiSide: MODLOADER_PACKAGES,
     DaleAndDawson: RECURSIVE_MELONLOADER_MAPPING,
+    GangBeasts: RECURSIVE_MELONLOADER_MAPPING,
+    REPO: MODLOADER_PACKAGES,
+    Zort: MODLOADER_PACKAGES,
+    DiscoElysium: MODLOADER_PACKAGES,
+    OddRemedy: MODLOADER_PACKAGES,
+    DUSK: MODLOADER_PACKAGES,
+    MyDreamSetup: MODLOADER_PACKAGES,
+    MonsterTrain2: MODLOADER_PACKAGES,
+    ScheduleI: RECURSIVE_MELONLOADER_MAPPING,
+    Gatekeeper: MODLOADER_PACKAGES,
+    PulsarLostColony: MODLOADER_PACKAGES,
+    SongsOfConquest: MODLOADER_PACKAGES,
+    WhiteKnuckle: MODLOADER_PACKAGES,
+    HumanFallFlat: MODLOADER_PACKAGES,
+    Magicite: MODLOADER_PACKAGES,
+    ENADreamBBQ: MODLOADER_PACKAGES,
+    ASKA: MODLOADER_PACKAGES,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

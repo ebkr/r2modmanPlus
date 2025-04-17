@@ -159,6 +159,21 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Subterror"),
             buildBepInExRules("IAmYourBeast"),
             buildBepInExRules("MiSide"),
+            buildBepInExRules("REPO"),
+            buildBepInExRules("Zort"),
+            buildBepInExRules("DiscoElysium"),
+            buildBepInExRules("OddRemedy"),
+            buildBepInExRules("DUSK"),
+            buildBepInExRules("MyDreamSetup"),
+            buildBepInExRules("MonsterTrain2"),
+            buildBepInExRules("Gatekeeper"),
+            buildBepInExRules("PulsarLostColony"),
+            buildBepInExRules("SongsOfConquest"),
+            buildBepInExRules("WhiteKnuckle"),
+            buildBepInExRules("HumanFallFlat"),
+            buildBepInExRules("Magicite"),
+            buildBepInExRules("ENADreamBBQ"),
+            buildBepInExRules("ASKA"),
         ]
     }
 }

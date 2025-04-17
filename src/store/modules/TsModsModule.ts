@@ -1,8 +1,8 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { State as RootState } from '../index';
-import ExportMod from '../../model/exports/ExportMod';
 import ManifestV2 from '../../model/ManifestV2';
+import R2Error from "../../model/errors/R2Error";
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import VersionNumber from '../../model/VersionNumber';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
@@ -10,7 +10,7 @@ import * as PackageDb from '../../r2mm/manager/PackageDexieStore';
 import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
 import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
-import { fetchAndProcessBlobFile, getAxiosWithTimeouts } from '../../utils/HttpUtils';
+import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -45,6 +45,7 @@ function isPackageListChunk(value: unknown): value is PackageListChunk {
 }
 
 const EXCLUSIONS = 'https://raw.githubusercontent.com/ebkr/r2modmanPlus/master/modExclusions.md';
+const PARTIAL_UPDATE_ERROR = 'Failed to fully refresh the online mod list. Some mod versions might be unavailable.';
 
 /**
  * For dealing with mods listed in communities, i.e. available through
@@ -81,7 +82,7 @@ export const TsModsModule = {
          *  time this happens slows down the LocalModList, cache the
          *  data in a Map.
          */
-        cachedMod: (state) => (mod: ExportMod|ManifestV2): CachedMod => {
+        cachedMod: (state) => (mod: ManifestV2): CachedMod => {
             const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
             if (state.cache.get(cacheKey) === undefined) {
@@ -118,8 +119,29 @@ export const TsModsModule = {
             return getters.cachedMod(mod).isLatest;
         },
 
+        /*** Was the last successful mod list update more than an hour ago? */
+        isModListOutdated(state) {
+            return state.modsLastUpdated instanceof Date
+                && (Date.now() - state.modsLastUpdated.getTime()) > (1000 * 60 * 60);
+        },
+
+        /*** A more concise version of the error message */
+        conciseThunderstoreModListUpdateErrorMessage(state): string|undefined {
+            if (!state.thunderstoreModListUpdateError) {
+                return undefined;
+            }
+
+            let conciseError = "Failed to load mod list";
+            if (isNetworkError(state.thunderstoreModListUpdateError)) {
+                conciseError = "Failed to fully refresh the online mod list due to network error"
+            } else if (state.thunderstoreModListUpdateError.name === PARTIAL_UPDATE_ERROR) {
+                conciseError = "Failed to fully refresh the online mod list";
+            }
+            return conciseError;
+        },
+
         /*** Return ThunderstoreMod representation of a ManifestV2 */
-        tsMod: (_state, getters) => (mod: ExportMod|ManifestV2): ThunderstoreMod | undefined => {
+        tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
             return getters.cachedMod(mod).tsMod;
         },
 
@@ -178,8 +200,8 @@ export const TsModsModule = {
          * Full update process of the mod list, to be used after
          * passing the splash screen.
          */
-        async syncPackageList({commit, dispatch, state}): Promise<void> {
-            if (state.isThunderstoreModListUpdateInProgress) {
+        async syncPackageList({commit, dispatch, state, rootGetters}): Promise<void> {
+            if (state.isThunderstoreModListUpdateInProgress || rootGetters['download/activeDownloadCount'] > 0) {
                 return;
             }
 
@@ -252,7 +274,7 @@ export const TsModsModule = {
         },
 
         async fetchAndCachePackageListChunks(
-            {dispatch},
+            {commit, dispatch},
             {packageListIndex, progressCallback}: {packageListIndex: PackageListIndex, progressCallback?: ProgressCallback},
         ): Promise<boolean> {
             const chunkCount = packageListIndex.content.length;
@@ -277,6 +299,13 @@ export const TsModsModule = {
             // hash is updated in the API.
             if (successes === chunkCount) {
                 await dispatch('cacheIndexHash', packageListIndex.hash);
+            } else {
+                commit('setThunderstoreModListUpdateError',
+                    new R2Error(
+                        PARTIAL_UPDATE_ERROR,
+                        `Only ${successes} out of ${chunkCount} parts of the list were updated successfully`,
+                    )
+                );
             }
 
             return successes === chunkCount;

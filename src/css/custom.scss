@@ -436,6 +436,22 @@ code {
     outline-color: yellow !important;
 }
 
+.button:focus-visible,
+.is-checkradio[type=checkbox]:focus-visible + label::before {
+    outline: yellow auto 1px;
+}
+
+.button:focus,
+.is-checkradio[type=checkbox]:focus + label::before {
+    box-shadow: none !important;
+}
+
+.button:focus:not(.focus-visible):not(:active),
+.is-checkradio[type=checkbox]:focus:not(.focus-visible):not(:active) + label::before {
+    color: var(--button-color, var(--text-strong, #363636));
+    border-color: var(--button-border-color, var(--border, #e1e1e1));
+}
+
 .pad {
     &--sides {
         padding: 1em;

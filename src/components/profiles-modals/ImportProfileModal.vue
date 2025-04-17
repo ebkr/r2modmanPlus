@@ -1,25 +1,28 @@
 <script lang="ts">
 import { mixins } from "vue-class-component";
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
+import { sleep } from "../../utils/Common";
 import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import ProfilesMixin from "../mixins/ProfilesMixin.vue";
+import Progress from "../Progress.vue";
 import OnlineModList from "../views/OnlineModList.vue";
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 @Component({
-    components: { OnlineModList, ModalCard}
+    components: {Progress, OnlineModList, ModalCard}
 })
 export default class ImportProfileModal extends mixins(ProfilesMixin) {
     valueToReadableDate = valueToReadableDate;
@@ -30,10 +33,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
     private targetProfileName: string = '';
     private profileImportFilePath: string | null = null;
     private profileImportContent: ExportFormat | null = null;
+    private profileMods: {known: ThunderstoreCombo[], unknown: string[]} = {known: [], unknown: []};
+    private isPartialImportAllowed: boolean = false;
     private activeStep:
         'FILE_CODE_SELECTION'
         | 'IMPORT_FILE'
         | 'IMPORT_CODE'
+        | 'REFRESH_MOD_LIST'
         | 'REVIEW_IMPORT'
         | 'IMPORT_UPDATE_SELECTION'
         | 'ADDING_PROFILE'
@@ -56,29 +62,30 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.profileImportCode = '';
         this.profileImportFilePath = null;
         this.profileImportContent = null;
+        this.profileMods = {known: [], unknown: []};
         this.$store.commit('closeImportProfileModal');
     }
 
-    get profileMods(): {known: ThunderstoreMod[], unknown: string[]} {
-        const profileMods = this.profileImportContent ? this.profileImportContent.getMods() : [];
-        const known: ThunderstoreMod[] = [];
-        const unknown: string[] = [];
-
-        for (const mod of profileMods) {
-            const tsMod = this.$store.getters['tsMods/tsMod'](mod);
-            if (tsMod) {
-                known.push(tsMod);
-            } else {
-                unknown.push(mod.getName());
-            }
-        }
-
-        unknown.sort();
-        return {known, unknown};
+    get knownProfileMods(): ThunderstoreMod[] {
+        return this.profileMods.known.map((combo) => combo.getMod());
     }
 
     get unknownProfileModNames(): string {
         return this.profileMods.unknown.join(', ');
+    }
+
+    // Required to trigger a re-render of the modlist in preview step
+    // when the online modlist is refreshed.
+    @Watch('$store.state.tsMods.mods')
+    async updateProfileModsOnOnlineModListRefresh() {
+        if (this.profileImportContent === null) {
+            return;
+        }
+
+        this.profileMods = await ProfileUtils.exportModsToCombos(
+            this.profileImportContent.getMods(),
+            this.$store.state.activeGame
+        );
     }
 
     get isProfileCodeValid(): boolean {
@@ -126,9 +133,13 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
             return;
         }
 
-        let read: string = '';
         try {
-            read = await ProfileUtils.readProfileFile(files[0]);
+            const yamlContent = await ProfileUtils.readProfileFile(files[0]);
+            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(yamlContent);
+            this.profileMods = await ProfileUtils.exportModsToCombos(
+                this.profileImportContent.getMods(),
+                this.$store.state.activeGame
+            );
         } catch (e: unknown) {
             const err = R2Error.fromThrownValue(e);
             this.$store.commit('error/handleError', err);
@@ -137,13 +148,34 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         }
 
         this.profileImportFilePath = files[0];
-        try {
-            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(read);
-        } catch (e: unknown) {
-            const err = R2Error.fromThrownValue(e);
-            this.$store.commit('error/handleError', err)
-            this.closeModal();
-            return;
+
+        if (this.profileMods.unknown.length > 0) {
+            // Sometimes the reason some packages are unknown is that
+            // the mod list is out of date, so let's try refreshing it
+            this.activeStep = 'REFRESH_MOD_LIST';
+
+            // Mod downloads in progress will prevent mod list refresh, so wait
+            // them out first.
+            while (this.$store.getters['download/activeDownloadCount'] > 0) {
+                await sleep(100);
+            }
+
+            // Awaiting the sync doesn't work here as the function will immediately
+            // return if the process is already in progress, e.g. when the splash
+            // screen has started the process in the background. Use while-loop
+            // instead to wait in this screen.
+            try {
+                await this.$store.dispatch('tsMods/syncPackageList');
+            } catch (e: unknown) {
+                const err = R2Error.fromThrownValue(e);
+                this.$store.commit('error/handleError', err);
+                this.closeModal();
+                return;
+            }
+
+            while (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+                await sleep(100);
+            }
         }
 
         this.activeStep = 'REVIEW_IMPORT';
@@ -215,13 +247,11 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         const progressCallback = (progress: number|string) => typeof progress === "number"
             ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
             : this.importPhaseDescription = progress;
-        const game = this.$store.state.activeGame;
-        const settings = this.$store.getters['settings'];
-        const ignoreCache = settings.getContext().global.ignoreCache;
+        const ignoreCache = this.$store.state.download.ignoreCache;
         const isUpdate = this.importUpdateSelection === 'UPDATE';
 
         try {
-            const comboList = await ProfileUtils.exportModsToCombos(mods, game);
+            const comboList = this.profileMods.known;
             await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
             await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
         } catch (e) {
@@ -300,62 +330,68 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         </template>
     </ModalCard>
 
+    <ModalCard v-else-if="activeStep === 'REFRESH_MOD_LIST'" key="REFRESH_MOD_LIST" :is-active="isOpen" :can-close="false">
+        <template v-slot:header>
+            <h2 class="modal-title">Refreshing online mod list</h2>
+        </template>
+        <template v-slot:footer>
+            <div>
+                <p>
+                    Some of the packages in the profile are not recognized by the mod manager.
+                    Refreshing the online mod list might fix the problem. Please wait...
+                </p>
+                <p v-if="$store.getters['download/activeDownloadCount'] > 0" class="margin-top">
+                    Waiting for mod downloads to finish before refreshing the online mod list...
+                </p>
+                <p v-else class="margin-top"></p>
+                    {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
+                </p>
+            </div>
+        </template>
+    </ModalCard>
+
     <ModalCard v-else-if="activeStep === 'REVIEW_IMPORT'" key="REVIEW_IMPORT" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Packages to be installed</h2>
         </template>
         <template v-slot:body>
-            <OnlineModList :paged-mod-list="profileMods.known" :read-only="true" />
-            <div v-if="profileMods.known.length === 0 || profileMods.unknown.length > 0" class="notification is-warning margin-top">
-                <p v-if="profileMods.known.length === 0">
-                    None of the packages in the profile were found on Thunderstore:
-                </p>
-                <p v-else>
-                    Some of the packages in the profile were not found on Thunderstore:
-                </p>
-
+            <div v-if="knownProfileMods.length === 0 || profileMods.unknown.length > 0" class="notification is-warning">
+                <p>These packages in the profile were not found on Thunderstore and will not be installed:</p>
                 <p class="margin-top">{{ unknownProfileModNames }}</p>
 
-                <p v-if="profileMods.known.length > 0" class="margin-top">
-                    These packages will not be installed.
-                </p>
-                <p v-else class="margin-top">
+                <p v-if="knownProfileMods.length === 0" class="margin-top">
                     Ensure the profile is intended for the currently selected game.
                 </p>
-
-                <p class="margin-top">
-                    Updating the mod list from Thunderstore might solve this issue.
-
-                    <span v-if="$store.state.tsMods.modsLastUpdated">
-                        The mod list was last updated on {{ valueToReadableDate($store.state.tsMods.modsLastUpdated) }}.
-                    </span>
-
-                    <br />
-
-                    <span v-if="$store.state.tsMods.isThunderstoreModListUpdateInProgress">
-                        {{ $store.state.tsMods.thunderstoreModListUpdateStatus }}
-                    </span>
-                    <span v-else-if="$store.state.tsMods.thunderstoreModListUpdateError">
-                        Error updating the mod list:
-                        {{ $store.state.tsMods.thunderstoreModListUpdateError.message }}.
-                        <a @click="$store.dispatch('tsMods/syncPackageList')">Retry</a>?
-                    </span>
-                    <span v-else>
-                        Would you like to
-                        <a @click="$store.dispatch('tsMods/syncPackageList')">update now</a>?
-                    </span>
-                </p>
             </div>
+
+            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">These packages will be installed:</p>
+            <OnlineModList
+                v-if="knownProfileMods.length > 0"
+                :paged-mod-list="knownProfileMods"
+                :read-only="true"
+            />
         </template>
         <template v-slot:footer>
+
+            <div v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="is-flex-grow-1">
+                <input
+                    v-model="isPartialImportAllowed"
+                    id="partialImportAllowedCheckbox"
+                    class="is-checkradio has-background-color"
+                    type="checkbox"
+                >
+                <label for="partialImportAllowedCheckbox">I understand that some of the mods won't be imported</label>
+            </div>
+
             <button
                 id="modal-review-confirmed"
                 class="button is-info"
-                :disabled="profileMods.known.length === 0"
+                :disabled="knownProfileMods.length === 0 || (profileMods.unknown.length > 0 && !isPartialImportAllowed)"
                 @click="onProfileReviewConfirmed"
             >
                 Import
             </button>
+
         </template>
     </ModalCard>
 
