@@ -1,3 +1,22 @@
+### 3.1.58
+#### Games added
+- Schedule 1
+- Zort
+- Disco Elysium
+- Odd Remedy
+- Dusk
+- Monster Train 2
+- My Dream Setup
+- Hades 2 (@xiaoxiao921)
+- Gatekeeper
+- Pulsar: Lost Colony
+- Songs of Conquest
+- White Knuckle
+- ENA: Dream BBQ
+- Human Fall Flat
+- Magicite
+- ASKA
+
 ### 3.1.57
 #### Games added
 - R.E.P.O
