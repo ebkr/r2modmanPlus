@@ -1,4 +1,5 @@
 import { ActionTree, GetterTree } from "vuex";
+import UUID from 'uuid-js';
 
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
@@ -14,7 +15,7 @@ import { State as RootState } from "../../store";
 import * as DownloadUtils from "../../utils/DownloadUtils";
 
 interface DownloadProgress {
-    downloadId: number;
+    downloadId: UUID;
     initialMods: string[];
     modName: string;
     downloadProgress: number;
@@ -23,7 +24,7 @@ interface DownloadProgress {
 }
 
 interface UpdateObject {
-    downloadId: number;
+    downloadId: UUID;
     downloadProgress?: number;
     installProgress?: number;
     modName?: string;
@@ -49,8 +50,8 @@ export const DownloadModule = {
     }),
 
     actions: <ActionTree<State, RootState>>{
-        addDownload({state}, initialMods: string[]): number {
-            const downloadId = state.allDownloads.length;
+        addDownload({state}, initialMods: string[]): UUID {
+            const downloadId = UUID.create();
             const downloadObject: DownloadProgress = {
                 downloadId: downloadId,
                 initialMods,
@@ -100,7 +101,7 @@ export const DownloadModule = {
 
         async installMods({commit, dispatch}, params: {
             downloadedMods: ThunderstoreCombo[],
-            downloadId: number,
+            downloadId: UUID,
             profile: ImmutableProfile,
         }) {
             await ProfileModList.requestLock(async () => {
@@ -147,7 +148,7 @@ export const DownloadModule = {
         },
 
         async downloadProgressCallback({commit}, params: {
-            downloadId: number,
+            downloadId: UUID,
             downloadProgress: number,
             modName: string,
             status: number,
@@ -224,7 +225,7 @@ export const DownloadModule = {
     },
 }
 
-function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId: number): number {
+function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId: UUID): number {
     const index = [...allDownloads].findIndex((downloadProgress) => downloadProgress.downloadId === downloadId);
 
     if (index === -1) {
