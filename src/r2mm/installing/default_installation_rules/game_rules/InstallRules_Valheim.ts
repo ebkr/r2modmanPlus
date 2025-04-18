@@ -43,7 +43,8 @@ export default function(): CoreRuleType {
                 trackingMethod: "SUBDIR",
                 subRoutes: []
             }
-        ]
+        ],
+        relativeFileExclusions: null
     }
 
 }

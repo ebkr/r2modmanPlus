@@ -61,7 +61,8 @@ export default function(): CoreRuleType {
                 trackingMethod: 'STATE',
                 subRoutes: []
             }
-        ]
+        ],
+        relativeFileExclusions: null
     }
 
 }

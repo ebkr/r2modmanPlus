@@ -1,9 +1,8 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
-import { GAME_NAME } from '../../profile_installers/ModLoaderVariantRecord';
 import { RuleSubtype } from "../../InstallationRules";
 
-export function buildBepInExRules(gameName: GAME_NAME, extraRules?: RuleSubtype[]): CoreRuleType {
+export function buildBepInExRules(gameName: string, extraRules?: RuleSubtype[]): CoreRuleType {
     return {
         gameName: gameName,
         rules: [
@@ -40,5 +39,6 @@ export function buildBepInExRules(gameName: GAME_NAME, extraRules?: RuleSubtype[
             },
             ...(extraRules ? extraRules : []),
         ],
+        relativeFileExclusions: null
     }
 }

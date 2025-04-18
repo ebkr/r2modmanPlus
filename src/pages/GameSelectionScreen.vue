@@ -218,7 +218,7 @@ export default class GameSelectionScreen extends Vue {
         const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
             return game.additionalSearchStrings.find(value => value.toLowerCase().trim().indexOf(filterText.toLowerCase().trim()) >= 0) !== undefined;
         }
-        return this.gameList
+        return (this.activeTab === GameInstanceType.GAME ? this.gameList : this.serverList)
             .filter(value => value.displayName.toLowerCase().indexOf(
                 this.filterText.toLowerCase()) >= 0
                 || this.filterText.trim().length === 0
@@ -228,18 +228,24 @@ export default class GameSelectionScreen extends Vue {
     }
 
     get gameList(): Game[] {
-        return GameManager.gameList.sort((a, b) => {
-            if (this.favourites.includes(a.settingsIdentifier)) {
-                if (this.favourites.includes(b.settingsIdentifier)) {
-                    return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-                } else {
-                    return -1;
-                }
-            } else if (this.favourites.includes(b.settingsIdentifier)) {
-                return 1;
+        return GameManager.gameList.sort(this.gameComparer);
+    }
+
+    get serverList(): Game[] {
+        return GameManager.serverList.sort(this.gameComparer);
+    }
+
+    gameComparer(a: Game, b: Game) {
+        if (this.favourites.includes(a.settingsIdentifier)) {
+            if (this.favourites.includes(b.settingsIdentifier)) {
+                return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
+            } else {
+                return -1;
             }
-            return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-        });
+        } else if (this.favourites.includes(b.settingsIdentifier)) {
+            return 1;
+        }
+        return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
     }
 
     private changeTab(key: string) {
