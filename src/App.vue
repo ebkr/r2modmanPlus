@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div class="router-view">
-            <router-view v-if="visible"/>
-        </div>
+        <router-view v-if="visible"/>
         <ErrorModal />
     </div>
 </template>
