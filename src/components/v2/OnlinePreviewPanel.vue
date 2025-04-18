@@ -30,12 +30,14 @@ function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
 }
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
-    return fetch(`https://thunderstore.io/api/experimental/package/${mod.getOwner()}/${mod.getName()}/${mod.getLatestVersion()}/${type}/`)
+    return fetch(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/latest/${type}/`)
         .then(res => res.json())
-        .then(res => res.markdown);
+        .then(res => res.html);
 }
 
 function fetchReadme(modToLoad: ThunderstoreMod) {
+    // TODO - Make sure that this is null on fetch failure.
+    readme.value = null;
     return fetchDataFor(props.mod, "readme").then(res => {
         if (props.mod === modToLoad) {
             readme.value = res;
@@ -123,9 +125,10 @@ function showDownloadModal(mod: ThunderstoreMod) {
             <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
         </div>
         <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
-            <div class="pad pad--top">
-                <button class="button is-info margin-right" @click="showDownloadModal(mod)">Download</button>
+            <div class="button-group">
+                <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
                 <Link target="_blank" tag="button" class="button" :url="props.mod.getPackageUrl()">View online</Link>
+                <Link v-if="props.mod.getDonationLink()" target="_blank" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</Link>
             </div>
             <div class="tabs margin-top">
                 <ul>
@@ -148,7 +151,11 @@ function showDownloadModal(mod: ThunderstoreMod) {
                     <OnlineModList :paged-mod-list="dependencies" :read-only="true" />
                 </template>
                 <template v-else>
-                    <p>No dependencies</p>
+                    <div class="notification">
+                        <div class="container">
+                            <p>{{ props.mod.getName() }} has no dependencies</p>
+                        </div>
+                    </div>
                 </template>
             </template>
             <template v-else>
@@ -191,5 +198,12 @@ function showDownloadModal(mod: ThunderstoreMod) {
         overflow-y: auto;
         overflow-x: hidden;
     }
+}
+
+.button-group {
+    padding-top: 1rem;
+    display: flex;
+    flex-grow: 0;
+    gap: 0.5rem;
 }
 </style>
