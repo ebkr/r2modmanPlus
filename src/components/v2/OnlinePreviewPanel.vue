@@ -56,15 +56,16 @@ function fetchChangelog(modToLoad: ThunderstoreMod) {
 function fetchAll(modToLoad: ThunderstoreMod) {
     setActiveTab("README");
     loadingPanel.value = true;
-    buildDependencies(modToLoad)
-        .then(value => dependencies.value = value)
-        .then(() => fetchReadme(modToLoad))
-        .then(() => fetchChangelog(modToLoad))
+
+    fetchReadme(modToLoad)
         .then(() => {
             if (props.mod === modToLoad) {
                 loadingPanel.value = false;
             }
         });
+
+    buildDependencies(modToLoad).then(value => dependencies.value = value);
+    fetchChangelog(modToLoad);
 }
 
 async function buildDependencies(mod: ThunderstoreMod) {
