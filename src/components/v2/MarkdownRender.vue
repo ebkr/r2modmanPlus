@@ -4,20 +4,12 @@ import markdownit from 'markdown-it';
 import { markdownItTable } from 'markdown-it-table';
 import LinkProvider from 'src/providers/components/LinkProvider';
 
+// TODO - Rename `markdown` to `content`
 interface MarkdownRenderProps {
     markdown: string;
 }
 
 const props = defineProps<MarkdownRenderProps>();
-
-const markdownToRender = computed(() => {
-    const md = markdownit("commonmark", {
-        linkify: true
-    });
-    md.use(markdownItTable);
-    md.enable(['linkify', 'strikethrough']);
-    return md.render(props.markdown);
-})
 
 function capturePropagationParentLink(target: HTMLElement, originalEvent: Event) {
     if (target.tagName.toLowerCase() === "a") {
@@ -40,7 +32,7 @@ function captureClick(e: Event) {
 </script>
 
 <template>
-    <p class="markdown-body" v-html="markdownToRender" @click="captureClick"></p>
+    <p class="markdown-body" v-html="props.markdown" @click="captureClick"></p>
 </template>
 
 <style lang="scss">
@@ -58,7 +50,7 @@ function captureClick(e: Event) {
         height: max(200px, 100%);
 
         padding-right: 1rem;
-        background-color: rgba(0, 0, 0, 0);
+        background-color: transparent;
 
         details {
             border-left: 5px solid var(--v2-primary-text-color);
