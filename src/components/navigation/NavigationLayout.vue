@@ -1,9 +1,9 @@
 <template>
-    <div id="content" class="columns">
-        <div class="column non-selectable is-one-quarter">
+    <div id="content">
+        <div class="nav-column non-selectable">
             <NavigationMenu />
         </div>
-        <div class="column">
+        <div class="content-column">
             <router-view />
         </div>
         <GameRunningModal :activeGame="$store.state.activeGame" />
@@ -23,3 +23,20 @@ import GameRunningModal from '../modals/GameRunningModal.vue';
 export default class NavigationLayout extends Vue {}
 
 </script>
+
+<style>
+.content-column {
+    padding: 0;
+    margin-left: 0.75rem;
+    max-height: 100vh;
+    overflow: hidden;
+    overflow-y: auto;
+    width: 100%;
+}
+
+#content {
+    padding: 0;
+    max-width: 100vw;
+    display: flex;
+}
+</style>

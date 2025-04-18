@@ -47,6 +47,14 @@ import GenericProfileInstaller from './r2mm/installing/profile_installers/Generi
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
 
+document.addEventListener('auxclick', e => {
+    const target = e.target! as any;
+    if (target.localName == 'a') {
+        LinkProvider.instance.openLink(target.getAttribute("href"))
+    }
+    e.preventDefault();
+}, false)
+
 @Component({
     components: {
         ErrorModal,
@@ -128,3 +136,10 @@ export default class App extends mixins(UtilityMixin) {
 
 }
 </script>
+
+<style lang="scss">
+html {
+    overflow: hidden;
+    overflow-y: auto;
+}
+</style>

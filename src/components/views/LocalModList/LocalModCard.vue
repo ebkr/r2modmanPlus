@@ -260,7 +260,7 @@ function dependencyStringToModName(x: string) {
                 <div class="field">
                     <input :id="`switch-${mod.getName()}`"
                         type="checkbox"
-                        :class='`switch is-small  ${mod.isEnabled() ? "switch is-info" : ""}`'
+                        :class="['switch', 'is-small', {'switch is-info' : mod.isEnabled()}]"
                         :checked="mod.isEnabled()" />
                     <label :for="`switch-${mod.getName()}`"
                         v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
@@ -310,5 +310,7 @@ function dependencyStringToModName(x: string) {
 </template>
 
 <style scoped lang="scss">
-
+.switch {
+    position: relative;
+}
 </style>
