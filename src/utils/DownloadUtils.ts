@@ -17,3 +17,8 @@ export function addSolutionsToError(err: R2Error): void {
         err.solution = 'Using "Change data folder" option in the settings to select a shorter path might solve the issue';
     }
 }
+
+export function generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
+    const completedProgress = (currentIndex / total) * 100;
+    return completedProgress + (progress * 1/total);
+}

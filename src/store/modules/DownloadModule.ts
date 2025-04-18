@@ -115,7 +115,7 @@ export const DownloadModule = {
                     commit('updateDownload', {
                         assignId: params.assignId,
                         modName: combo.getMod().getName(),
-                        installProgress: ThunderstoreDownloaderProvider.instance.generateProgressPercentage(100, currentDownloadIndex, params.downloadedMods.length)
+                        installProgress: DownloadUtils.generateProgressPercentage(100, currentDownloadIndex, params.downloadedMods.length)
                     });
                     currentDownloadIndex++;
                 }

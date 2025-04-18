@@ -74,15 +74,6 @@ export default abstract class ThunderstoreDownloaderProvider {
     ): Promise<void>;
 
     /**
-     * Generate the current progress across all downloads.
-     *
-     * @param progress      The current download's progress.
-     * @param currentIndex  The number of mods currently downloaded.
-     * @param total         The final progress value.
-     */
-    public abstract generateProgressPercentage(progress: number, currentIndex: number, total: number): number;
-
-    /**
      * Iterate the {@class ThunderstoreCombo} array to perform the download for each mod.
      * Progress to the next one recursively once the callback received has been successful.
      *
