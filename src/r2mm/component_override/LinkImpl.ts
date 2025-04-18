@@ -7,6 +7,12 @@ export default class LinkImpl extends LinkProvider {
         shell.openExternal(url);
     }
 
+    openWebOnlyLink(url: string): void {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            shell.openExternal(url);
+        }
+    }
+
     selectFile(url: string): void {
         shell.showItemInFolder(url);
     }

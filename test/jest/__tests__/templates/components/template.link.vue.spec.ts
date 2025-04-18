@@ -90,7 +90,7 @@ describe("Link component", () => {
         });
 
         it("Invokes the correct action when clicked", () => {
-            sandbox.mock(LinkProvider.instance).expects("openLink").exactly(1).calledWith(mountOptions.propsData.url);
+            sandbox.mock(LinkProvider.instance).expects("openWebOnlyLink").exactly(1).calledWith(mountOptions.propsData.url);
             const link = mount.find("a");
             link.trigger("click");
             sandbox.verify();
