@@ -73,6 +73,7 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack_AmongUs", PackageLoader.BEPINEX),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_Magicite", "BepInExPack_Magicite", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_HumanFallFlat", "BepInExPack_HumanFallFlat", PackageLoader.BEPINEX),
 ];
 
 export const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
