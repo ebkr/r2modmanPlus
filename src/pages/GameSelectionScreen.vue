@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModalCard v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
+        <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
                 <h2 class='modal-title'>Which store manages your game?</h2>
             </template>

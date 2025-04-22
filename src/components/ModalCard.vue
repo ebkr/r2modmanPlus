@@ -1,5 +1,5 @@
 <template>
-    <div :class="['modal', {'is-active': isActive}]">
+    <div :class="['modal', {'is-active': isActive}]" :id="id">
         <div class="modal-background" @click="closeModal()"/>
         <div class="modal-card py-4">
             <header class="modal-card-head">
@@ -26,6 +26,9 @@ import { Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class ModalCard extends Vue {
+
+    @Prop({required: true, type: String})
+    id!: string;
 
     @Prop({default: false, type: Boolean})
     isActive!: boolean;

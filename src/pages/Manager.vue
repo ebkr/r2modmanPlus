@@ -35,7 +35,7 @@
 			<button class="modal-close is-large" aria-label="close"
 			        @click="showRor2IncorrectDirectoryModal = false"></button>
 		</div>
-		<ModalCard :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
+		<ModalCard id="steam-installation-validation-modal" :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
 			<template v-slot:header>
 				<h2 class='modal-title'>Clearing the {{activeGame.displayName}} installation directory</h2>
 			</template>
@@ -62,7 +62,7 @@
 				</button>
 			</template>
 		</ModalCard>
-        <ModalCard :is-active="showDependencyStrings" @close-modal="showDependencyStrings = false;" :can-close="true">
+        <ModalCard id="dependency-strings-modal" :is-active="showDependencyStrings" @close-modal="showDependencyStrings = false;" :can-close="true">
             <template v-slot:header>
                 <h2 class='modal-title'>Dependency string list</h2>
             </template>
@@ -80,7 +80,7 @@
                 </button>
             </template>
         </ModalCard>
-		<ModalCard :is-active="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}" :can-close="true">
+		<ModalCard id="launch-parameters-modal" :is-active="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}" :can-close="true">
 			<template v-slot:header>
 				<h2 class='modal-title'>Set custom launch parameters</h2>
 			</template>
@@ -121,7 +121,7 @@
 				</button>
 			</template>
 		</ModalCard>
-		<ModalCard :is-active="exportCode !== ''" @close-modal="() => {exportCode = '';}" :can-close="true">
+		<ModalCard id="profile-exported-modal" :is-active="exportCode !== ''" @close-modal="() => {exportCode = '';}" :can-close="true">
 			<template v-slot:header>
 				<h2 class='modal-title'>Profile exported</h2>
 			</template>

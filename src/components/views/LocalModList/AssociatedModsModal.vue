@@ -39,7 +39,7 @@ export default class AssociatedModsModal extends Vue {
 }
 </script>
 <template>
-    <ModalCard v-if="isOpen" :is-active="true" @close-modal="onClose">
+    <ModalCard id="associated-mods-modal" v-if="isOpen" :is-active="true" @close-modal="onClose">
         <template v-slot:header>
             <h2 class='modal-title'>Mods associated with {{mod.getName()}}</h2>
         </template>

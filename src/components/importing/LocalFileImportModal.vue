@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModalCard :can-close="true" @close-modal="emitClose" :is-active="visible">
+        <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="emitClose" :is-active="visible">
             <template v-slot:header>
                 <h2 class='modal-title'>Import mod from file</h2>
             </template>
