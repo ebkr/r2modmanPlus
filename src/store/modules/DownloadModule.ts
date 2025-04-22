@@ -14,7 +14,7 @@ import { State as RootState } from "../../store";
 import * as DownloadUtils from "../../utils/DownloadUtils";
 
 interface DownloadProgress {
-    assignId: number;
+    downloadId: number;
     initialMods: string[];
     modName: string;
     downloadProgress: number;
@@ -23,7 +23,7 @@ interface DownloadProgress {
 }
 
 interface UpdateObject {
-    assignId: number;
+    downloadId: number;
     downloadProgress?: number;
     installProgress?: number;
     modName?: string;
@@ -50,9 +50,9 @@ export const DownloadModule = {
 
     actions: <ActionTree<State, RootState>>{
         addDownload({state}, initialMods: string[]): number {
-            const assignId = state.allDownloads.length;
+            const downloadId = state.allDownloads.length;
             const downloadObject: DownloadProgress = {
-                assignId,
+                downloadId: downloadId,
                 initialMods,
                 modName: '',
                 downloadProgress: 0,
@@ -60,7 +60,7 @@ export const DownloadModule = {
                 failed: false,
             };
             state.allDownloads = [...state.allDownloads, downloadObject];
-            return assignId;
+            return downloadId;
         },
 
         async toggleIgnoreCache({commit, rootGetters}) {
@@ -100,7 +100,7 @@ export const DownloadModule = {
 
         async installMods({commit, dispatch}, params: {
             downloadedMods: ThunderstoreCombo[],
-            assignId: number,
+            downloadId: number,
             profile: ImmutableProfile,
         }) {
             await ProfileModList.requestLock(async () => {
@@ -112,7 +112,7 @@ export const DownloadModule = {
                         throw R2Error.fromThrownValue(e, `Failed to install mod [${combo.getMod().getFullName()}]`);
                     }
                     commit('updateDownload', {
-                        assignId: params.assignId,
+                        downloadId: params.downloadId,
                         modName: combo.getMod().getName(),
                         installProgress: DownloadUtils.generateProgressPercentage(100, currentDownloadIndex, params.downloadedMods.length)
                     });
@@ -128,7 +128,7 @@ export const DownloadModule = {
             combo: ThunderstoreCombo,
             profile: ImmutableProfile
         }) {
-            const assignId = await dispatch('addDownload', [`${params.combo.getMod().getName()} (${params.combo.getVersion().getVersionNumber().toString()})`]);
+            const downloadId = await dispatch('addDownload', [`${params.combo.getMod().getName()} (${params.combo.getVersion().getVersionNumber().toString()})`]);
 
             try {
                 const downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
@@ -136,18 +136,18 @@ export const DownloadModule = {
                     params.combo,
                     state.ignoreCache,
                     (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
-                        dispatch('downloadProgressCallback', { assignId, downloadProgress, modName, status, err });
+                        dispatch('downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
                     }
                 );
-                await dispatch('installMods', {downloadedMods, assignId, profile: params.profile});
+                await dispatch('installMods', {downloadedMods, downloadId, profile: params.profile});
             } catch (e) {
-                commit('updateDownload', { assignId, failed: true });
+                commit('updateDownload', { downloadId, failed: true });
                 throw e;
             }
         },
 
         async downloadProgressCallback({commit}, params: {
-            assignId: number,
+            downloadId: number,
             downloadProgress: number,
             modName: string,
             status: number,
@@ -155,13 +155,13 @@ export const DownloadModule = {
         }) {
             if (params.status === StatusEnum.FAILURE) {
                 commit('setIsModProgressModalOpen', false);
-                commit('updateDownload', {assignId: params.assignId, failed: true});
+                commit('updateDownload', {downloadId: params.downloadId, failed: true});
                 if (params.err !== null) {
                     DownloadUtils.addSolutionsToError(params.err);
                     throw params.err;
                 }
             } else if (params.status === StatusEnum.PENDING || params.status === StatusEnum.SUCCESS) {
-                commit('updateDownload', {assignId: params.assignId, modName: params.modName, downloadProgress: params.downloadProgress});
+                commit('updateDownload', {downloadId: params.downloadId, modName: params.modName, downloadProgress: params.downloadProgress});
             }
         },
 
@@ -198,13 +198,13 @@ export const DownloadModule = {
 
     mutations: {
         removeDownload(state: State, download: UpdateObject) {
-            const index = getIndexOfDownloadProgress(state.allDownloads, download.assignId);
+            const index = getIndexOfDownloadProgress(state.allDownloads, download.downloadId);
             if (index > -1) {
                 state.allDownloads.splice(index, 1);
             }
         },
         updateDownload(state: State, update: UpdateObject) {
-            const index: number = getIndexOfDownloadProgress(state.allDownloads, update.assignId);
+            const index: number = getIndexOfDownloadProgress(state.allDownloads, update.downloadId);
             if (index > -1) {
                 const newDownloads = [...state.allDownloads];
                 newDownloads[index] = {...newDownloads[index], ...update};
@@ -224,11 +224,11 @@ export const DownloadModule = {
     },
 }
 
-function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], assignId: number): number {
-    const index = [...allDownloads].findIndex((downloadProgress) => downloadProgress.assignId === assignId);
+function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId: number): number {
+    const index = [...allDownloads].findIndex((downloadProgress) => downloadProgress.downloadId === downloadId);
 
     if (index === -1) {
-        console.warn(`Couldn't find DownloadProgress object with assignId ${assignId}.`);
+        console.warn(`Couldn't find DownloadProgress object with downloadId ${downloadId}.`);
     }
 
     return index;
