@@ -151,12 +151,9 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Link, Modal, Progress } from '../components/all';
 
-import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import ProfileModList from '../r2mm/mods/ProfileModList';
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator} from '../r2mm/manager/SteamInstallationValidator';
-
-import { LogSeverity } from '../providers/ror2/logging/LoggerProvider';
 
 import Profile from '../model/Profile';
 import VersionNumber from '../model/VersionNumber';

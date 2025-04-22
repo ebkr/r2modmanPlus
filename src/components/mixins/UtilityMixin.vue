@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import Profile from '../../model/Profile';
 import R2Error from '../../model/errors/R2Error';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
@@ -15,19 +14,15 @@ export default class UtilityMixin extends Vue {
     readonly REFRESH_INTERVAL = 5 * 60 * 1000;
     private tsBackgroundRefreshFailed = false;
 
-    get profile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
-    };
-
     hookBackgroundUpdateThunderstoreModList() {
         setInterval(this.backgroundRefreshThunderstoreModList, this.REFRESH_INTERVAL);
     }
 
     hookModInstallingViaProtocol() {
         InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
-            const exemptRoutes = ["index", "splash", "profiles"];
+            const profileSelectedRoutes = ["manager", "manager.installed", "manager.online", "manager.settings", "config-editor", "help", "downloads"];
 
-            if (this.$route.name && exemptRoutes.includes(this.$route.name)) {
+            if (this.$route.name && !profileSelectedRoutes.includes(this.$route.name)) {
                 this.$store.commit('error/handleError', {
                     error: new R2Error(
                         "Unable to install mod(s)",
@@ -50,14 +45,18 @@ export default class UtilityMixin extends Vue {
             }
 
             try {
-                await this.$store.dispatch('download/downloadAndInstallSpecific', {profile: this.profile.asImmutableProfile(), combo});
-                const modList = await ProfileModList.getModList(this.profile.asImmutableProfile());
+                const profile = this.$store.getters['profile/activeProfile'].asImmutableProfile();
+                await this.$store.dispatch('download/downloadAndInstallSpecific', {profile, combo});
+                const modList = await ProfileModList.getModList(profile);
                 if (modList instanceof R2Error) {
                     throw modList;
                 }
                 await this.$store.dispatch('profile/updateModList', modList);
             } catch (err) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(err));
+                this.$store.commit('error/handleError', {
+                    error: R2Error.fromThrownValue(err),
+                    severity: LogSeverity.ACTION_STOPPED
+                });
             }
         });
     }
