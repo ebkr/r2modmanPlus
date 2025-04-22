@@ -142,11 +142,11 @@ export const DownloadModule = {
                     }
                 );
 
-                commit('updateDownload', { downloadId, status: DownloadStatusEnum.INSTALLING });
+                commit('setInstalling', downloadId);
                 await dispatch('installMods', {downloadedMods, downloadId, profile: params.profile});
-                commit('updateDownload', { downloadId, status: DownloadStatusEnum.DONE });
+                commit('setDone', downloadId);
             } catch (e) {
-                commit('updateDownload', { downloadId, status: DownloadStatusEnum.FAILED });
+                commit('setFailed', downloadId);
                 throw e;
             }
         },
@@ -160,7 +160,7 @@ export const DownloadModule = {
         }) {
             if (params.status === StatusEnum.FAILURE) {
                 commit('setIsModProgressModalOpen', false);
-                commit('updateDownload', {downloadId: params.downloadId, status: DownloadStatusEnum.FAILED});
+                commit('setFailed', params.downloadId);
                 if (params.err !== null) {
                     DownloadUtils.addSolutionsToError(params.err);
                     throw params.err;
@@ -169,7 +169,6 @@ export const DownloadModule = {
                 commit('updateDownload', {downloadId: params.downloadId, modName: params.modName, downloadProgress: params.downloadProgress});
             }
         },
-
     },
 
     getters: <GetterTree<State, RootState>>{
@@ -216,6 +215,15 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
+        setDone(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
+        },
+        setFailed(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
+        },
+        setInstalling(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
+        },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
             state.ignoreCache = ignoreCache;
@@ -242,4 +250,12 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
     const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
     return downloads.filter(dl => active.includes(dl.status));
+}
+
+function updateDownloadStatus(downloads: DownloadProgress[], downloadId: UUID, status: DownloadStatusEnum): DownloadProgress[] {
+    const index: number = getIndexOfDownloadProgress(downloads, downloadId);
+    if (index > -1) {
+        downloads[index].status = status;
+    }
+    return downloads;
 }

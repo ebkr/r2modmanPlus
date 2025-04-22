@@ -30,7 +30,6 @@ import ModalCard from "../ModalCard.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
 import * as DownloadUtils from "../../utils/DownloadUtils";
 import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
-import { DownloadStatusEnum } from "../../model/enums/DownloadStatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import StatusEnum from "../../model/enums/StatusEnum";
 import R2Error from "../../model/errors/R2Error";
@@ -57,7 +56,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', {downloadId, status: DownloadStatusEnum.FAILED});
+                    this.$store.commit('download/setFailed', downloadId);
                     if (err !== null) {
                         DownloadUtils.addSolutionsToError(err);
                         throw err;
