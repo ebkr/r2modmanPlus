@@ -67,7 +67,7 @@ export default class UninstallModModal extends Vue {
 }
 </script>
 <template>
-    <ModalCard v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
+    <ModalCard id="uninstall-mod-modal" v-if="isOpen" :is-active="true" :can-close="!isLocked" @close-modal="onClose">
         <template v-slot:header>
             <h2 class='modal-title'>Uninstalling {{mod.getName()}}</h2>
         </template>

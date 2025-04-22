@@ -36,7 +36,7 @@ export default class DeleteProfileModal extends ProfilesMixin {
 
 </script>
 <template>
-    <ModalCard v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
+    <ModalCard id="delete-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeDeleteProfileModal">
 
         <template v-slot:header>
             <h2 class="modal-title">Delete profile</h2>

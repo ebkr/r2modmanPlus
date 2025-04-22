@@ -1,5 +1,5 @@
 <template>
-    <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>Update all installed mods</h2>
         </template>
