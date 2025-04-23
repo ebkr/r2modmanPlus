@@ -971,6 +971,18 @@ export default class GameManager {
             "https://thunderstore.io/c/aska/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1898300")], "ASKA.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Lost Skies", "LostSkies", "LostSkies",
+            "LostSkies", ["LostSkies.exe"], "LostSkies_Data",
+            "https://thunderstore.io/c/lost-skies/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1931180")], "LostSkies.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ls"]),
+
+        new Game("ANEURISM IV", "ANEURISMIV", "ANEURISMIV",
+            "ANEURISMIV", ["ANEURISM IV.exe"], "ANEURISM IV_Data",
+            "https://thunderstore.io/c/aneurism-iv/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2773280")], "ANEURISM_IV.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {

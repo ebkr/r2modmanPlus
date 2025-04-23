@@ -174,6 +174,8 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("Magicite"),
             buildBepInExRules("ENADreamBBQ"),
             buildBepInExRules("ASKA"),
+            buildBepInExRules("LostSkies"),
+            buildBepInExRules("ANEURISMIV"),
         ]
     }
 }
