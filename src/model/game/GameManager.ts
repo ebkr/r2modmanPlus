@@ -949,7 +949,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
 
         new Game("Human Fall Flat", "HumanFallFlat", "HumanFallFlat",
-            "Human", ["Human.exe"], "Human_Data",
+            "Human Fall Flat", ["Human.exe"], "Human_Data",
             "https://thunderstore.io/c/human-fall-flat/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "477160")], "HumanFallFlat.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["hff"]),
