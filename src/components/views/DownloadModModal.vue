@@ -1,62 +1,3 @@
-<script lang="ts" setup>
-import { Progress } from '../all';
-import DownloadModVersionSelectModal from '../../components/views/DownloadModVersionSelectModal.vue';
-import UpdateAllInstalledModsModal from '../../components/views/UpdateAllInstalledModsModal.vue';
-import R2Error from '../../model/errors/R2Error';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
-import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import { useDownloadComposable } from '../composables/DownloadComposable';
-import { getStore } from '../../providers/generic/store/StoreProvider';
-import { State } from '../../store';
-
-const store = getStore<State>();
-
-const {
-    closeModal,
-    setIsModProgressModalOpen,
-    downloadCompletedCallback,
-} = useDownloadComposable();
-
-async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
-    closeModal();
-
-    const downloadId = await store.dispatch(
-        'download/addDownload',
-        [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
-    );
-
-    setIsModProgressModalOpen(true);
-
-    const tsCombo = new ThunderstoreCombo();
-    tsCombo.setMod(tsMod);
-    tsCombo.setVersion(tsVersion);
-
-    setTimeout(async () => {
-        let downloadedMods: ThunderstoreCombo[] = [];
-        try {
-            downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
-                store.getters['profile/activeProfile'].asImmutableProfile(),
-                tsCombo,
-                store.state.download.ignoreCache,
-                (downloadProgress, modName, status, err) => {
-                    store.dispatch('download/downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
-                }
-            );
-        } catch (e) {
-            setIsModProgressModalOpen(false);
-            store.commit('download/setFailed', downloadId);
-            store.commit('error/handleError', R2Error.fromThrownValue(e));
-            return;
-        }
-        await downloadCompletedCallback(downloadedMods, downloadId);
-        setIsModProgressModalOpen(false);
-    }, 1);
-}
-
-</script>
-
 <template>
     <div>
         <div
@@ -101,3 +42,41 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
         <UpdateAllInstalledModsModal />
     </div>
 </template>
+
+<script lang="ts">
+
+import { mixins } from "vue-class-component";
+import { Component } from 'vue-property-decorator';
+
+import { Progress } from '../all';
+import ModalCard from '../ModalCard.vue';
+import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
+import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
+import DownloadMixin from "../mixins/DownloadMixin.vue";
+import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ThunderstoreVersion from '../../model/ThunderstoreVersion';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+
+    @Component({
+        components: {
+            DownloadModVersionSelectModal,
+            UpdateAllInstalledModsModal,
+            ModalCard,
+            Progress
+        }
+    })
+    export default class DownloadModModal extends mixins(DownloadMixin) {
+
+        async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
+            this.closeModal();
+
+            const combos = [new ThunderstoreCombo()];
+            combos[0].setMod(tsMod);
+            combos[0].setVersion(tsVersion);
+
+            this.setIsModProgressModalOpen(true);
+            await this.$store.dispatch('download/downloadAndInstallCombos', {combos, profile: this.profile.asImmutableProfile(), game: this.activeGame})
+        }
+    }
+
+</script>

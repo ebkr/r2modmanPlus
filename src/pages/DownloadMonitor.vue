@@ -25,7 +25,7 @@
                 <div class="container">
                     <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
-                            <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
+                            <p><strong>{{ downloadObject.initialMods.map(tsCombo => tsCombo.getUserFriendlyString()).join(", ") }}</strong></p>
 
                             <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
