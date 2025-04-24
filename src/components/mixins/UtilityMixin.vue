@@ -37,9 +37,9 @@ export default class UtilityMixin extends Vue {
             try {
                 const game = this.$store.state.activeGame;
                 const profile = this.$store.getters['profile/activeProfile'].asImmutableProfile();
-                const combo = throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game));
+                const combos = [throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game))];
 
-                await this.$store.dispatch('download/downloadAndInstallSpecific', {profile, combo});
+                await this.$store.dispatch('download/downloadAndInstallCombos', {combos, profile, game});
 
                 const modList = throwForR2Error(await ProfileModList.getModList(profile));
                 await this.$store.dispatch('profile/updateModList', modList);

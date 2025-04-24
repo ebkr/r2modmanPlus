@@ -53,11 +53,9 @@ import ModalCard from '../ModalCard.vue';
 import DownloadModVersionSelectModal from "../../components/views/DownloadModVersionSelectModal.vue";
 import UpdateAllInstalledModsModal from "../../components/views/UpdateAllInstalledModsModal.vue";
 import DownloadMixin from "../mixins/DownloadMixin.vue";
-import R2Error from '../../model/errors/R2Error';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 
     @Component({
         components: {
@@ -72,37 +70,12 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
         async downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
             this.closeModal();
 
-            const downloadId = await this.$store.dispatch(
-                'download/addDownload',
-                [`${tsMod.getName()} (${tsVersion.getVersionNumber().toString()})`]
-            );
+            const combos = [new ThunderstoreCombo()];
+            combos[0].setMod(tsMod);
+            combos[0].setVersion(tsVersion);
 
             this.setIsModProgressModalOpen(true);
-
-            const tsCombo = new ThunderstoreCombo();
-            tsCombo.setMod(tsMod);
-            tsCombo.setVersion(tsVersion);
-
-            setTimeout(async () => {
-                let downloadedMods: ThunderstoreCombo[] = [];
-                try {
-                    downloadedMods = await ThunderstoreDownloaderProvider.instance.download(
-                        this.profile.asImmutableProfile(),
-                        tsCombo,
-                        this.$store.state.download.ignoreCache,
-                        (downloadProgress, modName, status, err) => {
-                            this.$store.dispatch('download/downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
-                        }
-                    );
-                } catch (e) {
-                    this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/setFailed', downloadId);
-                    this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-                    return;
-                }
-                await this.downloadCompletedCallback(downloadedMods, downloadId);
-                this.setIsModProgressModalOpen(false);
-            }, 1);
+            await this.$store.dispatch('download/downloadAndInstallCombos', {combos, profile: this.profile.asImmutableProfile(), game: this.activeGame})
         }
     }
 
