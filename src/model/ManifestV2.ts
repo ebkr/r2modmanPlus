@@ -1,4 +1,3 @@
-import InvalidManifestError from './errors/Manifest/InvalidManifestError';
 import VersionNumber from './VersionNumber';
 import ThunderstoreCombo from './ThunderstoreCombo';
 import InstallMode from './enums/InstallMode';
@@ -33,39 +32,6 @@ export default class ManifestV2 {
     private enabled: boolean = true;
     private icon: string = '';
 
-    // Will create a ManifestV2 object from a given manifest.
-    // If manifest is V1, convert as much as possible to V2.
-    public make(data: any): InvalidManifestError | ManifestV2  {
-        if (data.ManifestVersion === undefined) {
-            return this.fromUnsupported(data);
-        }
-        this.setManifestVersion(data.ManifestVersion);
-        this.setName(data.Name);
-        this.setAuthorName(data.AuthorName);
-        this.setWebsiteUrl(data.WebsiteUrl);
-        this.setDisplayName(data.DisplayName);
-        this.setDescription(data.Description);
-        this.setGameVersion(data.GameVersion);
-        this.setNetworkMode(data.NetworkMode);
-        this.setPackageType(data.PackageType);
-        this.setInstallMode(data.InstallMode);
-        this.setLoaders(data.Loaders);
-        this.setDependencies(data.Dependencies);
-        this.setIncompatibilities(data.Incompatibilities);
-        this.setOptionalDependencies(data.OptionalDependencies);
-        this.setVersionNumber(new VersionNumber(data.Version));
-        this.setInstalledAtTime(data.installedAtTime || 0);
-        return this;
-    }
-
-    public makeSafe(data: any): R2Error | ManifestV2 {
-        if (data.ManifestVersion === undefined || data.ManifestVersion != 2) {
-            return new R2Error('Manifest is not V2', 'Manifest version is not supported',
-                'Contact the mod author to ask for a ManifestV2 zip. If they\'re unsure how, they can follow the guide here:\nhttps://github.com/ebkr/r2modmanPlus/wiki/Installing-mods-locally#developers');
-        }
-        return this.make(data);
-    }
-
     // Intended to be used to import a mod with only minimal fields specified.
     // Should support manifest V1. Defaults to an "Unknown" author field if not found.
     public makeSafeFromPartial(data: any): R2Error | ManifestV2 {
@@ -83,10 +49,6 @@ export default class ManifestV2 {
             return this;
         }
         return new R2Error("Manifest failed to be validated.", "The manifest is missing an author field.", "Add the author field to the manifest.json file manually.");
-    }
-
-    private fromUnsupported(data: any): ManifestV2 {
-        return this;
     }
 
     public fromThunderstoreCombo(combo: ThunderstoreCombo): ManifestV2 {
@@ -144,7 +106,7 @@ export default class ManifestV2 {
         return this.manifestVersion;
     }
 
-    private setManifestVersion(version: number) {
+    public setManifestVersion(version: number) {
         this.manifestVersion = version;
     }
 
