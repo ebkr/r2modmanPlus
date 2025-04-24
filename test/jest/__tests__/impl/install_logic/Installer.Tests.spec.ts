@@ -2,8 +2,6 @@ import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../../stubs/providers/InMemory.FsProvider';
 import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import * as path from 'path';
-import VersionNumber from '../../../../../src/model/VersionNumber';
-import ManifestV2 from '../../../../../src/model/ManifestV2';
 import Profile from '../../../../../src/model/Profile';
 import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
 import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
@@ -13,6 +11,7 @@ import InstallationRuleApplicator from 'src/r2mm/installing/default_installation
 import InstallationRules from 'src/r2mm/installing/InstallationRules';
 import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
 import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
+import { createManifest } from '../../../__utils__/InstallLogicUtils';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -39,9 +38,7 @@ describe('Installer Tests', () => {
         });
 
         test('Loose DLL', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.dll'), '');
@@ -59,9 +56,7 @@ describe('Installer Tests', () => {
         });
 
         test("Keep override folder structure", async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder("test_mod", "auth", new VersionNumber("1.0.0"));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.mkdirs(path.join(cachePkgRoot, "Plugins", "static_dir"));
@@ -80,9 +75,7 @@ describe('Installer Tests', () => {
         });
 
         test("Flatten non-override structure", async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder("test_mod", "auth", new VersionNumber("1.0.0"));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.mkdirs(path.join(cachePkgRoot, "static_dir"));
@@ -101,9 +94,7 @@ describe('Installer Tests', () => {
         });
 
         test('Default file extension', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.mm.dll'), '');
@@ -139,9 +130,7 @@ describe('Installer Tests', () => {
         });
 
         test('Loose file', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.file'), '');
@@ -163,9 +152,7 @@ describe('Installer Tests', () => {
         });
 
         test('One-level nested', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             const cacheParentDir = path.join(cachePkgRoot, "userdata");
             await FsProvider.instance.mkdirs(cacheParentDir);
@@ -184,9 +171,7 @@ describe('Installer Tests', () => {
         });
 
         test('Two-level nested', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             const cacheParentDir = path.join(cachePkgRoot, "userdata", "CustomFolder");
             await FsProvider.instance.mkdirs(cacheParentDir);
@@ -206,9 +191,7 @@ describe('Installer Tests', () => {
 
         // .managed.dll rule points to /MelonLoader/Managed
         test('Default file extension placement', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             await FsProvider.instance.mkdirs(cachePkgRoot);
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'loose.managed.dll'), '');
@@ -243,9 +226,7 @@ describe('Installer Tests', () => {
         });
 
         test('Config folder', async () => {
-            // Build dummy cache package
-            const pkg = packageBuilder('test_mod', 'auth', new VersionNumber('1.0.0'));
-
+            const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
             const cacheParentDir = path.join(cachePkgRoot, "Config");
             await FsProvider.instance.mkdirs(cacheParentDir);
@@ -266,29 +247,3 @@ describe('Installer Tests', () => {
     });
 
 });
-
-let packageBuilder = (name: string, author: string, version: VersionNumber): ManifestV2 => {
-    /** ManifestV2::make ->
-     *
-     *  if (data.ManifestVersion === undefined) {
-     *   return this.fromUnsupported(data);
-     *  }
-     *  this.setManifestVersion(2);
-     *  this.setAuthorName(data.AuthorName || data.author || "Unknown");
-     *  this.setName(data.Name || `${this.getAuthorName()}-${data.name}`);
-     *  this.setWebsiteUrl(data.WebsiteURL || data.website_url || "");
-     *  this.setDisplayName(data.DisplayName || data.name);
-     *  this.setDescription(data.Description || data.description || "");
-     *  this.setVersionNumber(new VersionNumber(data.Version || data.version_number));
-     *  this.setDependencies(data.Dependencies || data.dependencies || []);
-     *  return this;
-     */
-    return new ManifestV2().make({
-        // Bare minimum for ManifestV2
-        ManifestVersion: 2,
-        AuthorName: author,
-        Name: `${author}-${name}`,
-        DisplayName: name,
-        Version: version.toString()
-    }) as ManifestV2;
-};

@@ -53,13 +53,13 @@ export async function installLogicBeforeEach(internalFolderName: string) {
  * Return a minimal fake package
  */
 export function createManifest(name: string, author: string, version?: VersionNumber): ManifestV2  {
-    return new ManifestV2().make({
-        ManifestVersion: 2,
-        AuthorName: author,
-        Name: `${author}-${name}`,
-        DisplayName: name,
-        Version: version ? version.toString() : new VersionNumber("1.0.0").toString(),
-    }) as ManifestV2;
+    const manifest = new ManifestV2()
+    manifest.setManifestVersion(2);
+    manifest.setAuthorName(author);
+    manifest.setName(`${author}-${name}`);
+    manifest.setDisplayName(name);
+    manifest.setVersionNumber(version ? version : new VersionNumber("1.0.0"));
+    return manifest;
 };
 
 /**
