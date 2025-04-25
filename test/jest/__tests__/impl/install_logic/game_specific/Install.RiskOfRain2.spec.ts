@@ -1,42 +1,23 @@
 import FsProvider from '../../../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
-import PathResolver from '../../../../../../src/r2mm/manager/PathResolver';
 import * as path from 'path';
 import ManifestV2 from '../../../../../../src/model/ManifestV2';
 import Profile from '../../../../../../src/model/Profile';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
-import NodeFs from 'src/providers/generic/file/NodeFs';
-import FileTree from 'src/model/file/FileTree';
-import R2Error from 'src/model/errors/R2Error';
-import { createManifest, installLogicBeforeEach } from '../../../../__utils__/InstallLogicUtils';
+import {
+    createManifest,
+    installLogicBeforeEach,
+    setupFolderStructureTestFiles
+} from '../../../../__utils__/InstallLogicUtils';
 
 let pkg: ManifestV2;
-let cachePkgRoot: string;
 
 describe('Risk of Rain 2 Install Logic', () => {
 
     beforeAll(async () => {
-        FsProvider.provide(() => new NodeFs());
-        const baseFolderStructurePath = path.join(__dirname, "../../../../../folder-structure-testing");
-        const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
-        if (tree instanceof R2Error) {
-            throw new Error("Unable to find folder-structure-testing folder");
-        }
-        const allFiles = tree.getRecursiveFiles()
-            .map(value => path.relative(baseFolderStructurePath, value))
-            // Filter out file generation script.
-            .filter(value => value !== "populator.mjs");
-
         await installLogicBeforeEach("RiskOfRain2");
-
         pkg = createManifest('test_mod', 'author');
-        cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
-
-        // Create cache from "folder-structure-testing" folder.
-        for (const value of allFiles) {
-            await FsProvider.instance.mkdirs(path.join(cachePkgRoot, path.dirname(value.trim())));
-            await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
-        }
+        await setupFolderStructureTestFiles(pkg);
 
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
