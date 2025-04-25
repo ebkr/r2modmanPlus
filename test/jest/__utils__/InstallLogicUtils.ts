@@ -1,11 +1,14 @@
 import * as path from 'path';
 
 import InMemoryFsProvider from '../__tests__/stubs/providers/InMemory.FsProvider';
+import R2Error from '../../../src/model/errors/R2Error';
+import FileTree from '../../../src/model/file/FileTree';
 import GameManager from '../../../src/model/game/GameManager';
 import ManifestV2 from '../../../src/model/ManifestV2';
 import Profile from '../../../src/model/Profile';
 import VersionNumber from '../../../src/model/VersionNumber';
 import FsProvider from '../../../src/providers/generic/file/FsProvider';
+import NodeFs from '../../../src/providers/generic/file/NodeFs';
 import ConflictManagementProvider from '../../../src/providers/generic/installing/ConflictManagementProvider';
 import ProfileInstallerProvider from '../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import ProfileProvider from '../../../src/providers/ror2/model_implementation/ProfileProvider';
@@ -75,6 +78,33 @@ export async function createPackageFilesIntoCache(pkg: ManifestV2, filePaths: st
         await fs.mkdirs(path.dirname(destPath));
         await fs.writeFile(destPath, "");
         expect(await fs.exists(destPath));
+    }
+}
+
+/**
+ * Create "cached package" from the contents of "folder-structure-testing" folder.
+ */
+export async function setupFolderStructureTestFiles(pkg: ManifestV2) {
+    // Read the file structure from disk.
+    FsProvider.provide(() => new NodeFs());
+    const baseFolderStructurePath = path.join(__dirname, "../../folder-structure-testing");
+    const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
+    if (tree instanceof R2Error) {
+        throw new Error("Unable to find folder-structure-testing folder");
+    }
+
+    const testFiles = tree.getRecursiveFiles()
+        .map(value => path.relative(baseFolderStructurePath, value))
+        // Filter out file generation script.
+        .filter(value => value !== "populator.mjs" && value !== "depopulator.mjs");
+
+    // Write the file structure into mock file system.
+    FsProvider.provide(() => new InMemoryFsProvider());
+    const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
+
+    for (const value of testFiles) {
+        await FsProvider.instance.mkdirs(path.join(cachePkgRoot, path.dirname(value.trim())));
+        await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
     }
 }
 
