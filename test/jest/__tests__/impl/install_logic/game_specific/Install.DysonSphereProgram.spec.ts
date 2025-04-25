@@ -7,7 +7,8 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import {
     createManifest,
     installLogicBeforeEach,
-    setupFolderStructureTestFiles
+    setupFolderStructureTestFiles,
+    testUntrackedFileStructure
 } from '../../../../__utils__/InstallLogicUtils';
 
 let pkg: ManifestV2;
@@ -49,20 +50,8 @@ describe('Dyson Sphere Program Install Logic', () => {
     });
 
     test('NONE', async () => {
-
-        /** Expect files to be installed as intended **/
-        const subdirPaths = [
-            path.join("BIE", "Config"),
-        ]
-
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(
-                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`)
-            )).toBeTruthy();
-        }
+        await testUntrackedFileStructure([
+            [path.join("BIE", "Config"), "BepInEx"],
+        ]);
     });
-
 });

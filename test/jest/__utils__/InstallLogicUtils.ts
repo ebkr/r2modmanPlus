@@ -116,6 +116,14 @@ function convertPath(path: string) {
 
 // For testing file installation with the contents of folder-structure-testing folder.
 export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: SourceAndTargetPaths[]) {
+    await testUntrackedFileStructure(paths);
+
+    const stateFile = Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}-state.yml`);
+    expect(await FsProvider.instance.exists(stateFile)).toBeTruthy();
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testUntrackedFileStructure(paths: SourceAndTargetPaths[]) {
     for (const [packagePath, installDir] of paths) {
         const targetPath = Profile.getActiveProfile().joinToProfilePath(
             installDir,
@@ -125,8 +133,6 @@ export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: Sour
         );
         expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
     }
-    const stateFile = Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}-state.yml`);
-    expect(await FsProvider.instance.exists(stateFile)).toBeTruthy();
 }
 
 /**
