@@ -8,7 +8,8 @@ import {
     createManifest,
     installLogicBeforeEach,
     setupFolderStructureTestFiles,
-    testStateTrackedFileStructure
+    testStateTrackedFileStructure,
+    testUntrackedFileStructure
 } from '../../../../__utils__/InstallLogicUtils';
 
 let pkg: ManifestV2;
@@ -52,20 +53,9 @@ describe('GTFO Install Logic', () => {
     });
 
     test('NONE', async () => {
-
-        /** Expect files to be installed as intended **/
-        const subdirPaths = [
+        await testUntrackedFileStructure(pkg, [
             path.join("BIE", "Config"),
-        ]
-
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(
-                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), `${convertedName}_Files`, `${convertedName}_file.txt`)
-            )).toBeTruthy();
-        }
+        ]);
     });
 
     test('STATE', async () => {
@@ -73,5 +63,4 @@ describe('GTFO Install Logic', () => {
             [path.join("BIE", "GameSpecific", "GTFO", "Assets"), "BepInEx"],
         ]);
     });
-
 });

@@ -129,6 +129,19 @@ export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: Sour
     expect(await FsProvider.instance.exists(stateFile)).toBeTruthy();
 }
 
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testUntrackedFileStructure(pkg: ManifestV2, paths: string[]) {
+    for (const packagePath of paths) {
+        const targetPath = Profile.getActiveProfile().joinToProfilePath(
+            "BepInEx",
+            path.basename(packagePath),
+            `${convertPath(packagePath)}_Files`,
+            `${convertPath(packagePath)}_file.txt`
+        );
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+    }
+}
+
 /**
  * Return file tree of the target path as an array.
  *
