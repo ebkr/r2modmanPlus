@@ -130,6 +130,20 @@ export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: Sour
 }
 
 // For testing file installation with the contents of folder-structure-testing folder.
+export async function testSubdirTrackedFileStructure(pkg: ManifestV2, paths: string[]) {
+    for (const packagePath of paths) {
+        const targetPath = Profile.getActiveProfile().joinToProfilePath(
+            "BepInEx",
+            path.basename(packagePath),
+            pkg.getName(),
+            `${convertPath(packagePath)}_Files`,
+            `${convertPath(packagePath)}_file.txt`
+        );
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+    }
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
 export async function testUntrackedFileStructure(pkg: ManifestV2, paths: string[]) {
     for (const packagePath of paths) {
         const targetPath = Profile.getActiveProfile().joinToProfilePath(
