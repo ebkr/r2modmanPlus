@@ -1,4 +1,3 @@
-import FsProvider from '../../../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import * as path from 'path';
 import ManifestV2 from '../../../../../../src/model/ManifestV2';
@@ -9,6 +8,7 @@ import {
     installLogicBeforeEach,
     setupFolderStructureTestFiles,
     testStateTrackedFileStructure,
+    testSubdirTrackedFileStructure,
     testUntrackedFileStructure
 } from '../../../../__utils__/InstallLogicUtils';
 
@@ -34,22 +34,13 @@ describe('GTFO Install Logic', () => {
     })
 
     test('SUBDIR', async () => {
-
-        /** Expect files to be installed as intended **/
-        const subdirPaths = [
-            path.join("BIE", "Plugins"),
-            path.join("BIE", "Monomod"),
-            path.join("BIE", "Patchers"),
-            path.join("BIE", "Core"),
-            path.join("BIE", "GameSpecific", "GTFO", "GameData"),
-        ]
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value.replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(
-                Profile.getActiveProfile().joinToProfilePath("BepInEx", path.basename(value), pkg.getName(), `${convertedName}_Files`, `${convertedName}_file.txt`)
-            )).toBeTruthy();
-        }
+        await testSubdirTrackedFileStructure(pkg, [
+            [path.join("BIE", "Plugins"), "BepInEx"],
+            [path.join("BIE", "Monomod"), "BepInEx"],
+            [path.join("BIE", "Patchers"), "BepInEx"],
+            [path.join("BIE", "Core"), "BepInEx"],
+            [path.join("BIE", "GameSpecific", "GTFO", "GameData"), "BepInEx"],
+        ]);
     });
 
     test('NONE', async () => {
