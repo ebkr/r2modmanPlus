@@ -31,7 +31,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
     FsProvider.provide(() => inMemoryFs);
     InMemoryFsProvider.clear();
     PathResolver.MOD_ROOT = 'MODS';
-    inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+    await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
 
     const game = GameManager.findByFolderName(internalFolderName);
     if (game === undefined) {
@@ -41,7 +41,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
 
     ProfileProvider.provide(() => new ProfileProviderImpl());
     new Profile('TestProfile');
-    inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
+    await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
 
     ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
     InstallationRuleApplicator.apply();
