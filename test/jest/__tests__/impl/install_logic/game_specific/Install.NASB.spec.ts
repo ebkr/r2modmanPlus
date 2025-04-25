@@ -7,7 +7,8 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import {
     createManifest,
     installLogicBeforeEach,
-    setupFolderStructureTestFiles
+    setupFolderStructureTestFiles,
+    testStateTrackedFileStructure
 } from '../../../../__utils__/InstallLogicUtils';
 
 let pkg: ManifestV2;
@@ -69,22 +70,10 @@ describe('NASB Install Logic', () => {
     });
 
     test('STATE', async () => {
-
-        // [package_path, install_dir_relative_to_profile_folder]
-        const subdirPaths = [
+        await testStateTrackedFileStructure(pkg, [
             [path.join('BIE', 'GameSpecific', 'NASB', 'CustomSongs'), path.join("BepInEx")],
             [path.join('BIE', 'GameSpecific', 'NASB', 'Movesets'), path.join('BepInEx')]
-        ];
-
-        InMemoryFsProvider.setMatchMode('CASE_INSENSITIVE');
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value[0].replace(/[\/\\]/g, '_')}`;
-            expect(await FsProvider.instance.exists(
-                Profile.getActiveProfile().joinToProfilePath(value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`)
-            )).toBeTruthy();
-            expect(FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath('_state', `${pkg.getName()}.yml`)));
-        }
+        ]);
     });
 
 });
