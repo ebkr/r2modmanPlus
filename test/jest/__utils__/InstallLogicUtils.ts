@@ -108,6 +108,27 @@ export async function setupFolderStructureTestFiles(pkg: ManifestV2) {
     }
 }
 
+type SourceAndTargetPaths = [string, string];  // [package_path, install_dir_relative_to_profile_folder]
+
+function convertPath(path: string) {
+    return path.replace(/[\/\\]/g, "_");
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: SourceAndTargetPaths[]) {
+    for (const [packagePath, installDir] of paths) {
+        const targetPath = Profile.getActiveProfile().joinToProfilePath(
+            installDir,
+            path.basename(packagePath),
+            `${convertPath(packagePath)}_Files`,
+            `${convertPath(packagePath)}_file.txt`
+        );
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+    }
+    const stateFile = Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}-state.yml`);
+    expect(await FsProvider.instance.exists(stateFile)).toBeTruthy();
+}
+
 /**
  * Return file tree of the target path as an array.
  *
