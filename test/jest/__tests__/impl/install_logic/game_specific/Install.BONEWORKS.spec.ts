@@ -1,4 +1,3 @@
-import FsProvider from '../../../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import * as path from 'path';
 import ManifestV2 from '../../../../../../src/model/ManifestV2';
@@ -7,7 +6,8 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import {
     createManifest,
     installLogicBeforeEach,
-    setupFolderStructureTestFiles
+    setupFolderStructureTestFiles,
+    testStateTrackedFileStructure
 } from '../../../../__utils__/InstallLogicUtils';
 
 let pkg: ManifestV2;
@@ -32,10 +32,7 @@ describe('BONEWORKS Install Logic', () => {
     });
 
     test('STATE', async () => {
-
-        /** Expect files to be installed as intended **/
-        // [package_path, install_dir_relative_to_profile_folder]
-        const subdirPaths = [
+        await testStateTrackedFileStructure(pkg, [
             [path.join("ML", "MelonLoader"), "."],
             [path.join("ML", "Managed"), "MelonLoader"],
             [path.join("ML", "Libs"), "MelonLoader"],
@@ -52,17 +49,6 @@ describe('BONEWORKS Install Logic', () => {
             [path.join("ML", "GameSpecific", "BONEWORKS", "Scoreworks"), "UserData"],
             [path.join("ML", "GameSpecific", "BONEWORKS", "CustomSkins"), "UserData"],
             [path.join("ML", "GameSpecific", "BONEWORKS", "Grenades"), "UserData"],
-        ]
-
-        InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
-
-        for (const value of subdirPaths) {
-            const convertedName = `${value[0].replace(/[\/\\]/g, "_")}`;
-            expect(await FsProvider.instance.exists(
-                Profile.getActiveProfile().joinToProfilePath(value[1], path.basename(value[0]), `${convertedName}_Files`, `${convertedName}_file.txt`)
-            )).toBeTruthy();
-            expect(FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}.yml`)))
-        }
+        ]);
     });
-
 });
