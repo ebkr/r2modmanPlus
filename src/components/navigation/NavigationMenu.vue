@@ -60,9 +60,12 @@
                     <slot></slot>
                 </div>
                 <div class="menu-bottom">
-                    <div id="profile-switcher" @click="changeProfile">
-                        <img :src="getGameImage()" alt="Game icon" @click.stop="changeGame"/>
-                        <div>{{ profile.getProfileName() }}</div>
+                    <div id="profile-switcher" @click="openProfileManagementModal">
+                        <img :src="getGameImage()" alt="Game icon"/>
+                        <div>
+                            <p>{{ profile.getProfileName() }}</p>
+                            <p class="sub-action">Profile</p>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -116,12 +119,8 @@ export default class NavigationMenu extends Vue {
         return FileUtils.requireImage(this.activeGame.gameImage);
     }
 
-    changeGame() {
-        this.$router.push({name: 'index'});
-    }
-
-    changeProfile() {
-        this.$router.push({name: 'profiles'});
+    openProfileManagementModal() {
+        this.$store.commit("openProfileManagementModal");
     }
 
     async launch(mode: LaunchMode) {
