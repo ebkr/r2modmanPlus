@@ -32,13 +32,14 @@ export class EcosystemSchema {
         this._isValidated = true;
         return ecosystem as ThunderstoreEcosystem;
     }
-
     /**
-     * Get a list of games which have valid r2mm entries.
+     * Get a list of r2modman entries i.e. games supported by the mod manager.
      */
     static get supportedGames() {
         return Object.values(this.get.games).filter(
             (x): x is typeof x & {r2modman: NonNullable<typeof x["r2modman"]>} => x.r2modman != null
+        ).flatMap(
+            (game) => game.r2modman
         );
     }
 

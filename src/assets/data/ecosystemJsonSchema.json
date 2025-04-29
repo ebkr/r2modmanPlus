@@ -162,143 +162,157 @@
               "r2modman": {
                 "anyOf": [
                   {
-                    "type": "object",
-                    "properties": {
-                      "internalFolderName": {
-                        "type": "string"
-                      },
-                      "dataFolderName": {
-                        "type": "string"
-                      },
-                      "settingsIdentifier": {
-                        "type": "string"
-                      },
-                      "packageIndex": {
-                        "type": "string"
-                      },
-                      "steamFolderName": {
-                        "type": "string"
-                      },
-                      "exeNames": {
-                        "type": "array",
-                        "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "meta": {
+                          "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/meta"
+                        },
+                        "internalFolderName": {
                           "type": "string"
-                        }
-                      },
-                      "gameInstanceType": {
-                        "type": "string",
-                        "enum": [
-                          "game",
-                          "server"
-                        ]
-                      },
-                      "gameSelectionDisplayMode": {
-                        "type": "string",
-                        "enum": [
-                          "visible",
-                          "hidden"
-                        ]
-                      },
-                      "additionalSearchStrings": {
-                        "type": "array",
-                        "items": {
+                        },
+                        "dataFolderName": {
                           "type": "string"
-                        }
-                      },
-                      "packageLoader": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "enum": [
-                              "bepinex",
-                              "melonloader",
-                              "northstar",
-                              "godotml",
-                              "shimloader",
-                              "lovely",
-                              "returnofmodding",
-                              "gdweave",
-                              "recursive-melonloader"
-                            ]
-                          },
-                          {
-                            "type": "null"
+                        },
+                        "distributions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/distributions/items"
                           }
-                        ]
-                      },
-                      "installRules": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "route": {
-                              "type": "string"
-                            },
-                            "trackingMethod": {
+                        },
+                        "settingsIdentifier": {
+                          "type": "string"
+                        },
+                        "packageIndex": {
+                          "type": "string"
+                        },
+                        "steamFolderName": {
+                          "type": "string"
+                        },
+                        "exeNames": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "gameInstanceType": {
+                          "type": "string",
+                          "enum": [
+                            "game",
+                            "server"
+                          ]
+                        },
+                        "gameSelectionDisplayMode": {
+                          "type": "string",
+                          "enum": [
+                            "visible",
+                            "hidden"
+                          ]
+                        },
+                        "additionalSearchStrings": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "packageLoader": {
+                          "anyOf": [
+                            {
                               "type": "string",
                               "enum": [
-                                "state",
-                                "subdir",
-                                "subdir-no-flatten",
-                                "package-zip",
-                                "none"
+                                "bepinex",
+                                "melonloader",
+                                "northstar",
+                                "godotml",
+                                "shimloader",
+                                "lovely",
+                                "returnofmodding",
+                                "gdweave",
+                                "recursive-melonloader"
                               ]
                             },
-                            "defaultFileExtensions": {
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "installRules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "route": {
+                                "type": "string"
+                              },
+                              "trackingMethod": {
+                                "type": "string",
+                                "enum": [
+                                  "state",
+                                  "subdir",
+                                  "subdir-no-flatten",
+                                  "package-zip",
+                                  "none"
+                                ]
+                              },
+                              "defaultFileExtensions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "isDefaultLocation": {
+                                "type": "boolean"
+                              },
+                              "subRoutes": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/r2modman/anyOf/0/items/properties/installRules/items"
+                                }
+                              }
+                            },
+                            "required": [
+                              "route",
+                              "trackingMethod",
+                              "defaultFileExtensions",
+                              "isDefaultLocation",
+                              "subRoutes"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "relativeFileExclusions": {
+                          "anyOf": [
+                            {
                               "type": "array",
                               "items": {
                                 "type": "string"
                               }
                             },
-                            "isDefaultLocation": {
-                              "type": "boolean"
-                            },
-                            "subRoutes": {
-                              "type": "array",
-                              "items": {
-                                "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/r2modman/anyOf/0/properties/installRules/items"
-                              }
+                            {
+                              "type": "null"
                             }
-                          },
-                          "required": [
-                            "route",
-                            "trackingMethod",
-                            "defaultFileExtensions",
-                            "isDefaultLocation",
-                            "subRoutes"
-                          ],
-                          "additionalProperties": false
+                          ]
                         }
                       },
-                      "relativeFileExclusions": {
-                        "anyOf": [
-                          {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    },
-                    "required": [
-                      "internalFolderName",
-                      "dataFolderName",
-                      "settingsIdentifier",
-                      "packageIndex",
-                      "steamFolderName",
-                      "exeNames",
-                      "gameInstanceType",
-                      "gameSelectionDisplayMode",
-                      "additionalSearchStrings",
-                      "packageLoader",
-                      "installRules",
-                      "relativeFileExclusions"
-                    ],
-                    "additionalProperties": false
+                      "required": [
+                        "meta",
+                        "internalFolderName",
+                        "dataFolderName",
+                        "distributions",
+                        "settingsIdentifier",
+                        "packageIndex",
+                        "steamFolderName",
+                        "exeNames",
+                        "gameInstanceType",
+                        "gameSelectionDisplayMode",
+                        "additionalSearchStrings",
+                        "packageLoader",
+                        "installRules",
+                        "relativeFileExclusions"
+                      ],
+                      "additionalProperties": false
+                    }
                   },
                   {
                     "type": "null"
