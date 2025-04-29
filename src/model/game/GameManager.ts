@@ -983,6 +983,12 @@ export default class GameManager {
             "https://thunderstore.io/c/aneurism-iv/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2773280")], "ANEURISM_IV.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Labyrinthine", "Labyrinthine", "Labyrinthine",
+            "Labyrinthine", ["Labyrinthine.exe"], "Labyrinthine_Data",
+            "https://thunderstore.io/c/labyrinthine/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1302240")], "Labyrinthine.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
     ];
 
     static get activeGame(): Game {

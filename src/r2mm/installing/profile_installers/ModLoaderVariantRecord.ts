@@ -243,6 +243,7 @@ const VARIANTS = {
     ASKA: MODLOADER_PACKAGES,
     LostSkies: MODLOADER_PACKAGES,
     ANEURISMIV: MODLOADER_PACKAGES,
+    Labyrinthine: RECURSIVE_MELONLOADER_MAPPING,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.
