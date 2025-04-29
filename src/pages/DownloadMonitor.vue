@@ -23,7 +23,7 @@
             </div>
             <div v-for="(downloadObject, index) of $store.getters['download/newestFirst']" :key="`download-progress-${index}`">
                 <div class="container">
-                    <div class="row border-at-bottom pad pad--sides">
+                    <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
                             <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
 
