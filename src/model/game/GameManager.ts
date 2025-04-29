@@ -973,7 +973,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
 
         new Game("Lost Skies", "LostSkies", "LostSkies",
-            "LostSkies", ["LostSkies.exe"], "LostSkies_Data",
+            "Wild Skies", ["LostSkies.exe"], "LostSkies_Data",
             "https://thunderstore.io/c/lost-skies/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1931180")], "LostSkies.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ls"]),
