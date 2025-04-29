@@ -34,11 +34,13 @@ export class EcosystemSchema {
     }
 
     /**
-     * Get a list of games which have valid r2mm entries.
+     * Get a list of r2modman entries i.e. games supported by the mod manager.
      */
     static get supportedGames() {
-        return Object.values(this.ecosystem.games).filter(
-            (x): x is typeof x & {r2modman: NonNullable<typeof x["r2modman"]>} => x.r2modman != null
+        return Object.values(this.ecosystem.games).flatMap(
+            (game) => game.r2modman
+        ).filter(
+            (r2modman): r2modman is NonNullable<typeof r2modman> => r2modman != null
         );
     }
 

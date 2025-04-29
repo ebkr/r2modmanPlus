@@ -34,7 +34,7 @@ export interface Game {
     distributions: Distribution[];
     label:         string;
     meta:          Meta;
-    r2modman:      R2Modman | null;
+    r2modman:      R2Modman[] | null;
     tcli?:         { [key: string]: any };
     thunderstore?: ThunderstoreEcosyste;
     uuid:          string;
@@ -63,11 +63,13 @@ export interface Meta {
 export interface R2Modman {
     additionalSearchStrings:  string[];
     dataFolderName:           string;
+    distributions:            Distribution[];
     exeNames:                 string[];
     gameInstanceType:         GameInstanceType;
     gameSelectionDisplayMode: GameSelectionDisplayMode;
     installRules:             InstallRule[];
     internalFolderName:       string;
+    meta:                     Meta;
     packageIndex:             string;
     packageLoader:            Loader | null;
     relativeFileExclusions:   string[] | null;
@@ -316,7 +318,7 @@ const typeMap: any = {
         { json: "distributions", js: "distributions", typ: a(r("Distribution")) },
         { json: "label", js: "label", typ: "" },
         { json: "meta", js: "meta", typ: r("Meta") },
-        { json: "r2modman", js: "r2modman", typ: u(r("R2Modman"), null) },
+        { json: "r2modman", js: "r2modman", typ: u(a(r("R2Modman")), null) },
         { json: "tcli", js: "tcli", typ: u(undefined, m("any")) },
         { json: "thunderstore", js: "thunderstore", typ: u(undefined, r("ThunderstoreEcosyste")) },
         { json: "uuid", js: "uuid", typ: "" },
@@ -332,11 +334,13 @@ const typeMap: any = {
     "R2Modman": o([
         { json: "additionalSearchStrings", js: "additionalSearchStrings", typ: a("") },
         { json: "dataFolderName", js: "dataFolderName", typ: "" },
+        { json: "distributions", js: "distributions", typ: a(r("Distribution")) },
         { json: "exeNames", js: "exeNames", typ: a("") },
         { json: "gameInstanceType", js: "gameInstanceType", typ: r("GameInstanceType") },
         { json: "gameSelectionDisplayMode", js: "gameSelectionDisplayMode", typ: r("GameSelectionDisplayMode") },
         { json: "installRules", js: "installRules", typ: a(r("InstallRule")) },
         { json: "internalFolderName", js: "internalFolderName", typ: "" },
+        { json: "meta", js: "meta", typ: r("Meta") },
         { json: "packageIndex", js: "packageIndex", typ: "" },
         { json: "packageLoader", js: "packageLoader", typ: u(r("Loader"), null) },
         { json: "relativeFileExclusions", js: "relativeFileExclusions", typ: u(a(""), null) },
