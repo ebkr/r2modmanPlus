@@ -5,9 +5,9 @@ export default class InstallationRuleApplicator {
 
     public static apply() {
         InstallationRules.RULES = EcosystemSchema.supportedGames.map((x) => ({
-            gameName: x.r2modman.internalFolderName,
-            rules: x.r2modman.installRules.map(normalizeRuleSubtype),
-            relativeFileExclusions: x.r2modman.relativeFileExclusions,
+            gameName: x.internalFolderName,
+            rules: x.installRules.map(normalizeRuleSubtype),
+            relativeFileExclusions: x.relativeFileExclusions,
         }));
     }
 }

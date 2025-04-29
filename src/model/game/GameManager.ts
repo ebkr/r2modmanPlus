@@ -28,8 +28,6 @@ export default class GameManager {
 
     static get gameList(): Game[] {
         return EcosystemSchema.supportedGames.map((game) => {
-            const r2mm = game.r2modman;
-
             const distributions = game.distributions.map((x) => new StorePlatformMetadata(
                     getStorePlatformFromName(x.platform),
                     x.identifier || undefined,
@@ -38,18 +36,18 @@ export default class GameManager {
 
             return new Game(
                 game.meta.displayName,
-                r2mm.internalFolderName,
-                r2mm.settingsIdentifier,
-                r2mm.steamFolderName,
-                r2mm.exeNames,
-                r2mm.dataFolderName,
-                r2mm.packageIndex,
+                game.internalFolderName,
+                game.settingsIdentifier,
+                game.steamFolderName,
+                game.exeNames,
+                game.dataFolderName,
+                game.packageIndex,
                 distributions,
                 game.meta.iconUrl || "ThunderstoreBeta.jpg",
-                displayModeFromString(r2mm.gameSelectionDisplayMode),
-                gameInstanceTypeFromString(r2mm.gameInstanceType),
-                installerVariantFromString(r2mm.packageLoader),
-                r2mm.additionalSearchStrings,
+                displayModeFromString(game.gameSelectionDisplayMode),
+                gameInstanceTypeFromString(game.gameInstanceType),
+                installerVariantFromString(game.packageLoader),
+                game.additionalSearchStrings,
             );
         });
     }
