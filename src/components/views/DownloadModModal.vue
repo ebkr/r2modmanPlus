@@ -56,6 +56,7 @@ import DownloadMixin from "../mixins/DownloadMixin.vue";
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import { ModpackDependencyStrategy } from "../../utils/DependencyUtils";
 
     @Component({
         components: {
@@ -75,7 +76,12 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
             combos[0].setVersion(tsVersion);
 
             this.setIsModProgressModalOpen(true);
-            await this.$store.dispatch('download/downloadAndInstallCombos', {combos, profile: this.profile.asImmutableProfile(), game: this.activeGame})
+            await this.$store.dispatch('download/downloadAndInstallCombos', {
+                combos,
+                profile: this.profile.asImmutableProfile(),
+                game: this.activeGame,
+                modpackDependencyStrategy: ModpackDependencyStrategy.USE_EXACT_VERSION
+            })
         }
     }
 

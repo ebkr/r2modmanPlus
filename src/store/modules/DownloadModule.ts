@@ -13,9 +13,8 @@ import ManagerSettings from "../../r2mm/manager/ManagerSettings";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
 import { State as RootState } from "../../store";
 import * as DownloadUtils from "../../utils/DownloadUtils";
-import { getFullDependencyList } from "../../utils/DependencyUtils";
+import { getFullDependencyList, ModpackDependencyStrategy } from "../../utils/DependencyUtils";
 import { installModsToProfile } from "../../utils/ProfileUtils";
-import ManifestV2 from "src/model/ManifestV2";
 
 interface DownloadProgress {
     downloadId: UUID;
@@ -76,15 +75,16 @@ export const DownloadModule = {
         async downloadAndInstallCombos({commit, dispatch}, params: {
             combos: ThunderstoreCombo[],
             profile: ImmutableProfile,
-            game: Game
+            game: Game,
+            modpackDependencyStrategy: ModpackDependencyStrategy
         }) {
-            const { combos, game, profile } = params;
+            const { combos, game, profile, modpackDependencyStrategy } = params;
             let downloadId: UUID | undefined;
 
             try {
                 downloadId = await dispatch('_addDownload', combos);
-                const modList = await throwForR2Error(ProfileModList.getModList(profile));
-                await getFullDependencyList(combos, game, (modList as ManifestV2[]));
+                const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
+                await getFullDependencyList(combos, game, installedMods, modpackDependencyStrategy);
                 await dispatch('_download', { combos, downloadId })
                 await dispatch('_installModsAndResolveConflicts', { combos, profile, downloadId });
             } catch (e) {

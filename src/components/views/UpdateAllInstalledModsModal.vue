@@ -27,9 +27,10 @@ import { mixins } from 'vue-class-component';
 import { Component } from 'vue-property-decorator';
 
 import ModalCard from "../ModalCard.vue";
+import DownloadMixin from '../mixins/DownloadMixin.vue';
 import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import DownloadMixin from '../mixins/DownloadMixin.vue';
+import { ModpackDependencyStrategy } from "../../utils/DependencyUtils";
 
 @Component({
     components: {DownloadModVersionSelectModal, ModalCard}
@@ -40,7 +41,12 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin) {
         this.closeModal();
         const combos: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
         this.setIsModProgressModalOpen(true);
-        await this.$store.dispatch('download/downloadAndInstallCombos', {combos, profile: this.profile.asImmutableProfile(), game: this.activeGame})
+        await this.$store.dispatch('download/downloadAndInstallCombos', {
+            combos,
+            profile: this.profile.asImmutableProfile(),
+            game: this.activeGame,
+            modpackDependencyStrategy: ModpackDependencyStrategy.USE_LATEST_VERSION
+        });
     }
 }
 </script>
