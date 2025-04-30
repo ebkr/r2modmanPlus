@@ -92,6 +92,73 @@ describe('Installer Tests', () => {
 
     });
 
+    describe('SUBDIR_NO_FLATTEN', () => {
+        beforeEach(async () => {
+            await installLogicBeforeEach('RiskOfRain2');
+        });
+
+        test('Copy to root', async () => {
+            InstallationRules.RULES = [{
+                gameName: 'RiskOfRain2',
+                rules: [{
+                    route: '.',
+                    trackingMethod: 'SUBDIR_NO_FLATTEN',
+                    subRoutes: [],
+                    defaultFileExtensions: [],
+                    isDefaultLocation: true
+                }],
+                relativeFileExclusions: null,
+            }];
+
+            const pkg = createManifest('test_mod', 'auth');
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            await FsProvider.instance.mkdirs(path.join(cachePkgRoot, 'folder', 'subfolder'));
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'folder', 'subfolder', 'loose.file'), '');
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'manifest.json'), '');
+
+            const profile = Profile.getActiveProfile().asImmutableProfile();
+            await ProfileInstallerProvider.instance.installMod(pkg, profile);
+
+            expect(await FsProvider.instance.exists(
+                profile.joinToProfilePath(pkg.getName(), 'folder', 'subfolder', 'loose.file')
+            )).toBeTruthy();
+
+            expect(await FsProvider.instance.exists(
+                profile.joinToProfilePath(pkg.getName(), 'manifest.json')
+            )).toBeTruthy();
+        });
+
+        test('No default location', async () => {
+            InstallationRules.RULES = [{
+                gameName: 'RiskOfRain2',
+                rules: [{
+                    route: '.',
+                    trackingMethod: 'SUBDIR_NO_FLATTEN',
+                    subRoutes: [],
+                    defaultFileExtensions: [],
+                    isDefaultLocation: false
+                }],
+                relativeFileExclusions: null,
+            }];
+
+            const pkg = createManifest('test_mod', 'auth');
+            const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
+            await FsProvider.instance.mkdirs(path.join(cachePkgRoot, 'folder'));
+            await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'file'), '');
+
+            const profile = Profile.getActiveProfile().asImmutableProfile();
+            await ProfileInstallerProvider.instance.installMod(pkg, profile);
+
+            expect(await FsProvider.instance.exists(
+                profile.joinToProfilePath(pkg.getName(), 'folder')
+            )).toBeFalsy();
+
+            expect(await FsProvider.instance.exists(
+                profile.joinToProfilePath(pkg.getName(), 'file')
+            )).toBeFalsy();
+        });
+    });
+
     describe("STATE", () => {
 
         beforeEach(async () => {
