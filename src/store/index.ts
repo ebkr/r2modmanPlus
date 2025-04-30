@@ -1,11 +1,12 @@
 import Vue from 'vue';
-import Vuex, { ActionContext } from 'vuex';
+import Vuex, { ActionContext, Store } from 'vuex';
 
 import ErrorModule from './modules/ErrorModule';
 import { DownloadModule } from './modules/DownloadModule';
 import ModalsModule from './modules/ModalsModule';
 import ModFilterModule from './modules/ModFilterModule';
 import ProfileModule from './modules/ProfileModule';
+import ProfileExportModule from './modules/ProfileExportModule';
 import { ProfilesModule } from './modules/ProfilesModule';
 import { TsModsModule } from './modules/TsModsModule';
 import { FolderMigration } from '../migrations/FolderMigration';
@@ -81,6 +82,7 @@ export const store = {
             commit('profiles/reset');
             commit('tsMods/reset');
             commit('modFilters/reset');
+            commit('profileExport/reset');
             await dispatch('resetActiveGame');
         },
     },
@@ -132,6 +134,7 @@ export const store = {
         profile: ProfileModule,
         profiles: ProfilesModule,
         tsMods: TsModsModule,
+        profileExport: ProfileExportModule,
     },
 
     // enable strict mode (adds overhead!)
@@ -144,4 +147,11 @@ export const store = {
  * directly export the Store instantiation
  */
 
-export default (/* { ssrContext } */) => new Vuex.Store<State>(store);
+let singletonStore!: Store<State>;
+
+export default (/* { ssrContext } */) => {
+    if (!singletonStore) {
+        singletonStore = new Store<State>(store);
+    }
+    return singletonStore;
+};

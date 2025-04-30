@@ -1,5 +1,7 @@
 import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
+import { ActionTree } from 'vuex';
+import { State as RootState } from 'src/store';
 
 interface State {
     associatedModsModalMod: ManifestV2 | null;
@@ -17,6 +19,7 @@ interface State {
     isUninstallModModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
     isProfileManagementModalOpen: boolean;
+    isProfileCodeExportModalOpen: boolean;
 }
 
 export default {
@@ -36,6 +39,7 @@ export default {
         isUninstallModModalOpen: false,
         uninstallModModalMod: null,
         isProfileManagementModalOpen: false,
+        isProfileCodeExportModalOpen: false,
     }),
 
     mutations: {
@@ -85,6 +89,10 @@ export default {
 
         closeProfileManagementModal: function(state: State): void {
             state.isProfileManagementModalOpen = false;
+        },
+
+        closeProfileCodeExportModal: function(state: State): void {
+            state.isProfileCodeExportModalOpen = false;
         },
 
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
@@ -138,6 +146,11 @@ export default {
 
         openProfileManagementModal: function(state: State): void {
             state.isProfileManagementModalOpen = true;
-        }
+        },
+
+        openProfileCodeExportModal: function(state: State): void {
+            console.log("Opened");
+            state.isProfileCodeExportModalOpen = true;
+        },
     }
 }

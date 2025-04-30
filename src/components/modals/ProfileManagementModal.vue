@@ -2,7 +2,7 @@
 import ModalCard from '../ModalCard.vue';
 import { computed, getCurrentInstance, onMounted } from 'vue';
 import useStore from '../../store';
-import SettingsItem from 'components/settings-components/SettingsItem.vue';
+import SettingsItem from '../settings-components/SettingsItem.vue';
 
 import VueRouter from 'vue-router';
 
@@ -19,8 +19,17 @@ function closeModal() {
     store.commit('closeProfileManagementModal');
 }
 
-function changeProfile() {
+async function changeProfile() {
     router.push({name: 'profiles'});
+}
+
+async function exportProfileAsFile() {
+    store.dispatch("profileExport/exportProfileAsFile");
+}
+
+async function exportProfileAsCode() {
+    store.dispatch("profileExport/exportProfileAsCode");
+    store.commit("closeProfileManagementModal");
 }
 </script>
 
@@ -34,22 +43,22 @@ function changeProfile() {
                 action="Change profile"
                 description="Return to the profile selection screen"
                 icon="fa-file-import"
-                :value="() => undefined"
+                :value="async () => undefined"
                 @click="changeProfile" />
-            <!-- TODO - Catch event emits, move to store?? -->
             <SettingsItem
                 action="Export profile as a file"
                 description="Export your mod list and configs as a file"
                 icon="fa-file-alt"
-                :value="() => undefined"
-                @click="() => $emit('ExportFile')"
+                :value="async () => undefined"
+                @click="exportProfileAsFile"
             />
-            <!-- TODO - Catch event emits, move to store?? -->
             <SettingsItem
-                action="Export profile as a code"
+                action="Export profile as code"
                 description="Export your mod list and configs as a code"
                 icon="fa-cloud-upload-alt"
-                :value="() => $emit('ExportCode')" />
+                :value="async () => undefined"
+                @click="exportProfileAsCode"
+            />
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="closeModal">Close</button>
