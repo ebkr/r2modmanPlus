@@ -14,7 +14,7 @@ function closeModal() {
 </script>
 
 <template>
-    <ModalCard :is-active="isOpen" @close-modal="closeModal" :can-close="true">
+    <ModalCard id="profile-exported-modal" :is-active="isOpen" @close-modal="closeModal" :can-close="true">
         <template v-slot:header>
             <h2 class='modal-title'>Profile exported</h2>
         </template>
