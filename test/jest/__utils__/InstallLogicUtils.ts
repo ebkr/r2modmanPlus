@@ -13,7 +13,7 @@ import ConflictManagementProvider from '../../../src/providers/generic/installin
 import ProfileInstallerProvider from '../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import ProfileProvider from '../../../src/providers/ror2/model_implementation/ProfileProvider';
 import ConflictManagementProviderImpl from '../../../src/r2mm/installing/ConflictManagementProviderImpl';
-import InstallationRuleApplicator from '../../../src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
+import InstallationRules from '../../../src/r2mm/installing/InstallationRules';
 import GenericProfileInstaller from '../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import PathResolver from '../../../src/r2mm/manager/PathResolver';
 
@@ -47,7 +47,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
     await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
 
     ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
-    InstallationRuleApplicator.apply();
+    InstallationRules.apply();
     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
     InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
 }
