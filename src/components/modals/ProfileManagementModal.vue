@@ -20,6 +20,7 @@ function closeModal() {
 }
 
 async function changeProfile() {
+    store.commit("closeProfileManagementModal");
     router.push({name: 'profiles'});
 }
 
