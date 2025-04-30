@@ -44,7 +44,6 @@ import PlatformInterceptorProvider from './providers/generic/game/platform_inter
 import PlatformInterceptorImpl from './providers/generic/game/platform_interceptor/PlatformInterceptorImpl';
 import ProfileInstallerProvider from './providers/ror2/installing/ProfileInstallerProvider';
 import InstallationRules from './r2mm/installing/InstallationRules';
-import InstallationRuleApplicator from './r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
@@ -75,7 +74,7 @@ export default class App extends mixins(UtilityMixin) {
         this.hookModInstallingViaProtocol();
         await this.checkCdnConnection();
 
-        InstallationRuleApplicator.apply();
+        InstallationRules.apply();
         InstallationRules.validate();
 
         ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
