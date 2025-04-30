@@ -1,40 +1,19 @@
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
-import InMemoryFsProvider from '../../stubs/providers/InMemory.FsProvider';
 import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import * as path from 'path';
 import Profile from '../../../../../src/model/Profile';
-import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
 import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import InstallationRuleApplicator from 'src/r2mm/installing/default_installation_rules/InstallationRuleApplicator';
 import InstallationRules from 'src/r2mm/installing/InstallationRules';
-import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
-import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
-import { createManifest } from '../../../__utils__/InstallLogicUtils';
-
-class ProfileProviderImpl extends ProfileProvider {
-    ensureProfileDirectory(directory: string, profile: string): void {
-        FsProvider.instance.mkdirs(path.join(directory, profile));
-    }
-}
+import { createManifest, installLogicBeforeEach } from '../../../__utils__/InstallLogicUtils';
 
 describe('Installer Tests', () => {
 
     describe('SUBDIR', () => {
 
-        beforeEach(() => {
-            const inMemoryFs = new InMemoryFsProvider();
-            FsProvider.provide(() => inMemoryFs);
-            InMemoryFsProvider.clear();
-            PathResolver.MOD_ROOT = 'MODS';
-            inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
-            ProfileProvider.provide(() => new ProfileProviderImpl());
-            new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
-            InstallationRuleApplicator.apply();
-            InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
+        beforeEach(async () => {
+            await installLogicBeforeEach("RiskOfRain2");
         });
 
         test('Loose DLL', async () => {
@@ -115,18 +94,8 @@ describe('Installer Tests', () => {
 
     describe("STATE", () => {
 
-        beforeEach(() => {
-            const inMemoryFs = new InMemoryFsProvider();
-            FsProvider.provide(() => inMemoryFs);
-            InMemoryFsProvider.clear();
-            PathResolver.MOD_ROOT = 'MODS';
-            inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
-            ProfileProvider.provide(() => new ProfileProviderImpl());
-            new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
-            InstallationRuleApplicator.apply();
-            ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
+        beforeEach(async () => {
+            await installLogicBeforeEach("BONEWORKS");
         });
 
         test('Loose file', async () => {
@@ -212,17 +181,8 @@ describe('Installer Tests', () => {
 
     describe("UNTRACKED/NONE", () => {
 
-        beforeEach(() => {
-            const inMemoryFs = new InMemoryFsProvider();
-            FsProvider.provide(() => inMemoryFs);
-            InMemoryFsProvider.clear();
-            PathResolver.MOD_ROOT = 'MODS';
-            inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
-            ProfileProvider.provide(() => new ProfileProviderImpl());
-            new Profile('TestProfile');
-            inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
-            GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "RiskOfRain2")!;
-            InstallationRuleApplicator.apply();
+        beforeEach(async () => {
+            await installLogicBeforeEach("RiskOfRain2");
         });
 
         test('Config folder', async () => {
