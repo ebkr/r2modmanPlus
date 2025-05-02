@@ -6,7 +6,7 @@ const ECOSYSTEM_DATA_URL = "https://thunderstore.io/api/experimental/schema/dev/
 const ECOSYSTEM_JSON_SCHEMA_URL = "https://thunderstore.io/api/experimental/schema/ecosystem-json-schema/latest/";
 const ECOSYSTEM_DATA_PATH = "./src/assets/data/ecosystem.json";
 const ECOSYSTEM_JSON_SCHEMA_PATH = "./src/assets/data/ecosystemJsonSchema.json";
-const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystem.d.ts";
+const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystemTypes.ts";
 
 /**
  * This script synchronizes the in-repo ecosystem schema JSON to the latest
@@ -29,7 +29,7 @@ async function updateSchema() {
     const schema = Buffer.from(await schemaResponse.arrayBuffer());
     fs.writeFileSync(ECOSYSTEM_JSON_SCHEMA_PATH, schema);
 
-    console.log("Updating ecosystem.d.ts...");
+    console.log("Updating ecosystemTypes.ts...");
     const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
     await schemaInput.addSource({name: "ThunderstoreEcosystem", schema: schema.toString()});
     const inputData = new InputData();
