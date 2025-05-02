@@ -21,11 +21,11 @@
         <hero
             :title="`${activeTab} selection`"
             :subtitle="
-                activeTab === 'Game'
+                activeTab === gameInstanceTypes.Game
                     ? 'Which game are you managing your mods for?'
                     : 'Which dedicated server are you managing your mods for?'
             "
-            :heroType="activeTab === 'Game' ? 'primary' : 'warning'"
+            :heroType="activeTab === gameInstanceTypes.Game ? 'primary' : 'warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -88,9 +88,9 @@
                             <div class="level-item">
                                 <div class="tabs">
                                     <ul class="text-center">
-                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
-                                            :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
+                                        <li v-for="(value, label) in gameInstanceTypes" :key="`tab-${value}`"
+                                            :class="[{'is-active': activeTab === value}]">
+                                            <a @click="changeTab(value)">{{label}}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -150,7 +150,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <template v-if="activeTab === 'Game'">
+                                                            <template v-if="activeTab === gameInstanceTypes.Game">
                                                                 <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
@@ -186,7 +186,7 @@ import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
-import { GameInstanceType } from '../model/game/GameInstanceType';
+import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 
@@ -208,10 +208,10 @@ export default class GameSelectionScreen extends Vue {
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
-    private activeTab = GameInstanceType.GAME;
+    private activeTab = GameInstanceType.Game;
 
-    get gameInstanceTypes(): string[] {
-        return Object.values(GameInstanceType);
+    get gameInstanceTypes(): typeof GameInstanceType {
+        return GameInstanceType;
     }
 
     get filteredGameList() {
@@ -242,12 +242,8 @@ export default class GameSelectionScreen extends Vue {
         });
     }
 
-    private changeTab(key: string) {
-        for (const objKey of Object.keys(GameInstanceType)) {
-            if ((GameInstanceType as any)[objKey] === key) {
-                this.activeTab = (GameInstanceType as any)[objKey];
-            }
-        }
+    private changeTab(tab: GameInstanceType) {
+        this.activeTab = tab;
     }
 
     private selectGame(game: Game) {

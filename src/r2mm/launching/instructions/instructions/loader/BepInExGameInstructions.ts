@@ -4,7 +4,7 @@ import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
-import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
+import { GameInstanceType } from '../../../../../model/schema/ThunderstoreSchema';
 import { getUnityDoorstopVersion } from '../../../../../utils/UnityDoorstopUtils';
 
 export default class BepInExGameInstructions extends GameInstructionGenerator {
@@ -21,7 +21,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
         let extraArguments = "";
         if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
             extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
-            if (game.instanceType === GameInstanceType.SERVER) {
+            if (game.instanceType === GameInstanceType.Server) {
                 extraArguments += ` --server`;
             }
             if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
@@ -38,7 +38,7 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
         let extraArguments = "";
         if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
             extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
-            if (game.instanceType === GameInstanceType.SERVER) {
+            if (game.instanceType === GameInstanceType.Server) {
                 extraArguments += ` --server`;
             }
             if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {

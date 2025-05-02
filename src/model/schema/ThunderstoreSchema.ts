@@ -6,6 +6,9 @@ import { ThunderstoreEcosystem }  from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
+// Re-export generated types/Enums to avoid having the whole codebase
+// tightly coupled with the generated ecosystemTypes.
+export { GameInstanceType } from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {
     private static _isValidated: boolean = false;
