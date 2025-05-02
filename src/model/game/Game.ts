@@ -1,8 +1,8 @@
 import { StorePlatform } from '../../model/game/StorePlatform';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
-import { GameInstanceType } from '../../model/game/GameInstanceType';
 import { PackageLoader } from '../../model/installing/PackageLoader';
+import { GameInstanceType } from '../../model/schema/ThunderstoreSchema';
 
 export default class Game {
 
