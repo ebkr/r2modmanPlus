@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { InstallRule as ThunderstoreEcosystemInstallRule } from '../../assets/data/ecosystem.d';
+import { InstallRule as ThunderstoreEcosystemInstallRule } from '../../assets/data/ecosystemTypes';
 import { EcosystemSchema } from '../../model/schema/ThunderstoreSchema';
 import R2Error from '../../model/errors/R2Error';
 import GameManager from '../../model/game/GameManager';
