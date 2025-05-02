@@ -182,11 +182,10 @@ import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
-import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
-import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
+import { GameInstanceType, GameSelectionDisplayMode } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 
@@ -223,7 +222,7 @@ export default class GameSelectionScreen extends Vue {
                 this.filterText.toLowerCase()) >= 0
                 || this.filterText.trim().length === 0
                 || displayNameInAdditionalSearch(value, this.filterText))
-            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
+            .filter(value => value.displayMode === GameSelectionDisplayMode.Visible)
             .filter(value => value.instanceType === this.activeTab);
     }
 
