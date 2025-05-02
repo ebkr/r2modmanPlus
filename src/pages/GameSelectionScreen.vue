@@ -182,11 +182,10 @@ import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { StorePlatform } from '../model/game/StorePlatform';
-import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
-import { GameInstanceType } from '../model/schema/ThunderstoreSchema';
+import { GameInstanceType, GameSelectionDisplayMode } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
@@ -217,7 +216,7 @@ const filteredGameList = computed(() => {
             filterText.value.toLowerCase()) >= 0
             || filterText.value.trim().length === 0
             || displayNameInAdditionalSearch(value, filterText.value))
-        .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
+        .filter(value => value.displayMode === GameSelectionDisplayMode.Visible)
         .filter(value => value.instanceType === activeTab.value);
 });
 

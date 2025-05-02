@@ -1,8 +1,7 @@
 import { expect, jest, it } from '@jest/globals';
 
 import Game from "../../../../src/model/game/Game";
-import { GameInstanceType } from '../../../../src/model/schema/ThunderstoreSchema';
-import { GameSelectionDisplayMode } from '../../../../src/model/game/GameSelectionDisplayMode';
+import { GameInstanceType, GameSelectionDisplayMode } from '../../../../src/model/schema/ThunderstoreSchema';
 import ManifestV2 from '../../../../src/model/ManifestV2';
 import { PackageLoader } from '../../../../src/model/installing/PackageLoader';
 import ThunderstoreCombo from '../../../../src/model/ThunderstoreCombo';
@@ -33,7 +32,7 @@ jest.spyOn(PackageDexieStoreMockables, "fetchPackagesByCommunityPackagePairs").m
 
 const game = new Game(
     "", "RiskOfRain2", "", "", [], "", "", [], "",
-    GameSelectionDisplayMode.VISIBLE, GameInstanceType.Game, PackageLoader.BEPINEX, []
+    GameSelectionDisplayMode.Visible, GameInstanceType.Game, PackageLoader.BEPINEX, []
 );
 
 function addMockPackage(modData: {
