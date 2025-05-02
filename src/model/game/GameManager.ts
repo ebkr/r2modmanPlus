@@ -2,7 +2,6 @@ import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import { getStorePlatformFromName, StorePlatform } from '../../model/game/StorePlatform';
 import { displayModeFromString } from '../../model/game/GameSelectionDisplayMode';
-import { gameInstanceTypeFromString } from '../../model/game/GameInstanceType';
 import { installerVariantFromString } from '../../model/installing/PackageLoader';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
@@ -45,7 +44,7 @@ export default class GameManager {
                 distributions,
                 game.meta.iconUrl || "ThunderstoreBeta.jpg",
                 displayModeFromString(game.gameSelectionDisplayMode),
-                gameInstanceTypeFromString(game.gameInstanceType),
+                game.gameInstanceType,
                 installerVariantFromString(game.packageLoader),
                 game.additionalSearchStrings,
             );
