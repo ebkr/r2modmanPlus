@@ -1,4 +1,4 @@
-import R2Error from '../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ActionTree, MutationTree } from 'vuex';
@@ -35,14 +35,10 @@ export default {
                 );
             }
             const immutableProfile = rootGetters["profile/activeProfileOrThrow"].asImmutableProfile();
-            const exportErr = await ProfileModList.exportModListToFile(immutableProfile);
-            if (exportErr instanceof R2Error) {
-                throw exportErr;
-            }
+            throwForR2Error(await ProfileModList.exportModListToFile(immutableProfile));
         },
 
-        async exportProfileAsCode({rootGetters, getters, commit}) {
-            console.log(rootGetters, getters);
+        async exportProfileAsCode({rootGetters, commit}) {
             if (!rootGetters["profile/modList"].length) {
                 throw new R2Error(
                     'Profile is empty',
@@ -61,7 +57,6 @@ export default {
             if (exportErr instanceof R2Error) {
                 throw exportErr;
             }
-            commit("openProfileCodeExportModal", null, {root: true});
             commit("openProfileCodeExportModal", null, {root: true});
         },
 

@@ -5,6 +5,7 @@ import useStore from '../../store';
 import SettingsItem from '../settings-components/SettingsItem.vue';
 
 import VueRouter from 'vue-router';
+import R2Error from 'src/model/errors/R2Error';
 
 const store = useStore();
 let router!: VueRouter;
@@ -25,17 +26,25 @@ async function changeProfile() {
 }
 
 async function exportProfileAsFile() {
-    store.dispatch("profileExport/exportProfileAsFile");
+    try {
+        await store.dispatch("profileExport/exportProfileAsFile");
+    } catch (e) {
+        store.commit('error/handleError', R2Error.fromThrownValue(e));
+    }
 }
 
 async function exportProfileAsCode() {
-    store.dispatch("profileExport/exportProfileAsCode");
+    try {
+        await store.dispatch("profileExport/exportProfileAsCode");
+    } catch (e) {
+        store.commit('error/handleError', R2Error.fromThrownValue(e));
+    }
     store.commit("closeProfileManagementModal");
 }
 </script>
 
 <template>
-    <ModalCard :can-close="true" :is-active="isOpen" @close-modal="closeModal">
+    <ModalCard id="profile-management-modal" :can-close="true" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class='modal-title non-selectable'>Profile</h2>
         </template>

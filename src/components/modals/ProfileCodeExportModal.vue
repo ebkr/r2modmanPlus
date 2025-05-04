@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../ModalCard.vue';
 import { computed } from 'vue';
 import useStore from '../../store';
 

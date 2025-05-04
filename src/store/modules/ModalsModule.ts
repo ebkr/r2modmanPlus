@@ -1,7 +1,5 @@
 import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreMod from "../../model/ThunderstoreMod";
-import { ActionTree } from 'vuex';
-import { State as RootState } from 'src/store';
 
 interface State {
     associatedModsModalMod: ManifestV2 | null;
