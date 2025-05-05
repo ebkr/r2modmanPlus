@@ -5,7 +5,7 @@ import useStore from '../../store';
 import SettingsItem from '../settings-components/SettingsItem.vue';
 
 import VueRouter from 'vue-router';
-import R2Error from 'src/model/errors/R2Error';
+import R2Error from '../../model/errors/R2Error';
 
 const store = useStore();
 let router!: VueRouter;

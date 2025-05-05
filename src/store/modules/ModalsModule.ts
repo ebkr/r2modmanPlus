@@ -147,7 +147,6 @@ export default {
         },
 
         openProfileCodeExportModal: function(state: State): void {
-            console.log("Opened");
             state.isProfileCodeExportModalOpen = true;
         },
     }
