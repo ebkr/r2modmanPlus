@@ -5,6 +5,7 @@ import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
 import R2Error from "../model/errors/R2Error";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
 
 export class ShimloaderInstaller implements PackageInstaller {
     /**
@@ -63,19 +64,19 @@ export class ShimloaderPluginInstaller implements PackageInstaller {
                 route: path.join("shimloader", "mod"),
                 isDefaultLocation: true,
                 defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
+                trackingMethod: TrackingMethod.SUBDIR,
                 subRoutes: [],
             },
             {
                 route: path.join("shimloader", "pak"),
                 defaultFileExtensions: [],
-                trackingMethod: "SUBDIR",
+                trackingMethod: TrackingMethod.SUBDIR,
                 subRoutes: [],
             },
             {
                 route: path.join("shimloader", "cfg"),
                 defaultFileExtensions: [],
-                trackingMethod: "NONE",
+                trackingMethod: TrackingMethod.NONE,
                 subRoutes: [],
             }
         ],

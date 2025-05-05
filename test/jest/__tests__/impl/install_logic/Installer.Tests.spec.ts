@@ -7,6 +7,7 @@ import GameManager from 'src/model/game/GameManager';
 import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRules from 'src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../__utils__/InstallLogicUtils';
+import { TrackingMethod } from '../../../../../src/model/schema/ThunderstoreSchema';
 
 describe('Installer Tests', () => {
 
@@ -102,7 +103,7 @@ describe('Installer Tests', () => {
                 gameName: 'RiskOfRain2',
                 rules: [{
                     route: '.',
-                    trackingMethod: 'SUBDIR_NO_FLATTEN',
+                    trackingMethod: TrackingMethod.SUBDIR_NO_FLATTEN,
                     subRoutes: [],
                     defaultFileExtensions: [],
                     isDefaultLocation: true
@@ -133,7 +134,7 @@ describe('Installer Tests', () => {
                 gameName: 'RiskOfRain2',
                 rules: [{
                     route: '.',
-                    trackingMethod: 'SUBDIR_NO_FLATTEN',
+                    trackingMethod: TrackingMethod.SUBDIR_NO_FLATTEN,
                     subRoutes: [],
                     defaultFileExtensions: [],
                     isDefaultLocation: false

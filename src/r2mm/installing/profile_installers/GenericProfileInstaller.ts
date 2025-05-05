@@ -22,6 +22,7 @@ import { InstallArgs } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
+import { TrackingMethod } from '../../../model/schema/ThunderstoreSchema';
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -58,7 +59,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
 
         const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
-            .filter(value => ["SUBDIR", "SUBDIR_NO_FLATTEN"].includes(value.trackingMethod));
+            .filter(value => [TrackingMethod.SUBDIR, TrackingMethod.SUBDIR_NO_FLATTEN].includes(value.trackingMethod));
 
         for (const dir of subDirPaths) {
             if (await FsProvider.instance.exists(profile.joinToProfilePath(dir.route))) {

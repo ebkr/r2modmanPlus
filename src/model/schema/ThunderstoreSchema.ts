@@ -11,6 +11,7 @@ import R2Error from "../errors/R2Error";
 export {
     GameInstanceType,
     GameSelectionDisplayMode,
+    TrackingMethod,
 } from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {

@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import Profile, { ImmutableProfile } from "../model/Profile";
+import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
 import ManifestV2 from "../model/ManifestV2";
@@ -12,6 +12,7 @@ import ModFileTracker from "../model/installing/ModFileTracker";
 import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
+import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
 
 type InstallRuleArgs = {
     profile: ImmutableProfile,
@@ -257,11 +258,11 @@ export class InstallRuleInstaller implements PackageInstaller {
                 mod,
             }
             switch (rule.trackingMethod) {
-                case 'STATE': await installState(args); break;
-                case 'SUBDIR': await installSubDir(profile, managedRule, files, mod); break;
-                case 'NONE': await installUntracked(profile, managedRule, files, mod); break;
-                case 'SUBDIR_NO_FLATTEN': await installSubDirNoFlatten(profile, managedRule, files, mod); break;
-                case 'PACKAGE_ZIP': await installPackageZip(profile, managedRule, files, mod); break;
+                case TrackingMethod.STATE: await installState(args); break;
+                case TrackingMethod.SUBDIR: await installSubDir(profile, managedRule, files, mod); break;
+                case TrackingMethod.NONE: await installUntracked(profile, managedRule, files, mod); break;
+                case TrackingMethod.SUBDIR_NO_FLATTEN: await installSubDirNoFlatten(profile, managedRule, files, mod); break;
+                case TrackingMethod.PACKAGE_ZIP: await installPackageZip(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
