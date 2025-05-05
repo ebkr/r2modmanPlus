@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import Profile, { ImmutableProfile } from "../model/Profile";
+import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "path";
 import ManifestV2 from "../model/ManifestV2";
@@ -12,6 +12,7 @@ import ModFileTracker from "../model/installing/ModFileTracker";
 import ConflictManagementProvider from "../providers/generic/installing/ConflictManagementProvider";
 import PathResolver from "../r2mm/manager/PathResolver";
 import ZipProvider from "../providers/generic/zip/ZipProvider";
+import { TrackingMethod } from "../model/schema/ThunderstoreSchema";
 
 type InstallRuleArgs = {
     profile: ImmutableProfile,
@@ -72,7 +73,7 @@ async function installSubDir(
 async function installPackageZip(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
     /*
         This install method repackages the entire mod as-is and places it to the
-        destination route. Essentially the same as SUBDIR_NO_FLATTEN, but as a
+        destination route. Essentially the same as SubdirNoFlatten, but as a
         zip instead of a directory. The zip name will be the mod ID.
      */
     const destDir = profile.joinToProfilePath(rule.route);
@@ -257,11 +258,11 @@ export class InstallRuleInstaller implements PackageInstaller {
                 mod,
             }
             switch (rule.trackingMethod) {
-                case 'STATE': await installState(args); break;
-                case 'SUBDIR': await installSubDir(profile, managedRule, files, mod); break;
-                case 'NONE': await installUntracked(profile, managedRule, files, mod); break;
-                case 'SUBDIR_NO_FLATTEN': await installSubDirNoFlatten(profile, managedRule, files, mod); break;
-                case 'PACKAGE_ZIP': await installPackageZip(profile, managedRule, files, mod); break;
+                case TrackingMethod.State: await installState(args); break;
+                case TrackingMethod.Subdir: await installSubDir(profile, managedRule, files, mod); break;
+                case TrackingMethod.None: await installUntracked(profile, managedRule, files, mod); break;
+                case TrackingMethod.SubdirNoFlatten: await installSubDirNoFlatten(profile, managedRule, files, mod); break;
+                case TrackingMethod.PackageZip: await installPackageZip(profile, managedRule, files, mod); break;
             }
         }
         return Promise.resolve(undefined);
