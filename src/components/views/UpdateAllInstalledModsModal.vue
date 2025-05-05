@@ -1,3 +1,4 @@
+
 <template>
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
         <template v-slot:header>
@@ -55,7 +56,7 @@ export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  
             try {
                 if (status === StatusEnum.FAILURE) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', {downloadId, failed: true});
+                    this.$store.commit('download/setFailed', downloadId);
                     if (err !== null) {
                         DownloadUtils.addSolutionsToError(err);
                         throw err;

@@ -96,7 +96,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
                     );
                 } catch (e) {
                     this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/updateDownload', { downloadId, failed: true });
+                    this.$store.commit('download/setFailed', downloadId);
                     this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
                     return;
                 }

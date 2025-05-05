@@ -27,7 +27,7 @@
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
                             <p><strong>{{ downloadObject.initialMods.join(", ") }}</strong></p>
 
-                            <div class="row" v-if="downloadObject.failed">
+                            <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
                                     <p>Download failed</p>
                                     <Progress
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
 
-                            <div class="row" v-else-if="downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100">
+                            <div class="row" v-else-if="downloadObject.status === DownloadStatusEnum.DONE">
                                 <div class="col">
                                     <p>Download complete</p>
                                     <Progress
@@ -52,7 +52,7 @@
                             <div v-else class="row">
 
                                 <div class="col">
-                                    <p v-if="downloadObject.downloadProgress < 100">Downloading: {{ downloadObject.modName }}</p>
+                                    <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">Downloading: {{ downloadObject.modName }}</p>
                                     <p v-else>Downloading:</p>
                                     <p>{{Math.min(Math.floor(downloadObject.downloadProgress), 100)}}% complete</p>
                                     <Progress
@@ -62,7 +62,7 @@
                                     />
                                 </div>
 
-                                <div v-if="downloadObject.downloadProgress < 100" class="col">
+                                <div v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING" class="col">
                                     <p>Installing:</p>
                                     <p>Waiting for download to finish</p>
                                     <Progress
@@ -84,7 +84,7 @@
                             </div>
                         </div>
                         <button
-                            v-if="downloadObject.failed || (downloadObject.downloadProgress === 100 && downloadObject.installProgress === 100)"
+                            v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.DONE"
                             class="button download-item-action-button"
                             v-tooltip.left="'Remove'"
                             @click="$store.commit('download/removeDownload', downloadObject)"
@@ -104,6 +104,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
+import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
 
 @Component({
     components: {
@@ -112,6 +113,7 @@ import Progress from '../components/Progress.vue';
     }
 })
 export default class DownloadMonitor extends Vue {
+    DownloadStatusEnum = DownloadStatusEnum;
 }
 
 </script>

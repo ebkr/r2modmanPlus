@@ -4,6 +4,7 @@ import UUID from 'uuid-js';
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
 import { ImmutableProfile } from "../../model/Profile";
+import { DownloadStatusEnum } from "../../model/enums/DownloadStatusEnum";
 import StatusEnum from "../../model/enums/StatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
@@ -20,7 +21,7 @@ interface DownloadProgress {
     modName: string;
     downloadProgress: number;
     installProgress: number;
-    failed: boolean;
+    status: DownloadStatusEnum;
 }
 
 interface UpdateObject {
@@ -28,7 +29,7 @@ interface UpdateObject {
     downloadProgress?: number;
     installProgress?: number;
     modName?: string;
-    failed?: boolean;
+    status?: DownloadStatusEnum;
 }
 
 interface State {
@@ -58,7 +59,7 @@ export const DownloadModule = {
                 modName: '',
                 downloadProgress: 0,
                 installProgress: 0,
-                failed: false,
+                status: DownloadStatusEnum.DOWNLOADING
             };
             state.allDownloads = [...state.allDownloads, downloadObject];
             return downloadId;
@@ -140,9 +141,12 @@ export const DownloadModule = {
                         dispatch('downloadProgressCallback', { downloadId, downloadProgress, modName, status, err });
                     }
                 );
+
+                commit('setInstalling', downloadId);
                 await dispatch('installMods', {downloadedMods, downloadId, profile: params.profile});
+                commit('setDone', downloadId);
             } catch (e) {
-                commit('updateDownload', { downloadId, failed: true });
+                commit('setFailed', downloadId);
                 throw e;
             }
         },
@@ -156,7 +160,7 @@ export const DownloadModule = {
         }) {
             if (params.status === StatusEnum.FAILURE) {
                 commit('setIsModProgressModalOpen', false);
-                commit('updateDownload', {downloadId: params.downloadId, failed: true});
+                commit('setFailed', params.downloadId);
                 if (params.err !== null) {
                     DownloadUtils.addSolutionsToError(params.err);
                     throw params.err;
@@ -165,7 +169,6 @@ export const DownloadModule = {
                 commit('updateDownload', {downloadId: params.downloadId, modName: params.modName, downloadProgress: params.downloadProgress});
             }
         },
-
     },
 
     getters: <GetterTree<State, RootState>>{
@@ -212,6 +215,15 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
+        setDone(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
+        },
+        setFailed(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
+        },
+        setInstalling(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
+        },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
             state.ignoreCache = ignoreCache;
@@ -236,8 +248,14 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 }
 
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
-    return downloads.filter(dl =>
-        !dl.failed &&
-        !(dl.downloadProgress >= 100 && dl.installProgress >= 100)
-    );
+    const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
+    return downloads.filter(dl => active.includes(dl.status));
+}
+
+function updateDownloadStatus(downloads: DownloadProgress[], downloadId: UUID, status: DownloadStatusEnum): DownloadProgress[] {
+    const index: number = getIndexOfDownloadProgress(downloads, downloadId);
+    if (index > -1) {
+        downloads[index].status = status;
+    }
+    return downloads;
 }
