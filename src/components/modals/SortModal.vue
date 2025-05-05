@@ -3,7 +3,7 @@ import ModalCard from 'components/ModalCard.vue';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import useStore from '../../store';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 const store = useStore();
 
@@ -36,7 +36,7 @@ function changeSortDirection(e: InputEvent) {
 </script>
 
 <template>
-    <ModalCard v-show="isOpen" :is-active="isOpen" :can-close="true" @close-modal="closeModal">
+    <ModalCard id="sort-modal" v-show="isOpen" :is-active="isOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
             <h2 class="modal-title">Change the ordering of mods</h2>
         </template>

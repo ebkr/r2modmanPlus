@@ -73,7 +73,6 @@ export default {
         },
 
         setSortDirection(state: State, direction: keyof typeof SortDirection) {
-            console.log(direction)
             state.sortDirection = SortDirection[direction];
         },
 

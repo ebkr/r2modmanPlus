@@ -1,7 +1,7 @@
 <template>
     <div>
         <OnlineRowCard
-            v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
+            v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}`"
             :image="getImageUrl(key)"
             :id="index"
             :is-selected="selectedMod === key"
@@ -39,13 +39,11 @@
 import { Prop, Vue } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, Link } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineRowCard from 'components/OnlineRowCard.vue';
 
 @Component({
@@ -67,12 +65,6 @@ export default class OnlineModListWithPanel extends Vue {
 
     @Prop({default: false})
     readOnly!: boolean;
-
-    private funkyMode: boolean = false;
-
-    get settings(): ManagerSettings {
-        return this.$store.getters["settings"];
-    };
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
@@ -96,10 +88,6 @@ export default class OnlineModListWithPanel extends Vue {
 
     emitCardClick(mod: ThunderstoreMod) {
         this.$emit("selected-mod", mod);
-    }
-
-    async created() {
-        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
     }
 
 }

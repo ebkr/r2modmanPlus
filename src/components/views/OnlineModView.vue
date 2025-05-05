@@ -13,6 +13,7 @@
                                     class="input"
                                     type="text"
                                     placeholder="Search"
+                                    autocomplete="off"
                                 />
                             </div>
                             <div class="input-group">
@@ -50,7 +51,7 @@
                     :local-mod-list="localModList"
                     :paged-mod-list="pagedThunderstoreModList"
                     :selected-mod="previewMod"
-                    @selected-mod="openPreviewForMod"
+                    @selected-mod="toggleModPreview"
                 />
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
@@ -112,8 +113,6 @@ export default class OnlineModView extends Vue {
     pageNumber = 1;
     searchableThunderstoreModList: ThunderstoreMod[] = [];
     sortedThunderstoreModList: ThunderstoreMod[] = [];
-    sortingDirectionModel = SortingDirection.STANDARD;
-    sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
     previewMod: ThunderstoreMod | null = null;
 
@@ -234,7 +233,7 @@ export default class OnlineModView extends Vue {
         });
     }
 
-    openPreviewForMod(mod: ThunderstoreMod) {
+    toggleModPreview(mod: ThunderstoreMod) {
         if (this.previewMod === mod) {
             this.previewMod = null;
         } else {
