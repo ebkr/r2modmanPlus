@@ -2,8 +2,8 @@ import * as path from "path";
 
 import InMemoryFsProvider from "../stubs/providers/InMemory.FsProvider";
 import GameManager from "../../../../src/model/game/GameManager";
-import { StorePlatform } from "../../../../src/model/game/StorePlatform";
 import Profile, { ImmutableProfile } from "../../../../src/model/Profile";
+import { Platform } from "../../../../src/model/schema/ThunderstoreSchema";
 import FsProvider from "../../../../src/providers/generic/file/FsProvider";
 import ProfileProvider from "../../../../src/providers/ror2/model_implementation/ProfileProvider";
 import PathResolver from "../../../../src/r2mm/manager/PathResolver";
@@ -22,7 +22,7 @@ function activateGame(name: string) {
         throw new Error(`Unknown Game "${name}"`);
     }
 
-    GameManager.activate(game, StorePlatform.STEAM);
+    GameManager.activate(game, Platform.STEAM);
 }
 
 describe("ImmutableProfile", () => {
