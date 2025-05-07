@@ -4,7 +4,7 @@ import EnumResolver from '../../model/enums/_EnumResolver';
 import { SortNaming } from '../../model/real_enums/sort/SortNaming';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
-import { StorePlatform } from '../../model/game/StorePlatform';
+import { Platform } from '../../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 import GameManager from '../../model/game/GameManager'
 
@@ -195,7 +195,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     lastSelectedGame: string | null;
     favouriteGames: string[] | undefined;
     defaultGame: string | undefined;
-    defaultStore: StorePlatform | undefined;
+    defaultStore: Platform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
 }
 

@@ -20,14 +20,14 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import Game from "../../model/game/Game";
-import { StorePlatform } from "../../model/game/StorePlatform";
+import { Platform } from "../../model/schema/ThunderstoreSchema";
 
 @Component
 export default class GameRunningModal extends Vue {
     @Prop({required: true})
     readonly activeGame!: Game;
 
-    isSteamGame = this.activeGame.activePlatform.storePlatform === StorePlatform.STEAM;
+    isSteamGame = this.activeGame.activePlatform.storePlatform === Platform.Steam;
 
     close() {
         this.$store.commit('closeGameRunningModal');

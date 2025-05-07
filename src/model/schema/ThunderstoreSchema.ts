@@ -12,6 +12,7 @@ export {
     GameInstanceType,
     GameSelectionDisplayMode,
     TrackingMethod,
+    Platform,
 } from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {

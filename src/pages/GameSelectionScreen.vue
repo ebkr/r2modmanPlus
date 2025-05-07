@@ -6,9 +6,9 @@
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
-                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
-                        <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
+                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
+                        <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
+                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ platformLabels[platform.storePlatform] }}</label>
                     </div>
                 </div>
             </template>
@@ -181,7 +181,7 @@ import GameManager from '../model/game/GameManager';
 import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { StorePlatform } from '../model/game/StorePlatform';
+import { Platform } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
@@ -202,12 +202,22 @@ export default class GameSelectionScreen extends Vue {
     private selectedGame: Game | null = null;
     private filterText: string = "";
     private showPlatformModal: boolean = false;
-    private selectedPlatform: StorePlatform | null = null;
+    private selectedPlatform: Platform | null = null;
     private favourites: string[] = [];
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
     private activeTab = GameInstanceType.Game;
+
+    private platformLabels = {
+        [Platform.Steam]: "Steam",
+        [Platform.SteamDirect]: "Steam",
+        [Platform.EpicGamesStore]: "Epic Games Store",
+        [Platform.OculusStore]: "Oculus Store",
+        [Platform.Origin]: "Origin / EA Desktop",
+        [Platform.XboxGamePass]: "Xbox Game Pass",
+        [Platform.Other]: "Other"
+    }
 
     get gameInstanceTypes(): typeof GameInstanceType {
         return GameInstanceType;
