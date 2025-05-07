@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 
-import { Vue, Watch } from 'vue-property-decorator';
-import Component from 'vue-class-component';
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -13,9 +11,7 @@ import VersionNumber from '../../model/VersionNumber';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { Hero } from '../all';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
-import ManifestV2 from '../../model/ManifestV2';
-import Game from '../../model/game/Game';
-import { StorePlatform } from '../../model/game/StorePlatform';
+import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { computed, getCurrentInstance, onMounted, ref, watch, watchEffect } from 'vue';
@@ -68,7 +64,7 @@ let settingsList = [
         },
         'fa-folder-open',
         () => {
-            if (StorePlatform.XBOX_GAME_PASS == activeGame.value.activePlatform.storePlatform) {
+            if (Platform.XboxGamePass == activeGame.value.activePlatform.storePlatform) {
                 emitInvoke('ChangeGameDirectoryGamePass');
             }
             else {
@@ -312,7 +308,7 @@ function getFilteredSettings() {
 }
 
 onMounted(async () => {
-    if ([StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(activeGame.value.activePlatform.storePlatform)) {
+    if ([Platform.Steam, Platform.SteamDirect].includes(activeGame.value.activePlatform.storePlatform)) {
         settingsList.push(
             new SettingsRow(
                 'Locations',

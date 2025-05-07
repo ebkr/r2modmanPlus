@@ -6,13 +6,12 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
-import { StorePlatform } from '../../model/game/StorePlatform';
 
 
 export class SteamInstallationValidator {
 
     public static async validateInstallation(game: Game): Promise<R2Error | void> {
-        if (![StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(game.activePlatform.storePlatform)) {
+        if (!game.isInstalledViaSteam) {
             return new R2Error(
                 "This feature is not available on non-Steam platforms.",
                 "The feature deletes the contents of the game folder and verifies files. You can do the same manually."

@@ -6,9 +6,9 @@
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
-                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
-                        <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
+                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
+                        <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
+                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ platformLabels[platform.storePlatform] }}</label>
                     </div>
                 </div>
             </template>
@@ -181,11 +181,10 @@ import GameManager from '../model/game/GameManager';
 import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
-import { GameInstanceType, GameSelectionDisplayMode } from '../model/schema/ThunderstoreSchema';
+import { GameInstanceType, GameSelectionDisplayMode, Platform } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
@@ -200,7 +199,7 @@ const runningMigration = ref<boolean>(false);
 const selectedGame = ref<Game | null>(null);
 const filterText = ref<string>("");
 const showPlatformModal = ref<boolean>(false);
-const selectedPlatform = ref<StorePlatform | null>(null);
+const selectedPlatform = ref<Platform | null>(null);
 const favourites = ref<string[]>([]);
 const settings = ref<ManagerSettings | undefined>(undefined);
 const isSettingDefaultPlatform = ref<boolean>(false);
@@ -262,6 +261,16 @@ function selectDefaultGame(game: Game) {
         showPlatformModal.value = false;
         proceedDefault();
     }
+}
+
+const platformLabels = {
+    [Platform.Steam]: "Steam",
+    [Platform.SteamDirect]: "Steam",
+    [Platform.EpicGamesStore]: "Epic Games Store",
+    [Platform.OculusStore]: "Oculus Store",
+    [Platform.Origin]: "Origin / EA Desktop",
+    [Platform.XboxGamePass]: "Xbox Game Pass",
+    [Platform.Other]: "Other"
 }
 
 function selectPlatform() {

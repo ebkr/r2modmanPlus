@@ -5,7 +5,7 @@ import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisabledMods';
 import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDexieStore';
 import Game from '../../model/game/Game';
-import { StorePlatform } from '../../model/game/StorePlatform';
+import { Platform } from '../../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 
 export default class ManagerSettings {
@@ -188,7 +188,7 @@ export default class ManagerSettings {
         await this.save();
     }
 
-    public async setDefaultStorePlatform(storePlatform: StorePlatform | undefined) {
+    public async setDefaultStorePlatform(storePlatform: Platform | undefined) {
         ManagerSettings.CONTEXT.global.defaultStore = storePlatform;
         await this.save();
     }
