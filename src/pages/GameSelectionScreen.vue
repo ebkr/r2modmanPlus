@@ -6,9 +6,9 @@
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
-                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
-                        <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
+                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
+                        <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
+                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ platformLabels[platform.storePlatform] }}</label>
                     </div>
                 </div>
             </template>
@@ -21,11 +21,11 @@
         <hero
             :title="`${activeTab} selection`"
             :subtitle="
-                activeTab === 'Game'
+                activeTab === gameInstanceTypes.Game
                     ? 'Which game are you managing your mods for?'
                     : 'Which dedicated server are you managing your mods for?'
             "
-            :heroType="activeTab === 'Game' ? 'primary' : 'warning'"
+            :heroType="activeTab === gameInstanceTypes.Game ? 'primary' : 'warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -88,9 +88,9 @@
                             <div class="level-item">
                                 <div class="tabs">
                                     <ul class="text-center">
-                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
-                                            :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
+                                        <li v-for="(value, label) in gameInstanceTypes" :key="`tab-${value}`"
+                                            :class="[{'is-active': activeTab === value}]">
+                                            <a @click="changeTab(value)">{{label}}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -150,7 +150,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <template v-if="activeTab === 'Game'">
+                                                            <template v-if="activeTab === gameInstanceTypes.Game">
                                                                 <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
@@ -181,12 +181,11 @@ import GameManager from '../model/game/GameManager';
 import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { StorePlatform } from '../model/game/StorePlatform';
-import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
+import { Platform } from '../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
 import Modal from '../components/Modal.vue';
-import { GameInstanceType } from '../model/game/GameInstanceType';
+import { GameInstanceType, GameSelectionDisplayMode } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 
@@ -203,15 +202,25 @@ export default class GameSelectionScreen extends Vue {
     private selectedGame: Game | null = null;
     private filterText: string = "";
     private showPlatformModal: boolean = false;
-    private selectedPlatform: StorePlatform | null = null;
+    private selectedPlatform: Platform | null = null;
     private favourites: string[] = [];
     private settings: ManagerSettings | undefined;
     private isSettingDefaultPlatform: boolean = false;
     private viewMode = GameSelectionViewMode.LIST;
-    private activeTab = GameInstanceType.GAME;
+    private activeTab = GameInstanceType.Game;
 
-    get gameInstanceTypes(): string[] {
-        return Object.values(GameInstanceType);
+    private platformLabels = {
+        [Platform.Steam]: "Steam",
+        [Platform.SteamDirect]: "Steam",
+        [Platform.EpicGamesStore]: "Epic Games Store",
+        [Platform.OculusStore]: "Oculus Store",
+        [Platform.Origin]: "Origin / EA Desktop",
+        [Platform.XboxGamePass]: "Xbox Game Pass",
+        [Platform.Other]: "Other"
+    }
+
+    get gameInstanceTypes(): typeof GameInstanceType {
+        return GameInstanceType;
     }
 
     get filteredGameList() {
@@ -223,7 +232,7 @@ export default class GameSelectionScreen extends Vue {
                 this.filterText.toLowerCase()) >= 0
                 || this.filterText.trim().length === 0
                 || displayNameInAdditionalSearch(value, this.filterText))
-            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
+            .filter(value => value.displayMode === GameSelectionDisplayMode.Visible)
             .filter(value => value.instanceType === this.activeTab);
     }
 
@@ -242,12 +251,8 @@ export default class GameSelectionScreen extends Vue {
         });
     }
 
-    private changeTab(key: string) {
-        for (const objKey of Object.keys(GameInstanceType)) {
-            if ((GameInstanceType as any)[objKey] === key) {
-                this.activeTab = (GameInstanceType as any)[objKey];
-            }
-        }
+    private changeTab(tab: GameInstanceType) {
+        this.activeTab = tab;
     }
 
     private selectGame(game: Game) {

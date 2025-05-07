@@ -60,7 +60,7 @@ import { Hero } from '../all';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import ManifestV2 from '../../model/ManifestV2';
 import Game from '../../model/game/Game';
-import { StorePlatform } from '../../model/game/StorePlatform';
+import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 
@@ -121,7 +121,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 },
                 'fa-folder-open',
                 () => {
-                    if (StorePlatform.XBOX_GAME_PASS == this.activeGame.activePlatform.storePlatform) {
+                    if (this.activeGame.activePlatform.storePlatform === Platform.XboxGamePass) {
                         this.emitInvoke('ChangeGameDirectoryGamePass');
                     }
                     else {
@@ -366,7 +366,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
         }
 
         async created() {
-            if ([StorePlatform.STEAM, StorePlatform.STEAM_DIRECT].includes(this.activeGame.activePlatform.storePlatform)) {
+            if (this.activeGame.isInstalledViaSteam) {
                 this.settingsList.push(
                     new SettingsRow(
                         'Locations',

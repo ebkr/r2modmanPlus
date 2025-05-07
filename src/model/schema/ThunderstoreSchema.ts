@@ -1,11 +1,19 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
-import { ThunderstoreEcosystem }  from "../../assets/data/ecosystem.d";
 import ecosystem from "../../assets/data/ecosystem.json";
+import { ThunderstoreEcosystem }  from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
+// Re-export generated types/Enums to avoid having the whole codebase
+// tightly coupled with the generated ecosystemTypes.
+export {
+    GameInstanceType,
+    GameSelectionDisplayMode,
+    TrackingMethod,
+    Platform,
+} from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {
     private static _isValidated: boolean = false;
@@ -32,6 +40,7 @@ export class EcosystemSchema {
         this._isValidated = true;
         return ecosystem as ThunderstoreEcosystem;
     }
+
     /**
      * Get a list of r2modman entries i.e. games supported by the mod manager.
      */

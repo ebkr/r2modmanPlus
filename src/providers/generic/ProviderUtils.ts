@@ -1,7 +1,7 @@
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import ProviderError from '../../model/errors/ProviderError';
-import { StorePlatform } from '../../model/game/StorePlatform';
+import { Platform } from '../../model/schema/ThunderstoreSchema';
 import ConflictManagementProviderImpl from '../../r2mm/installing/ConflictManagementProviderImpl';
 import GameDirectoryResolverProvider from '../ror2/game/GameDirectoryResolverProvider';
 import GameRunnerProvider from './game/GameRunnerProvider';
@@ -10,7 +10,7 @@ import ConflictManagementProvider from './installing/ConflictManagementProvider'
 
 export default class ProviderUtils {
 
-    public static setupGameProviders(game: Game, platform: StorePlatform) {
+    public static setupGameProviders(game: Game, platform: Platform) {
         const runner = PlatformInterceptorProvider.instance.getRunnerForPlatform(platform, game.packageLoader);
 
         if (runner === undefined) {

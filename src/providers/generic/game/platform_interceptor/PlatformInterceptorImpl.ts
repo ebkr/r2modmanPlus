@@ -1,4 +1,4 @@
-import { StorePlatform } from '../../../../model/game/StorePlatform';
+import { Platform } from '../../../../model/schema/ThunderstoreSchema';
 import GameRunnerProvider from '../GameRunnerProvider';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
@@ -25,11 +25,11 @@ type LoaderRunnersType = {
 }
 
 type RunnerType = {
-    [platkey in StorePlatform]: LoaderRunnersType
+    [platkey in Platform]: LoaderRunnersType
 };
 
 type ResolverType = {
-    [platkey in StorePlatform]: {
+    [platkey in Platform]: {
         [procKey: string]: GameDirectoryResolverProvider
     }
 };
@@ -72,45 +72,45 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
 }
 
 const RUNNERS: RunnerType = {
-    [StorePlatform.STEAM]: buildRunners(STEAM_RUNNERS),
-    [StorePlatform.STEAM_DIRECT]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.EPIC_GAMES_STORE]: buildRunners(EGS_RUNNERS),
-    [StorePlatform.OCULUS_STORE]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.ORIGIN]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.XBOX_GAME_PASS]: buildRunners(XBOX_RUNNERS),
-    [StorePlatform.OTHER]: buildRunners(DIRECT_RUNNERS),
+    [Platform.Steam]: buildRunners(STEAM_RUNNERS),
+    [Platform.SteamDirect]: buildRunners(DIRECT_RUNNERS),
+    [Platform.EpicGamesStore]: buildRunners(EGS_RUNNERS),
+    [Platform.OculusStore]: buildRunners(DIRECT_RUNNERS),
+    [Platform.Origin]: buildRunners(DIRECT_RUNNERS),
+    [Platform.XboxGamePass]: buildRunners(XBOX_RUNNERS),
+    [Platform.Other]: buildRunners(DIRECT_RUNNERS),
 };
 
 const RESOLVERS: ResolverType = {
-    [StorePlatform.STEAM]: {
+    [Platform.Steam]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()
     },
-    [StorePlatform.STEAM_DIRECT]: {
+    [Platform.SteamDirect]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()
     },
-    [StorePlatform.EPIC_GAMES_STORE]: {
+    [Platform.EpicGamesStore]: {
         "win32": new EGSDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver(),
     },
-    [StorePlatform.OCULUS_STORE]: {
+    [Platform.OculusStore]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },
-    [StorePlatform.ORIGIN]: {
+    [Platform.Origin]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },
-    [StorePlatform.XBOX_GAME_PASS]: {
+    [Platform.XboxGamePass]: {
         "win32": new XboxGamePassDirectoryResolver()
     },
-    [StorePlatform.OTHER]: {
+    [Platform.Other]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
@@ -119,14 +119,14 @@ const RESOLVERS: ResolverType = {
 
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
-    public getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined {
+    public getRunnerForPlatform(platform: Platform, loader: PackageLoader): GameRunnerProvider | undefined {
         if (RUNNERS[platform][loader][process.platform] !== undefined) {
             return RUNNERS[platform][loader][process.platform];
         }
         return undefined;
     }
 
-    public getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined {
+    public getDirectoryResolverForPlatform(platform: Platform): GameDirectoryResolverProvider | undefined {
         if (RESOLVERS[platform][process.platform] !== undefined) {
             return RESOLVERS[platform][process.platform];
         }
