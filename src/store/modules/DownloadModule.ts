@@ -84,9 +84,9 @@ export const DownloadModule = {
             try {
                 downloadId = await dispatch('_addDownload', combos);
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
-                await getFullDependencyList(combos, game, installedMods, installMode);
-                await dispatch('_download', { combos, downloadId })
-                await dispatch('_installModsAndResolveConflicts', { combos, profile, downloadId });
+                const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
+                await dispatch('_download', { combos: modsWithDependencies, downloadId })
+                await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
             } catch (e) {
                 if (downloadId) {
                     commit('setFailed', downloadId);
