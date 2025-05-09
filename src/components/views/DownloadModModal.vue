@@ -56,7 +56,7 @@ import DownloadMixin from "../mixins/DownloadMixin.vue";
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-import { ModpackDependencyStrategy } from "../../utils/DependencyUtils";
+import { InstallMode } from "../../utils/DependencyUtils";
 
     @Component({
         components: {
@@ -80,8 +80,8 @@ import { ModpackDependencyStrategy } from "../../utils/DependencyUtils";
                 combos,
                 profile: this.profile.asImmutableProfile(),
                 game: this.activeGame,
-                modpackDependencyStrategy: ModpackDependencyStrategy.USE_EXACT_VERSION
-            })
+                installMode: InstallMode.INSTALL_SPECIFIC
+            });
         }
     }
 
