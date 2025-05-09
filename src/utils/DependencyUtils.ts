@@ -98,18 +98,18 @@ export async function getFullDependencyList(
         ));
     }
 
-    await sortDependencyOrder(results);
+    sortDependencyOrder(results);
     return results;
 }
 
-async function sortDependencyOrder(deps: ThunderstoreCombo[]) {
+function sortDependencyOrder(deps: ThunderstoreCombo[]) {
     deps.sort((a, b) => {
         if (a.getVersion().getDependencies().find(value => value.startsWith(b.getMod().getFullName() + "-"))) {
             return 1;
         } else {
             return -1;
         }
-    })
+    });
 }
 
 async function buildDependencySet(
