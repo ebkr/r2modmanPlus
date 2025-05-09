@@ -75,9 +75,10 @@ export async function getFullDependencyList(
     game: Game,
     installedMods: ManifestV2[],
     installMode: InstallMode
-) {
-    const originalCombos = [...combos];
-    for (const combo of originalCombos) {
+): Promise<ThunderstoreCombo[]> {
+    const results = [...combos];
+
+    for (const combo of combos) {
         const isModpack = combo.getMod().getCategories().some(value => value === "Modpacks");
         const dependencyVersionStrategy = installMode === InstallMode.INSTALL_SPECIFIC && isModpack
             ? ModpackDependencyStrategy.USE_EXACT_VERSION
@@ -92,12 +93,13 @@ export async function getFullDependencyList(
             );
         }
 
-        combos.push(...dependencies.filter(
-            (dependency) => !combos.some(alreadyAdded => alreadyAdded.getMod().getFullName() === dependency.getMod().getFullName())
+        results.push(...dependencies.filter(
+            (dependency) => !results.some(alreadyAdded => alreadyAdded.getMod().getFullName() === dependency.getMod().getFullName())
         ));
     }
 
-    await sortDependencyOrder(combos);
+    await sortDependencyOrder(results);
+    return results;
 }
 
 async function sortDependencyOrder(deps: ThunderstoreCombo[]) {
