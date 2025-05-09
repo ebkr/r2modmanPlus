@@ -4,6 +4,11 @@ import ThunderstoreCombo from "../model/ThunderstoreCombo";
 import ThunderstoreVersion from "../model/ThunderstoreVersion";
 import { getCombosByDependencyStrings } from '../r2mm/manager/PackageDexieStore';
 
+export enum InstallMode {
+    INSTALL_SPECIFIC = 0,  // Use when installing a single mod or modpack
+    UPDATE_ALL = 1  // Use when updating all mods currently in a profile
+};
+
 /**
  * ModpackDependencyStrategy controls how dependencies are resolved for mod packs:
  * - USE_EXACT_VERSION: Use exactly the version specified in the mod pack. (This is the default behaviour).
@@ -11,7 +16,7 @@ import { getCombosByDependencyStrings } from '../r2mm/manager/PackageDexieStore'
  *
  * For regular mods (non-modpacks), the latest version of dependencies is always used.
  */
-export enum ModpackDependencyStrategy {
+enum ModpackDependencyStrategy {
     USE_EXACT_VERSION = 0,
     USE_LATEST_VERSION = 1
 };
@@ -31,35 +36,65 @@ export const splitToNameAndVersion = (dependencyString: string): [string, string
 };
 
 /**
- * - When installing a regular mods, always install the latest versions of dependencies.
- * - When installing a mod pack we usually want to ensure compatibility by installing the exact
- *      versions of dependencies, even if it means upgrading/downgrading already installed mods.
- *   - If, however, modpackDependencyStrategy is set to USE_LATEST_VERSION, we install the latest
- *      versions of dependencies for mod packs too.
- * - When installing latest versions of dependencies, already installed mods are filtered out.
- * - The order of the input combos array matters, combos earlier on the array get their dependencies'
- *      versions prioritised over later ones.
+ * There's no formal specification about how the dependency resolution should
+ * work. Instead, there's established practice for how it should work on the
+ * use cases supported by the UI (documented below). When adding new use cases,
+ * consider carefully what behaviour that particular case should warrant and
+ * document it here.
+ *
+ * 1. When installing a mod
+ *   - `combos` must contain only the mod being installed
+ *   - `installMode` must be `INSTALL_SPECIFIC`
+ *   - Returned array contains the mod/version in `combos` and latest
+ *     versions of the dependencies, excluding any dependencies that are
+ *     already installed. We do not want to update installed mods in case
+ *     they're version pinned in a modpack
+ * 2. When installing a modpack
+ *   - `combos` must contain only the modpack being installed
+ *   - `installMode` must be `INSTALL_SPECIFIC`
+ *   - Returned array contains the modpack/version in `combos` and exact
+ *     versions of the dependencies as defined by the modpack's
+ *     dependencies. Exact versions are used to ensure compatibility
+ *     between users who install the same modpack
+ * 3. When updating all packages in the profile
+ *   - `combos` must contain exact (=latest) versions of all packages
+ *     to be updated. These versions of these packages are used, even if
+ *     dependencies contain other versions.
+ *   - `installMode` must be `UPDATE_ALL`
+ *   - Returned array contains the the exact versions in `combos` and
+ *     latest versions of any new dependencies.
+ *   - Latest versions of both the input packages and their dependencies
+ *     are used as this is used by the "Update all" UI feature, which
+ *     can't differentiate if a package is present because it's installed
+ *     directly or as a dependency
+ *     - The UI feature for updating a single package acts as installing
+ *       a single package
  */
 export async function getFullDependencyList(
     combos: ThunderstoreCombo[],
     game: Game,
     installedMods: ManifestV2[],
-    modpackDependencyStrategy: ModpackDependencyStrategy
+    installMode: InstallMode
 ) {
     const originalCombos = [...combos];
     for (const combo of originalCombos) {
         const isModpack = combo.getMod().getCategories().some(value => value === "Modpacks");
-        const dependencyVersionStrategy = isModpack ? modpackDependencyStrategy : ModpackDependencyStrategy.USE_LATEST_VERSION;
+        const dependencyVersionStrategy = installMode === InstallMode.INSTALL_SPECIFIC && isModpack
+            ? ModpackDependencyStrategy.USE_EXACT_VERSION
+            : ModpackDependencyStrategy.USE_LATEST_VERSION;
 
         let dependencies: ThunderstoreCombo[] = [];
         await buildDependencySet(combo.getVersion(), game, dependencies, dependencyVersionStrategy);
 
-        combos.push(...dependencies.filter(dependency => {
-            const isNotAlreadyFound = !combos.some(alreadyAdded => alreadyAdded.getMod().getFullName() === dependency.getMod().getFullName());
-            const isNotInstalled = !installedMods.some(installed => installed.getName() === dependency.getMod().getFullName());
+        if (installMode === InstallMode.INSTALL_SPECIFIC && !isModpack) {
+            dependencies = dependencies.filter(
+                (dependency) => !installedMods.some(installed => installed.getName() === dependency.getMod().getFullName())
+            );
+        }
 
-            return isNotAlreadyFound && (isNotInstalled || dependencyVersionStrategy === ModpackDependencyStrategy.USE_EXACT_VERSION);
-        }));
+        combos.push(...dependencies.filter(
+            (dependency) => !combos.some(alreadyAdded => alreadyAdded.getMod().getFullName() === dependency.getMod().getFullName())
+        ));
     }
 
     await sortDependencyOrder(combos);
