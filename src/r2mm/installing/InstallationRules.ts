@@ -1,17 +1,21 @@
-import GameManager from '../../model/game/GameManager';
 import * as path from 'path';
-import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
+
+import { InstallRule as ThunderstoreEcosystemInstallRule } from '../../assets/data/ecosystem.d';
+import R2Error from '../../model/errors/R2Error';
+import GameManager from '../../model/game/GameManager';
 import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
 
 export type CoreRuleType = {
-    gameName: GAME_NAME,
+    gameName: string,
     rules: RuleSubtype[],
-    relativeFileExclusions?: string[],
+    relativeFileExclusions: string[] | null,
 }
+
+type TrackingMethod = "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP";
 
 export type RuleSubtype = {
     route: string,
-    trackingMethod: "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP",
+    trackingMethod: TrackingMethod,
     subRoutes: RuleSubtype[],
     defaultFileExtensions: string[],
     isDefaultLocation?: boolean
@@ -23,6 +27,29 @@ export type ManagedRule = {
     trackingMethod: string,
     extensions: string[],
     isDefaultLocation: boolean
+}
+
+export function trackingMethodFromString(method: string): TrackingMethod {
+    switch (method.toLocaleLowerCase()) {
+        case "subdir": return "SUBDIR";
+        case "state": return "STATE";
+        case "none": return "NONE";
+        case "subdir-no-flatten": return "SUBDIR_NO_FLATTEN";
+        case "package-zip": return "PACKAGE_ZIP";
+    }
+
+    throw new R2Error(
+        "Invalid tracking method identifier",
+        `${method} is not a valid tracking method.`
+    );
+}
+
+export function normalizeRuleSubtype(apiData: ThunderstoreEcosystemInstallRule): RuleSubtype {
+    return {
+        ...apiData,
+        trackingMethod: trackingMethodFromString(apiData.trackingMethod),
+        subRoutes: apiData.subRoutes.map(normalizeRuleSubtype)
+    };
 }
 
 export default class InstallationRules {

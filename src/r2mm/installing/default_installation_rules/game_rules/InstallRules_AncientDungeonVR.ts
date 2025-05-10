@@ -13,7 +13,8 @@ export function InstallRules_AncientDungeonVR(): CoreRuleType {
                 trackingMethod: 'SUBDIR_NO_FLATTEN',
                 subRoutes: []
             },
-        ]
+        ],
+        relativeFileExclusions: null
     };
 
 }

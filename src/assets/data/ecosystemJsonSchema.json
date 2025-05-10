@@ -1,0 +1,410 @@
+{
+  "$ref": "#/definitions/thunderstore",
+  "definitions": {
+    "thunderstore": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string"
+        },
+        "games": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "label": {
+                "type": "string",
+                "pattern": "^[a-z0-9](-?[a-z0-9])*$"
+              },
+              "meta": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "iconUrl": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "displayName",
+                  "iconUrl"
+                ],
+                "additionalProperties": false
+              },
+              "distributions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "platform": {
+                      "type": "string",
+                      "enum": [
+                        "steam",
+                        "steam-direct",
+                        "epic-games-store",
+                        "oculus-store",
+                        "origin",
+                        "xbox-game-pass",
+                        "other"
+                      ]
+                    },
+                    "identifier": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "not": {}
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "platform"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "thunderstore": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "categories": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "propertyNames": {
+                      "pattern": "^[a-z0-9](-?[a-z0-9])*$"
+                    }
+                  },
+                  "sections": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "excludeCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "requireCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "propertyNames": {
+                      "pattern": "^[a-z0-9](-?[a-z0-9])*$"
+                    }
+                  },
+                  "wikiUrl": {
+                    "type": "string"
+                  },
+                  "discordUrl": {
+                    "type": "string"
+                  },
+                  "autolistPackageIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "displayName",
+                  "categories",
+                  "sections"
+                ],
+                "additionalProperties": false
+              },
+              "tcli": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              "r2modman": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "meta": {
+                          "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/meta"
+                        },
+                        "internalFolderName": {
+                          "type": "string"
+                        },
+                        "dataFolderName": {
+                          "type": "string"
+                        },
+                        "distributions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/distributions/items"
+                          }
+                        },
+                        "settingsIdentifier": {
+                          "type": "string"
+                        },
+                        "packageIndex": {
+                          "type": "string"
+                        },
+                        "steamFolderName": {
+                          "type": "string"
+                        },
+                        "exeNames": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "gameInstanceType": {
+                          "type": "string",
+                          "enum": [
+                            "game",
+                            "server"
+                          ]
+                        },
+                        "gameSelectionDisplayMode": {
+                          "type": "string",
+                          "enum": [
+                            "visible",
+                            "hidden"
+                          ]
+                        },
+                        "additionalSearchStrings": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "packageLoader": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "bepinex",
+                                "melonloader",
+                                "northstar",
+                                "godotml",
+                                "shimloader",
+                                "lovely",
+                                "returnofmodding",
+                                "gdweave",
+                                "recursive-melonloader"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "installRules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "route": {
+                                "type": "string"
+                              },
+                              "trackingMethod": {
+                                "type": "string",
+                                "enum": [
+                                  "state",
+                                  "subdir",
+                                  "subdir-no-flatten",
+                                  "package-zip",
+                                  "none"
+                                ]
+                              },
+                              "defaultFileExtensions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "isDefaultLocation": {
+                                "type": "boolean"
+                              },
+                              "subRoutes": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/r2modman/anyOf/0/items/properties/installRules/items"
+                                }
+                              }
+                            },
+                            "required": [
+                              "route",
+                              "trackingMethod",
+                              "defaultFileExtensions",
+                              "isDefaultLocation",
+                              "subRoutes"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "relativeFileExclusions": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "meta",
+                        "internalFolderName",
+                        "dataFolderName",
+                        "distributions",
+                        "settingsIdentifier",
+                        "packageIndex",
+                        "steamFolderName",
+                        "exeNames",
+                        "gameInstanceType",
+                        "gameSelectionDisplayMode",
+                        "additionalSearchStrings",
+                        "packageLoader",
+                        "installRules",
+                        "relativeFileExclusions"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "uuid",
+              "label",
+              "meta",
+              "distributions",
+              "r2modman"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "communities": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/thunderstore/properties/games/additionalProperties/properties/thunderstore"
+          },
+          "propertyNames": {
+            "pattern": "^[a-z0-9](-?[a-z0-9])*$"
+          }
+        },
+        "packageInstallers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          "propertyNames": {
+            "pattern": "^[a-z0-9](-?[a-z0-9])*$"
+          }
+        },
+        "modloaderPackages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "packageId": {
+                "type": "string"
+              },
+              "rootFolder": {
+                "type": "string"
+              },
+              "loader": {
+                "type": "string",
+                "enum": [
+                  "bepinex",
+                  "melonloader",
+                  "northstar",
+                  "godotml",
+                  "shimloader",
+                  "lovely",
+                  "returnofmodding",
+                  "gdweave",
+                  "recursive-melonloader"
+                ]
+              }
+            },
+            "required": [
+              "packageId",
+              "rootFolder",
+              "loader"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "games",
+        "communities",
+        "packageInstallers",
+        "modloaderPackages"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
