@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="emitClose" :is-active="visible">
+        <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="emitClose" :is-active="isOpen">
             <template v-slot:header>
                 <h2 class='modal-title'>Import mod from file</h2>
             </template>
@@ -86,11 +86,9 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
-import Modal from '../Modal.vue';
 import * as path from 'path';
 import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
@@ -100,242 +98,244 @@ import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ModalCard from '../ModalCard.vue';
+import { ref, defineProps, watch, computed } from 'vue';
+import useStore from '../../store';
 
-@Component({
-    components: { ModalCard, Modal }
-})
-export default class LocalFileImportModal extends Vue {
+const store = useStore();
 
-    @Prop({default: false, type: Boolean})
-    private visible!: boolean;
+type LocalFileImportModalProps = {
+    visible: boolean;
+}
 
-    private fileToImport: string | null = null;
-    private waitingForSelection: boolean = false;
-    private validationMessage: string | null = null;
+const isOpen = computed(() => store.state.modals.isLocalFileImportModalOpen);
 
-    private modName = "";
-    private modAuthor = "Unknown";
-    private modDescription = "";
-    private modVersionMajor = 0;
-    private modVersionMinor = 0;
-    private modVersionPatch = 0;
+const props = defineProps<LocalFileImportModalProps>();
 
-    private resultingManifest = new ManifestV2();
+const fileToImport = ref<string | null>(null);
+const waitingForSelection = ref<boolean>(false);
+const validationMessage = ref<string | null>(null);
 
-    @Watch("visible")
-    private visiblityChanged() {
-        this.fileToImport = null;
-        this.waitingForSelection = false;
-        this.validationMessage = null;
-    }
+const modName = ref<string>("");
+const modAuthor = ref<string>("Unknown");
+const modDescription = ref<string>("");
+const modVersionMajor = ref<number>(0);
+const modVersionMinor = ref<number>(0);
+const modVersionPatch = ref<number>(0);
 
-    private async selectFile() {
-        this.waitingForSelection = true;
-        InteractionProvider.instance.selectFile({
-            buttonLabel: "Select file",
-            title: "Import local mod from file",
-            filters: []
-        }).then(value => {
-            if (value.length > 0) {
-                this.fileToImport = value[0];
-                this.assumeDefaults();
-            } else {
-                this.waitingForSelection = false;
-                this.fileToImport = null;
-            }
-        })
-    }
+let resultingManifest = new ManifestV2();
 
-    private async assumeDefaults() {
+watch(() => props.visible, () => {
+    fileToImport.value = null;
+    waitingForSelection.value = false;
+    validationMessage.value = null;
+});
 
-        this.modName = "";
-        this.modAuthor = "Unknown";
-        this.modDescription = "";
-        this.modVersionMajor = 0;
-        this.modVersionMinor = 0;
-        this.modVersionPatch = 0;
+async function selectFile() {
+    waitingForSelection.value = true;
+    InteractionProvider.instance.selectFile({
+        buttonLabel: "Select file",
+        title: "Import local mod from file",
+        filters: []
+    }).then(value => {
+        if (value.length > 0) {
+            fileToImport.value = value[0];
+            assumeDefaults();
+        } else {
+            waitingForSelection.value = false;
+            fileToImport.value = null;
+        }
+    })
+}
 
-        this.resultingManifest = new ManifestV2();
+async function assumeDefaults() {
 
-        if (this.fileToImport === null) { return }
+    modName.value = "";
+    modAuthor.value = "Unknown";
+    modDescription.value = "";
+    modVersionMajor.value = 0;
+    modVersionMinor.value = 0;
+    modVersionPatch.value = 0;
 
-        if (this.fileToImport.endsWith(".zip")) {
-            const entries = await ZipProvider.instance.getEntries(this.fileToImport);
-            if (entries.filter(value => value.entryName === "manifest.json").length === 1) {
-                const manifestContents = await ZipProvider.instance.readFile(this.fileToImport, "manifest.json");
-                if (manifestContents !== null) {
-                    const manifestJson: any = JSON.parse(manifestContents.toString().trim());
-                    const manifestOrErr = new ManifestV2().makeSafeFromPartial(manifestJson);
-                    if (manifestOrErr instanceof R2Error) {
-                        // Assume V1. Allow user to correct anything incorrect in case manifest is not Thunderstore valid.
-                        this.modName = manifestJson.name || "";
-                        this.modDescription = manifestJson.description || "";
-                        const modVersion = new VersionNumber(manifestJson.version_number || "").toString().split(".");
-                        this.modVersionMajor = Number(modVersion[0]);
-                        this.modVersionMinor = Number(modVersion[1]);
-                        this.modVersionPatch = Number(modVersion[2]);
-                        const inferred = this.inferFieldValuesFromFile(this.fileToImport);
-                        this.modAuthor = inferred.modAuthor;
-                        this.resultingManifest.setDependencies(manifestJson.dependencies || []);
-                        return;
-                    } else {
-                        this.resultingManifest = manifestOrErr;
-                        this.modName = manifestOrErr.getDisplayName();
-                        this.modAuthor = manifestOrErr.getAuthorName();
-                        this.modDescription = manifestOrErr.getDescription();
-                        const modVersion = manifestOrErr.getVersionNumber().toString().split(".");
-                        this.modVersionMajor = Number(modVersion[0]);
-                        this.modVersionMinor = Number(modVersion[1]);
-                        this.modVersionPatch = Number(modVersion[2]);
-                        // TODO: Make fields readonly if V2 is provided.
-                        return;
-                    }
+    resultingManifest = new ManifestV2();
+
+    if (fileToImport.value === null) { return }
+
+    if (fileToImport.value.endsWith(".zip")) {
+        const entries = await ZipProvider.instance.getEntries(fileToImport.value);
+        if (entries.filter(value => value.entryName === "manifest.json").length === 1) {
+            const manifestContents = await ZipProvider.instance.readFile(fileToImport.value, "manifest.json");
+            if (manifestContents !== null) {
+                const manifestJson: any = JSON.parse(manifestContents.toString().trim());
+                const manifestOrErr = new ManifestV2().makeSafeFromPartial(manifestJson);
+                if (manifestOrErr instanceof R2Error) {
+                    // Assume V1. Allow user to correct anything incorrect in case manifest is not Thunderstore valid.
+                    modName.value = manifestJson.name || "";
+                    modDescription.value = manifestJson.description || "";
+                    const modVersion = new VersionNumber(manifestJson.version_number || "").toString().split(".");
+                    modVersionMajor.value = Number(modVersion[0]);
+                    modVersionMinor.value = Number(modVersion[1]);
+                    modVersionPatch.value = Number(modVersion[2]);
+                    const inferred = inferFieldValuesFromFile(fileToImport.value);
+                    modAuthor.value = inferred.modAuthor;
+                    resultingManifest.setDependencies(manifestJson.dependencies || []);
+                    return;
+                } else {
+                    resultingManifest = manifestOrErr;
+                    modName.value = manifestOrErr.getDisplayName();
+                    modAuthor.value = manifestOrErr.getAuthorName();
+                    modDescription.value = manifestOrErr.getDescription();
+                    const modVersion = manifestOrErr.getVersionNumber().toString().split(".");
+                    modVersionMajor.value = Number(modVersion[0]);
+                    modVersionMinor.value = Number(modVersion[1]);
+                    modVersionPatch.value = Number(modVersion[2]);
+                    // TODO: Make fields readonly if V2 is provided.
+                    return;
                 }
-            } else {
-                console.log("Does not contain manifest");
             }
-        }
-
-        const inferred = this.inferFieldValuesFromFile(this.fileToImport);
-
-        this.modName = inferred.modName
-        this.modAuthor = inferred.modAuthor;
-        this.modVersionMajor = inferred.modVersionMajor;
-        this.modVersionMinor = inferred.modVersionMinor;
-        this.modVersionPatch = inferred.modVersionPatch;
-    }
-
-    private inferFieldValuesFromFile(file: string): ImportFieldAttributes {
-        const fileSafe = file.split("\\").join("/");
-        const fileName = path.basename(fileSafe, path.extname(fileSafe));
-        const hyphenSeparated = fileName.split("-");
-        const underscoreSeparated = fileName.split("_");
-
-        const data: ImportFieldAttributes = {
-            modName: "",
-            modAuthor: "Unknown",
-            modVersionMajor: 0,
-            modVersionMinor: 0,
-            modVersionPatch: 0,
-        }
-
-        if (hyphenSeparated.length === 3) {
-            data.modAuthor = hyphenSeparated[0];
-            data.modName = hyphenSeparated[1];
-            const modVersion = this.santizeVersionNumber(hyphenSeparated[2]).toString().split(".");
-            data.modVersionMajor = Number(modVersion[0]);
-            data.modVersionMinor = Number(modVersion[1]);
-            data.modVersionPatch = Number(modVersion[2]);
-        } else if (hyphenSeparated.length === 2) {
-            data.modName = hyphenSeparated[0];
-            const modVersion = this.santizeVersionNumber(hyphenSeparated[1]).toString().split(".");
-            data.modVersionMajor = Number(modVersion[0]);
-            data.modVersionMinor = Number(modVersion[1]);
-            data.modVersionPatch = Number(modVersion[2]);
-        } else if (underscoreSeparated.length === 3) {
-            data.modAuthor = underscoreSeparated[0];
-            data.modName = underscoreSeparated[1];
-            const modVersion = this.santizeVersionNumber(underscoreSeparated[2]).toString().split(".");
-            data.modVersionMajor = Number(modVersion[0]);
-            data.modVersionMinor = Number(modVersion[1]);
-            data.modVersionPatch = Number(modVersion[2]);
-        } else if (underscoreSeparated.length === 2) {
-            data.modName = underscoreSeparated[0];
-            const modVersion = this.santizeVersionNumber(underscoreSeparated[1]).toString().split(".");
-            data.modVersionMajor = Number(modVersion[0]);
-            data.modVersionMinor = Number(modVersion[1]);
-            data.modVersionPatch = Number(modVersion[2]);
         } else {
-            data.modName = fileName;
+            console.log("Does not contain manifest");
         }
-
-        return data;
     }
 
-    private santizeVersionNumber(vn: string): VersionNumber {
-        const modVersionSplit = vn.split(".");
-        const modVersionString = `${this.versionPartToNumber(modVersionSplit[0])}.${this.versionPartToNumber(modVersionSplit[1])}.${this.versionPartToNumber(modVersionSplit[2])}`;
-        return new VersionNumber(modVersionString);
+    const inferred = inferFieldValuesFromFile(fileToImport.value);
+
+    modName.value = inferred.modName
+    modAuthor.value = inferred.modAuthor;
+    modVersionMajor.value = inferred.modVersionMajor;
+    modVersionMinor.value = inferred.modVersionMinor;
+    modVersionPatch.value = inferred.modVersionPatch;
+}
+
+function inferFieldValuesFromFile(file: string): ImportFieldAttributes {
+    const fileSafe = file.split("\\").join("/");
+    const fileName = path.basename(fileSafe, path.extname(fileSafe));
+    const hyphenSeparated = fileName.split("-");
+    const underscoreSeparated = fileName.split("_");
+
+    const data: ImportFieldAttributes = {
+        modName: "",
+        modAuthor: "Unknown",
+        modVersionMajor: 0,
+        modVersionMinor: 0,
+        modVersionPatch: 0,
     }
 
-    private versionPartToNumber(input: string | undefined) {
-        return (input || "0").split(new RegExp("[^0-9]+"))
-            .filter(value => value.trim().length > 0)
-            .shift() || "0";
+    if (hyphenSeparated.length === 3) {
+        data.modAuthor = hyphenSeparated[0];
+        data.modName = hyphenSeparated[1];
+        const modVersion = santizeVersionNumber(hyphenSeparated[2]).toString().split(".");
+        data.modVersionMajor = Number(modVersion[0]);
+        data.modVersionMinor = Number(modVersion[1]);
+        data.modVersionPatch = Number(modVersion[2]);
+    } else if (hyphenSeparated.length === 2) {
+        data.modName = hyphenSeparated[0];
+        const modVersion = santizeVersionNumber(hyphenSeparated[1]).toString().split(".");
+        data.modVersionMajor = Number(modVersion[0]);
+        data.modVersionMinor = Number(modVersion[1]);
+        data.modVersionPatch = Number(modVersion[2]);
+    } else if (underscoreSeparated.length === 3) {
+        data.modAuthor = underscoreSeparated[0];
+        data.modName = underscoreSeparated[1];
+        const modVersion = santizeVersionNumber(underscoreSeparated[2]).toString().split(".");
+        data.modVersionMajor = Number(modVersion[0]);
+        data.modVersionMinor = Number(modVersion[1]);
+        data.modVersionPatch = Number(modVersion[2]);
+    } else if (underscoreSeparated.length === 2) {
+        data.modName = underscoreSeparated[0];
+        const modVersion = santizeVersionNumber(underscoreSeparated[1]).toString().split(".");
+        data.modVersionMajor = Number(modVersion[0]);
+        data.modVersionMinor = Number(modVersion[1]);
+        data.modVersionPatch = Number(modVersion[2]);
+    } else {
+        data.modName = fileName;
     }
 
-    private emitClose() {
-        this.$emit("close-modal");
+    return data;
+}
+
+function santizeVersionNumber(vn: string): VersionNumber {
+    const modVersionSplit = vn.split(".");
+    const modVersionString = `${versionPartToNumber(modVersionSplit[0])}.${versionPartToNumber(modVersionSplit[1])}.${versionPartToNumber(modVersionSplit[2])}`;
+    return new VersionNumber(modVersionString);
+}
+
+function versionPartToNumber(input: string | undefined) {
+    return (input || "0").split(new RegExp("[^0-9]+"))
+        .filter(value => value.trim().length > 0)
+        .shift() || "0";
+}
+
+function emitClose() {
+    store.commit("closeLocalFileImportModal");
+}
+
+async function importFile() {
+    if (fileToImport.value === null) {
+        return;
     }
 
-    private async importFile() {
-        if (this.fileToImport === null) {
+    switch (0) {
+        case modName.value.trim().length:
+            validationMessage.value = "The mod name must not be empty.";
             return;
-        }
-
-        switch (0) {
-            case this.modName.trim().length:
-                this.validationMessage = "The mod name must not be empty.";
-                return;
-            case this.modAuthor.trim().length:
-                this.validationMessage = "The mod author must not be empty.";
-                return;
-        }
-
-        switch (NaN) {
-            case Number(this.modVersionMajor):
-            case Number(this.modVersionMinor):
-            case Number(this.modVersionPatch):
-                this.validationMessage = "Major, minor, and patch must all be numbers.";
-                return;
-        }
-
-        if (this.modVersionMajor < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+        case modAuthor.value.trim().length:
+            validationMessage.value = "The mod author must not be empty.";
             return;
-        }
-        if (this.modVersionMinor < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
+    }
+
+    switch (NaN) {
+        case Number(modVersionMajor.value):
+        case Number(modVersionMinor.value):
+        case Number(modVersionPatch.value):
+            validationMessage.value = "Major, minor, and patch must all be numbers.";
             return;
-        }
-        if (this.modVersionPatch < 0) {
-            this.validationMessage = "Major, minor, and patch must be whole numbers greater than 0.";
-            return;
-        }
+    }
 
-        const profile: ImmutableProfile|null = this.$store.state.profile.activeProfile
-            ? this.$store.state.profile.activeProfile.asImmutableProfile()
-            : null;
+    if (modVersionMajor.value < 0) {
+        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        return;
+    }
+    if (modVersionMinor.value < 0) {
+        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        return;
+    }
+    if (modVersionPatch.value < 0) {
+        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        return;
+    }
 
-        if (profile === null) {
-            this.validationMessage = "Profile is not selected";
-            return;
-        }
+    const profile: ImmutableProfile|null = store.state.profile.activeProfile
+        ? store.state.profile.activeProfile.asImmutableProfile()
+        : null;
 
-        this.resultingManifest.setName(`${this.modAuthor.trim()}-${this.modName.trim()}`);
-        this.resultingManifest.setDisplayName(this.modName.trim());
-        this.resultingManifest.setVersionNumber(new VersionNumber(`${this.modVersionMajor}.${this.modVersionMinor}.${this.modVersionPatch}`));
-        this.resultingManifest.setDescription(this.modDescription.trim());
-        this.resultingManifest.setAuthorName(this.modAuthor.trim());
+    if (profile === null) {
+        validationMessage.value = "Profile is not selected";
+        return;
+    }
 
-        try {
-            if (this.fileToImport.endsWith(".zip")) {
-                await LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, this.fileToImport, this.resultingManifest);
-            } else {
-                await LocalModInstallerProvider.instance.placeFileInCache(profile, this.fileToImport, this.resultingManifest);
-            }
-        } catch (e) {
-            this.$store.commit("error/handleError", R2Error.fromThrownValue(e));
-            return;
-        }
+    resultingManifest.setName(`${modAuthor.value.trim()}-${modName.value.trim()}`);
+    resultingManifest.setDisplayName(modName.value.trim());
+    resultingManifest.setVersionNumber(new VersionNumber(`${modVersionMajor.value}.${modVersionMinor.value}.${modVersionPatch.value}`));
+    resultingManifest.setDescription(modDescription.value.trim());
+    resultingManifest.setAuthorName(modAuthor.value.trim());
 
-        const updatedModListResult = await ProfileModList.getModList(profile);
-        if (updatedModListResult instanceof R2Error) {
-            this.$store.commit("error/handleError", updatedModListResult);
+    try {
+        if (fileToImport.value.endsWith(".zip")) {
+            await LocalModInstallerProvider.instance.extractToCacheWithManifestData(profile, fileToImport.value, resultingManifest);
         } else {
-            await this.$store.dispatch("profile/updateModList", updatedModListResult);
-            this.emitClose();
+            await LocalModInstallerProvider.instance.placeFileInCache(profile, fileToImport.value, resultingManifest);
         }
+    } catch (e) {
+        store.commit('error/handleError', R2Error.fromThrownValue(e));
+        return;
+    }
+
+    const updatedModListResult = await ProfileModList.getModList(profile);
+    if (updatedModListResult instanceof R2Error) {
+        store.commit('error/handleError', R2Error.fromThrownValue(updatedModListResult));
+    } else {
+        await store.dispatch("profile/updateModList", updatedModListResult);
+        emitClose();
     }
 }
 

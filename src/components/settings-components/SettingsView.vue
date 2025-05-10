@@ -237,14 +237,6 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Profile',
-                'Import local mod',
-                'Install a mod offline from your files.',
-                async () => 'Not all mods can be installed locally',
-                'fa-file-import',
-                () => this.emitInvoke('ImportLocalMod')
-            ),
-            new SettingsRow(
-                'Profile',
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
                 async () => {
