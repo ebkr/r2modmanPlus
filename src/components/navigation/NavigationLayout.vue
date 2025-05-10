@@ -7,6 +7,7 @@
             <router-view />
         </div>
         <GameRunningModal :activeGame="$store.state.activeGame" />
+        <ProfileManagementModal />
     </div>
 </template>
 
@@ -16,9 +17,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import NavigationMenu from './NavigationMenu.vue';
 import GameRunningModal from '../modals/GameRunningModal.vue';
+import ProfileManagementModal from '../modals/ProfileManagementModal.vue';
 
 @Component({
-    components: {GameRunningModal, NavigationMenu}
+    components: { ProfileManagementModal, GameRunningModal, NavigationMenu}
 })
 export default class NavigationLayout extends Vue {}
 

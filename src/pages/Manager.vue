@@ -121,24 +121,10 @@
 				</button>
 			</template>
 		</ModalCard>
-		<ModalCard id="profile-exported-modal" :is-active="exportCode !== ''" @close-modal="() => {exportCode = '';}" :can-close="true">
-			<template v-slot:header>
-				<h2 class='modal-title'>Profile exported</h2>
-			</template>
-			<template v-slot:body>
-				<p>Your code: <strong>{{exportCode}}</strong> has been copied to your clipboard. Just give it to a
-					friend!
-				</p>
-			</template>
-			<template v-slot:footer>
-				<button class="button is-info" @click="exportCode = ''">
-					Done
-				</button>
-			</template>
-		</ModalCard>
 
         <CategoryFilterModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
+        <ProfileCodeExportModal />
         <DownloadModModal />
 
         <router-view name="subview"
@@ -178,9 +164,11 @@ import { PackageLoader } from '../model/installing/PackageLoader';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
+import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 
 @Component({
 		components: {
+            ProfileCodeExportModal,
             ModalCard,
             LocalFileImportModal,
             CategoryFilterModal,
@@ -195,7 +183,6 @@ import ModalCard from '../components/ModalCard.vue';
 		portableUpdateAvailable: boolean = false;
 		updateTagName: string = '';
 		isValidatingSteamInstallation: boolean = false;
-		exportCode: string = '';
 		showSteamIncorrectDirectoryModal: boolean = false;
 		showRor2IncorrectDirectoryModal: boolean = false;
 		launchParametersModel: string = '';
@@ -366,43 +353,6 @@ import ModalCard from '../components/ModalCard.vue';
 			this.settings.setFunkyMode(value);
 		}
 
-		async exportProfile() {
-			if (!this.localModList.length) {
-				const err = new R2Error(
-					'Profile is empty',
-					'The profile must contain at least one mod to export it as a file.'
-				);
-				this.$store.commit('error/handleError', err);
-				return;
-			}
-			const exportErr = await ProfileModList.exportModListToFile(this.profile.asImmutableProfile());
-			if (exportErr instanceof R2Error) {
-				this.$store.commit('error/handleError', exportErr);
-			}
-		}
-
-		async exportProfileAsCode() {
-			if (!this.localModList.length) {
-				const err = new R2Error(
-					'Profile is empty',
-					'The profile must contain at least one mod to export it as a code.'
-				);
-				this.$store.commit('error/handleError', err);
-				return;
-			}
-			const exportErr = await ProfileModList.exportModListAsCode(this.profile.asImmutableProfile(), (code: string, err: R2Error | null) => {
-				if (err !== null) {
-					this.$store.commit('error/handleError', err);
-				} else {
-					this.exportCode = code;
-					InteractionProvider.instance.copyToClipboard(code);
-				}
-			});
-			if (exportErr instanceof R2Error) {
-				this.$store.commit('error/handleError', exportErr);
-			}
-		}
-
 		browseDataFolder() {
             LinkProvider.instance.openLink('file://' + PathResolver.ROOT);
 		}
@@ -565,12 +515,6 @@ import ModalCard from '../components/ModalCard.vue';
                     break;
                 case "ImportLocalMod":
                     this.importingLocalMod = true;
-                    break;
-                case "ExportFile":
-                    this.exportProfile();
-                    break;
-                case "ExportCode":
-                    this.exportProfileAsCode();
                     break;
                 case "ToggleFunkyMode":
                     this.setFunkyMode(!this.settings.getContext().global.funkyModeEnabled);

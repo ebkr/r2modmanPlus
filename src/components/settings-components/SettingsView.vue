@@ -245,22 +245,6 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
             ),
             new SettingsRow(
                 'Profile',
-                'Export profile as a file',
-                'Export your mod list and configs as a file.',
-                async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
-                'fa-file-export',
-                () => this.emitInvoke('ExportFile')
-            ),
-            new SettingsRow(
-                'Profile',
-                'Export profile as a code',
-                'Export your mod list and configs as a code.',
-                async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
-                'fa-file-export',
-                () => this.emitInvoke('ExportCode')
-            ),
-            new SettingsRow(
-                'Profile',
                 'Update all mods',
                 'Quickly update every installed mod to their latest versions.',
                 async () => {
