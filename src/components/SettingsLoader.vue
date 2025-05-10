@@ -34,7 +34,7 @@
                         Resetting of the settings failed. You can still
                         try to reset the settings manually by following
                         these
-                        <a @click="openLink('https://github.com/ebkr/r2modmanPlus/wiki/Error:-White-or-blank-game-select-screen-on-startup#corrupted-settings-on-update')">
+                        <a @click="openWebOnlyLink('https://github.com/ebkr/r2modmanPlus/wiki/Error:-White-or-blank-game-select-screen-on-startup#corrupted-settings-on-update')">
                             instructions.
                         </a>
                     </p>
@@ -78,7 +78,7 @@ export default class SettingsLoader extends Vue {
     private logError!: (error: R2Error) => void;
 
     @Prop({required: true})
-    openLink!: (url: string) => void;
+    openWebOnlyLink!: (url: string) => void;
 
     error: R2Error|null = null;
     PHASES = PHASES;
