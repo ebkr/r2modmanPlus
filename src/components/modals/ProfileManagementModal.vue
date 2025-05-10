@@ -31,6 +31,7 @@ async function exportProfileAsFile() {
     } catch (e) {
         store.commit('error/handleError', R2Error.fromThrownValue(e));
     }
+    store.commit("closeProfileManagementModal");
 }
 
 async function exportProfileAsCode() {
