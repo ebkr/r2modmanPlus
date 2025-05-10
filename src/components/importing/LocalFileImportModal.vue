@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="emitClose" :is-active="isOpen">
+        <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="closeModal" :is-active="isOpen">
             <template v-slot:header>
                 <h2 class='modal-title'>Import mod from file</h2>
             </template>
@@ -98,7 +98,7 @@ import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ModalCard from '../ModalCard.vue';
-import { ref, defineProps, watch, computed } from 'vue';
+import { ref, defineProps, computed } from 'vue';
 import useStore from '../../store';
 
 const store = useStore();
@@ -124,12 +124,6 @@ const modVersionPatch = ref<number>(0);
 
 let resultingManifest = new ManifestV2();
 
-watch(() => props.visible, () => {
-    fileToImport.value = null;
-    waitingForSelection.value = false;
-    validationMessage.value = null;
-});
-
 async function selectFile() {
     waitingForSelection.value = true;
     InteractionProvider.instance.selectFile({
@@ -145,6 +139,18 @@ async function selectFile() {
             fileToImport.value = null;
         }
     })
+}
+
+async function resetValues() {
+    modName.value = "";
+    modAuthor.value = "Unknown";
+    modDescription.value = "";
+    modVersionMajor.value = 0;
+    modVersionMinor.value = 0;
+    modVersionPatch.value = 0;
+    fileToImport.value = null;
+    waitingForSelection.value = false;
+    validationMessage.value = null;
 }
 
 async function assumeDefaults() {
@@ -265,7 +271,8 @@ function versionPartToNumber(input: string | undefined) {
         .shift() || "0";
 }
 
-function emitClose() {
+async function closeModal() {
+    await resetValues();
     store.commit("closeLocalFileImportModal");
 }
 
@@ -335,7 +342,7 @@ async function importFile() {
         store.commit('error/handleError', R2Error.fromThrownValue(updatedModListResult));
     } else {
         await store.dispatch("profile/updateModList", updatedModListResult);
-        emitClose();
+        closeModal();
     }
 }
 
