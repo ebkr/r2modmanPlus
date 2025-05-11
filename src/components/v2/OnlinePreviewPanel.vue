@@ -11,6 +11,7 @@ import ThunderstoreDownloaderProvider, {
 import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
 import { getVersionAsThunderstoreVersion } from 'src/r2mm/manager/PackageDexieStore';
 import Link from 'components/Link.vue';
+import R2Error from 'src/model/errors/R2Error';
 
 const store = useStore();
 
@@ -20,7 +21,9 @@ interface ModPreviewPanelProps {
 
 const props = defineProps<ModPreviewPanelProps>();
 const readme = ref<string | null>(null);
+const readmeError = ref<R2Error | null>(null);
 const changelog = ref<string | null>(null);
+const changelogError = ref<R2Error | null>(null);
 const activeTab = ref<"README" | "CHANGELOG" | "Dependencies">("README");
 const loadingPanel = ref<boolean>(true);
 const dependencies = ref<ThunderstoreMod[]>([]);
@@ -37,18 +40,37 @@ function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promi
 
 function fetchReadme(modToLoad: ThunderstoreMod) {
     // TODO - Make sure that this is null on fetch failure.
+    readmeError.value = null;
     readme.value = null;
     return fetchDataFor(props.mod, "readme").then(res => {
         if (props.mod === modToLoad) {
-            readme.value = res;
+            if (res && res.trim().length > 0) {
+                readme.value = res;
+            } else {
+                readme.value = null;
+            }
+        }
+    }).catch(e => {
+        if (props.mod === modToLoad) {
+            readmeError.value = e;
         }
     });
 }
 
 function fetchChangelog(modToLoad: ThunderstoreMod) {
+    changelogError.value = null;
+    changelog.value = null;
     return fetchDataFor(props.mod, "changelog").then(res => {
         if (props.mod === modToLoad) {
-            changelog.value = res;
+            if (res && res.trim().length > 0) {
+                changelog.value = res;
+            } else {
+                changelog.value = null;
+            }
+        }
+    }).catch(e => {
+        if (props.mod === modToLoad) {
+            changelogError.value = e;
         }
     });
 }
@@ -159,19 +181,26 @@ function showDownloadModal(mod: ThunderstoreMod) {
                     </div>
                 </template>
             </template>
-            <template v-else>
-                <template v-if="markdownToRender !== null">
+            <template v-else-if="activeTab === 'README'">
+                <template v-if="readmeError !== null">
+                    <div class="notification is-danger">
+                        <h2 class="title is-6">Unable to fetch README for {{ props.mod.getFullName() }}</h2>
+                        <p>{{ readmeError.message }}</p>
+                    </div>
+                </template>
+                <template v-else-if="markdownToRender !== null">
                     <MarkdownRender :markdown="markdownToRender" />
                 </template>
-                <template v-else>
-                    <div class="notification">
-                        <div class="container">
-                            <p>
-                                <template v-if="activeTab === 'README'">Unable to fetch README</template>
-                                <template v-else-if="activeTab === 'CHANGELOG'">No CHANGELOG available for {{ props.mod.getFullName() }}</template>
-                            </p>
-                        </div>
+            </template>
+            <template v-else-if="activeTab === 'CHANGELOG'">
+                <template v-if="changelogError !== null">
+                    <div class="notification is-danger">
+                        <h2 class="title is-6">Unable to fetch CHANGELOG for {{ props.mod.getFullName() }}</h2>
+                        <p>{{ changelogError.message }}</p>
                     </div>
+                </template>
+                <template v-else-if="markdownToRender !== null">
+                    <MarkdownRender :markdown="markdownToRender" />
                 </template>
             </template>
         </div>

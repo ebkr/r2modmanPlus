@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import markdownit from 'markdown-it';
-import { markdownItTable } from 'markdown-it-table';
 import LinkProvider from 'src/providers/components/LinkProvider';
 
 // TODO - Rename `markdown` to `content`
