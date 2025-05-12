@@ -7,31 +7,29 @@ import { computed } from 'vue';
 
 const store = useStore();
 
-const directions = Object.keys(SortDirection);
-const behaviours = Object.keys(SortingStyle);
+const selectedBehaviour = computed({
+    get() {
+        return store.state.modFilters.sortBehaviour;
+    },
+    set(value: string) {
+        store.commit("modFilters/setSortBehaviour", value);
+    }
+});
 
-const selectedBehaviour = computed(() => store.state.modFilters.sortBehaviour);
-const selectedDirection = computed(() => store.state.modFilters.sortDirection);
+const selectedDirection = computed({
+    get() {
+        return store.state.modFilters.sortDirection;
+    },
+    set(value: string) {
+        store.commit("modFilters/setSortDirection", value);
+    }
+});
 
 function closeModal() {
     store.commit("closeOnlineSortModal");
 }
 
 const isOpen = computed(() => store.state.modals.isOnlineSortModalOpen)
-
-function changeSortBehaviour(e: InputEvent) {
-    const value: string = e.target!.value;
-    const selected = Object.keys(SortingStyle)
-        .find(style => SortingStyle[style] === value)!;
-    store.commit("modFilters/setSortBehaviour", selected);
-}
-
-function changeSortDirection(e: InputEvent) {
-    const value: string = e.target!.value;
-    const selected = Object.keys(SortDirection)
-        .find(style => SortDirection[style] === value)!;
-    store.commit("modFilters/setSortDirection", selected);
-}
 
 </script>
 
@@ -44,9 +42,9 @@ function changeSortDirection(e: InputEvent) {
             <div class="input-group">
                 <label>Sort behaviour</label>
                 <div class="input-group margin-bottom">
-                    <select class="select select--content-spacing" @change="changeSortBehaviour">
-                        <option v-for="(key, index) in behaviours" :key="`sort-behaviour--${key}-${index}`" :selected="selectedBehaviour === key">
-                            {{ SortingStyle[key] }}
+                    <select class="select select--content-spacing" v-model="selectedBehaviour">
+                        <option v-for="(value, key) in SortingStyle" :value="value" :key="`sort-behaviour--${key}`">
+                            {{ value }}
                         </option>
                     </select>
                 </div>
@@ -54,9 +52,9 @@ function changeSortDirection(e: InputEvent) {
             <div class="input-group">
                 <label>Sort direction</label>
                 <div class="input-group margin-bottom">
-                    <select class="select select--content-spacing" @change="changeSortDirection">
-                        <option v-for="(key, index) in directions" :key="`sort-direction--${key}-${index}`" @selected="selectedDirection === key">
-                            {{ SortDirection[key] }}
+                    <select class="select select--content-spacing" v-model="selectedDirection">
+                        <option v-for="(value, key) in SortDirection" :value="value" :key="`sort-direction--${key}`">
+                            {{ value }}
                         </option>
                     </select>
                 </div>

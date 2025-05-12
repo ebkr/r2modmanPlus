@@ -68,12 +68,12 @@ export default {
             state.allowNsfw = value;
         },
 
-        setSortBehaviour(state: State, sortBehaviour: keyof typeof SortingStyle) {
-            state.sortBehaviour = SortingStyle[sortBehaviour];
+        setSortBehaviour(state: State, sortBehaviour: string) {
+            state.sortBehaviour = sortBehaviour;
         },
 
         setSortDirection(state: State, direction: keyof typeof SortDirection) {
-            state.sortDirection = SortDirection[direction];
+            state.sortDirection = direction;
         },
 
         unselectCategory: function(state: State, category: string) {

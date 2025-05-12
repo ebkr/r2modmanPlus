@@ -200,16 +200,16 @@ export default class OnlineModView extends Vue {
             let result: boolean;
             switch (this.$store.state.modFilters.sortBehaviour) {
                 case SortingStyle.LAST_UPDATED:
-                    result = sortDescending ? a.getDateUpdated() < b.getDateUpdated() : a.getDateUpdated() > b.getDateUpdated();
+                    result = a.getDateUpdated() < b.getDateUpdated();
                     break;
                 case SortingStyle.ALPHABETICAL:
-                    result = sortDescending ? a.getName().localeCompare(b.getName()) > 0 : a.getName().localeCompare(b.getName()) < 0;
+                    result = a.getName().localeCompare(b.getName()) > 0;
                     break;
                 case SortingStyle.DOWNLOADS:
-                    result = sortDescending ? a.getDownloadCount() < b.getDownloadCount() : a.getDownloadCount() > b.getDownloadCount();
+                    result = a.getDownloadCount() < b.getDownloadCount();
                     break;
                 case SortingStyle.RATING:
-                    result = sortDescending ? a.getRating() < b.getRating() : a.getRating() > b.getRating();
+                    result = a.getRating() < b.getRating();
                     break;
                 case SortingStyle.DEFAULT:
                     result = true;
@@ -218,7 +218,8 @@ export default class OnlineModView extends Vue {
                     result = true;
                     break;
             }
-            return result ? 1 : -1;
+            const sortOrder = result ? 1 : -1;
+            return sortDescending ? sortOrder : -sortOrder;
         });
         this.sortedThunderstoreModList = sortedList;
         this.filterThunderstoreModList();
