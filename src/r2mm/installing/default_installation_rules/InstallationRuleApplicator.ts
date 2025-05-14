@@ -14,9 +14,6 @@ import { buildBepInExRules } from '../default_installation_rules/game_rules/Inst
 import * as path from 'path';
 import { buildGodotMLRules } from "../default_installation_rules/game_rules/InstallRules_GodotML";
 import {
-    InstallRules_AncientDungeonVR
-} from "../default_installation_rules/game_rules/InstallRules_AncientDungeonVR";
-import {
     buildMelonLoaderRules
 } from "../default_installation_rules/game_rules/InstallRules_MelonLoader";
 
@@ -86,7 +83,6 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("UltimateChickenHorse"),
             buildBepInExRules("AtrioTheDarkWild"),
             buildGodotMLRules("Brotato"),
-            InstallRules_AncientDungeonVR(),
             buildMelonLoaderRules("RUMBLE"),
             buildGodotMLRules("DomeKeeper"),
             buildBepInExRules("SkulTheHeroSlayer"),

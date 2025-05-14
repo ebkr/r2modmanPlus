@@ -6,7 +6,7 @@ import MelonLoaderGameInstructions from './instructions/loader/MelonLoaderGameIn
 import Profile from '../../../model/Profile';
 import NorthstarGameInstructions from './instructions/loader/NorthstarGameInstructions';
 import { GodotMLGameInstructions } from "../../launching/instructions/instructions/loader/GodotMLGameInstructions";
-import { AncientVRGameInstructions } from "../../launching/instructions/instructions/loader/AncientVRGameInstructions";
+import { CustomInstructions, ModsPathInstructions } from "./instructions/loader/CustomInstructions";
 import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInstructions';
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
 import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
@@ -19,14 +19,17 @@ export interface GameInstruction {
 
 export default class GameInstructions {
 
-    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map();
+    public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
+        ["AncientDungeonVR", new ModsPathInstructions()]
+    ]);
+
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
         [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
         [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
-        [PackageLoader.ANCIENT_DUNGEON_VR, new AncientVRGameInstructions()],
+        [PackageLoader.NONE, new CustomInstructions()],
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
         [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
