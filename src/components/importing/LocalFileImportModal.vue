@@ -99,9 +99,10 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import ModalCard from '../ModalCard.vue';
 import { ref, defineProps, computed } from 'vue';
-import useStore from '../../store';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-const store = useStore();
+const store = getStore<State>();
 
 type LocalFileImportModalProps = {
     visible: boolean;
