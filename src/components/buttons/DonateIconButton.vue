@@ -6,25 +6,14 @@
     </span>
 </template>
 
-<script lang="ts">
-
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { ExternalLink }  from '../../components/all';
 
-@Component({
-    components: {
-        ExternalLink,
-    }
-})
-export default class DonateIconButton extends Vue {
-
-    @Prop({required: true})
-    mod: ThunderstoreMod | undefined;
-
-    @Prop({default: true})
-    extraRenderCondition!: boolean;
-
+type DonateIconButtonProps = {
+    mod: ThunderstoreMod;
+    extraRenderCondition: boolean;
 }
 
+defineProps<DonateIconButtonProps>();
 </script>
