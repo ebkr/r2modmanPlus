@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import ModalCard from '../ModalCard.vue';
 import { computed, getCurrentInstance, onMounted } from 'vue';
-import useStore from '../../store';
 import SettingsItem from '../settings-components/SettingsItem.vue';
-
 import VueRouter from 'vue-router';
 import R2Error from '../../model/errors/R2Error';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-const store = useStore();
+const store = getStore<State>();
 let router!: VueRouter;
 
 onMounted(() => {
