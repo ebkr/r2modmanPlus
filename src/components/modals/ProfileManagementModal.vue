@@ -41,6 +41,11 @@ async function exportProfileAsCode() {
     }
     store.commit("closeProfileManagementModal");
 }
+
+async function importLocalMod() {
+    store.commit("openLocalFileImportModal");
+    store.commit("closeProfileManagementModal");
+}
 </script>
 
 <template>
@@ -68,6 +73,13 @@ async function exportProfileAsCode() {
                 icon="fa-cloud-upload-alt"
                 :value="async () => undefined"
                 @click="exportProfileAsCode"
+            />
+            <SettingsItem
+                action="Import local mod"
+                description="Install a mod offline from your files"
+                icon="fa-file-import"
+                :value="async () => 'Not all mods can be installed locally'"
+                @click="importLocalMod"
             />
         </template>
         <template v-slot:footer>
