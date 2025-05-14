@@ -4,9 +4,12 @@ import LinkProvider from '../../providers/components/LinkProvider';
 
 type InternalLinkProps = {
     url: string;
+    tag: string;
 }
 
-const props = defineProps<InternalLinkProps>();
+const props = withDefaults(defineProps<InternalLinkProps>(), {
+   tag: 'a'
+});
 
 function openLink() {
     LinkProvider.instance.openLink(props.url);
@@ -14,7 +17,7 @@ function openLink() {
 </script>
 
 <template>
-    <a @click="openLink" class='c-link'><slot></slot></a>
+    <component :is="tag" @click="openLink" class='c-link'><slot></slot></component>
 </template>
 
 <style lang="scss" scoped>
