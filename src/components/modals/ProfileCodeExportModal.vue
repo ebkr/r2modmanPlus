@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import ModalCard from '../ModalCard.vue';
 import { computed } from 'vue';
-import useStore from '../../store';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-const store = useStore();
+const store = getStore<State>();
 const isOpen = computed(() => store.state.modals.isProfileCodeExportModalOpen);
 
 const exportCode = computed(() => store.state.profileExport.exportCode);
