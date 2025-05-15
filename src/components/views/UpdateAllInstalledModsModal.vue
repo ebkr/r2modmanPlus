@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 import ModalCard from "../ModalCard.vue";
 import * as DownloadUtils from "../../utils/DownloadUtils";
