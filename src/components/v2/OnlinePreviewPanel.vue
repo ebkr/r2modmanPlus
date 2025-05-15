@@ -34,7 +34,12 @@ function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
     return fetch(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/latest/${type}/`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`No ${type} available for ${mod.getName()}`)
+            }
+            return res.json();
+        })
         .then(res => res.html);
 }
 
