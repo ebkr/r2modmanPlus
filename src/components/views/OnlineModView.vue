@@ -93,8 +93,8 @@ import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
 import ModListUpdateBanner from "../ModListUpdateBanner.vue";
-import OnlinePreviewPanel from 'components/v2/OnlinePreviewPanel.vue';
-import OnlineModListWithPanel from 'components/views/OnlineModListWithPanel.vue';
+import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
+import OnlineModListWithPanel from '../views/OnlineModListWithPanel.vue';
 
 @Component({
     components: {

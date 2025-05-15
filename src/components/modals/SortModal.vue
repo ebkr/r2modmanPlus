@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ModalCard from 'components/ModalCard.vue';
+import ModalCard from '../ModalCard.vue';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import useStore from '../../store';

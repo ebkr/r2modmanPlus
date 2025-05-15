@@ -44,7 +44,7 @@ import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import OnlineRowCard from 'components/OnlineRowCard.vue';
+import OnlineRowCard from '../OnlineRowCard.vue';
 
 @Component({
     components: {
