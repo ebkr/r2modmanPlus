@@ -1,19 +1,19 @@
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed } from 'vue';
 import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
 import R2Error, { throwForR2Error } from 'src/model/errors/R2Error';
 import { ImmutableProfile } from 'src/model/Profile';
 import ProfileModList from 'src/r2mm/mods/ProfileModList';
 import { installModsToProfile } from 'src/utils/ProfileUtils';
 import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import { computed } from 'vue';
 
 export function useDownloadComposable() {
-    const store = getStore<State>();
+    const store = getStore<any>();
 
     // const activeGame = computed(() => store.state.activeGame);
-    // const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
-    // const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+    const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
+    const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
     // const profile = computed(() => store.getters['profile/activeProfile']);
 
     function closeModal() {
@@ -57,5 +57,5 @@ export function useDownloadComposable() {
         });
     }
 
-    return {closeModal, setIsModProgressModalOpen, downloadCompletedCallback}
+    return {closeModal, setIsModProgressModalOpen, downloadCompletedCallback, isOpen, thunderstoreMod}
 }
