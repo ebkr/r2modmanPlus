@@ -2,10 +2,11 @@
 import ModalCard from '../ModalCard.vue';
 import { SortDirection } from '../../model/real_enums/sort/SortDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
-import useStore from '../../store';
 import { computed } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-const store = useStore();
+const store = getStore<State>();
 
 const selectedBehaviour = computed({
     get() {
