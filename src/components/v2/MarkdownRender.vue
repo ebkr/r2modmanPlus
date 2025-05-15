@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LinkProvider from 'src/providers/components/LinkProvider';
+import LinkProvider from '../../providers/components/LinkProvider';
 
 // TODO - Rename `markdown` to `content`
 interface MarkdownRenderProps {

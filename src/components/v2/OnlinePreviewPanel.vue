@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import ThunderstoreMod from 'src/model/ThunderstoreMod';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { computed, ref, watch } from 'vue';
-import MarkdownRender from 'components/v2/MarkdownRender.vue';
-import { valueToReadableDate } from 'src/utils/DateUtils';
-import OnlineModList from 'components/views/OnlineModList.vue';
+import MarkdownRender from './MarkdownRender.vue';
+import { valueToReadableDate } from '../../utils/DateUtils';
+import OnlineModList from '../views/OnlineModList.vue';
 import useStore from '../../store';
 import ThunderstoreDownloaderProvider, {
     DependencySetBuilderMode
-} from 'src/providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
-import { getVersionAsThunderstoreVersion } from 'src/r2mm/manager/PackageDexieStore';
-import Link from 'components/Link.vue';
-import R2Error from 'src/model/errors/R2Error';
+} from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import { getVersionAsThunderstoreVersion } from '../../r2mm/manager/PackageDexieStore';
+import Link from '../Link.vue';
+import R2Error from '../../model/errors/R2Error';
 
 const store = useStore();
 
