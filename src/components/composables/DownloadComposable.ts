@@ -11,10 +11,8 @@ import { computed } from 'vue';
 export function useDownloadComposable() {
     const store = getStore<any>();
 
-    // const activeGame = computed(() => store.state.activeGame);
     const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
     const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
-    // const profile = computed(() => store.getters['profile/activeProfile']);
 
     function closeModal() {
         store.commit("closeDownloadModModal");
