@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="settings-view">
         <Hero title='Settings'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='primary'/>
@@ -397,3 +397,9 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
         }
     }
 </script>
+
+<style lang="scss" scoped>
+#settings-view {
+    width: 100%;
+}
+</style>

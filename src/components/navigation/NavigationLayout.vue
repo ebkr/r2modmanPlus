@@ -28,9 +28,10 @@ export default class NavigationLayout extends Vue {}
 
 <style>
 .content-column {
+    display: flex;
+    flex: 1;
     padding: 0;
     margin-left: 0.75rem;
-    max-height: 100vh;
     overflow: hidden;
     overflow-y: auto;
     width: 100%;

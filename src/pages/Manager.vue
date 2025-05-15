@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="manager-main-view">
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -576,3 +576,17 @@ import SortModal from '../components/modals/SortModal.vue';
 	}
 
 </script>
+
+<style lang="scss">
+.manager-main-view {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+.router-view {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+</style>

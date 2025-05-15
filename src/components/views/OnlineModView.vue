@@ -251,13 +251,11 @@ export default class OnlineModView extends Vue {
 <style lang="scss" scoped>
 #online-view {
     flex: 1;
-    min-width: 300px;
-
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
-    overflow: hidden;
-    padding-left: 0.75rem;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
 
     #controls {
         flex: 0;
@@ -268,9 +266,10 @@ export default class OnlineModView extends Vue {
     }
 
     #view-content {
-        flex: 1;
+        flex-grow: 1;
         overflow-y: auto;
         padding-right: 1rem;
+        height: 100%;
     }
 }
 
@@ -281,6 +280,10 @@ export default class OnlineModView extends Vue {
 
 .split-pane {
     display: flex;
+    overflow-y: hidden;
+    max-height: 100%;
+    width: 100%;
+    flex: 1;
 
     &--with-active-second-pane {
         #mod-preview {

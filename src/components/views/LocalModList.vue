@@ -77,11 +77,12 @@ import SearchAndSort from './LocalModList/SearchAndSort.vue';
 .pane {
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
+    width: 100%;
 
     .mod-list-content {
         flex: 1;
         overflow-y: auto;
+        padding-right: 1rem;
     }
 }
 </style>

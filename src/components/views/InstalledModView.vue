@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="installed-view">
         <div v-if="localModList.length === 0" class="relative-position full-height--minus-em">
             <div class="absolute-center text-center top">
                 <div class="margin-right">
@@ -62,3 +62,11 @@ export default class InstalledModView extends Vue {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+.installed-view {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+</style>

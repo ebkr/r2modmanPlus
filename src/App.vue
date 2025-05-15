@@ -1,6 +1,8 @@
 <template>
     <div>
-        <router-view v-if="visible"/>
+        <main>
+            <router-view v-if="visible"/>
+        </main>
         <ErrorModal />
     </div>
 </template>
@@ -146,5 +148,10 @@ export default class App extends mixins(UtilityMixin) {
 html {
     overflow: hidden;
     overflow-y: auto;
+}
+
+main {
+    display: grid;
+    grid-template-rows: 100vh;
 }
 </style>
