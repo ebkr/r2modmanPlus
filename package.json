@@ -79,7 +79,6 @@
         "@types/fs-extra": "^8.0.1",
         "@types/jsdom": "^21.1.7",
         "@types/lodash.debounce": "^4.0.7",
-        "@types/markdown-it": "^14.1.2",
         "@types/node": "^12.12.12",
         "@types/quill": "^2.0.3",
         "@types/sinon": "^10.0.2",
