@@ -4,7 +4,7 @@ import LinkProvider from '../../providers/components/LinkProvider';
 
 type InternalLinkProps = {
     url: string;
-    tag: string;
+    tag?: string;
 }
 
 const props = withDefaults(defineProps<InternalLinkProps>(), {
