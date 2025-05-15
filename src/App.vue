@@ -46,6 +46,8 @@ import InstallationRuleApplicator from './r2mm/installing/default_installation_r
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
+import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
+import baseStore from './store';
 
 @Component({
     components: {
@@ -106,6 +108,9 @@ export default class App extends mixins(UtilityMixin) {
 
     beforeCreate() {
         FsProvider.provide(() => new NodeFs());
+
+        const store = baseStore();
+        provideStoreImplementation(() => store);
 
         ProfileProvider.provide(() => new ProfileImpl());
         LogOutputProvider.provide(() => LogOutput.getSingleton());
