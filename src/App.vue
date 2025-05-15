@@ -46,7 +46,7 @@ import InstallationRuleApplicator from './r2mm/installing/default_installation_r
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
-import { provideStoreImplementation } from 'src/providers/generic/store/StoreProvider';
+import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
 import baseStore from './store';
 
 @Component({
