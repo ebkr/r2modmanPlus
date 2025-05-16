@@ -44,7 +44,7 @@ function createWindow() {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             webSecurity: false,
-            contextIsolation: false,
+            contextIsolation: false
         },
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD

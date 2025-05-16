@@ -192,4 +192,8 @@ export default class NavigationMenu extends Vue {
     opacity: 0.8;
 }
 
+.tagged-link__content {
+    padding-right: 0.75rem;
+}
+
 </style>

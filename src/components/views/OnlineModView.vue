@@ -1,71 +1,83 @@
 <template>
-    <div>
-        <div class="inherit-background-colour sticky-top sticky-top--search non-selectable">
-            <div class="is-shadowless is-square">
-                <div class="no-padding-left card-header-title">
-                    <div class="input-group input-group--flex margin-right">
-                        <label for="online-search">Search</label>
-                        <DeferredInput
-                            v-model="thunderstoreSearchFilter"
-                            id="online-search"
-                            class="input"
-                            type="text"
-                            placeholder="Search for a mod"
-                            autocomplete="off"
-                        />
-                    </div>
-                    <div class="input-group margin-right">
-                        <label for="thunderstore-sort">Sort</label>
-                        <select v-model="sortingStyleModel"
-                                id="thunderstore-sort"
-                                class="select select--content-spacing margin-right margin-right--half-width"
-                        >
-                            <option v-for="(key) in getSortOptions()" v-bind:key="key">{{key}}</option>
-                        </select>
-                        <select v-model="sortingDirectionModel"
-                                class="select select--content-spacing"
-                                :disabled="sortingStyleModel === 'Default'"
-                        >
-                            <option v-for="(key) in getSortDirections()" v-bind:key="key">{{key}}</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group input-group--flex">
-                            <label for="thunderstore-category-filter">Additional filters</label>
-                            <button
-                                id="thunderstore-category-filter"
-                                class="button"
-                                @click="$store.commit('openCategoryFilterModal')"
-                            >
-                                Filter categories
-                            </button>
+    <div class="split-pane" :class="[{'split-pane--with-active-second-pane': previewMod !== null}]">
+        <div id="online-view">
+            <div id="controls">
+                <div class="inherit-background-colour non-selectable">
+                    <div class="is-shadowless is-square">
+                        <div class="no-padding-left card-header-title">
+                            <div class="input-group input-group--flex margin-right">
+                                <label for="thunderstore-search-filter">Search</label>
+                                <DeferredInput
+                                    v-model="thunderstoreSearchFilter"
+                                    id="thunderstore-search-filter"
+                                    class="input"
+                                    type="text"
+                                    placeholder="Search"
+                                    autocomplete="off"
+                                />
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group input-group--flex">
+                                    <label for="thunderstore-category-filter">&nbsp;</label>
+                                    <button
+                                        id="thunderstore-category-filter"
+                                        class="button"
+                                        @click="$store.commit('openOnlineSortModal')"
+                                    >
+                                        Sort
+                                    </button>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="input-group">
+                                <div class="input-group input-group--flex">
+                                    <label for="thunderstore-category-filter">&nbsp;</label>
+                                    <button
+                                        id="thunderstore-category-filter"
+                                        class="button"
+                                        @click="$store.commit('openCategoryFilterModal')"
+                                    >
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <ModListUpdateBanner />
+            <div id="view-content">
+                <OnlineModList
+                    :local-mod-list="localModList"
+                    :paged-mod-list="pagedThunderstoreModList"
+                    :selected-mod="previewMod"
+                    @selected-mod="toggleModPreview"
+                />
+                <div class="in-mod-list" v-if="getPaginationSize() > 1">
+                    <p class="notification margin-right">
+                        Use the numbers below to change page
+                    </p>
+                </div>
+                <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
+                    <p class="notification margin-right">
+                        {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                    </p>
+                </div>
+            </div>
+            <div id="pagination">
+                <PaginationButtons
+                    :current-page="pageNumber"
+                    :page-count="getPaginationSize()"
+                    :context-size="3"
+                    :on-click="updatePageNumber"
+                />
+            </div>
         </div>
-        <ModListUpdateBanner />
-        <OnlineModList
-            :local-mod-list="localModList"
-            :paged-mod-list="pagedThunderstoreModList"
-        />
-        <div class="in-mod-list" v-if="getPaginationSize() > 1">
-            <p class="notification margin-right">
-                Use the numbers below to change page
-            </p>
+        <div id="mod-preview">
+            <template v-if="previewMod !== null">
+                <OnlinePreviewPanel :mod="previewMod"/>
+            </template>
         </div>
-        <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
-            <p class="notification margin-right">
-                {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
-            </p>
-        </div>
-        <br/>
-        <PaginationButtons
-            :current-page="pageNumber"
-            :page-count="getPaginationSize()"
-            :context-size="3"
-            :on-click="updatePageNumber"
-        />
     </div>
 </template>
 
@@ -81,9 +93,13 @@ import SearchUtils from '../../utils/SearchUtils';
 import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
 import ModListUpdateBanner from "../ModListUpdateBanner.vue";
+import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
+import OnlineModListWithPanel from '../views/OnlineModListWithPanel.vue';
 
 @Component({
     components: {
+        OnlineModListWithPanel,
+        OnlinePreviewPanel,
         DeferredInput,
         ModListUpdateBanner,
         OnlineModList: OnlineModListProvider.provider,
@@ -97,9 +113,8 @@ export default class OnlineModView extends Vue {
     pageNumber = 1;
     searchableThunderstoreModList: ThunderstoreMod[] = [];
     sortedThunderstoreModList: ThunderstoreMod[] = [];
-    sortingDirectionModel = SortingDirection.STANDARD;
-    sortingStyleModel = SortingStyle.DEFAULT;
     thunderstoreSearchFilter = "";
+    previewMod: ThunderstoreMod | null = null;
 
     get localModList(): ManifestV2[] {
         return this.$store.state.profile.modList;
@@ -111,14 +126,6 @@ export default class OnlineModView extends Vue {
 
     getPaginationSize() {
         return Math.ceil(this.searchableThunderstoreModList.length / this.pageSize);
-    }
-
-    getSortDirections() {
-        return Object.values(SortingDirection);
-    }
-
-    getSortOptions() {
-        return Object.values(SortingStyle);
     }
 
     @Watch("pageNumber")
@@ -183,26 +190,26 @@ export default class OnlineModView extends Vue {
         this.changePage();
     }
 
-    @Watch("sortingDirectionModel")
-    @Watch("sortingStyleModel")
+    @Watch("$store.state.modFilters.sortDirection")
+    @Watch("$store.state.modFilters.sortBehaviour")
     @Watch("thunderstoreModList")
     sortThunderstoreModList() {
-        const sortDescending = this.sortingDirectionModel == SortingDirection.STANDARD;
+        const sortDescending = this.$store.state.modFilters.sortDirection == SortingDirection.STANDARD;
         const sortedList = [...this.thunderstoreModList];
         sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
             let result: boolean;
-            switch (this.sortingStyleModel) {
+            switch (this.$store.state.modFilters.sortBehaviour) {
                 case SortingStyle.LAST_UPDATED:
-                    result = sortDescending ? a.getDateUpdated() < b.getDateUpdated() : a.getDateUpdated() > b.getDateUpdated();
+                    result = a.getDateUpdated() < b.getDateUpdated();
                     break;
                 case SortingStyle.ALPHABETICAL:
-                    result = sortDescending ? a.getName().localeCompare(b.getName()) > 0 : a.getName().localeCompare(b.getName()) < 0;
+                    result = a.getName().localeCompare(b.getName()) > 0;
                     break;
                 case SortingStyle.DOWNLOADS:
-                    result = sortDescending ? a.getDownloadCount() < b.getDownloadCount() : a.getDownloadCount() > b.getDownloadCount();
+                    result = a.getDownloadCount() < b.getDownloadCount();
                     break;
                 case SortingStyle.RATING:
-                    result = sortDescending ? a.getRating() < b.getRating() : a.getRating() > b.getRating();
+                    result = a.getRating() < b.getRating();
                     break;
                 case SortingStyle.DEFAULT:
                     result = true;
@@ -211,7 +218,8 @@ export default class OnlineModView extends Vue {
                     result = true;
                     break;
             }
-            return result ? 1 : -1;
+            const sortOrder = result ? 1 : -1;
+            return sortDescending ? sortOrder : -sortOrder;
         });
         this.sortedThunderstoreModList = sortedList;
         this.filterThunderstoreModList();
@@ -226,8 +234,62 @@ export default class OnlineModView extends Vue {
         });
     }
 
+    toggleModPreview(mod: ThunderstoreMod) {
+        if (this.previewMod === mod) {
+            this.previewMod = null;
+        } else {
+            this.previewMod = mod;
+        }
+    }
+
     async created() {
         this.sortThunderstoreModList();
     }
 };
 </script>
+
+<style lang="scss" scoped>
+#online-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+
+    #controls {
+        flex: 0;
+    }
+
+    #pagination {
+        flex: 0;
+    }
+
+    #view-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 1rem;
+        height: 100%;
+    }
+}
+
+#mod-preview {
+    flex: 0;
+    display: none;
+}
+
+.split-pane {
+    display: flex;
+    overflow-y: hidden;
+    max-height: 100%;
+    width: 100%;
+    flex: 1;
+
+    &--with-active-second-pane {
+        #mod-preview {
+            display: flex;
+            flex: 0;
+        }
+    }
+}
+</style>

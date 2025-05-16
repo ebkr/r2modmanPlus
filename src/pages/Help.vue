@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="help-view">
         <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
         <div
             class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
@@ -147,3 +147,9 @@ export default class Help extends Vue {
 
 }
 </script>
+
+<style lang="scss" scoped>
+#help-view {
+    width: 100%;
+}
+</style>

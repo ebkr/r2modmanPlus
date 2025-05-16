@@ -7,6 +7,7 @@ interface State {
     downloadModModalMod: ThunderstoreMod | null;
     isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
+    isOnlineSortModalOpen: boolean;
     isCreateProfileModalOpen: boolean;
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
@@ -28,6 +29,7 @@ export default {
         downloadModModalMod: null,
         isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
+        isOnlineSortModalOpen: false,
         isCreateProfileModalOpen: false,
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
@@ -50,6 +52,10 @@ export default {
 
         closeCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = false;
+        },
+
+        closeOnlineSortModal: function(state: State): void {
+            state.isOnlineSortModalOpen = false;
         },
 
         closeCreateProfileModal: function(state: State): void {
@@ -106,6 +112,10 @@ export default {
 
         openCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = true;
+        },
+
+        openOnlineSortModal: function(state: State): void {
+            state.isOnlineSortModalOpen = true;
         },
 
         openCreateProfileModal: function(state: State): void {

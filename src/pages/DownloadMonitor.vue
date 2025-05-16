@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="download-monitor-view">
         <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="primary"/>
         <template v-if="$store.state.download.allDownloads.length === 0">
             <div class='text-center top'>
@@ -119,6 +119,10 @@ export default class DownloadMonitor extends Vue {
 </script>
 
 <style lang="scss" scoped>
+#download-monitor-view {
+    width: 100%;
+}
+
 .download-item-action-button {
     font-size: 1.5rem;
     padding: 0;

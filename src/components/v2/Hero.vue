@@ -68,11 +68,11 @@ const heroTypeClass = computed(() => {
     }
 
     &--primary {
-        background-color: var(--v2-primary-background-color);
-        color: var(--v2-primary-text-color);
+        background-color: var(--v2-hero-background-color);
+        color: var(--v2-hero-text-color);
 
         #{$root}__subtitle {
-            color: var(--v2-primary-subtitle-text-color);
+            color: var(--v2-hero-subtitle-text-color);
         }
 
     }

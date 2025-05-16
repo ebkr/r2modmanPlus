@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="manager-main-view">
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
@@ -123,12 +123,14 @@
 		</ModalCard>
 
         <CategoryFilterModal />
+        <SortModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <ProfileCodeExportModal />
         <DownloadModModal />
 
-        <router-view name="subview"
-                     v-on:setting-invoked="handleSettingsCallbacks($event)" />
+        <div class="router-view">
+            <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
+        </div>
     </div>
 </template>
 
@@ -137,7 +139,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Hero, Link, Modal, Progress } from '../components/all';
 
-import ProfileModList from '../r2mm/mods/ProfileModList';
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator} from '../r2mm/manager/SteamInstallationValidator';
 
@@ -165,10 +166,12 @@ import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
+import SortModal from '../components/modals/SortModal.vue';
 
 @Component({
 		components: {
             ProfileCodeExportModal,
+            SortModal,
             ModalCard,
             LocalFileImportModal,
             CategoryFilterModal,
@@ -573,3 +576,17 @@ import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.
 	}
 
 </script>
+
+<style lang="scss">
+.manager-main-view {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+.router-view {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+</style>
