@@ -10,7 +10,7 @@ import ThunderstoreDownloaderProvider, {
 } from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import { getVersionAsThunderstoreVersion } from '../../r2mm/manager/PackageDexieStore';
-import Link from '../Link.vue';
+import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 
 const store = useStore();
@@ -155,8 +155,8 @@ function showDownloadModal(mod: ThunderstoreMod) {
         <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
             <div class="button-group">
                 <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
-                <Link target="_blank" tag="button" class="button" :url="props.mod.getPackageUrl()">View online</Link>
-                <Link v-if="props.mod.getDonationLink()" target="_blank" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</Link>
+                <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
+                <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
             </div>
             <div class="tabs margin-top">
                 <ul>
