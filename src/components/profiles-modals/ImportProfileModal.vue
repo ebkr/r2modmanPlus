@@ -1,6 +1,6 @@
 <script lang="ts">
 import { mixins } from "vue-class-component";
-import { Component, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
@@ -15,16 +15,16 @@ import { sleep } from "../../utils/Common";
 import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
-import ProfilesMixin from "../mixins/ProfilesMixin.vue";
 import Progress from "../Progress.vue";
 import OnlineModList from "../views/OnlineModList.vue";
+import { useProfilesComposable } from '../composables/ProfilesComposable';
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 @Component({
     components: {Progress, OnlineModList, ModalCard}
 })
-export default class ImportProfileModal extends mixins(ProfilesMixin) {
+export default class ImportProfileModal extends Vue {
     valueToReadableDate = valueToReadableDate;
     private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
     private importPhaseDescription: string = 'Downloading mods: 0%';
@@ -52,6 +52,21 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
 
     get isOpen(): boolean {
         return this.$store.state.modals.isImportProfileModalOpen;
+    }
+
+    get doesProfileExist() {
+        const { doesProfileExist } = useProfilesComposable();
+        return doesProfileExist;
+    }
+
+    get makeProfileNameSafe() {
+        const { makeProfileNameSafe } = useProfilesComposable();
+        return makeProfileNameSafe;
+    }
+
+    get profileList() {
+        const { profileList } = useProfilesComposable();
+        return profileList;
     }
 
     closeModal() {
@@ -201,7 +216,7 @@ export default class ImportProfileModal extends mixins(ProfilesMixin) {
         this.importUpdateSelection = mode;
 
         if (mode === 'UPDATE') {
-            this.targetProfileName = this.activeProfileName;
+            this.targetProfileName = this.$store.getters['profile/activeProfileName'];
         }
 
         this.activeStep = 'ADDING_PROFILE';
