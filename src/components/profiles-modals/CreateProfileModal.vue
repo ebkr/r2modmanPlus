@@ -1,16 +1,26 @@
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
-import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
+import { useProfilesComposable } from '../composables/ProfilesComposable';
 
 @Component({
     components: {ModalCard}
 })
-export default class CreateProfileModal extends ProfilesMixin {
+export default class CreateProfileModal extends Vue {
 
     private creatingInProgress: boolean = false;
     private newProfileName = '';
+
+    get doesProfileExist() {
+        const { doesProfileExist } = useProfilesComposable();
+        return doesProfileExist;
+    }
+
+    get makeProfileNameSafe() {
+        const { makeProfileNameSafe } = useProfilesComposable();
+        return makeProfileNameSafe;
+    }
 
     get isOpen(): boolean {
         return this.$store.state.modals.isCreateProfileModalOpen;
