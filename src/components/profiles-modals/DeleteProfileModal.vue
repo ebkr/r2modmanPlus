@@ -1,13 +1,12 @@
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
-import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
 
 @Component({
     components: {ModalCard}
 })
-export default class DeleteProfileModal extends ProfilesMixin {
+export default class DeleteProfileModal extends Vue {
     private deletingInProgress: boolean = false;
 
     get isOpen(): boolean {
