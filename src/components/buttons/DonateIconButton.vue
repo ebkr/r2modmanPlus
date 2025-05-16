@@ -12,8 +12,10 @@ import { ExternalLink }  from '../../components/all';
 
 type DonateIconButtonProps = {
     mod: ThunderstoreMod;
-    extraRenderCondition: boolean;
+    extraRenderCondition?: boolean;
 }
 
-defineProps<DonateIconButtonProps>();
+withDefaults(defineProps<DonateIconButtonProps>(), {
+    extraRenderCondition: true
+});
 </script>
