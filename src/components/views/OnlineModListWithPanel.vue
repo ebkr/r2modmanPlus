@@ -22,9 +22,9 @@
                     <i class='fas fa-map-pin' v-tooltip.left="'Pinned on Thunderstore'"></i>
                 </span>
                 <span class='card-header-icon' v-if="key.getDonationLink() && !readOnly">
-                    <Link :url="key.getDonationLink()" target="external" tag="span">
+                    <ExternalLink :url="key.getDonationLink()" target="external" tag="span">
                         <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
-                    </Link>
+                    </ExternalLink>
                 </span>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
                     <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
@@ -39,7 +39,7 @@
 import { Prop, Vue } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { ExpandableCard, Link } from '../all';
+import { ExpandableCard, ExternalLink } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
@@ -52,7 +52,7 @@ import OnlineRowCard from '../OnlineRowCard.vue';
         DonateButton,
         DownloadModModal,
         ExpandableCard,
-        Link
+        ExternalLink
     }
 })
 export default class OnlineModListWithPanel extends Vue {

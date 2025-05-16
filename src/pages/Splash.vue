@@ -16,7 +16,7 @@
                         <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
                         <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
                         <li>
-                            <link-component :url="'https://github.com/ebkr/r2modmanPlus'" :target="'external'">
+                            <link-component url="https://github.com/ebkr/r2modmanPlus">
                                 <i class='fab fa-github fa-lg' aria-hidden='true' />
                             </link-component>
                         </li>
@@ -44,9 +44,7 @@
                                         <li>
                                             <p>
                                                 You can use the "Install with Mod Manager" button on
-                                                <link-component
-                                                    :url="'https://thunderstore.io'" :target="'external'">Thunderstore
-                                                </link-component>
+                                                <link-component url="https://thunderstore.io">Thunderstore</link-component>
                                                 with r2modman.
                                             </p>
                                         </li>
@@ -125,7 +123,7 @@ import * as path from 'path';
 import { ipcRenderer } from 'electron';
 import Component, { mixins } from 'vue-class-component';
 
-import { Hero, Link, Progress } from '../components/all';
+import { ExternalLink, Hero, Progress } from '../components/all';
 import SplashMixin from '../components/mixins/SplashMixin.vue';
 import Game from '../model/game/Game';
 import RequestItem from '../model/requests/RequestItem';
@@ -138,7 +136,7 @@ import PathResolver from '../r2mm/manager/PathResolver';
     components: {
         'hero': Hero,
         'progress-bar': Progress,
-        'link-component': Link
+        'link-component': ExternalLink
     }
 })
 export default class Splash extends mixins(SplashMixin) {

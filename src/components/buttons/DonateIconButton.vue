@@ -1,8 +1,8 @@
 <template>
     <span v-if="mod && mod.getDonationLink() && extraRenderCondition" class="card-header-icon">
-        <Link :url="mod.getDonationLink()" target="external" tag="span">
+        <ExternalLink :url="mod.getDonationLink()" tag="span">
             <i class="fas fa-heart" v-tooltip.left="'Donate to the mod author'"></i>
-        </Link>
+        </ExternalLink>
     </span>
 </template>
 
@@ -10,11 +10,11 @@
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { Link } from '../../components/all';
+import { ExternalLink }  from '../../components/all';
 
 @Component({
     components: {
-        Link
+        ExternalLink,
     }
 })
 export default class DonateIconButton extends Vue {

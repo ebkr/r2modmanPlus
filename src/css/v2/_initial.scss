@@ -2,6 +2,9 @@
     --v2-primary-text-color: #222;
     --v2-secondary-text-color: #333;
 
+    --v2-link-text-color: #3f8ecf;
+    --v2-link-active-text-color: #222;
+
     --v2-hero-background-color: #3f8ecf;
     --v2-hero-text-color: white;
     --v2-hero-subtitle-text-color: #e4f4fa;
@@ -19,6 +22,9 @@
 html[class="html--dark"] {
     --v2-primary-text-color: white;
     --v2-secondary-text-color: #eaeaea;
+
+    --v2-link-text-color: #3f8ecf;
+    --v2-link-active-text-color: white;
 
     --v2-hero-background-color: #3f8ecf;
     --v2-hero-text-color: white;

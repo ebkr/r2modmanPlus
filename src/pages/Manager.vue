@@ -4,10 +4,9 @@
 			<div class='container'>
 				<p>
 					An update is available.
-					<link-component :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`"
-					                :target="'external'"
-					>Click here to go to the release page.
-					</link-component>
+					<ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
+                        Click here to go to the release page.
+					</ExternalLink>
 				</p>
 			</div>
 		</div>
@@ -137,7 +136,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Hero, Link, Modal, Progress } from '../components/all';
+import { Hero, ExternalLink, Modal, Progress } from '../components/all';
 
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator} from '../r2mm/manager/SteamInstallationValidator';
@@ -178,8 +177,8 @@ import SortModal from '../components/modals/SortModal.vue';
             DownloadModModal,
 			'hero': Hero,
 			'progress-bar': Progress,
-			'link-component': Link,
 			'modal': Modal,
+            ExternalLink,
 		}
 	})
 	export default class Manager extends Vue {
