@@ -65,8 +65,7 @@ export default class ImportProfileModal extends Vue {
     }
 
     get profileList() {
-        const { profileList } = useProfilesComposable();
-        return profileList;
+        return this.$store.state.profiles.profileList;
     }
 
     closeModal() {

@@ -76,8 +76,7 @@ import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal
 import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
 import CreateProfileModal from "../components/profiles-modals/CreateProfileModal.vue";
 import ImportProfileModal from "../components/profiles-modals/ImportProfileModal.vue";
-import ProfilesMixin from "../components/mixins/ProfilesMixin.vue";
-
+import { Vue } from 'vue-property-decorator';
 
 @Component({
     components: {
@@ -89,7 +88,15 @@ import ProfilesMixin from "../components/mixins/ProfilesMixin.vue";
         RenameProfileModal,
     },
 })
-export default class Profiles extends ProfilesMixin {
+export default class Profiles extends Vue {
+
+    get profileList() {
+        return this.$store.state.profiles.profileList;
+    }
+
+    get activeProfileName() {
+        return this.$store.getters['profile/activeProfileName'];
+    }
 
     openCreateProfileModal() {
         this.$store.commit('openCreateProfileModal');
