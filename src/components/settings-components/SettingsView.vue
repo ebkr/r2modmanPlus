@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="settings-view">
         <Hero title='Settings'
               :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
               heroType='primary'/>
@@ -241,7 +241,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Install a mod offline from your files.',
                 async () => 'Not all mods can be installed locally',
                 'fa-file-import',
-                () => this.emitInvoke('ImportLocalMod')
+                () => this.$store.commit("openLocalFileImportModal")
             ),
             new SettingsRow(
                 'Profile',
@@ -249,7 +249,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Export your mod list and configs as a file.',
                 async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
-                () => this.emitInvoke('ExportFile')
+                () => this.$store.dispatch("profileExport/exportProfileAsFile")
             ),
             new SettingsRow(
                 'Profile',
@@ -257,7 +257,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
                 'Export your mod list and configs as a code.',
                 async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
                 'fa-file-export',
-                () => this.emitInvoke('ExportCode')
+                () => this.$store.dispatch("profileExport/exportProfileAsCode")
             ),
             new SettingsRow(
                 'Profile',
@@ -421,3 +421,9 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
         }
     }
 </script>
+
+<style lang="scss" scoped>
+#settings-view {
+    width: 100%;
+}
+</style>

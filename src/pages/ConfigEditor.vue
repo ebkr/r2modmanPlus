@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="config-editor">
         <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
         <ConfigEditLayout
             :config-file="editing"
@@ -31,3 +31,9 @@
     }
 
 </script>
+
+<style lang="scss" scoped>
+#config-editor {
+    width: 100%;
+}
+</style>

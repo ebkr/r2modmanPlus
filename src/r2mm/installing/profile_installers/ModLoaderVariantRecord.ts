@@ -72,10 +72,13 @@ export const MODLOADER_PACKAGES = [
     new ModLoaderPackageMapping("Hell2Modding-Hell2Modding", "ReturnOfModdingPack", PackageLoader.RETURN_OF_MODDING),
     new ModLoaderPackageMapping("NotNet-GDWeave", "", PackageLoader.GDWEAVE),
     new ModLoaderPackageMapping("BepInEx-BepInExPack_AmongUs", "BepInExPack_AmongUs", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_Magicite", "BepInExPack_Magicite", PackageLoader.BEPINEX),
+    new ModLoaderPackageMapping("BepInEx-BepInExPack_HumanFallFlat", "BepInExPack_HumanFallFlat", PackageLoader.BEPINEX),
 ];
 
 export const LEGACY_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.MELON_LOADER)];
 export const RECURSIVE_MELONLOADER_MAPPING = [new ModLoaderPackageMapping("LavaGang-MelonLoader", "", PackageLoader.RECURSIVE_MELON_LOADER)];
+export const LOADERLESS_GAME: ModLoaderPackageMapping[] = [];
 
 export const ALL_MODLOADER_MAPPINGS = [
     ...MODLOADER_PACKAGES,
@@ -140,7 +143,7 @@ const VARIANTS = {
     ULTRAKILL: MODLOADER_PACKAGES,
     UltimateChickenHorse: MODLOADER_PACKAGES,
     AtrioTheDarkWild: MODLOADER_PACKAGES,
-    AncientDungeonVR: MODLOADER_PACKAGES,
+    AncientDungeonVR: LOADERLESS_GAME,
     Brotato: MODLOADER_PACKAGES,
     RUMBLE: LEGACY_MELONLOADER_MAPPING,
     DomeKeeper: MODLOADER_PACKAGES,
@@ -239,6 +242,9 @@ const VARIANTS = {
     Magicite: MODLOADER_PACKAGES,
     ENADreamBBQ: MODLOADER_PACKAGES,
     ASKA: MODLOADER_PACKAGES,
+    LostSkies: MODLOADER_PACKAGES,
+    ANEURISMIV: MODLOADER_PACKAGES,
+    Labyrinthine: RECURSIVE_MELONLOADER_MAPPING,
 };
 // Exported separately from the definition in order to preserve the key names in the type definition.
 // Otherwise this would become [key: string] and we couldn't use the game names for type hinting elsewhere.

@@ -7,6 +7,7 @@ interface State {
     downloadModModalMod: ThunderstoreMod | null;
     isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
+    isOnlineSortModalOpen: boolean;
     isCreateProfileModalOpen: boolean;
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
@@ -16,6 +17,9 @@ interface State {
     isRenameProfileModalOpen: boolean;
     isUninstallModModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
+    isProfileManagementModalOpen: boolean;
+    isProfileCodeExportModalOpen: boolean;
+    isLocalFileImportModalOpen: boolean;
 }
 
 export default {
@@ -25,6 +29,7 @@ export default {
         downloadModModalMod: null,
         isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
+        isOnlineSortModalOpen: false,
         isCreateProfileModalOpen: false,
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
@@ -34,6 +39,9 @@ export default {
         isRenameProfileModalOpen: false,
         isUninstallModModalOpen: false,
         uninstallModModalMod: null,
+        isProfileManagementModalOpen: false,
+        isProfileCodeExportModalOpen: false,
+        isLocalFileImportModalOpen: false,
     }),
 
     mutations: {
@@ -44,6 +52,10 @@ export default {
 
         closeCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = false;
+        },
+
+        closeOnlineSortModal: function(state: State): void {
+            state.isOnlineSortModalOpen = false;
         },
 
         closeCreateProfileModal: function(state: State): void {
@@ -81,6 +93,18 @@ export default {
             state.uninstallModModalMod = null;
         },
 
+        closeProfileManagementModal: function(state: State): void {
+            state.isProfileManagementModalOpen = false;
+        },
+
+        closeProfileCodeExportModal: function(state: State): void {
+            state.isProfileCodeExportModalOpen = false;
+        },
+
+        closeLocalFileImportModal: function(state: State): void {
+            state.isLocalFileImportModalOpen = false;
+        },
+
         openAssociatedModsModal: function(state: State, mod: ManifestV2): void {
             state.associatedModsModalMod = mod;
             state.isAssociatedModsModOpen = true;
@@ -88,6 +112,10 @@ export default {
 
         openCategoryFilterModal: function(state: State): void {
             state.isCategoryFilterModalOpen = true;
+        },
+
+        openOnlineSortModal: function(state: State): void {
+            state.isOnlineSortModalOpen = true;
         },
 
         openCreateProfileModal: function(state: State): void {
@@ -128,6 +156,18 @@ export default {
         openUpdateAllModsModal: function(state: State): void {
             state.downloadModModalMod = null;
             state.isDownloadModModalOpen = true;
-        }
+        },
+
+        openProfileManagementModal: function(state: State): void {
+            state.isProfileManagementModalOpen = true;
+        },
+
+        openProfileCodeExportModal: function(state: State): void {
+            state.isProfileCodeExportModalOpen = true;
+        },
+
+        openLocalFileImportModal: function(state: State): void {
+            state.isLocalFileImportModalOpen = true;
+        },
     }
 }

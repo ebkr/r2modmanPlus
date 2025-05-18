@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { ExpandableCard, Link } from '../../all';
+import { ExpandableCard, ExternalLink } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import DonateIconButton from '../../buttons/DonateIconButton.vue';
 import R2Error from '../../../model/errors/R2Error';
@@ -17,7 +17,7 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
         DonateButton,
         DonateIconButton,
         ExpandableCard,
-        Link,
+        ExternalLink,
     }
 })
 export default class LocalModCard extends Vue {
@@ -260,7 +260,7 @@ function dependencyStringToModName(x: string) {
                 <div class="field">
                     <input :id="`switch-${mod.getName()}`"
                         type="checkbox"
-                        :class='`switch is-small  ${mod.isEnabled() ? "switch is-info" : ""}`'
+                        :class="['switch', 'is-small', {'switch is-info' : mod.isEnabled()}]"
                         :checked="mod.isEnabled()" />
                     <label :for="`switch-${mod.getName()}`"
                         v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
@@ -284,10 +284,10 @@ function dependencyStringToModName(x: string) {
             Associated
         </a>
 
-        <Link :url="mod.getWebsiteUrl()" :target="'external'" class="card-footer-item">
+        <ExternalLink :url="mod.getWebsiteUrl()" class="card-footer-item">
             Website
             <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
-        </Link>
+        </ExternalLink>
 
         <a v-if="!isLatestVersion" @click="updateMod()" class='card-footer-item'>
             Update
@@ -310,5 +310,7 @@ function dependencyStringToModName(x: string) {
 </template>
 
 <style scoped lang="scss">
-
+.switch {
+    position: relative;
+}
 </style>

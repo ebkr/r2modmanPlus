@@ -1,30 +1,20 @@
 <template>
-    <Link v-if="mod && mod.getDonationLink()"
+    <ExternalLink v-if="mod && mod.getDonationLink()"
           :url="mod.getDonationLink()"
-          target="external"
           class="card-footer-item"
           v-tooltip.left="{content: 'Donate to the mod author', distance: 0}">
         <i class='fas fa-heart margin-right margin-right--half-width'></i>
         Donate
-    </Link>
+    </ExternalLink>
 </template>
 
-<script lang="ts">
-
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { Link } from '../../components/all';
+import { ExternalLink } from '../../components/all';
 
-@Component({
-    components: {
-        Link
-    }
-})
-export default class DonateButton extends Vue {
-
-    @Prop({required: true})
-    mod: ThunderstoreMod | undefined;
-
+type DonateButtonProps = {
+    mod: ThunderstoreMod;
 }
 
+defineProps<DonateButtonProps>();
 </script>

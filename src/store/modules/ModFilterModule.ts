@@ -1,6 +1,8 @@
 import { GetterTree } from 'vuex';
 
 import { State as RootState } from '../index';
+import { SortDirection } from '../../model/real_enums/sort/SortDirection';
+import SortingStyle from '../../model/enums/SortingStyle';
 
 interface State {
     allowNsfw: boolean;
@@ -8,6 +10,8 @@ interface State {
     selectedCategoriesCompareAll: string[];
     selectedCategoriesToExclude: string[];
     showDeprecatedPackages: boolean;
+    sortDirection: string;
+    sortBehaviour: string;
 }
 
 /**
@@ -21,7 +25,9 @@ export default {
         selectedCategoriesCompareOne: [],
         selectedCategoriesCompareAll: [],
         selectedCategoriesToExclude: [],
-        showDeprecatedPackages: false
+        showDeprecatedPackages: false,
+        sortDirection: SortDirection.STANDARD,
+        sortBehaviour: SortingStyle.DEFAULT
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -42,6 +48,8 @@ export default {
             state.selectedCategoriesCompareOne = [];
             state.selectedCategoriesCompareAll = [];
             state.selectedCategoriesToExclude = [];
+            state.sortDirection = SortDirection.STANDARD;
+            state.sortBehaviour = SortingStyle.DEFAULT;
         },
 
         selectCategoryToCompareOne: function(state: State, category: string) {
@@ -58,6 +66,14 @@ export default {
 
         setAllowNsfw: function(state: State, value: boolean) {
             state.allowNsfw = value;
+        },
+
+        setSortBehaviour(state: State, sortBehaviour: string) {
+            state.sortBehaviour = sortBehaviour;
+        },
+
+        setSortDirection(state: State, direction: keyof typeof SortDirection) {
+            state.sortDirection = direction;
         },
 
         unselectCategory: function(state: State, category: string) {

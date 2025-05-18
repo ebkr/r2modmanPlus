@@ -1,5 +1,5 @@
 <template>
-    <ModalCard :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
+    <ModalCard id="download-mod-version-select-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod !== null" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title' v-if="thunderstoreMod !== null">
                 Select a version of {{thunderstoreMod.getName()}} to download

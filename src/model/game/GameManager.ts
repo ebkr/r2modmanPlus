@@ -370,7 +370,7 @@ export default class GameManager {
             "Ancient Dungeon VR", ["Ancient_Dungeon.exe"], "Ancient_Dungeon_Data",
             "https://thunderstore.io/c/ancient-dungeon-vr/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1125240"), new StorePlatformMetadata(StorePlatform.OCULUS_STORE)], "ancient-dungeon-vr.png",
-            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.ANCIENT_DUNGEON_VR, ["adv"]),
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.NONE, ["adv"]),
 
         new Game("RUMBLE", "RUMBLE", "RUMBLE",
             "RUMBLE", ["RUMBLE.exe"], "RUMBLE_Data",
@@ -949,7 +949,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
 
         new Game("Human Fall Flat", "HumanFallFlat", "HumanFallFlat",
-            "Human", ["Human.exe"], "Human_Data",
+            "Human Fall Flat", ["Human.exe"], "Human_Data",
             "https://thunderstore.io/c/human-fall-flat/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "477160")], "HumanFallFlat.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["hff"]),
@@ -971,6 +971,24 @@ export default class GameManager {
             "https://thunderstore.io/c/aska/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1898300")], "ASKA.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Lost Skies", "LostSkies", "LostSkies",
+            "Wild Skies", ["LostSkies.exe"], "LostSkies_Data",
+            "https://thunderstore.io/c/lost-skies/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1931180")], "LostSkies.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["ls"]),
+
+        new Game("ANEURISM IV", "ANEURISMIV", "ANEURISMIV",
+            "ANEURISMIV", ["ANEURISM IV.exe"], "ANEURISM IV_Data",
+            "https://thunderstore.io/c/aneurism-iv/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2773280")], "ANEURISM_IV.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Labyrinthine", "Labyrinthine", "Labyrinthine",
+            "Labyrinthine", ["Labyrinthine.exe"], "Labyrinthine_Data",
+            "https://thunderstore.io/c/labyrinthine/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1302240")], "Labyrinthine.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
     ];
 
     static get activeGame(): Game {

@@ -1,5 +1,5 @@
 <template>
-    <ModalCard v-show="isOpen" :is-active="isOpen" :can-close="false">
+    <ModalCard id="mod-category-filter-modal" v-show="isOpen" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
             <h2 class="modal-title">Filter mod categories</h2>
         </template>

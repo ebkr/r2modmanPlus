@@ -61,7 +61,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.BEPINEX]: runners,
         [PackageLoader.MELON_LOADER]: runners,
         [PackageLoader.NORTHSTAR]: runners,
-        [PackageLoader.ANCIENT_DUNGEON_VR]: runners,
+        [PackageLoader.NONE]: runners,
         [PackageLoader.GODOT_ML]: runners,
         [PackageLoader.SHIMLOADER]: runners,
         [PackageLoader.LOVELY]: runners,

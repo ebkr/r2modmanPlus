@@ -1,6 +1,8 @@
 <template>
     <div>
-        <router-view v-if="visible"/>
+        <main>
+            <router-view v-if="visible"/>
+        </main>
         <ErrorModal />
     </div>
 </template>
@@ -46,6 +48,16 @@ import InstallationRuleApplicator from './r2mm/installing/default_installation_r
 import GenericProfileInstaller from './r2mm/installing/profile_installers/GenericProfileInstaller';
 import UtilityMixin from './components/mixins/UtilityMixin.vue';
 import ErrorModal from './components/modals/ErrorModal.vue';
+import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
+import baseStore from './store';
+
+document.addEventListener('auxclick', e => {
+    const target = e.target! as any;
+    if (target.localName == 'a') {
+        LinkProvider.instance.openLink(target.getAttribute("href"))
+    }
+    e.preventDefault();
+}, false)
 
 @Component({
     components: {
@@ -107,6 +119,9 @@ export default class App extends mixins(UtilityMixin) {
     beforeCreate() {
         FsProvider.provide(() => new NodeFs());
 
+        const store = baseStore();
+        provideStoreImplementation(() => store);
+
         ProfileProvider.provide(() => new ProfileImpl());
         LogOutputProvider.provide(() => LogOutput.getSingleton());
 
@@ -128,3 +143,15 @@ export default class App extends mixins(UtilityMixin) {
 
 }
 </script>
+
+<style lang="scss">
+html {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+main {
+    display: grid;
+    grid-template-rows: 100vh;
+}
+</style>
