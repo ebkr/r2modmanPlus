@@ -1,3 +1,17 @@
+### 3.2.0
+#### Major changes
+- You can now preview a mod's README, CHANGELOG, and dependencies all within the Online section.
+- Profile management now belongs in the bottom left of the screen.
+  - You can use this to:
+    - Change profile
+    - Export profile
+    - Import local mods
+
+#### Games added
+- ANEURISM IV
+- Lost Skies
+- Labyrinthine
+
 ### 3.1.58
 #### Games added
 - Schedule 1
