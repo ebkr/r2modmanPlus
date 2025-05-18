@@ -8,6 +8,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import { InstallMode } from '../../utils/DependencyUtils';
 
 @Component
 export default class UtilityMixin extends Vue {
@@ -37,9 +38,9 @@ export default class UtilityMixin extends Vue {
             try {
                 const game = this.$store.state.activeGame;
                 const profile = this.$store.getters['profile/activeProfile'].asImmutableProfile();
-                const combo = throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game));
-
-                await this.$store.dispatch('download/downloadAndInstallSpecific', {profile, combo});
+                const combos = [throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game))];
+                const installMode = InstallMode.INSTALL_SPECIFIC;
+                await this.$store.dispatch('download/downloadAndInstallCombos', {combos, game, installMode, profile});
 
                 const modList = throwForR2Error(await ProfileModList.getModList(profile));
                 await this.$store.dispatch('profile/updateModList', modList);

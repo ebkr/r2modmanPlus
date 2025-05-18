@@ -47,4 +47,8 @@ export default class ThunderstoreCombo {
     public getDependencyString(): string {
         return `${this.mod.getFullName()}-${this.version.getVersionNumber().toString()}`;
     }
+
+    public getUserFriendlyString(): string {
+        return `${this.mod.getName()} (${this.version.getVersionNumber().toString()})`;
+    }
 }
