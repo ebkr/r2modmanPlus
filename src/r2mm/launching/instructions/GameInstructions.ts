@@ -20,7 +20,10 @@ export interface GameInstruction {
 export default class GameInstructions {
 
     public static GAME_INSTRUCTIONS: Map<string, GameInstructionGenerator> = new Map([
-        ["AncientDungeonVR", new ModsPathInstructions()]
+        ["AncientDungeonVR", new ModsPathInstructions()],
+        ["Starship", new ModsPathInstructions()],
+        ["ShipOfHarkinian", new ModsPathInstructions()],
+        ["2Ship2Harkinian", new ModsPathInstructions()]
     ]);
 
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
