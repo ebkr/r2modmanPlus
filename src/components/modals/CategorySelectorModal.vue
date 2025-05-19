@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+
+type CategorySelectorModalProps = {
+    title: string;
+    selectedCategories: string[];
+    selectableCategories: string[];
+}
+
+const props = defineProps<CategorySelectorModalProps>();
+const emits = defineEmits<{
+    'selected-category': [ev: Event];
+    'deselectedCategory': [value: string];
+}>();
+
+function emitSelected(event: Event) {
+    emits('selected-category', event)
+}
+
+function emitDeselected(key: string) {
+    emits("deselected-category", key);
+}
+</script>
+
 <template>
     <div class="input-group">
         <label>{{ title }}:</label>
@@ -28,29 +51,3 @@
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-
-@Component
-export default class ChangeSelectorModal extends Vue {
-
-    @Prop({required: true})
-    private title!: string;
-
-    @Prop({required: true})
-    private selectedCategories!: string[]
-
-    @Prop({required: true})
-    private selectableCategories!: string[]
-
-    emitSelected(event: Event) {
-        this.$emit("selected-category", event);
-    }
-
-    emitDeselected(key: string) {
-        this.$emit("deselected-category", key);
-    }
-
-}
-</script>
