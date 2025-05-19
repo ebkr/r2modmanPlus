@@ -239,18 +239,18 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             onDownloadProgress: progress => {
                 callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
             },
-            responseType: 'arraybuffer',
+            responseType: 'blob',
             headers: {
                 'Content-Type': 'application/zip',
                 'Access-Control-Allow-Origin': '*'
-            }
+            },
         });
     }
 
     private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<void> {
-        const buf: Buffer = Buffer.from(response.data)
+        const dataStream = response.data.stream() as ReadableStream;
         callback(100, StatusEnum.PENDING, null);
-        await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
+        await this.saveToFile(dataStream, combo, (success: boolean, error?: R2Error) => {
             if (success) {
                 callback(100, StatusEnum.SUCCESS, error || null);
             } else {
@@ -259,18 +259,18 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    public async saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
+    public async saveToFile(data: ReadableStream, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void) {
         const fs = FsProvider.instance;
         const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
         try {
             if (! await fs.exists(path.join(cacheDirectory, combo.getMod().getFullName()))) {
                 await fs.mkdirs(path.join(cacheDirectory, combo.getMod().getFullName()));
             }
-            await fs.writeFile(path.join(
+            await fs.writeStreamToFile(path.join(
                 cacheDirectory,
                 combo.getMod().getFullName(),
                 combo.getVersion().getVersionNumber().toString() + '.zip'
-            ), response);
+            ), data);
             await ZipExtract.extractAndDelete(
                 path.join(cacheDirectory, combo.getMod().getFullName()),
                 combo.getVersion().getVersionNumber().toString() + '.zip',
@@ -278,8 +278,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 callback
             );
         } catch(e) {
+            const err = e as Error;
             callback(false, new FileWriteError(
-                'File write error',
+                err.name,
                 `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache folder. \nReason: ${(e as Error).message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));

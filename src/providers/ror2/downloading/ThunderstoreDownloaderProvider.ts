@@ -106,7 +106,7 @@ export default abstract class ThunderstoreDownloaderProvider {
      * @param combo     The mod being downloaded.
      * @param callback  Callback on if saving and extracting has been performed correctly. An error is provided if success is false.
      */
-    public abstract saveToFile(response: Buffer, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void): void;
+    public abstract saveToFile(response: ReadableStream, combo: ThunderstoreCombo, callback: (success: boolean, error?: R2Error) => void): void;
 
     /**
      * Check the cache to see if the mod has already been downloaded.
