@@ -1,28 +1,18 @@
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import R2Error from "../../model/errors/R2Error";
+<script lang="ts" setup>
+import R2Error from '../../model/errors/R2Error';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed, ComputedRef } from 'vue';
 
-@Component
-export default class ErrorModal extends Vue {
-    get error(): R2Error | null {
-        return this.$store.state.error.error;
-    }
+const store = getStore<State>();
 
-    get name() {
-        return this.error ? this.error.name : '';
-    }
+const error: ComputedRef<R2Error | null> = computed(() => store.state.error.error);
+const name = computed(() => error.value ? error.value.name : '');
+const message = computed(() => error.value ? error.value.message : '');
+const solution = computed(() => error.value ? error.value.solution : '');
 
-    get message() {
-        return this.error ? this.error.message : '';
-    }
-
-    get solution() {
-        return this.error ? this.error.solution : '';
-    }
-
-    close() {
-        this.$store.commit('error/discardError');
-    }
+function close() {
+    store.commit('error/discardError');
 }
 </script>
 
