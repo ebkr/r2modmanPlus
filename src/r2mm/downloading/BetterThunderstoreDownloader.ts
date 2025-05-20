@@ -271,12 +271,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 combo.getMod().getFullName(),
                 combo.getVersion().getVersionNumber().toString() + '.zip'
             ), data);
-            await ZipExtract.extractAndDelete(
-                path.join(cacheDirectory, combo.getMod().getFullName()),
-                combo.getVersion().getVersionNumber().toString() + '.zip',
-                combo.getVersion().getVersionNumber().toString(),
-                callback
-            );
         } catch(e) {
             const err = e as Error;
             callback(false, new FileWriteError(
@@ -284,6 +278,17 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache folder. \nReason: ${(e as Error).message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
+        }
+
+        try {
+            await ZipExtract.extractAndDelete(
+                path.join(cacheDirectory, combo.getMod().getFullName()),
+                combo.getVersion().getVersionNumber().toString() + '.zip',
+                combo.getVersion().getVersionNumber().toString(),
+                callback
+            );
+        } catch(e) {
+            callback(false, e as R2Error);
         }
     }
 
