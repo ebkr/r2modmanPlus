@@ -1,36 +1,33 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { Component, Vue } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
+import { computed, ref } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-@Component({
-    components: {ModalCard}
-})
-export default class DeleteProfileModal extends Vue {
-    private deletingInProgress: boolean = false;
+const store = getStore<State>();
 
-    get isOpen(): boolean {
-        return this.$store.state.modals.isDeleteProfileModalOpen;
+const deletingInProgress = ref<boolean>(false);
+const isOpen = computed(() => store.state.modals.isDeleteProfileModalOpen);
+
+function closeDeleteProfileModal() {
+    deletingInProgress.value = false;
+    store.commit('closeDeleteProfileModal');
+}
+
+async function removeProfile() {
+    if (deletingInProgress.value) {
+        return;
     }
-
-    closeDeleteProfileModal() {
-        this.deletingInProgress = false;
-        this.$store.commit('closeDeleteProfileModal');
+    try {
+        deletingInProgress.value = true;
+        await store.dispatch('profiles/removeSelectedProfile');
+    } catch (e) {
+        const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
+        store.commit('error/handleError', err);
     }
-
-    async removeProfile() {
-        if (this.deletingInProgress) {
-            return;
-        }
-        try {
-            this.deletingInProgress = true;
-            await this.$store.dispatch('profiles/removeSelectedProfile');
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst deleting profile');
-            this.$store.commit('error/handleError', err);
-        }
-        this.closeDeleteProfileModal();
-    }
+    closeDeleteProfileModal();
 }
 
 </script>
