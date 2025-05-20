@@ -1,11 +1,10 @@
 import { getStore } from '../../providers/generic/store/StoreProvider';
-import { State } from '../../store';
-import ThunderstoreCombo from 'src/model/ThunderstoreCombo';
-import R2Error, { throwForR2Error } from 'src/model/errors/R2Error';
-import { ImmutableProfile } from 'src/model/Profile';
-import ProfileModList from 'src/r2mm/mods/ProfileModList';
-import { installModsToProfile } from 'src/utils/ProfileUtils';
-import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
+import { ImmutableProfile } from '../../model/Profile';
+import ProfileModList from '../../r2mm/mods/ProfileModList';
+import { installModsToProfile } from '../../utils/ProfileUtils';
+import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
 import { computed } from 'vue';
 
 export function useDownloadComposable() {

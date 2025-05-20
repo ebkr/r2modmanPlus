@@ -61,7 +61,7 @@ import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
-import { useDownloadComposable } from 'components/composables/DownloadComposable';
+import { useDownloadComposable } from '../composables/DownloadComposable';
 import Game from '../../model/game/Game';
 
 @Component({
