@@ -1,17 +1,27 @@
 <script lang="ts">
-import { Component, Ref, Watch } from 'vue-property-decorator';
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
 import Profile from "../../model/Profile";
-import ProfilesMixin from "../../components/mixins/ProfilesMixin.vue";
+import { useProfilesComposable } from '../composables/ProfilesComposable';
 
 @Component({
     components: {ModalCard}
 })
-export default class RenameProfileModal extends ProfilesMixin {
+export default class RenameProfileModal extends Vue {
     @Ref() readonly nameInput: HTMLInputElement | undefined;
     private newProfileName: string = '';
     private renamingInProgress: boolean = false;
+
+    get doesProfileExist() {
+        const { doesProfileExist } = useProfilesComposable();
+        return doesProfileExist;
+    }
+
+    get makeProfileNameSafe() {
+        const { makeProfileNameSafe } = useProfilesComposable();
+        return makeProfileNameSafe;
+    }
 
     @Watch('$store.state.profile.activeProfile')
     activeProfileChanged(newProfile: Profile, oldProfile: Profile|null) {
