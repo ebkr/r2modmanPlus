@@ -989,6 +989,12 @@ export default class GameManager {
             "https://thunderstore.io/c/labyrinthine/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1302240")], "Labyrinthine.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, [""]),
+
+        new Game("Painting VR", "PaintingVr", "PaintingVr",
+            "PaintingVr", ["PaintingVr.exe"], "PaintingVr_Data",
+            "https://thunderstore.io/c/painting-vr/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1905940")], "PaintingVr.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["pvr"]),
     ];
 
     static get activeGame(): Game {
