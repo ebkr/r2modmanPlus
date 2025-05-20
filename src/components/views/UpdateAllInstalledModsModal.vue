@@ -23,23 +23,47 @@
 </template>
 
 <script lang="ts">
-import { mixins } from "vue-class-component";
-import { Component } from "vue-property-decorator";
+import { Component } from 'vue-property-decorator';
 
 import ModalCard from "../ModalCard.vue";
-import DownloadMixin from "../mixins/DownloadMixin.vue";
 import * as DownloadUtils from "../../utils/DownloadUtils";
 import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import StatusEnum from "../../model/enums/StatusEnum";
 import R2Error from "../../model/errors/R2Error";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
+import { useDownloadComposable } from '../composables/DownloadComposable';
+import Vue from 'vue';
 
 @Component({
     components: {DownloadModVersionSelectModal, ModalCard}
 })
-export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  {
+export default class UpdateAllInstalledModsModal extends Vue {
 
+    get isOpen(): boolean {
+        const { isOpen } = useDownloadComposable();
+        return isOpen.value;
+    }
+
+     get closeModal() {
+        const { closeModal } = useDownloadComposable();
+        return closeModal;
+    }
+
+    get setIsModProgressModalOpen() {
+         const { setIsModProgressModalOpen } = useDownloadComposable();
+         return setIsModProgressModalOpen;
+    }
+
+    get downloadCompletedCallback() {
+         const { downloadCompletedCallback } = useDownloadComposable();
+         return downloadCompletedCallback;
+    }
+
+    get thunderstoreMod() {
+        const { thunderstoreMod } = useDownloadComposable();
+        return thunderstoreMod.value;
+    }
 
     async updateAllToLatestVersion() {
         this.closeModal();
