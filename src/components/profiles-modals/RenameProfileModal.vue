@@ -1,75 +1,55 @@
-<script lang="ts">
-import { Component, Ref, Vue, Watch } from 'vue-property-decorator';
+<script lang="ts" setup>
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
-import Profile from "../../model/Profile";
 import { useProfilesComposable } from '../composables/ProfilesComposable';
+import { computed, nextTick, ref, watchEffect } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-@Component({
-    components: {ModalCard}
+const store = getStore<State>();
+
+const {
+    doesProfileExist,
+    makeProfileNameSafe,
+} = useProfilesComposable();
+
+const nameInput = ref<HTMLInputElement>();
+const newProfileName = ref<string>('');
+const renamingInProgress = ref<boolean>(false);
+
+const isOpen = computed(() => store.state.modals.isRenameProfileModalOpen);
+
+watchEffect(() => {
+    newProfileName.value = store.getters['profile/activeProfileName'];
 })
-export default class RenameProfileModal extends Vue {
-    @Ref() readonly nameInput: HTMLInputElement | undefined;
-    private newProfileName: string = '';
-    private renamingInProgress: boolean = false;
 
-    get doesProfileExist() {
-        const { doesProfileExist } = useProfilesComposable();
-        return doesProfileExist;
+watchEffect(() => {
+    const openValue = store.state.modals.isRenameProfileModalOpen;
+    if (openValue) {
+        nextTick(() => {
+            nameInput.value!.focus()
+        })
     }
+});
 
-    get makeProfileNameSafe() {
-        const { makeProfileNameSafe } = useProfilesComposable();
-        return makeProfileNameSafe;
+function closeModal() {
+    renamingInProgress.value = false;
+    newProfileName.value = store.state.profile.activeProfile.getProfileName();
+    store.commit('closeRenameProfileModal');
+}
+
+async function performRename() {
+    if (renamingInProgress.value) {
+        return;
     }
-
-    @Watch('$store.state.profile.activeProfile')
-    activeProfileChanged(newProfile: Profile, oldProfile: Profile|null) {
-        if (
-            // Modal was just created and has no value yet, use any available.
-            this.newProfileName === "" ||
-            // Profile was not previously selected, use the new active profile.
-            oldProfile === null ||
-            // Avoid losing user's changes when the profile unexpectedly changes.
-            oldProfile.getProfileName() === this.newProfileName
-        ) {
-            this.newProfileName = newProfile.getProfileName();
-        }
+    try {
+        renamingInProgress.value = true;
+        await store.dispatch('profiles/renameProfile', {newName: newProfileName.value});
+    } catch (e) {
+        const err = R2Error.fromThrownValue(e, 'Error whilst renaming profile');
+        store.commit('error/handleError', err);
     }
-
-    get isOpen(): boolean {
-        const isOpen_ = this.$store.state.modals.isRenameProfileModalOpen;
-
-        if (isOpen_) {
-            this.$nextTick(() => {
-                if (this.nameInput) {
-                    this.nameInput.focus();
-                }
-            });
-        }
-
-        return isOpen_;
-    }
-
-    closeModal() {
-        this.renamingInProgress = false;
-        this.newProfileName = this.$store.state.profile.activeProfile.getProfileName();
-        this.$store.commit('closeRenameProfileModal');
-    }
-
-    async performRename() {
-        if (this.renamingInProgress) {
-            return;
-        }
-        try {
-            this.renamingInProgress = true;
-            await this.$store.dispatch('profiles/renameProfile', {newName: this.newProfileName});
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst renaming profile');
-            this.$store.commit('error/handleError', err);
-        }
-        this.closeModal();
-    }
+    closeModal();
 }
 
 </script>
@@ -108,3 +88,10 @@ export default class RenameProfileModal extends Vue {
 
     </ModalCard>
 </template>
+
+<style lang="scss" scoped>
+#rename-profile-modal-new-profile-name {
+    display: block;
+    margin-bottom: 1rem;
+}
+</style>
