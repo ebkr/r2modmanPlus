@@ -1,6 +1,4 @@
-<script lang="ts">
-import { mixins } from "vue-class-component";
-import { Component, Vue, Watch } from 'vue-property-decorator';
+<script lang="ts" setup>
 
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
@@ -12,278 +10,253 @@ import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/Thu
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
 import { sleep } from "../../utils/Common";
-import { valueToReadableDate } from "../../utils/DateUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
-import Progress from "../Progress.vue";
 import OnlineModList from "../views/OnlineModList.vue";
 import { useProfilesComposable } from '../composables/ProfilesComposable';
+import { computed, ref, watch } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-@Component({
-    components: {Progress, OnlineModList, ModalCard}
+const store = getStore<State>();
+
+const {
+    doesProfileExist,
+    makeProfileNameSafe,
+} = useProfilesComposable();
+
+const importUpdateSelection = ref<'CREATE' | 'UPDATE'>('CREATE');
+const importPhaseDescription = ref<string>('Downloading mods: 0%');
+const importViaCodeInProgress = ref<boolean>(false);
+const profileImportCode = ref<string>('');
+const targetProfileName = ref<string>('');
+const profileImportFilePath = ref<string | null>(null);
+const profileImportContent = ref<ExportFormat | null>(null);
+const profileMods = ref<{known: ThunderstoreCombo[], unknown: string[]}>({known: [], unknown: []});
+const isPartialImportAllowed = ref<boolean>(false);
+
+type ActiveStep =
+    'FILE_CODE_SELECTION'
+    | 'IMPORT_FILE'
+    | 'IMPORT_CODE'
+    | 'REFRESH_MOD_LIST'
+    | 'REVIEW_IMPORT'
+    | 'IMPORT_UPDATE_SELECTION'
+    | 'ADDING_PROFILE'
+    | 'PROFILE_IS_BEING_IMPORTED'
+const activeStep = ref<ActiveStep>('FILE_CODE_SELECTION');
+
+const appName = computed(() => ManagerInformation.APP_NAME);
+const isOpen = computed(() => store.state.modals.isImportProfileModalOpen);
+const profileList = computed(() => store.state.profiles.profileList);
+const knownProfileMods = computed(() => profileMods.value.known.map((combo) => combo.getMod()));
+const unknownProfileModNames = computed(() => profileMods.value.unknown.join(', '));
+const isProfileCodeValid = computed(() => VALID_PROFILE_CODE_REGEX.test(profileImportCode.value));
+
+function closeModal() {
+    activeStep.value = 'FILE_CODE_SELECTION';
+    targetProfileName.value = '';
+    importUpdateSelection.value = 'CREATE';
+    importViaCodeInProgress.value = false;
+    profileImportCode.value = '';
+    profileImportFilePath.value = null;
+    profileImportContent.value = null;
+    profileMods.value = {known: [], unknown: []};
+    store.commit('closeImportProfileModal');
+}
+
+// Required to trigger a re-render of the modlist in preview step
+// when the online modlist is refreshed.
+watch(store.state.tsMods.mods, async() => {
+    if (profileImportContent.value === null) {
+        return;
+    }
+
+    profileMods.value = await ProfileUtils.exportModsToCombos(
+        profileImportContent.value.getMods(),
+        store.state.activeGame
+    );
 })
-export default class ImportProfileModal extends Vue {
-    valueToReadableDate = valueToReadableDate;
-    private importUpdateSelection: 'CREATE' | 'UPDATE' = 'CREATE';
-    private importPhaseDescription: string = 'Downloading mods: 0%';
-    private importViaCodeInProgress: boolean = false;
-    private profileImportCode: string = '';
-    private targetProfileName: string = '';
-    private profileImportFilePath: string | null = null;
-    private profileImportContent: ExportFormat | null = null;
-    private profileMods: {known: ThunderstoreCombo[], unknown: string[]} = {known: [], unknown: []};
-    private isPartialImportAllowed: boolean = false;
-    private activeStep:
-        'FILE_CODE_SELECTION'
-        | 'IMPORT_FILE'
-        | 'IMPORT_CODE'
-        | 'REFRESH_MOD_LIST'
-        | 'REVIEW_IMPORT'
-        | 'IMPORT_UPDATE_SELECTION'
-        | 'ADDING_PROFILE'
-        | 'PROFILE_IS_BEING_IMPORTED'
-    = 'FILE_CODE_SELECTION';
 
-    get appName(): string {
-        return ManagerInformation.APP_NAME;
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isImportProfileModalOpen;
-    }
-
-    get doesProfileExist() {
-        const { doesProfileExist } = useProfilesComposable();
-        return doesProfileExist;
-    }
-
-    get makeProfileNameSafe() {
-        const { makeProfileNameSafe } = useProfilesComposable();
-        return makeProfileNameSafe;
-    }
-
-    get profileList() {
-        return this.$store.state.profiles.profileList;
-    }
-
-    closeModal() {
-        this.activeStep = 'FILE_CODE_SELECTION';
-        this.targetProfileName = '';
-        this.importUpdateSelection = 'CREATE';
-        this.importViaCodeInProgress = false;
-        this.profileImportCode = '';
-        this.profileImportFilePath = null;
-        this.profileImportContent = null;
-        this.profileMods = {known: [], unknown: []};
-        this.$store.commit('closeImportProfileModal');
-    }
-
-    get knownProfileMods(): ThunderstoreMod[] {
-        return this.profileMods.known.map((combo) => combo.getMod());
-    }
-
-    get unknownProfileModNames(): string {
-        return this.profileMods.unknown.join(', ');
-    }
-
-    // Required to trigger a re-render of the modlist in preview step
-    // when the online modlist is refreshed.
-    @Watch('$store.state.tsMods.mods')
-    async updateProfileModsOnOnlineModListRefresh() {
-        if (this.profileImportContent === null) {
-            return;
-        }
-
-        this.profileMods = await ProfileUtils.exportModsToCombos(
-            this.profileImportContent.getMods(),
-            this.$store.state.activeGame
-        );
-    }
-
-    get isProfileCodeValid(): boolean {
-        return VALID_PROFILE_CODE_REGEX.test(this.profileImportCode);
-    }
-
-    // Fired when user selects to import either from file or code.
-    async onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
-        if (mode === 'FILE') {
-            this.activeStep = 'IMPORT_FILE';
-            process.nextTick(async () => {
-                const files = await InteractionProvider.instance.selectFile({
-                    title: 'Import Profile',
-                    filters: [{
-                        name: "*",
-                        extensions: ["r2z"]
-                    }],
-                    buttonLabel: 'Import'
-                });
-                await this.validateProfileFile(files);
+// Fired when user selects to import either from file or code.
+async function onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
+    if (mode === 'FILE') {
+        activeStep.value = 'IMPORT_FILE';
+        process.nextTick(async () => {
+            const files = await InteractionProvider.instance.selectFile({
+                title: 'Import Profile',
+                filters: [{
+                    name: "*",
+                    extensions: ["r2z"]
+                }],
+                buttonLabel: 'Import'
             });
-        } else {
-            this.activeStep = 'IMPORT_CODE';
-        }
+            await validateProfileFile(files);
+        });
+    } else {
+        activeStep.value = 'IMPORT_CODE';
+    }
+}
+
+// Fired when user has entered a profile code to import.
+async function onProfileCodeEntered() {
+    try {
+        importViaCodeInProgress.value = true;
+        const filepath = await ProfileImportExport.downloadProfileCode(profileImportCode.value.trim());
+        await validateProfileFile([filepath]);
+    } catch (e: any) {
+        const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+        store.commit('error/handleError', err);
+    } finally {
+        importViaCodeInProgress.value = false;
+    }
+}
+
+// Check that selected profile zip is valid and proceed.
+async function validateProfileFile(files: string[] | null) {
+    if (files === null || files.length === 0) {
+        closeModal();
+        return;
     }
 
-    // Fired when user has entered a profile code to import.
-    async onProfileCodeEntered() {
-        try {
-            this.importViaCodeInProgress = true;
-            const filepath = await ProfileImportExport.downloadProfileCode(this.profileImportCode.trim());
-            await this.validateProfileFile([filepath]);
-        } catch (e: any) {
-            const err = R2Error.fromThrownValue(e, 'Failed to import profile');
-            this.$store.commit('error/handleError', err);
-        } finally {
-            this.importViaCodeInProgress = false;
-        }
+    try {
+        const yamlContent = await ProfileUtils.readProfileFile(files[0]);
+        profileImportContent.value = await ProfileUtils.parseYamlToExportFormat(yamlContent);
+        profileMods.value = await ProfileUtils.exportModsToCombos(
+            profileImportContent.value.getMods(),
+            store.state.activeGame
+        );
+    } catch (e: unknown) {
+        const err = R2Error.fromThrownValue(e);
+        store.commit('error/handleError', err);
+        closeModal();
+        return;
     }
 
-    // Check that selected profile zip is valid and proceed.
-    async validateProfileFile(files: string[] | null) {
-        if (files === null || files.length === 0) {
-            this.closeModal();
-            return;
+    profileImportFilePath.value = files[0];
+
+    if (profileMods.value.unknown.length > 0) {
+        // Sometimes the reason some packages are unknown is that
+        // the mod list is out of date, so let's try refreshing it
+        activeStep.value = 'REFRESH_MOD_LIST';
+
+        // Mod downloads in progress will prevent mod list refresh, so wait
+        // them out first.
+        while (store.getters['download/activeDownloadCount'] > 0) {
+            await sleep(100);
         }
 
+        // Awaiting the sync doesn't work here as the function will immediately
+        // return if the process is already in progress, e.g. when the splash
+        // screen has started the process in the background. Use while-loop
+        // instead to wait in this screen.
         try {
-            const yamlContent = await ProfileUtils.readProfileFile(files[0]);
-            this.profileImportContent = await ProfileUtils.parseYamlToExportFormat(yamlContent);
-            this.profileMods = await ProfileUtils.exportModsToCombos(
-                this.profileImportContent.getMods(),
-                this.$store.state.activeGame
-            );
+            await store.dispatch('tsMods/syncPackageList');
         } catch (e: unknown) {
             const err = R2Error.fromThrownValue(e);
-            this.$store.commit('error/handleError', err);
-            this.closeModal();
+            store.commit('error/handleError', err);
+            closeModal();
             return;
         }
 
-        this.profileImportFilePath = files[0];
-
-        if (this.profileMods.unknown.length > 0) {
-            // Sometimes the reason some packages are unknown is that
-            // the mod list is out of date, so let's try refreshing it
-            this.activeStep = 'REFRESH_MOD_LIST';
-
-            // Mod downloads in progress will prevent mod list refresh, so wait
-            // them out first.
-            while (this.$store.getters['download/activeDownloadCount'] > 0) {
-                await sleep(100);
-            }
-
-            // Awaiting the sync doesn't work here as the function will immediately
-            // return if the process is already in progress, e.g. when the splash
-            // screen has started the process in the background. Use while-loop
-            // instead to wait in this screen.
-            try {
-                await this.$store.dispatch('tsMods/syncPackageList');
-            } catch (e: unknown) {
-                const err = R2Error.fromThrownValue(e);
-                this.$store.commit('error/handleError', err);
-                this.closeModal();
-                return;
-            }
-
-            while (this.$store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                await sleep(100);
-            }
+        while (store.state.tsMods.isThunderstoreModListUpdateInProgress) {
+            await sleep(100);
         }
-
-        this.activeStep = 'REVIEW_IMPORT';
     }
 
-    // Fired when user has accepted the mods to be imported in the review phase.
-    async onProfileReviewConfirmed() {
-        const profileContent = this.profileImportContent;
-        const filePath = this.profileImportFilePath;
+    activeStep.value = 'REVIEW_IMPORT';
+}
 
-        // Check and return early for better UX.
-        if (profileContent === null || filePath === null) {
-            this.onContentOrPathNotSet();
-            return;
-        }
+// Fired when user has accepted the mods to be imported in the review phase.
+async function onProfileReviewConfirmed() {
+    const profileContent = profileImportContent.value;
+    const filePath = profileImportFilePath.value;
 
-        this.targetProfileName = profileContent.getProfileName();
-        this.activeStep = 'IMPORT_UPDATE_SELECTION';
+    // Check and return early for better UX.
+    if (profileContent === null || filePath === null) {
+        onContentOrPathNotSet();
+        return;
     }
 
-    // Fired when user selects whether to import a new profile or update existing one.
-    onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
-        this.importUpdateSelection = mode;
+    targetProfileName.value = profileContent.getProfileName();
+    activeStep.value = 'IMPORT_UPDATE_SELECTION';
+}
 
-        if (mode === 'UPDATE') {
-            this.targetProfileName = this.$store.getters['profile/activeProfileName'];
-        }
+// Fired when user selects whether to import a new profile or update existing one.
+function onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
+    importUpdateSelection.value = mode;
 
-        this.activeStep = 'ADDING_PROFILE';
+    if (mode === 'UPDATE') {
+        targetProfileName.value = store.getters['profile/activeProfileName'];
     }
 
-    // Fired when user confirms the import target location (new or existing profile).
-    async onImportTargetSelected() {
-        const profileContent = this.profileImportContent;
-        const filePath = this.profileImportFilePath;
+    activeStep.value = 'ADDING_PROFILE';
+}
 
-        // Recheck to ensure values haven't changed and to satisfy TypeScript.
-        if (profileContent === null || filePath === null) {
-            this.onContentOrPathNotSet();
-            return;
-        }
+// Fired when user confirms the import target location (new or existing profile).
+async function onImportTargetSelected() {
+    const profileContent = profileImportContent.value;
+    const filePath = profileImportFilePath.value;
 
-        const targetProfileName = this.makeProfileNameSafe(this.targetProfileName);
-
-        // Sanity check, should not happen.
-        if (targetProfileName === '') {
-            const err = new R2Error("Can't import profile: unknown target profile", "Please try again");
-            this.$store.commit('error/handleError', err);
-            return;
-        }
-
-        if (this.importUpdateSelection === 'CREATE') {
-            try {
-                await this.$store.dispatch('profiles/addProfile', targetProfileName);
-            } catch (e) {
-                this.closeModal();
-                const err = R2Error.fromThrownValue(e, 'Error while creating profile');
-                this.$store.commit('error/handleError', err);
-                return;
-            }
-        }
-
-        await this.importProfile(targetProfileName, profileContent.getMods(), filePath);
+    // Recheck to ensure values haven't changed and to satisfy TypeScript.
+    if (profileContent === null || filePath === null) {
+        onContentOrPathNotSet();
+        return;
     }
 
-    async importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
-        this.activeStep = 'PROFILE_IS_BEING_IMPORTED';
-        this.importPhaseDescription = 'Downloading mods: 0%';
-        const progressCallback = (progress: number|string) => typeof progress === "number"
-            ? this.importPhaseDescription = `Downloading mods: ${Math.floor(progress)}%`
-            : this.importPhaseDescription = progress;
-        const ignoreCache = this.$store.state.download.ignoreCache;
-        const isUpdate = this.importUpdateSelection === 'UPDATE';
+    const importTargetProfileName = makeProfileNameSafe(targetProfileName.value);
 
+    // Sanity check, should not happen.
+    if (importTargetProfileName === '') {
+        const err = new R2Error("Can't import profile: unknown target profile", "Please try again");
+        store.commit('error/handleError', err);
+        return;
+    }
+
+    if (importUpdateSelection.value === 'CREATE') {
         try {
-            const comboList = this.profileMods.known;
-            await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
-            await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+            await store.dispatch('profiles/addProfile', importTargetProfileName);
         } catch (e) {
-            await this.$store.dispatch('profiles/ensureProfileExists');
-            this.closeModal();
-            this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
+            closeModal();
+            const err = R2Error.fromThrownValue(e, 'Error while creating profile');
+            store.commit('error/handleError', err);
             return;
         }
-
-        await this.$store.dispatch('profiles/setSelectedProfile', {profileName: targetProfileName, prewarmCache: true});
-        this.closeModal();
     }
 
-    onContentOrPathNotSet() {
-        this.closeModal();
-        const reason = `content is ${this.profileImportContent ? 'not' : ''} null, file path is ${this.profileImportFilePath ? 'not' : ''} null`;
-        this.$store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
+    await importProfile(importTargetProfileName, profileContent.getMods(), filePath);
+}
+
+async function importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
+    activeStep.value = 'PROFILE_IS_BEING_IMPORTED';
+    importPhaseDescription.value = 'Downloading mods: 0%';
+    const progressCallback = (progress: number|string) => typeof progress === "number"
+        ? importPhaseDescription.value = `Downloading mods: ${Math.floor(progress)}%`
+        : importPhaseDescription.value = progress;
+    const ignoreCache = store.state.download.ignoreCache;
+    const isUpdate = importUpdateSelection.value === 'UPDATE';
+
+    try {
+        const comboList = profileMods.value.known as ThunderstoreCombo[];
+        await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
+        await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+    } catch (e) {
+        await store.dispatch('profiles/ensureProfileExists');
+        closeModal();
+        store.commit('error/handleError', R2Error.fromThrownValue(e));
+        return;
     }
+
+    await store.dispatch('profiles/setSelectedProfile', {profileName: targetProfileName, prewarmCache: true});
+    closeModal();
+}
+
+function onContentOrPathNotSet() {
+    closeModal();
+    const reason = `content is ${profileImportContent.value ? 'not' : ''} null, file path is ${profileImportFilePath.value ? 'not' : ''} null`;
+    store.commit('error/handleError', R2Error.fromThrownValue(`Can't install profile: ${reason}`));
 }
 </script>
 
