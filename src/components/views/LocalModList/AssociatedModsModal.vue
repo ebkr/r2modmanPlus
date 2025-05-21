@@ -1,41 +1,31 @@
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+<script lang="ts" setup>
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
-import ManifestV2 from '../../../model/ManifestV2';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { computed } from 'vue';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 
-@Component({
-    components: {ModalCard}
-})
-export default class AssociatedModsModal extends Vue {
+const store = getStore<State>();
 
-    get dependants(): Set<ManifestV2> {
-        return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
+const dependants = computed(() => Dependants.getDependantList(mod.value, store.state.profile.modList));
+const dependencies = computed(() => Dependants.getDependencyList(mod.value, store.state.profile.modList));
+const isOpen = computed(() =>
+    store.state.modals.isAssociatedModsModOpen
+    && store.state.modals.associatedModsModalMod !== null);
+
+const mod = computed(() => {
+    if (store.state.modals.associatedModsModalMod === null) {
+        throw new R2Error(
+            'Error while opening AssociatedModsModal',
+            'Mod not provided'
+        );
     }
+    return store.state.modals.associatedModsModalMod;
+});
 
-    get dependencies(): Set<ManifestV2> {
-        return Dependants.getDependencyList(this.mod, this.$store.state.profile.modList);
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isAssociatedModsModOpen
-            && this.$store.state.modals.associatedModsModalMod !== null;
-    }
-
-    get mod(): ManifestV2 {
-        if (this.$store.state.modals.associatedModsModalMod === null) {
-            throw new R2Error(
-                'Error while opening AssociatedModsModal',
-                'Mod not provided'
-            );
-        }
-        return this.$store.state.modals.associatedModsModalMod;
-    }
-
-    onClose() {
-        this.$store.commit('closeAssociatedModsModal');
-    }
+function onClose() {
+    store.commit('closeAssociatedModsModal');
 }
 </script>
 <template>
