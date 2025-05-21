@@ -1,53 +1,44 @@
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { ModalCard } from "../all";
-import R2Error from "../../model/errors/R2Error";
+<script lang="ts" setup>
+import { ModalCard } from '../all';
+import R2Error from '../../model/errors/R2Error';
 import { useProfilesComposable } from '../composables/ProfilesComposable';
+import { computed, ref } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-@Component({
-    components: {ModalCard}
-})
-export default class CreateProfileModal extends Vue {
+const store = getStore<State>();
 
-    private creatingInProgress: boolean = false;
-    private newProfileName = '';
+const {
+    doesProfileExist,
+    makeProfileNameSafe,
+} = useProfilesComposable();
 
-    get doesProfileExist() {
-        const { doesProfileExist } = useProfilesComposable();
-        return doesProfileExist;
+const creatingInProgress = ref<boolean>(false);
+const newProfileName = ref<string>('');
+
+const isOpen = computed(() => store.state.modals.isCreateProfileModalOpen);
+
+function closeModal() {
+    newProfileName.value = '';
+    creatingInProgress.value = false;
+    store.commit('closeCreateProfileModal');
+}
+
+// User confirmed creation of a new profile with a name that didn't exist before.
+async function createProfile() {
+    if (creatingInProgress.value) {
+        return;
     }
-
-    get makeProfileNameSafe() {
-        const { makeProfileNameSafe } = useProfilesComposable();
-        return makeProfileNameSafe;
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isCreateProfileModalOpen;
-    }
-
-    closeModal() {
-        this.newProfileName = '';
-        this.creatingInProgress = false;
-        this.$store.commit('closeCreateProfileModal');
-    }
-
-    // User confirmed creation of a new profile with a name that didn't exist before.
-    async createProfile() {
-        if (this.creatingInProgress) {
-            return;
-        }
-        const safeName = this.makeProfileNameSafe(this.newProfileName);
-        if (safeName !== '') {
-            try {
-                this.creatingInProgress = true;
-                await this.$store.dispatch('profiles/addProfile', safeName);
-                this.closeModal();
-            } catch (e) {
-                this.creatingInProgress = false;
-                const err = R2Error.fromThrownValue(e, 'Error whilst creating a profile');
-                this.$store.commit('error/handleError', err);
-            }
+    const safeName = makeProfileNameSafe(newProfileName.value);
+    if (safeName !== '') {
+        try {
+            creatingInProgress.value = true;
+            await store.dispatch('profiles/addProfile', safeName);
+            closeModal();
+        } catch (e) {
+            creatingInProgress.value = false;
+            const err = R2Error.fromThrownValue(e, 'Error whilst creating a profile');
+            store.commit('error/handleError', err);
         }
     }
 }
