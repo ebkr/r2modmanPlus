@@ -10,18 +10,18 @@ import DeferredInput from '../../DeferredInput.vue';
 const store = getStore<State>();
 
 const order = computed({
-   get() {
-       return store.state.profile.order;
-   },
+    get() {
+        return store.state.profile.order;
+    },
     set(newValue: SortNaming) {
         store.dispatch('profile/updateOrder', newValue);
     }
 });
 
 const direction = computed({
-   get() {
-       return store.state.profile.direction;
-   },
+    get() {
+        return store.state.profile.direction;
+    },
     set(newValue: SortDirection) {
         store.dispatch('profile/updateDirection', newValue);
     }
