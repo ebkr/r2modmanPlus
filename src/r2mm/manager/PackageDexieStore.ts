@@ -5,6 +5,7 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import { splitToNameAndVersion } from '../../utils/DependencyUtils';
+import DexieStoreProvider from 'src/providers/generic/db/DexieStoreProvider';
 
 interface DexieVersion {
     full_name: string;
@@ -22,7 +23,7 @@ interface DexieVersion {
     date_created: Date;
 }
 
-interface DexiePackage {
+export interface DexiePackage {
     full_name: string;
     owner: string;
     name: string;
@@ -45,13 +46,13 @@ interface DexiePackage {
 
 // For keeping track of seen package list index files so we can
 // skip processing chunks if there's no changes.
-interface IndexChunkHash {
+export interface IndexChunkHash {
     community: string;
     hash: string;
     date_updated: Date;
 }
 
-class PackageDexieStore extends Dexie {
+export class PackageDexieStore extends Dexie {
     packages!: Table<DexiePackage, string>;
     indexHashes!: Table<IndexChunkHash, string>;
 
@@ -67,15 +68,15 @@ class PackageDexieStore extends Dexie {
     }
 }
 
-const db = new PackageDexieStore();
-
 export async function getPackagesAsThunderstoreMods(community: string) {
+    const db = DexieStoreProvider.instance;
     const packages = await db.packages.where({community}).toArray();
     return packages.map(ThunderstoreMod.parseFromThunderstoreData)
                    .sort(ThunderstoreMod.defaultOrderComparer);
 }
 
 export async function getPackagesByNames(community: string, packageNames: string[]) {
+    const db = DexieStoreProvider.instance;
     const keys = packageNames.map((p): [string, string] => [community, p]);
 
     // Dexie's anyOfIgnoreCase doesn't support compound indexes.
@@ -84,11 +85,13 @@ export async function getPackagesByNames(community: string, packageNames: string
 }
 
 export async function getPackageVersionNumbers(community: string, packageName: string) {
+    const db = DexieStoreProvider.instance;
     const pkg = await getPackageFromDatabase(community, packageName);
     return pkg.versions.map((v) => v.version_number);
 }
 
 export async function getPackageCount(community: string) {
+    const db = DexieStoreProvider.instance;
     return await db.packages.where({community}).count();
 }
 
@@ -108,6 +111,7 @@ export async function getCombosByDependencyStrings(
     const keys = split.map((d): [string, string] => [community, d[0]]);
 
     // Dexie's anyOfIgnoreCase doesn't support compound indexes.
+    const db = DexieStoreProvider.instance;
     const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
     const versionMap = Object.fromEntries(split);
     const modOrderMap = new Map(split.map(([name, _ver], i) => [name, i]));
@@ -136,16 +140,19 @@ export async function getCombosByDependencyStrings(
 }
 
 export async function getLastPackageListUpdateTime(community: string) {
+    const db = DexieStoreProvider.instance;
     const hash = await db.indexHashes.where({community}).first();
     return hash ? hash.date_updated : undefined;
 }
 
 export async function getVersionAsThunderstoreVersion(community: string, packageName: string, versionNumber: string) {
+    const db = DexieStoreProvider.instance;
     const version = await getPackgeVersionFromDatabase(community, packageName, versionNumber);
     return ThunderstoreVersion.parseFromThunderstoreData(version);
 }
 
 export async function hasEntries(community: string): Promise<boolean> {
+    const db = DexieStoreProvider.instance;
     if (await db.indexHashes.where({community}).count()) {
         return true;
     }
@@ -158,12 +165,14 @@ export async function hasEntries(community: string): Promise<boolean> {
 }
 
 export async function isLatestPackageListIndex(community: string, hash: string) {
+    const db = DexieStoreProvider.instance;
     return Boolean(
         await db.indexHashes.where({community, hash}).count()
     );
 }
 
 export async function pruneRemovedMods(community: string, cutoff: Date) {
+    const db = DexieStoreProvider.instance;
     // Find packages that were no longer returned by the API and delete them.
     // .bulkDelete is faster than calling .delete() on the Collection
     // directly. Using the odd looking .where(compoundIndex).between(values)
@@ -176,6 +185,7 @@ export async function pruneRemovedMods(community: string, cutoff: Date) {
 }
 
 export async function resetCommunity(community: string) {
+    const db = DexieStoreProvider.instance;
     await db.transaction('rw', db.packages, db.indexHashes, async () => {
         const packageIds = await db.packages.where({community}).primaryKeys();
         await db.packages.bulkDelete(packageIds);
@@ -184,16 +194,19 @@ export async function resetCommunity(community: string) {
 }
 
 export async function upsertPackageListChunk(community: string, packageChunk: any[]) {
+    const db = DexieStoreProvider.instance;
     const extra = {community, date_fetched: new Date()};
     const newPackages: DexiePackage[] = packageChunk.map((pkg) => ({...pkg, ...extra}));
     await db.packages.bulkPut(newPackages);
 }
 
 export async function setLatestPackageListIndex(community: string, hash: string) {
+    const db = DexieStoreProvider.instance;
     await db.indexHashes.put({community, hash, date_updated: new Date()});
 }
 
 async function getPackageFromDatabase(community: string, packageName: string) {
+    const db = DexieStoreProvider.instance;
     const pkg = await db.packages.where({community, full_name: packageName}).first();
 
     if (!pkg) {
