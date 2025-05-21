@@ -1,64 +1,53 @@
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import { DeferredInput } from '../../all';
+<script lang="ts" setup>
 import { SortDirection } from '../../../model/real_enums/sort/SortDirection';
 import { SortLocalDisabledMods } from '../../../model/real_enums/sort/SortLocalDisabledMods';
 import { SortNaming } from '../../../model/real_enums/sort/SortNaming';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
+import { computed } from 'vue';
+import DeferredInput from '../../DeferredInput.vue';
 
-@Component({
-    components: {
-        DeferredInput,
-    }
-})
-export default class SearchAndSort extends Vue {
-    get order() {
-        return this.$store.state.profile.order;
-    }
+const store = getStore<State>();
 
-    set order(value: SortNaming) {
-        this.$store.dispatch('profile/updateOrder', value);
+const order = computed({
+   get() {
+       return store.state.profile.order;
+   },
+    set(newValue: SortNaming) {
+        store.dispatch('profile/updateOrder', newValue);
     }
+});
 
-    get direction() {
-        return this.$store.state.profile.direction;
+const direction = computed({
+   get() {
+       return store.state.profile.direction;
+   },
+    set(newValue: SortDirection) {
+        store.dispatch('profile/updateDirection', newValue);
     }
+});
 
-    set direction(value: SortDirection) {
-        this.$store.dispatch('profile/updateDirection', value);
+const disabledPosition = computed({
+    get() {
+        return store.state.profile.disabledPosition;
+    },
+    set(newValue: SortLocalDisabledMods) {
+        store.dispatch('profile/updateDisabledPosition', newValue);
     }
+});
 
-    get disabledPosition() {
-        return this.$store.state.profile.disabledPosition;
+const search = computed({
+    get() {
+        return store.state.profile.searchQuery;
+    },
+    set(newValue: string) {
+        store.commit('profile/setSearchQuery', newValue);
     }
+});
 
-    set disabledPosition(value: SortLocalDisabledMods) {
-        this.$store.dispatch('profile/updateDisabledPosition', value);
-    }
-
-    get search() {
-        return this.$store.state.profile.searchQuery;
-    }
-
-    set search(value: string) {
-        this.$store.commit('profile/setSearchQuery', value);
-    }
-
-    get orderOptions() {
-        return Object.values(SortNaming);
-    }
-
-    get directionOptions() {
-        return Object.values(SortDirection);
-    }
-
-    get disabledOptions() {
-        return Object.values(SortLocalDisabledMods);
-    }
-
-    async destroyed() {
-        this.$store.commit('profile/setSearchQuery', '');
-    }
-}
+const orderOptions = computed(() => Object.values(SortNaming));
+const directionOptions = computed(() => Object.values(SortDirection));
+const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
 </script>
 
 <template>
