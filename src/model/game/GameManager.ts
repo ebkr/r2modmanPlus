@@ -913,9 +913,9 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["MDS"]),
 
         new Game("Monster Train 2", "MonsterTrain2", "MonsterTrain2",
-            "Monster Train 2 Demo", ["MonsterTrain2-Demo.exe"], "MonsterTrain2-Demo_Data",
+            "Monster Train 2", ["MonsterTrain2.exe"], "MonsterTrain2_Data",
             "https://thunderstore.io/c/monster-train-2/api/v1/package-listing-index/",
-            [new StorePlatformMetadata(StorePlatform.STEAM, "3296150")], "MonsterTrain2.png",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2742830")], "MonsterTrain2.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["mt2"]),
 
         new Game("Schedule I", "ScheduleI", "ScheduleI",
