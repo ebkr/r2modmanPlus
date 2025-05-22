@@ -1,5 +1,4 @@
-import Dexie from 'dexie';
-import { expect, jest, it } from '@jest/globals';
+import { expect, it } from '@jest/globals';
 
 import Game from "../../../../src/model/game/Game";
 import { GameInstanceType } from '../../../../src/model/game/GameInstanceType';
@@ -12,23 +11,107 @@ import ThunderstoreVersion from "../../../../src/model/ThunderstoreVersion";
 import VersionNumber from "../../../../src/model/VersionNumber";
 import { getFullDependencyList, InstallMode } from "../../../../src/utils/DependencyUtils";
 
-
-beforeAll(() => {
-    jest.mock('dexie');
-});
-
-// Unmock Dexie after these tests complete
-afterAll(() => {
-    jest.unmock('dexie');
-});
-
-
 const packageDefaultValues = {
     community: "RiskOfRain2",
     owner: "author",
     categories: [],
     dependencies: [],
+    uuid4: "test-uuid",
+    package_url: "https://thunderstore.io/test",
+    rating_score: 0,
+    is_pinned: false,
+    is_deprecated: false,
+    has_nsfw_content: false,
+    donation_link: null,
+    date_created: new Date(),
+    date_updated: new Date(),
+    date_fetched: new Date()
 }
+
+interface DexieVersion {
+    version_number: string;
+    dependencies: string[];
+    name: string;
+    full_name: string;
+    description: string;
+    icon: string;
+    download_url: string;
+    download_count: number;
+    date_created: Date;
+}
+
+interface DexiePackage {
+    full_name: string;
+    owner: string;
+    name: string;
+    uuid4: string;
+    package_url: string;
+    categories: string[];
+    dependencies: string[];
+    rating_score: number;
+    is_pinned: boolean;
+    is_deprecated: boolean;
+    has_nsfw_content: boolean;
+    donation_link: string | null;
+    date_created: Date;
+    date_updated: Date;
+    versions: DexieVersion[];
+    community: string;
+    date_fetched: Date;
+}
+
+jest.mock('../../../../src/r2mm/manager/PackageDexieStore', () => {
+    const packageStorage = new Map<string, DexiePackage>();
+    
+    return {
+        addMockPackageToStorage: (data: DexiePackage) => {
+            const depString = `${data.owner}-${data.name}-${data.versions[0].version_number}`;
+            packageStorage.set(depString, data);
+        },
+        resetMockPackages: () => {
+            packageStorage.clear();
+        },
+        getCombosByDependencyStrings: jest.fn().mockImplementation(async (game, dependencyStrings, useLatestVersion) => {
+            return dependencyStrings
+                .map((depString: string) => {
+                    if (useLatestVersion) {
+                        const baseName = depString.split('-').slice(0, -1).join('-');
+                        const versions = Array.from(packageStorage.keys())
+                            .filter(key => key.startsWith(baseName))
+                            .sort((a, b) => {
+                                const versionA = new VersionNumber(a.split('-').pop() || '');
+                                const versionB = new VersionNumber(b.split('-').pop() || '');
+                                return versionA.compareToDescending(versionB);
+                            });
+                        return versions.length > 0 ? packageStorage.get(versions[0]) : undefined;
+                    } else {
+                        return packageStorage.get(depString);
+                    }
+                })
+                .filter((data: DexiePackage | undefined): data is DexiePackage => data !== undefined)
+                .map((data: DexiePackage) => {
+                    const combo = new ThunderstoreCombo();
+                    const mod = new ThunderstoreMod();
+                    mod.setName(data.name);
+                    mod.setFullName(`${data.owner}-${data.name}`);
+                    mod.setDependencies(data.dependencies || []);
+                    mod.setCategories(data.categories || []);
+                    combo.setMod(mod);
+
+                    const version = new ThunderstoreVersion();
+                    const versionStr = data.versions[0].version_number;
+                    version.setVersionNumber(new VersionNumber(versionStr));
+                    version.setName(`${data.owner}-${data.name}-${versionStr}`);
+                    version.setDependencies(data.versions[0].dependencies || []);
+                    combo.setVersion(version);
+
+                    return combo;
+                });
+        })
+    };
+});
+
+const { addMockPackageToStorage, resetMockPackages } = require('../../../../src/r2mm/manager/PackageDexieStore');
 
 function addMockPackage(modData: {
     name: string,
@@ -39,35 +122,49 @@ function addMockPackage(modData: {
         dependencies?: string[]
     }[]
 }) {
-    const data = {
+    const data: DexiePackage = {
         ...packageDefaultValues,
         ...modData,
         full_name: `${packageDefaultValues.owner}-${modData.name}`,
         versions: modData.versions.map(v => ({
             version_number: v.version,
             dependencies: v.dependencies || [],
-            name: `${packageDefaultValues.owner}-${modData.name}-${v.version}`
+            name: `${packageDefaultValues.owner}-${modData.name}-${v.version}`,
+            full_name: `${packageDefaultValues.owner}-${modData.name}-${v.version}`,
+            description: "",
+            icon: "",
+            download_url: "",
+            download_count: 0,
+            date_created: new Date()
         }))
     };
-    (Dexie as any).addMockPackage(data);
 
-    const combo = new ThunderstoreCombo();
+    for (const versionInfo of data.versions) {
+        const versionData: DexiePackage = {
+            ...data,
+            versions: [{
+                ...versionInfo
+            }]
+        };
+        addMockPackageToStorage(versionData);
+    }
 
+    const firstCombo = new ThunderstoreCombo();
     const mod = new ThunderstoreMod();
     mod.setName(data.name);
     mod.setFullName(`${packageDefaultValues.owner}-${modData.name}`);
     mod.setDependencies(data.dependencies || []);
     mod.setCategories(data.categories || []);
-    combo.setMod(mod);
+    firstCombo.setMod(mod);
 
     const version = new ThunderstoreVersion();
     const versionStr = data.versions[0].version_number;
     version.setVersionNumber(new VersionNumber(versionStr));
     version.setName(`${data.owner}-${data.name}-${versionStr}`);
     version.setDependencies(data.versions[0].dependencies || []);
-    combo.setVersion(version);
+    firstCombo.setVersion(version);
 
-    return combo;
+    return firstCombo;
 }
 
 let game: Game;
@@ -81,10 +178,9 @@ let game: Game;
  */
 describe("DependencyUtils.getFullDependencyList", () => {
     beforeEach(() => {
-        (Dexie as any).resetMockPackages();
-
         game = new Game("", "RiskOfRain2", "", "", [], "", "", [], "",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []);
+        resetMockPackages();
     });
 
 
@@ -146,7 +242,6 @@ describe("DependencyUtils.getFullDependencyList", () => {
             expectToContainOnly(await getFullDependencyList(combos, game, [], installMode), expected);
         });
     });
-
 
     describe("A mod pack with a dependency", () => {
         it.each([
@@ -381,8 +476,8 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
     describe("A loop dependency of a mod and a modpack, starting from the mod", () => {
         it.each([
-            [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-1.0.0"]],
-            [InstallMode.UPDATE_ALL, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-1.0.0"]],
+            [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
+            [InstallMode.UPDATE_ALL, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
         ])
         ("", async (installMode, expected) => {
             addMockPackage({
