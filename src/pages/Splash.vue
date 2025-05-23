@@ -1,11 +1,11 @@
 <template>
     <div>
-        <hero :title=heroTitle :subtitle='loadingText' :heroType=heroType />
+        <hero :title=heroTitle :subtitle='splashText' :heroType=heroType />
         <div class='notification is-warning'>
             <p>Game updates may break mods. If a new update has been released, please be patient.</p>
         </div>
-        <progress-bar
-            :max='requests.length * 100'
+        <Progress
+            :max='store.state.splash.requests.length * 100'
             :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
             :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
         <div class='columns'>
@@ -16,9 +16,9 @@
                         <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
                         <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
                         <li>
-                            <link-component url="https://github.com/ebkr/r2modmanPlus">
+                            <ExternalLink url="https://github.com/ebkr/r2modmanPlus">
                                 <i class='fab fa-github fa-lg' aria-hidden='true' />
-                            </link-component>
+                            </ExternalLink>
                         </li>
                     </ul>
                 </aside>
@@ -44,7 +44,7 @@
                                         <li>
                                             <p>
                                                 You can use the "Install with Mod Manager" button on
-                                                <link-component url="https://thunderstore.io">Thunderstore</link-component>
+                                                <ExternalLink url="https://thunderstore.io">Thunderstore</ExternalLink>
                                                 with r2modman.
                                             </p>
                                         </li>
@@ -117,95 +117,97 @@
     </div>
 </template>
 
-<script lang='ts'>
+<script lang='ts' setup>
 import * as path from 'path';
-
 import { ipcRenderer } from 'electron';
-import Component, { mixins } from 'vue-class-component';
-
 import { ExternalLink, Hero, Progress } from '../components/all';
-import SplashMixin from '../components/mixins/SplashMixin.vue';
 import Game from '../model/game/Game';
 import RequestItem from '../model/requests/RequestItem';
 import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import PathResolver from '../r2mm/manager/PathResolver';
+import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { State } from '../store';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import VueRouter from 'vue-router';
+import { useSplashComposable } from '../components/composables/SplashComposable';
 
-@Component({
-    components: {
-        'hero': Hero,
-        'progress-bar': Progress,
-        'link-component': ExternalLink
-    }
+const store = getStore<State>();
+let router!: VueRouter;
+
+onMounted(() => {
+    router = getCurrentInstance()!.proxy.$router;
 })
-export default class Splash extends mixins(SplashMixin) {
-    heroTitle: string = 'Starting r2modman';
-    loadingText: string = 'Initialising';
-    view: string = 'main';
 
-    requests = [
-        new RequestItem('UpdateCheck', 0),
-        new RequestItem('PackageListIndex', 0),
-        new RequestItem('PackageListChunks', 0),
-        new RequestItem('Vuex', 0)
-    ];
+const {
+    getRequestItem,
+    reduceRequests
+} = useSplashComposable();
 
-    // Ensure that r2modman isn't outdated.
-    private checkForUpdates() {
-        this.loadingText = 'Preparing';
-        ipcRenderer.once('update-done', async () => {
-            this.getRequestItem('UpdateCheck').setProgress(100);
-            await this.getThunderstoreMods();
-        });
-        ipcRenderer.send('update-app');
-    }
+const heroTitle = ref<string>('Starting r2modman');
+const heroType = ref<string>('primary');
+const view = ref<string>('main');
+const splashText = computed(() => store.state.splash.splashText);
 
-    async moveToNextScreen() {
-        if (process.platform === 'linux') {
-            const activeGame: Game = this.$store.state.activeGame;
+store.commit('splash/initialiseRequests');
 
-            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
-                console.log('Not proton game');
-                await this.ensureWrapperInGameFolder();
-                const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
-                console.log(`Launch arguments for this game:`, launchArgs);
-                if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
-                    this.$router.push({name: 'linux'});
-                    return;
-                }
-            }
-        } else if (process.platform === 'darwin') {
-            await this.ensureWrapperInGameFolder();
-            this.$router.push({name: 'linux'});
-            return;
-        }
-        this.$router.push({name: 'profiles'});
-    }
-
-    private async ensureWrapperInGameFolder() {
-        const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
-        const activeGame: Game = this.$store.state.activeGame;
-        console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
-        try {
-            await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
-            const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
-            const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
-            if (!oldBuf.equals(newBuf)) {
-                throw new Error('Outdated buffer');
-            }
-        } catch (_) {
-            if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
-                await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
-            }
-            await FsProvider.instance.copyFile(path.join(__statics, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
-        }
-        await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
-    }
-
-    async created() {
-        this.loadingText = 'Checking for updates';
-        setTimeout(this.checkForUpdates, 100);
-    }
+// Ensure that the manager isn't outdated.
+function checkForUpdates() {
+    store.dispatch('splash/setSplashText', 'Preparing');
+    ipcRenderer.once('update-done', async () => {
+        const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
+        updateCheck.setProgress(100);
+        await store.dispatch('splash/getThunderstoreMods');
+        router.push({name: 'profiles'});
+    });
+    ipcRenderer.send('update-app');
 }
+
+async function moveToNextScreen() {
+    if (process.platform === 'linux') {
+        const activeGame: Game = store.state.activeGame;
+
+        if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
+            console.log('Not proton game');
+            await ensureWrapperInGameFolder();
+            const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
+            console.log(`Launch arguments for this game:`, launchArgs);
+            if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+                router.push({name: 'linux'});
+                return;
+            }
+        }
+    } else if (process.platform === 'darwin') {
+        await ensureWrapperInGameFolder();
+        router.push({name: 'linux'});
+        return;
+    }
+    router.push({name: 'profiles'});
+}
+
+async function ensureWrapperInGameFolder() {
+    const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
+    const activeGame: Game = store.state.activeGame;
+    console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
+    try {
+        await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
+        const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
+        const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
+        if (!oldBuf.equals(newBuf)) {
+            throw new Error('Outdated buffer');
+        }
+    } catch (_) {
+        if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
+            await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
+        }
+        await FsProvider.instance.copyFile(path.join(__statics, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
+    }
+    await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
+}
+
+onMounted(() => {
+    store.dispatch('splash/setSplashText', 'Checking for updates');
+    setTimeout(checkForUpdates, 100);
+})
 </script>

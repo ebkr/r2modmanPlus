@@ -15,6 +15,7 @@ import GameManager from '../model/game/GameManager';
 import R2Error from '../model/errors/R2Error';
 import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import { SplashModule } from './modules/SplashModule';
 
 Vue.use(Vuex);
 
@@ -135,6 +136,7 @@ export const store = {
         profiles: ProfilesModule,
         tsMods: TsModsModule,
         profileExport: ProfileExportModule,
+        splash: SplashModule,
     },
 
     // enable strict mode (adds overhead!)
