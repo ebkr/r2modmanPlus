@@ -1,200 +1,180 @@
-<script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+<script lang="ts" setup>
+import { Component } from 'vue-property-decorator';
 import { ExpandableCard, ExternalLink } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import DonateIconButton from '../../buttons/DonateIconButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
-import ThunderstoreMod from '../../../model/ThunderstoreMod';
 import VersionNumber from '../../../model/VersionNumber';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import { valueToReadableDate } from '../../../utils/DateUtils';
 import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
+import { computed, ref, watch } from 'vue';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 
-@Component({
-    components: {
-        DonateButton,
-        DonateIconButton,
-        ExpandableCard,
-        ExternalLink,
-    }
-})
-export default class LocalModCard extends Vue {
+const store = getStore<State>();
 
-    @Prop({required: true})
-    readonly mod!: ManifestV2;
+type LocalModCardProps = {
+    mod: ManifestV2;
+}
 
-    disabledDependencies: ManifestV2[] = [];
-    missingDependencies: string[] = [];
-    disableChangePending = false;
+const props = defineProps<LocalModCardProps>();
 
-    get canBeDisabled(): boolean {
-        // Mod loader packages can't be disabled as it's hard to define
-        // what that should even do in all cases.
-        return !this.$store.getters['isModLoader'](this.mod.getName());
-    }
+const disabledDependencies = ref<ManifestV2[]>([]);
+const missingDependencies = ref<string[]>([]);
+const disableChangePending = ref<boolean>(false);
 
-    get donationLink() {
-        return this.tsMod ? this.tsMod.getDonationLink() : null;
-    }
+// Mod loader packages can't be disabled as it's hard to define
+// what that should even do in all cases.
+const canBeDisabled = computed(() => !store.getters['isModLoader'](props.mod.getName()));
 
-    get isDeprecated() {
-        return this.$store.state.tsMods.deprecated.get(this.mod.getName()) || false;
+const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.getName()) || false);
+const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
+const localModList = computed(() => store.state.profile.modList);
+const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
+
+function updateDependencies() {
+    if (props.mod.getDependencies().length === 0) {
+        return;
     }
 
-    get isLatestVersion() {
-        return this.$store.getters['tsMods/isLatestVersion'](this.mod);
+    const dependencies = props.mod.getDependencies();
+    const dependencyNames = dependencies.map(dependencyStringToModName);
+    const foundDependencies: ManifestV2[] = [];
+
+    for (const mod of localModList.value) {
+        if (foundDependencies.length === dependencyNames.length) {
+            break;
+        }
+
+        if (dependencyNames.includes(mod.getName())) {
+            foundDependencies.push(mod);
+        }
     }
 
-    get localModList(): ManifestV2[] {
-        return this.$store.state.profile.modList;
+    const foundNames = foundDependencies.map((mod) => mod.getName());
+
+    disabledDependencies.value = foundDependencies.filter((d) => !d.isEnabled());
+    missingDependencies.value = dependencies.filter(
+        (d) => !foundNames.includes(dependencyStringToModName(d))
+    );
+}
+
+watch(localModList, updateDependencies);
+
+async function disableMod() {
+    if (disableChangePending.value) {
+        return;
     }
 
-    get tsMod(): ThunderstoreMod | undefined {
-        return this.$store.getters['tsMods/tsMod'](this.mod);
-    }
+    disableChangePending.value = true;
+    const dependants = Dependants.getDependantList(props.mod, localModList.value);
 
-    @Watch("localModList")
-    updateDependencies() {
-        if (this.mod.getDependencies().length === 0) {
+    for (const mod of dependants) {
+        if (mod.isEnabled()) {
+            store.commit('openDisableModModal', props.mod);
+            disableChangePending.value = false;
             return;
         }
+    }
 
-        const dependencies = this.mod.getDependencies();
-        const dependencyNames = dependencies.map(dependencyStringToModName);
-        const foundDependencies: ManifestV2[] = [];
-
-        for (const mod of this.localModList) {
-            if (foundDependencies.length === dependencyNames.length) {
-                break;
-            }
-
-            if (dependencyNames.includes(mod.getName())) {
-                foundDependencies.push(mod);
-            }
-        }
-
-        const foundNames = foundDependencies.map((mod) => mod.getName());
-
-        this.disabledDependencies = foundDependencies.filter((d) => !d.isEnabled());
-        this.missingDependencies = dependencies.filter(
-            (d) => !foundNames.includes(dependencyStringToModName(d))
+    try {
+        await store.dispatch(
+            'profile/disableModsFromActiveProfile',
+            { mods: [props.mod] }
         );
+    } catch (e) {
+        store.commit('error/handleError', {
+            error: R2Error.fromThrownValue(e),
+            severity: LogSeverity.ACTION_STOPPED
+        });
     }
 
-    async disableMod() {
-        if (this.disableChangePending) {
-            return;
-        }
+    disableChangePending.value = false;
+}
 
-        this.disableChangePending = true;
-        const dependants = Dependants.getDependantList(this.mod, this.localModList);
-
-        for (const mod of dependants) {
-            if (mod.isEnabled()) {
-                this.$store.commit('openDisableModModal', this.mod);
-                this.disableChangePending = false;
-                return;
-            }
-        }
-
-        try {
-            await this.$store.dispatch(
-                'profile/disableModsFromActiveProfile',
-                { mods: [this.mod] }
-            );
-        } catch (e) {
-            this.$store.commit('error/handleError', {
-                error: R2Error.fromThrownValue(e),
-                severity: LogSeverity.ACTION_STOPPED
-            });
-        }
-
-        this.disableChangePending = false;
+async function enableMod(mod: ManifestV2) {
+    if (disableChangePending.value) {
+        return;
     }
 
-    async enableMod(mod: ManifestV2) {
-        if (this.disableChangePending) {
-            return;
-        }
+    disableChangePending.value = true;
+    const dependencies = Dependants.getDependencyList(mod, localModList.value);
 
-        this.disableChangePending = true;
-        const dependencies = Dependants.getDependencyList(mod, this.localModList);
-
-        try {
-            await this.$store.dispatch(
-                'profile/enableModsOnActiveProfile',
-                { mods: [...dependencies, mod] }
-            );
-        } catch (e) {
-            this.$store.commit('error/handleError', {
-                error: R2Error.fromThrownValue(e),
-                severity: LogSeverity.ACTION_STOPPED
-            });
-        }
-
-        this.disableChangePending = false;
+    try {
+        await store.dispatch(
+            'profile/enableModsOnActiveProfile',
+            { mods: [...dependencies, mod] }
+        );
+    } catch (e) {
+        store.commit('error/handleError', {
+            error: R2Error.fromThrownValue(e),
+            severity: LogSeverity.ACTION_STOPPED
+        });
     }
 
-    async uninstallMod() {
-        const dependants = Dependants.getDependantList(this.mod, this.localModList);
+    disableChangePending.value = false;
+}
 
-        if (dependants.size > 0) {
-            this.$store.commit('openUninstallModModal', this.mod);
-            return;
-        }
+async function uninstallMod() {
+    const dependants = Dependants.getDependantList(props.mod, localModList.value);
 
-        try {
-            await this.$store.dispatch(
-                'profile/uninstallModsFromActiveProfile',
-                { mods: [this.mod] }
-            );
-        } catch (e) {
-            this.$store.commit('error/handleError', {
-                error: R2Error.fromThrownValue(e),
-                severity: LogSeverity.ACTION_STOPPED
-            });
-        }
+    if (dependants.size > 0) {
+        store.commit('openUninstallModModal', props.mod);
+        return;
     }
 
-    updateMod() {
-        if (this.tsMod !== undefined) {
-            this.$store.commit('openDownloadModModal', this.tsMod);
-        }
+    try {
+        await store.dispatch(
+            'profile/uninstallModsFromActiveProfile',
+            { mods: [props.mod] }
+        );
+    } catch (e) {
+        store.commit('error/handleError', {
+            error: R2Error.fromThrownValue(e),
+            severity: LogSeverity.ACTION_STOPPED
+        });
     }
+}
 
-    downloadDependency(dependencyString: string) {
-        const [name, version] = splitToNameAndVersion(dependencyString);
-        const partialManifest = new ManifestV2();
-        partialManifest.setName(name);
-        partialManifest.setVersionNumber(new VersionNumber(version));
-        const dependency = this.$store.getters['tsMods/tsMod'](partialManifest);
-
-        if (dependency === undefined) {
-            const error = new R2Error(
-                `${dependencyString} could not be found`,
-                'You may be offline, or the mod was removed from Thunderstore.',
-                'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
-            );
-            this.$store.commit('error/handleError', error);
-            return;
-        }
-        this.$store.commit('openDownloadModModal', dependency);
+function updateMod() {
+    if (tsMod.value !== undefined) {
+        store.commit('openDownloadModModal', tsMod.value);
     }
+}
 
-    viewAssociatedMods() {
-        this.$store.commit('openAssociatedModsModal', this.mod);
-    }
+function downloadDependency(dependencyString: string) {
+    const [name, version] = splitToNameAndVersion(dependencyString);
+    const partialManifest = new ManifestV2();
+    partialManifest.setName(name);
+    partialManifest.setVersionNumber(new VersionNumber(version));
+    const dependency = store.getters['tsMods/tsMod'](partialManifest);
 
-    created() {
-        this.updateDependencies();
+    if (dependency === undefined) {
+        const error = new R2Error(
+            `${dependencyString} could not be found`,
+            'You may be offline, or the mod was removed from Thunderstore.',
+            'The dependency may not yet be published to Thunderstore and may be available elsewhere.'
+        );
+        store.commit('error/handleError', error);
+        return;
     }
+    store.commit('openDownloadModModal', dependency);
+}
 
-    // Need to wrap util call in method to allow access from Vue context
-    getReadableDate(value: number): string {
-        return valueToReadableDate(value);
-    }
+function viewAssociatedMods() {
+    store.commit('openAssociatedModsModal', props.mod);
+}
+
+function created() {
+    updateDependencies();
+}
+
+// Need to wrap util call in method to allow access from Vue context
+function getReadableDate(value: number): string {
+    return valueToReadableDate(value);
 }
 
 function dependencyStringToModName(x: string) {
@@ -203,7 +183,7 @@ function dependencyStringToModName(x: string) {
 </script>
 
 <template>
-    <expandable-card
+    <ExpandableCard
         :description="mod.getDescription()"
         :enabled="mod.isEnabled()"
         :id="`${mod.getAuthorName()}-${mod.getName()}-${mod.getVersionNumber()}`"
@@ -306,7 +286,7 @@ function dependencyStringToModName(x: string) {
         </a>
 
         <DonateButton :mod="tsMod"/>
-    </expandable-card>
+    </ExpandableCard>
 </template>
 
 <style scoped lang="scss">
