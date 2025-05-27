@@ -943,7 +943,7 @@ export default class GameManager {
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["soc"]),
 
         new Game("White Knuckle", "WhiteKnuckle", "WhiteKnuckle",
-            "White Knuckle Demo", ["White Knuckle.exe"], "White Knuckle_Data",
+            "White Knuckle", ["White Knuckle.exe"], "White Knuckle_Data",
             "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3195790")], "WhiteKnuckle.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["wk"]),
@@ -995,6 +995,12 @@ export default class GameManager {
             "https://thunderstore.io/c/painting-vr/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1905940")], "PaintingVr.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.RECURSIVE_MELON_LOADER, ["pvr"]),
+
+        new Game("DEPO : Death Epileptic Pixel Origins", "DEPO", "DEPO",
+            "DEPO", ["DEPO.exe"], "DEPO_Data",
+            "https://thunderstore.io/c/depo/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "1091320")], "DEPO.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
