@@ -383,8 +383,8 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
     describe("A loop dependency of a mod and a modpack, starting from the mod", () => {
         it.each([
-            [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-1.0.0"]],
-            [InstallMode.UPDATE_ALL, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-1.0.0"]],
+            [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
+            [InstallMode.UPDATE_ALL, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
         ])
         ("", async (installMode, expected) => {
             addMockPackage({
