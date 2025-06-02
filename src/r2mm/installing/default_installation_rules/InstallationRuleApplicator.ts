@@ -173,6 +173,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("LostSkies"),
             buildBepInExRules("ANEURISMIV"),
             buildMelonLoaderRules("PaintingVr"),
+            buildBepInExRules("DEPO"),
         ]
     }
 }
