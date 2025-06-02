@@ -16,7 +16,7 @@
                         Installing {{$store.getters['download/currentDownload'].modName}}
                     </h3>
 
-                    <p>Downloading: {{Math.floor($store.getters['download/currentDownload'].downloadProgress)}}% complete</p>
+                    <p>Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete</p>
 
                     <Progress
                         :max='100'
@@ -25,7 +25,7 @@
                     />
 
                     <p v-if="$store.getters['download/currentDownload'].installProgress">
-                        Installing: {{Math.floor($store.getters['download/currentDownload'].installProgress)}}% complete
+                        Installing: {{$store.getters['download/currentDownload'].installProgress}}% complete
                     </p>
                     <p v-else>Installing: waiting for download to finish</p>
 
