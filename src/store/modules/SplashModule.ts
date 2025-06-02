@@ -1,16 +1,13 @@
-import RequestItem from 'src/model/requests/RequestItem';
+import RequestItem from '../../model/requests/RequestItem';
 import { ActionTree } from 'vuex';
-import { State as RootState } from 'src/store';
-import type { PackageListIndex } from 'src/store/modules/TsModsModule';
+import { State as RootState } from "../../store";
+import type { PackageListIndex } from './TsModsModule';
 
 interface State {
     requests: RequestItem[];
     splashText: string;
 }
 
-/**
- * State for Profiles, i.e. list for profiles in a single game/community.
- */
 export const SplashModule = {
     namespaced: true,
 
@@ -61,8 +58,6 @@ export const SplashModule = {
                 // We want this to trigger in the background to ensure that the user gets an up-to-date modlist as soon as possible.
                 dispatch('tsMods/syncPackageList', null, {root: true});
             }
-
-            // TODO - Move to next screen (name: profiles)
         },
         async fetchPackageListIndex({state, dispatch}): Promise<PackageListIndex | undefined> {
              state.splashText = 'Checking for mod list updates from Thunderstore';
@@ -84,7 +79,7 @@ export const SplashModule = {
             try {
                 hasCache = await dispatch('tsMods/gameHasCachedModList', null, {root: true});
             } catch (e) {
-                console.error('SplashMixin failed to check mod list in local cache', e);
+                console.error('SplashModule failed to check mod list in local cache', e);
             }
 
             if (hasCache) {
