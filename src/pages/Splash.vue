@@ -159,7 +159,7 @@ function checkForUpdates() {
         const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
         updateCheck.setProgress(100);
         await store.dispatch('splash/getThunderstoreMods');
-        router.push({name: 'profiles'});
+        moveToNextScreen();
     });
     ipcRenderer.send('update-app');
 }
