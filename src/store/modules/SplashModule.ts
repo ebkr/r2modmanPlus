@@ -111,7 +111,7 @@ export const SplashModule = {
                     {root: true}
                 );
             } catch (e) {
-                console.error('SplashMixin failed to fetch mod list from API.', e);
+                console.error('SplashModule failed to fetch mod list from API.', e);
                 return false;
             } finally {
                 await progressCallback(100);
@@ -134,7 +134,7 @@ export const SplashModule = {
             try {
                 await dispatch('tsMods/pruneRemovedModsFromCache', packageListIndex.dateFetched, {root: true});
             } catch (e) {
-                console.error('SplashMixin failed to delete outdated mods from local cache.', e);
+                console.error('SplashModule failed to delete outdated mods from local cache.', e);
             }
         },
         async triggerStoreModListUpdate({state, dispatch}): Promise<void> {
@@ -143,7 +143,7 @@ export const SplashModule = {
             try {
                 await dispatch('tsMods/updateMods', null, {root: true});
             } catch (e) {
-                console.error('Updating the store mod list by SplashMixin failed.', e);
+                console.error('Updating the store mod list by SplashModule failed.', e);
             } finally {
                 const vuex = await dispatch('getRequestItem', 'Vuex');
                 vuex.setProgress(100);
