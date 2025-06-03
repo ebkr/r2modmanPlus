@@ -174,6 +174,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("ANEURISMIV"),
             buildMelonLoaderRules("PaintingVr"),
             buildBepInExRules("DEPO"),
+            buildBepInExRules("9Kings"),
         ]
     }
 }
