@@ -73,101 +73,97 @@
     </div>
 </template>
 
-<script lang="ts">
-
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
 import ConfigLine from '../../model/file/ConfigLine';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ConfigFile from '../../model/file/ConfigFile';
 import { Hero } from '../all';
 import QuillEditor from '../QuillEditor.vue';
 import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
+import { onMounted, ref } from 'vue';
 
-@Component({
-        components: { Hero, QuillEditor }
-    })
-    export default class ConfigEditLayout extends Vue {
+type ConfigEditLayoutProps = {
+    configFile: ConfigFile;
+}
 
-        @Prop({required: true})
-        private configFile!: ConfigFile;
+const props = defineProps<ConfigEditLayoutProps>();
+const emits = defineEmits<{
+    (e: 'changed'): void;
+}>();
 
-        private fileText: string = "";
+const fileText = ref<string>("");
+const dumpedConfigVariables = ref<{ [section: string]: { [variable: string]: ConfigLine } }>({});
 
-        private dumpedConfigVariables: { [section: string]: { [variable: string]: ConfigLine } } = {};
-
-        async created() {
-            const fs = FsProvider.instance;
-            this.fileText = (await fs.readFile(this.configFile.getPath())).toString();
-            if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
-                const config = await BepInExConfigUtils.getBepInExConfigBreakdown(this.configFile.getPath());
-                this.dumpedConfigVariables = config;
-            }
-            window.scrollTo(0, 0);
-        }
-
-        save() {
-            if (this.configFile.getPath().toLowerCase().endsWith(".cfg")) {
-                this.saveCfg();
-            } else {
-                this.saveNonCfg();
-            }
-        }
-
-        async saveCfg() {
-            await BepInExConfigUtils.updateBepInExConfigFile(this.configFile.getPath(), this.fileText, this.dumpedConfigVariables);
-            window.scrollTo(0, 0);
-            this.$emit("changed");
-        }
-
-        async saveNonCfg() {
-            const fs = FsProvider.instance;
-            await fs.writeFile(this.configFile.getPath(), this.fileText);
-            window.scrollTo(0, 0);
-            this.$emit("changed");
-        }
-
-        cancel() {
-            window.scrollTo(0, 0);
-            this.$emit("changed");
-        }
-
-        updateFreeText(text: string) {
-            this.fileText = text;
-        }
-
-        getCommentDisplay(comments: string[]): string {
-            return comments.map(value => value.trim())
-                .join("\n")
-                .trim()
-                .replace(new RegExp("#+", "g"), "")
-                .replace(new RegExp(";+", "g"), "")
-                .replace(new RegExp("\n\\s", "g"), "\n")
-                .trim();
-        }
-
-        getCommentDisplayShort(comments: string[]): string {
-            return comments.map(value => value.trim())
-                .slice(0, 4)
-                .join("\n")
-                .trim()
-                .replace(new RegExp("#+", "g"), "")
-                .replace(new RegExp(";+", "g"), "")
-                .replace(new RegExp("\n\\s+", "g"), "\n")
-                .trim();
-        }
-
-        toggleEntryExpansion(key: string, variable: string) {
-            const oldLine = this.dumpedConfigVariables[key][variable];
-            const newLine = new ConfigLine(oldLine.value, oldLine.comments, oldLine.allowedValues);
-            newLine.commentsExpanded = !oldLine.commentsExpanded;
-            this.dumpedConfigVariables[key][variable] = newLine;
-            this.dumpedConfigVariables = JSON.parse(JSON.stringify(this.dumpedConfigVariables));
-        }
-
-        setConfigLineValue(line: ConfigLine, value: number) {
-            line.value = value.toString();
-        }
-
+onMounted(async () => {
+    const fs = FsProvider.instance;
+    fileText.value = (await fs.readFile(props.configFile.getPath())).toString();
+    if (props.configFile.getPath().toLowerCase().endsWith(".cfg")) {
+        dumpedConfigVariables.value = await BepInExConfigUtils.getBepInExConfigBreakdown(props.configFile.getPath());
     }
+    window.scrollTo(0, 0);
+});
+
+function save() {
+    if (props.configFile.getPath().toLowerCase().endsWith(".cfg")) {
+        saveCfg();
+    } else {
+        saveNonCfg();
+    }
+}
+
+async function saveCfg() {
+    await BepInExConfigUtils.updateBepInExConfigFile(props.configFile.getPath(), fileText.value, dumpedConfigVariables.value);
+    window.scrollTo(0, 0);
+    emits('changed');
+}
+
+async function saveNonCfg() {
+    const fs = FsProvider.instance;
+    await fs.writeFile(props.configFile.getPath(), fileText.value);
+    window.scrollTo(0, 0);
+    emits('changed');
+}
+
+function cancel() {
+    window.scrollTo(0, 0);
+    emits('changed');
+}
+
+function updateFreeText(text: string) {
+    fileText.value = text;
+}
+
+function getCommentDisplay(comments: string[]): string {
+    return comments.map(value => value.trim())
+        .join("\n")
+        .trim()
+        .replace(new RegExp("#+", "g"), "")
+        .replace(new RegExp(";+", "g"), "")
+        .replace(new RegExp("\n\\s", "g"), "\n")
+        .trim();
+}
+
+function getCommentDisplayShort(comments: string[]): string {
+    return comments.map(value => value.trim())
+        .slice(0, 4)
+        .join("\n")
+        .trim()
+        .replace(new RegExp("#+", "g"), "")
+        .replace(new RegExp(";+", "g"), "")
+        .replace(new RegExp("\n\\s+", "g"), "\n")
+        .trim();
+}
+
+function toggleEntryExpansion(key: string, variable: string) {
+    const oldLine = dumpedConfigVariables.value[key][variable];
+    const newLine = new ConfigLine(oldLine.value, oldLine.comments, oldLine.allowedValues);
+    newLine.commentsExpanded = !oldLine.commentsExpanded;
+    dumpedConfigVariables.value[key][variable] = newLine;
+    dumpedConfigVariables.value = JSON.parse(JSON.stringify(dumpedConfigVariables.value));
+}
+
+function setConfigLineValue(line: ConfigLine, value: number) {
+    line.value = value.toString();
+}
 
 </script>
