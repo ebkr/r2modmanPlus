@@ -205,6 +205,9 @@ export const DownloadModule = {
         activeDownloadCount(_state, getters) {
             return getters.activeDownloads.length;
         },
+        activeProfileDownloadCount(_state, getters) {
+            return getters.activeProfileDownloads.length;
+        },
         activeDownloads(state) {
             return getOnlyActiveDownloads(state.allDownloads);
         },
@@ -289,6 +292,9 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 }
 
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
+    if (downloads.length === 0) {
+        return [];
+    }
     const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
     return downloads.filter(dl => active.includes(dl.status));
 }
