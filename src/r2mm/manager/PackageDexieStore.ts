@@ -1,47 +1,13 @@
 import Dexie, { Table } from 'dexie';
 
+import { DexiePackage, fetchPackagesByCommunityPackagePairs } from './PackageDexieStoreMockables';
 import Game from '../../model/game/Game';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import { splitToNameAndVersion } from '../../utils/DependencyUtils';
 
-interface DexieVersion {
-    full_name: string;
-    name: string;
-    version_number: string;
-    uuid4: string;
-    dependencies: string[];
-    description: string;
-    icon: string;
-    is_active: boolean;
-    downloads: number;
-    download_url: string;
-    website_url: string;
-    file_size: number;
-    date_created: Date;
-}
 
-interface DexiePackage {
-    full_name: string;
-    owner: string;
-    name: string;
-    uuid4: string;
-    package_url: string;
-    categories: string[];
-    rating_score: number;
-    is_pinned: boolean;
-    is_deprecated: boolean;
-    has_nsfw_content: boolean;
-    donation_link: string | null;
-    date_created: Date;
-    date_updated: Date;
-    versions: DexieVersion[];
-
-    // Extra fields not included in the API response
-    community: string;
-    date_fetched: Date; // When the entry was fetched from the API
-}
 
 // For keeping track of seen package list index files so we can
 // skip processing chunks if there's no changes.
@@ -107,8 +73,7 @@ export async function getCombosByDependencyStrings(
     const split = dependencyStrings.map(splitToNameAndVersion);
     const keys = split.map((d): [string, string] => [community, d[0]]);
 
-    // Dexie's anyOfIgnoreCase doesn't support compound indexes.
-    const packages = await db.packages.where('[community+full_name]').anyOf(keys).toArray();
+    const packages = await fetchPackagesByCommunityPackagePairs(db, keys);
     const versionMap = Object.fromEntries(split);
     const modOrderMap = new Map(split.map(([name, _ver], i) => [name, i]));
 
