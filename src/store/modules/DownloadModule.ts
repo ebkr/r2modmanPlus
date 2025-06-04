@@ -19,6 +19,9 @@ import { installModsToProfile } from "../../utils/ProfileUtils";
 interface DownloadProgress {
     downloadId: UUID;
     initialMods: ThunderstoreCombo[];
+    installMode: InstallMode;
+    game: Game;
+    profile: ImmutableProfile;
     modName: string;
     downloadProgress: number;
     installProgress: number;
@@ -52,11 +55,32 @@ export const DownloadModule = {
     }),
 
     actions: <ActionTree<State, RootState>>{
-        _addDownload({state}, combos: ThunderstoreCombo[]): UUID {
+        retryDownload({commit, dispatch}, params: { download: DownloadProgress, hideModal?: boolean }) {
+            const { game, profile, installMode, initialMods } = params.download;
+            dispatch('downloadAndInstallCombos', {
+                combos: initialMods,
+                game,
+                profile,
+                installMode,
+                hideModal: params.hideModal
+            });
+            commit('removeDownload', params.download);
+        },
+
+        _addDownload({state}, params: {
+            combos: ThunderstoreCombo[],
+            installMode: InstallMode,
+            game: Game,
+            profile: ImmutableProfile
+        }): UUID {
+            const { combos, installMode, game, profile } = params;
             const downloadId = UUID.create();
             const downloadObject: DownloadProgress = {
                 downloadId: downloadId,
                 initialMods: [...combos],
+                installMode,
+                game,
+                profile,
                 modName: '',
                 downloadProgress: 0,
                 installProgress: 0,
@@ -76,14 +100,17 @@ export const DownloadModule = {
             combos: ThunderstoreCombo[],
             game: Game,
             installMode: InstallMode,
-            profile: ImmutableProfile
+            profile: ImmutableProfile,
+            hideModal?: boolean
         }) {
-            const { combos, game, installMode, profile } = params;
+            const { combos, game, installMode, profile, hideModal } = params;
             let downloadId: UUID | undefined;
 
             try {
-                commit('setIsModProgressModalOpen', true);
-                downloadId = await dispatch('_addDownload', combos);
+                if (!hideModal) {
+                    commit('setIsModProgressModalOpen', true);
+                }
+                downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
@@ -96,7 +123,9 @@ export const DownloadModule = {
                 }
                 commit('error/handleError', R2Error.fromThrownValue(e), { root: true });
             } finally {
-                commit('setIsModProgressModalOpen', false);
+                if (!hideModal) {
+                    commit('setIsModProgressModalOpen', false);
+                }
             }
         },
 
@@ -179,6 +208,26 @@ export const DownloadModule = {
         activeDownloads(state) {
             return getOnlyActiveDownloads(state.allDownloads);
         },
+        currentDownload(state) {
+            return state.allDownloads[state.allDownloads.length-1] || null;
+        },
+        newestActiveDownload(_state, getters) {
+            return getters.activeDownloads[getters.activeDownloads.length-1] || null;
+        },
+        profileActiveDownloadCount(_state, getters) {
+            return getters.profileActiveDownloads.length;
+        },
+        profileActiveDownloads(_state, getters) {
+            return getOnlyActiveDownloads(getters.profileDownloads);
+        },
+        profileDownloads(state, _getters, _rootState, rootGetters) {
+            return state.allDownloads.filter((dl: DownloadProgress) => {
+                return dl.profile.getProfilePath() === rootGetters['profile/activeProfile'].getProfilePath();
+            });
+        },
+        profileDownloadsNewestFirst(_state, getters) {
+            return Array.from(getters.profileDownloads).reverse();
+        },
         conciseDownloadStatus(_state, getters) {
             if (getters.activeDownloadCount === 1 && getters.newestActiveDownload) {
                 if (getters.newestActiveDownload.downloadProgress < 100) {
@@ -189,15 +238,6 @@ export const DownloadModule = {
             } else if (getters.activeDownloadCount > 1) {
                 return `Downloading and installing ${getters.activeDownloadCount} mods...`;
             }
-        },
-        currentDownload(state) {
-            return state.allDownloads[state.allDownloads.length-1] || null;
-        },
-        newestActiveDownload(_state, getters) {
-            return getters.activeDownloads[getters.activeDownloads.length-1] || null;
-        },
-        newestFirst(state) {
-            return Array.from(state.allDownloads).reverse();
         },
     },
 
