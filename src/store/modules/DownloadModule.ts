@@ -100,6 +100,14 @@ export const DownloadModule = {
             }
         },
 
+        async downloadToCache({state}, params: {
+            combos: ThunderstoreCombo[],
+            progressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+        }) {
+            const { combos, progressCallback } = params;
+            await ThunderstoreDownloaderProvider.instance.download(combos, state.ignoreCache, progressCallback);
+        },
+
         async _download({state, commit, dispatch}, params: {
             combos: ThunderstoreCombo[],
             downloadId: UUID

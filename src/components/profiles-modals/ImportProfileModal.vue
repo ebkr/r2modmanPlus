@@ -5,8 +5,6 @@ import R2Error from "../../model/errors/R2Error";
 import ExportFormat from "../../model/exports/ExportFormat";
 import ExportMod from "../../model/exports/ExportMod";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import ThunderstoreMod from "../../model/ThunderstoreMod";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
 import { sleep } from "../../utils/Common";
@@ -235,13 +233,12 @@ async function importProfile(targetProfileName: string, mods: ExportMod[], zipPa
     const progressCallback = (progress: number|string) => typeof progress === "number"
         ? importPhaseDescription.value = `Downloading mods: ${Math.floor(progress)}%`
         : importPhaseDescription.value = progress;
-    const ignoreCache = store.state.download.ignoreCache;
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
     try {
-        const comboList = profileMods.value.known as ThunderstoreCombo[];
-        await ThunderstoreDownloaderProvider.instance.downloadImportedMods(comboList, ignoreCache, progressCallback);
-        await ProfileUtils.populateImportedProfile(comboList, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+        const combos = profileMods.value.known as ThunderstoreCombo[];
+        await store.dispatch('download/downloadToCache', {combos, progressCallback});
+        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, progressCallback);
     } catch (e) {
         await store.dispatch('profiles/ensureProfileExists');
         closeModal();
