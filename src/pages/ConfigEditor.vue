@@ -8,27 +8,18 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 
-    import { Component, Vue } from 'vue-property-decorator';
-    import ConfigSelectionLayout from '../components/config-components/ConfigSelectionLayout.vue';
-    import ConfigFile from '../model/file/ConfigFile';
-    import ConfigEditLayout from '../components/config-components/ConfigEditLayout.vue';
+import ConfigSelectionLayout from '../components/config-components/ConfigSelectionLayout.vue';
+import ConfigFile from '../model/file/ConfigFile';
+import ConfigEditLayout from '../components/config-components/ConfigEditLayout.vue';
+import { ref } from 'vue';
 
-    @Component({
-        components: {
-            ConfigEditLayout,
-            ConfigSelectionLayout
-        }
-    })
-    export default class BetterConfigEditor extends Vue {
-        private editing: ConfigFile | null = null;
+const editing = ref<ConfigFile | null>(null);
 
-        bindEdit(editing: ConfigFile | null) {
-            this.editing = editing;
-        }
-
-    }
+function bindEdit(editValue: ConfigFile | null) {
+    editing.value = editValue;
+}
 
 </script>
 
