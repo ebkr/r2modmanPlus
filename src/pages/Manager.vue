@@ -133,9 +133,8 @@
     </div>
 </template>
 
-<script lang='ts'>
-import Vue from 'vue';
-import Component from 'vue-class-component';
+<script lang='ts' setup>
+import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { Hero, ExternalLink, Modal, Progress } from '../components/all';
 
 import PathResolver from '../r2mm/manager/PathResolver';
@@ -166,413 +165,385 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 import SortModal from '../components/modals/SortModal.vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
+import VueRouter from 'vue-router';
 
-@Component({
-		components: {
-            ProfileCodeExportModal,
-            SortModal,
-            ModalCard,
-            LocalFileImportModal,
-            CategoryFilterModal,
-            DownloadModModal,
-			'hero': Hero,
-			'progress-bar': Progress,
-			'modal': Modal,
-            ExternalLink,
-		}
-	})
-	export default class Manager extends Vue {
-		portableUpdateAvailable: boolean = false;
-		updateTagName: string = '';
-		isValidatingSteamInstallation: boolean = false;
-		showSteamIncorrectDirectoryModal: boolean = false;
-		showRor2IncorrectDirectoryModal: boolean = false;
-		launchParametersModel: string = '';
-		showLaunchParameterModal: boolean = false;
-        showDependencyStrings: boolean = false;
-        importingLocalMod: boolean = false;
-        doorstopTarget: string = "";
-        vanillaLaunchArgs: string = "";
+const store = getStore<State>();
+let router!: VueRouter;
 
-        get activeGame(): Game {
-            return this.$store.state.activeGame;
-        }
+const portableUpdateAvailable = ref<boolean>(false);
+const updateTagName = ref<string>('');
+const isValidatingSteamInstallation = ref<boolean>(false);
+const showSteamIncorrectDirectoryModal = ref<boolean>(false);
+const showRor2IncorrectDirectoryModal = ref<boolean>(false);
+const launchParametersModel = ref<string>('');
+const showLaunchParameterModal = ref<boolean>(false);
+const showDependencyStrings = ref<boolean>(false);
+const importingLocalMod = ref<boolean>(false);
+const doorstopTarget = ref<string>("");
+const vanillaLaunchArgs = ref<string>("");
 
-        get settings(): ManagerSettings {
-            return this.$store.getters['settings'];
-        };
+const activeGame = computed(() => store.state.activeGame);
+const settings = computed(() => store.getters['settings']);
+const profile = computed(() => store.getters['profile/activeProfile']);
+const localModList = computed(() => store.state.profile.modList);
 
-        get profile(): Profile {
-            return this.$store.getters['profile/activeProfile'];
-        };
+function closeSteamInstallationValidationModal() {
+    isValidatingSteamInstallation.value = false;
+}
 
-		get localModList(): ManifestV2[] {
-			return this.$store.state.profile.modList;
-		}
+async function validateSteamInstallation() {
+    const res = await SteamInstallationValidator.validateInstallation(activeGame.value);
+    if (res instanceof R2Error) {
+        store.commit('error/handleError', res);
+    } else {
+        isValidatingSteamInstallation.value = true;
+    }
+}
 
-		closeSteamInstallationValidationModal() {
-			this.isValidatingSteamInstallation = false;
-		}
+function computeDefaultInstallDirectory(): string {
+    switch(process.platform){
+        case 'win32':
+            return path.resolve(
+                process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+                'Steam', 'steamapps', 'common', activeGame.value.steamFolderName
+            );
+        case 'linux':
+            return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
+        case 'darwin':
+            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam',
+                'steamapps', 'common', activeGame.value.steamFolderName);
+        default:
+            return '';
+    }
+}
 
-		async validateSteamInstallation() {
-			const res = await SteamInstallationValidator.validateInstallation(this.activeGame);
-			if (res instanceof R2Error) {
-				this.$store.commit('error/handleError', res);
-			} else {
-				this.isValidatingSteamInstallation = true;
-			}
-		}
-
-		computeDefaultInstallDirectory() : string {
-			switch(process.platform){
-				case 'win32':
-					return path.resolve(
-						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
-						'Steam', 'steamapps', 'common', this.activeGame.steamFolderName
-					);
-				case 'linux':
-					return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', this.activeGame.steamFolderName);
-                case 'darwin':
-                    return path.resolve(homedir(), 'Library', 'Application Support', 'Steam',
-                        'steamapps', 'common', this.activeGame.steamFolderName);
-                default:
-					return '';
-			}
-		}
-
-		changeGameInstallDirectory() {
-			const ror2Directory: string = this.settings.getContext().gameSpecific.gameDirectory || this.computeDefaultInstallDirectory();
-			InteractionProvider.instance.selectFile({
-                title: `Locate ${this.activeGame.displayName} Executable`,
-                // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
-                // Should fix if needed, although unlikely.
-                filters: (this.activeGame.exeName.map(value => {
-                    const nameSplit = value.split(".");
-                    return [{
-                        name: nameSplit[0],
-                        extensions: [nameSplit[1]]
-                    }]
-                }).reduce((previousValue, currentValue) => {
-                    previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
-                    return previousValue;
-                })),
-                defaultPath: ror2Directory,
-                buttonLabel: 'Select Executable'
-            }).then(async files => {
-                if (files.length === 1) {
-                    try {
-                        const containsGameExecutable = this.activeGame.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
-                        if (containsGameExecutable) {
-                            await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                        } else {
-                            this.showRor2IncorrectDirectoryModal = true;
-                        }
-                    } catch (e) {
-                        const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
-                        this.$store.commit('error/handleError', err);
-                    }
-                }
-            });
-		}
-
-		changeGameInstallDirectoryGamePass() {
-			const ror2Directory: string = this.settings.getContext().gameSpecific.gameDirectory || this.computeDefaultInstallDirectory();
-			InteractionProvider.instance.selectFile({
-                title: `Locate gamelaunchhelper Executable`,
-                filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
-				defaultPath: ror2Directory,
-				buttonLabel: 'Select Executable'
-			}).then(async files => {
-				if (files.length === 1) {
-					try {
-						const containsGameExecutable = (path.basename(files[0]).toLowerCase() === "gamelaunchhelper.exe");
-						if (containsGameExecutable) {
-							await this.settings.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-						} else {
-							throw new Error("The selected executable is not gamelaunchhelper.exe");
-						}
-					} catch (e) {
-						const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
-						this.$store.commit('error/handleError', err);
-					}
-				}
-			});
-		}
-
-		computeDefaultSteamDirectory() : string {
-			switch(process.platform){
-				case 'win32':
-					return path.resolve(
-						process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
-						'Steam'
-					);
-				case 'linux':
-					return path.resolve(homedir(), '.local', 'share', 'Steam');
-                case 'darwin':
-                    return path.resolve(homedir(), 'Library', 'Application Support', 'Steam');
-				default:
-					return '';
-			}
-		}
-
-		async checkIfSteamExecutableIsValid(file: string) : Promise<boolean> {
-			switch(process.platform){
-				case 'win32':
-					return path.basename(file).toLowerCase() === "steam.exe"
-				case 'linux':
-                    return path.basename(file).toLowerCase() === "steam.sh"
-                case 'darwin':
-                    return path.basename(file).toLowerCase() === 'steam.app'
-                default:
-					return true;
-			}
-		}
-
-		changeSteamDirectory() {
-			const steamDir: string = this.settings.getContext().global.steamDirectory || this.computeDefaultSteamDirectory();
-			InteractionProvider.instance.selectFile({
-                title: 'Locate Steam Executable',
-                defaultPath: steamDir,
-                filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
-                buttonLabel: 'Select Executable'
-            }).then(async files => {
-				if (files.length === 1) {
-				    try {
-                        if (await this.checkIfSteamExecutableIsValid(files[0])) {
-                            await this.settings.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
-                        } else {
-                            this.showSteamIncorrectDirectoryModal = true;
-                        }
-                    } catch (e) {
-                        const err = R2Error.fromThrownValue(e, 'Failed to change the Steam folder');
-                        this.$store.commit('error/handleError', err);
-                    }
-				}
-            });
-		}
-
-		setFunkyMode(value: boolean) {
-			this.settings.setFunkyMode(value);
-		}
-
-		browseDataFolder() {
-            LinkProvider.instance.openLink('file://' + PathResolver.ROOT);
-		}
-
-        browseProfileFolder() {
-            LinkProvider.instance.openLink('file://' + this.profile.getProfilePath());
-		}
-
-		toggleCardExpanded(expanded: boolean) {
-			if (expanded) {
-				this.settings.expandCards();
-			} else {
-				this.settings.collapseCards();
-			}
-			this.$router.push({name: "manager.installed"});
-		}
-
-		async toggleDarkTheme() {
-			await this.settings.toggleDarkTheme();
-			ThemeManager.apply();
-		}
-
-		isManagerUpdateAvailable() {
-			if (!ManagerInformation.IS_PORTABLE) {
-				return;
-			}
-			fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
-				.then(response => response.json())
-				.then((parsed: any) => {
-					parsed.sort((a: any, b: any) => {
-						if (b !== null) {
-							const versionA = new VersionNumber(a.name);
-							const versionB = new VersionNumber(b.name);
-							return versionA.isNewerThan(versionB);
-						}
-						return 1;
-					});
-					let foundMatch = false;
-					parsed.forEach((release: any) => {
-						if (!foundMatch && !release.draft) {
-							const releaseVersion = new VersionNumber(release.name);
-							if (releaseVersion.isNewerThan(ManagerInformation.VERSION)) {
-								this.portableUpdateAvailable = true;
-								this.updateTagName = release.tag_name;
-								foundMatch = true;
-								return;
-							}
-						}
-					});
-				}).catch(err => {
-				// Do nothing, potentially offline. Try next launch.
-			});
-			return;
-		}
-
-		showLaunchParameters() {
-			GameInstructions.getInstructionsForGame(this.activeGame, this.profile).then(instructions => {
-				this.vanillaLaunchArgs = instructions.vanillaParameters;
-			});
-
-			GameRunnerProvider.instance.getGameArguments(this.activeGame, this.profile).then(target => {
-				if (target instanceof R2Error) {
-					this.doorstopTarget = "";
-				} else {
-					this.doorstopTarget = target;
-				}
-			});
-
-			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
-			this.showLaunchParameterModal = true;
-		}
-
-		updateLaunchParameters() {
-			this.settings.setLaunchParameters(this.launchParametersModel);
-			this.showLaunchParameterModal = false;
-		}
-
-		async copyLogToClipboard() {
-            const fs = FsProvider.instance;
-            let logOutputPath = "";
-            switch (this.activeGame.packageLoader) {
-                case PackageLoader.BEPINEX:
-                    logOutputPath = path.join(this.profile.getProfilePath(), "BepInEx", "LogOutput.log");
-                    break;
-                case PackageLoader.MELON_LOADER:
-                    logOutputPath = path.join(this.profile.getProfilePath(), "MelonLoader", "Latest.log");
-                    break;
-                case PackageLoader.RETURN_OF_MODDING:
-                    logOutputPath = path.join(this.profile.getProfilePath(), "ReturnOfModding", "LogOutput.log");
-                    break;
-                case PackageLoader.GDWEAVE:
-                    logOutputPath = path.join(this.profile.getProfilePath(), "GDWeave", "GDWeave.log");
-                    break;
-            }
-            const text = (await fs.readFile(logOutputPath)).toString();
-            if (text.length >= 1992) {
-                InteractionProvider.instance.copyToClipboard(text);
-            } else {
-                InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
-            }
-		}
-
-        async copyTroubleshootingInfoToClipboard() {
-            const content = await this.$store.dispatch('profile/generateTroubleshootingString');
-            InteractionProvider.instance.copyToClipboard('```' + content + '```');
-        }
-
-        async changeDataFolder() {
+function changeGameInstallDirectory() {
+    const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
+    InteractionProvider.instance.selectFile({
+        title: `Locate ${activeGame.value.displayName} Executable`,
+        // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
+        // Should fix if needed, although unlikely.
+        filters: (activeGame.value.exeName.map(value => {
+            const nameSplit = value.split(".");
+            return [{
+                name: nameSplit[0],
+                extensions: [nameSplit[1]]
+            }]
+        }).reduce((previousValue, currentValue) => {
+            previousValue[0].extensions = [...previousValue[0].extensions, ...currentValue[0].extensions];
+            return previousValue;
+        })),
+        defaultPath: ror2Directory,
+        buttonLabel: 'Select Executable'
+    }).then(async files => {
+        if (files.length === 1) {
             try {
-                const folder = await DataFolderProvider.instance.showSelectionDialog();
-
-                if (folder === null) {
-                    return;
+                const containsGameExecutable = activeGame.value.exeName.find(exeName => path.basename(files[0]).toLowerCase() === exeName.toLowerCase()) !== undefined
+                if (containsGameExecutable) {
+                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                } else {
+                    showRor2IncorrectDirectoryModal.value = true;
                 }
-
-                await DataFolderProvider.instance.throwForInvalidFolder(folder);
-                await DataFolderProvider.instance.writeOverrideFile(folder);
-                await this.settings.setDataDirectory(folder);
-                InteractionProvider.instance.restartApp();
-            } catch(err) {
-                this.$store.commit("error/handleError", R2Error.fromThrownValue(err));
-                return
+            } catch (e) {
+                const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
+                store.commit('error/handleError', err);
             }
         }
+    });
+}
 
-        async handleSettingsCallbacks(invokedSetting: any) {
-		    switch(invokedSetting) {
-		        case "BrowseDataFolder":
-		            this.browseDataFolder();
-		            break;
-                case "BrowseProfileFolder":
-                    this.browseProfileFolder();
-                    break;
-                case "ChangeGameDirectory":
-                    this.changeGameInstallDirectory();
-					break;
-                case "ChangeGameDirectoryGamePass":
-                    this.changeGameInstallDirectoryGamePass();
-                    break;
-                case "ChangeSteamDirectory":
-                    this.changeSteamDirectory();
-                    break;
-                case "CopyLogToClipboard":
-                    this.copyLogToClipboard();
-                    break;
-                case "CopyTroubleshootingInfoToClipboard":
-                    this.copyTroubleshootingInfoToClipboard();
-                    break;
-                case "ToggleDownloadCache":
-                    await this.$store.dispatch('download/toggleIgnoreCache');
-                    break;
-                case "ValidateSteamInstallation":
-                    this.validateSteamInstallation();
-                    break;
-                case "SetLaunchParameters":
-                    this.showLaunchParameters();
-                    break;
-                case "ChangeProfile":
-                    this.$router.push({name: "profiles"});
-                    break;
-                case "ImportLocalMod":
-                    this.importingLocalMod = true;
-                    break;
-                case "ToggleFunkyMode":
-                    this.setFunkyMode(!this.settings.getContext().global.funkyModeEnabled);
-                    break;
-                case "SwitchTheme":
-                    this.toggleDarkTheme();
-                    document.documentElement.classList.toggle('html--dark', this.settings.getContext().global.darkTheme);
-                    break;
-                case "SwitchCard":
-                    this.toggleCardExpanded(!this.settings.getContext().global.expandedCards);
-                    break;
-                case "EnableAll":
-                    await this.$store.dispatch(
-                        "profile/enableModsOnActiveProfile",
-                        {mods: this.localModList}
-                    );
-                    await this.$router.push({name: "manager.installed"});
-                    break;
-                case "DisableAll":
-                    await this.$store.dispatch(
-                        "profile/disableModsFromActiveProfile",
-                        {mods: this.localModList}
-                    );
-                    await this.$router.push({name: "manager.installed"});
-                    break;
-                case "UpdateAllMods":
-                    this.$store.commit("openUpdateAllModsModal");
-                    break;
-                case "ShowDependencyStrings":
-                    this.showDependencyStrings = true;
-                    break;
-                case "ChangeDataFolder":
-                    await this.changeDataFolder();
-                    break;
-                case "CleanCache":
-                    CacheUtil.clean();
-                    break;
+function changeGameInstallDirectoryGamePass() {
+    const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
+    InteractionProvider.instance.selectFile({
+        title: `Locate gamelaunchhelper Executable`,
+        filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
+        defaultPath: ror2Directory,
+        buttonLabel: 'Select Executable'
+    }).then(async files => {
+        if (files.length === 1) {
+            try {
+                const containsGameExecutable = (path.basename(files[0]).toLowerCase() === "gamelaunchhelper.exe");
+                if (containsGameExecutable) {
+                    await settings.value.setGameDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                } else {
+                    throw new Error("The selected executable is not gamelaunchhelper.exe");
+                }
+            } catch (e) {
+                const err = R2Error.fromThrownValue(e, 'Failed to change the game folder');
+                store.commit('error/handleError', err);
             }
         }
+    });
+}
 
-        async beforeCreate() {
-            // Used by SearchAndSort, but need to be called here to
-            // ensure the settings are loaded before LocalModList
-            // accesses visibleModList from Vuex store.
-            await this.$store.dispatch('profile/loadOrderingSettings');
+function computeDefaultSteamDirectory(): string {
+    switch(process.platform){
+        case 'win32':
+            return path.resolve(
+                process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
+                'Steam'
+            );
+        case 'linux':
+            return path.resolve(homedir(), '.local', 'share', 'Steam');
+        case 'darwin':
+            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam');
+        default:
+            return '';
+    }
+}
 
-            // Used by OnlineModView, called here for consistency.
-            this.$store.commit('modFilters/reset');
+async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
+    switch(process.platform){
+        case 'win32':
+            return path.basename(file).toLowerCase() === "steam.exe"
+        case 'linux':
+            return path.basename(file).toLowerCase() === "steam.sh"
+        case 'darwin':
+            return path.basename(file).toLowerCase() === 'steam.app'
+        default:
+            return true;
+    }
+}
+
+function changeSteamDirectory() {
+    const steamDir: string = settings.value.getContext().global.steamDirectory || computeDefaultSteamDirectory();
+    InteractionProvider.instance.selectFile({
+        title: 'Locate Steam Executable',
+        defaultPath: steamDir,
+        filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
+        buttonLabel: 'Select Executable'
+    }).then(async files => {
+        if (files.length === 1) {
+            try {
+                if (await checkIfSteamExecutableIsValid(files[0])) {
+                    await settings.value.setSteamDirectory(path.dirname(await FsProvider.instance.realpath(files[0])));
+                } else {
+                    showSteamIncorrectDirectoryModal.value = true;
+                }
+            } catch (e) {
+                const err = R2Error.fromThrownValue(e, 'Failed to change the Steam folder');
+                store.commit('error/handleError', err);
+            }
+        }
+    });
+}
+
+function setFunkyMode(value: boolean) {
+    settings.value.setFunkyMode(value);
+}
+
+function browseDataFolder() {
+    LinkProvider.instance.openLink('file://' + PathResolver.ROOT);
+}
+
+function browseProfileFolder() {
+    LinkProvider.instance.openLink('file://' + profile.value.getProfilePath());
+}
+
+function toggleCardExpanded(expanded: boolean) {
+    if (expanded) {
+        settings.value.expandCards();
+    } else {
+        settings.value.collapseCards();
+    }
+    router.push({name: "manager.installed"});
+}
+
+async function toggleDarkTheme() {
+    await settings.value.toggleDarkTheme();
+    ThemeManager.apply();
+}
+
+function isManagerUpdateAvailable() {
+    if (!ManagerInformation.IS_PORTABLE) {
+        return;
+    }
+    fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
+        .then(response => response.json())
+        .then((parsed: any) => {
+            parsed.sort((a: any, b: any) => {
+                if (b !== null) {
+                    const versionA = new VersionNumber(a.name);
+                    const versionB = new VersionNumber(b.name);
+                    return versionA.isNewerThan(versionB);
+                }
+                return 1;
+            });
+            let foundMatch = false;
+            parsed.forEach((release: any) => {
+                if (!foundMatch && !release.draft) {
+                    const releaseVersion = new VersionNumber(release.name);
+                    if (releaseVersion.isNewerThan(ManagerInformation.VERSION)) {
+                        portableUpdateAvailable.value = true;
+                        updateTagName.value = release.tag_name;
+                        foundMatch = true;
+                        return;
+                    }
+                }
+            });
+        }).catch(err => {
+        // Do nothing, potentially offline. Try next launch.
+    });
+    return;
+}
+
+function showLaunchParameters() {
+    GameInstructions.getInstructionsForGame(activeGame.value, profile.value).then(instructions => {
+        vanillaLaunchArgs.value = instructions.vanillaParameters;
+    });
+
+    GameRunnerProvider.instance.getGameArguments(activeGame.value, profile.value).then(target => {
+        if (target instanceof R2Error) {
+            doorstopTarget.value = "";
+        } else {
+            doorstopTarget.value = target;
+        }
+    });
+
+    launchParametersModel.value = settings.value.getContext().gameSpecific.launchParameters;
+    showLaunchParameterModal.value = true;
+}
+
+function updateLaunchParameters() {
+    settings.value.setLaunchParameters(launchParametersModel.value);
+    showLaunchParameterModal.value = false;
+}
+
+async function copyLogToClipboard() {
+    const fs = FsProvider.instance;
+    let logOutputPath = "";
+    switch (activeGame.value.packageLoader) {
+        case PackageLoader.BEPINEX:
+            logOutputPath = path.join(profile.value.getProfilePath(), "BepInEx", "LogOutput.log");
+            break;
+        case PackageLoader.MELON_LOADER:
+            logOutputPath = path.join(profile.value.getProfilePath(), "MelonLoader", "Latest.log");
+            break;
+        case PackageLoader.RETURN_OF_MODDING:
+            logOutputPath = path.join(profile.value.getProfilePath(), "ReturnOfModding", "LogOutput.log");
+            break;
+        case PackageLoader.GDWEAVE:
+            logOutputPath = path.join(profile.value.getProfilePath(), "GDWeave", "GDWeave.log");
+            break;
+    }
+    const text = (await fs.readFile(logOutputPath)).toString();
+    if (text.length >= 1992) {
+        InteractionProvider.instance.copyToClipboard(text);
+    } else {
+        InteractionProvider.instance.copyToClipboard("```\n" + text + "\n```");
+    }
+}
+
+async function copyTroubleshootingInfoToClipboard() {
+    const content = await store.dispatch('profile/generateTroubleshootingString');
+    InteractionProvider.instance.copyToClipboard('```' + content + '```');
+}
+
+async function changeDataFolder() {
+    try {
+        const folder = await DataFolderProvider.instance.showSelectionDialog();
+
+        if (folder === null) {
+            return;
         }
 
-		async created() {
-			this.launchParametersModel = this.settings.getContext().gameSpecific.launchParameters;
+        await DataFolderProvider.instance.throwForInvalidFolder(folder);
+        await DataFolderProvider.instance.writeOverrideFile(folder);
+        await settings.value.setDataDirectory(folder);
+        InteractionProvider.instance.restartApp();
+    } catch(err) {
+        store.commit("error/handleError", R2Error.fromThrownValue(err));
+        return
+    }
+}
 
-			this.isManagerUpdateAvailable();
-		}
-	}
+async function handleSettingsCallbacks(invokedSetting: any) {
+    switch(invokedSetting) {
+        case "BrowseDataFolder":
+            browseDataFolder();
+            break;
+        case "BrowseProfileFolder":
+            browseProfileFolder();
+            break;
+        case "ChangeGameDirectory":
+            changeGameInstallDirectory();
+            break;
+        case "ChangeGameDirectoryGamePass":
+            changeGameInstallDirectoryGamePass();
+            break;
+        case "ChangeSteamDirectory":
+            changeSteamDirectory();
+            break;
+        case "CopyLogToClipboard":
+            copyLogToClipboard();
+            break;
+        case "CopyTroubleshootingInfoToClipboard":
+            copyTroubleshootingInfoToClipboard();
+            break;
+        case "ToggleDownloadCache":
+            await store.dispatch('download/toggleIgnoreCache');
+            break;
+        case "ValidateSteamInstallation":
+            validateSteamInstallation();
+            break;
+        case "SetLaunchParameters":
+            showLaunchParameters();
+            break;
+        case "ChangeProfile":
+            router.push({name: "profiles"});
+            break;
+        case "ImportLocalMod":
+            importingLocalMod.value = true;
+            break;
+        case "ToggleFunkyMode":
+            setFunkyMode(!settings.value.getContext().global.funkyModeEnabled);
+            break;
+        case "SwitchTheme":
+            toggleDarkTheme();
+            document.documentElement.classList.toggle('html--dark', settings.value.getContext().global.darkTheme);
+            break;
+        case "SwitchCard":
+            toggleCardExpanded(!settings.value.getContext().global.expandedCards);
+            break;
+        case "EnableAll":
+            await store.dispatch(
+                "profile/enableModsOnActiveProfile",
+                {mods: localModList.value}
+            );
+            await router.push({name: "manager.installed"});
+            break;
+        case "DisableAll":
+            await store.dispatch(
+                "profile/disableModsFromActiveProfile",
+                {mods: localModList.value}
+            );
+            await router.push({name: "manager.installed"});
+            break;
+        case "UpdateAllMods":
+            store.commit("openUpdateAllModsModal");
+            break;
+        case "ShowDependencyStrings":
+            showDependencyStrings.value = true;
+            break;
+        case "ChangeDataFolder":
+            await changeDataFolder();
+            break;
+        case "CleanCache":
+            CacheUtil.clean();
+            break;
+    }
+}
+
+store.dispatch('profile/loadOrderingSettings');
+store.commit('modFilters/reset');
+
+onMounted(() => {
+    router = getCurrentInstance()!.proxy.$router;
+    launchParametersModel.value = settings.value.getContext().gameSpecific.launchParameters;
+    isManagerUpdateAvailable();
+})
 
 </script>
 
