@@ -1001,6 +1001,12 @@ export default class GameManager {
             "https://thunderstore.io/c/depo/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "1091320")], "DEPO.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("9 Kings", "9Kings", "9Kings",
+            "9 Kings", ["9Kings.exe"], "9Kings_Data",
+            "https://thunderstore.io/c/9-kings/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "2784470")], "9Kings.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
     ];
 
     static get activeGame(): Game {
