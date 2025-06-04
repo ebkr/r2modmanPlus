@@ -82,6 +82,7 @@ export const DownloadModule = {
             let downloadId: UUID | undefined;
 
             try {
+                commit('setIsModProgressModalOpen', true);
                 downloadId = await dispatch('_addDownload', combos);
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);

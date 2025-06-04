@@ -1,3 +1,31 @@
+<script lang="ts" setup>
+import { useDownloadComposable } from '../composables/DownloadComposable';
+import ModalCard from '../ModalCard.vue';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { InstallMode } from '../../utils/DependencyUtils';
+
+const store = getStore<State>();
+
+const {
+    closeModal,
+    isOpen,
+    thunderstoreMod,
+} = useDownloadComposable();
+
+async function updateAllToLatestVersion() {
+    closeModal();
+    const combos: ThunderstoreCombo[] = await store.dispatch('profile/getCombosWithUpdates');
+
+    await store.dispatch('download/downloadAndInstallCombos', {
+        combos,
+        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
+        game: store.state.activeGame,
+        installMode: InstallMode.UPDATE_ALL
+    });
+}
+</script>
 
 <template>
     <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
@@ -21,32 +49,3 @@
         </template>
     </ModalCard>
 </template>
-
-<script lang="ts">
-import { mixins } from 'vue-class-component';
-import { Component } from 'vue-property-decorator';
-
-import ModalCard from "../ModalCard.vue";
-import DownloadMixin from '../mixins/DownloadMixin.vue';
-import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import { InstallMode } from "../../utils/DependencyUtils";
-
-@Component({
-    components: {DownloadModVersionSelectModal, ModalCard}
-})
-export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin) {
-
-    async updateAllToLatestVersion() {
-        this.closeModal();
-        const combos: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
-        this.setIsModProgressModalOpen(true);
-        await this.$store.dispatch('download/downloadAndInstallCombos', {
-            combos,
-            profile: this.profile.asImmutableProfile(),
-            game: this.activeGame,
-            installMode: InstallMode.UPDATE_ALL
-        });
-    }
-}
-</script>
