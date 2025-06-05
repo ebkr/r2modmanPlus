@@ -67,6 +67,18 @@ export const DownloadModule = {
             commit('removeDownload', params.download);
         },
 
+        retryDownloadById({state, commit, dispatch}, downloadId: UUID) {
+            const download = state.allDownloads.find((d: DownloadProgress) => d.downloadId === downloadId);
+            if (!download) {
+                commit('error/handleError',
+                    new R2Error('Download not found', 'Tried to retry a download, but it wasn\'t found in the list of downloads.'),
+                    { root: true }
+                );
+                return;
+            }
+            dispatch('retryDownload', { download });
+        },
+
         _addDownload({state}, params: {
             combos: ThunderstoreCombo[],
             installMode: InstallMode,
@@ -96,7 +108,7 @@ export const DownloadModule = {
             commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
         },
 
-        async downloadAndInstallCombos({commit, dispatch}, params: {
+        async downloadAndInstallCombos({commit, dispatch, rootGetters}, params: {
             combos: ThunderstoreCombo[],
             game: Game,
             installMode: InstallMode,
@@ -118,10 +130,17 @@ export const DownloadModule = {
                 await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
                 commit('setDone', downloadId);
             } catch (e) {
+                const r2Error = R2Error.fromThrownValue(e);
                 if (downloadId) {
                     commit('setFailed', downloadId);
+                    if (profile.getProfilePath() === rootGetters['profile/activeProfile'].getProfilePath()) {
+                        r2Error.setAction({
+                            label: 'Retry',
+                            function: () => dispatch('retryDownloadById', downloadId)
+                        });
+                    }
                 }
-                commit('error/handleError', R2Error.fromThrownValue(e), { root: true });
+                commit('error/handleError', r2Error, { root: true });
             } finally {
                 if (!hideModal) {
                     commit('setIsModProgressModalOpen', false);
@@ -204,9 +223,6 @@ export const DownloadModule = {
     getters: <GetterTree<State, RootState>>{
         activeDownloadCount(_state, getters) {
             return getters.activeDownloads.length;
-        },
-        activeProfileDownloadCount(_state, getters) {
-            return getters.activeProfileDownloads.length;
         },
         activeDownloads(state) {
             return getOnlyActiveDownloads(state.allDownloads);
@@ -292,9 +308,6 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 }
 
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
-    if (downloads.length === 0) {
-        return [];
-    }
     const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
     return downloads.filter(dl => active.includes(dl.status));
 }
