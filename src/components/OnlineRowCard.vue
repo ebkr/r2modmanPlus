@@ -17,26 +17,24 @@
     </keep-alive>
 </template>
 
-<script lang='ts'>
-    import Vue from 'vue';
-    import { Component, Prop, Watch } from 'vue-property-decorator'
+<script lang='ts' setup>
+import { onMounted } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
-    @Component
-    export default class OnlineRowCard extends Vue {
+const store = getStore<State>();
 
-        @Prop()
-        isSelected: boolean | undefined;
+type OnlineRowCardProps = {
+    isSelected: boolean;
+    image: string;
+    id: string;
+}
 
-        @Prop({default: ''})
-        image: string | undefined;
+const props = defineProps<OnlineRowCardProps>();
 
-        @Prop()
-        id: string | undefined;
-
-        async created() {
-            await this.$store.dispatch('profile/loadModCardSettings');
-        }
-    }
+onMounted(async () => {
+    await store.dispatch('profile/loadModCardSettings');
+});
 </script>
 
 
