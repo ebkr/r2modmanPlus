@@ -39,51 +39,46 @@
     </keep-alive>
 </template>
 
-<script lang='ts'>
-    import Vue from 'vue';
-    import { Component, Prop, Watch } from 'vue-property-decorator'
+<script lang='ts' setup>
+import { computed, onMounted, ref, watchEffect } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
-    @Component
-    export default class ExpandableCard extends Vue {
+const store = getStore<State>();
 
-        @Prop({default: ''})
-        image: string | undefined;
+type ExpandableCardProps = {
+    image: string;
+    description: string;
+    id: string;
+    allowSorting: boolean;
+    enabled: boolean;
+}
 
-        @Prop({default: ''})
-        description: string | undefined;
+const props = withDefaults(defineProps<ExpandableCardProps>(), {
+    image: '',
+    description: '',
+    id: undefined,
+    allowSorting: false,
+    enabled: true,
+})
 
-        @Prop()
-        id: string | undefined;
+const visible = ref<boolean | undefined>(false);
 
-        @Prop({default: false})
-        allowSorting: boolean | undefined;
+const showSort = computed<boolean>(() => props.allowSorting && store.getters["profile/canSortMods"]);
 
-        @Prop({default: true})
-        enabled: boolean | undefined;
+watchEffect(() => {
+    visible.value = store.state.profile.expandedByDefault;
+})
 
-        // Keep track of visibility
-        visible: boolean | undefined = false;
+function toggleVisibility() {
+    visible.value = !visible.value;
+}
 
-        get showSort() {
-            return this.allowSorting && this.$store.getters["profile/canSortMods"];
-        }
-
-        @Watch('$store.state.profile.expandedByDefault')
-        visibilityChanged(current: boolean) {
-            this.visible = current;
-        }
-
-        toggleVisibility() {
-            this.visible = !this.visible;
-        }
-
-        async created() {
-            await this.$store.dispatch('profile/loadModCardSettings');
-            this.visible = this.$store.state.profile.expandedByDefault;
-        }
-    }
+onMounted(async () => {
+    await store.dispatch('profile/loadModCardSettings');
+    visible.value = store.state.profile.expandedByDefault;
+});
 </script>
-
 
 <style lang="scss" scoped>
 .card-header-title {
