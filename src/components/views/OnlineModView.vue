@@ -81,9 +81,7 @@
     </div>
 </template>
 
-<script lang="ts">
-import Component from 'vue-class-component';
-import { Vue, Watch } from 'vue-property-decorator';
+<script lang="ts" setup>
 import SortingDirection from '../../model/enums/SortingDirection';
 import SortingStyle from '../../model/enums/SortingStyle';
 import ManifestV2 from '../../model/ManifestV2';
@@ -95,157 +93,157 @@ import { DeferredInput } from "../all";
 import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import OnlineModListWithPanel from '../views/OnlineModListWithPanel.vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed, ref, watchEffect, watch, onMounted } from 'vue';
 
-@Component({
-    components: {
-        OnlineModListWithPanel,
-        OnlinePreviewPanel,
-        DeferredInput,
-        ModListUpdateBanner,
-        OnlineModList: OnlineModListProvider.provider,
-        PaginationButtons,
+const store = getStore<State>();
+
+const PAGE_SIZE = 40;
+
+const pagedThunderstoreModList = ref<ThunderstoreMod[]>([]);
+const pageNumber = ref<number>(1);
+const searchableThunderstoreModList = ref<ThunderstoreMod[]>([]);
+const sortedThunderstoreModList = ref<ThunderstoreMod[]>([]);
+const thunderstoreSearchFilter = ref<string>("");
+const previewMod = ref<ThunderstoreMod | null>(null);
+
+const OnlineModList = computed(() => OnlineModListProvider.provider);
+
+const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
+const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods.mods);
+
+function getPaginationSize() {
+    return Math.ceil(searchableThunderstoreModList.value.length / PAGE_SIZE);
+}
+
+function changePage() {
+    pagedThunderstoreModList.value = searchableThunderstoreModList.value.slice(
+        (pageNumber.value - 1) * PAGE_SIZE,
+        pageNumber.value * PAGE_SIZE
+    );
+}
+
+watch(pageNumber, changePage);
+
+function filterThunderstoreModList() {
+    const allowNsfw = store.state.modFilters.allowNsfw;
+    const filterCategoriesToCompareOne = store.state.modFilters.selectedCategoriesCompareOne;
+    const filterCategoriesToCompareAll = store.state.modFilters.selectedCategoriesCompareAll;
+    const filterCategoriesToExclude = store.state.modFilters.selectedCategoriesToExclude;
+    const showDeprecatedPackages = store.state.modFilters.showDeprecatedPackages;
+
+    let searchableList = sortedThunderstoreModList.value;
+    const searchKeys = SearchUtils.makeKeys(thunderstoreSearchFilter.value);
+    if (searchKeys.length > 0) {
+        searchableList = sortedThunderstoreModList.value.filter((x: ThunderstoreMod) => {
+            return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
+        });
     }
-})
-
-export default class OnlineModView extends Vue {
-    readonly pageSize = 40;
-    pagedThunderstoreModList: ThunderstoreMod[] = [];
-    pageNumber = 1;
-    searchableThunderstoreModList: ThunderstoreMod[] = [];
-    sortedThunderstoreModList: ThunderstoreMod[] = [];
-    thunderstoreSearchFilter = "";
-    previewMod: ThunderstoreMod | null = null;
-
-    get localModList(): ManifestV2[] {
-        return this.$store.state.profile.modList;
+    if (!allowNsfw) {
+        searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
     }
-
-    get thunderstoreModList(): ThunderstoreMod[] {
-        return this.$store.state.tsMods.mods;
-    }
-
-    getPaginationSize() {
-        return Math.ceil(this.searchableThunderstoreModList.length / this.pageSize);
-    }
-
-    @Watch("pageNumber")
-    changePage() {
-        this.pagedThunderstoreModList = this.searchableThunderstoreModList.slice(
-            (this.pageNumber - 1) * this.pageSize,
-            this.pageNumber * this.pageSize
+    if (!showDeprecatedPackages) {
+        searchableList = searchableList.filter(
+            mod => !store.state.tsMods.deprecated.get(mod.getFullName())
         );
     }
 
-    @Watch("thunderstoreSearchFilter")
-    performThunderstoreFilterUpdate() {
-        this.pageNumber = 1;
-        this.filterThunderstoreModList();
+    // Category filters
+    if (filterCategoriesToExclude.length > 0) {
+        searchableList = searchableList.filter((x: ThunderstoreMod) =>
+            !filterCategoriesToExclude.some((category: string) => x.getCategories().includes(category)))
+    }
+    if (filterCategoriesToCompareOne.length > 0) {
+        searchableList = searchableList.filter((x: ThunderstoreMod) =>
+            filterCategoriesToCompareOne.some((category: string) => x.getCategories().includes(category)))
+    }
+    if (filterCategoriesToCompareAll.length > 0) {
+        searchableList = searchableList.filter((x: ThunderstoreMod) =>
+            filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
     }
 
-    @Watch("$store.state.modFilters.allowNsfw")
-    @Watch("$store.state.modFilters.selectedCategoriesCompareOne")
-    @Watch("$store.state.modFilters.selectedCategoriesCompareAll")
-    @Watch("$store.state.modFilters.selectedCategoriesToExclude")
-    @Watch("$store.state.modFilters.showDeprecatedPackages")
-    filterThunderstoreModList() {
-        const allowNsfw = this.$store.state.modFilters.allowNsfw;
-        const filterCategoriesToCompareOne = this.$store.state.modFilters.selectedCategoriesCompareOne;
-        const filterCategoriesToCompareAll = this.$store.state.modFilters.selectedCategoriesCompareAll;
-        const filterCategoriesToExclude = this.$store.state.modFilters.selectedCategoriesToExclude;
-        const showDeprecatedPackages = this.$store.state.modFilters.showDeprecatedPackages;
+    searchableThunderstoreModList.value = [...searchableList];
 
-        let searchableList = this.sortedThunderstoreModList;
-        const searchKeys = SearchUtils.makeKeys(this.thunderstoreSearchFilter);
-        if (searchKeys.length > 0) {
-            searchableList = this.sortedThunderstoreModList.filter((x: ThunderstoreMod) => {
-                return SearchUtils.isSearched(searchKeys, x.getFullName(), x.getDescription())
-            });
-        }
-        if (!allowNsfw) {
-            searchableList = searchableList.filter(mod => !mod.getNsfwFlag());
-        }
-        if (!showDeprecatedPackages) {
-            searchableList = searchableList.filter(
-                mod => !this.$store.state.tsMods.deprecated.get(mod.getFullName())
-            );
-        }
+    // Update results
+    changePage();
+}
 
-        // Category filters
-        if (filterCategoriesToExclude.length > 0) {
-            searchableList = searchableList.filter((x: ThunderstoreMod) =>
-                !filterCategoriesToExclude.some((category: string) => x.getCategories().includes(category)))
+function sortThunderstoreModList() {
+    const sortDescending = store.state.modFilters.sortDirection == SortingDirection.STANDARD;
+    const sortedList = [...thunderstoreModList.value];
+    sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
+        let result: boolean;
+        switch (store.state.modFilters.sortBehaviour) {
+            case SortingStyle.LAST_UPDATED:
+                result = a.getDateUpdated() < b.getDateUpdated();
+                break;
+            case SortingStyle.ALPHABETICAL:
+                result = a.getName().localeCompare(b.getName()) > 0;
+                break;
+            case SortingStyle.DOWNLOADS:
+                result = a.getDownloadCount() < b.getDownloadCount();
+                break;
+            case SortingStyle.RATING:
+                result = a.getRating() < b.getRating();
+                break;
+            case SortingStyle.DEFAULT:
+                result = true;
+                break;
+            default:
+                result = true;
+                break;
         }
-        if (filterCategoriesToCompareOne.length > 0) {
-            searchableList = searchableList.filter((x: ThunderstoreMod) =>
-                filterCategoriesToCompareOne.some((category: string) => x.getCategories().includes(category)))
-        }
-        if (filterCategoriesToCompareAll.length > 0) {
-            searchableList = searchableList.filter((x: ThunderstoreMod) =>
-                filterCategoriesToCompareAll.every((category: string) => x.getCategories().includes(category)))
-        }
+        const sortOrder = result ? 1 : -1;
+        return sortDescending ? sortOrder : -sortOrder;
+    });
+    sortedThunderstoreModList.value = sortedList;
+    filterThunderstoreModList();
+}
 
-        this.searchableThunderstoreModList = [...searchableList];
+watch(thunderstoreSearchFilter, () => {
+    pageNumber.value = 1;
+    filterThunderstoreModList();
+});
 
-        // Update results
-        this.changePage();
+watch(() => [
+    store.state.modFilters.allowNsfw,
+    store.state.modFilters.selectedCategoriesCompareOne,
+    store.state.modFilters.selectedCategoriesCompareAll,
+    store.state.modFilters.selectedCategoriesToExclude,
+    store.state.modFilters.showDeprecatedPackages,
+], () => {
+    filterThunderstoreModList();
+});
+
+watch(() => [
+    store.state.modFilters.sortDirection,
+    store.state.modFilters.sortBehaviour,
+    thunderstoreModList,
+], () => {
+    sortThunderstoreModList();
+})
+
+function updatePageNumber(page: number) {
+    pageNumber.value = page;
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto"
+    });
+}
+
+function toggleModPreview(mod: ThunderstoreMod) {
+    if (previewMod.value === mod) {
+        previewMod.value = null;
+    } else {
+        previewMod.value = mod;
     }
+}
 
-    @Watch("$store.state.modFilters.sortDirection")
-    @Watch("$store.state.modFilters.sortBehaviour")
-    @Watch("thunderstoreModList")
-    sortThunderstoreModList() {
-        const sortDescending = this.$store.state.modFilters.sortDirection == SortingDirection.STANDARD;
-        const sortedList = [...this.thunderstoreModList];
-        sortedList.sort((a: ThunderstoreMod, b: ThunderstoreMod) => {
-            let result: boolean;
-            switch (this.$store.state.modFilters.sortBehaviour) {
-                case SortingStyle.LAST_UPDATED:
-                    result = a.getDateUpdated() < b.getDateUpdated();
-                    break;
-                case SortingStyle.ALPHABETICAL:
-                    result = a.getName().localeCompare(b.getName()) > 0;
-                    break;
-                case SortingStyle.DOWNLOADS:
-                    result = a.getDownloadCount() < b.getDownloadCount();
-                    break;
-                case SortingStyle.RATING:
-                    result = a.getRating() < b.getRating();
-                    break;
-                case SortingStyle.DEFAULT:
-                    result = true;
-                    break;
-                default:
-                    result = true;
-                    break;
-            }
-            const sortOrder = result ? 1 : -1;
-            return sortDescending ? sortOrder : -sortOrder;
-        });
-        this.sortedThunderstoreModList = sortedList;
-        this.filterThunderstoreModList();
-    }
-
-    updatePageNumber(page: number) {
-        this.pageNumber = page;
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "auto"
-        });
-    }
-
-    toggleModPreview(mod: ThunderstoreMod) {
-        if (this.previewMod === mod) {
-            this.previewMod = null;
-        } else {
-            this.previewMod = mod;
-        }
-    }
-
-    async created() {
-        this.sortThunderstoreModList();
-    }
-};
+onMounted(() => {
+    sortThunderstoreModList();
+});
 </script>
 
 <style lang="scss" scoped>
