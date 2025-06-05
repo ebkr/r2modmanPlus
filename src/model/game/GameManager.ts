@@ -1007,6 +1007,18 @@ export default class GameManager {
             "https://thunderstore.io/c/9-kings/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "2784470")], "9Kings.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, [""]),
+
+        new Game("Return of the Obra Dinn", "ObraDinn", "ObraDinn",
+            "ObraDinn", ["ObraDinn.exe"], "ObraDinn_Data",
+            "https://thunderstore.io/c/return-of-the-obra-dinn/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "653530")], "ObraDinn.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["rotod"]),
+
+        new Game("Guilty as Sock!", "GuiltyasSock", "GuiltyasSock",
+            "Guilty as Sock!", ["StandaloneWindows64.exe"], "StandaloneWindows64_Data",
+            "https://thunderstore.io/c/guilty-as-sock/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3400930")], "GuiltyasSock.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gas"]),
     ];
 
     static get activeGame(): Game {
