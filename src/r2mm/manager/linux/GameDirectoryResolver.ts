@@ -24,10 +24,15 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         try {
             const dirs = [
+                // Standard paths
                 path.resolve(homedir(), '.local', 'share', 'Steam'),
                 path.resolve(homedir(), '.steam', 'steam'),
                 path.resolve(homedir(), '.steam', 'root'),
                 path.resolve(homedir(), '.steam'),
+                // Debian-specific paths
+                path.resolve(homedir(), '.steam', 'debian-installation'),
+                path.resolve(homedir(), '.steam', 'debian-installation', 'ubuntu12_32'),
+                // Flatpak paths
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
                 path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
@@ -243,10 +248,24 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     }
 
     private async findAppManifestLocation(steamPath: string, game: Game): Promise<R2Error | string> {
+        // Check if we're at the end of the Steam path hierarchy
+        const parentOfSteamPath = path.dirname(steamPath);
+        const steamPathBaseName = path.basename(steamPath);
+        
+        // For special cases like debian-installation, we need to check if steamapps is in the parent directory
+        let additionalPaths: string[] = [];
+        if (steamPathBaseName === 'ubuntu12_32' && parentOfSteamPath.endsWith('debian-installation')) {
+            additionalPaths.push(path.join(parentOfSteamPath, 'steamapps')); // Direct steamapps in debian-installation
+        }
+        
         const probableSteamAppsLocations = [
+            // Standard locations
             path.join(steamPath, 'steamapps'), // every proper linux distro ever
             path.join(steamPath, 'steam', 'steamapps'), // Ubuntu LTS
-            path.join(steamPath, 'root', 'steamapps') // wtf? expect the unexpectable
+            path.join(steamPath, 'root', 'steamapps'), // wtf? expect the unexpectable
+            path.join(steamPath, 'debian-installation', 'steamapps'), // Debian installation
+            // Additional special case locations
+            ...additionalPaths
         ];
 
         let steamapps: string | undefined;

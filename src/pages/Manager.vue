@@ -320,7 +320,11 @@ import SortModal from '../components/modals/SortModal.vue';
 				case 'win32':
 					return path.basename(file).toLowerCase() === "steam.exe"
 				case 'linux':
-                    return path.basename(file).toLowerCase() === "steam.sh"
+                    const basename = path.basename(file).toLowerCase();
+                    // Accept steam.sh script, plain 'steam' executable, or any file named 'steam' (for ELF binaries)
+                    return basename === "steam.sh" || basename === "steam" || 
+                           // Check if file exists and is executable
+                           (basename.includes("steam") && await this.isFileExecutable(file))
                 case 'darwin':
                     return path.basename(file).toLowerCase() === 'steam.app'
                 default:
@@ -333,7 +337,11 @@ import SortModal from '../components/modals/SortModal.vue';
 			InteractionProvider.instance.selectFile({
                 title: 'Locate Steam Executable',
                 defaultPath: steamDir,
-                filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
+                filters: process.platform === 'linux' 
+                    ? [
+                        { name: "All Files", extensions: ["*"] }
+                      ]
+                    : [{ name: "Steam", extensions: ["exe", "sh", "app"] }],
                 buttonLabel: 'Select Executable'
             }).then(async files => {
 				if (files.length === 1) {
@@ -572,6 +580,20 @@ import SortModal from '../components/modals/SortModal.vue';
 
 			this.isManagerUpdateAvailable();
 		}
+
+        async isFileExecutable(file: string): Promise<boolean> {
+            try {
+                // Check if file exists
+                const exists = await FsProvider.instance.exists(file);
+                if (!exists) return false;
+                
+                // Get file stats and check if it's a valid file
+                const stats = await FsProvider.instance.stat(file);
+                return stats.isFile();
+            } catch (e) {
+                return false;
+            }
+        }
 	}
 
 </script>
