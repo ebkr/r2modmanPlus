@@ -11,7 +11,7 @@ import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/
 import { exec } from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 

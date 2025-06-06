@@ -154,7 +154,7 @@ import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
@@ -413,7 +413,7 @@ async function copyLogToClipboard() {
         case PackageLoader.BEPINEX:
             logOutputPath = path.join(profile.value.getProfilePath(), "BepInEx", "LogOutput.log");
             break;
-        case PackageLoader.MELON_LOADER:
+        case PackageLoader.MELONLOADER:
             logOutputPath = path.join(profile.value.getProfilePath(), "MelonLoader", "Latest.log");
             break;
         case PackageLoader.RETURN_OF_MODDING:

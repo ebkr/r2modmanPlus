@@ -1,7 +1,6 @@
 import R2Error from '../errors/R2Error';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
-import { PackageLoader } from '../../model/installing/PackageLoader';
-import { GameInstanceType, GameSelectionDisplayMode, Platform } from '../../model/schema/ThunderstoreSchema';
+import { GameInstanceType, GameSelectionDisplayMode, PackageLoader, Platform } from '../../model/schema/ThunderstoreSchema';
 
 export default class Game {
 

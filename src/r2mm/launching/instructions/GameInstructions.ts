@@ -1,4 +1,4 @@
-import { PackageLoader } from '../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../model/schema/ThunderstoreSchema';
 import Game from '../../../model/game/Game';
 import GameInstructionGenerator from './instructions/GameInstructionGenerator';
 import BepInExGameInstructions from './instructions/loader/BepInExGameInstructions';
@@ -25,10 +25,10 @@ export default class GameInstructions {
 
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
-        [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
-        [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
+        [PackageLoader.MELONLOADER, new MelonLoaderGameInstructions()],
+        [PackageLoader.RECURSIVE_MELONLOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
-        [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
+        [PackageLoader.GODOTML, new GodotMLGameInstructions()],
         [PackageLoader.NONE, new CustomInstructions()],
         [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
         [PackageLoader.LOVELY, new LovelyGameInstructions()],

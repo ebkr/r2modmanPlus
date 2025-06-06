@@ -3,7 +3,7 @@ import path from "path";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
-import { PackageLoader } from "../model/installing/PackageLoader";
+import { PackageLoader } from "../model/schema/ThunderstoreSchema";
 import FsProvider from "../providers/generic/file/FsProvider";
 import { MODLOADER_PACKAGES } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import FileUtils from "../utils/FileUtils";

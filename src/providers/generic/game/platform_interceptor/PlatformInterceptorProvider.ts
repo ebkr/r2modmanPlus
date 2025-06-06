@@ -1,7 +1,7 @@
 import ProviderUtils from '../../../../providers/generic/ProviderUtils';
 import GameRunnerProvider from '../../../generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { Platform } from '../../../../model/schema/ThunderstoreSchema';
 
 export default abstract class PlatformInterceptorProvider {

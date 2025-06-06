@@ -11,6 +11,7 @@ import R2Error from "../errors/R2Error";
 export {
     GameInstanceType,
     GameSelectionDisplayMode,
+    Loader as PackageLoader,
     TrackingMethod,
     Platform,
 } from "../../assets/data/ecosystemTypes";

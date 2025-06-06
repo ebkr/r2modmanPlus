@@ -1,10 +1,6 @@
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
-import {
-    installerVariantFromString,
-    PackageLoader,
-} from '../../../model/installing/PackageLoader';
 import VersionNumber from '../../../model/VersionNumber';
-import { EcosystemSchema } from '../../../model/schema/ThunderstoreSchema';
+import { EcosystemSchema, PackageLoader } from '../../../model/schema/ThunderstoreSchema';
 
 /**
  * A set of modloader packages read from the ecosystem schema.
@@ -13,7 +9,7 @@ export const MODLOADER_PACKAGES = EcosystemSchema.modloaderPackages.map((x) =>
     new ModLoaderPackageMapping(
         x.packageId,
         x.rootFolder,
-        installerVariantFromString(x.loader),
+        x.loader,
     ),
 );
 
@@ -26,7 +22,7 @@ const OVERRIDES: Modloaders = {
         new ModLoaderPackageMapping(
             'LavaGang-MelonLoader',
             '',
-            PackageLoader.MELON_LOADER,
+            PackageLoader.MELONLOADER,
             new VersionNumber('0.5.4'),
         ),
     ],

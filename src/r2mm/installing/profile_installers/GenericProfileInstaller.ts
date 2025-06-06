@@ -16,9 +16,8 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { GetInstallerIdForLoader, GetInstallerIdForPlugin } from '../../../model/installing/PackageLoader';
-import { PackageInstallerId, PackageInstallers } from "../../../installers/registry";
-import { InstallArgs } from "../../../installers/PackageInstaller";
+import { getPackageLoaderInstaller, getPluginInstaller } from "../../../installers/registry";
+import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ShimloaderPluginInstaller } from "../../../installers/ShimloaderInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
@@ -37,22 +36,19 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     private async applyModModeForSubdir(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-        // TODO: Call through the installer interface. For now we hardcode the only known case because expanding the
+        // TODO: Call through the installer interface. For now we hardcode the only known cases because expanding the
         //       installer system is out of scope.
         //
         //       In other words, this entire functionality of enabling & disabling mods should exist as a callable on
         //       installers rather than here. Below is a dirty hack to fetch the install rules for the current only
         //       known case.
         let rule = this.rule;
-        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
-        if (installerId) {
-            const installer = PackageInstallers[installerId];
-            if (
-                installer instanceof ShimloaderPluginInstaller ||
-                installer instanceof ReturnOfModdingPluginInstaller
-            ) {
-                rule = installer.installer.rule;
-            }
+        const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
+        if (
+            installer instanceof ShimloaderPluginInstaller ||
+            installer instanceof ReturnOfModdingPluginInstaller
+        ) {
+            rule = installer.installer.rule;
         }
         if (!rule) {
             return;
@@ -169,11 +165,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
         // Installation logic for mods for games that use "plugins",
         // i.e. the newer approach for defining installation logic.
-        const pluginInstaller = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
+        const pluginInstaller = getPluginInstaller(GameManager.activeGame.packageLoader);
 
         if (pluginInstaller !== null) {
             try {
-                await PackageInstallers[pluginInstaller].install(args);
+                await pluginInstaller.install(args);
                 return Promise.resolve(null);
             } catch (e) {
                 return Promise.resolve(R2Error.fromThrownValue(e));
@@ -196,9 +192,9 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
-        const installerId = GetInstallerIdForLoader(mapping.loaderType);
-        if (installerId) {
-            await PackageInstallers[installerId].install(args);
+        const loaderInstaller = getPackageLoaderInstaller(mapping.loaderType);
+        if (loaderInstaller) {
+            await loaderInstaller.install(args);
             return Promise.resolve(null);
         } else {
             return new R2Error(
@@ -337,8 +333,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      */
     private async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const modLoader = this.getModLoader(mod);
-        const installerId = modLoader ? GetInstallerIdForLoader(modLoader.loaderType) : null;
-        return this.uninstallWithInstaller(installerId, mod, profile);
+        const installer = modLoader ? getPackageLoaderInstaller(modLoader.loaderType) : null;
+        return this.uninstallWithInstaller(installer, mod, profile);
     }
 
     /**
@@ -347,17 +343,15 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      * @return true if mod was uninstalled
      */
     private async uninstallModWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
-        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
-        return this.uninstallWithInstaller(installerId, mod, profile);
+        const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
+        return this.uninstallWithInstaller(installer, mod, profile);
     }
 
     private async uninstallWithInstaller(
-        installerId: PackageInstallerId | null,
+        installer: PackageInstaller | null,
         mod: ManifestV2,
         profile: ImmutableProfile
     ): Promise<boolean> {
-        const installer = installerId ? PackageInstallers[installerId] : undefined;
-
         if (installer && installer.uninstall) {
             const args = this.getInstallArgs(mod, profile);
             await installer.uninstall(args);
@@ -379,8 +373,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             return false;  // Don't process mod loader with plugin installer.
         }
 
-        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
-        const installer = installerId ? PackageInstallers[installerId] : undefined;
+        const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
 
         if (installer && installer.enable) {
             const args = this.getInstallArgs(mod, profile);
@@ -403,8 +396,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             return false;  // Don't process mod loader with plugin installer.
         }
 
-        const installerId = GetInstallerIdForPlugin(GameManager.activeGame.packageLoader);
-        const installer = installerId ? PackageInstallers[installerId] : undefined;
+        const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
 
         if (installer && installer.disable) {
             const args = this.getInstallArgs(mod, profile);
