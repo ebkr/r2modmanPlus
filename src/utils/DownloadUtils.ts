@@ -19,6 +19,9 @@ export function addSolutionsToError(err: R2Error): void {
 }
 
 export function generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
+    if (progress === 100 && currentIndex === total) {
+        return 100;
+    }
     const completedProgress = (currentIndex / total) * 100;
     const totalProgressPercentage = completedProgress + (progress * 1/total)
     return Math.floor(totalProgressPercentage);
