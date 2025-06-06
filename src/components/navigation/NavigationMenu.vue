@@ -6,10 +6,10 @@
                     <p class="menu-label">{{ activeGame.displayName }}</p>
                     <ul class="menu-list">
                         <li>
-                            <a href="#" @click="launch(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                            <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
                         </li>
                         <li>
-                            <a href="#" @click="launch(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
+                            <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
                         </li>
                     </ul>
                     <p class="menu-label">Mods</p>
@@ -73,9 +73,8 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 
-import { Component, Vue } from 'vue-property-decorator';
 import R2Error from '../../model/errors/R2Error';
 import Game from '../../model/game/Game';
 import Profile from '../../model/Profile';
@@ -87,57 +86,55 @@ import {
     throwIfNoGameDir
  } from '../../utils/LaunchUtils';
 import FileUtils from '../../utils/FileUtils';
+import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import VueRouter from 'vue-router';
 
-@Component
-export default class NavigationMenu extends Vue {
-    private LaunchMode = LaunchMode;
+const store = getStore<State>();
+let router!: VueRouter;
 
-    get activeGame(): Game {
-      return this.$store.state.activeGame;
-    }
+onMounted(() => {
+    router = getCurrentInstance()!.proxy.$router;
+});
 
-    get profile(): Profile {
-        return this.$store.getters['profile/activeProfile'];
-    };
+const activeGame = computed<Game>(() => store.state.activeGame);
+const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
+const localModCount = computed<number>(() => store.state.profile.modList.length);
 
-    get thunderstoreModCount() {
-        return this.$store.state.modFilters.showDeprecatedPackages
-          ? this.$store.state.tsMods.mods.length
-          : this.$store.getters['tsMods/undeprecatedModCount'];
-    }
+const thunderstoreModCount = computed(() =>
+    store.state.modFilters.showDeprecatedPackages
+        ? store.state.tsMods.mods.length
+        : store.getters['tsMods/undeprecatedModCount']
+);
 
-    get localModCount(): number {
-        return this.$store.state.profile.modList.length;
-    }
+function getTagLinkClasses(routeNames: string[]) {
+    const base = ["tag", "tagged-link__tag"];
+    return router && routeNames.includes(router.currentRoute.name || "") ? base : [...base, "is-link"];
+}
 
-    getTagLinkClasses(routeNames: string[]) {
-        const base = ["tag", "tagged-link__tag"];
-        return routeNames.includes(this.$route.name || "") ? base : [...base, "is-link"];
-    }
+function getGameImage() {
+    return FileUtils.requireImage(activeGame.value.gameImage);
+}
 
-    getGameImage() {
-        return FileUtils.requireImage(this.activeGame.gameImage);
-    }
+function openProfileManagementModal() {
+    store.commit("openProfileManagementModal");
+}
 
-    openProfileManagementModal() {
-        this.$store.commit("openProfileManagementModal");
-    }
+async function launchGame(mode: LaunchMode) {
+    try {
+        await setGameDirIfUnset(activeGame.value);
+        await throwIfNoGameDir(activeGame.value);
 
-    async launch(mode: LaunchMode) {
-        try {
-            await setGameDirIfUnset(this.activeGame);
-            await throwIfNoGameDir(this.activeGame);
-
-            if (mode === LaunchMode.MODDED) {
-                await linkProfileFiles(this.activeGame, this.profile.asImmutableProfile());
-            }
-
-            this.$store.commit("openGameRunningModal");
-            await launch(this.activeGame, this.profile, mode);
-        } catch (error) {
-            this.$store.commit("closeGameRunningModal");
-            this.$store.commit("error/handleError", R2Error.fromThrownValue(error));
+        if (mode === LaunchMode.MODDED) {
+            await linkProfileFiles(activeGame.value, profile.value.asImmutableProfile());
         }
+
+        store.commit("openGameRunningModal");
+        await launch(activeGame.value, profile.value, mode);
+    } catch (error) {
+        store.commit("closeGameRunningModal");
+        store.commit("error/handleError", R2Error.fromThrownValue(error));
     }
 }
 
