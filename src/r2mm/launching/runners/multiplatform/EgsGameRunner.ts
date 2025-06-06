@@ -6,7 +6,7 @@ import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import { shell } from 'electron';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
 import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
@@ -25,7 +25,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
         if (args instanceof R2Error) {
             return args
         }
-        if (game.packageLoader === PackageLoader.BEPINEX) {
+        if (game.packageLoader === PackageLoader.Bepinex) {
             // Enable doorstop and set preloader path
             const preloaderPath = await GameInstructionParser.parse(DynamicGameInstruction.BEPINEX_PRELOADER_PATH, game, profile);
             if (preloaderPath instanceof R2Error) {
@@ -66,7 +66,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        if (game.packageLoader === PackageLoader.BEPINEX) {
+        if (game.packageLoader === PackageLoader.Bepinex) {
             // Disable doorstop
             const updateResult = await this.updateDoorstopConfigVars(profile, {
                 UnityDoorstop: {

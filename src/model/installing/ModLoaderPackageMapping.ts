@@ -1,4 +1,4 @@
-import { PackageLoader } from '../../model/installing/PackageLoader';
+import { PackageLoader } from '../../model/schema/ThunderstoreSchema';
 import VersionNumber from '../../model/VersionNumber';
 
 export default class ModLoaderPackageMapping {

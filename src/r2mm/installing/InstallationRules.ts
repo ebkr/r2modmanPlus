@@ -1,7 +1,7 @@
 import * as path from 'path';
 
+import { getPluginInstaller } from '../../installers/registry';
 import GameManager from '../../model/game/GameManager';
-import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
 import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
 
 export type CoreRuleType = {
@@ -50,7 +50,7 @@ export default class InstallationRules {
     public static validate() {
         GameManager.gameList.forEach(value => {
             if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
-                if (GetInstallerIdForPlugin(value.packageLoader) === null) {
+                if (getPluginInstaller(value.packageLoader) === null) {
                     throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
                 }
             }

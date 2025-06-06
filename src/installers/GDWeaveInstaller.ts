@@ -8,7 +8,7 @@ import path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
 import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 import FileWriteError from '../model/errors/FileWriteError';
 import R2Error from '../model/errors/R2Error';
 
@@ -20,7 +20,7 @@ export class GDWeaveInstaller implements PackageInstaller {
             (entry) =>
                 entry.packageName.toLowerCase() ==
                     mod.getName().toLowerCase() &&
-                entry.loaderType == PackageLoader.GDWEAVE
+                entry.loaderType == PackageLoader.Gdweave
         );
 
         if (!mapping) {

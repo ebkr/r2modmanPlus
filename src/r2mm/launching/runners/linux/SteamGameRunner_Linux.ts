@@ -11,7 +11,7 @@ import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/
 import { exec } from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -29,7 +29,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         if (isProton) {
             // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
-            const proxyDll = game.packageLoader == PackageLoader.GDWEAVE ? "winmm" : "winhttp";
+            const proxyDll = game.packageLoader == PackageLoader.Gdweave ? "winmm" : "winhttp";
             const promise = await this.ensureWineWillLoadDllOverride(game, proxyDll);
             if (promise instanceof R2Error) {
                 return promise;

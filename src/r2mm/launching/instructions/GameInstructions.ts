@@ -1,4 +1,4 @@
-import { PackageLoader } from '../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../model/schema/ThunderstoreSchema';
 import Game from '../../../model/game/Game';
 import GameInstructionGenerator from './instructions/GameInstructionGenerator';
 import BepInExGameInstructions from './instructions/loader/BepInExGameInstructions';
@@ -24,16 +24,16 @@ export default class GameInstructions {
     ]);
 
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
-        [PackageLoader.BEPINEX, new BepInExGameInstructions()],
-        [PackageLoader.MELON_LOADER, new MelonLoaderGameInstructions()],
-        [PackageLoader.RECURSIVE_MELON_LOADER, new MelonLoaderGameInstructions()],
-        [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],
-        [PackageLoader.GODOT_ML, new GodotMLGameInstructions()],
-        [PackageLoader.NONE, new CustomInstructions()],
-        [PackageLoader.SHIMLOADER, new ShimloaderGameInstructions()],
-        [PackageLoader.LOVELY, new LovelyGameInstructions()],
-        [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
-        [PackageLoader.GDWEAVE, new GDWeaveGameInstructions()]
+        [PackageLoader.Bepinex, new BepInExGameInstructions()],
+        [PackageLoader.Melonloader, new MelonLoaderGameInstructions()],
+        [PackageLoader.RecursiveMelonloader, new MelonLoaderGameInstructions()],
+        [PackageLoader.Northstar, new NorthstarGameInstructions()],
+        [PackageLoader.Godotml, new GodotMLGameInstructions()],
+        [PackageLoader.None, new CustomInstructions()],
+        [PackageLoader.Shimloader, new ShimloaderGameInstructions()],
+        [PackageLoader.Lovely, new LovelyGameInstructions()],
+        [PackageLoader.Returnofmodding, new ReturnOfModdingGameInstructions()],
+        [PackageLoader.Gdweave, new GDWeaveGameInstructions()]
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {

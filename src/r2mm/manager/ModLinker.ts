@@ -11,12 +11,12 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
-import { PackageLoader } from "../../model/installing/PackageLoader";
+import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
 
 export default class ModLinker {
 
     public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
-        if (game.packageLoader == PackageLoader.BEPINEX) {
+        if (game.packageLoader == PackageLoader.Bepinex) {
             if (process.platform === 'linux') {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
                 if (!isProton) {
@@ -83,7 +83,7 @@ export default class ModLinker {
             return null;
         }
 
-        if (game.packageLoader == PackageLoader.SHIMLOADER) {
+        if (game.packageLoader == PackageLoader.Shimloader) {
             if (["ue4ss.dll", "dwmapi.dll", "ue4ss-settings.ini"].indexOf(lowercased) > -1) {
                 return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
             }

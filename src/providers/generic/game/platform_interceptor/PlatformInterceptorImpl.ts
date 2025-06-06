@@ -7,7 +7,7 @@ import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterce
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
 import XboxGamePassDirectoryResolver from '../directory_resolver/win/XboxGamePassDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
 import SteamGameRunner_Windows from '../../../../r2mm/launching/runners/windows/SteamGameRunner_Windows';
 import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/DirectGameRunner';
@@ -21,7 +21,7 @@ type PlatformRunnersType = {
 }
 
 type LoaderRunnersType = {
-    [loader: number]: PlatformRunnersType
+    [loader in PackageLoader]: PlatformRunnersType
 }
 
 type RunnerType = {
@@ -58,16 +58,16 @@ const XBOX_RUNNERS = {
 
 function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
     return {
-        [PackageLoader.BEPINEX]: runners,
-        [PackageLoader.MELON_LOADER]: runners,
-        [PackageLoader.NORTHSTAR]: runners,
-        [PackageLoader.NONE]: runners,
-        [PackageLoader.GODOT_ML]: runners,
-        [PackageLoader.SHIMLOADER]: runners,
-        [PackageLoader.LOVELY]: runners,
-        [PackageLoader.RETURN_OF_MODDING]: runners,
-        [PackageLoader.GDWEAVE]: runners,
-        [PackageLoader.RECURSIVE_MELON_LOADER]: runners,
+        [PackageLoader.Bepinex]: runners,
+        [PackageLoader.Melonloader]: runners,
+        [PackageLoader.Northstar]: runners,
+        [PackageLoader.None]: runners,
+        [PackageLoader.Godotml]: runners,
+        [PackageLoader.Shimloader]: runners,
+        [PackageLoader.Lovely]: runners,
+        [PackageLoader.Returnofmodding]: runners,
+        [PackageLoader.Gdweave]: runners,
+        [PackageLoader.RecursiveMelonloader]: runners,
     }
 }
 

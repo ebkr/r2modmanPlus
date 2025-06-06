@@ -159,7 +159,7 @@ import LinkProvider from '../providers/components/LinkProvider';
 import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 import GameInstructions from '../r2mm/launching/instructions/GameInstructions';
 import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
@@ -415,16 +415,16 @@ async function copyLogToClipboard() {
     const fs = FsProvider.instance;
     let logOutputPath = "";
     switch (activeGame.value.packageLoader) {
-        case PackageLoader.BEPINEX:
+        case PackageLoader.Bepinex:
             logOutputPath = path.join(profile.value.getProfilePath(), "BepInEx", "LogOutput.log");
             break;
-        case PackageLoader.MELON_LOADER:
+        case PackageLoader.Melonloader:
             logOutputPath = path.join(profile.value.getProfilePath(), "MelonLoader", "Latest.log");
             break;
-        case PackageLoader.RETURN_OF_MODDING:
+        case PackageLoader.Returnofmodding:
             logOutputPath = path.join(profile.value.getProfilePath(), "ReturnOfModding", "LogOutput.log");
             break;
-        case PackageLoader.GDWEAVE:
+        case PackageLoader.Gdweave:
             logOutputPath = path.join(profile.value.getProfilePath(), "GDWeave", "GDWeave.log");
             break;
     }

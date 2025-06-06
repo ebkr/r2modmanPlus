@@ -1,7 +1,7 @@
 import Profile from '../../model/Profile';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import GameManager from '../../model/game/GameManager';
-import { PackageLoader } from '../../model/installing/PackageLoader';
+import { PackageLoader } from '../../model/schema/ThunderstoreSchema';
 import Timeout = NodeJS.Timeout;
 
 let fs: FsProvider;
@@ -33,20 +33,20 @@ export default class LogOutput {
     private confirmOutputExists() {
         const game = GameManager.activeGame;
         switch (game.packageLoader) {
-            case PackageLoader.BEPINEX:
+            case PackageLoader.Bepinex:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('BepInEx', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
-            case PackageLoader.RETURN_OF_MODDING:
+            case PackageLoader.Returnofmodding:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('ReturnOfModding', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
-            case PackageLoader.MELON_LOADER:
-            case PackageLoader.NORTHSTAR:
+            case PackageLoader.Melonloader:
+            case PackageLoader.Northstar:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('MelonLoader', 'Latest.log'))
                     .then(value => this._exists = value);
                 break;
-            case PackageLoader.GDWEAVE:
+            case PackageLoader.Gdweave:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('GDWeave', 'GDWeave.log'))
                     .then(value => this._exists = value);
                 break;
