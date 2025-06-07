@@ -125,6 +125,7 @@ import Component, { mixins } from 'vue-class-component';
 
 import { ExternalLink, Hero, Progress } from '../components/all';
 import SplashMixin from '../components/mixins/SplashMixin.vue';
+import R2Error from '../model/errors/R2Error';
 import Game from '../model/game/Game';
 import RequestItem from '../model/requests/RequestItem';
 import FsProvider from '../providers/generic/file/FsProvider';
@@ -164,8 +165,18 @@ export default class Splash extends mixins(SplashMixin) {
     async moveToNextScreen() {
         if (process.platform === 'linux') {
             const activeGame: Game = this.$store.state.activeGame;
+            let activeGameIsProton: boolean | R2Error;
+            try {
+                activeGameIsProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame);
+                if (typeof activeGameIsProton !== 'boolean') {
+                    activeGameIsProton = true;
+                }
+            } catch (error) {
+                console.error(`Error checking if ${activeGame.displayName} uses Proton: ${error}`);
+                activeGameIsProton = true;
+            }
 
-            if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
+            if (!activeGameIsProton) {
                 console.log('Not proton game');
                 await this.ensureWrapperInGameFolder();
                 const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
