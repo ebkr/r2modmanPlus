@@ -28,11 +28,8 @@
     </div>
 </template>
 
-<script lang="ts">
-
+<script lang="ts" setup>
 import Draggable from 'vuedraggable';
-import { Component, Vue } from 'vue-property-decorator';
-import ManifestV2 from '../../model/ManifestV2';
 import R2Error from '../../model/errors/R2Error';
 import { ImmutableProfile } from '../../model/Profile';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
@@ -40,37 +37,28 @@ import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
 import LocalModCard from './LocalModList/LocalModCard.vue';
 import SearchAndSort from './LocalModList/SearchAndSort.vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed } from 'vue';
 
-@Component({
-        components: {
-            Draggable,
-            AssociatedModsModal,
-            DisableModModal,
-            UninstallModModal,
-            LocalModCard,
-            SearchAndSort,
-        }
-    })
-    export default class LocalModList extends Vue {
-        get profile(): ImmutableProfile {
-            return this.$store.getters['profile/activeProfile'].asImmutableProfile();
-        }
+const store = getStore<State>();
 
-        get draggableList(): ManifestV2[] {
-            return this.$store.getters['profile/visibleModList'];
-        }
-
-        set draggableList(newList: ManifestV2[]) {
-            try {
-                this.$store.dispatch(
-                    'profile/saveModListToDisk',
-                    {mods: newList, profile: this.profile}
-                );
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
+const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
+const draggableList = computed({
+    get() {
+        return store.getters['profile/visibleModList'];
+    },
+    set(newList: string) {
+        try {
+            store.dispatch(
+                'profile/saveModListToDisk',
+                {mods: newList, profile: profile.value}
+            );
+        } catch (e) {
+            store.commit('error/handleError', R2Error.fromThrownValue(e));
         }
     }
+});
 </script>
 
 <style lang="scss" scoped>
