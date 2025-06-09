@@ -62,7 +62,7 @@ const props = withDefaults(defineProps<ExpandableCardProps>(), {
     enabled: true,
 })
 
-const visible = ref<boolean | undefined>(false);
+const visible = ref<boolean>(false);
 
 const showSort = computed<boolean>(() => props.allowSorting && store.getters["profile/canSortMods"]);
 
