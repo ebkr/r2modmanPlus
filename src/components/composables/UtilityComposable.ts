@@ -6,6 +6,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import VueRouter from 'vue-router';
+import { InstallMode } from '../../utils/DependencyUtils';
 
 export function useUtilityComposable() {
 
@@ -36,9 +37,9 @@ export function useUtilityComposable() {
             try {
                 const game = store.state.activeGame;
                 const profile = store.getters['profile/activeProfile'].asImmutableProfile();
-                const combo = throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game));
-
-                await store.dispatch('download/downloadAndInstallSpecific', {profile, combo});
+                const combos = [throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game))];
+                const installMode = InstallMode.INSTALL_SPECIFIC;
+                await store.dispatch('download/downloadAndInstallCombos', {combos, game, installMode, profile});
 
                 const modList = throwForR2Error(await ProfileModList.getModList(profile));
                 await store.dispatch('profile/updateModList', modList);
