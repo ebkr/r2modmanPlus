@@ -54,12 +54,12 @@
                             </div>
                             <div class="margin-right">
                                 <a class="button is-info"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectGame(selectedGame)">Select
+                                   :disabled="selectedGame === null && !runningMigration" @click="selectGame(selectedGame)">Select
                                     {{ activeTab.toLowerCase() }}</a>
                             </div>
                             <div class="margin-right">
                                 <a class="button"
-                                   :disabled="selectedGame === null && !this.runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
+                                   :disabled="selectedGame === null && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -174,7 +174,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
@@ -189,199 +189,195 @@ import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
+import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
+import VueRouter from 'vue-router';
 
-@Component({
-    components: {
-        ModalCard,
-        Hero,
-        Modal
+const store = getStore<State>();
+let router!: VueRouter;
+
+const runningMigration = ref<boolean>(false);
+const selectedGame = ref<Game | null>(null);
+const filterText = ref<string>("");
+const showPlatformModal = ref<boolean>(false);
+const selectedPlatform = ref<StorePlatform | null>(null);
+const favourites = ref<string[]>([]);
+const settings = ref<ManagerSettings | undefined>(undefined);
+const isSettingDefaultPlatform = ref<boolean>(false);
+const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
+const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
+
+const gameInstanceTypes = Object.values(GameInstanceType);
+
+const filteredGameList = computed(() => {
+    const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
+        return game.additionalSearchStrings.find(value => value.toLowerCase().trim().indexOf(filterText.toLowerCase().trim()) >= 0) !== undefined;
+    }
+    return gameList.value
+        .filter(value => value.displayName.toLowerCase().indexOf(
+            filterText.value.toLowerCase()) >= 0
+            || filterText.value.trim().length === 0
+            || displayNameInAdditionalSearch(value, filterText.value))
+        .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
+        .filter(value => value.instanceType === activeTab.value);
+});
+
+const gameList = computed<Game[]>(() => {
+    return GameManager.gameList.sort((a, b) => {
+        if (favourites.value.includes(a.settingsIdentifier)) {
+            if (favourites.value.includes(b.settingsIdentifier)) {
+                return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
+            } else {
+                return -1;
+            }
+        } else if (favourites.value.includes(b.settingsIdentifier)) {
+            return 1;
+        }
+        return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
+    });
+});
+
+function changeTab(key: string) {
+    for (const objKey of Object.keys(GameInstanceType)) {
+        if ((GameInstanceType as any)[objKey] === key) {
+            activeTab.value = (GameInstanceType as any)[objKey];
+        }
+    }
+}
+
+function selectGame(game: Game) {
+    selectedGame.value = game;
+    isSettingDefaultPlatform.value = false;
+    if (game.storePlatformMetadata.length > 1) {
+        selectedPlatform.value = null;
+        showPlatformModal.value = true;
+    } else {
+        selectedPlatform.value = game.storePlatformMetadata[0].storePlatform;
+        showPlatformModal.value = false;
+        proceed();
+    }
+}
+
+function selectDefaultGame(game: Game) {
+    selectedGame.value = game;
+    isSettingDefaultPlatform.value = true;
+    if (game.storePlatformMetadata.length > 1) {
+        showPlatformModal.value = true;
+    } else {
+        selectedPlatform.value = game.storePlatformMetadata[0].storePlatform;
+        showPlatformModal.value = false;
+        proceedDefault();
+    }
+}
+
+function selectPlatform() {
+    if (isSettingDefaultPlatform.value) {
+        proceedDefault()
+    } else {
+        proceed();
+    }
+}
+
+async function proceed() {
+    if (runningMigration.value || selectedGame.value === null || selectedPlatform.value === null) {
+        return;
+    }
+
+    try {
+        ProviderUtils.setupGameProviders(selectedGame.value, selectedPlatform.value);
+    } catch (error) {
+        if (error instanceof R2Error) {
+            store.commit('error/handleError', error);
+            return;
+        }
+
+        throw error;
+    }
+
+    const settings = await ManagerSettings.getSingleton(selectedGame.value);
+    await settings.setLastSelectedGame(selectedGame.value);
+    await GameManager.activate(selectedGame.value, selectedPlatform.value);
+    await store.dispatch("setActiveGame", selectedGame.value);
+
+    await router.push({name: "splash"});
+}
+
+async function proceedDefault() {
+    if (runningMigration.value || selectedGame.value === null || selectedPlatform.value === null) {
+        return;
+    }
+
+    const settings = await ManagerSettings.getSingleton(selectedGame.value);
+    await settings.setDefaultGame(selectedGame.value);
+    await settings.setDefaultStorePlatform(selectedPlatform.value);
+
+    proceed();
+}
+
+function toggleFavourite(game: Game) {
+    if (favourites.value.includes(game.settingsIdentifier)) {
+        favourites.value = favourites.value.filter(value => value !== game.settingsIdentifier)
+    } else {
+        favourites.value = [...favourites.value, game.settingsIdentifier];
+    }
+    if (settings.value !== undefined) {
+        settings.value.setFavouriteGames(favourites.value);
+    }
+}
+
+function isFavourited(game: Game) {
+    if (settings.value !== undefined) {
+        return favourites.value.includes(game.settingsIdentifier);
+    }
+}
+
+onMounted(async () => {
+    router = getCurrentInstance()!.proxy.$router;
+
+    runningMigration.value = true;
+    await store.dispatch('checkMigrations');
+    runningMigration.value = false;
+
+    await store.dispatch('resetLocalState');
+
+    settings.value = await ManagerSettings.getSingleton(GameManager.defaultGame);
+    const globalSettings = settings.value.getContext().global;
+    favourites.value = globalSettings.favouriteGames || [];
+    selectedGame.value = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
+
+    switch(globalSettings.gameSelectionViewMode) {
+        case GameSelectionViewMode.LIST:
+        case GameSelectionViewMode.CARD:
+            viewMode.value = globalSettings.gameSelectionViewMode;
+            break;
+        default:
+            viewMode.value = GameSelectionViewMode.CARD;
+    }
+
+    // Skip game selection view if valid default game & platform are set.
+    const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(settings.value);
+
+    if (defaultGame && defaultPlatform) {
+        selectedGame.value = defaultGame;
+        selectedPlatform.value = defaultPlatform;
+        proceed();
     }
 })
-export default class GameSelectionScreen extends Vue {
 
-    private runningMigration = false;
-    private selectedGame: Game | null = null;
-    private filterText: string = "";
-    private showPlatformModal: boolean = false;
-    private selectedPlatform: StorePlatform | null = null;
-    private favourites: string[] = [];
-    private settings: ManagerSettings | undefined;
-    private isSettingDefaultPlatform: boolean = false;
-    private viewMode = GameSelectionViewMode.LIST;
-    private activeTab = GameInstanceType.GAME;
-
-    get gameInstanceTypes(): string[] {
-        return Object.values(GameInstanceType);
+function toggleViewMode() {
+    if (viewMode.value === GameSelectionViewMode.LIST) {
+        viewMode.value = GameSelectionViewMode.CARD;
+    } else {
+        viewMode.value = GameSelectionViewMode.LIST;
     }
-
-    get filteredGameList() {
-        const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
-            return game.additionalSearchStrings.find(value => value.toLowerCase().trim().indexOf(filterText.toLowerCase().trim()) >= 0) !== undefined;
-        }
-        return this.gameList
-            .filter(value => value.displayName.toLowerCase().indexOf(
-                this.filterText.toLowerCase()) >= 0
-                || this.filterText.trim().length === 0
-                || displayNameInAdditionalSearch(value, this.filterText))
-            .filter(value => value.displayMode === GameSelectionDisplayMode.VISIBLE)
-            .filter(value => value.instanceType === this.activeTab);
+    if (settings.value !== undefined) {
+        settings.value.setGameSelectionViewMode(viewMode.value);
     }
+}
 
-    get gameList(): Game[] {
-        return GameManager.gameList.sort((a, b) => {
-            if (this.favourites.includes(a.settingsIdentifier)) {
-                if (this.favourites.includes(b.settingsIdentifier)) {
-                    return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-                } else {
-                    return -1;
-                }
-            } else if (this.favourites.includes(b.settingsIdentifier)) {
-                return 1;
-            }
-            return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
-        });
-    }
-
-    private changeTab(key: string) {
-        for (const objKey of Object.keys(GameInstanceType)) {
-            if ((GameInstanceType as any)[objKey] === key) {
-                this.activeTab = (GameInstanceType as any)[objKey];
-            }
-        }
-    }
-
-    private selectGame(game: Game) {
-        this.selectedGame = game;
-        this.isSettingDefaultPlatform = false;
-        if (game.storePlatformMetadata.length > 1) {
-            this.selectedPlatform = null;
-            this.showPlatformModal = true;
-        } else {
-            this.selectedPlatform = game.storePlatformMetadata[0].storePlatform;
-            this.showPlatformModal = false;
-            this.proceed();
-        }
-    }
-
-    private selectDefaultGame(game: Game) {
-        this.selectedGame = game;
-        this.isSettingDefaultPlatform = true;
-        if (game.storePlatformMetadata.length > 1) {
-            this.showPlatformModal = true;
-        } else {
-            this.selectedPlatform = game.storePlatformMetadata[0].storePlatform;
-            this.showPlatformModal = false;
-            this.proceedDefault();
-        }
-    }
-
-    private selectPlatform() {
-        if (this.isSettingDefaultPlatform) {
-            this.proceedDefault()
-        } else {
-            this.proceed();
-        }
-    }
-
-    private async proceed() {
-        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
-            return;
-        }
-
-        try {
-            ProviderUtils.setupGameProviders(this.selectedGame, this.selectedPlatform);
-        } catch (error) {
-            if (error instanceof R2Error) {
-                this.$store.commit('error/handleError', error);
-                return;
-            }
-
-            throw error;
-        }
-
-        const settings = await ManagerSettings.getSingleton(this.selectedGame);
-        await settings.setLastSelectedGame(this.selectedGame);
-        await GameManager.activate(this.selectedGame, this.selectedPlatform);
-        await this.$store.dispatch("setActiveGame", this.selectedGame);
-
-        await this.$router.push({name: "splash"});
-    }
-
-    private async proceedDefault() {
-        if (this.runningMigration || this.selectedGame === null || this.selectedPlatform === null) {
-            return;
-        }
-
-        const settings = await ManagerSettings.getSingleton(this.selectedGame);
-        await settings.setDefaultGame(this.selectedGame);
-        await settings.setDefaultStorePlatform(this.selectedPlatform);
-
-        this.proceed();
-    }
-
-    private toggleFavourite(game: Game) {
-        if (this.favourites.includes(game.settingsIdentifier)) {
-            this.favourites = this.favourites.filter(value => value !== game.settingsIdentifier)
-        } else {
-            this.favourites = [...this.favourites, game.settingsIdentifier];
-        }
-        if (this.settings !== undefined) {
-            this.settings.setFavouriteGames(this.favourites);
-        }
-    }
-
-    isFavourited(game: Game) {
-        if (this.settings !== undefined) {
-            return this.favourites.includes(game.settingsIdentifier);
-        }
-    }
-
-    async created() {
-        this.runningMigration = true;
-        await this.$store.dispatch('checkMigrations');
-        this.runningMigration = false;
-
-        await this.$store.dispatch('resetLocalState');
-
-        this.settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
-        const globalSettings = this.settings.getContext().global;
-        this.favourites = globalSettings.favouriteGames || [];
-        this.selectedGame = GameManager.findByFolderName(globalSettings.lastSelectedGame) || null;
-
-        switch(globalSettings.gameSelectionViewMode) {
-            case GameSelectionViewMode.LIST:
-            case GameSelectionViewMode.CARD:
-                this.viewMode = globalSettings.gameSelectionViewMode;
-                break;
-            default:
-                this.viewMode = GameSelectionViewMode.CARD;
-        }
-
-        // Skip game selection view if valid default game & platform are set.
-        const {defaultGame, defaultPlatform} = ManagerUtils.getDefaults(this.settings);
-
-        if (defaultGame && defaultPlatform) {
-            this.selectedGame = defaultGame;
-            this.selectedPlatform = defaultPlatform;
-            this.proceed();
-        }
-    }
-
-    toggleViewMode() {
-        if (this.viewMode === GameSelectionViewMode.LIST) {
-            this.viewMode = GameSelectionViewMode.CARD;
-        } else {
-            this.viewMode = GameSelectionViewMode.LIST;
-        }
-        if (this.settings !== undefined) {
-            this.settings.setGameSelectionViewMode(this.viewMode);
-        }
-    }
-
-    getImage(image: string) {
-        return require("../assets/images/game_selection/" + image);
-    }
-
+function getImage(image: string) {
+    return require("../assets/images/game_selection/" + image);
 }
 </script>
 
