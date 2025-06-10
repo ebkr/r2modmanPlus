@@ -47,11 +47,11 @@ import { State } from '../store';
 const store = getStore<State>();
 
 type ExpandableCardProps = {
-    image: string;
-    description: string;
+    image?: string;
+    description?: string;
     id: string;
-    allowSorting: boolean;
-    enabled: boolean;
+    allowSorting?: boolean;
+    enabled?: boolean;
 }
 
 const props = withDefaults(defineProps<ExpandableCardProps>(), {
