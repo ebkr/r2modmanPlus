@@ -125,7 +125,6 @@ async function saveCfg() {
 }
 
 async function saveNonCfg() {
-    console.log('Saving non cfg:', fileText.value);
     const fs = FsProvider.instance;
     await fs.writeFile(props.configFile.getPath(), fileText.value);
     window.scrollTo(0, 0);
