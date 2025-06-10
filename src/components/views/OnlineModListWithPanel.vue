@@ -34,10 +34,7 @@
     </div>
 </template>
 
-<script lang="ts">
-
-import { Prop, Vue } from 'vue-property-decorator';
-import Component from 'vue-class-component';
+<script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import { ExpandableCard, ExternalLink } from '../all';
 import DownloadModModal from './DownloadModModal.vue';
@@ -45,51 +42,45 @@ import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import OnlineRowCard from '../OnlineRowCard.vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed } from 'vue';
 
-@Component({
-    components: {
-        OnlineRowCard,
-        DonateButton,
-        DownloadModModal,
-        ExpandableCard,
-        ExternalLink
-    }
-})
-export default class OnlineModListWithPanel extends Vue {
+const store = getStore<State>();
 
-    @Prop()
-    pagedModList!: ThunderstoreMod[];
+type OnlineModListWithPanelProps = {
+    pagedModList?: ThunderstoreMod[];
+    selectedMod?: ThunderstoreMod | null;
+    readOnly?: boolean;
+}
 
-    @Prop()
-    selectedMod: ThunderstoreMod | null = null;
+const props = withDefaults(defineProps<OnlineModListWithPanelProps>(), {
+    pagedModList: [],
+    selectedMod: null,
+    readOnly: false,
+});
 
-    @Prop({default: false})
-    readOnly!: boolean;
+const emits = defineEmits<{
+    (e: 'selected-mod', mod: ThunderstoreMod): void;
+}>();
 
-    get localModList(): ManifestV2[] {
-        return this.$store.state.profile.modList;
-    }
+const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
+const deprecationMap = computed<Map<string, boolean>>(() => store.state.tsMods.deprecated);
 
-    get deprecationMap(): Map<string, boolean> {
-        return this.$store.state.tsMods.deprecated;
-    }
+function isModDeprecated(mod: ThunderstoreMod) {
+    return deprecationMap.value.get(mod.getFullName()) || false;
+}
 
-    isModDeprecated(mod: ThunderstoreMod) {
-        return this.deprecationMap.get(mod.getFullName()) || false;
-    }
+function isThunderstoreModInstalled(mod: ThunderstoreMod) {
+    return localModList.value.find((local: ManifestV2) => local.getName() === mod.getFullName()) != undefined;
+}
 
-    isThunderstoreModInstalled(mod: ThunderstoreMod) {
-        return this.localModList.find((local: ManifestV2) => local.getName() === mod.getFullName()) != undefined;
-    }
+function getImageUrl(mod: ThunderstoreMod): string {
+    return CdnProvider.replaceCdnHost(mod.getIcon());
+}
 
-    getImageUrl(mod: ThunderstoreMod): string {
-        return CdnProvider.replaceCdnHost(mod.getIcon());
-    }
-
-    emitCardClick(mod: ThunderstoreMod) {
-        this.$emit("selected-mod", mod);
-    }
-
+function emitCardClick(mod: ThunderstoreMod) {
+    emits("selected-mod", mod);
 }
 
 </script>

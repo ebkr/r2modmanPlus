@@ -106,24 +106,11 @@
     </div>
 </template>
 
-<script lang="ts">
-
-import { Component, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
 
 import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
 import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
-
-@Component({
-    components: {
-        Progress,
-        Hero,
-    }
-})
-export default class DownloadMonitor extends Vue {
-    DownloadStatusEnum = DownloadStatusEnum;
-}
-
 </script>
 
 <style lang="scss" scoped>
