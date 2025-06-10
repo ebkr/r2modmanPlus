@@ -3,7 +3,7 @@
         <ExpandableCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="getImageUrl(key)"
-            :id="index"
+            :id="`online-card-${index}`"
             :description="key.getDescription()">
             <template v-slot:title>
                 <span v-if="key.isPinned()">

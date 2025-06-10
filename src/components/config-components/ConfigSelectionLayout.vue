@@ -46,7 +46,7 @@
         <div class="margin-right">
             <div v-for="(file, index) in sortedConfigFiles" :key="`config-file-${file.getName()}`">
                 <ExpandableCard
-                    :id="index"
+                    :id="`config-file-${index}`"
                     :visible="false">
                     <template v-slot:title>
                         <span>{{file.getName()}}</span>
