@@ -96,7 +96,7 @@ onMounted(async () => {
     const router = getCurrentInstance()!.proxy.$router;
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
 
-    hookBackgroundUpdateThunderstoreModList();
+    hookBackgroundUpdateThunderstoreModList(router);
     hookModInstallingViaProtocol(router);
     await checkCdnConnection();
 

@@ -15,8 +15,8 @@ export function useUtilityComposable() {
     const refreshInterval = 5 * 60 * 1000;
     let tsBackgroundRefreshFailed = false;
 
-    function hookBackgroundUpdateThunderstoreModList() {
-        setInterval(backgroundRefreshThunderstoreModList, refreshInterval);
+    function hookBackgroundUpdateThunderstoreModList(router: VueRouter) {
+        setInterval(() => backgroundRefreshThunderstoreModList(router), refreshInterval);
     }
 
     function hookModInstallingViaProtocol(router: VueRouter) {
