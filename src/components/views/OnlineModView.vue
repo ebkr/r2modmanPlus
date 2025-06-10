@@ -8,7 +8,8 @@
                             <div class="input-group input-group--flex margin-right">
                                 <label for="thunderstore-search-filter">Search</label>
                                 <DeferredInput
-                                    v-model="thunderstoreSearchFilter"
+                                    :modelValue="thunderstoreSearchFilter"
+                                    @update:modelValue="$event => (thunderstoreSearchFilter = $event)"
                                     id="thunderstore-search-filter"
                                     class="input"
                                     type="text"

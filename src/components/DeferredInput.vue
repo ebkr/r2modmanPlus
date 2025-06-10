@@ -1,28 +1,30 @@
-<script lang="ts">
+<script lang="ts" setup>
 import debounce from 'lodash.debounce';
 import { Component, Model, Prop, Vue, Watch } from 'vue-property-decorator';
+import { watch, watchEffect } from 'vue';
 
-@Component({})
-export default class DeferredInput extends Vue {
-    @Model('change')
-    readonly value!: string;
+type DeferredInputProps = {
+    delay?: number;
+    modelValue: string;
+}
 
-    @Prop({type: Number, required: false, default: 250})
-    readonly delay!: number;
+const props = withDefaults(defineProps<DeferredInputProps>(), {
+    delay: 250,
+});
 
-    internalValue = this.value;
+const emits = defineEmits<{
+    (e: 'update:modelValue', value: string): void,
+}>();
 
-    @Watch('internalValue')
-    onInternalValueChange = debounce(this.emitChange, this.delay);
+const debounceExecutor = debounce(emitChange, props.delay);
 
-    emitChange() {
-        this.$emit('change', this.internalValue);
-    }
+function emitChange(value: string): void {
+    emits('update:modelValue', value);
 }
 </script>
 
 <template>
-    <input v-model="internalValue" />
+    <input :value="modelValue" @input="e => debounceExecutor(e.target.value)" />
 </template>
 
 <style scoped lang="scss">

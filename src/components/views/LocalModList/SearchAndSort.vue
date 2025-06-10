@@ -58,7 +58,8 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                 <div class="input-group input-group--flex margin-right">
                     <label for="installed-search" class="non-selectable">Search</label>
                     <DeferredInput
-                        v-model="search"
+                        :modelValue="search"
+                        @update:modelValue="$event => (search = $event)"
                         id="installed-search"
                         class="input margin-right"
                         type="text"

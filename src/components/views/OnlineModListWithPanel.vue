@@ -3,7 +3,7 @@
         <OnlineRowCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}`"
             :image="getImageUrl(key)"
-            :id="index"
+            :id="`online-row-card-${index}`"
             :is-selected="selectedMod === key"
             @click="() => emitCardClick(key)">
             <template v-slot:title>
