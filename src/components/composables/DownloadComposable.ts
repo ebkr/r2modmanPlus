@@ -5,7 +5,6 @@ import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { installModsToProfile } from '../../utils/ProfileUtils';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import { computed } from 'vue';
 
 export function useDownloadComposable() {
     const store = getStore<any>();
