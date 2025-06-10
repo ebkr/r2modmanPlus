@@ -21,7 +21,7 @@
                     <i class="fas fa-times mr-2" />Clear finished
                 </button>
             </div>
-            <div v-for="(downloadObject, index) of $store.getters['download/newestFirst']" :key="`download-progress-${index}`">
+            <div v-for="(downloadObject, index) of $store.getters['download/profileDownloadsNewestFirst']" :key="`download-progress-${index}`">
                 <div class="container">
                     <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
@@ -84,12 +84,20 @@
                             </div>
                         </div>
                         <button
+                            v-if="downloadObject.status === DownloadStatusEnum.FAILED"
+                            class="button download-item-action-button"
+                            v-tooltip.left="'Retry'"
+                            @click="$store.dispatch('download/retryDownload', { download: downloadObject, hideModal: true })"
+                        >
+                            <i class="fas fa-redo redo-icon" />
+                        </button>
+                        <button
                             v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.DONE"
                             class="button download-item-action-button"
                             v-tooltip.left="'Remove'"
                             @click="$store.commit('download/removeDownload', downloadObject)"
                         >
-                            <i class="fas fa-times" />
+                            <i class="fas fa-times x-icon" />
                         </button>
                     </div>
                 </div>
@@ -124,7 +132,6 @@ export default class DownloadMonitor extends Vue {
 }
 
 .download-item-action-button {
-    font-size: 1.5rem;
     padding: 0;
     height: 1em;
     margin: auto 1rem;
@@ -137,5 +144,14 @@ export default class DownloadMonitor extends Vue {
     z-index: 100;
     padding: 0.5rem;
     text-align: right;
+}
+
+// icons are different sizes, so we need to compensate for that
+.x-icon {
+    font-size: 1.5rem; 
+}
+
+.redo-icon {
+    font-size: 1.125rem; 
 }
 </style>
