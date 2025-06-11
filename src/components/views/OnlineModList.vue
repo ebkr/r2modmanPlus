@@ -53,12 +53,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Prop, Vue } from 'vue-property-decorator';
-import Component from 'vue-class-component';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, ExternalLink } from '../all';
-import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import DonateIconButton from '../../components/buttons/DonateIconButton.vue';
