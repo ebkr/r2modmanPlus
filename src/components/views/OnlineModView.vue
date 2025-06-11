@@ -52,6 +52,7 @@
                     :paged-mod-list="pagedThunderstoreModList"
                     :selected-mod="previewMod"
                     @selected-mod="toggleModPreview"
+                    :read-only="false"
                 />
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
@@ -92,10 +93,9 @@ import PaginationButtons from "../navigation/PaginationButtons.vue";
 import { DeferredInput } from "../all";
 import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
-import OnlineModListWithPanel from '../views/OnlineModListWithPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed, ref, watchEffect, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 
 const store = getStore<State>();
 
