@@ -71,7 +71,7 @@ export interface R2Modman {
     internalFolderName:       string;
     meta:                     Meta;
     packageIndex:             string;
-    packageLoader:            Loader | null;
+    packageLoader:            Loader;
     relativeFileExclusions:   string[] | null;
     settingsIdentifier:       string;
     steamFolderName:          string;
@@ -109,6 +109,7 @@ export enum Loader {
     Godotml = "godotml",
     Lovely = "lovely",
     Melonloader = "melonloader",
+    None = "none",
     Northstar = "northstar",
     RecursiveMelonloader = "recursive-melonloader",
     Returnofmodding = "returnofmodding",
@@ -342,7 +343,7 @@ const typeMap: any = {
         { json: "internalFolderName", js: "internalFolderName", typ: "" },
         { json: "meta", js: "meta", typ: r("Meta") },
         { json: "packageIndex", js: "packageIndex", typ: "" },
-        { json: "packageLoader", js: "packageLoader", typ: u(r("Loader"), null) },
+        { json: "packageLoader", js: "packageLoader", typ: r("Loader") },
         { json: "relativeFileExclusions", js: "relativeFileExclusions", typ: u(a(""), null) },
         { json: "settingsIdentifier", js: "settingsIdentifier", typ: "" },
         { json: "steamFolderName", js: "steamFolderName", typ: "" },
@@ -393,6 +394,7 @@ const typeMap: any = {
         "godotml",
         "lovely",
         "melonloader",
+        "none",
         "northstar",
         "recursive-melonloader",
         "returnofmodding",

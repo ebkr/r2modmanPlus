@@ -217,24 +217,18 @@
                           }
                         },
                         "packageLoader": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "enum": [
-                                "bepinex",
-                                "melonloader",
-                                "northstar",
-                                "godotml",
-                                "shimloader",
-                                "lovely",
-                                "returnofmodding",
-                                "gdweave",
-                                "recursive-melonloader"
-                              ]
-                            },
-                            {
-                              "type": "null"
-                            }
+                          "type": "string",
+                          "enum": [
+                            "bepinex",
+                            "melonloader",
+                            "northstar",
+                            "godotml",
+                            "shimloader",
+                            "lovely",
+                            "returnofmodding",
+                            "gdweave",
+                            "recursive-melonloader",
+                            "none"
                           ]
                         },
                         "installRules": {
@@ -383,7 +377,8 @@
                   "lovely",
                   "returnofmodding",
                   "gdweave",
-                  "recursive-melonloader"
+                  "recursive-melonloader",
+                  "none"
                 ]
               }
             },
