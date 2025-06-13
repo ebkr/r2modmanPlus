@@ -46,13 +46,13 @@ export interface Distribution {
 }
 
 export enum Platform {
-    EpicGamesStore = "epic-games-store",
-    OculusStore = "oculus-store",
-    Origin = "origin",
-    Other = "other",
-    Steam = "steam",
-    SteamDirect = "steam-direct",
-    XboxGamePass = "xbox-game-pass",
+    EPIC_GAMES_STORE = "epic-games-store",
+    OCULUS_STORE = "oculus-store",
+    ORIGIN = "origin",
+    OTHER = "other",
+    STEAM = "steam",
+    STEAM_DIRECT = "steam-direct",
+    XBOX_GAME_PASS = "xbox-game-pass",
 }
 
 export interface Meta {
@@ -71,20 +71,20 @@ export interface R2Modman {
     internalFolderName:       string;
     meta:                     Meta;
     packageIndex:             string;
-    packageLoader:            Loader | null;
+    packageLoader:            Loader;
     relativeFileExclusions:   string[] | null;
     settingsIdentifier:       string;
     steamFolderName:          string;
 }
 
 export enum GameInstanceType {
-    Game = "game",
-    Server = "server",
+    GAME = "game",
+    SERVER = "server",
 }
 
 export enum GameSelectionDisplayMode {
-    Hidden = "hidden",
-    Visible = "visible",
+    HIDDEN = "hidden",
+    VISIBLE = "visible",
 }
 
 export interface InstallRule {
@@ -96,23 +96,24 @@ export interface InstallRule {
 }
 
 export enum TrackingMethod {
-    None = "none",
-    PackageZip = "package-zip",
-    State = "state",
-    Subdir = "subdir",
-    SubdirNoFlatten = "subdir-no-flatten",
+    NONE = "none",
+    PACKAGE_ZIP = "package-zip",
+    STATE = "state",
+    SUBDIR = "subdir",
+    SUBDIR_NO_FLATTEN = "subdir-no-flatten",
 }
 
 export enum Loader {
-    Bepinex = "bepinex",
-    Gdweave = "gdweave",
-    Godotml = "godotml",
-    Lovely = "lovely",
-    Melonloader = "melonloader",
-    Northstar = "northstar",
-    RecursiveMelonloader = "recursive-melonloader",
-    Returnofmodding = "returnofmodding",
-    Shimloader = "shimloader",
+    BEPINEX = "bepinex",
+    GDWEAVE = "gdweave",
+    GODOTML = "godotml",
+    LOVELY = "lovely",
+    MELONLOADER = "melonloader",
+    NONE = "none",
+    NORTHSTAR = "northstar",
+    RECURSIVE_MELONLOADER = "recursive-melonloader",
+    RETURN_OF_MODDING = "return-of-modding",
+    SHIMLOADER = "shimloader",
 }
 
 export interface ModloaderPackage {
@@ -342,7 +343,7 @@ const typeMap: any = {
         { json: "internalFolderName", js: "internalFolderName", typ: "" },
         { json: "meta", js: "meta", typ: r("Meta") },
         { json: "packageIndex", js: "packageIndex", typ: "" },
-        { json: "packageLoader", js: "packageLoader", typ: u(r("Loader"), null) },
+        { json: "packageLoader", js: "packageLoader", typ: r("Loader") },
         { json: "relativeFileExclusions", js: "relativeFileExclusions", typ: u(a(""), null) },
         { json: "settingsIdentifier", js: "settingsIdentifier", typ: "" },
         { json: "steamFolderName", js: "steamFolderName", typ: "" },
@@ -393,9 +394,10 @@ const typeMap: any = {
         "godotml",
         "lovely",
         "melonloader",
+        "none",
         "northstar",
         "recursive-melonloader",
-        "returnofmodding",
+        "return-of-modding",
         "shimloader",
     ],
 };

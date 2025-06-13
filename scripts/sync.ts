@@ -42,7 +42,20 @@ async function updateSchema() {
             "Do not edit it manually.",
         ]}],
     });
-    fs.writeFileSync(ECOSYSTEM_DATA_TYPES_PATH, types.lines.join("\n"));
+    const finalTypes = enumKeysToUpperSnakeCase(types.lines.join("\n"));
+    fs.writeFileSync(ECOSYSTEM_DATA_TYPES_PATH, finalTypes);
 }
 
 updateSchema();
+
+function enumKeysToUpperSnakeCase(tsCode: string): string {
+    const enumRegex = /export enum (\w+) \{([\s\S]*?)\}/g;
+    const enumKeyValueRegex = /(\w+) = "(.*?)"/g;
+
+    const enumKeyValueReplacer = (_: string, enumKey: string, enumValue: string) =>
+        `${enumValue.replace(/-/g, "_").toUpperCase()} = "${enumValue}"`;
+
+    return tsCode.replace(enumRegex, (_, enumName, enumBody) =>
+        `export enum ${enumName} {${enumBody.replace(enumKeyValueRegex, enumKeyValueReplacer)}}`
+    );
+}

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.2.0",
+  "schemaVersion": "0.2.2",
   "games": {
     "20-minutes-till-dawn": {
       "uuid": "57ae7cc1-b21a-4592-8415-73512a91b180",
@@ -93,6 +93,131 @@
           "relativeFileExclusions": null
         }
       ]
+    },
+    "9-kings": {
+      "uuid": "3f1b9fa4-a067-4910-877e-78bcd8caef25",
+      "label": "9-kings",
+      "meta": {
+        "displayName": "9 Kings",
+        "iconUrl": "9Kings.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "2784470"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "9 Kings",
+            "iconUrl": "9Kings.png"
+          },
+          "internalFolderName": "9Kings",
+          "dataFolderName": "9Kings_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2784470"
+            }
+          ],
+          "settingsIdentifier": "9Kings",
+          "packageIndex": "https://thunderstore.io/c/9-kings/api/v1/package-listing-index/",
+          "steamFolderName": "9 Kings",
+          "exeNames": [
+            "9Kings.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            ""
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "9 Kings",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/nuNWnFmqub",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
     },
     "across-the-obelisk": {
       "uuid": "00b69efd-f144-45d5-b16e-09c4927a5421",
@@ -793,16 +918,8 @@
           "additionalSearchStrings": [
             "adv"
           ],
-          "packageLoader": null,
-          "installRules": [
-            {
-              "route": "mods",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir-no-flatten",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            }
-          ],
+          "packageLoader": "none",
+          "installRules": [],
           "relativeFileExclusions": null
         }
       ],
@@ -4085,6 +4202,131 @@
         ]
       }
     },
+    "depo": {
+      "uuid": "c6954061-56b4-4854-b12b-b473c6bdf051",
+      "label": "depo",
+      "meta": {
+        "displayName": "DEPO : Death Epileptic Pixel Origins",
+        "iconUrl": "DEPO.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1091320"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "DEPO : Death Epileptic Pixel Origins",
+            "iconUrl": "DEPO.png"
+          },
+          "internalFolderName": "DEPO",
+          "dataFolderName": "DEPO_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1091320"
+            }
+          ],
+          "settingsIdentifier": "DEPO",
+          "packageIndex": "https://thunderstore.io/c/depo/api/v1/package-listing-index/",
+          "steamFolderName": "DEPO",
+          "exeNames": [
+            "DEPO.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            ""
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "DEPO : Death Epileptic Pixel Origins",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/5H7uPAK",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "disco-elysium": {
       "uuid": "2c8bdcd0-e5b7-4927-8e0b-c13b7914c3a1",
       "label": "disco-elysium",
@@ -6433,6 +6675,131 @@
         }
       ]
     },
+    "guilty-as-sock": {
+      "uuid": "32cca075-5dea-4bae-8ff5-1e0ccc737b0f",
+      "label": "guilty-as-sock",
+      "meta": {
+        "displayName": "Guilty as Sock!",
+        "iconUrl": "GuiltyasSock.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "3400930"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Guilty as Sock!",
+            "iconUrl": "GuiltyasSock.png"
+          },
+          "internalFolderName": "GuiltyasSock",
+          "dataFolderName": "StandaloneWindows64_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3400930"
+            }
+          ],
+          "settingsIdentifier": "GuiltyasSock",
+          "packageIndex": "https://thunderstore.io/c/guilty-as-sock/api/v1/package-listing-index/",
+          "steamFolderName": "Guilty as Sock!",
+          "exeNames": [
+            "StandaloneWindows64.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "gas"
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Guilty as Sock!",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/X9eK5zmqkk",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "h3vr": {
       "uuid": "429bb8b1-7bb0-409f-a1f2-73357298e651",
       "label": "h3vr",
@@ -6574,7 +6941,7 @@
           "additionalSearchStrings": [
             "h2"
           ],
-          "packageLoader": "returnofmodding",
+          "packageLoader": "return-of-modding",
           "installRules": [],
           "relativeFileExclusions": null
         }
@@ -7299,6 +7666,96 @@
         }
       ]
     },
+    "labyrinthine": {
+      "uuid": "f51778cc-ffa4-42f7-a140-9ad5c528d8f7",
+      "label": "labyrinthine",
+      "meta": {
+        "displayName": "Labyrinthine",
+        "iconUrl": "Labyrinthine.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1302240"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Labyrinthine",
+            "iconUrl": "Labyrinthine.png"
+          },
+          "internalFolderName": "Labyrinthine",
+          "dataFolderName": "Labyrinthine_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1302240"
+            }
+          ],
+          "settingsIdentifier": "Labyrinthine",
+          "packageIndex": "https://thunderstore.io/c/labyrinthine/api/v1/package-listing-index/",
+          "steamFolderName": "Labyrinthine",
+          "exeNames": [
+            "Labyrinthine.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            ""
+          ],
+          "packageLoader": "recursive-melonloader",
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Labyrinthine",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "clientside": {
+            "label": "Client-Side"
+          },
+          "serverside": {
+            "label": "Server-Side"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "last-train-outta-wormtown": {
       "uuid": "476f1d7a-4009-4ede-9ccd-e620a57f4040",
       "label": "last-train-outta-wormtown",
@@ -7402,6 +7859,24 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "equipment": {
+            "label": "Equipment"
+          },
+          "abilities": {
+            "label": "Abilities"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "objectives": {
+            "label": "Objectives"
+          },
+          "translations": {
+            "label": "Translations"
+          },
+          "tweaks": {
+            "label": "Tweaks"
           }
         },
         "sections": {
@@ -7419,7 +7894,7 @@
           }
         },
         "wikiUrl": "https://lasttrainouttawormtown.fandom.com/wiki/Last_Train_Outta'_Wormtown_Wiki",
-        "discordUrl": "https://discord.gg/wormtown"
+        "discordUrl": "https://discord.gg/bTpxn65ZzY"
       }
     },
     "lethal-company": {
@@ -7749,7 +8224,7 @@
           ],
           "settingsIdentifier": "LostSkies",
           "packageIndex": "https://thunderstore.io/c/lost-skies/api/v1/package-listing-index/",
-          "steamFolderName": "LostSkies",
+          "steamFolderName": "Wild Skies",
           "exeNames": [
             "LostSkies.exe"
           ],
@@ -8556,7 +9031,7 @@
       "distributions": [
         {
           "platform": "steam",
-          "identifier": "3296150"
+          "identifier": "2742830"
         }
       ],
       "r2modman": [
@@ -8566,18 +9041,18 @@
             "iconUrl": "MonsterTrain2.png"
           },
           "internalFolderName": "MonsterTrain2",
-          "dataFolderName": "MonsterTrain2-Demo_Data",
+          "dataFolderName": "MonsterTrain2_Data",
           "distributions": [
             {
               "platform": "steam",
-              "identifier": "3296150"
+              "identifier": "2742830"
             }
           ],
           "settingsIdentifier": "MonsterTrain2",
           "packageIndex": "https://thunderstore.io/c/monster-train-2/api/v1/package-listing-index/",
-          "steamFolderName": "Monster Train 2 Demo",
+          "steamFolderName": "Monster Train 2",
           "exeNames": [
-            "MonsterTrain2-Demo.exe"
+            "MonsterTrain2.exe"
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
@@ -8649,6 +9124,9 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "clans": {
+            "label": "Clan"
           }
         },
         "sections": {
@@ -9599,18 +10077,6 @@
             {
               "platform": "other",
               "identifier": null
-            },
-            {
-              "platform": "steam",
-              "identifier": "1758860"
-            },
-            {
-              "platform": "epic-games-store",
-              "identifier": "f07a51af8ac845ea96f792fb485e04a3"
-            },
-            {
-              "platform": "other",
-              "identifier": null
             }
           ],
           "settingsIdentifier": "Outward",
@@ -9741,6 +10207,146 @@
           "relativeFileExclusions": null
         }
       ]
+    },
+    "painting-vr": {
+      "uuid": "ce8b8855-5fa1-46a1-a362-356254d1fff7",
+      "label": "painting-vr",
+      "meta": {
+        "displayName": "Painting VR",
+        "iconUrl": "PaintingVr.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1905940"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Painting VR",
+            "iconUrl": "PaintingVr.png"
+          },
+          "internalFolderName": "PaintingVr",
+          "dataFolderName": "PaintingVr_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1905940"
+            }
+          ],
+          "settingsIdentifier": "PaintingVr",
+          "packageIndex": "https://thunderstore.io/c/painting-vr/api/v1/package-listing-index/",
+          "steamFolderName": "Painting VR",
+          "exeNames": [
+            "PaintingVr.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "pvr"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "installRules": [
+            {
+              "route": "Mods",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "state",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "UserData/ModManager",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir-no-flatten",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "UserLibs",
+              "defaultFileExtensions": [
+                ".lib.dll"
+              ],
+              "trackingMethod": "state",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "MelonLoader",
+              "defaultFileExtensions": [],
+              "trackingMethod": "state",
+              "subRoutes": [
+                {
+                  "route": "Managed",
+                  "defaultFileExtensions": [
+                    ".managed.dll"
+                  ],
+                  "trackingMethod": "state",
+                  "subRoutes": [],
+                  "isDefaultLocation": false
+                },
+                {
+                  "route": "Libs",
+                  "defaultFileExtensions": [],
+                  "trackingMethod": "state",
+                  "subRoutes": [],
+                  "isDefaultLocation": false
+                }
+              ],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": [
+            "manifest.json",
+            "icon.png",
+            "README.md",
+            "LICENCE"
+          ]
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Painting VR",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/2xTshCTAMM",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
     },
     "palworld": {
       "uuid": "60b24eb2-791f-43bf-91da-f19139f6738f",
@@ -10168,6 +10774,129 @@
         "discordUrl": "https://discord.gg/rf8RwMYqZe"
       }
     },
+    "peak": {
+      "uuid": "bb2d482f-548d-4e6c-8421-0824a81f172c",
+      "label": "peak",
+      "meta": {
+        "displayName": "PEAK",
+        "iconUrl": "PEAK.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "3527290"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "PEAK",
+            "iconUrl": "PEAK.webp"
+          },
+          "internalFolderName": "PEAK",
+          "dataFolderName": "PEAK_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3527290"
+            }
+          ],
+          "settingsIdentifier": "PEAK",
+          "packageIndex": "https://thunderstore.io/c/peak/api/v1/package-listing-index/",
+          "steamFolderName": "PEAK",
+          "exeNames": [
+            "PEAK.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PEAK",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/peakgame",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "peaks-of-yore": {
       "uuid": "4f23c46e-2f26-46fc-9e66-4b0bcfcf03f0",
       "label": "peaks-of-yore",
@@ -10383,6 +11112,130 @@
           "relativeFileExclusions": null
         }
       ]
+    },
+    "pigface": {
+      "uuid": "edc46cc0-7891-4a35-a68f-0933bbb6f49e",
+      "label": "pigface",
+      "meta": {
+        "displayName": "PIGFACE",
+        "iconUrl": "PIGFACE.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "3746840"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "PIGFACE",
+            "iconUrl": "PIGFACE.png"
+          },
+          "internalFolderName": "PIGFACE",
+          "dataFolderName": "Pigface_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3746840"
+            }
+          ],
+          "settingsIdentifier": "PIGFACE",
+          "packageIndex": "https://thunderstore.io/c/pigface/api/v1/package-listing-index/",
+          "steamFolderName": "PIGFACE Demo",
+          "exeNames": [
+            "Pigface.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "pf"
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PIGFACE",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "plasma": {
       "uuid": "18cea92d-ed64-4107-8f49-79b55ad6cb39",
@@ -10949,7 +11802,7 @@
       "label": "repo",
       "meta": {
         "displayName": "R.E.P.O.",
-        "iconUrl": "repo.webp"
+        "iconUrl": "REPO.png"
       },
       "distributions": [
         {
@@ -11096,7 +11949,133 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ],
-        "discordUrl": "https://discord.gg/vPJtKhYAFe"
+        "discordUrl": "https://discord.gg/vPJtKhYAFe",
+        "wikiUrl": "https://repomods.com/"
+      }
+    },
+    "return-of-the-obra-dinn": {
+      "uuid": "6b4a870a-26fe-44c2-9164-9e3fc5d86e3a",
+      "label": "return-of-the-obra-dinn",
+      "meta": {
+        "displayName": "Return of the Obra Dinn",
+        "iconUrl": "ObraDinn.png"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "653530"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Return of the Obra Dinn",
+            "iconUrl": "ObraDinn.png"
+          },
+          "internalFolderName": "ObraDinn",
+          "dataFolderName": "ObraDinn_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "653530"
+            }
+          ],
+          "settingsIdentifier": "ObraDinn",
+          "packageIndex": "https://thunderstore.io/c/return-of-the-obra-dinn/api/v1/package-listing-index/",
+          "steamFolderName": "ObraDinn",
+          "exeNames": [
+            "ObraDinn.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "rotod"
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Return of the Obra Dinn",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://obradinn.fandom.com/wiki/Return_of_the_Obra_Dinn_Wiki",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
       }
     },
     "risk-of-rain-returns": {
@@ -11137,7 +12116,7 @@
           "additionalSearchStrings": [
             "rorr"
           ],
-          "packageLoader": "returnofmodding",
+          "packageLoader": "return-of-modding",
           "installRules": [],
           "relativeFileExclusions": null
         }
@@ -11263,10 +12242,6 @@
             {
               "platform": "epic-games-store",
               "identifier": "4b3dcc5723454a47a9112d8fe8fd5f5c"
-            },
-            {
-              "platform": "steam",
-              "identifier": "1180760"
             }
           ],
           "settingsIdentifier": "RiskOfRain2",
@@ -15951,10 +16926,6 @@
             {
               "platform": "xbox-game-pass",
               "identifier": "CoffeeStainStudios.Valheim"
-            },
-            {
-              "platform": "steam",
-              "identifier": "896660"
             }
           ],
           "settingsIdentifier": "Valheim",
@@ -16876,7 +17847,7 @@
           ],
           "settingsIdentifier": "WhiteKnuckle",
           "packageIndex": "https://thunderstore.io/c/white-knuckle/api/v1/package-listing-index/",
-          "steamFolderName": "White Knuckle Demo",
+          "steamFolderName": "White Knuckle",
           "exeNames": [
             "White Knuckle.exe"
           ],
@@ -18027,58 +18998,6 @@
       },
       "r2modman": null
     },
-    "labyrinthine": {
-      "uuid": "f51778cc-ffa4-42f7-a140-9ad5c528d8f7",
-      "label": "labyrinthine",
-      "meta": {
-        "displayName": "Labyrinthine",
-        "iconUrl": null
-      },
-      "distributions": [],
-      "thunderstore": {
-        "displayName": "Labyrinthine",
-        "categories": {
-          "mods": {
-            "label": "Mods"
-          },
-          "modpacks": {
-            "label": "Modpacks"
-          },
-          "tools": {
-            "label": "Tools"
-          },
-          "libraries": {
-            "label": "Libraries"
-          },
-          "misc": {
-            "label": "Misc"
-          },
-          "audio": {
-            "label": "Audio"
-          }
-        },
-        "sections": {
-          "mods": {
-            "name": "Mods",
-            "excludeCategories": [
-              "modpacks"
-            ]
-          },
-          "modpacks": {
-            "name": "Modpacks",
-            "requireCategories": [
-              "modpacks"
-            ]
-          }
-        },
-        "wikiUrl": "https://labyrinthine.fandom.com/wiki/Labyrinthine_Wiki",
-        "discordUrl": "https://discord.com/invite/valkogamestudios",
-        "autolistPackageIds": [
-          "LavaGang-MelonLoader"
-        ]
-      },
-      "r2modman": null
-    },
     "lizards-must-die": {
       "uuid": "37b2e210-0f07-4386-9d3e-97f767eacca2",
       "label": "lizards-must-die",
@@ -18472,6 +19391,47 @@
     }
   },
   "communities": {
+    "9-kings": {
+      "displayName": "9 Kings",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/nuNWnFmqub",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
     "against-the-storm": {
       "displayName": "Against the Storm",
       "categories": {
@@ -19519,6 +20479,47 @@
         "BepInEx-BepInExPack_IL2CPP"
       ]
     },
+    "depo": {
+      "displayName": "DEPO : Death Epileptic Pixel Origins",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/5H7uPAK",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "disco-elysium": {
       "displayName": "Disco Elysium",
       "categories": {
@@ -20211,6 +21212,47 @@
         "BepInEx-BepInExPack_IL2CPP"
       ]
     },
+    "guilty-as-sock": {
+      "displayName": "Guilty as Sock!",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/X9eK5zmqkk",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "hades-ii": {
       "displayName": "Hades 2",
       "categories": {
@@ -20396,6 +21438,52 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "labyrinthine": {
+      "displayName": "Labyrinthine",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "clientside": {
+          "label": "Client-Side"
+        },
+        "serverside": {
+          "label": "Server-Side"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "last-train-outta-wormtown": {
       "displayName": "Last Train Outta' Wormtown",
       "categories": {
@@ -20416,6 +21504,24 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "equipment": {
+          "label": "Equipment"
+        },
+        "abilities": {
+          "label": "Abilities"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "objectives": {
+          "label": "Objectives"
+        },
+        "translations": {
+          "label": "Translations"
+        },
+        "tweaks": {
+          "label": "Tweaks"
         }
       },
       "sections": {
@@ -20433,7 +21539,7 @@
         }
       },
       "wikiUrl": "https://lasttrainouttawormtown.fandom.com/wiki/Last_Train_Outta'_Wormtown_Wiki",
-      "discordUrl": "https://discord.gg/wormtown"
+      "discordUrl": "https://discord.gg/bTpxn65ZzY"
     },
     "lethal-company": {
       "displayName": "Lethal Company",
@@ -20826,6 +21932,9 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "clans": {
+          "label": "Clan"
         }
       },
       "sections": {
@@ -21022,6 +22131,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "painting-vr": {
+      "displayName": "Painting VR",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/2xTshCTAMM",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "palworld": {
       "displayName": "Palworld",
       "categories": {
@@ -21177,6 +22327,47 @@
       },
       "discordUrl": "https://discord.gg/rf8RwMYqZe"
     },
+    "peak": {
+      "displayName": "PEAK",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/peakgame",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "peaks-of-yore": {
       "displayName": "Peaks of Yore",
       "categories": {
@@ -21215,6 +22406,46 @@
       },
       "wikiUrl": "https://peaksofyore.wiki.gg/wiki/Peaks_of_Yore_Wiki",
       "discordUrl": "https://discord.com/invite/fRDAbGTSd5",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
+    "pigface": {
+      "displayName": "PIGFACE",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -21430,7 +22661,49 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ],
-      "discordUrl": "https://discord.gg/vPJtKhYAFe"
+      "discordUrl": "https://discord.gg/vPJtKhYAFe",
+      "wikiUrl": "https://repomods.com/"
+    },
+    "return-of-the-obra-dinn": {
+      "displayName": "Return of the Obra Dinn",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://obradinn.fandom.com/wiki/Return_of_the_Obra_Dinn_Wiki",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "risk-of-rain-returns": {
       "displayName": "Risk of Rain Returns",
@@ -23533,48 +24806,6 @@
       },
       "discordUrl": "https://discord.gg/Hu2cTCr2m2"
     },
-    "labyrinthine": {
-      "displayName": "Labyrinthine",
-      "categories": {
-        "mods": {
-          "label": "Mods"
-        },
-        "modpacks": {
-          "label": "Modpacks"
-        },
-        "tools": {
-          "label": "Tools"
-        },
-        "libraries": {
-          "label": "Libraries"
-        },
-        "misc": {
-          "label": "Misc"
-        },
-        "audio": {
-          "label": "Audio"
-        }
-      },
-      "sections": {
-        "mods": {
-          "name": "Mods",
-          "excludeCategories": [
-            "modpacks"
-          ]
-        },
-        "modpacks": {
-          "name": "Modpacks",
-          "requireCategories": [
-            "modpacks"
-          ]
-        }
-      },
-      "wikiUrl": "https://labyrinthine.fandom.com/wiki/Labyrinthine_Wiki",
-      "discordUrl": "https://discord.com/invite/valkogamestudios",
-      "autolistPackageIds": [
-        "LavaGang-MelonLoader"
-      ]
-    },
     "lizards-must-die": {
       "displayName": "Lizards Must Die",
       "categories": {
@@ -24182,12 +25413,12 @@
     {
       "packageId": "ReturnOfModding-ReturnOfModding",
       "rootFolder": "ReturnOfModdingPack",
-      "loader": "returnofmodding"
+      "loader": "return-of-modding"
     },
     {
       "packageId": "Hell2Modding-Hell2Modding",
       "rootFolder": "ReturnOfModdingPack",
-      "loader": "returnofmodding"
+      "loader": "return-of-modding"
     },
     {
       "packageId": "NotNet-GDWeave",
