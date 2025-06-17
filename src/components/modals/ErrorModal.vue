@@ -28,9 +28,13 @@ function close() {
                     <h5 class="title is-5">Suggestion</h5>
                     <p>{{solution}}</p>
                 </div>
-                <div class="mt-3 text-right" v-if="error.action">
-                    <button class="button is-white" @click="() => { error.action.function(); close(); }">
-                        {{error.action.label}}
+                <div class="mt-3 text-right" v-if="error.actions">
+                    <button 
+                        v-for="action in error.actions"
+                        class="button is-white ml-3"
+                        @click="action.function(); if(action.closeModal) close()"
+                    >
+                        {{action.label}}
                     </button>
                 </div>
             </div>

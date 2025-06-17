@@ -1,6 +1,7 @@
 interface Action {
     function: () => Promise<void>;
     label: string;
+    closeModal?: boolean;
 }
 
 export default class R2Error extends Error {
@@ -9,7 +10,7 @@ export default class R2Error extends Error {
     public stack?: string | undefined;
     public solution: string;
     public errorReferenceString: string | undefined;
-    public action?: Action;
+    public actions: Action[] = [];
 
     public constructor(name: string, message: string, solution: string | null = null) {
         super(message);
@@ -33,8 +34,8 @@ export default class R2Error extends Error {
         }
     }
 
-    public setAction(action: Action) {
-        this.action = action;
+    public addAction(action: Action) {
+        this.actions.push(action);
     }
 }
 
