@@ -67,7 +67,7 @@
                 <br/>
             </div>
         </div>
-        <div class="notification margin-right">
+        <div class="notification margin-right" v-else>
             <QuillEditor
                 :modelValue="fileText"
                 @update:modelValue="quillEditorValueUpdated"/>
