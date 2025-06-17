@@ -1,32 +1,24 @@
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
+<script lang="ts" setup>
 import R2Error from '../model/errors/R2Error';
+import { computed } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
-@Component({})
-export default class ModListUpdateBanner extends Vue {
-    get isModListLoaded(): boolean {
-        return this.$store.state.tsMods.modsLastUpdated !== undefined;
-    }
+const store = getStore<State>();
 
-    get isUpdateInProgress(): boolean {
-        return this.$store.state.tsMods.isThunderstoreModListUpdateInProgress;
-    }
+const isModListLoaded = computed<boolean>(() => store.state.tsMods.modsLastUpdated !== undefined);
+const isUpdateInProgress = computed<boolean>(() => store.state.tsMods.isThunderstoreModListUpdateInProgress);
+const updateError = computed<Error|undefined>(() => store.state.tsMods.thunderstoreModListUpdateError);
 
-    get updateError(): Error|undefined {
-        return this.$store.state.tsMods.thunderstoreModListUpdateError;
-    }
+async function updateModList() {
+    await store.dispatch('tsMods/syncPackageList');
+}
 
-    async updateModList() {
-        await this.$store.dispatch('tsMods/syncPackageList');
-    }
-
-    openErrorModal() {
-        this.$store.commit('error/handleError', R2Error.fromThrownValue(
-            this.updateError,
-            'Error updating the mod list from Thunderstore',
-        ));
-    }
+function openErrorModal() {
+    store.commit('error/handleError', R2Error.fromThrownValue(
+        updateError.value,
+        'Error updating the mod list from Thunderstore',
+    ));
 }
 </script>
 

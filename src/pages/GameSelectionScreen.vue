@@ -175,7 +175,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Component, Vue } from 'vue-property-decorator';
 import Game from '../model/game/Game';
 import GameManager from '../model/game/GameManager';
 import { Hero } from '../components/all';
@@ -185,7 +184,6 @@ import { StorePlatform } from '../model/game/StorePlatform';
 import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
-import Modal from '../components/Modal.vue';
 import { GameInstanceType } from '../model/game/GameInstanceType';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';

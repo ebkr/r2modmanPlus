@@ -19,7 +19,7 @@
                                 <router-link :to="{name: 'manager.installed'}" class="tagged-link">
                                     <i class="fas fa-folder tagged-link__icon icon--margin-right" />
                                     <span class="tagged-link__content">Installed</span>
-                                    <span :class="getTagLinkClasses(['manager.installed'])">{{localModCount}}</span>
+                                    <span :class="getTagLinkClasses(['manager.installed', 'manager'])">{{localModCount}}</span>
                                 </router-link>
                             </li>
                             <li>
@@ -92,10 +92,10 @@ import { State } from '../../store';
 import VueRouter from 'vue-router';
 
 const store = getStore<State>();
-let router!: VueRouter;
+const router = ref<VueRouter>();
 
 onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
+    router.value = getCurrentInstance()!.proxy.$router;
 });
 
 const activeGame = computed<Game>(() => store.state.activeGame);
@@ -110,7 +110,7 @@ const thunderstoreModCount = computed(() =>
 
 function getTagLinkClasses(routeNames: string[]) {
     const base = ["tag", "tagged-link__tag"];
-    return router && routeNames.includes(router.currentRoute.name || "") ? base : [...base, "is-link"];
+    return router.value && routeNames.includes(router.value.currentRoute.name || "") ? base : [...base, "is-link"];
 }
 
 function getGameImage() {

@@ -135,16 +135,12 @@
 
 <script lang='ts' setup>
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
-import { Hero, ExternalLink, Modal, Progress } from '../components/all';
+import { ExternalLink } from '../components/all';
 
 import PathResolver from '../r2mm/manager/PathResolver';
-import { SteamInstallationValidator} from '../r2mm/manager/SteamInstallationValidator';
-
-import Profile from '../model/Profile';
+import { SteamInstallationValidator } from '../r2mm/manager/SteamInstallationValidator';
 import VersionNumber from '../model/VersionNumber';
 import R2Error from '../model/errors/R2Error';
-import ManifestV2 from '../model/ManifestV2';
-import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ThemeManager from '../r2mm/manager/ThemeManager';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
@@ -156,7 +152,6 @@ import FsProvider from '../providers/generic/file/FsProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
-import Game from '../model/game/Game';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import LocalFileImportModal from '../components/importing/LocalFileImportModal.vue';
 import { PackageLoader } from '../model/installing/PackageLoader';

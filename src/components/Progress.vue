@@ -9,22 +9,18 @@
     </div>
 </template>
 
-<script lang='ts'>
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
-
-@Component
-export default class Progress extends Vue {
-    @Prop({default: 100})
-    max: number | undefined;
-
-    @Prop()
-    value: number | undefined;
-
-    @Prop({default: ''})
-    className: string | undefined;
+<script lang='ts' setup>
+type ProgressProps = {
+    max?: number;
+    value?: number;
+    className?: string[];
 }
 
+const props = withDefaults(defineProps<ProgressProps>(), {
+    max: 100,
+    value: undefined,
+    className: []
+});
 </script>
 
 <style lang="scss" scoped>

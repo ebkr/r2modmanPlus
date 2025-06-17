@@ -5,13 +5,9 @@ import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { installModsToProfile } from '../../utils/ProfileUtils';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
-import { computed } from 'vue';
 
 export function useDownloadComposable() {
     const store = getStore<any>();
-
-    const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
-    const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
 
     function closeModal() {
         store.commit("closeDownloadModModal");
@@ -54,5 +50,5 @@ export function useDownloadComposable() {
         });
     }
 
-    return {closeModal, setIsModProgressModalOpen, downloadCompletedCallback, isOpen, thunderstoreMod}
+    return {closeModal, setIsModProgressModalOpen, downloadCompletedCallback}
 }
