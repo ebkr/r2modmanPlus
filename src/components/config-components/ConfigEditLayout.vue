@@ -67,8 +67,10 @@
                 <br/>
             </div>
         </div>
-        <div class='container margin-right' v-else>
-            <QuillEditor v-model="fileText" @input="updateFreeText"/>
+        <div class="notification margin-right">
+            <QuillEditor
+                :modelValue="fileText"
+                @update:modelValue="quillEditorValueUpdated"/>
         </div>
     </div>
 </template>
@@ -77,7 +79,7 @@
 import ConfigLine from '../../model/file/ConfigLine';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ConfigFile from '../../model/file/ConfigFile';
-import { Hero } from '../all';
+import { DeferredInput, Hero } from '../all';
 import QuillEditor from '../QuillEditor.vue';
 import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 import { onMounted, ref } from 'vue';
@@ -102,6 +104,11 @@ onMounted(async () => {
     }
     window.scrollTo(0, 0);
 });
+
+function quillEditorValueUpdated(value: string) {
+    fileText.value = value;
+    updateFreeText(value);
+}
 
 function save() {
     if (props.configFile.getPath().toLowerCase().endsWith(".cfg")) {
