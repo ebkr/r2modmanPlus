@@ -137,8 +137,10 @@ export const DownloadModule = {
                     if (profile.getProfilePath() === rootGetters['profile/activeProfile'].getProfilePath()) {
                         r2Error.addAction({
                             label: 'Retry',
-                            function: () => dispatch('retryDownloadById', downloadId),
-                            closeModal: true
+                            function: async () => {
+                                commit('error/discardError', null, { root: true });
+                                await dispatch('retryDownloadById', downloadId);
+                            },
                         });
                     }
                 }
@@ -155,13 +157,7 @@ export const DownloadModule = {
             progressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
         }) {
             const { combos, progressCallback } = params;
-            try {
-                await ThunderstoreDownloaderProvider.instance.download(combos, state.ignoreCache, progressCallback);
-            } catch (e) {
-                const r2Error = R2Error.fromThrownValue(e);
-                DownloadUtils.addSolutionsToError(r2Error, true);
-                throw r2Error;
-            }
+            await ThunderstoreDownloaderProvider.instance.download(combos, state.ignoreCache, progressCallback);
         },
 
         async _download({state, commit, dispatch}, params: {

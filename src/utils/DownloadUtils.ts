@@ -1,7 +1,7 @@
 import CdnProvider from "../providers/generic/connection/CdnProvider";
 import R2Error from "../model/errors/R2Error";
 
-export function addSolutionsToError(err: R2Error, closeModalOnToggleCDN: boolean = false): void {
+export function addSolutionsToError(err: R2Error): void {
     // Sanity check typing.
     if (!(err instanceof R2Error)) {
         return;
@@ -12,10 +12,10 @@ export function addSolutionsToError(err: R2Error, closeModalOnToggleCDN: boolean
         err.name.includes("System.Net.WebException")
     ) {
         err.solution = "Try toggling the preferred Thunderstore CDN by clicking the button below (or in the settings).";
+        err.showCurrentCdn = true;
         err.addAction({
             label: 'Toggle CDN',
             function: async () => CdnProvider.togglePreferredCdn(),
-            closeModal: closeModalOnToggleCDN
         });
     }
 

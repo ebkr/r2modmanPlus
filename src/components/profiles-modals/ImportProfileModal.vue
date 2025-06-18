@@ -8,6 +8,7 @@ import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ProfileImportExport } from "../../r2mm/mods/ProfileImportExport";
 import { sleep } from "../../utils/Common";
+import { addSolutionsToError } from "../../utils/DownloadUtils";
 import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import OnlineModList from "../views/OnlineModList.vue";
@@ -106,6 +107,7 @@ async function onProfileCodeEntered() {
         await validateProfileFile([filepath]);
     } catch (e: any) {
         const err = R2Error.fromThrownValue(e, 'Failed to import profile');
+        addSolutionsToError(err);
         store.commit('error/handleError', err);
     } finally {
         importViaCodeInProgress.value = false;
@@ -242,7 +244,9 @@ async function importProfile(targetProfileName: string, mods: ExportMod[], zipPa
     } catch (e) {
         await store.dispatch('profiles/ensureProfileExists');
         closeModal();
-        store.commit('error/handleError', R2Error.fromThrownValue(e));
+        const r2Error = R2Error.fromThrownValue(e);
+        addSolutionsToError(r2Error);
+        store.commit('error/handleError', r2Error);
         return;
     }
 
