@@ -1019,6 +1019,12 @@ export default class GameManager {
             "https://thunderstore.io/c/guilty-as-sock/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3400930")], "GuiltyasSock.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gas"]),
+
+        new Game("PIGFACE", "PIGFACE", "PIGFACE",
+            "PIGFACE Demo", ["Pigface.exe"], "Pigface_Data",
+            "https://thunderstore.io/c/pigface/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3746840")], "PIGFACE.png",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["pf"]),
     ];
 
     static get activeGame(): Game {
