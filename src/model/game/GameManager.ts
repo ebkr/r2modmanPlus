@@ -1019,6 +1019,12 @@ export default class GameManager {
             "https://thunderstore.io/c/guilty-as-sock/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3400930")], "GuiltyasSock.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["gas"]),
+
+        new Game("PEAK", "PEAK", "PEAK",
+            "PEAK", ["PEAK.exe"], "PEAK_Data",
+            "https://thunderstore.io/c/peak/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3527290")], "PEAK.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["peak"]),
     ];
 
     static get activeGame(): Game {
