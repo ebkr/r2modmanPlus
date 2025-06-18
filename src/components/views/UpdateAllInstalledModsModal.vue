@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
+
 import { useDownloadComposable } from '../composables/DownloadComposable';
 import ModalCard from '../ModalCard.vue';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -10,9 +12,10 @@ const store = getStore<State>();
 
 const {
     closeModal,
-    isOpen,
-    thunderstoreMod,
 } = useDownloadComposable();
+
+const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
+const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
 
 async function updateAllToLatestVersion() {
     closeModal();
