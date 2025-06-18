@@ -1025,6 +1025,12 @@ export default class GameManager {
             "https://thunderstore.io/c/pigface/api/v1/package-listing-index/",
             [new StorePlatformMetadata(StorePlatform.STEAM, "3746840")], "PIGFACE.png",
             GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, ["pf"]),
+
+        new Game("PEAK", "PEAK", "PEAK",
+            "PEAK", ["PEAK.exe"], "PEAK_Data",
+            "https://thunderstore.io/c/peak/api/v1/package-listing-index/",
+            [new StorePlatformMetadata(StorePlatform.STEAM, "3527290")], "PEAK.webp",
+            GameSelectionDisplayMode.VISIBLE, GameInstanceType.GAME, PackageLoader.BEPINEX, []),
     ];
 
     static get activeGame(): Game {

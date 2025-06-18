@@ -178,6 +178,7 @@ export default class InstallationRuleApplicator {
             buildBepInExRules("ObraDinn"),
             buildBepInExRules("GuiltyasSock"),
             buildBepInExRules("PIGFACE"),
+            buildBepInExRules("PEAK"),
         ]
     }
 }
