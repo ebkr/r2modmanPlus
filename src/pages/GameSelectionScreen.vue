@@ -19,7 +19,7 @@
             </template>
         </ModalCard>
         <hero
-            :title="`${activeTab} selection`"
+            :title="`${capitalize(activeTab)} selection`"
             :subtitle="
                 activeTab === GameInstanceType.GAME
                     ? 'Which game are you managing your mods for?'
@@ -90,7 +90,7 @@
                                     <ul class="text-center">
                                         <li v-for="(value) in GameInstanceType" :key="`tab-${value}`"
                                             :class="[{'is-active': activeTab === value}]">
-                                            <a @click="changeTab(value)">{{value.slice(0, 1).toUpperCase() + value.slice(1)}}</a>
+                                            <a @click="changeTab(value)">{{capitalize(value)}}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -378,6 +378,10 @@ function toggleViewMode() {
 
 function getImage(image: string) {
     return require("../assets/images/game_selection/" + image);
+}
+
+function capitalize(str: string) {
+    return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
 </script>
 
