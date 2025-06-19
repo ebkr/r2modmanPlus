@@ -1,6 +1,7 @@
 import * as path from 'path';
 
 import { InstallRule as ThunderstoreEcosystemInstallRule } from '../../assets/data/ecosystem.d';
+import { EcosystemSchema } from '../../model/schema/ThunderstoreSchema';
 import R2Error from '../../model/errors/R2Error';
 import GameManager from '../../model/game/GameManager';
 import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
@@ -44,7 +45,7 @@ export function trackingMethodFromString(method: string): TrackingMethod {
     );
 }
 
-export function normalizeRuleSubtype(apiData: ThunderstoreEcosystemInstallRule): RuleSubtype {
+function normalizeRuleSubtype(apiData: ThunderstoreEcosystemInstallRule): RuleSubtype {
     return {
         ...apiData,
         trackingMethod: trackingMethodFromString(apiData.trackingMethod),
@@ -62,6 +63,14 @@ export default class InstallationRules {
 
     static set RULES(value: CoreRuleType[]) {
         this._RULES = value;
+    }
+
+    public static apply() {
+        this._RULES = EcosystemSchema.supportedGames.map((x) => ({
+            gameName: x.internalFolderName,
+            rules: x.installRules.map(normalizeRuleSubtype),
+            relativeFileExclusions: x.relativeFileExclusions,
+        }));
     }
 
     public static validate() {
