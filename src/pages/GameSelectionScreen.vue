@@ -6,9 +6,9 @@
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
-                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform.toString()}`">
-                        <input type="radio" :id="`${index}-${platform.storePlatform.toString()}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform.toString()}`"><span class="margin-right margin-right--half-width"/>{{ platform.storePlatform }}</label>
+                    <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
+                        <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
+                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ platformLabels[platform.storePlatform] }}</label>
                     </div>
                 </div>
             </template>
@@ -19,13 +19,13 @@
             </template>
         </ModalCard>
         <hero
-            :title="`${activeTab} selection`"
+            :title="`${capitalize(activeTab)} selection`"
             :subtitle="
-                activeTab === 'Game'
+                activeTab === GameInstanceType.GAME
                     ? 'Which game are you managing your mods for?'
                     : 'Which dedicated server are you managing your mods for?'
             "
-            :heroType="activeTab === 'Game' ? 'primary' : 'warning'"
+            :heroType="activeTab === GameInstanceType.GAME ? 'primary' : 'warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
@@ -88,9 +88,9 @@
                             <div class="level-item">
                                 <div class="tabs">
                                     <ul class="text-center">
-                                        <li v-for="(key, index) in gameInstanceTypes" :key="`tab-${key}`"
-                                            :class="[{'is-active': activeTab === key}]">
-                                            <a @click="changeTab(key)">{{key}}</a>
+                                        <li v-for="(value) in GameInstanceType" :key="`tab-${value}`"
+                                            :class="[{'is-active': activeTab === value}]">
+                                            <a @click="changeTab(value)">{{capitalize(value)}}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -150,7 +150,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <template v-if="activeTab === 'Game'">
+                                                            <template v-if="activeTab === GameInstanceType.GAME">
                                                                 <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
@@ -180,11 +180,9 @@ import GameManager from '../model/game/GameManager';
 import { Hero } from '../components/all';
 import * as ManagerUtils from '../utils/ManagerUtils';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-import { StorePlatform } from '../model/game/StorePlatform';
-import { GameSelectionDisplayMode } from '../model/game/GameSelectionDisplayMode';
 import { GameSelectionViewMode } from '../model/enums/GameSelectionViewMode';
 import R2Error from '../model/errors/R2Error';
-import { GameInstanceType } from '../model/game/GameInstanceType';
+import { GameInstanceType, GameSelectionDisplayMode, Platform } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
@@ -199,14 +197,12 @@ const runningMigration = ref<boolean>(false);
 const selectedGame = ref<Game | null>(null);
 const filterText = ref<string>("");
 const showPlatformModal = ref<boolean>(false);
-const selectedPlatform = ref<StorePlatform | null>(null);
+const selectedPlatform = ref<Platform | null>(null);
 const favourites = ref<string[]>([]);
 const settings = ref<ManagerSettings | undefined>(undefined);
 const isSettingDefaultPlatform = ref<boolean>(false);
 const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
 const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
-
-const gameInstanceTypes = Object.values(GameInstanceType);
 
 const filteredGameList = computed(() => {
     const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
@@ -236,12 +232,8 @@ const gameList = computed<Game[]>(() => {
     });
 });
 
-function changeTab(key: string) {
-    for (const objKey of Object.keys(GameInstanceType)) {
-        if ((GameInstanceType as any)[objKey] === key) {
-            activeTab.value = (GameInstanceType as any)[objKey];
-        }
-    }
+function changeTab(tab: GameInstanceType) {
+    activeTab.value = tab;
 }
 
 function selectGame(game: Game) {
@@ -267,6 +259,16 @@ function selectDefaultGame(game: Game) {
         showPlatformModal.value = false;
         proceedDefault();
     }
+}
+
+const platformLabels = {
+    [Platform.STEAM]: "Steam",
+    [Platform.STEAM_DIRECT]: "Steam",
+    [Platform.EPIC_GAMES_STORE]: "Epic Games Store",
+    [Platform.OCULUS_STORE]: "Oculus Store",
+    [Platform.ORIGIN]: "Origin / EA Desktop",
+    [Platform.XBOX_GAME_PASS]: "Xbox Game Pass",
+    [Platform.OTHER]: "Other"
 }
 
 function selectPlatform() {
@@ -376,6 +378,10 @@ function toggleViewMode() {
 
 function getImage(image: string) {
     return require("../assets/images/game_selection/" + image);
+}
+
+function capitalize(str: string) {
+    return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
 </script>
 

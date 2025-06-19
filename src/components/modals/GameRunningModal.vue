@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Game from "../../model/game/Game";
-import { StorePlatform } from "../../model/game/StorePlatform";
+import { Platform } from "../../model/schema/ThunderstoreSchema";
 import { computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
@@ -12,7 +12,7 @@ type GameRunningModalProps = {
 }
 const props = defineProps<GameRunningModalProps>();
 
-const isSteamGame = computed(() => props.activeGame.activePlatform.storePlatform === StorePlatform.STEAM);
+const isSteamGame = computed(() => props.activeGame.activePlatform.storePlatform === Platform.STEAM);
 const isOpen = computed(() => store.state.modals.isGameRunningModalOpen);
 
 function close() {

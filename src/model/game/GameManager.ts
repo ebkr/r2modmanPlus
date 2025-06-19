@@ -1,13 +1,9 @@
 import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
-import { getStorePlatformFromName, StorePlatform } from '../../model/game/StorePlatform';
-import { displayModeFromString } from '../../model/game/GameSelectionDisplayMode';
-import { gameInstanceTypeFromString } from '../../model/game/GameInstanceType';
-import { installerVariantFromString } from '../../model/installing/PackageLoader';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
 import * as path from 'path';
-import { EcosystemSchema } from '../schema/ThunderstoreSchema';
+import { EcosystemSchema, Platform } from '../schema/ThunderstoreSchema';
 
 export default class GameManager {
 
@@ -27,32 +23,26 @@ export default class GameManager {
     }
 
     static get gameList(): Game[] {
-        return EcosystemSchema.supportedGames.map((game) => {
-            const distributions = game.distributions.map((x) => new StorePlatformMetadata(
-                    getStorePlatformFromName(x.platform),
-                    x.identifier || undefined,
-                )
-            );
-
-            return new Game(
-                game.meta.displayName,
-                game.internalFolderName,
-                game.settingsIdentifier,
-                game.steamFolderName,
-                game.exeNames,
-                game.dataFolderName,
-                game.packageIndex,
-                distributions,
-                game.meta.iconUrl || "ThunderstoreBeta.jpg",
-                displayModeFromString(game.gameSelectionDisplayMode),
-                gameInstanceTypeFromString(game.gameInstanceType),
-                installerVariantFromString(game.packageLoader),
-                game.additionalSearchStrings,
-            );
-        });
+        return EcosystemSchema.supportedGames.map((game) => new Game(
+            game.meta.displayName,
+            game.internalFolderName,
+            game.settingsIdentifier,
+            game.steamFolderName,
+            game.exeNames,
+            game.dataFolderName,
+            game.packageIndex,
+            game.distributions.map(
+                (x) => new StorePlatformMetadata(x.platform, x.identifier || undefined)
+            ),
+            game.meta.iconUrl || "ThunderstoreBeta.jpg",
+            game.gameSelectionDisplayMode,
+            game.gameInstanceType,
+            game.packageLoader,
+            game.additionalSearchStrings,
+        ));
     }
 
-    public static async activate(game: Game, platform: StorePlatform) {
+    public static async activate(game: Game, platform: Platform) {
         this._activeGame = game;
         this._activeGame.setActivePlatformByStore(platform);
         PathResolver.MOD_ROOT = path.join(PathResolver.ROOT, game.internalFolderName);

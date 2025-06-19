@@ -1,8 +1,6 @@
-import { StorePlatform } from '../../model/game/StorePlatform';
+import R2Error from '../errors/R2Error';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
-import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
-import { GameInstanceType } from '../../model/game/GameInstanceType';
-import { PackageLoader } from '../../model/installing/PackageLoader';
+import { GameInstanceType, GameSelectionDisplayMode, PackageLoader, Platform } from '../../model/schema/ThunderstoreSchema';
 
 export default class Game {
 
@@ -80,8 +78,17 @@ export default class Game {
         return this._activePlatform;
     }
 
-    public setActivePlatformByStore(storePlatform: StorePlatform) {
-        this._activePlatform = this._storePlatformMetadata.find(platform => platform.storePlatform === storePlatform)!;
+    public setActivePlatformByStore(storePlatform: Platform) {
+        const platform = this._storePlatformMetadata.find(platform => platform.storePlatform === storePlatform);
+
+        if (!platform) {
+            throw new R2Error(
+                "Invalid store platform",
+                `"${storePlatform}" is not a valid platform for ${this.displayName}.`
+            );
+        };
+
+        this._activePlatform = platform;
     }
 
     get gameImage(): string {
@@ -102,5 +109,9 @@ export default class Game {
 
     get additionalSearchStrings(): string[] {
         return this._additionalSearchStrings;
+    }
+
+    get isInstalledViaSteam(): boolean {
+        return [Platform.STEAM, Platform.STEAM_DIRECT].includes(this._activePlatform.storePlatform);
     }
 }

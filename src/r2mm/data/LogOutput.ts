@@ -1,7 +1,7 @@
 import Profile from '../../model/Profile';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import GameManager from '../../model/game/GameManager';
-import { PackageLoader } from '../../model/installing/PackageLoader';
+import { PackageLoader } from '../../model/schema/ThunderstoreSchema';
 import Timeout = NodeJS.Timeout;
 
 let fs: FsProvider;
@@ -41,7 +41,7 @@ export default class LogOutput {
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('ReturnOfModding', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;
-            case PackageLoader.MELON_LOADER:
+            case PackageLoader.MELONLOADER:
             case PackageLoader.NORTHSTAR:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('MelonLoader', 'Latest.log'))
                     .then(value => this._exists = value);

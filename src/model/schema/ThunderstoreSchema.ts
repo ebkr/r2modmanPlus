@@ -1,11 +1,20 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
-import { ThunderstoreEcosystem }  from "../../assets/data/ecosystem.d";
 import ecosystem from "../../assets/data/ecosystem.json";
+import { ThunderstoreEcosystem }  from "../../assets/data/ecosystemTypes";
 import jsonSchema from "../../assets/data/ecosystemJsonSchema.json";
 import R2Error from "../errors/R2Error";
 
+// Re-export generated types/Enums to avoid having the whole codebase
+// tightly coupled with the generated ecosystemTypes.
+export {
+    GameInstanceType,
+    GameSelectionDisplayMode,
+    Loader as PackageLoader,
+    TrackingMethod,
+    Platform,
+} from "../../assets/data/ecosystemTypes";
 
 export class EcosystemSchema {
     private static _isValidated: boolean = false;

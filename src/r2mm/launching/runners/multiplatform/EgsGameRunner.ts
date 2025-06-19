@@ -6,7 +6,7 @@ import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import { shell } from 'electron';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
 import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';

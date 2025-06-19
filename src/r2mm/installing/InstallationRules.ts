@@ -1,10 +1,8 @@
 import * as path from 'path';
 
-import { InstallRule as ThunderstoreEcosystemInstallRule } from '../../assets/data/ecosystem.d';
-import { EcosystemSchema } from '../../model/schema/ThunderstoreSchema';
-import R2Error from '../../model/errors/R2Error';
+import { getPluginInstaller } from '../../installers/registry';
 import GameManager from '../../model/game/GameManager';
-import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
+import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
 
 export type CoreRuleType = {
     gameName: string,
@@ -12,7 +10,6 @@ export type CoreRuleType = {
     relativeFileExclusions: string[] | null,
 }
 
-type TrackingMethod = "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP";
 
 export type RuleSubtype = {
     route: string,
@@ -25,32 +22,9 @@ export type RuleSubtype = {
 export type ManagedRule = {
     route: string,
     ref: RuleSubtype,
-    trackingMethod: string,
+    trackingMethod: TrackingMethod,
     extensions: string[],
     isDefaultLocation: boolean
-}
-
-export function trackingMethodFromString(method: string): TrackingMethod {
-    switch (method.toLocaleLowerCase()) {
-        case "subdir": return "SUBDIR";
-        case "state": return "STATE";
-        case "none": return "NONE";
-        case "subdir-no-flatten": return "SUBDIR_NO_FLATTEN";
-        case "package-zip": return "PACKAGE_ZIP";
-    }
-
-    throw new R2Error(
-        "Invalid tracking method identifier",
-        `${method} is not a valid tracking method.`
-    );
-}
-
-function normalizeRuleSubtype(apiData: ThunderstoreEcosystemInstallRule): RuleSubtype {
-    return {
-        ...apiData,
-        trackingMethod: trackingMethodFromString(apiData.trackingMethod),
-        subRoutes: apiData.subRoutes.map(normalizeRuleSubtype)
-    };
 }
 
 export default class InstallationRules {
@@ -68,7 +42,7 @@ export default class InstallationRules {
     public static apply() {
         this._RULES = EcosystemSchema.supportedGames.map((x) => ({
             gameName: x.internalFolderName,
-            rules: x.installRules.map(normalizeRuleSubtype),
+            rules: x.installRules,
             relativeFileExclusions: x.relativeFileExclusions,
         }));
     }
@@ -76,7 +50,7 @@ export default class InstallationRules {
     public static validate() {
         GameManager.gameList.forEach(value => {
             if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
-                if (GetInstallerIdForPlugin(value.packageLoader) === null) {
+                if (getPluginInstaller(value.packageLoader) === null) {
                     throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
                 }
             }
