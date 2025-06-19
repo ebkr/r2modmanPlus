@@ -92,7 +92,8 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
                 trackingMethod: "SUBDIR_NO_FLATTEN",
                 subRoutes: [],
             }
-        ]
+        ],
+        relativeFileExclusions: null
     });
 
 

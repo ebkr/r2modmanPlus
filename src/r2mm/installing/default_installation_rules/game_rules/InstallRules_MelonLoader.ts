@@ -1,10 +1,9 @@
 import type { CoreRuleType } from '../../InstallationRules';
 import * as path from 'path';
-import { GAME_NAME } from "../../profile_installers/ModLoaderVariantRecord";
 import { RuleSubtype } from "../../InstallationRules";
 
 
-export function buildMelonLoaderRules(gameName: GAME_NAME, extraRules?: RuleSubtype[]): CoreRuleType {
+export function buildMelonLoaderRules(gameName: string, extraRules?: RuleSubtype[]): CoreRuleType {
     return {
         gameName: gameName,
         relativeFileExclusions: ["manifest.json", "icon.png", "README.md", "LICENCE"],

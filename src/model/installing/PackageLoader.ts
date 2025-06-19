@@ -1,4 +1,5 @@
 import { PackageInstallerId } from '../../installers/registry';
+import R2Error from '../errors/R2Error';
 
 export enum PackageLoader {
     BEPINEX,
@@ -41,4 +42,25 @@ export function GetInstallerIdForPlugin(loader: PackageLoader): PackageInstaller
     }
 
     return null;
+}
+
+// Return the PackageLoader enum variant from the provided ecosystem-schema package loader name.
+export function installerVariantFromString(name: string|null): PackageLoader {
+    switch (name) {
+        case null: return PackageLoader.NONE;
+        case "bepinex": return PackageLoader.BEPINEX;
+        case "melonloader": return PackageLoader.MELON_LOADER;
+        case "northstar": return PackageLoader.NORTHSTAR;
+        case "godotml": return PackageLoader.GODOT_ML;
+        case "shimloader": return PackageLoader.SHIMLOADER;
+        case "lovely": return PackageLoader.LOVELY;
+        case "returnofmodding": return PackageLoader.RETURN_OF_MODDING;
+        case "gdweave": return PackageLoader.GDWEAVE;
+        case "recursive-melonloader": return PackageLoader.RECURSIVE_MELON_LOADER;
+    }
+
+    throw new R2Error(
+        "Invalid schema installer identifier",
+        `"${name}" is not a valid installer identifier.`
+    );
 }
