@@ -1,11 +1,14 @@
 import * as path from 'path';
 
 import InMemoryFsProvider from '../__tests__/stubs/providers/InMemory.FsProvider';
+import R2Error from '../../../src/model/errors/R2Error';
+import FileTree from '../../../src/model/file/FileTree';
 import GameManager from '../../../src/model/game/GameManager';
 import ManifestV2 from '../../../src/model/ManifestV2';
 import Profile from '../../../src/model/Profile';
 import VersionNumber from '../../../src/model/VersionNumber';
 import FsProvider from '../../../src/providers/generic/file/FsProvider';
+import NodeFs from '../../../src/providers/generic/file/NodeFs';
 import ConflictManagementProvider from '../../../src/providers/generic/installing/ConflictManagementProvider';
 import ProfileInstallerProvider from '../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import ProfileProvider from '../../../src/providers/ror2/model_implementation/ProfileProvider';
@@ -31,7 +34,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
     FsProvider.provide(() => inMemoryFs);
     InMemoryFsProvider.clear();
     PathResolver.MOD_ROOT = 'MODS';
-    inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+    await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
 
     const game = GameManager.findByFolderName(internalFolderName);
     if (game === undefined) {
@@ -41,7 +44,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
 
     ProfileProvider.provide(() => new ProfileProviderImpl());
     new Profile('TestProfile');
-    inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
+    await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
 
     ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
     InstallationRuleApplicator.apply();
@@ -53,13 +56,13 @@ export async function installLogicBeforeEach(internalFolderName: string) {
  * Return a minimal fake package
  */
 export function createManifest(name: string, author: string, version?: VersionNumber): ManifestV2  {
-    return new ManifestV2().make({
-        ManifestVersion: 2,
-        AuthorName: author,
-        Name: `${author}-${name}`,
-        DisplayName: name,
-        Version: version ? version.toString() : new VersionNumber("1.0.0").toString(),
-    }) as ManifestV2;
+    const manifest = new ManifestV2()
+    manifest.setManifestVersion(2);
+    manifest.setAuthorName(author);
+    manifest.setName(`${author}-${name}`);
+    manifest.setDisplayName(name);
+    manifest.setVersionNumber(version ? version : new VersionNumber("1.0.0"));
+    return manifest;
 };
 
 /**
@@ -75,6 +78,74 @@ export async function createPackageFilesIntoCache(pkg: ManifestV2, filePaths: st
         await fs.mkdirs(path.dirname(destPath));
         await fs.writeFile(destPath, "");
         expect(await fs.exists(destPath));
+    }
+}
+
+/**
+ * Create "cached package" from the contents of "folder-structure-testing" folder.
+ */
+export async function setupFolderStructureTestFiles(pkg: ManifestV2) {
+    // Read the file structure from disk.
+    FsProvider.provide(() => new NodeFs());
+    const baseFolderStructurePath = path.join(__dirname, "../../folder-structure-testing");
+    const tree = await FileTree.buildFromLocation(baseFolderStructurePath);
+    if (tree instanceof R2Error) {
+        throw new Error("Unable to find folder-structure-testing folder");
+    }
+
+    const testFiles = tree.getRecursiveFiles()
+        .map(value => path.relative(baseFolderStructurePath, value))
+        // Filter out file generation script.
+        .filter(value => value !== "populator.mjs" && value !== "depopulator.mjs");
+
+    // Write the file structure into mock file system.
+    FsProvider.provide(() => new InMemoryFsProvider());
+    const cachePkgRoot = path.join(PathResolver.MOD_ROOT, "cache", pkg.getName(), pkg.getVersionNumber().toString());
+
+    for (const value of testFiles) {
+        await FsProvider.instance.mkdirs(path.join(cachePkgRoot, path.dirname(value.trim())));
+        await FsProvider.instance.writeFile(path.join(cachePkgRoot, value.trim()), "placeholder");
+    }
+}
+
+type SourceAndTargetPaths = [string, string];  // [package_path, install_dir_relative_to_profile_folder]
+
+function convertPath(path: string) {
+    return path.replace(/[\/\\]/g, "_");
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testStateTrackedFileStructure(pkg: ManifestV2, paths: SourceAndTargetPaths[]) {
+    await testUntrackedFileStructure(paths);
+
+    const stateFile = Profile.getActiveProfile().joinToProfilePath("_state", `${pkg.getName()}-state.yml`);
+    expect(await FsProvider.instance.exists(stateFile)).toBeTruthy();
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testSubdirTrackedFileStructure(pkg: ManifestV2, paths: SourceAndTargetPaths[]) {
+    for (const [packagePath, installDir] of paths) {
+        const targetPath = Profile.getActiveProfile().joinToProfilePath(
+            installDir,
+            path.basename(packagePath),
+            pkg.getName(),
+            `${convertPath(packagePath)}_Files`,
+            `${convertPath(packagePath)}_file.txt`
+        );
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
+    }
+}
+
+// For testing file installation with the contents of folder-structure-testing folder.
+export async function testUntrackedFileStructure(paths: SourceAndTargetPaths[]) {
+    for (const [packagePath, installDir] of paths) {
+        const targetPath = Profile.getActiveProfile().joinToProfilePath(
+            installDir,
+            path.basename(packagePath),
+            `${convertPath(packagePath)}_Files`,
+            `${convertPath(packagePath)}_file.txt`
+        );
+        expect(await FsProvider.instance.exists(targetPath)).toBeTruthy();
     }
 }
 
