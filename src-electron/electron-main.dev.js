@@ -38,4 +38,4 @@ app.whenReady().then(() => {
   }, 250)
 })
 
-import './electron-main'
+import './electron-main.js.js'
