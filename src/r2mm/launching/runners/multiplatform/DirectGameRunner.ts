@@ -8,7 +8,8 @@ import ManagerSettings from '../../../manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
-import { exec } from 'child_process';
+import ChildProcess from 'child_process';
+const { exec } = ChildProcess;
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
