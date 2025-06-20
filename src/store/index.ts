@@ -17,8 +17,6 @@ import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { SplashModule } from './modules/SplashModule';
 
-Vue.use(Vuex);
-
 export interface State {
     activeGame: Game;
     isMigrationChecked: boolean;
@@ -150,9 +148,12 @@ export const store = {
  */
 let singletonStore!: Store<State>;
 
-export default (/* { ssrContext } */) => {
+// @ts-ignore
+export default ( { app }) => {
     if (!singletonStore) {
         singletonStore = new Store<State>(store);
+        app.use(Vuex);
+        app.use(singletonStore);
     }
     return singletonStore;
 };
