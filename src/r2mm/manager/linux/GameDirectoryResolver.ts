@@ -4,7 +4,7 @@ import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
 
 import * as vdf from '@node-steam/vdf';
 import * as path from 'path';
-import { homedir } from 'os';
+import os from "../../../providers/node/os/NodeOsProvider";
 import ManagerSettings from '../ManagerSettings';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
@@ -24,14 +24,14 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
         }
         try {
             const dirs = [
-                path.resolve(homedir(), '.local', 'share', 'Steam'),
-                path.resolve(homedir(), '.steam', 'steam'),
-                path.resolve(homedir(), '.steam', 'root'),
-                path.resolve(homedir(), '.steam'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
-                path.resolve(homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
+                path.resolve(os.homedir(), '.local', 'share', 'Steam'),
+                path.resolve(os.homedir(), '.steam', 'steam'),
+                path.resolve(os.homedir(), '.steam', 'root'),
+                path.resolve(os.homedir(), '.steam'),
+                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
+                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam'),
+                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'root'),
+                path.resolve(os.homedir(), '.var', 'app', 'com.valvesoftware.Steam', '.steam')
             ];
             for (let dir of dirs) {
                 if (await FsProvider.instance.exists(dir) && (await FsProvider.instance.readdir(dir))

@@ -16,7 +16,6 @@ import LogOutput from './r2mm/data/LogOutput';
 import LogOutputProvider from './providers/ror2/data/LogOutputProvider';
 import ThunderstoreDownloaderProvider from './providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import BetterThunderstoreDownloader from './r2mm/downloading/BetterThunderstoreDownloader';
-import { ipcRenderer } from 'electron';
 import PathResolver from './r2mm/manager/PathResolver';
 import path from 'path';
 import ThemeManager from './r2mm/manager/ThemeManager';
@@ -102,35 +101,36 @@ onMounted(async () => {
     InstallationRules.apply();
     InstallationRules.validate();
 
-    ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
-        PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
-        // Legacy path. Needed for migration.
-        PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
-
-        if (ManagerSettings.NEEDS_MIGRATION) {
-            await ManagerSettingsMigration.migrate();
-        }
-
-        PathResolver.ROOT = settings.getContext().global.dataDirectory || PathResolver.APPDATA_DIR;
-
-        // If ROOT directory was set previously but no longer exists (EG: Drive disconnected) then fallback to original.
-        try {
-            await FileUtils.ensureDirectory(PathResolver.ROOT);
-        } catch (e) {
-            PathResolver.ROOT = PathResolver.APPDATA_DIR;
-        }
-
-        await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
-
-        await ThemeManager.apply();
-        ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
-            ManagerInformation.IS_PORTABLE = isPortable;
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
-            visible.value = true;
-        });
-        ipcRenderer.send('get-is-portable');
-    });
-    ipcRenderer.send('get-appData-directory');
+    // TODO QUASAR UPGRADE
+    // ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
+    //     PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
+    //     // Legacy path. Needed for migration.
+    //     PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
+    //
+    //     if (ManagerSettings.NEEDS_MIGRATION) {
+    //         await ManagerSettingsMigration.migrate();
+    //     }
+    //
+    //     PathResolver.ROOT = settings.getContext().global.dataDirectory || PathResolver.APPDATA_DIR;
+    //
+    //     // If ROOT directory was set previously but no longer exists (EG: Drive disconnected) then fallback to original.
+    //     try {
+    //         await FileUtils.ensureDirectory(PathResolver.ROOT);
+    //     } catch (e) {
+    //         PathResolver.ROOT = PathResolver.APPDATA_DIR;
+    //     }
+    //
+    //     await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
+    //
+    //     await ThemeManager.apply();
+    //     ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
+    //         ManagerInformation.IS_PORTABLE = isPortable;
+    //         LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
+    //         visible.value = true;
+    //     });
+    //     ipcRenderer.send('get-is-portable');
+    // });
+    // ipcRenderer.send('get-appData-directory');
 
     store.commit('updateModLoaderPackageNames');
     store.dispatch('tsMods/updateExclusions');
