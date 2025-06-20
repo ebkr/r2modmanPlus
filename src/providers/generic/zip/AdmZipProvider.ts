@@ -13,12 +13,14 @@ export default class AdmZipProvider extends ZipProvider {
         // adm.extractAllTo(outputFolder, true);
     }
 
-    async readFile(zip: string | Buffer, file: string): Promise<Buffer | null> {
+    // Type is Promise<Buffer | null>
+    async readFile(zip: string | Buffer, file: string): Promise<any> {
         // const adm = new AdmZip(zip);
         // return adm.readFile(file);
     }
 
-    async getEntries(zip: string | Buffer): Promise<ZipEntryInterface[]> {
+    // Type is Promise<ZipEntryInterface[]>
+    async getEntries(zip: string | Buffer): Promise<any> {
         // const adm = new AdmZip(zip);
         // return (adm.getEntries() as unknown as ZipEntryInterface[]);
     }
