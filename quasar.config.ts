@@ -2,7 +2,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers';
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig((ctx) => {
     return {
@@ -40,7 +40,7 @@ export default defineConfig((ctx) => {
         // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
         build: {
             target: {
-                browser: [ 'es2022', 'firefox115', 'chrome115', 'safari14' ],
+                browser: [ 'esnext' ],
                 node: 'esnext'
             },
 
@@ -62,7 +62,7 @@ export default defineConfig((ctx) => {
             // env: {},
             // rawDefine: {}
             // ignorePublicFolder: true,
-            // minify: false,
+            minify: 'esbuild',
             polyfillModulePreload: true,
             // distDir
 
@@ -81,6 +81,7 @@ export default defineConfig((ctx) => {
             },
 
             vitePlugins: [
+                nodePolyfills()
             ]
         },
 
