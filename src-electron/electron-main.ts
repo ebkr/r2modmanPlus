@@ -22,6 +22,7 @@ try {
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename);
+const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 if (process.env.PROD) {
     global.__statics = __dirname;
@@ -41,12 +42,15 @@ function createWindow() {
         defaultHeight: 700
     });
 
+    console.log(path.resolve(currentDir, path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)))
+
     mainWindow = new BrowserWindow({
         width: windowSize.width,
         height: windowSize.height,
         useContentSize: true,
         icon: path.join(__dirname, 'icon.png'),
-        autoHideMenuBar: process.env.PROD
+        autoHideMenuBar: process.env.PROD,
+        preload: path.resolve(currentDir, path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION))
     });
 
     if (windowSize.maximized) {

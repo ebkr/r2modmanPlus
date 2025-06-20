@@ -9,6 +9,10 @@ import App from "./App.vue";
 import SettingsLoader from "./components/SettingsLoader.vue";
 import R2Error from "./model/errors/R2Error";
 import LinkProvider from './providers/components/LinkProvider';
+import { providePathImplementation } from 'src/providers/node/path/path';
+import { NodePathImplementation } from 'src/providers/node/path/NodePathImplementation';
+
+providePathImplementation(() => NodePathImplementation);
 
 function logError(error: R2Error) {
     console.error(error.name, error.message, error.stack);
