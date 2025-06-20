@@ -1,11 +1,11 @@
-import { RouteConfig } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router';
 import Profile from '../model/Profile';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const appTitle = () => `${ManagerInformation.APP_NAME} (${ManagerInformation.VERSION.toString()})`;
 const profileTitle = () => `${appTitle()} - ${Profile.getActiveProfile().getProfileName()}`;
 
-const routes: RouteConfig[] = [
+const routes: RouteRecordRaw[] = [
     {
         name: 'index',
         path: '/',
