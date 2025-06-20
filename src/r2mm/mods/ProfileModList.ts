@@ -22,8 +22,6 @@ import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
 
-const FALLBACK_ICON = require("../../../public/unknown.png");
-
 export default class ProfileModList {
 
     public static SUPPORTED_CONFIG_FILE_EXTENSIONS = [".cfg", ".txt", ".json", ".yml", ".yaml", ".ini"];
@@ -294,6 +292,6 @@ export default class ProfileModList {
             }
         }
 
-        mod.setIcon(FALLBACK_ICON);
+        mod.setIcon("/unknown.png");
     }
 }

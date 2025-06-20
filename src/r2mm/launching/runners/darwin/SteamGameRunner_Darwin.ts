@@ -1,4 +1,4 @@
-import { homedir } from 'os';
+import os from "../../../../providers/node/os/NodeOsProvider";
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import path from 'path';
 import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
@@ -44,7 +44,7 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
 
         const steamExecutable = [
             path.join("/", "Applications", "Steam.app"),
-            path.join(homedir(), "Applications", "Steam.app")
+            path.join(os.homedir(), "Applications", "Steam.app")
         ].find(async executable => await FsProvider.instance.exists(executable));
 
         if (steamExecutable === undefined) {
