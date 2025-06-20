@@ -1,7 +1,7 @@
-import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
 import FileUtils from '../utils/FileUtils';
+import path from '../providers/node/path/path';
 
 /**
  * Mod directory structure was changed when support for other games

@@ -2,7 +2,7 @@ import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDire
 import Game from '../../../model/game/Game';
 import R2Error from '../../../model/errors/R2Error';
 import path from 'path';
-import os from '../../../providers/node/os/NodeOsProvider';
+import os from '../../../providers/node/os/os';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import ManagerSettings from '../../manager/ManagerSettings';
 import FileNotFoundError from '../../../model/errors/FileNotFoundError';
