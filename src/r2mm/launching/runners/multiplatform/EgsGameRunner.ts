@@ -9,7 +9,6 @@ import FsProvider from '../../../../providers/generic/file/FsProvider';
 // import { shell } from 'electron';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
-import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
 import ConfigLine from '../../../../model/file/ConfigLine';
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';

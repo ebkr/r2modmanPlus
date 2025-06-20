@@ -2,13 +2,13 @@ import R2Error, { throwForR2Error } from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import ProfileInstallerProvider from '../../providers/ror2/installing/ProfileInstallerProvider';
 import ZipExtract from './ZipExtract';
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import ProfileModList from '../mods/ProfileModList';
 import LocalModInstallerProvider from '../../providers/ror2/installing/LocalModInstallerProvider';
 import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
+import path from '../../providers/node/path/path';
 
 export default class LocalModInstaller extends LocalModInstallerProvider {
 

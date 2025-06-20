@@ -1,7 +1,6 @@
-import * as path from 'path';
-
 import ProfileProvider from '../providers/ror2/model_implementation/ProfileProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
+import path from '../providers/node/path/path';
 
 interface ProfileCompatible {
     getProfileName: () => string;

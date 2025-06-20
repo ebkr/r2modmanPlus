@@ -1,7 +1,5 @@
 import * as yaml from 'yaml';
 import { ImmutableProfile } from '../../model/Profile';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
@@ -21,6 +19,7 @@ import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
+import path from '../../providers/node/path/path';
 
 export default class ProfileModList {
 

@@ -89,7 +89,6 @@
 <script lang="ts" setup>
 
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
-import * as path from 'path';
 import VersionNumber from '../../model/VersionNumber';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
 import ManifestV2 from '../../model/ManifestV2';
@@ -101,6 +100,7 @@ import ModalCard from '../ModalCard.vue';
 import { ref, defineProps, computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import path from '../../providers/node/path/path';
 
 const store = getStore<State>();
 
