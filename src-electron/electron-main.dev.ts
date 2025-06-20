@@ -5,9 +5,9 @@
  *  environment.
  */
 
-import electronDebug from 'electron-debug'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import { app, BrowserWindow } from 'electron'
+import electronDebug from 'electron-debug';
+import devtoolsInstaller, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { app, BrowserWindow } from 'electron';
 
 app.whenReady().then(() => {
   // allow for a small delay for mainWindow to be created
@@ -16,7 +16,7 @@ app.whenReady().then(() => {
     electronDebug({ showDevTools: false })
 
     // Install vuejs devtools
-    installExtension(VUEJS_DEVTOOLS)
+    devtoolsInstaller(VUEJS_DEVTOOLS)
       .then(name => {
         console.log(`Added Extension: ${name}`)
         // get main window
@@ -38,4 +38,4 @@ app.whenReady().then(() => {
   }, 250)
 })
 
-import './electron-main.js.js'
+import './electron-main'
