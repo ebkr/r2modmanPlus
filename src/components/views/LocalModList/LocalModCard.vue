@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Component } from 'vue-property-decorator';
 import { ExpandableCard, ExternalLink } from '../../all';
 import DonateButton from '../../buttons/DonateButton.vue';
 import DonateIconButton from '../../buttons/DonateIconButton.vue';

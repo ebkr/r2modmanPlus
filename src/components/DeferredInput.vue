@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import debounce from 'lodash.debounce';
-import { Component, Model, Prop, Vue, Watch } from 'vue-property-decorator';
-import { watch, watchEffect } from 'vue';
 
 type DeferredInputProps = {
     delay?: number;
