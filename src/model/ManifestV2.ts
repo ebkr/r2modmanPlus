@@ -3,10 +3,9 @@ import ThunderstoreCombo from './ThunderstoreCombo';
 import InstallMode from './enums/InstallMode';
 import PackageType from './enums/PackageType';
 import NetworkMode from './enums/NetworkMode';
-
-import * as path from 'path';
 import PathResolver from '../r2mm/manager/PathResolver';
 import R2Error from './errors/R2Error';
+import path from '../providers/node/path/path';
 
 export default class ManifestV2 {
 

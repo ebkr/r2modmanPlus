@@ -1,4 +1,4 @@
-import os from "../../../../providers/node/os/NodeOsProvider";
+import os from "../../../../providers/node/os/os";
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import path from 'path';
 import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
