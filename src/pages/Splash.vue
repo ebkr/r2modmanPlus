@@ -118,7 +118,6 @@
 </template>
 
 <script lang='ts' setup>
-import * as path from 'path';
 // TODO QUASAR UPGRADE
 // import { ipcRenderer } from 'electron';
 import { ExternalLink, Hero, Progress } from '../components/all';
@@ -133,6 +132,7 @@ import { State } from '../store';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import VueRouter from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
+import path from '../providers/node/path/path';
 
 const store = getStore<State>();
 let router!: VueRouter;

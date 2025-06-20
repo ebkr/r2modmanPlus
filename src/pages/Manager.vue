@@ -136,7 +136,6 @@
 <script lang='ts' setup>
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { ExternalLink } from '../components/all';
-
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator } from '../r2mm/manager/SteamInstallationValidator';
 import VersionNumber from '../model/VersionNumber';
@@ -145,9 +144,7 @@ import ThemeManager from '../r2mm/manager/ThemeManager';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-
 import { homedir } from 'os';
-import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
@@ -163,6 +160,7 @@ import SortModal from '../components/modals/SortModal.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import path from '../providers/node/path/path';
 
 const store = getStore<State>();
 let router!: VueRouter;

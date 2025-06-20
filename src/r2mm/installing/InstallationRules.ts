@@ -1,8 +1,7 @@
-import * as path from 'path';
-
 import { getPluginInstaller } from '../../installers/registry';
 import GameManager from '../../model/game/GameManager';
 import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
+import path from '../../providers/node/path/path';
 
 export type CoreRuleType = {
     gameName: string,

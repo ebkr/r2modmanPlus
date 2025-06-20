@@ -2,7 +2,6 @@
 
 import ZipProvider from './ZipProvider';
 // import AdmZip from 'adm-zip';
-import * as path from 'path';
 import ZipBuilder from './ZipBuilder';
 import ZipEntryInterface from './ZipEntryInterface';
 
