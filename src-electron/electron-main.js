@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, nativeTheme, protocol } from 'electron';
-import Listeners from './ipcListeners';
-import Persist from './window-state-persist';
+import Listeners from './ipcListeners.js';
+import Persist from './window-state-persist.js';
 import path from 'path';
 import ipcServer from 'node-ipc';
 import * as fs from 'fs';
