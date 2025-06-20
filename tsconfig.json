@@ -1,6 +1,7 @@
 {
   "extends": "./.quasar/tsconfig.json",
     "compilerOptions": {
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "module": "esnext"
     }
 }
