@@ -2,7 +2,6 @@ import GameInstructionGenerator from '../GameInstructionGenerator';
 import { GameInstruction } from '../../GameInstructions';
 import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
-import * as path from 'path';
 
 export default class ReturnOfModdingGameInstructions extends GameInstructionGenerator {
 

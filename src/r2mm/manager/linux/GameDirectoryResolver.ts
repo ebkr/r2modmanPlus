@@ -1,10 +1,8 @@
 import R2Error from '../../../model/errors/R2Error';
 import FileNotFoundError from '../../../model/errors/FileNotFoundError';
 import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
-
 import * as vdf from '@node-steam/vdf';
-import * as path from 'path';
-import os from "../../../providers/node/os/NodeOsProvider";
+import os from "../../../providers/node/os/os";
 import ManagerSettings from '../ManagerSettings';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
@@ -12,6 +10,7 @@ import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
 import DepotLoader from '../../../depots/loader/DepotLoader';
+import path from '../../../providers/node/path/path';
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
 import EnumResolver from "../../../model/enums/_EnumResolver";
 
