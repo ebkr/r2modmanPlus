@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
@@ -14,7 +13,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { computed, getCurrentInstance, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter from 'vue-router';

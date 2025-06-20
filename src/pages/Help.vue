@@ -100,7 +100,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Component, Vue } from 'vue-property-decorator';
 import { Hero, ExternalLink } from '../components/all';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';

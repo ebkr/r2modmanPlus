@@ -52,8 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import Vue, { onMounted, ref } from 'vue';
-import { Component, Prop } from "vue-property-decorator";
+import { onMounted, ref } from 'vue';
 
 import R2Error from "../model/errors/R2Error";
 import Game from "..//model/game/Game";

@@ -52,8 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Component, Vue, Watch } from 'vue-property-decorator';
-
 import ModalCard from "../ModalCard.vue";
 import R2Error from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";

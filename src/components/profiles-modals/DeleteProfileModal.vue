@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Component, Vue } from 'vue-property-decorator';
 import { ModalCard } from "../all";
 import R2Error from "../../model/errors/R2Error";
 import { computed, ref } from 'vue';
