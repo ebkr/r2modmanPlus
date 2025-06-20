@@ -1,9 +1,7 @@
 <template>
-    <div id="q-app">
-        <SettingsLoader :logError="logError" :openLink="openLink">
-            <App />
-        </SettingsLoader>
-    </div>
+    <SettingsLoader :logError="logError" :openLink="openLink">
+        <App />
+    </SettingsLoader>
 </template>
 
 <script lang="ts" setup>
