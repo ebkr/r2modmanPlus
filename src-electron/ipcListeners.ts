@@ -1,11 +1,11 @@
 import { ipcMain, dialog } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import electronUpdater from 'electron-updater';
 import os from 'os';
 
 let browserWindow;
 let app;
 
-export default class Listeners {
+export class Listeners {
     constructor(window, electronApp) {
         browserWindow = window;
         app = electronApp;
@@ -18,8 +18,8 @@ ipcMain.on('get-browser-window', ()=>{
 
 ipcMain.on('update-app', ()=>{
     if (typeof process.env.APPIMAGE !== "undefined" || !process.execPath.startsWith(os.tmpdir())) {
-        autoUpdater.autoDownload = true;
-        autoUpdater.checkForUpdatesAndNotify();
+        electronUpdater.autoUpdater.autoDownload = true;
+        electronUpdater.autoUpdater.checkForUpdatesAndNotify();
         browserWindow.webContents.send('update-done');
     } else {
         browserWindow.webContents.send('update-done');

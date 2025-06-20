@@ -1,9 +1,10 @@
 import { app, BrowserWindow, ipcMain, nativeTheme, protocol } from 'electron';
-import Listeners from './ipcListeners.js';
-import Persist from './window-state-persist.js';
+import { Listeners } from './ipcListeners';
+import { Persist } from './window-state-persist';
 import path from 'path';
 import ipcServer from 'node-ipc';
-import * as fs from 'fs';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 app.allowRendererProcessReuse = true;
 
@@ -18,6 +19,10 @@ try {
  * Set `__statics` path to static files in production;
  * The reason we are setting it here is that the path needs to be evaluated at runtime
  */
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename);
+
 if (process.env.PROD) {
     global.__statics = __dirname;
     global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\');
@@ -40,12 +45,6 @@ function createWindow() {
         width: windowSize.width,
         height: windowSize.height,
         useContentSize: true,
-        webPreferences: {
-            nodeIntegration: true,
-            nodeIntegrationInWorker: true,
-            webSecurity: false,
-            contextIsolation: false
-        },
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD
     });
