@@ -1,10 +1,10 @@
-import * as yaml from 'yaml';
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import yaml from 'yaml';
+import path from 'path';
+import fs from 'fs-extra';
 
 let resizeTimeout = undefined;
 
-export default class Persist {
+export class Persist {
 
     static getSize(app, { defaultWidth, defaultHeight }) {
         const configFilePath = path.join(app.getPath('appData'), 'r2modmanPlus-local', 'config', 'window-state.yml');
