@@ -119,7 +119,8 @@
 
 <script lang='ts' setup>
 import * as path from 'path';
-import { ipcRenderer } from 'electron';
+// TODO QUASAR UPGRADE
+// import { ipcRenderer } from 'electron';
 import { ExternalLink, Hero, Progress } from '../components/all';
 import Game from '../model/game/Game';
 import RequestItem from '../model/requests/RequestItem';
@@ -156,13 +157,13 @@ store.commit('splash/initialiseRequests');
 // Ensure that the manager isn't outdated.
 function checkForUpdates() {
     store.dispatch('splash/setSplashText', 'Preparing');
-    ipcRenderer.once('update-done', async () => {
-        const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
-        updateCheck.setProgress(100);
-        await store.dispatch('splash/getThunderstoreMods');
-        moveToNextScreen();
-    });
-    ipcRenderer.send('update-app');
+    // ipcRenderer.once('update-done', async () => {
+    //     const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
+    //     updateCheck.setProgress(100);
+    //     await store.dispatch('splash/getThunderstoreMods');
+    //     moveToNextScreen();
+    // });
+    // ipcRenderer.send('update-app');
 }
 
 async function moveToNextScreen() {
