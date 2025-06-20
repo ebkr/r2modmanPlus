@@ -12,10 +12,10 @@
 @import "scheme/dark";
 @import "scheme/funky";
 
-@import "~bulma";
-@import "~bulma-steps";
-@import "~bulma-divider";
-@import "~bulma-slider";
-@import "~bulma-checkradio";
+@import "bulma/css/bulma.css";
+@import "bulma-steps/dist/css/bulma-steps.min.css";
+@import "bulma-divider/dist/css/bulma-divider.min.css";
+@import "bulma-slider/dist/css/bulma-slider.min.css";
+@import "bulma-checkradio/dist/css/bulma-checkradio.min.css";
 
 @import "custom";
