@@ -81,7 +81,6 @@ export default defineConfig((ctx) => {
             },
 
             vitePlugins: [
-                nodePolyfills()
             ]
         },
 
