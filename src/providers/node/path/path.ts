@@ -1,5 +1,4 @@
-import ProviderUtils from 'src/providers/generic/ProviderUtils';
-import { defaultImplementation } from 'app/src-electron/preload/node-path';
+import { NodePathImplementation } from 'src/providers/node/path/NodePathImplementation';
 
 export type NodePathProvider = {
     join: (...paths: string[]) => string;
@@ -14,7 +13,7 @@ let implementation: () => NodePathProvider;
 
 function getImplementation() {
     if (!implementation) {
-        return window.node.path.defaultImplementation;
+        return NodePathImplementation;
     }
     return implementation();
 }
