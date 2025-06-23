@@ -28,6 +28,4 @@
  * }
  */
 
-console.log("Preloading");
-
 import "./preload/expose-preload";
