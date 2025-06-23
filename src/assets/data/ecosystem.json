@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.2.2",
+  "schemaVersion": "0.2.3",
   "games": {
     "20-minutes-till-dawn": {
       "uuid": "57ae7cc1-b21a-4592-8415-73512a91b180",
@@ -10247,63 +10247,8 @@
             "pvr"
           ],
           "packageLoader": "recursive-melonloader",
-          "installRules": [
-            {
-              "route": "Mods",
-              "defaultFileExtensions": [
-                ".dll"
-              ],
-              "trackingMethod": "state",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "UserData/ModManager",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir-no-flatten",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            },
-            {
-              "route": "UserLibs",
-              "defaultFileExtensions": [
-                ".lib.dll"
-              ],
-              "trackingMethod": "state",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "MelonLoader",
-              "defaultFileExtensions": [],
-              "trackingMethod": "state",
-              "subRoutes": [
-                {
-                  "route": "Managed",
-                  "defaultFileExtensions": [
-                    ".managed.dll"
-                  ],
-                  "trackingMethod": "state",
-                  "subRoutes": [],
-                  "isDefaultLocation": false
-                },
-                {
-                  "route": "Libs",
-                  "defaultFileExtensions": [],
-                  "trackingMethod": "state",
-                  "subRoutes": [],
-                  "isDefaultLocation": false
-                }
-              ],
-              "isDefaultLocation": false
-            }
-          ],
-          "relativeFileExclusions": [
-            "manifest.json",
-            "icon.png",
-            "README.md",
-            "LICENCE"
-          ]
+          "installRules": [],
+          "relativeFileExclusions": null
         }
       ],
       "thunderstore": {
@@ -10891,10 +10836,8 @@
             ]
           }
         },
-        "discordUrl": "https://discord.gg/peakgame",
-        "autolistPackageIds": [
-          "BepInEx-BepInExPack"
-        ]
+        "discordUrl": "https://discord.gg/SAw86z24rB",
+        "wikiUrl": "https://peakmodding.github.io"
       }
     },
     "peaks-of-yore": {
@@ -22363,10 +22306,8 @@
           ]
         }
       },
-      "discordUrl": "https://discord.gg/peakgame",
-      "autolistPackageIds": [
-        "BepInEx-BepInExPack"
-      ]
+      "discordUrl": "https://discord.gg/SAw86z24rB",
+      "wikiUrl": "https://peakmodding.github.io"
     },
     "peaks-of-yore": {
       "displayName": "Peaks of Yore",
@@ -25449,6 +25390,11 @@
       "packageId": "LavaGang-MelonLoader",
       "rootFolder": "",
       "loader": "recursive-melonloader"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_PEAK",
+      "rootFolder": "BepInExPack_PEAK",
+      "loader": "bepinex"
     }
   ]
 }

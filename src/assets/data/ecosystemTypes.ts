@@ -17,6 +17,7 @@ export interface ThunderstoreEcosyste {
     discordUrl?:         string;
     displayName:         string;
     sections:            { [key: string]: Section };
+    shortDescription?:   string;
     wikiUrl?:            string;
 }
 
@@ -305,6 +306,7 @@ const typeMap: any = {
         { json: "discordUrl", js: "discordUrl", typ: u(undefined, "") },
         { json: "displayName", js: "displayName", typ: "" },
         { json: "sections", js: "sections", typ: m(r("Section")) },
+        { json: "shortDescription", js: "shortDescription", typ: u(undefined, "") },
         { json: "wikiUrl", js: "wikiUrl", typ: u(undefined, "") },
     ], false),
     "Category": o([
