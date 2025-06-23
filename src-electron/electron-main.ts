@@ -5,6 +5,7 @@ import path from 'path';
 import ipcServer from 'node-ipc';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import './node/init-node-ipc';
 
 app.allowRendererProcessReuse = true;
 
@@ -22,7 +23,6 @@ try {
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename);
-const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 if (process.env.PROD) {
     global.__statics = __dirname;
@@ -37,12 +37,15 @@ function createWindow() {
      * Initial window options
      */
 
+    console.log(path.resolve(
+        fileURLToPath(new URL('.', import.meta.url)),
+        path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)
+    ));
+
     const windowSize = Persist.getSize(app, {
         defaultWidth: 1200,
         defaultHeight: 700
     });
-
-    console.log(path.resolve(currentDir, path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)))
 
     mainWindow = new BrowserWindow({
         width: windowSize.width,
@@ -50,7 +53,13 @@ function createWindow() {
         useContentSize: true,
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD,
-        preload: path.resolve(currentDir, path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION))
+        webPreferences: {
+            // sandbox: false
+            preload: path.resolve(
+                fileURLToPath(new URL('.', import.meta.url)),
+                path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)
+            )
+        }
     });
 
     if (windowSize.maximized) {
@@ -104,7 +113,7 @@ app.whenReady().then(() => {
         if (fs.existsSync(pathname)) {
             callback(pathname);
         } else {
-            callback(path.join(__statics, "unknown.png"));
+            callback(path.join(__statics, 'unknown.png'));
         }
     });
 });
