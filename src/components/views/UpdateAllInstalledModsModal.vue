@@ -16,6 +16,7 @@ const {
 
 const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
 const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+const modsWithUpdates = computed(() => store.getters['profile/modsWithUpdates']);
 
 async function updateAllToLatestVersion() {
     closeModal();
@@ -31,7 +32,18 @@ async function updateAllToLatestVersion() {
 </script>
 
 <template>
-    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null && modsWithUpdates.length === 0" @close-modal="closeModal()">
+        <template v-slot:header>
+            <h2 class='modal-title'>No mods to update</h2>
+        </template>
+        <template v-slot:body>
+            <p>Either all installed mods are up to date, or there are no installed mods.</p>
+        </template>
+        <template v-slot:footer>
+            <button class="button is-info" @click="closeModal()">Close</button>
+        </template>
+    </ModalCard>
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else-if="thunderstoreMod === null && modsWithUpdates.length > 0" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>Update all installed mods</h2>
         </template>
@@ -41,7 +53,7 @@ async function updateAllToLatestVersion() {
             <p>The following mods will be downloaded and installed:</p>
             <br/>
             <ul class="list">
-                <li class="list-item" v-for='(mod, index) in $store.getters["profile/modsWithUpdates"]'
+                <li class="list-item" v-for='(mod, index) in modsWithUpdates'
                     :key='`to-update-${index}-${mod.getFullName()}`'>
                     {{mod.getName()}} will be updated to: {{mod.getLatestVersion()}}
                 </li>
