@@ -8,8 +8,7 @@ import Profile from '../../../../model/Profile';
 import ManagerSettings from '../../../manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
-import ChildProcess from 'child_process';
-const { exec } = ChildProcess;
+import ChildProcess from '../../../../providers/node/child_process/child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 
@@ -55,7 +54,7 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
         try{
             const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
-            await exec(cmd);
+            await ChildProcess.exec(cmd);
         } catch(err){
             LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting the game');
             LoggerProvider.instance.Log(LogSeverity.ERROR, (err as Error).message);
