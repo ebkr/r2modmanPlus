@@ -131,6 +131,7 @@ import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
     z-index: 100;
     padding: 0.5rem;
     text-align: right;
+    background-color: var(--background);
 }
 
 // icons are different sizes, so we need to compensate for that
