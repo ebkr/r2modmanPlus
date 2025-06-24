@@ -18,9 +18,7 @@ export function provideOsImplementation(provider: () => NodeOsProvider) {
 }
 
 const os: NodeOsProvider = {
-    homedir: () => {
-        return getImplementation().homedir();
-    }
+    homedir: () => getImplementation().homedir()
 };
 
 export default os;
