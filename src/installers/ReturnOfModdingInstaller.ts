@@ -1,5 +1,4 @@
-import path from "path";
-
+import path from "../providers/node/path/path";
 import { InstallRuleInstaller } from "./InstallRuleInstaller";
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
