@@ -32,23 +32,23 @@ export default class InteractionProviderImpl extends InteractionProvider {
             const fileOpts = options as unknown as OpenDialogOptions;
             fileOpts.properties = ['openFile', 'showHiddenFiles'];
 
-            ipcRenderer.once('receive-open-dialog', (_, args) => {
-                resolve(args.filePaths);
-            });
-            ipcRenderer.send('show-open-dialog', fileOpts);
+            // ipcRenderer.once('receive-open-dialog', (_, args) => {
+            //     resolve(args.filePaths);
+            // });
+            // ipcRenderer.send('show-open-dialog', fileOpts);
         });
     }
 
 
     hookModInstallProtocol(callback: (data: any) => void) {
-        ipcRenderer.removeAllListeners('install-from-thunderstore-string');
-        ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
-            callback(data);
-        });
+        // ipcRenderer.removeAllListeners('install-from-thunderstore-string');
+        // ipcRenderer.on('install-from-thunderstore-string', (_sender: any, data: string) => {
+        //     callback(data);
+        // });
     }
 
 
     copyToClipboard(value: string) {
-        clipboard.writeText(value, 'clipboard');
+        // clipboard.writeText(value, 'clipboard');
     }
 }
