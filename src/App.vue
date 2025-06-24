@@ -50,7 +50,7 @@ import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
 import { Dark } from 'quasar';
 
-const store = baseStore();
+const store = baseStore;
 provideStoreImplementation(() => store);
 
 document.addEventListener('auxclick', e => {

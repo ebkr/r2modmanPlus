@@ -388,7 +388,7 @@ export const TsModsModule = {
 
         async updateExclusions({commit}) {
             // Read exclusion list from a bundled file to have some values available ASAP.
-            const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
+            const exclusionList: {exclusions: string[]} = await import('../../../modExclusions.json');
             commit('setExclusions', exclusionList.exclusions);
 
             const timeout = 20000;
