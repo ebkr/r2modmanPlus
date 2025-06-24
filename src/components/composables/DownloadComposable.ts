@@ -9,10 +9,6 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 export function useDownloadComposable() {
     const store = getStore<any>();
 
-    function closeModal() {
-        store.commit("closeDownloadModModal");
-    }
-
     function setIsModProgressModalOpen(open: boolean): void {
         store.commit('download/setIsModProgressModalOpen', open);
     }
@@ -50,5 +46,5 @@ export function useDownloadComposable() {
         });
     }
 
-    return {closeModal, setIsModProgressModalOpen, downloadCompletedCallback}
+    return {setIsModProgressModalOpen, downloadCompletedCallback}
 }

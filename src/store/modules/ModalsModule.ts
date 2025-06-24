@@ -11,7 +11,7 @@ interface State {
     isCreateProfileModalOpen: boolean;
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
-    isDownloadModModalOpen: boolean;
+    isDownloadModVersionSelectModalOpen: boolean;
     isGameRunningModalOpen: boolean;
     isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
@@ -34,7 +34,7 @@ export default {
         isCreateProfileModalOpen: false,
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
-        isDownloadModModalOpen: false,
+        isDownloadModVersionSelectModalOpen: false,
         isGameRunningModalOpen: false,
         isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
@@ -73,8 +73,8 @@ export default {
             state.disableModModalMod = null;
         },
 
-        closeDownloadModModal: function(state: State): void {
-            state.isDownloadModModalOpen = false;
+        closeDownloadModVersionSelectModal: function(state: State): void {
+            state.isDownloadModVersionSelectModalOpen = false;
             state.downloadModModalMod = null;
         },
 
@@ -137,9 +137,9 @@ export default {
             state.isDisableModModalOpen = true;
         },
 
-        openDownloadModModal: function(state: State, mod: ThunderstoreMod): void {
+        openDownloadModVersionSelectModal: function(state: State, mod: ThunderstoreMod): void {
             state.downloadModModalMod = mod;
-            state.isDownloadModModalOpen = true;
+            state.isDownloadModVersionSelectModalOpen = true;
         },
 
         openGameRunningModal: function(state: State): void {

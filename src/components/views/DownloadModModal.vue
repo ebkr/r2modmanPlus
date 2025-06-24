@@ -1,35 +1,15 @@
 <script lang="ts" setup>
 import { Progress } from '../all';
-import DownloadModVersionSelectModal from '../../components/views/DownloadModVersionSelectModal.vue';
-import ThunderstoreMod from '../../model/ThunderstoreMod';
-import ThunderstoreVersion from '../../model/ThunderstoreVersion';
-import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import { useDownloadComposable } from '../composables/DownloadComposable';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { InstallMode } from "../../utils/DependencyUtils";
 
 const store = getStore<State>();
 
 const {
-    closeModal,
     setIsModProgressModalOpen,
 } = useDownloadComposable();
 
-async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
-    closeModal();
-
-    const combos = [new ThunderstoreCombo()];
-    combos[0].setMod(tsMod);
-    combos[0].setVersion(tsVersion);
-
-    await store.dispatch('download/downloadAndInstallCombos', {
-        combos,
-        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
-        game: store.state.activeGame,
-        installMode: InstallMode.INSTALL_SPECIFIC
-    });
-}
 
 </script>
 
@@ -73,6 +53,5 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
             </div>
             <button class="modal-close is-large" aria-label="close" @click="setIsModProgressModalOpen(false);"></button>
         </div>
-        <DownloadModVersionSelectModal @download-mod="downloadHandler" />
     </div>
 </template>

@@ -90,7 +90,7 @@ function isThunderstoreModInstalled(mod: ThunderstoreMod) {
 }
 
 function showDownloadModal(mod: ThunderstoreMod) {
-    store.commit("openDownloadModModal", mod);
+    store.commit("openDownloadModVersionSelectModal", mod);
 }
 
 function getReadableDate(date: Date): string {
