@@ -49,6 +49,7 @@ import baseStore from './store';
 import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
 import { Dark } from 'quasar';
+import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
 
 const store = baseStore;
 provideStoreImplementation(() => store);
@@ -69,7 +70,7 @@ const {
 
 const visible = ref<boolean>(false);
 
-FsProvider.provide(() => new NodeFs());
+FsProvider.provide(() => NodeFsImplementation);
 
 ProfileProvider.provide(() => new ProfileImpl());
 LogOutputProvider.provide(() => LogOutput.getSingleton());
