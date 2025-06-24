@@ -125,9 +125,9 @@
         <SortModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <ProfileCodeExportModal />
-        <DownloadModModal />
-        <UpdateAllInstalledModsModal />
+        <DownloadProgressModal />
         <DownloadModVersionSelectModal />
+        <UpdateAllInstalledModsModal />
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
@@ -151,7 +151,6 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import { homedir } from 'os';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
-import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
@@ -162,8 +161,9 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 import SortModal from '../components/modals/SortModal.vue';
-import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledModsModal.vue';
 import DownloadModVersionSelectModal from '../components/views/DownloadModVersionSelectModal.vue';
+import DownloadProgressModal from '../components/views/DownloadProgressModal.vue';
+import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledModsModal.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';

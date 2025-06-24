@@ -10,8 +10,8 @@ import { InstallMode } from '../../utils/DependencyUtils';
 const store = getStore<State>();
 
 const isOpen = computed(() => store.state.modals.isUpdateAllModsModalOpen);
-const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
 const modsWithUpdates = computed(() => store.getters['profile/modsWithUpdates']);
+
 function closeModal() {
     store.commit("closeUpdateAllModsModal");
 }

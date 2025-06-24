@@ -36,10 +36,8 @@
 
 <script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { ExpandableCard, ExternalLink } from '../all';
-import DownloadModModal from './DownloadModModal.vue';
+import { ExternalLink } from '../all';
 import ManifestV2 from '../../model/ManifestV2';
-import DonateButton from '../../components/buttons/DonateButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import OnlineRowCard from '../OnlineRowCard.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';

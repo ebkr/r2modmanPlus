@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { Progress } from '../all';
-import { useDownloadComposable } from '../composables/DownloadComposable';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 
 const store = getStore<State>();
 
-const {
-    setIsModProgressModalOpen,
-} = useDownloadComposable();
-
+function closeModal() {
+    store.commit("closeDownloadProgressModal");
+}
 
 </script>
 
@@ -17,10 +15,10 @@ const {
     <div>
         <div
             id='downloadProgressModal'
-            :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]"
+            :class="['modal', {'is-active':$store.state.modals.isDownloadProgressModalOpen}]"
             v-if="$store.getters['download/currentDownload'] !== null"
         >
-            <div class="modal-background" @click="setIsModProgressModalOpen(false);"></div>
+            <div class="modal-background" @click="closeModal();"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
 
@@ -51,7 +49,7 @@ const {
                     />
                 </div>
             </div>
-            <button class="modal-close is-large" aria-label="close" @click="setIsModProgressModalOpen(false);"></button>
+            <button class="modal-close is-large" aria-label="close" @click="closeModal();"></button>
         </div>
     </div>
 </template>

@@ -75,13 +75,13 @@ const selectedVersion = ref<string | null>(null);
 const currentVersion = ref<string | null>(null);
 
 const isOpen = computed(() => store.state.modals.isDownloadModVersionSelectModalOpen);
-const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+const thunderstoreMod = computed(() => store.state.modals.downloadModalMod);
 
 function closeModal() {
     store.commit("closeDownloadModVersionSelectModal");
 }
 
-watch(() => store.state.modals.downloadModModalMod, async () => {
+watch(() => store.state.modals.downloadModalMod, async () => {
     currentVersion.value = null;
     if (thunderstoreMod.value !== null) {
         const activeGame: Game = store.state.activeGame;

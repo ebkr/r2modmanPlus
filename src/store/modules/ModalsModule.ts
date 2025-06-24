@@ -4,7 +4,7 @@ import ThunderstoreMod from "../../model/ThunderstoreMod";
 interface State {
     associatedModsModalMod: ManifestV2 | null;
     disableModModalMod: ManifestV2 | null;
-    downloadModModalMod: ThunderstoreMod | null;
+    downloadModalMod: ThunderstoreMod | null;
     isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
     isOnlineSortModalOpen: boolean;
@@ -12,6 +12,7 @@ interface State {
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
     isDownloadModVersionSelectModalOpen: boolean;
+    isDownloadProgressModalOpen: boolean;
     isGameRunningModalOpen: boolean;
     isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
@@ -27,7 +28,7 @@ export default {
     state: (): State => ({
         associatedModsModalMod: null,
         disableModModalMod: null,
-        downloadModModalMod: null,
+        downloadModalMod: null,
         isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
         isOnlineSortModalOpen: false,
@@ -35,6 +36,7 @@ export default {
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
         isDownloadModVersionSelectModalOpen: false,
+        isDownloadProgressModalOpen: false,
         isGameRunningModalOpen: false,
         isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
@@ -75,7 +77,11 @@ export default {
 
         closeDownloadModVersionSelectModal: function(state: State): void {
             state.isDownloadModVersionSelectModalOpen = false;
-            state.downloadModModalMod = null;
+            state.downloadModalMod = null;
+        },
+
+        closeDownloadProgressModal: function(state: State): void {
+            state.isDownloadProgressModalOpen = false;
         },
 
         closeGameRunningModal: function(state: State): void {
@@ -138,8 +144,12 @@ export default {
         },
 
         openDownloadModVersionSelectModal: function(state: State, mod: ThunderstoreMod): void {
-            state.downloadModModalMod = mod;
+            state.downloadModalMod = mod;
             state.isDownloadModVersionSelectModalOpen = true;
+        },
+
+        openDownloadProgressModal: function(state: State): void {
+            state.isDownloadProgressModalOpen = true;
         },
 
         openGameRunningModal: function(state: State): void {
