@@ -8,8 +8,7 @@ import ManagerSettings from '../../../manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
-import ChildProcess from 'child_process';
-const { exec } = ChildProcess;
+import ChildProcess from '../../../../providers/node/child_process/child_process';
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -46,7 +45,7 @@ export default class DirectGameRunner extends GameRunnerProvider {
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            const childProcess = exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
+            const childProcess = ChildProcess.exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {
