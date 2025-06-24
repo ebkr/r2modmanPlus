@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Vuex, { ActionContext, Store } from 'vuex';
+import { ActionContext, createStore } from 'vuex';
 
 import ErrorModule from './modules/ErrorModule';
 import { DownloadModule } from './modules/DownloadModule';
@@ -139,21 +138,13 @@ export const store = {
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEV === 'true'
+    strict: process.env.DEBUGGING
 };
 
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
-let singletonStore!: Store<State>;
+let singletonStore = createStore(store);
 
-// @ts-ignore
-export default ( { app }) => {
-    if (!singletonStore) {
-        singletonStore = new Store<State>(store);
-        app.use(Vuex);
-        app.use(singletonStore);
-    }
-    return singletonStore;
-};
+export default singletonStore;
