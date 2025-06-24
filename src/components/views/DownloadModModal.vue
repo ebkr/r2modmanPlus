@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Progress } from '../all';
 import DownloadModVersionSelectModal from '../../components/views/DownloadModVersionSelectModal.vue';
-import UpdateAllInstalledModsModal from '../../components/views/UpdateAllInstalledModsModal.vue';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ThunderstoreVersion from '../../model/ThunderstoreVersion';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
@@ -75,6 +74,5 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
             <button class="modal-close is-large" aria-label="close" @click="setIsModProgressModalOpen(false);"></button>
         </div>
         <DownloadModVersionSelectModal @download-mod="downloadHandler" />
-        <UpdateAllInstalledModsModal />
     </div>
 </template>

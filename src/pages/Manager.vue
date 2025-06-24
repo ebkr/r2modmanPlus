@@ -126,6 +126,7 @@
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <ProfileCodeExportModal />
         <DownloadModModal />
+        <UpdateAllInstalledModsModal />
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
@@ -160,6 +161,7 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 import SortModal from '../components/modals/SortModal.vue';
+import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledModsModal.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';

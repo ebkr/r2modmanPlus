@@ -16,6 +16,7 @@ interface State {
     isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
     isUninstallModModalOpen: boolean;
+    isUpdateAllModsModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
     isProfileManagementModalOpen: boolean;
     isProfileCodeExportModalOpen: boolean;
@@ -38,6 +39,7 @@ export default {
         isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
         isUninstallModModalOpen: false,
+        isUpdateAllModsModalOpen: false,
         uninstallModModalMod: null,
         isProfileManagementModalOpen: false,
         isProfileCodeExportModalOpen: false,
@@ -91,6 +93,10 @@ export default {
         closeUninstallModModal: function(state: State): void {
             state.isUninstallModModalOpen = false;
             state.uninstallModModalMod = null;
+        },
+
+        closeUpdateAllModsModal: function(state: State): void {
+            state.isUpdateAllModsModalOpen = false;
         },
 
         closeProfileManagementModal: function(state: State): void {
@@ -154,8 +160,7 @@ export default {
         },
 
         openUpdateAllModsModal: function(state: State): void {
-            state.downloadModModalMod = null;
-            state.isDownloadModModalOpen = true;
+            state.isUpdateAllModsModalOpen = true;
         },
 
         openProfileManagementModal: function(state: State): void {
