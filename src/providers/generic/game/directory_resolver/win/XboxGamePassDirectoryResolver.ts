@@ -3,7 +3,7 @@ import Game from '../../../../../model/game/Game';
 import R2Error from '../../../../../model/errors/R2Error';
 import ManagerSettings from '../../../../../r2mm/manager/ManagerSettings';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
-import child from 'child_process';
+import ChildProcess from '../../../../../providers/node/child_process/child_process';
 
 export default class XboxGamePassDirectoryResolver extends GameDirectoryResolverProvider {
 
@@ -15,7 +15,7 @@ export default class XboxGamePassDirectoryResolver extends GameDirectoryResolver
 
         try {
             const installDirectoryQuery = `get-appxpackage -Name ${game.activePlatform.storeIdentifier} | select -expand InstallLocation`;
-            const queryResult: string = child.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
+            const queryResult: string = ChildProcess.execSync(`powershell.exe "${installDirectoryQuery}"`).toString().trim();
             const realInstallLocation = await FsProvider.instance.realpath(queryResult);
             if (await FsProvider.instance.exists(realInstallLocation)) {
                 return realInstallLocation;
