@@ -95,9 +95,13 @@ let settingsList = [
         'Debugging',
         'Copy log file contents to clipboard',
         'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-        async () => doesLogFileExist(),
+        async () => logOutput.value.exists ? 'Log file exists' : 'Log file does not exist',
         'fa-clipboard',
-        () => emitInvoke('CopyLogToClipboard')
+        () => {
+            if (logOutput.value.exists) {
+                emitInvoke('CopyLogToClipboard')
+            }
+        }
     ),
     new SettingsRow(
         'Debugging',
@@ -361,9 +365,6 @@ function emitInvoke(invoked: string) {
     emits('setting-invoked', invoked);
 }
 
-function doesLogFileExist() {
-    return logOutput.value.exists ? 'Log file exists' : 'Log file does not exist';
-}
 </script>
 
 <template>
