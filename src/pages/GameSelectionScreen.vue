@@ -150,8 +150,8 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <template v-if="activeTab === GameInstanceType.GAME">
-                                                                <img :src='getImage(game.gameImage)' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                            <template v-if="activeTab === GameInstanceType.GAME && gameImages[game.gameImage]">
+                                                                <img :src='gameImages[game.gameImage]' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
                                                                 <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
@@ -185,7 +185,7 @@ import R2Error from '../model/errors/R2Error';
 import { GameInstanceType, GameSelectionDisplayMode, Platform } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import {computed, getCurrentInstance, onMounted, reactive, ref} from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
@@ -203,6 +203,7 @@ const settings = ref<ManagerSettings | undefined>(undefined);
 const isSettingDefaultPlatform = ref<boolean>(false);
 const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
 const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
+const gameImages = reactive({});
 
 const filteredGameList = computed(() => {
     const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
@@ -230,6 +231,11 @@ const gameList = computed<Game[]>(() => {
         }
         return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
     });
+});
+
+gameList.value.forEach(async (game) => {
+    // @ts-ignore
+    gameImages[game.gameImage] = import("../assets/images/game_selection/" + image);
 });
 
 function changeTab(tab: GameInstanceType) {
@@ -374,10 +380,6 @@ function toggleViewMode() {
     if (settings.value !== undefined) {
         settings.value.setGameSelectionViewMode(viewMode.value);
     }
-}
-
-function getImage(image: string) {
-    return require("../assets/images/game_selection/" + image);
 }
 
 function capitalize(str: string) {
