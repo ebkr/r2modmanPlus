@@ -2,8 +2,8 @@ import {ipcRenderer} from "electron/renderer";
 
 export async function getAppDataDirectory(): Promise<string> {
     return new Promise((resolve, reject) => {
-        ipcRenderer.on('receive-appData-directory', (event, args) => {
-            const result = args[0];
+        ipcRenderer.on('receive-appData-directory', (event, path) => {
+            const result = path;
             if (result instanceof Error) {
                 reject(result);
             } else {
@@ -17,13 +17,12 @@ export async function getAppDataDirectory(): Promise<string> {
 export async function isApplicationPortable(): Promise<boolean> {
     console.log("Checking is portable")
     return new Promise((resolve, reject) => {
-        ipcRenderer.on('receive-is-portable', (event, args) => {
-            console.log("Received is-portable", args);
-            const result = args[0];
-            if (result instanceof Error) {
-                reject(result);
+        ipcRenderer.on('receive-is-portable', (event, isPortable) => {
+            console.log("Received is-portable", isPortable);
+            if (isPortable instanceof Error) {
+                reject(isPortable);
             } else {
-                resolve(result);
+                resolve(isPortable);
             }
         })
         ipcRenderer.send('get-is-portable');
