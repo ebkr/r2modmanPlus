@@ -1,0 +1,14 @@
+.menu-label {
+    color: var(--text, #363636);
+}
+
+.menu-list li {
+
+    * {
+        color: var(--text, #363636);
+    }
+
+    *.is-active {
+        color: var(--text, #363636) !important;
+    }
+}
