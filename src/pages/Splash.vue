@@ -122,27 +122,22 @@
 // import { ipcRenderer } from 'electron';
 import { ExternalLink, Hero, Progress } from '../components/all';
 import Game from '../model/game/Game';
-import RequestItem from '../model/requests/RequestItem';
 import FsProvider from '../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import PathResolver from '../r2mm/manager/PathResolver';
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { State } from '../store';
 import { getStore } from '../providers/generic/store/StoreProvider';
-import VueRouter from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
 import path from '../providers/node/path/path';
+import { UpdateRequestItemBody } from '../store/modules/SplashModule';
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+const router = useRouter();
 
 const {
-    getRequestItem,
     reduceRequests
 } = useSplashComposable();
 
@@ -156,17 +151,19 @@ store.commit('splash/initialiseRequests');
 // Ensure that the manager isn't outdated.
 function checkForUpdates() {
     store.dispatch('splash/setSplashText', 'Preparing');
-    // ipcRenderer.once('update-done', async () => {
-    //     const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
-    //     updateCheck.setProgress(100);
-    //     await store.dispatch('splash/getThunderstoreMods');
-    //     moveToNextScreen();
-    // });
-    // ipcRenderer.send('update-app');
+    window.app.checkForApplicationUpdates()
+        .then(async () => {
+            await store.dispatch('splash/updateRequestItem', {
+                requestName: 'UpdateCheck',
+                value: 100
+            } as UpdateRequestItemBody);
+            await store.dispatch('splash/getThunderstoreMods');
+            moveToNextScreen();
+        })
 }
 
 async function moveToNextScreen() {
-    if (process.platform === 'linux') {
+    if (window.app.getPlatform() === 'linux') {
         const activeGame: Game = store.state.activeGame;
 
         if (!await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)) {
@@ -179,7 +176,7 @@ async function moveToNextScreen() {
                 return;
             }
         }
-    } else if (process.platform === 'darwin') {
+    } else if (window.app.getPlatform() === 'darwin') {
         await ensureWrapperInGameFolder();
         router.push({name: 'linux'});
         return;
@@ -188,7 +185,7 @@ async function moveToNextScreen() {
 }
 
 async function ensureWrapperInGameFolder() {
-    const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
+    const wrapperName = window.app.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
     const activeGame: Game = store.state.activeGame;
     console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
     try {
