@@ -51,9 +51,8 @@
     </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
 
 import R2Error from "../model/errors/R2Error";
 import Game from "..//model/game/Game";
@@ -72,107 +71,104 @@ enum PHASES {
     RETRY_FAILED = 104
 }
 
-@Component
-export default class SettingsLoader extends Vue {
-    @Prop({required: true})
-    private logError!: (error: R2Error) => void;
+type SettingsLoaderType = {
+    logError: (error: R2Error) => void;
+    openLink: (url: string) => void;
+}
 
-    @Prop({required: true})
-    openLink!: (url: string) => void;
+const props = defineProps<SettingsLoaderType>();
 
-    error: R2Error|null = null;
-    PHASES = PHASES;
-    phase = PHASES.INITIAL;
+const error = ref<R2Error|null>(null);
+const phase = ref<PHASES>(PHASES.INITIAL);
 
-    handleError(name: string, message: string) {
-        this.error = new R2Error(name, message);
-        this.logError(this.error);
+function handleError(name: string, message: string) {
+    error.value = new R2Error(name, message);
+    props.logError(error.value);
+}
+
+async function loadSettings(game: Game) {
+    const isRetry = phase.value === PHASES.SETTINGS_FAILED;
+    let settings;
+    let error;
+
+    try {
+        settings = await ManagerSettings.getSingleton(game);
+    } catch (e) {
+        handleError("Failed to read ManagerSettings", `${e}`);
+        phase.value = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
+        return;
     }
 
-    async loadSettings(game: Game) {
-        const isRetry = this.phase === PHASES.SETTINGS_FAILED;
-        let settings;
-        let error;
-
-        try {
-            settings = await ManagerSettings.getSingleton(game);
-        } catch (e) {
-            this.handleError("Failed to read ManagerSettings", `${e}`);
-            this.phase = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
-            return;
-        }
-
-        try {
-            // Force reload settings from Dexie just to be sure although
-            // .getSingleton() should have done it already.
-            error = await settings.load(true);
-        } catch (e) {
-            this.handleError("Failed to load ManagerSettings", `${e}`);
-            this.phase = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
-            return;
-        }
-
-        if (error) {
-            this.handleError(error.name, error.message);
-            this.phase = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
-            return;
-        }
-
-        this.phase = PHASES.LOADED;
+    try {
+        // Force reload settings from Dexie just to be sure although
+        // .getSingleton() should have done it already.
+        error = await settings.load(true);
+    } catch (e) {
+        handleError("Failed to load ManagerSettings", `${e}`);
+        phase.value = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
+        return;
     }
 
-    async resetSettings() {
-        try {
-            await this.resetIndexedDB();
-        } catch (e) {
-            this.handleError("Failed to reset IndexedDB", `${e}`);
-            this.phase = PHASES.RESET_FAILED;
-            return;
-        }
-
-        try {
-            // Discard settings singleton since it might be in invalid
-            // state after the earlier failed loading attempt.
-            ManagerSettings.discardSingleton();
-
-            // We know by now that getDefaultGame is safe to use.
-            await this.loadSettings(getDefaultGame());
-        } catch (e) {
-            this.handleError("Unexpected ManagerSettings error", `${e}`);
-            this.phase = PHASES.RETRY_FAILED;
-        }
+    if (error) {
+        handleError(error.name, error.message);
+        phase.value = isRetry ? PHASES.RETRY_FAILED : PHASES.SETTINGS_FAILED;
+        return;
     }
 
-    resetIndexedDB() {
-        const DBDeleteRequest = window.indexedDB.deleteDatabase(SETTINGS_DB_NAME);
+    phase.value = PHASES.LOADED;
+}
 
-        return new Promise<void>((resolve, reject) => {
-            DBDeleteRequest.onsuccess = () => resolve();
-            DBDeleteRequest.onerror = () => reject("Deleting settings database failed");
-        });
+async function resetSettings() {
+    try {
+        await resetIndexedDB();
+    } catch (e) {
+        handleError("Failed to reset IndexedDB", `${e}`);
+        phase.value = PHASES.RESET_FAILED;
+        return;
     }
 
-    async created() {
-        let defaultGame;
+    try {
+        // Discard settings singleton since it might be in invalid
+        // state after the earlier failed loading attempt.
+        ManagerSettings.discardSingleton();
 
-        try {
-            defaultGame = getDefaultGame();
-        } catch (e) {
-            this.handleError("Failed to read game definitions", `${e}`);
-            this.phase = PHASES.GAME_FAILED;
-            return;
-        }
-
-        try {
-            await this.loadSettings(defaultGame);
-        } catch (e) {
-            this.handleError("Unexpected ManagerSettings error", `${e}`);
-            this.phase = PHASES.SETTINGS_FAILED;
-        }
+        // We know by now that getDefaultGame is safe to use.
+        await loadSettings(getDefaultGame());
+    } catch (e) {
+        handleError("Unexpected ManagerSettings error", `${e}`);
+        phase.value = PHASES.RETRY_FAILED;
     }
 }
 
-const getDefaultGame = () => {
+function resetIndexedDB() {
+    const DBDeleteRequest = window.indexedDB.deleteDatabase(SETTINGS_DB_NAME);
+
+    return new Promise<void>((resolve, reject) => {
+        DBDeleteRequest.onsuccess = () => resolve();
+        DBDeleteRequest.onerror = () => reject("Deleting settings database failed");
+    });
+}
+
+onMounted(async () => {
+    let defaultGame;
+
+    try {
+        defaultGame = getDefaultGame();
+    } catch (e) {
+        handleError("Failed to read game definitions", `${e}`);
+        phase.value = PHASES.GAME_FAILED;
+        return;
+    }
+
+    try {
+        await loadSettings(defaultGame);
+    } catch (e) {
+        handleError("Unexpected ManagerSettings error", `${e}`);
+        phase.value = PHASES.SETTINGS_FAILED;
+    }
+});
+
+function getDefaultGame() {
     // Don't trust the non-null asserted typing of GameManager.defaultGame.
     if (GameManager.defaultGame === undefined) {
         throw new Error("GameManager.defaultGame returned undefined");

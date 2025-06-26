@@ -1,4 +1,4 @@
-import { StorePlatform } from '../../../../model/game/StorePlatform';
+import { Platform } from '../../../../model/schema/ThunderstoreSchema';
 import GameRunnerProvider from '../GameRunnerProvider';
 import GameDirectoryResolverProvider from '../../../ror2/game/GameDirectoryResolverProvider';
 import GameDirectoryResolverImpl_Steam_Win from '../../../../r2mm/manager/win32/GameDirectoryResolver';
@@ -7,7 +7,7 @@ import PlatformInterceptorProvider from '../platform_interceptor/PlatformInterce
 import EGSDirectoryResolver from '../directory_resolver/win/EGSDirectoryResolver';
 import XboxGamePassDirectoryResolver from '../directory_resolver/win/XboxGamePassDirectoryResolver';
 import DRMFreeDirectoryResolver from '../directory_resolver/win/DRMFreeDirectoryResolver';
-import { PackageLoader } from '../../../../model/installing/PackageLoader';
+import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import DarwinGameDirectoryResolver from '../../../../r2mm/manager/darwin/DarwinGameDirectoryResolver';
 import SteamGameRunner_Windows from '../../../../r2mm/launching/runners/windows/SteamGameRunner_Windows';
 import DirectGameRunner from '../../../../r2mm/launching/runners/multiplatform/DirectGameRunner';
@@ -21,15 +21,15 @@ type PlatformRunnersType = {
 }
 
 type LoaderRunnersType = {
-    [loader: number]: PlatformRunnersType
+    [loader in PackageLoader]: PlatformRunnersType
 }
 
 type RunnerType = {
-    [platkey in StorePlatform]: LoaderRunnersType
+    [platkey in Platform]: LoaderRunnersType
 };
 
 type ResolverType = {
-    [platkey in StorePlatform]: {
+    [platkey in Platform]: {
         [procKey: string]: GameDirectoryResolverProvider
     }
 };
@@ -59,58 +59,58 @@ const XBOX_RUNNERS = {
 function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
     return {
         [PackageLoader.BEPINEX]: runners,
-        [PackageLoader.MELON_LOADER]: runners,
+        [PackageLoader.MELONLOADER]: runners,
         [PackageLoader.NORTHSTAR]: runners,
         [PackageLoader.NONE]: runners,
-        [PackageLoader.GODOT_ML]: runners,
+        [PackageLoader.GODOTML]: runners,
         [PackageLoader.SHIMLOADER]: runners,
         [PackageLoader.LOVELY]: runners,
         [PackageLoader.RETURN_OF_MODDING]: runners,
         [PackageLoader.GDWEAVE]: runners,
-        [PackageLoader.RECURSIVE_MELON_LOADER]: runners,
+        [PackageLoader.RECURSIVE_MELONLOADER]: runners,
     }
 }
 
 const RUNNERS: RunnerType = {
-    [StorePlatform.STEAM]: buildRunners(STEAM_RUNNERS),
-    [StorePlatform.STEAM_DIRECT]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.EPIC_GAMES_STORE]: buildRunners(EGS_RUNNERS),
-    [StorePlatform.OCULUS_STORE]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.ORIGIN]: buildRunners(DIRECT_RUNNERS),
-    [StorePlatform.XBOX_GAME_PASS]: buildRunners(XBOX_RUNNERS),
-    [StorePlatform.OTHER]: buildRunners(DIRECT_RUNNERS),
+    [Platform.STEAM]: buildRunners(STEAM_RUNNERS),
+    [Platform.STEAM_DIRECT]: buildRunners(DIRECT_RUNNERS),
+    [Platform.EPIC_GAMES_STORE]: buildRunners(EGS_RUNNERS),
+    [Platform.OCULUS_STORE]: buildRunners(DIRECT_RUNNERS),
+    [Platform.ORIGIN]: buildRunners(DIRECT_RUNNERS),
+    [Platform.XBOX_GAME_PASS]: buildRunners(XBOX_RUNNERS),
+    [Platform.OTHER]: buildRunners(DIRECT_RUNNERS),
 };
 
 const RESOLVERS: ResolverType = {
-    [StorePlatform.STEAM]: {
+    [Platform.STEAM]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()
     },
-    [StorePlatform.STEAM_DIRECT]: {
+    [Platform.STEAM_DIRECT]: {
         "win32": new GameDirectoryResolverImpl_Steam_Win,
         "linux": new GameDirectoryResolverImpl_Steam_Linux(),
         "darwin": new DarwinGameDirectoryResolver()
     },
-    [StorePlatform.EPIC_GAMES_STORE]: {
+    [Platform.EPIC_GAMES_STORE]: {
         "win32": new EGSDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver(),
     },
-    [StorePlatform.OCULUS_STORE]: {
+    [Platform.OCULUS_STORE]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },
-    [StorePlatform.ORIGIN]: {
+    [Platform.ORIGIN]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
     },
-    [StorePlatform.XBOX_GAME_PASS]: {
+    [Platform.XBOX_GAME_PASS]: {
         "win32": new XboxGamePassDirectoryResolver()
     },
-    [StorePlatform.OTHER]: {
+    [Platform.OTHER]: {
         "win32": new DRMFreeDirectoryResolver(),
         "linux": new DRMFreeDirectoryResolver(),
         "darwin": new DRMFreeDirectoryResolver()
@@ -119,14 +119,14 @@ const RESOLVERS: ResolverType = {
 
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
-    public getRunnerForPlatform(platform: StorePlatform, loader: PackageLoader): GameRunnerProvider | undefined {
+    public getRunnerForPlatform(platform: Platform, loader: PackageLoader): GameRunnerProvider | undefined {
         if (RUNNERS[platform][loader][process.platform] !== undefined) {
             return RUNNERS[platform][loader][process.platform];
         }
         return undefined;
     }
 
-    public getDirectoryResolverForPlatform(platform: StorePlatform): GameDirectoryResolverProvider | undefined {
+    public getDirectoryResolverForPlatform(platform: Platform): GameDirectoryResolverProvider | undefined {
         if (RESOLVERS[platform][process.platform] !== undefined) {
             return RESOLVERS[platform][process.platform];
         }

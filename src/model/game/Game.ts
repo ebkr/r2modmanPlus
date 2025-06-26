@@ -1,14 +1,11 @@
-import { StorePlatform } from '../../model/game/StorePlatform';
+import R2Error from '../errors/R2Error';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
-import { GameSelectionDisplayMode } from '../../model/game/GameSelectionDisplayMode';
-import { GameInstanceType } from '../../model/game/GameInstanceType';
-import { PackageLoader } from '../../model/installing/PackageLoader';
-import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
+import { GameInstanceType, GameSelectionDisplayMode, PackageLoader, Platform } from '../../model/schema/ThunderstoreSchema';
 
 export default class Game {
 
     private readonly _displayName: string;
-    private readonly _internalFolderName: GAME_NAME;
+    private readonly _internalFolderName: string;
     private readonly _steamFolderName: string;
     private readonly _settingsIdentifier: string;
     private readonly _exeName: string[];
@@ -24,7 +21,7 @@ export default class Game {
 
     private _activePlatform: StorePlatformMetadata;
 
-    constructor(displayName: string, internalFolderName: GAME_NAME, settingsIdentifier: string,
+    constructor(displayName: string, internalFolderName: string, settingsIdentifier: string,
                 steamFolderName: string, exeName: string[], dataFolderName: string,
                 tsUrl: string, platforms: StorePlatformMetadata[], gameImage: string,
                 displayMode: GameSelectionDisplayMode, instanceType: GameInstanceType, packageLoader: PackageLoader, additionalSearchStrings?: string[]) {
@@ -49,7 +46,7 @@ export default class Game {
         return this._displayName;
     }
 
-    get internalFolderName(): GAME_NAME {
+    get internalFolderName(): string {
         return this._internalFolderName;
     }
 
@@ -81,8 +78,17 @@ export default class Game {
         return this._activePlatform;
     }
 
-    public setActivePlatformByStore(storePlatform: StorePlatform) {
-        this._activePlatform = this._storePlatformMetadata.find(platform => platform.storePlatform === storePlatform)!;
+    public setActivePlatformByStore(storePlatform: Platform) {
+        const platform = this._storePlatformMetadata.find(platform => platform.storePlatform === storePlatform);
+
+        if (!platform) {
+            throw new R2Error(
+                "Invalid store platform",
+                `"${storePlatform}" is not a valid platform for ${this.displayName}.`
+            );
+        };
+
+        this._activePlatform = platform;
     }
 
     get gameImage(): string {
@@ -103,5 +109,9 @@ export default class Game {
 
     get additionalSearchStrings(): string[] {
         return this._additionalSearchStrings;
+    }
+
+    get isInstalledViaSteam(): boolean {
+        return [Platform.STEAM, Platform.STEAM_DIRECT].includes(this._activePlatform.storePlatform);
     }
 }

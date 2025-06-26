@@ -64,108 +64,103 @@
   </div>
 </template>
 
-<script lang='ts'>
-import Component from 'vue-class-component';
-import { Hero, Progress } from '../components/all';
+<script lang='ts' setup>
+import { Hero } from '../components/all';
 
 import R2Error from '../model/errors/R2Error';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import DeleteProfileModal from "../components/profiles-modals/DeleteProfileModal.vue";
-import RenameProfileModal from "../components/profiles-modals/RenameProfileModal.vue";
-import CreateProfileModal from "../components/profiles-modals/CreateProfileModal.vue";
-import ImportProfileModal from "../components/profiles-modals/ImportProfileModal.vue";
-import ProfilesMixin from "../components/mixins/ProfilesMixin.vue";
+import DeleteProfileModal from '../components/profiles-modals/DeleteProfileModal.vue';
+import RenameProfileModal from '../components/profiles-modals/RenameProfileModal.vue';
+import CreateProfileModal from '../components/profiles-modals/CreateProfileModal.vue';
+import ImportProfileModal from '../components/profiles-modals/ImportProfileModal.vue';
+import { computed, getCurrentInstance, onMounted } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
+import VueRouter from 'vue-router';
 
+const store = getStore<State>();
+let router!: VueRouter;
 
-@Component({
-    components: {
-        ImportProfileModal,
-        CreateProfileModal,
-        hero: Hero,
-        'progress-bar': Progress,
-        DeleteProfileModal,
-        RenameProfileModal,
-    },
-})
-export default class Profiles extends ProfilesMixin {
+const profileList = computed(() => store.state.profiles.profileList);
+const activeProfileName = computed(() => store.getters['profile/activeProfileName']);
 
-    openCreateProfileModal() {
-        this.$store.commit('openCreateProfileModal');
+function openCreateProfileModal() {
+    store.commit('openCreateProfileModal');
+}
+
+function openDeleteProfileModal() {
+    store.commit('openDeleteProfileModal');
+}
+
+function openRenameProfileModal() {
+    store.commit('openRenameProfileModal');
+}
+
+function openImportProfileModal() {
+    store.commit('openImportProfileModal');
+}
+
+async function moveToNextScreen() {
+    await router.push({name: 'manager.installed'});
+}
+
+onMounted(async () => {
+    router = getCurrentInstance()!.proxy.$router;
+    const settings = await store.getters.settings;
+    await settings.load();
+
+    const lastProfileName = await store.dispatch('profile/loadLastSelectedProfile');
+
+    // If the view was entered via game selection, the mod list was updated
+    // and the cache cleared. The profile is already set in the Vuex store
+    // but we want to trigger the cache prewarming. Always doing this for
+    // empty profiles is deemed a fair tradeoff. On the other hand there's
+    // no point to trigger this when returning from the manager view and the
+    // mods are already cached.
+    if (store.state.tsMods.cache.size === 0) {
+        await setSelectedProfile(lastProfileName);
     }
 
-    openDeleteProfileModal() {
-        this.$store.commit('openDeleteProfileModal');
-    }
-
-    openRenameProfileModal() {
-        this.$store.commit('openRenameProfileModal');
-    }
-
-    openImportProfileModal() {
-        this.$store.commit('openImportProfileModal');
-    }
-
-    async moveToNextScreen() {
-        await this.$router.push({name: 'manager.installed'});
-    }
-
-    async created() {
-        const settings = await this.$store.getters.settings;
-        await settings.load();
-
-        const lastProfileName = await this.$store.dispatch('profile/loadLastSelectedProfile');
-
-        // If the view was entered via game selection, the mod list was updated
-        // and the cache cleared. The profile is already set in the Vuex store
-        // but we want to trigger the cache prewarming. Always doing this for
-        // empty profiles is deemed a fair tradeoff. On the other hand there's
-        // no point to trigger this when returning from the manager view and the
-        // mods are already cached.
-        if (this.$store.state.tsMods.cache.size === 0) {
-            await this.setSelectedProfile(lastProfileName);
-        }
-
-        // Set default paths
-        if (settings.getContext().gameSpecific.gameDirectory === null) {
-            const result = await GameDirectoryResolverProvider.instance.getDirectory(this.$store.state.activeGame);
-            if (!(result instanceof R2Error)) {
-                await settings.setGameDirectory(result);
-            }
-        }
-
-        if (settings.getContext().global.steamDirectory === null) {
-            const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-            if (!(result instanceof R2Error)) {
-                await settings.setSteamDirectory(result);
-            }
-        }
-
-        await this.updateProfileList();
-    }
-
-    async setSelectedProfile(profileName: string, prewarmCache = true) {
-        try {
-            await this.$store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: prewarmCache });
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
-            this.$store.commit('error/handleError', err);
+    // Set default paths
+    if (settings.getContext().gameSpecific.gameDirectory === null) {
+        const result = await GameDirectoryResolverProvider.instance.getDirectory(store.state.activeGame);
+        if (!(result instanceof R2Error)) {
+            await settings.setGameDirectory(result);
         }
     }
 
-    async updateProfileList() {
-        try {
-            await this.$store.dispatch('profiles/updateProfileList');
-        } catch (e) {
-            const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
-            this.$store.commit('error/handleError', err);
+    if (settings.getContext().global.steamDirectory === null) {
+        const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+        if (!(result instanceof R2Error)) {
+            await settings.setSteamDirectory(result);
         }
     }
 
-    private async backToGameSelection() {
-        await ManagerSettings.resetDefaults();
-        await this.$router.push({name: "index"});
+    await updateProfileList();
+});
+
+async function setSelectedProfile(profileName: string, prewarmCache = true) {
+    try {
+        await store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: prewarmCache });
+    } catch (e) {
+        const err = R2Error.fromThrownValue(e, 'Error while selecting profile');
+        store.commit('error/handleError', err);
     }
+}
+
+async function updateProfileList() {
+    try {
+        await store.dispatch('profiles/updateProfileList');
+    } catch (e) {
+        const err = R2Error.fromThrownValue(e, 'Error whilst updating ProfileList');
+        store.commit('error/handleError', err);
+    }
+}
+
+async function backToGameSelection() {
+    await ManagerSettings.resetDefaults();
+    await router.push({name: "index"});
 }
 </script>

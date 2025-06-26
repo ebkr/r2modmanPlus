@@ -51,93 +51,100 @@
     </ModalCard>
 </template>
 
-<script lang="ts">
-
-import { mixins } from "vue-class-component";
-import { Component, Watch } from "vue-property-decorator";
-
+<script lang="ts" setup>
 import ModalCard from "../ModalCard.vue";
-import DownloadMixin from "../../components/mixins/DownloadMixin.vue";
 import R2Error from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
+import { useDownloadComposable } from '../composables/DownloadComposable';
+import Game from '../../model/game/Game';
+import { computed, ref, watch } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import ThunderstoreMod from '../../model/ThunderstoreMod';
 
+const store = getStore<State>();
 
-@Component({
-    components: {
-        ModalCard
-    },
-})
-export default class DownloadModVersionSelectModal extends mixins(DownloadMixin) {
-    versionNumbers: string[] = [];
-    recommendedVersion: string | null = null;
-    selectedVersion: string | null = null;
-    currentVersion: string | null = null;
+const {
+    closeModal,
+} = useDownloadComposable();
 
-    @Watch("$store.state.modals.downloadModModalMod")
-    async updateModVersionState() {
-        this.currentVersion = null;
-        if (this.thunderstoreMod !== null) {
-            this.selectedVersion = this.thunderstoreMod.getLatestVersion();
-            this.recommendedVersion = null;
+const emits = defineEmits<{
+    (e: 'download-mod', mod: ThunderstoreMod, version: ThunderstoreVersion): void;
+}>();
 
-            this.versionNumbers = await PackageDb.getPackageVersionNumbers(
-                this.activeGame.internalFolderName,
-                this.thunderstoreMod.getFullName()
+const versionNumbers = ref<string[]>([]);
+const recommendedVersion = ref<string | null>(null);
+const selectedVersion = ref<string | null>(null);
+const currentVersion = ref<string | null>(null);
+
+const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
+const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+
+watch(() => store.state.modals.downloadModModalMod, async () => {
+    currentVersion.value = null;
+    if (thunderstoreMod.value !== null) {
+        const activeGame: Game = store.state.activeGame;
+        selectedVersion.value = thunderstoreMod.value.getLatestVersion();
+        recommendedVersion.value = null;
+
+        versionNumbers.value = await PackageDb.getPackageVersionNumbers(
+            activeGame.internalFolderName,
+            thunderstoreMod.value.getFullName()
+        );
+
+        const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]
+            .find(value => value.packageName === thunderstoreMod.value!.getFullName());
+
+        if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
+            recommendedVersion.value = foundRecommendedVersion.recommendedVersion.toString();
+
+            // Auto-select recommended version if it's found.
+            const recommendedVersionToSelect = versionNumbers.value.find(
+                (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
             );
-
-            const foundRecommendedVersion = MOD_LOADER_VARIANTS[this.activeGame.internalFolderName]
-                .find(value => value.packageName === this.thunderstoreMod!.getFullName());
-
-            if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
-                this.recommendedVersion = foundRecommendedVersion.recommendedVersion.toString();
-
-                // Auto-select recommended version if it's found.
-                const recommendedVersion = this.versionNumbers.find(
-                    (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
-                );
-                if (recommendedVersion) {
-                    this.selectedVersion = recommendedVersion;
-                }
+            if (recommendedVersionToSelect) {
+                selectedVersion.value = recommendedVersionToSelect;
             }
+        }
 
-            const modListResult = await ProfileModList.getModList(this.profile.asImmutableProfile());
-            if (!(modListResult instanceof R2Error)) {
-                const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === this.thunderstoreMod!.getFullName());
-                if (manifestMod !== undefined) {
-                    this.currentVersion = manifestMod.getVersionNumber().toString();
-                }
+        const modListResult = await ProfileModList.getModList(store.getters['profile/activeProfile'].asImmutableProfile());
+        if (!(modListResult instanceof R2Error)) {
+            const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === thunderstoreMod.value!.getFullName());
+            if (manifestMod !== undefined) {
+                currentVersion.value = manifestMod.getVersionNumber().toString();
             }
         }
     }
+});
 
-    async downloadMod() {
-        const mod = this.thunderstoreMod;
-        const versionString = this.selectedVersion;
-        if (mod === null || versionString === null) {
-            // Shouldn't happen, but shouldn't throw an error.
-            console.log(`Download initiated with null mod [${mod}] or version [${versionString}]`);
-            return;
-        }
-
-        let version: ThunderstoreVersion;
-
-        try {
-            version = await PackageDb.getVersionAsThunderstoreVersion(
-                this.activeGame.internalFolderName,
-                mod.getFullName(),
-                versionString
-            );
-        } catch {
-            console.log(`Failed to get version [${versionString}] for mod [${mod.getFullName()}]`);
-            return;
-        }
-
-        this.$emit("download-mod", mod, version);  // Delegate to DownloadModModal.
+async function downloadMod() {
+    const mod = thunderstoreMod.value;
+    const versionString = selectedVersion.value;
+    if (mod === null || versionString === null) {
+        // Shouldn't happen, but shouldn't throw an error.
+        console.log(`Download initiated with null mod [${mod}] or version [${versionString}]`);
+        return;
     }
+
+    let version: ThunderstoreVersion;
+    const activeGame: Game = store.state.activeGame;
+
+    try {
+        version = await PackageDb.getVersionAsThunderstoreVersion(
+            activeGame.internalFolderName,
+            mod.getFullName(),
+            versionString
+        );
+    } catch {
+        console.log(`Failed to get version [${versionString}] for mod [${mod.getFullName()}]`);
+        return;
+    }
+
+    emits("download-mod", mod, version); // Delegate to DownloadModModal.
 }
 
 </script>

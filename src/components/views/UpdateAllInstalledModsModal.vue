@@ -1,6 +1,49 @@
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+import { useDownloadComposable } from '../composables/DownloadComposable';
+import ModalCard from '../ModalCard.vue';
+import ThunderstoreCombo from '../../model/ThunderstoreCombo';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { InstallMode } from '../../utils/DependencyUtils';
+
+const store = getStore<State>();
+
+const {
+    closeModal,
+} = useDownloadComposable();
+
+const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
+const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+const modsWithUpdates = computed(() => store.getters['profile/modsWithUpdates']);
+
+async function updateAllToLatestVersion() {
+    closeModal();
+    const combos: ThunderstoreCombo[] = await store.dispatch('profile/getCombosWithUpdates');
+
+    await store.dispatch('download/downloadAndInstallCombos', {
+        combos,
+        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
+        game: store.state.activeGame,
+        installMode: InstallMode.UPDATE_ALL
+    });
+}
+</script>
 
 <template>
-    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null && modsWithUpdates.length === 0" @close-modal="closeModal()">
+        <template v-slot:header>
+            <h2 class='modal-title'>No mods to update</h2>
+        </template>
+        <template v-slot:body>
+            <p>Either all installed mods are up to date, or there are no installed mods.</p>
+        </template>
+        <template v-slot:footer>
+            <button class="button is-info" @click="closeModal()">Close</button>
+        </template>
+    </ModalCard>
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else-if="thunderstoreMod === null && modsWithUpdates.length > 0" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>Update all installed mods</h2>
         </template>
@@ -10,7 +53,7 @@
             <p>The following mods will be downloaded and installed:</p>
             <br/>
             <ul class="list">
-                <li class="list-item" v-for='(mod, index) in $store.getters["profile/modsWithUpdates"]'
+                <li class="list-item" v-for='(mod, index) in modsWithUpdates'
                     :key='`to-update-${index}-${mod.getFullName()}`'>
                     {{mod.getName()}} will be updated to: {{mod.getLatestVersion()}}
                 </li>
@@ -21,56 +64,3 @@
         </template>
     </ModalCard>
 </template>
-
-<script lang="ts">
-import { mixins } from "vue-class-component";
-import { Component } from "vue-property-decorator";
-
-import ModalCard from "../ModalCard.vue";
-import DownloadMixin from "../mixins/DownloadMixin.vue";
-import * as DownloadUtils from "../../utils/DownloadUtils";
-import DownloadModVersionSelectModal from "../views/DownloadModVersionSelectModal.vue";
-import ThunderstoreCombo from "../../model/ThunderstoreCombo";
-import StatusEnum from "../../model/enums/StatusEnum";
-import R2Error from "../../model/errors/R2Error";
-import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
-
-@Component({
-    components: {DownloadModVersionSelectModal, ModalCard}
-})
-export default class UpdateAllInstalledModsModal extends mixins(DownloadMixin)  {
-
-
-    async updateAllToLatestVersion() {
-        this.closeModal();
-        const modsWithUpdates: ThunderstoreCombo[] = await this.$store.dispatch('profile/getCombosWithUpdates');
-
-        const downloadId = await this.$store.dispatch(
-            'download/addDownload',
-            modsWithUpdates.map(value => `${value.getMod().getName()} (${value.getVersion().getVersionNumber().toString()})`)
-        );
-
-        const ignoreCache = this.$store.state.download.ignoreCache;
-        this.setIsModProgressModalOpen(true);
-        ThunderstoreDownloaderProvider.instance.downloadLatestOfAll(modsWithUpdates, ignoreCache, (downloadProgress: number, modName: string, status: number, err: R2Error | null) => {
-            try {
-                if (status === StatusEnum.FAILURE) {
-                    this.setIsModProgressModalOpen(false);
-                    this.$store.commit('download/setFailed', downloadId);
-                    if (err !== null) {
-                        DownloadUtils.addSolutionsToError(err);
-                        throw err;
-                    }
-                } else if (status === StatusEnum.PENDING) {
-                    this.$store.commit('download/updateDownload', {downloadId, modName, downloadProgress});
-                }
-            } catch (e) {
-                this.$store.commit('error/handleError', R2Error.fromThrownValue(e));
-            }
-        }, async (downloadedMods) => {
-            await this.downloadCompletedCallback(downloadedMods, downloadId);
-            this.setIsModProgressModalOpen(false);
-        });
-    }
-}
-</script>

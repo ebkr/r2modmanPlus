@@ -1,71 +1,64 @@
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+<script lang="ts" setup>
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
-import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
+import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { computed, ref } from 'vue';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 
-@Component({
-    components: {ModalCard}
+const store = getStore<State>();
+
+const modBeingDisabled = ref<string | null>(null);
+const mod = computed(() => {
+    if (store.state.modals.disableModModalMod === null) {
+        throw new R2Error(
+            'Error while opening DisableModModal',
+            'Mod not provided'
+        );
+    }
+    return store.state.modals.disableModModalMod;
 })
-export default class DisableModModal extends Vue {
 
-    modBeingDisabled: string | null = null;
+const dependants = computed(() =>
+    Dependants.getDependantList(mod.value, store.state.profile.modList));
 
-    get dependants() {
-        return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
+const isLocked = computed(() => modBeingDisabled.value !== null);
+
+const isOpen = computed(() =>
+    store.state.modals.isDisableModModalOpen
+    && store.state.modals.disableModModalMod !== null);
+
+async function disableModIncludingDependants() {
+    await disableMods([...dependants.value, mod.value]);
+}
+
+async function disableModExcludingDependants() {
+    await disableMods([mod.value]);
+}
+
+async function disableMods(mods: ManifestV2[]) {
+    const onProgress = (mod: ManifestV2) => modBeingDisabled.value = mod.getName();
+
+    try {
+        await store.dispatch(
+            'profile/disableModsFromActiveProfile',
+            { mods, onProgress }
+        );
+    } catch (e) {
+        store.commit('error/handleError', {
+            error: R2Error.fromThrownValue(e),
+            severity: LogSeverity.ACTION_STOPPED
+        });
+    } finally {
+        onClose();
+        modBeingDisabled.value = null;
     }
+}
 
-    get isLocked(): boolean {
-        return this.modBeingDisabled !== null;
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isDisableModModalOpen
-            && this.$store.state.modals.disableModModalMod !== null;
-    }
-
-    get mod(): ManifestV2 {
-        if (this.$store.state.modals.disableModModalMod === null) {
-            throw new R2Error(
-                'Error while opening DisableModModal',
-                'Mod not provided'
-            );
-        }
-        return this.$store.state.modals.disableModModalMod;
-    }
-
-    async disableModIncludingDependants() {
-        await this.disableMods([...this.dependants, this.mod]);
-    }
-
-    async disableModExcludingDependants() {
-        await this.disableMods([this.mod]);
-    }
-
-    private async disableMods(mods: ManifestV2[]) {
-        const onProgress = (mod: ManifestV2) => this.modBeingDisabled = mod.getName();
-
-        try {
-            await this.$store.dispatch(
-                'profile/disableModsFromActiveProfile',
-                { mods, onProgress }
-            );
-        } catch (e) {
-            this.$store.commit('error/handleError', {
-                error: R2Error.fromThrownValue(e),
-                severity: LogSeverity.ACTION_STOPPED
-            });
-        } finally {
-            this.onClose();
-            this.modBeingDisabled = null;
-        }
-    }
-
-    onClose() {
-        this.$store.commit('closeDisableModModal');
-    }
+function onClose() {
+    store.commit('closeDisableModModal');
 }
 </script>
 

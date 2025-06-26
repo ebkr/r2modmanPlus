@@ -1,28 +1,18 @@
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import R2Error from "../../model/errors/R2Error";
+<script lang="ts" setup>
+import R2Error from '../../model/errors/R2Error';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed, ComputedRef } from 'vue';
 
-@Component
-export default class ErrorModal extends Vue {
-    get error(): R2Error | null {
-        return this.$store.state.error.error;
-    }
+const store = getStore<State>();
 
-    get name() {
-        return this.error ? this.error.name : '';
-    }
+const error: ComputedRef<R2Error | null> = computed(() => store.state.error.error);
+const name = computed(() => error.value ? error.value.name : '');
+const message = computed(() => error.value ? error.value.message : '');
+const solution = computed(() => error.value ? error.value.solution : '');
 
-    get message() {
-        return this.error ? this.error.message : '';
-    }
-
-    get solution() {
-        return this.error ? this.error.solution : '';
-    }
-
-    close() {
-        this.$store.commit('error/discardError');
-    }
+function close() {
+    store.commit('error/discardError');
 }
 </script>
 
@@ -37,6 +27,11 @@ export default class ErrorModal extends Vue {
                 <div v-if="solution">
                     <h5 class="title is-5">Suggestion</h5>
                     <p>{{solution}}</p>
+                </div>
+                <div class="mt-3 text-right" v-if="error.action">
+                    <button class="button is-white" @click="() => { error.action.function(); close(); }">
+                        {{error.action.label}}
+                    </button>
                 </div>
             </div>
         </div>

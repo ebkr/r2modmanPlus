@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+import Game from "../../model/game/Game";
+import { Platform } from "../../model/schema/ThunderstoreSchema";
+import { computed } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+
+const store = getStore<State>()
+
+type GameRunningModalProps = {
+    activeGame: Game;
+}
+const props = defineProps<GameRunningModalProps>();
+
+const isSteamGame = computed(() => props.activeGame.activePlatform.storePlatform === Platform.STEAM);
+const isOpen = computed(() => store.state.modals.isGameRunningModalOpen);
+
+function close() {
+    store.commit('closeGameRunningModal');
+}
+</script>
+
+
 <template>
     <div id="gameRunningModal" :class="['modal', {'is-active': isOpen}]">
         <div class="modal-background" @click="close"></div>
@@ -15,26 +38,3 @@
         <button class="modal-close is-large" aria-label="close" @click="close"></button>
     </div>
 </template>
-
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-
-import Game from "../../model/game/Game";
-import { StorePlatform } from "../../model/game/StorePlatform";
-
-@Component
-export default class GameRunningModal extends Vue {
-    @Prop({required: true})
-    readonly activeGame!: Game;
-
-    isSteamGame = this.activeGame.activePlatform.storePlatform === StorePlatform.STEAM;
-
-    close() {
-        this.$store.commit('closeGameRunningModal');
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isGameRunningModalOpen;
-    }
-}
-</script>

@@ -2,7 +2,7 @@ import { InstallArgs, PackageInstaller } from './PackageInstaller';
 import path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
 import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import { PackageLoader } from '../model/installing/PackageLoader';
+import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 

@@ -9,25 +9,62 @@ import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './Retu
 import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
 import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } from './RecursiveMelonLoaderInstaller';
 import { DirectCopyInstaller } from './DirectCopyInstaller';
+import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
-const _PackageInstallers = {
-    // "legacy": new InstallRuleInstaller(),  // TODO: Enable
-    "bepinex": new BepInExInstaller(),
-    "northstar": new NorthstarInstaller(),
-    "godotml": new GodotMLInstaller(),
-    "melonloader": new MelonLoaderInstaller(),
-    "shimloader": new ShimloaderInstaller(),
-    "shimloader-plugin": new ShimloaderPluginInstaller(),
-    "lovely": new LovelyInstaller(),
-    "lovely-plugin": new LovelyPluginInstaller(),
-    "returnofmodding": new ReturnOfModdingInstaller(),
-    "returnofmodding-plugin": new ReturnOfModdingPluginInstaller(),
-    "gdweave": new GDWeaveInstaller(),
-    "gdweave-plugin": new GDWeavePluginInstaller(),
-    "recursive-melonloader": new RecursiveMelonLoaderInstaller(),
-    "recursive-melonloader-plugin": new RecursiveMelonLoaderPluginInstaller(),
-    "direct-copy": new DirectCopyInstaller(),
+/**
+ * Package loader installer registry
+ */
+type LoaderInstallers = Exclude<PackageLoader, PackageLoader.NONE>;
+
+const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
+    [PackageLoader.BEPINEX]: new BepInExInstaller(),
+    [PackageLoader.GDWEAVE]: new GDWeaveInstaller(),
+    [PackageLoader.GODOTML]: new GodotMLInstaller(),
+    [PackageLoader.LOVELY]: new LovelyInstaller(),
+    [PackageLoader.MELONLOADER]: new MelonLoaderInstaller(),
+    [PackageLoader.NORTHSTAR]: new NorthstarInstaller(),
+    [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
+    [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
+    [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
+};
+
+export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
+    if (loader === PackageLoader.NONE) {
+        return null;
+    }
+
+    return PackageLoaderInstallers[loader];
 }
 
-export type PackageInstallerId = keyof typeof _PackageInstallers;
-export const PackageInstallers: {[key in PackageInstallerId]: PackageInstaller} = _PackageInstallers;
+
+/**
+ * Plugin installer registry
+ */
+type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR;
+type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
+
+const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
+    [PackageLoader.GDWEAVE]: new GDWeavePluginInstaller(),
+    [PackageLoader.LOVELY]: new LovelyPluginInstaller(),
+    [PackageLoader.NONE]: new DirectCopyInstaller(),
+    [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
+    [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingPluginInstaller(),
+    [PackageLoader.SHIMLOADER]: new ShimloaderPluginInstaller(),
+};
+
+function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
+    return !(
+        loader === PackageLoader.BEPINEX ||
+        loader === PackageLoader.GODOTML ||
+        loader === PackageLoader.MELONLOADER ||
+        loader === PackageLoader.NORTHSTAR
+    );
+}
+
+export function getPluginInstaller(loader: PackageLoader): PackageInstaller|null {
+    if (!isPluginInstaller(loader)) {
+        return null;
+    }
+
+    return PluginInstallers[loader];
+}

@@ -5,13 +5,10 @@ import MarkdownRender from './MarkdownRender.vue';
 import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineModList from '../views/OnlineModList.vue';
 import useStore from '../../store';
-import ThunderstoreDownloaderProvider, {
-    DependencySetBuilderMode
-} from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
-import ThunderstoreCombo from '../../model/ThunderstoreCombo';
-import { getVersionAsThunderstoreVersion } from '../../r2mm/manager/PackageDexieStore';
+import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieStore';
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
+import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
 
 const store = useStore();
 
@@ -96,18 +93,19 @@ function fetchAll(modToLoad: ThunderstoreMod) {
 }
 
 async function buildDependencies(mod: ThunderstoreMod) {
-    const builder: ThunderstoreCombo[] = [];
-    const tsVersion = await getVersionAsThunderstoreVersion(
-        store.state.activeGame.internalFolderName,
-        mod.getFullName(),
-        mod.getLatestVersion()
-    )
-    await ThunderstoreDownloaderProvider.instance.buildDependencySet(
-        tsVersion,
-        builder,
-        DependencySetBuilderMode.USE_LATEST_VERSION
+    const modCombo = await getCombosByDependencyStrings(
+        store.state.activeGame,
+        [mod.getLatestDependencyString()]
     );
-    return builder.map(value => value.getMod());
+    const modAndDependencies = await getFullDependencyList(
+        modCombo,
+        store.state.activeGame,
+        [],
+        InstallMode.INSTALL_SPECIFIC
+    );
+    return modAndDependencies
+        .filter(value => value.getMod().getFullName() !== mod.getFullName())
+        .map(value => value.getMod());
 }
 
 fetchAll(props.mod);

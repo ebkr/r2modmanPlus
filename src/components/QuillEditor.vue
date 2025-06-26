@@ -1,50 +1,51 @@
 <!-- Referenced from https://pineco.de/wrapping-quill-editor-in-a-vue-component/ -->
 <template>
-    <div class="notification">
-        <div ref="editor" class="quill"></div>
-    </div>
+    <div ref="editorElement" class="quill"></div>
 </template>
 
-<script lang="ts">
-    import Quill from 'quill';
-    import 'quill/dist/quill.core.css';
-    import 'quill/dist/quill.bubble.css';
+<script lang="ts" setup>
+import Quill from 'quill';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.bubble.css';
+import { onMounted, ref, watchEffect } from 'vue';
 
-    import { Component, Model, Vue, Watch } from 'vue-property-decorator';
+type QuillEditorProps = {
+    modelValue: string;
+}
 
-    @Component
-    export default class Editor extends Vue {
+const props = defineProps<QuillEditorProps>();
 
-        @Model("input", {type: String, required: true})
-        private textValue!: string;
+const editorElement = ref<HTMLDivElement>();
+let editor: Quill;
 
-        private editor: Quill | null = null;
+const emits = defineEmits<{
+    (e: 'update:modelValue', value: string): void,
+}>();
 
-        mounted() {
-            this.editor = new Quill(this.$refs.editor as Element, {
-                modules: {
-                    toolbar: false
-                },
-                theme: 'bubble',
-                formats: []
-            });
-            this.editor.setText(this.textValue || "");
-            this.editor.on('text-change', () => this.update());
-        }
+onMounted(() => {
+    editor = new Quill(editorElement.value as Element, {
+        modules: {
+            toolbar: false,
+        },
+        theme: 'bubble',
+        formats: []
+    });
+    editor.setText(props.modelValue);
+    editor.on('text-change', () => update());
+});
 
-        @Watch("textValue")
-        private updatedModel(newValue: string) {
-            if (this.editor !== null) {
-                const selection = this.editor.getSelection();
-                this.editor.setText(newValue);
-                if (selection) {
-                    this.editor.setSelection(Math.min(newValue.length, selection.index), 0);
-                }
-            }
-        }
-
-        update() {
-            this.$emit('input', this.editor!.getText() ? this.editor!.getText() : '');
+watchEffect(() => {
+    const newText = props.modelValue;
+    if (editor) {
+        const selection = editor.getSelection();
+        editor.setText(newText);
+        if (selection) {
+            editor.setSelection(Math.min(newText.length, selection.index), 0);
         }
     }
+});
+
+function update() {
+    emits('update:modelValue', editor!.getText() ? editor!.getText() : '');
+}
 </script>

@@ -1,8 +1,8 @@
 export default class LocalModListProvider {
 
-    static provider: () => Promise<typeof import("*.vue")>;
+    static provider: () => Promise<any>;
 
-    static provide(provider: () => Promise<typeof import("*.vue")>): void {
+    static provide(provider: () => Promise<any>): void {
         this.provider = provider;
     }
 

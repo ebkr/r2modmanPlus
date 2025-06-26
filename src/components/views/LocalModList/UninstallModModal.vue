@@ -1,69 +1,62 @@
-<script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+<script lang="ts" setup>
 import { ModalCard } from '../../all';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
+import { computed, ref } from 'vue';
+import { getStore } from '../../../providers/generic/store/StoreProvider';
+import { State } from '../../../store';
 
-@Component({
-    components: {ModalCard}
-})
-export default class UninstallModModal extends Vue {
-    modBeingUninstalled: string | null = null;
+const store = getStore<State>();
 
-    get dependants() {
-        return Dependants.getDependantList(this.mod, this.$store.state.profile.modList);
+const modBeingUninstalled = ref<string | null>(null);
+
+const dependants = computed(() => Dependants.getDependantList(mod.value, store.state.profile.modList));
+const isLocked = computed(() => modBeingUninstalled.value !== null);
+
+const isOpen = computed(() =>
+    store.state.modals.isUninstallModModalOpen
+    && store.state.modals.uninstallModModalMod !== null);
+
+const mod = computed(() => {
+    if (store.state.modals.uninstallModModalMod === null) {
+        throw new R2Error(
+            'Error while opening UninstallModModal',
+            'Mod not provided'
+        );
     }
+    return store.state.modals.uninstallModModalMod;
+});
 
-    get isLocked(): boolean {
-        return this.modBeingUninstalled !== null;
-    }
+async function uninstallModIncludingDependants() {
+    await uninstallMods([...dependants.value, mod.value]);
+}
 
-    get isOpen(): boolean {
-        return this.$store.state.modals.isUninstallModModalOpen
-            && this.$store.state.modals.uninstallModModalMod !== null;
-    }
+async function uninstallModExcludingDependants() {
+    await uninstallMods([mod.value]);
+}
 
-    get mod(): ManifestV2 {
-        if (this.$store.state.modals.uninstallModModalMod === null) {
-            throw new R2Error(
-                'Error while opening UninstallModModal',
-                'Mod not provided'
-            );
-        }
-        return this.$store.state.modals.uninstallModModalMod;
+async function uninstallMods(mods: ManifestV2[]) {
+    const onProgress = (mod: ManifestV2) => modBeingUninstalled.value = mod.getName();
+    try {
+        await store.dispatch(
+            'profile/uninstallModsFromActiveProfile',
+            { mods, onProgress }
+        );
+    } catch (e) {
+        store.commit('error/handleError', {
+            error: R2Error.fromThrownValue(e),
+            severity: LogSeverity.ACTION_STOPPED
+        });
+    } finally {
+        onClose();
+        modBeingUninstalled.value = null;
     }
+}
 
-    async uninstallModIncludingDependants() {
-        await this.uninstallMods([...this.dependants, this.mod]);
-    }
-
-    async uninstallModExcludingDependants() {
-        await this.uninstallMods([this.mod]);
-    }
-
-    private async uninstallMods(mods: ManifestV2[]) {
-        const onProgress = (mod: ManifestV2) => this.modBeingUninstalled = mod.getName();
-        try {
-            await this.$store.dispatch(
-                'profile/uninstallModsFromActiveProfile',
-                { mods, onProgress }
-            );
-        } catch (e) {
-            this.$store.commit('error/handleError', {
-                error: R2Error.fromThrownValue(e),
-                severity: LogSeverity.ACTION_STOPPED
-            });
-        } finally {
-            this.onClose();
-            this.modBeingUninstalled = null;
-        }
-    }
-
-    onClose() {
-        this.$store.commit('closeUninstallModModal');
-    }
+function onClose() {
+    store.commit('closeUninstallModModal');
 }
 </script>
 <template>

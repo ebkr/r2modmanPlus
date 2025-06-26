@@ -1,17 +1,19 @@
-import GameManager from '../../model/game/GameManager';
 import * as path from 'path';
-import { GAME_NAME } from '../../r2mm/installing/profile_installers/ModLoaderVariantRecord';
-import { GetInstallerIdForPlugin } from '../../model/installing/PackageLoader';
+
+import { getPluginInstaller } from '../../installers/registry';
+import GameManager from '../../model/game/GameManager';
+import { EcosystemSchema, TrackingMethod } from '../../model/schema/ThunderstoreSchema';
 
 export type CoreRuleType = {
-    gameName: GAME_NAME,
+    gameName: string,
     rules: RuleSubtype[],
-    relativeFileExclusions?: string[],
+    relativeFileExclusions: string[] | null,
 }
+
 
 export type RuleSubtype = {
     route: string,
-    trackingMethod: "SUBDIR" | "STATE" | "NONE" | "SUBDIR_NO_FLATTEN" | "PACKAGE_ZIP",
+    trackingMethod: TrackingMethod,
     subRoutes: RuleSubtype[],
     defaultFileExtensions: string[],
     isDefaultLocation?: boolean
@@ -20,7 +22,7 @@ export type RuleSubtype = {
 export type ManagedRule = {
     route: string,
     ref: RuleSubtype,
-    trackingMethod: string,
+    trackingMethod: TrackingMethod,
     extensions: string[],
     isDefaultLocation: boolean
 }
@@ -37,10 +39,18 @@ export default class InstallationRules {
         this._RULES = value;
     }
 
+    public static apply() {
+        this._RULES = EcosystemSchema.supportedGames.map((x) => ({
+            gameName: x.internalFolderName,
+            rules: x.installRules,
+            relativeFileExclusions: x.relativeFileExclusions,
+        }));
+    }
+
     public static validate() {
         GameManager.gameList.forEach(value => {
             if (this._RULES.find(rule => rule.gameName === value.internalFolderName) === undefined) {
-                if (GetInstallerIdForPlugin(value.packageLoader) === null) {
+                if (getPluginInstaller(value.packageLoader) === null) {
                     throw new Error(`Missing installation rule for game: ${value.internalFolderName}`);
                 }
             }

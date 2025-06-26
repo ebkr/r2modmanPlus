@@ -46,7 +46,7 @@
         <div class="margin-right">
             <div v-for="(file, index) in sortedConfigFiles" :key="`config-file-${file.getName()}`">
                 <ExpandableCard
-                    :id="index"
+                    :id="`config-file-${index}`"
                     :visible="false">
                     <template v-slot:title>
                         <span>{{file.getName()}}</span>
@@ -60,9 +60,7 @@
     </div>
 </template>
 
-<script lang="ts">
-
-import { Component, Vue, Watch } from 'vue-property-decorator';
+<script lang="ts" setup>
 import ConfigFile from '../../model/file/ConfigFile';
 import * as path from 'path';
 import FileTree from '../../model/file/FileTree';
@@ -75,98 +73,101 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
 
-@Component({
-        components: {
-            Hero,
-            ExpandableCard,
-        }
-    })
-    export default class ConfigSelectionLayout extends Vue {
+const store = getStore<State>();
 
-        private configFiles: ConfigFile[] = [];
-        private shownConfigFiles: ConfigFile[] = [];
+const emits = defineEmits<{
+    (e: 'edit', file: ConfigFile): void;
+}>()
 
-        private filterText: string = '';
-        private sortOrder: SortConfigFile = SortConfigFile.NAME;
-        private sortDirection: SortDirection = SortDirection.STANDARD;
+const configFiles = ref<ConfigFile[]>([]);
+const shownConfigFiles = ref<ConfigFile[]>([]);
 
-        @Watch('filterText')
-        textChanged() {
-            this.shownConfigFiles = this.configFiles.filter((conf: ConfigFile) => conf.getName().toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0);
-        }
+const filterText = ref<string>('');
+const sortOrder = ref<SortConfigFile>(SortConfigFile.NAME);
+const sortDirection = ref<SortDirection>(SortDirection.STANDARD);
 
-        getSortOrderOptions() {
-            return Object.values(SortConfigFile);
-        }
+function updateShownConfigFiles(configFiles: ConfigFile[]) {
+    shownConfigFiles.value = configFiles
+        .filter((conf: ConfigFile) => conf.getName().toLowerCase().indexOf(filterText.value.toLowerCase()) >= 0);
+}
 
-        getSortDirectionOptions() {
-            return Object.values(SortDirection);
-        }
+watch(filterText, () => {
+    updateShownConfigFiles(configFiles.value as ConfigFile[])
+});
 
-        get sortedConfigFiles(): ConfigFile[] {
-            return ConfigSort.sort(this.shownConfigFiles, this.sortOrder, this.sortDirection);
-        }
+function getSortOrderOptions() {
+    return Object.values(SortConfigFile);
+}
 
-        async created() {
-            const fs = FsProvider.instance;
-            const configLocation = this.$store.getters['profile/activeProfile'].getProfilePath();
-            const tree = await FileTree.buildFromLocation(configLocation);
-            if (tree instanceof R2Error) {
-                return;
-            }
-            tree.removeDirectories("dotnet");
-            tree.removeDirectories("_state");
-            tree.navigateAndPerform(plugins => {
-                plugins.getDirectories().forEach(value => {
-                    plugins.navigateAndPerform(sub => {
-                        // Remove all manifest.json files from the root of the plugins subdirectory.
-                        sub.removeFilesWithBasename("manifest.json");
-                    }, value.getDirectoryName())
-                });
-            }, "BepInEx", "plugins");
-            const files = tree.getDirectories().flatMap(value => value.getRecursiveFiles());
-            const supportedExtensions = ProfileModList.SUPPORTED_CONFIG_FILE_EXTENSIONS;
-            for (const file of files) {
-                if (supportedExtensions.includes(path.extname(file).toLowerCase())) {
-                    const fileStat = await fs.lstat(file);
-                    this.configFiles.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
-                }
-            }
+function getSortDirectionOptions() {
+    return Object.values(SortDirection);
+}
 
-            // HACK: Force the UE4SS-settings.ini file for shimloader mod installs to be visible.
-            const ue4ssSettingsPath = tree.getFiles().find(x => x.toLowerCase().endsWith("ue4ss-settings.ini"));
-            if (ue4ssSettingsPath) {
-                const lstat = await fs.lstat(ue4ssSettingsPath);
-                this.configFiles.push(new ConfigFile("UE4SS-settings.ini", ue4ssSettingsPath, lstat.mtime));
-            }
+const sortedConfigFiles = computed(() => {
+    return ConfigSort.sort(shownConfigFiles.value as ConfigFile[], sortOrder.value, sortDirection.value);
+});
 
-            this.shownConfigFiles = [...this.configFiles];
-        }
-
-        async deleteConfig(file: ConfigFile) {
-            const fs = FsProvider.instance;
-            try {
-                await fs.unlink(file.getPath());
-                this.configFiles = this.configFiles.filter(value => value.getName() !== file.getName());
-                this.textChanged();
-            } catch (e) {
-                this.$store.commit("error/handleError", R2Error.fromThrownValue(
-                    e,
-                    "Failed to delete config file",
-                    `Try running ${ManagerInformation.APP_NAME} as an administrator.`
-                ));
-            }
-        }
-
-        editConfig(file: ConfigFile) {
-            this.$emit("edit", file);
-        }
-
-        openConfig(file: ConfigFile) {
-            LinkProvider.instance.openLink(file.getPath());
-        }
-
+onMounted(async () => {
+    const fs = FsProvider.instance;
+    const configLocation = store.getters['profile/activeProfile'].getProfilePath();
+    const tree = await FileTree.buildFromLocation(configLocation);
+    if (tree instanceof R2Error) {
+        return;
     }
+    tree.removeDirectories("dotnet");
+    tree.removeDirectories("_state");
+    tree.navigateAndPerform(plugins => {
+        plugins.getDirectories().forEach(value => {
+            plugins.navigateAndPerform(sub => {
+                // Remove all manifest.json files from the root of the plugins subdirectory.
+                sub.removeFilesWithBasename("manifest.json");
+            }, value.getDirectoryName())
+        });
+    }, "BepInEx", "plugins");
+    const files = tree.getDirectories().flatMap(value => value.getRecursiveFiles());
+    const supportedExtensions = ProfileModList.SUPPORTED_CONFIG_FILE_EXTENSIONS;
+    for (const file of files) {
+        if (supportedExtensions.includes(path.extname(file).toLowerCase())) {
+            const fileStat = await fs.lstat(file);
+            configFiles.value.push(new ConfigFile(file.substring(configLocation.length + 1), file, fileStat.mtime));
+        }
+    }
+
+    // HACK: Force the UE4SS-settings.ini file for shimloader mod installs to be visible.
+    const ue4ssSettingsPath = tree.getFiles().find(x => x.toLowerCase().endsWith("ue4ss-settings.ini"));
+    if (ue4ssSettingsPath) {
+        const lstat = await fs.lstat(ue4ssSettingsPath);
+        configFiles.value.push(new ConfigFile("UE4SS-settings.ini", ue4ssSettingsPath, lstat.mtime));
+    }
+
+    shownConfigFiles.value = [...configFiles.value];
+});
+
+async function deleteConfig(file: ConfigFile) {
+    const fs = FsProvider.instance;
+    try {
+        await fs.unlink(file.getPath());
+        configFiles.value = configFiles.value.filter(value => value.getName() !== file.getName());
+        updateShownConfigFiles(configFiles.value as ConfigFile[]);
+    } catch (e) {
+        store.commit("error/handleError", R2Error.fromThrownValue(
+            e,
+            "Failed to delete config file",
+            `Try running ${ManagerInformation.APP_NAME} as an administrator.`
+        ));
+    }
+}
+
+function editConfig(file: ConfigFile) {
+    emits('edit', file);
+}
+
+function openConfig(file: ConfigFile) {
+    LinkProvider.instance.openLink(file.getPath());
+}
 
 </script>

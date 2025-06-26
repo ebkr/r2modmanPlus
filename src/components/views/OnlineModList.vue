@@ -3,7 +3,7 @@
         <ExpandableCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}-${settings.getContext().global.expandedCards}`"
             :image="getImageUrl(key)"
-            :id="index"
+            :id="`online-card-${index}`"
             :description="key.getDescription()">
             <template v-slot:title>
                 <span v-if="key.isPinned()">
@@ -52,81 +52,62 @@
     </div>
 </template>
 
-<script lang="ts">
-
-import { Prop, Vue } from 'vue-property-decorator';
-import Component from 'vue-class-component';
+<script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { ExpandableCard, ExternalLink } from '../all';
-import DownloadModModal from './DownloadModModal.vue';
 import ManifestV2 from '../../model/ManifestV2';
 import DonateButton from '../../components/buttons/DonateButton.vue';
 import DonateIconButton from '../../components/buttons/DonateIconButton.vue';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { valueToReadableDate } from '../../utils/DateUtils';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+import { computed, onMounted, ref } from 'vue';
 
-@Component({
-    components: {
-        DonateButton,
-        DonateIconButton,
-        DownloadModModal,
-        ExpandableCard,
-        ExternalLink
-    }
-})
-export default class OnlineModList extends Vue {
+const store = getStore<State>();
 
-    @Prop()
-    pagedModList!: ThunderstoreMod[];
-
-    @Prop({default: false})
-    readOnly!: boolean;
-
-    private cardExpanded: boolean = false;
-    private funkyMode: boolean = false;
-
-    get settings(): ManagerSettings {
-        return this.$store.getters["settings"];
-    };
-
-    get localModList(): ManifestV2[] {
-        return this.$store.state.profile.modList;
-    }
-
-    get deprecationMap(): Map<string, boolean> {
-        return this.$store.state.tsMods.deprecated;
-    }
-
-    isModDeprecated(mod: ThunderstoreMod) {
-        return this.deprecationMap.get(mod.getFullName()) || false;
-    }
-
-    isThunderstoreModInstalled(mod: ThunderstoreMod) {
-        return this.localModList.find((local: ManifestV2) => local.getName() === mod.getFullName()) != undefined;
-    }
-
-    showDownloadModal(mod: ThunderstoreMod) {
-        this.$store.commit("openDownloadModModal", mod);
-    }
-
-    getReadableDate(date: Date): string {
-        return valueToReadableDate(date);
-    }
-
-    getReadableCategories(mod: ThunderstoreMod) {
-        return mod.getCategories().join(", ");
-    }
-
-    getImageUrl(mod: ThunderstoreMod): string {
-        return CdnProvider.replaceCdnHost(mod.getIcon());
-    }
-
-    async created() {
-        this.cardExpanded = this.settings.getContext().global.expandedCards;
-        this.funkyMode = this.settings.getContext().global.funkyModeEnabled;
-    }
-
+type OnlineModListProps = {
+    pagedModList: ThunderstoreMod[];
+    readOnly: boolean;
 }
+
+const props = defineProps<OnlineModListProps>();
+
+const cardExpanded = ref<boolean>(false);
+const funkyMode = ref<boolean>(false);
+
+const settings = computed<ManagerSettings>(() => store.getters["settings"]);
+const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
+const deprecationMap = computed<Map<string, boolean>>(() => store.state.tsMods.deprecated);
+
+function isModDeprecated(mod: ThunderstoreMod) {
+    return deprecationMap.value.get(mod.getFullName()) || false;
+}
+
+function isThunderstoreModInstalled(mod: ThunderstoreMod) {
+    return localModList.value.find((local: ManifestV2) => local.getName() === mod.getFullName()) != undefined;
+}
+
+function showDownloadModal(mod: ThunderstoreMod) {
+    store.commit("openDownloadModModal", mod);
+}
+
+function getReadableDate(date: Date): string {
+    return valueToReadableDate(date);
+}
+
+function getReadableCategories(mod: ThunderstoreMod) {
+    return mod.getCategories().join(", ");
+}
+
+function getImageUrl(mod: ThunderstoreMod): string {
+    return CdnProvider.replaceCdnHost(mod.getIcon());
+}
+
+onMounted(() => {
+    cardExpanded.value = settings.value.getContext().global.expandedCards;
+    funkyMode.value = settings.value.getContext().global.funkyModeEnabled;
+});
 
 </script>

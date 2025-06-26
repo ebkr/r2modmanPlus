@@ -99,53 +99,48 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script lang="ts" setup>
 import { Hero, ExternalLink } from '../components/all';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
+import { onMounted, ref } from 'vue';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
 
-@Component({
-    components: {
-        ExternalLink,
-        Hero
-    }
-})
-export default class Help extends Vue {
-    private activeTab = 'General';
-    private tabs = ['General', 'Game won\'t start', 'Mods not appearing', 'Updating'];
-    private doorstopTarget = "";
-    private copyingDoorstopText = false;
+const store = getStore<State>();
 
-    changeTab(key: string) {
-        this.activeTab = key;
-    }
+const activeTab = ref('General');
+const tabs = ref(['General', 'Game won\'t start', 'Mods not appearing', 'Updating']);
+const doorstopTarget = ref("");
+const copyingDoorstopText = ref(false);
 
-    copyDoorstopTargetToClipboard() {
-        InteractionProvider.instance.copyToClipboard(this.doorstopTarget);
-        this.copyingDoorstopText = true;
-        setTimeout(this.stopShowingCopy, 400);
-    }
-
-    stopShowingCopy() {
-        this.copyingDoorstopText = false;
-    }
-
-    mounted() {
-        GameRunnerProvider.instance.getGameArguments(
-            this.$store.state.activeGame,
-            this.$store.getters['profile/activeProfile']
-        ).then(target => {
-            if (target instanceof R2Error) {
-                this.doorstopTarget = "";
-            } else {
-                this.doorstopTarget = target;
-            }
-        });
-    }
-
+function changeTab(key: string) {
+    activeTab.value = key;
 }
+
+function copyDoorstopTargetToClipboard() {
+    InteractionProvider.instance.copyToClipboard(doorstopTarget.value);
+    copyingDoorstopText.value = true;
+    setTimeout(stopShowingCopy, 400);
+}
+
+function stopShowingCopy() {
+    copyingDoorstopText.value = false;
+}
+
+onMounted(() => {
+    GameRunnerProvider.instance.getGameArguments(
+        store.state.activeGame,
+        store.getters['profile/activeProfile']
+    ).then(target => {
+        if (target instanceof R2Error) {
+            doorstopTarget.value = "";
+        } else {
+            doorstopTarget.value = target;
+        }
+    });
+});
 </script>
 
 <style lang="scss" scoped>

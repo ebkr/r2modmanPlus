@@ -1,3 +1,54 @@
+<script lang="ts" setup>
+import Timeout = NodeJS.Timeout;
+import { onMounted, ref, onUnmounted } from 'vue';
+
+type SettingsItemProps = {
+    action?: string;
+    description?: string;
+    value?: () => Promise<any>;
+    icon?: string;
+}
+
+const reactiveValue = ref<any | null>(null);
+const timeout = ref<Timeout | null>(null);
+
+const props = withDefaults(defineProps<SettingsItemProps>(), {
+    action: '',
+    description: '',
+    icon: '',
+    value: Promise.resolve
+});
+
+const emits = defineEmits<{
+    (e: 'click'): void;
+}>();
+
+onMounted(async () => {
+    if (timeout.value !== null) {
+        clearInterval(timeout.value);
+    }
+    props.value().then(value => reactiveValue.value = value);
+    timeout.value = setInterval(() => {
+        props.value().then(value => reactiveValue.value = value);
+    }, 1000);
+});
+
+onUnmounted(() => {
+    if (timeout.value !== null) {
+        clearInterval(timeout.value);
+        timeout.value = null;
+    }
+})
+
+function emitClick() {
+    emits('click');
+    setTimeout(() => {
+        props.value().then(value => reactiveValue.value = value);
+    }, 20);
+}
+
+</script>
+
 <template>
     <a class="panel-block is-block settings-panel" @click="emitClick()">
         <span class="icon is-pulled-right">
@@ -10,52 +61,3 @@
         </div>
     </a>
 </template>
-
-<script lang="ts">
-import { Prop, Vue } from 'vue-property-decorator';
-import Component from 'vue-class-component';
-import Timeout = NodeJS.Timeout;
-
-@Component
-    export default class SettingsItem extends Vue {
-
-        private reactiveValue: any | null = null;
-        private timeout: Timeout | null = null;
-
-        @Prop({default: ""})
-        private action: string | undefined;
-
-        @Prop({default: ""})
-        private description: string | undefined;
-
-        @Prop({default: () => Promise.resolve() })
-        private value!: () => Promise<any>;
-
-        @Prop({default: ""})
-        private icon: string | undefined;
-
-        async mounted() {
-            if (this.timeout !== null) {
-                clearInterval(this.timeout);
-            }
-            this.reactiveValue = await this.value();
-            this.timeout = setInterval(async () => {
-                this.reactiveValue = await this.value();
-            }, 1000);
-        }
-
-        destroyed() {
-            if (this.timeout !== null) {
-                clearInterval(this.timeout);
-            }
-        }
-
-        emitClick() {
-            this.$emit("click");
-            setTimeout(async () => {
-                this.reactiveValue = await this.value();
-            }, 20);
-        }
-
-    }
-</script>

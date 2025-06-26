@@ -11,7 +11,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
-import { PackageLoader } from "../../model/installing/PackageLoader";
+import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
 
 export default class ModLinker {
 

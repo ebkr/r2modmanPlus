@@ -1,3 +1,17 @@
+### 3.2.1
+#### Games added
+- PEAK
+- Painting VR
+- DEPO : Death Epileptic Pixel Origins
+- 9 Kings
+- Guilty as Sock!
+- Return of the Obra Dinn
+- ASKA
+- PIGFACE (Demo)
+
+#### Other changes
+- General bug fixes and enhancements
+
 ### 3.2.0
 #### Major changes
 - You can now preview a mod's README, CHANGELOG, and dependencies all within the Online section.

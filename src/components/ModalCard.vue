@@ -20,26 +20,24 @@
     </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+<script lang="ts" setup>
+type ModalCardProps = {
+    id: string;
+    isActive?: boolean;
+    canClose?: boolean;
+}
 
-@Component
-export default class ModalCard extends Vue {
+const props = withDefaults(defineProps<ModalCardProps>(), {
+    isActive: false,
+    canClose: true,
+});
+const emits = defineEmits<{
+    (e: 'close-modal'): void;
+}>();
 
-    @Prop({required: true, type: String})
-    id!: string;
-
-    @Prop({default: false, type: Boolean})
-    isActive!: boolean;
-
-    @Prop({default: true, type: Boolean})
-    canClose!: boolean;
-
-    closeModal() {
-        if (this.canClose) {
-            this.$emit('close-modal');
-        }
+function closeModal() {
+    if (props.canClose) {
+        emits('close-modal');
     }
 }
 </script>

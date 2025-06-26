@@ -1,3 +1,77 @@
+<script lang="ts" setup>
+import CategorySelectorModal from '../../components/modals/CategorySelectorModal.vue';
+import ModalCard from '../../components/ModalCard.vue';
+import { computed } from 'vue';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { State } from '../../store';
+
+const store = getStore<State>();
+
+const allowNsfw = computed({
+    get() {
+        return store.state.modFilters.allowNsfw;
+    },
+    set(value) {
+        store.commit("modFilters/setAllowNsfw", value)
+    }
+});
+
+const showDeprecatedPackages = computed({
+    get() {
+        return store.state.modFilters.showDeprecatedPackages;
+    },
+    set(value) {
+        store.commit("modFilters/setShowDeprecatedPackages", value)
+    }
+});
+
+function close() {
+    store.commit("closeCategoryFilterModal");
+}
+
+const isDarkTheme = computed(() => store.getters["settings"].getContext().global.darkTheme);
+const isOpen = computed(() => store.state.modals.isCategoryFilterModalOpen);
+
+function selectCompareOneCategory(event: Event) {
+    if (!(event.target instanceof HTMLSelectElement)) {
+        return;
+    }
+
+    store.commit("modFilters/selectCategoryToCompareOne", event.target.value);
+    event.target.selectedIndex = 0;
+}
+
+function selectCompareAllCategory(event: Event) {
+    if (!(event.target instanceof HTMLSelectElement)) {
+        return;
+    }
+
+    store.commit("modFilters/selectCategoryToCompareAll", event.target.value);
+    event.target.selectedIndex = 0;
+}
+
+function selectToExcludeCategory(event: Event) {
+    if (!(event.target instanceof HTMLSelectElement)) {
+        return;
+    }
+
+    store.commit("modFilters/selectCategoryToExclude", event.target.value);
+    event.target.selectedIndex = 0;
+}
+
+const selectedCategoriesCompareOne = computed(() => store.state.modFilters.selectedCategoriesCompareOne);
+
+const selectedCategoriesCompareAll = computed(() => store.state.modFilters.selectedCategoriesCompareAll);
+
+const selectedCategoriesToExclude = computed(() => store.state.modFilters.selectedCategoriesToExclude);
+
+function unselectCategory(category: string) {
+    store.commit("modFilters/unselectCategory", category);
+}
+
+const unselectedCategories = computed(() => store.getters["modFilters/unselectedCategories"]);
+</script>
+
 <template>
     <ModalCard id="mod-category-filter-modal" v-show="isOpen" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
@@ -60,91 +134,3 @@
         </template>
     </ModalCard>
 </template>
-
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-import { Modal } from '../../components/all';
-import CategorySelectorModal from '../../components/modals/CategorySelectorModal.vue';
-import ModalCard from '../../components/ModalCard.vue';
-
-@Component({
-    components: { ModalCard, CategorySelectorModal, Modal }
-})
-export default class CategoryFilterModal extends Vue {
-    get allowNsfw(): boolean {
-        return this.$store.state.modFilters.allowNsfw;
-    }
-
-    set allowNsfw(value: boolean) {
-        this.$store.commit("modFilters/setAllowNsfw", value);
-    }
-
-    get showDeprecatedPackages(): boolean {
-        return this.$store.state.modFilters.showDeprecatedPackages;
-    }
-
-    set showDeprecatedPackages(value: boolean) {
-        this.$store.commit("modFilters/setShowDeprecatedPackages", value);
-    }
-
-    close() {
-        this.$store.commit("closeCategoryFilterModal");
-    }
-
-    get isDarkTheme(): boolean {
-        return this.$store.getters["settings"].getContext().global.darkTheme;
-    }
-
-    get isOpen(): boolean {
-        return this.$store.state.modals.isCategoryFilterModalOpen;
-    }
-
-    selectCompareOneCategory(event: Event) {
-        if (!(event.target instanceof HTMLSelectElement)) {
-            return;
-        }
-
-        this.$store.commit("modFilters/selectCategoryToCompareOne", event.target.value);
-        event.target.selectedIndex = 0;
-    }
-
-    selectCompareAllCategory(event: Event) {
-        if (!(event.target instanceof HTMLSelectElement)) {
-            return;
-        }
-
-        this.$store.commit("modFilters/selectCategoryToCompareAll", event.target.value);
-        event.target.selectedIndex = 0;
-    }
-
-    selectToExcludeCategory(event: Event) {
-        if (!(event.target instanceof HTMLSelectElement)) {
-            return;
-        }
-
-        this.$store.commit("modFilters/selectCategoryToExclude", event.target.value);
-        event.target.selectedIndex = 0;
-    }
-
-    get selectedCategoriesCompareOne(): string[] {
-        return this.$store.state.modFilters.selectedCategoriesCompareOne;
-    }
-
-    get selectedCategoriesCompareAll(): string[] {
-        return this.$store.state.modFilters.selectedCategoriesCompareAll;
-    }
-
-    get selectedCategoriesToExclude(): string[] {
-        return this.$store.state.modFilters.selectedCategoriesToExclude;
-    }
-
-    unselectCategory(category: string) {
-        this.$store.commit("modFilters/unselectCategory", category);
-    }
-
-    get unselectedCategories(): string[] {
-        return this.$store.getters["modFilters/unselectedCategories"];
-    }
-}
-</script>

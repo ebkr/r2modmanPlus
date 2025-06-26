@@ -4,7 +4,7 @@ import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
-import { GameInstanceType } from '../../../../../model/game/GameInstanceType';
+import { GameInstanceType } from '../../../../../model/schema/ThunderstoreSchema';
 import { getUnityDoorstopVersion } from '../../../../../utils/UnityDoorstopUtils';
 
 export default class BepInExGameInstructions extends GameInstructionGenerator {
