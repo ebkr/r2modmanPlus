@@ -30,3 +30,16 @@ export async function isApplicationPortable(): Promise<boolean> {
 export function getPlatform(): string {
     return ipcRenderer.sendSync('get-process-platform');
 }
+
+export async function checkForApplicationUpdates(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        ipcRenderer.on('update-done', (event, error) => {
+            if (error && error instanceof Error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        })
+        ipcRenderer.send('update-app');
+    });
+}
