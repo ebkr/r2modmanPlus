@@ -23,7 +23,7 @@ export function providePathImplementation(provider: () => NodePathProvider) {
 }
 
 const nodePath: NodePathProvider = {
-    join: paths => getImplementation().join(paths),
+    join: (...args) => getImplementation().join(...args),
     dirname: path => getImplementation().dirname(path),
     extname: path => getImplementation().extname(path),
     basename: path => getImplementation().basename(path),
