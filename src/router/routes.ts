@@ -10,13 +10,13 @@ const routes: RouteRecordRaw[] = [
         name: 'index',
         path: '/',
         component: () => import("pages/GameSelectionScreen.vue"),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         name: 'splash',
         path: '/splash/',
         component: () => import('pages/Splash.vue'),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         name: 'linux',
@@ -30,12 +30,12 @@ const routes: RouteRecordRaw[] = [
         name: 'profiles',
         path: '/profiles/',
         component: () => import('pages/Profiles.vue'),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         path: '/',
         component: () => import('components/navigation/NavigationLayout.vue'),
-        meta: {title: appTitle},
+        meta: {title: appTitle()},
         children: [
             {
                 name: 'manager',

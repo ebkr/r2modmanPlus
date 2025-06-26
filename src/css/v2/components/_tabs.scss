@@ -1,0 +1,26 @@
+.tabs {
+    margin-bottom: 0 !important;
+
+    a {
+        align-items: center;
+        border-bottom-color: var(--tabs-border-bottom-color,var(--border,#e1e1e1));
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        color: var(--tabs-link-color,var(--text,#4a4a4a));
+        display: flex;
+        justify-content: center;
+        margin-bottom: -1px;
+        padding: 0.5em 1em;
+        vertical-align: top;
+
+        &:hover {
+            border-bottom-color: var(--tabs-link-hover-border-bottom-color,currentcolor);
+            color: var(--tabs-link-hover-color,var(--text-strong,#363636));
+        }
+    }
+
+    li.is-active a {
+        border-bottom-color: var(--tabs-link-active-border-bottom-color,currentcolor);
+        color: var(--tabs-link-active-color,#3273dc);
+    }
+}
