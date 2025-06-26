@@ -2,7 +2,7 @@ import { NodePathProvider } from './path';
 
 export const NodePathImplementation: NodePathProvider = {
     // @ts-ignore
-    join: paths => window.node.path.join(...paths),
+    join: (...args) => window.node.path.join(...args),
     extname: path => { throw new Error() },
     relative: (pathOne, pathTwo) => { throw new Error() },
     basename: path => { throw new Error() },

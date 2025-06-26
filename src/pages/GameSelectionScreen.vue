@@ -184,10 +184,10 @@ import R2Error from '../model/errors/R2Error';
 import { GameInstanceType, GameSelectionDisplayMode, Platform } from '../model/schema/ThunderstoreSchema';
 import ProviderUtils from '../providers/generic/ProviderUtils';
 import ModalCard from '../components/ModalCard.vue';
-import {computed, getCurrentInstance, onMounted, reactive, ref} from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter from 'vue-router';
+import VueRouter, { useRouter } from 'vue-router';
 
 const store = getStore<State>();
 let router!: typeof VueRouter;
@@ -345,7 +345,7 @@ function isAnyGameSelected() {
 }
 
 onMounted(async () => {
-    router = getCurrentInstance()!.proxy.$router;
+    router = useRouter();
 
     runningMigration.value = true;
     await store.dispatch('checkMigrations');
