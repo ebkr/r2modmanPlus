@@ -53,13 +53,12 @@
                                 </div>
                             </div>
                             <div class="margin-right">
-                                <a class="button is-info"
-                                   :disabled="selectedGame === null && !runningMigration" @click="selectGame(selectedGame)">Select
-                                    {{ activeTab.toLowerCase() }}</a>
+                                <button class="button is-info"
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectGame(selectedGame)">Select {{ activeTab.toLowerCase() }}</button>
                             </div>
                             <div class="margin-right">
-                                <a class="button"
-                                   :disabled="selectedGame === null && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</a>
+                                <button class="button"
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</button>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -102,12 +101,12 @@
                     <article class="media">
                         <div class="media-content">
                             <div class="content" v-if="viewMode === 'List'">
-                                <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`">
-                                    <a @click="selectedGame = game">
+                                <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${isGameSelected(game)}-${isFavourited(game)}`">
+                                    <a @click="markAsSelectedGame(game)">
                                         <div class="border-at-bottom cursor-pointer">
                                             <div class="card is-shadowless">
                                                 <p
-                                                    :class="['card-header-title', {'has-text-info':selectedGame === game}]"
+                                                    :class="['card-header-title', {'has-text-info':isGameSelected(game)}]"
                                                 >
                                                     <a :id="`${game.settingsIdentifier}-star`" href="#" class="margin-right" @click.prevent="toggleFavourite(game)">
                                                         <i class="fas fa-star text-warning" v-if="favourites.includes(game.settingsIdentifier)"></i>
@@ -122,7 +121,7 @@
                             </div>
                             <div class="content pad--sides" v-else>
                                 <div class="game-cards-container">
-                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${selectedGame === game}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
+                                    <div v-for="(game, index) of filteredGameList" :key="`${index}-${game.displayName}-${isGameSelected(game)}-${isFavourited(game)}`" class="inline-block margin-right margin-bottom">
 
                                         <div class="inline">
                                             <div class='card is-shadowless'>
@@ -150,8 +149,8 @@
                                                             </div>
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
-                                                            <template v-if="activeTab === GameInstanceType.GAME && gameImages[game.gameImage]">
-                                                                <img :src='gameImages[game.gameImage]' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                            <template v-if="activeTab === GameInstanceType.GAME">
+                                                                <img :src='`/images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
                                                                 <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
@@ -191,7 +190,7 @@ import { State } from '../store';
 import VueRouter from 'vue-router';
 
 const store = getStore<State>();
-let router!: VueRouter;
+let router!: typeof VueRouter;
 
 const runningMigration = ref<boolean>(false);
 const selectedGame = ref<Game | null>(null);
@@ -233,13 +232,12 @@ const gameList = computed<Game[]>(() => {
     });
 });
 
-gameList.value.forEach(async (game) => {
-    // @ts-ignore
-    gameImages[game.gameImage] = import("../assets/images/game_selection/" + image);
-});
-
 function changeTab(tab: GameInstanceType) {
     activeTab.value = tab;
+}
+
+function markAsSelectedGame(game: Game) {
+    selectedGame.value = game;
 }
 
 function selectGame(game: Game) {
@@ -249,7 +247,7 @@ function selectGame(game: Game) {
         selectedPlatform.value = null;
         showPlatformModal.value = true;
     } else {
-        selectedPlatform.value = game.storePlatformMetadata[0].storePlatform;
+        selectedPlatform.value = game.storePlatformMetadata[0]!.storePlatform;
         showPlatformModal.value = false;
         proceed();
     }
@@ -261,7 +259,7 @@ function selectDefaultGame(game: Game) {
     if (game.storePlatformMetadata.length > 1) {
         showPlatformModal.value = true;
     } else {
-        selectedPlatform.value = game.storePlatformMetadata[0].storePlatform;
+        selectedPlatform.value = game.storePlatformMetadata[0]!.storePlatform;
         showPlatformModal.value = false;
         proceedDefault();
     }
@@ -336,6 +334,14 @@ function isFavourited(game: Game) {
     if (settings.value !== undefined) {
         return favourites.value.includes(game.settingsIdentifier);
     }
+}
+
+function isGameSelected(game: Game) {
+    return selectedGame.value !== null && selectedGame.value.internalFolderName === game.internalFolderName;
+}
+
+function isAnyGameSelected() {
+    return selectedGame.value !== null;
 }
 
 onMounted(async () => {
