@@ -48,11 +48,13 @@ import { provideStoreImplementation } from './providers/generic/store/StoreProvi
 import baseStore from './store';
 import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
-import { Dark } from 'quasar';
+import { Dark, useQuasar } from 'quasar';
 import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
 
 const store = baseStore;
 provideStoreImplementation(() => store);
+
+const quasar = useQuasar();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -139,7 +141,7 @@ onMounted(async () => {
 });
 
 watchEffect(() => {
-    document.documentElement.classList.toggle('html--dark', Dark.isActive);
+    document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
 })
 </script>
 
