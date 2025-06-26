@@ -55,7 +55,6 @@ function createWindow() {
         icon: path.join(__dirname, 'icon.png'),
         autoHideMenuBar: process.env.PROD,
         webPreferences: {
-            // sandbox: false
             preload: path.resolve(
                 fileURLToPath(new URL('.', import.meta.url)),
                 path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)
