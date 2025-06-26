@@ -121,15 +121,15 @@ const RESOLVERS: ResolverType = {
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
     public getRunnerForPlatform(platform: Platform, loader: PackageLoader): GameRunnerProvider | undefined {
-        if (RUNNERS[platform][loader][process.platform] !== undefined) {
-            return RUNNERS[platform][loader][process.platform];
+        if (RUNNERS[platform][loader][window.app.getPlatform()] !== undefined) {
+            return RUNNERS[platform][loader][window.app.getPlatform()];
         }
         return undefined;
     }
 
     public getDirectoryResolverForPlatform(platform: Platform): GameDirectoryResolverProvider | undefined {
-        if (RESOLVERS[platform][process.platform] !== undefined) {
-            return RESOLVERS[platform][process.platform];
+        if (RESOLVERS[platform][window.app.getPlatform()] !== undefined) {
+            return RESOLVERS[platform][window.app.getPlatform()];
         }
         return undefined;
     }

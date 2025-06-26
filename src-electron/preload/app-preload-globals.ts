@@ -15,10 +15,8 @@ export async function getAppDataDirectory(): Promise<string> {
 }
 
 export async function isApplicationPortable(): Promise<boolean> {
-    console.log("Checking is portable")
     return new Promise((resolve, reject) => {
         ipcRenderer.on('receive-is-portable', (event, isPortable) => {
-            console.log("Received is-portable", isPortable);
             if (isPortable instanceof Error) {
                 reject(isPortable);
             } else {
@@ -26,5 +24,9 @@ export async function isApplicationPortable(): Promise<boolean> {
             }
         })
         ipcRenderer.send('get-is-portable');
-    })
+    });
+}
+
+export function getPlatform(): string {
+    return ipcRenderer.sendSync('get-process-platform');
 }

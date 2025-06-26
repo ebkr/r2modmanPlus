@@ -17,6 +17,7 @@ export class FolderMigration {
 
     public static async runMigration() {
         if (!await this.needsMigration()) {
+            console.log("Does not need migration");
             return;
         }
 
