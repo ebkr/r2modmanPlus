@@ -187,10 +187,10 @@ import ModalCard from '../components/ModalCard.vue';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter, { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const store = getStore<State>();
-let router!: typeof VueRouter;
+const router = useRouter();
 
 const runningMigration = ref<boolean>(false);
 const selectedGame = ref<Game | null>(null);
@@ -345,8 +345,6 @@ function isAnyGameSelected() {
 }
 
 onMounted(async () => {
-    router = useRouter();
-
     runningMigration.value = true;
     await store.dispatch('checkMigrations');
     runningMigration.value = false;
