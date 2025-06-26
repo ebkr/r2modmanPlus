@@ -69,3 +69,7 @@ ipcMain.on('show-open-dialog', (arg, fileOpts) => {
   });
 });
 
+ipcMain.on('get-process-platform', (event) => {
+    event.returnValue = process.platform;
+});
+

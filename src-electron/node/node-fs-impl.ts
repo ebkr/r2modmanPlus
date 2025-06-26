@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron';
 import fs from 'fs';
 
 export function hookFsIpc(browserWindow: BrowserWindow) {
-    ipcMain.on('node:fs:writeFile', (event, [identifier, path, content]) => {
+    ipcMain.on('node:fs:writeFile', (event, identifier, path, content) => {
         try {
             fs.writeFileSync(path, content);
             browserWindow.webContents.send(`node:fs:writeFile:${identifier}`);
@@ -11,7 +11,8 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
         }
     });
 
-    ipcMain.on('node:fs:exists',  async (event, [identifier, path]) => {
+    ipcMain.on('node:fs:exists',  async (event, identifier, path) => {
+        console.log(`node:fs:exists`, identifier, path);
         const result = await fs.promises.access(path, fs.constants.F_OK)
             .then(() => true)
             .catch(() => false);
