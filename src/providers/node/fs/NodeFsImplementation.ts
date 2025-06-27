@@ -13,11 +13,17 @@ function acquireLockAndDo(path: string, action: (resolve: any, reject: any) => P
 
 export const NodeFsImplementation: NodeFsProvider = {
     writeFile: async (...args) => {
-        const [ path ] = args;
+        const path = [...args][0] as string;
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.writeFile(...args).then(resolve).catch(reject));
     },
-    readFile: async (...args) => window.node.fs.readFile(...args),
-    readdir: async (...args) => window.node.fs.readdir(...args),
+    readFile: async (...args) => {
+        const [ path ] = args;
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.readFile(...args).then(resolve).catch(reject));
+    },
+    readdir: async (...args) => {
+        const [ path ] = args;
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.readdir(...args).then(resolve).catch(reject));
+    },
     rmdir: async (...args) => window.node.fs.rmdir(...args),
     mkdirs: async (...args) => {
         const [ path ] = args;

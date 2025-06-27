@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron/renderer';
+import { once } from "./hooks-preload";
 
 let writeFileIdentifier = 0;
 let readFileIdentifier = 0;
@@ -20,7 +21,7 @@ let setModifiedTimeIdentifier = 0;
 export async function writeFile(path: string, content: string | Buffer): Promise<any> {
     const identifier = writeFileIdentifier++;
     return new Promise((resolve, reject) => {
-        window.hooks.once(`node:fs:writeFile:${identifier}`, (e?: Error) => {
+        once(`node:fs:writeFile:${identifier}`, (e?: Error) => {
             if (e) {
                 reject(e);
             } else {
@@ -33,12 +34,34 @@ export async function writeFile(path: string, content: string | Buffer): Promise
 
 export async function readFile(path: string) {
     const identifier = readFileIdentifier++;
-    return ipcRenderer.send('node:fs:readFile', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:readFile:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:readFile', identifier, path);
+    })
 }
 
-export async function readdir(path: string) {
+export async function readdir(path: string): Promise<string[]> {
     const identifier = readdirIdentifier++;
-    return ipcRenderer.send('node:fs:readdir', identifier, path);
+    return new Promise(async (resolve, reject) => {
+        try {
+            once(`node:fs:readdir:${identifier}`, (result: any) => {
+                if (result instanceof Error) {
+                    reject(result);
+                } else {
+                    resolve(result);
+                }
+            });
+        } catch (e) {
+            console.log("Failed once hook", e);
+        }
+        return ipcRenderer.send('node:fs:readdir', identifier, path);
+    });
 }
 
 export async function rmdir(path: string) {

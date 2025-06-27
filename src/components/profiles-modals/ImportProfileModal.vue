@@ -327,7 +327,7 @@ function onContentOrPathNotSet() {
                 <p v-if="$store.getters['download/activeDownloadCount'] > 0" class="margin-top">
                     Waiting for mod downloads to finish before refreshing the online mod list...
                 </p>
-                <p v-else class="margin-top"></p>
+                <p v-else class="margin-top">
                     {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
             </div>
