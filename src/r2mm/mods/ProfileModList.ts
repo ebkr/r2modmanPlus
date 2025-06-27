@@ -176,7 +176,7 @@ export default class ProfileModList {
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
-        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
+        await builder.addBuffer("export.r2x", window.node.buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
             await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
