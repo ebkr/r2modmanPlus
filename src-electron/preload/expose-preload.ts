@@ -1,20 +1,17 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import * as hooks from "./hooks-preload";
 import * as path from './node-path';
 import * as child_process from './node-child-process';
 import * as fs from './node-fs';
+import * as buffer from './node-buffer';
 import * as appGlobals from "./app-preload-globals";
-import { ipcRenderer } from 'electron/renderer';
 
-const api = {
+contextBridge.exposeInMainWorld('node', {
     path: path,
     child_process: child_process,
-    fs: fs
-}
-
-contextBridge.exposeInMainWorld('node', api);
-contextBridge.exposeInMainWorld('hooks', {
-    once: (hookName: string, callback: Function) => {
-        ipcRenderer.once(hookName, (event, ...args) => callback(...args));
-    }
+    fs: fs,
+    buffer: buffer,
 });
+
+contextBridge.exposeInMainWorld('hooks', hooks);
 contextBridge.exposeInMainWorld('app', appGlobals);
