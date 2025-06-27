@@ -41,7 +41,7 @@ async function updateAllToLatestVersion() {
             <button class="button is-info" @click="closeModal()">Close</button>
         </template>
     </ModalCard>
-    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else-if="modsWithUpdates.length > 0" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>Update all installed mods</h2>
         </template>
