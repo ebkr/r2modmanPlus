@@ -454,6 +454,7 @@ export default {
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
             commit('setActiveProfile', profileName);
             rootGetters['settings'].setProfile(profileName);
+            console.log("Set active profile")
         },
 
         async updateDirection({commit, rootGetters}, value: SortDirection) {

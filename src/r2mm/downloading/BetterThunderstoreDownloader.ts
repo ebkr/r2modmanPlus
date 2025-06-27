@@ -78,10 +78,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<void> {
-        const buf: Buffer = Buffer.from(response.data);
+        const buf: Buffer = window.node.buffer.from(response.data);
         const comboSize = combo.getVersion().getFileSize();
         callback(comboSize, DownloadStatusEnum.EXTRACTING, null);
-
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
             if (success) {
                 callback(comboSize, DownloadStatusEnum.EXTRACTED, null);
