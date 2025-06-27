@@ -59,32 +59,29 @@ import ThunderstoreVersion from "../../model/ThunderstoreVersion";
 import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
-import { useDownloadComposable } from '../composables/DownloadComposable';
 import Game from '../../model/game/Game';
 import { computed, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import ThunderstoreCombo from "../../model/ThunderstoreCombo";
+import { InstallMode } from "../../utils/DependencyUtils";
 
 const store = getStore<State>();
-
-const {
-    closeModal,
-} = useDownloadComposable();
-
-const emits = defineEmits<{
-    (e: 'download-mod', mod: ThunderstoreMod, version: ThunderstoreVersion): void;
-}>();
 
 const versionNumbers = ref<string[]>([]);
 const recommendedVersion = ref<string | null>(null);
 const selectedVersion = ref<string | null>(null);
 const currentVersion = ref<string | null>(null);
 
-const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
-const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+const isOpen = computed(() => store.state.modals.isDownloadModVersionSelectModalOpen);
+const thunderstoreMod = computed(() => store.state.modals.downloadModalMod);
 
-watch(() => store.state.modals.downloadModModalMod, async () => {
+function closeModal() {
+    store.commit("closeDownloadModVersionSelectModal");
+}
+
+watch(() => store.state.modals.downloadModalMod, async () => {
     currentVersion.value = null;
     if (thunderstoreMod.value !== null) {
         const activeGame: Game = store.state.activeGame;
@@ -144,7 +141,22 @@ async function downloadMod() {
         return;
     }
 
-    emits("download-mod", mod, version); // Delegate to DownloadModModal.
+    downloadHandler(mod, version);
+}
+
+async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVersion) {
+    closeModal();
+
+    const combos = [new ThunderstoreCombo()];
+    combos[0].setMod(tsMod);
+    combos[0].setVersion(tsVersion);
+
+    await store.dispatch('download/downloadAndInstallCombos', {
+        combos,
+        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
+        game: store.state.activeGame,
+        installMode: InstallMode.INSTALL_SPECIFIC
+    });
 }
 
 </script>

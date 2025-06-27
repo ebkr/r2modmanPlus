@@ -140,7 +140,7 @@ async function uninstallMod() {
 
 function updateMod() {
     if (tsMod.value !== undefined) {
-        store.commit('openDownloadModModal', tsMod.value);
+        store.commit('openDownloadModVersionSelectModal', tsMod.value);
     }
 }
 
@@ -160,7 +160,7 @@ function downloadDependency(dependencyString: string) {
         store.commit('error/handleError', error);
         return;
     }
-    store.commit('openDownloadModModal', dependency);
+    store.commit('openDownloadModVersionSelectModal', dependency);
 }
 
 function viewAssociatedMods() {

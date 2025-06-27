@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { useDownloadComposable } from '../composables/DownloadComposable';
 import ModalCard from '../ModalCard.vue';
 import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import { getStore } from '../../providers/generic/store/StoreProvider';
@@ -10,13 +9,12 @@ import { InstallMode } from '../../utils/DependencyUtils';
 
 const store = getStore<State>();
 
-const {
-    closeModal,
-} = useDownloadComposable();
-
-const isOpen = computed(() => store.state.modals.isDownloadModModalOpen);
-const thunderstoreMod = computed(() => store.state.modals.downloadModModalMod);
+const isOpen = computed(() => store.state.modals.isUpdateAllModsModalOpen);
 const modsWithUpdates = computed(() => store.getters['profile/modsWithUpdates']);
+
+function closeModal() {
+    store.commit("closeUpdateAllModsModal");
+}
 
 async function updateAllToLatestVersion() {
     closeModal();
@@ -32,7 +30,7 @@ async function updateAllToLatestVersion() {
 </script>
 
 <template>
-    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="thunderstoreMod === null && modsWithUpdates.length === 0" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-if="modsWithUpdates.length === 0" @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>No mods to update</h2>
         </template>
@@ -43,7 +41,7 @@ async function updateAllToLatestVersion() {
             <button class="button is-info" @click="closeModal()">Close</button>
         </template>
     </ModalCard>
-    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else-if="thunderstoreMod === null && modsWithUpdates.length > 0" @close-modal="closeModal()">
+    <ModalCard id="update-all-installed-mods-modal" :is-active="isOpen" :can-close="true" v-else @close-modal="closeModal()">
         <template v-slot:header>
             <h2 class='modal-title'>Update all installed mods</h2>
         </template>
