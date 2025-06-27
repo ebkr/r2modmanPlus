@@ -11,8 +11,16 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
         }
     });
 
+    ipcMain.on('node:fs:readFile', (event, identifier, path, content) => {
+        try {
+            const result = fs.readFileSync(path, content);
+            browserWindow.webContents.send(`node:fs:writeFile:${identifier}`, result);
+        } catch (e) {
+            browserWindow.webContents.send(`node:fs:writeFile:${identifier}`, e);
+        }
+    });
+
     ipcMain.on('node:fs:exists',  async (event, identifier, path) => {
-        console.log(`node:fs:exists`, identifier, path);
         const result = await fs.promises.access(path, fs.constants.F_OK)
             .then(() => true)
             .catch(() => false);
@@ -25,6 +33,15 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
             browserWindow.webContents.send(`node:fs:mkdirs:${identifier}`);
         } catch (e) {
             browserWindow.webContents.send(`node:fs:mkdirs:${identifier}`, e);
+        }
+    });
+
+    ipcMain.on('node:fs:readdir',  async (event, {identifier, path}) => {
+        try {
+            const result = await fs.promises.readdir(path);
+            browserWindow.webContents.send(`node:fs:readdir:${identifier}`, result);
+        } catch (e) {
+            browserWindow.webContents.send(`node:fs:readdir:${identifier}`, e);
         }
     });
 }

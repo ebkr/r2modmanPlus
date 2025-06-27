@@ -29,6 +29,8 @@ export default {
         ): void {
             state.error = error instanceof R2Error ? error : error.error;
 
+            console.error(error);
+
             if (error instanceof R2Error) {
                 LoggerProvider.instance.Log(LogSeverity.ERROR, `[${error.name}]: ${error.message}`);
             } else {
