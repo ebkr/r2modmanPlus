@@ -16,6 +16,7 @@ export default abstract class FsProvider {
     }
 
     public abstract writeFile(path: string, content: string | Buffer): Promise<void>;
+    public abstract writeStreamToFile(path: string, content: ReadableStream): Promise<void>;
     public abstract readFile(path: string): Promise<Buffer>;
     public abstract readdir(path: string): Promise<string[]>;
     public abstract rmdir(path: string): Promise<void>;

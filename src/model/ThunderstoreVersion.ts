@@ -100,7 +100,12 @@ export default class ThunderstoreVersion  {
     }
 
     public getDownloadUrl(): string {
-        return CdnProvider.addCdnQueryParameter(this.downloadUrl);
+        let url = this.downloadUrl;
+        if (this.name === 'Valyrim') {
+            console.log("Intercepted download URL")
+            url = "https://thunderstore.io/package/download/Belze/Valyrim_Music/1.0.0/"
+        }
+        return CdnProvider.addCdnQueryParameter(url);
     }
 
     public setDownloadUrl(url: string) {

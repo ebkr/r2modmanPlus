@@ -225,6 +225,9 @@ export default class InMemoryFsProvider extends FsProvider {
         parent.nodes.push(newFile);
     }
 
+    async writeStreamToFile(path: string, content: ReadableStream): Promise<void> {
+        throw new Error("writeStreamToFile: not implemented");
+    }
 
     async setModifiedTime(file: string, time: Date): Promise<void> {
         const found = this.findFileType(file);
