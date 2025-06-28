@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+
 import R2Error from '../../../model/errors/R2Error';
 import { getAxiosWithTimeouts } from '../../../utils/HttpUtils';
 import { addOrReplaceSearchParams, replaceHost } from '../../../utils/UrlUtils';
@@ -20,13 +22,13 @@ const CONNECTION_ERROR = new R2Error(
 
 export default class CdnProvider {
     private static axios = getAxiosWithTimeouts(5000, 5000);
-    private static preferredCdn = "";
+    private static preferredCdn = ref("");
 
     public static get current() {
-        const i = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const i = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn.value);
         return {
             label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
-            url: CdnProvider.preferredCdn
+            url: CdnProvider.preferredCdn.value
         };
     }
 
@@ -49,7 +51,7 @@ export default class CdnProvider {
             }
 
             if (res.status === 200) {
-                CdnProvider.preferredCdn = cdn;
+                CdnProvider.preferredCdn.value = cdn;
                 return;
             }
         };
@@ -58,24 +60,24 @@ export default class CdnProvider {
     }
 
     public static replaceCdnHost(url: string) {
-        return CdnProvider.preferredCdn
-            ? replaceHost(url, CdnProvider.preferredCdn)
+        return CdnProvider.preferredCdn.value
+            ? replaceHost(url, CdnProvider.preferredCdn.value)
             : url;
     }
 
     public static addCdnQueryParameter(url: string) {
-        return CdnProvider.preferredCdn
-            ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn}`)
+        return CdnProvider.preferredCdn.value
+            ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn.value}`)
             : url;
     }
 
     public static togglePreferredCdn() {
-        let currentIndex = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        let currentIndex = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn.value);
 
         if (currentIndex === -1) {
             currentIndex = 0;
         }
 
-        CdnProvider.preferredCdn = CDNS[currentIndex + 1] || CDNS[0];
+        CdnProvider.preferredCdn.value = CDNS[currentIndex + 1] || CDNS[0];
     }
 }

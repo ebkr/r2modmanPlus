@@ -129,12 +129,16 @@ export const DownloadModule = {
                 commit('setDone', downloadId);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
+                DownloadUtils.addSolutionsToError(r2Error);
                 if (downloadId) {
                     commit('setFailed', downloadId);
                     if (profile.getProfilePath() === rootGetters['profile/activeProfile'].getProfilePath()) {
-                        r2Error.setAction({
+                        r2Error.addAction({
                             label: 'Retry',
-                            function: () => dispatch('retryDownloadById', downloadId)
+                            function: async () => {
+                                commit('error/discardError', null, { root: true });
+                                await dispatch('retryDownloadById', downloadId);
+                            },
                         });
                     }
                 }
