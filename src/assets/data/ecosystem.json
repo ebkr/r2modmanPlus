@@ -10820,6 +10820,30 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "world": {
+            "label": "World"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "client": {
+            "label": "Client Side"
+          },
+          "host": {
+            "label": "Host Only"
+          },
+          "all": {
+            "label": "All Clients"
+          },
+          "translation": {
+            "label": "Translations"
+          },
+          "optimization": {
+            "label": "Optimization"
           }
         },
         "sections": {
@@ -18989,6 +19013,110 @@
       },
       "r2modman": null
     },
+    "lost-skies-ic": {
+      "uuid": "76651ab2-90fc-4aa1-bb3f-677dcf924c2c",
+      "label": "lost-skies-ic",
+      "meta": {
+        "displayName": "Lost Skies Island Creator",
+        "iconUrl": "lost-skies-island-creator.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "2102670"
+        }
+      ],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2102670"
+            }
+          ],
+          "steamFolderName": "Lost Skies Island Creator",
+          "dataFolderName": "IslandCreator_Data",
+          "exeNames": [
+            "IslandCreator.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Lost Skies Island Creator",
+            "iconUrl": "lost-skies-island-creator.webp"
+          },
+          "settingsIdentifier": "LostSkiesIslandCreator",
+          "internalFolderName": "LostSkiesIslandCreator",
+          "packageIndex": "https://thunderstore.io/c/lost-skies-ic/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "lsic"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Lost Skies Island Creator",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "fixes": {
+            "label": "Fixes"
+          },
+          "misc": {
+            "label": "Misc"
+          }
+        },
+        "sections": {},
+        "wikiUrl": "https://lostskies.wiki.gg/",
+        "discordUrl": "https://discord.com/invite/QWtTAnbvqz",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -19135,6 +19263,55 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "spaghetti-kart": {
+      "uuid": "e9398d86-9fc8-4a68-83e0-90bdacc50289",
+      "label": "spaghetti-kart",
+      "meta": {
+        "displayName": "Spaghetti Kart",
+        "iconUrl": "spaghetti-kart.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Spaghetti Kart",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/shipofharkinian",
+        "autolistPackageIds": []
+      }
     },
     "starship": {
       "uuid": "367e77fa-c7d6-4ca0-a8c6-a35e3f10d300",
@@ -22290,6 +22467,30 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "world": {
+          "label": "World"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "client": {
+          "label": "Client Side"
+        },
+        "host": {
+          "label": "Host Only"
+        },
+        "all": {
+          "label": "All Clients"
+        },
+        "translation": {
+          "label": "Translations"
+        },
+        "optimization": {
+          "label": "Optimization"
         }
       },
       "sections": {
@@ -24785,6 +24986,26 @@
       },
       "discordUrl": "https://discord.gg/c5Ee98GNvb"
     },
+    "lost-skies-ic": {
+      "displayName": "Lost Skies Island Creator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "fixes": {
+          "label": "Fixes"
+        },
+        "misc": {
+          "label": "Misc"
+        }
+      },
+      "sections": {},
+      "wikiUrl": "https://lostskies.wiki.gg/",
+      "discordUrl": "https://discord.com/invite/QWtTAnbvqz",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -24899,6 +25120,45 @@
         }
       },
       "wikiUrl": "https://gamebanana.com/games/16121",
+      "discordUrl": "https://discord.com/invite/shipofharkinian",
+      "autolistPackageIds": []
+    },
+    "spaghetti-kart": {
+      "displayName": "Spaghetti Kart",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
