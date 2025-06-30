@@ -1,8 +1,6 @@
 import R2Error from '../../model/errors/R2Error';
 import { ImmutableProfile } from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';

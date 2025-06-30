@@ -1,11 +1,11 @@
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../../model/errors/R2Error';
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import FileUtils from '../../utils/FileUtils';
 import Game from '../../model/game/Game';
+import path from '../../providers/node/path/path';
 
 
 export class SteamInstallationValidator {

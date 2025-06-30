@@ -1,22 +1,22 @@
-import { RouteConfig } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router';
 import Profile from '../model/Profile';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const appTitle = () => `${ManagerInformation.APP_NAME} (${ManagerInformation.VERSION.toString()})`;
 const profileTitle = () => `${appTitle()} - ${Profile.getActiveProfile().getProfileName()}`;
 
-const routes: RouteConfig[] = [
+const routes: RouteRecordRaw[] = [
     {
         name: 'index',
         path: '/',
         component: () => import("pages/GameSelectionScreen.vue"),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         name: 'splash',
         path: '/splash/',
         component: () => import('pages/Splash.vue'),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         name: 'linux',
@@ -30,12 +30,12 @@ const routes: RouteConfig[] = [
         name: 'profiles',
         path: '/profiles/',
         component: () => import('pages/Profiles.vue'),
-        meta: {title: appTitle}
+        meta: {title: appTitle()}
     },
     {
         path: '/',
         component: () => import('components/navigation/NavigationLayout.vue'),
-        meta: {title: appTitle},
+        meta: {title: appTitle()},
         children: [
             {
                 name: 'manager',
@@ -91,13 +91,5 @@ const routes: RouteConfig[] = [
         ]
     }
 ];
-
-// Always leave this as last one
-if (process.env.MODE !== 'ssr') {
-    routes.push({
-        path: '*',
-        component: () => import('pages/Error404.vue')
-    });
-}
 
 export default routes;

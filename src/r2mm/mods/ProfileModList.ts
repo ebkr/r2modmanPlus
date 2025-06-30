@@ -1,7 +1,5 @@
 import * as yaml from 'yaml';
 import { ImmutableProfile } from '../../model/Profile';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
@@ -21,8 +19,7 @@ import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
-
-const FALLBACK_ICON = require("../../../public/unknown.png");
+import path from '../../providers/node/path/path';
 
 export default class ProfileModList {
 
@@ -176,7 +173,7 @@ export default class ProfileModList {
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
-        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
+        await builder.addBuffer("export.r2x", window.node.buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
             await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
@@ -294,6 +291,6 @@ export default class ProfileModList {
             }
         }
 
-        mod.setIcon(FALLBACK_ICON);
+        mod.setIcon("/unknown.png");
     }
 }

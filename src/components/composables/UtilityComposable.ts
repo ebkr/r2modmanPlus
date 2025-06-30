@@ -5,7 +5,7 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { getStore } from '../../providers/generic/store/StoreProvider';
-import VueRouter from 'vue-router';
+import { Router } from 'vue-router';
 import { InstallMode } from '../../utils/DependencyUtils';
 
 export function useUtilityComposable() {
@@ -15,14 +15,14 @@ export function useUtilityComposable() {
     const refreshInterval = 5 * 60 * 1000;
     let tsBackgroundRefreshFailed = false;
 
-    function hookBackgroundUpdateThunderstoreModList(router: VueRouter) {
+    function hookBackgroundUpdateThunderstoreModList(router: Router) {
         setInterval(() => backgroundRefreshThunderstoreModList(router), refreshInterval);
     }
 
-    function hookModInstallingViaProtocol(router: VueRouter) {
+    function hookModInstallingViaProtocol(router: Router) {
         InteractionProvider.instance.hookModInstallProtocol(async (protocolUrl) => {
             const profileSelectedRoutes = ["manager", "manager.installed", "manager.online", "manager.settings", "config-editor", "help", "downloads"];
-            if (router.currentRoute.name && !profileSelectedRoutes.includes(router.currentRoute.name)) {
+            if (router.currentRoute.value.name && !profileSelectedRoutes.includes(router.currentRoute.value.name as string)) {
                 store.commit('error/handleError', {
                     error: new R2Error(
                         "Unable to install mod(s)",
@@ -60,13 +60,13 @@ export function useUtilityComposable() {
      * closing the window while update is in progress. Ignore the first
      * failure to see how this affects the number of reported errors.
      */
-    async function backgroundRefreshThunderstoreModList(router: VueRouter) {
+    async function backgroundRefreshThunderstoreModList(router: Router) {
         // Don't do background update on index route since the game
         // isn't really chosen yet, nor in the splash screen since it
         // proactively updates the package list.
         const exemptRoutes = ["index", "splash"];
 
-        if (router.currentRoute.name && exemptRoutes.includes(router.currentRoute.name)) {
+        if (router.currentRoute.value.name && exemptRoutes.includes(router.currentRoute.value.name as string)) {
             return;
         }
 

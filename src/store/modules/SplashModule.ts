@@ -8,6 +8,11 @@ interface State {
     splashText: string;
 }
 
+export type UpdateRequestItemBody = {
+    requestName: string,
+    value: number,
+}
+
 export const SplashModule = {
     namespaced: true,
 
@@ -26,12 +31,29 @@ export const SplashModule = {
                 new RequestItem('PackageListChunks', 0),
                 new RequestItem('Vuex', 0)
             ];
+        },
+        setSplashText(state: State, splashText: string) {
+            state.splashText = splashText;
+        },
+        updateRequestItem(state: State, body: UpdateRequestItemBody) {
+            const item = state.requests.find((ri) => ri.getName() === body.requestName);
+
+            if (item === undefined) {
+                throw new Error(`Unknown RequestItem "${body.requestName}"`);
+            }
+
+            item.setProgress(body.value);
         }
     },
     actions: <ActionTree<State, RootState>>{
-        setSplashText({ state }, splashText: string) {
-            state.splashText = splashText;
+        setSplashText({ commit }, splashText: string) {
+            commit('setSplashText', splashText);
         },
+        /**
+         * @deprecated in favour of updateRequestItem to prevent raw mutation of a Vuex item.
+         * @param state
+         * @param requestName
+         */
         getRequestItem({state}, requestName: string): RequestItem {
             const item = state.requests.find((ri) => ri.getName() === requestName);
 
@@ -40,6 +62,9 @@ export const SplashModule = {
             }
 
             return item;
+        },
+        updateRequestItem({ commit }, body: UpdateRequestItemBody) {
+            commit('updateRequestItem', body);
         },
         async getThunderstoreMods({commit, dispatch}) {
             commit('tsMods/startThunderstoreModListUpdate', null, {root: true});
@@ -59,8 +84,8 @@ export const SplashModule = {
                 dispatch('tsMods/syncPackageList', null, {root: true});
             }
         },
-        async fetchPackageListIndex({state, dispatch}): Promise<PackageListIndex | undefined> {
-             state.splashText = 'Checking for mod list updates from Thunderstore';
+        async fetchPackageListIndex({commit, dispatch}): Promise<PackageListIndex | undefined> {
+             commit('setSplashText', 'Checking for mod list updates from Thunderstore');
 
             try {
                 return await dispatch('tsMods/fetchPackageListIndex', null, {root: true});
@@ -72,8 +97,8 @@ export const SplashModule = {
                 requestItem.setProgress(100);
             }
         },
-        async doesGameHaveLocalCache({state, dispatch}): Promise<boolean> {
-            state.splashText = 'Checking for mod list in local cache';
+        async doesGameHaveLocalCache({dispatch, commit}): Promise<boolean> {
+            commit('setSplashText', 'Checking for mod list in local cache');
             let hasCache = false;
 
             try {
@@ -83,21 +108,25 @@ export const SplashModule = {
             }
 
             if (hasCache) {
-                const packageListIndex = await dispatch('getRequestItem', 'PackageListIndex') as RequestItem;
-                packageListIndex.setProgress(100);
-                const packageListChunks = await dispatch('getRequestItem', 'PackageListChunks') as RequestItem;
-                packageListChunks.setProgress(100);
+                await dispatch('updateRequestItem', {
+                    requestName: 'PackageListIndex',
+                    value: 100
+                } as UpdateRequestItemBody);
+                await dispatch('updateRequestItem', {
+                    requestName: 'PackageListChunks',
+                    value: 100
+                } as UpdateRequestItemBody);
             }
 
             return hasCache;
         },
-        async fetchPackageListChunksIfUpdated({state, dispatch}, packageListIndex?: PackageListIndex): Promise<boolean> {
+        async fetchPackageListChunksIfUpdated({ commit, dispatch }, packageListIndex?: PackageListIndex): Promise<boolean> {
             // Skip loading chunks if loading index failed.
             if (!packageListIndex) {
                 return false;
             }
 
-            state.splashText = 'Loading latest mod list from Thunderstore';
+            commit('setSplashText', 'Loading latest mod list from Thunderstore');
 
             const progressCallback = async (progress: number) => {
                 const packageListChunks = await dispatch('getRequestItem', 'PackageListChunks');
@@ -118,7 +147,7 @@ export const SplashModule = {
             }
         },
         async pruneRemovedMods(
-            { state, dispatch },
+            { commit, dispatch },
             packageListIndex?: PackageListIndex,
             areAllChunksProcessedSuccessfully?: boolean
         ): Promise<void> {
@@ -129,7 +158,7 @@ export const SplashModule = {
                 return;
             }
 
-            state.splashText = 'Pruning removed mods from local cache';
+            commit('setSplashText', 'Pruning removed mods from local cache');
 
             try {
                 await dispatch('tsMods/pruneRemovedModsFromCache', packageListIndex.dateFetched, {root: true});
@@ -137,16 +166,18 @@ export const SplashModule = {
                 console.error('SplashModule failed to delete outdated mods from local cache.', e);
             }
         },
-        async triggerStoreModListUpdate({state, dispatch}): Promise<void> {
-            state.splashText = 'Processing the mod list';
+        async triggerStoreModListUpdate({ commit, dispatch }): Promise<void> {
+            commit('setSplashText', 'Processing the mod list');
 
             try {
                 await dispatch('tsMods/updateMods', null, {root: true});
             } catch (e) {
                 console.error('Updating the store mod list by SplashModule failed.', e);
             } finally {
-                const vuex = await dispatch('getRequestItem', 'Vuex');
-                vuex.setProgress(100);
+                await dispatch('updateRequestItem', {
+                    requestName: 'Vuex',
+                    value: 100
+                } as UpdateRequestItemBody);
             }
         }
     }

@@ -1,4 +1,7 @@
-import Vue from 'vue';
 import axios from 'axios';
 
-Vue.prototype.$axios = axios;
+// @ts-ignore
+export default ({ app }) => {
+    // Tell app to use the I18n instance
+    app.use(axios)
+}

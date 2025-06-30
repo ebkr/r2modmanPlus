@@ -1,7 +1,7 @@
 import FsProvider from '../../providers/generic/file/FsProvider';
-import * as path from "path";
 import ProfileProvider from '../../providers/ror2/model_implementation/ProfileProvider';
 import FileUtils from '../../utils/FileUtils';
+import path from '../../providers/node/path/path';
 
 export default class ProfileImpl extends ProfileProvider {
 

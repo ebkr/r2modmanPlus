@@ -16,9 +16,8 @@ import LogOutput from './r2mm/data/LogOutput';
 import LogOutputProvider from './providers/ror2/data/LogOutputProvider';
 import ThunderstoreDownloaderProvider from './providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import BetterThunderstoreDownloader from './r2mm/downloading/BetterThunderstoreDownloader';
-import { ipcRenderer } from 'electron';
 import PathResolver from './r2mm/manager/PathResolver';
-import path from 'path';
+import path from './providers/node/path/path';
 import ThemeManager from './r2mm/manager/ThemeManager';
 import 'bulma-switch/dist/css/bulma-switch.min.css';
 import LoggerProvider, { LogSeverity } from './providers/ror2/logging/LoggerProvider';
@@ -49,10 +48,13 @@ import { provideStoreImplementation } from './providers/generic/store/StoreProvi
 import baseStore from './store';
 import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
-import { Dark } from 'quasar';
+import { Dark, useQuasar } from 'quasar';
+import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
 
-const store = baseStore();
+const store = baseStore;
 provideStoreImplementation(() => store);
+
+const quasar = useQuasar();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -70,7 +72,7 @@ const {
 
 const visible = ref<boolean>(false);
 
-FsProvider.provide(() => new NodeFs());
+FsProvider.provide(() => NodeFsImplementation);
 
 ProfileProvider.provide(() => new ProfileImpl());
 LogOutputProvider.provide(() => LogOutput.getSingleton());
@@ -102,7 +104,9 @@ onMounted(async () => {
     InstallationRules.apply();
     InstallationRules.validate();
 
-    ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
+    // TODO QUASAR UPGRADE
+    window.app.getAppDataDirectory().then(async (appData: string) => {
+        console.log("Got AppDataDirectory", appData);
         PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
         // Legacy path. Needed for migration.
         PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
@@ -123,21 +127,21 @@ onMounted(async () => {
         await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
 
         await ThemeManager.apply();
-        ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
+
+        window.app.isApplicationPortable().then((isPortable: boolean) => {
+            console.log("Is portable?", isPortable);
             ManagerInformation.IS_PORTABLE = isPortable;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             visible.value = true;
         });
-        ipcRenderer.send('get-is-portable');
     });
-    ipcRenderer.send('get-appData-directory');
 
     store.commit('updateModLoaderPackageNames');
     store.dispatch('tsMods/updateExclusions');
 });
 
 watchEffect(() => {
-    document.documentElement.classList.toggle('html--dark', Dark.isActive);
+    document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
 })
 </script>
 
