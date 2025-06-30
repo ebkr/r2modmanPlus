@@ -1,7 +1,7 @@
 <template>
     <div id="download-monitor-view">
         <Hero title="Downloads" subtitle="Monitor progress of downloads" hero-type="primary"/>
-        <template v-if="$store.state.download.allDownloads.length === 0">
+        <template v-if="store.state.download.allDownloads.length === 0">
             <div class='text-center top'>
                 <div class="margin-right">
                     <br/>
@@ -16,12 +16,12 @@
             <div class="download-monitor-action-buttons border-at-bottom">
                 <button
                     class="button ghost"
-                    @click="$store.commit('download/removeAllInactive')"
+                    @click="store.commit('download/removeAllInactive')"
                 >
                     <i class="fas fa-times mr-2" />Clear finished
                 </button>
             </div>
-            <div v-for="(downloadObject, index) of $store.getters['download/profileDownloadsNewestFirst']" :key="`download-progress-${index}`">
+            <div v-for="(downloadObject, index) of store.getters['download/profileDownloadsNewestFirst']" :key="`download-progress-${index}`">
                 <div class="container">
                     <div class="row no-wrap border-at-bottom pad pad--sides">
                         <div class="is-flex-grow-1 margin-right card is-shadowless">
@@ -119,7 +119,7 @@
                             v-if="downloadObject.status === DownloadStatusEnum.FAILED"
                             class="button download-item-action-button"
                             v-tooltip.left="'Retry'"
-                            @click="$store.dispatch('download/retryDownload', { download: downloadObject, hideModal: true })"
+                            @click="store.dispatch('download/retryDownload', { download: downloadObject, hideModal: true })"
                         >
                             <i class="fas fa-redo redo-icon" />
                         </button>
@@ -127,7 +127,7 @@
                             v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.INSTALLED"
                             class="button download-item-action-button"
                             v-tooltip.left="'Remove'"
-                            @click="$store.commit('download/removeDownload', downloadObject)"
+                            @click="store.commit('download/removeDownload', downloadObject)"
                         >
                             <i class="fas fa-times x-icon" />
                         </button>
@@ -139,12 +139,15 @@
 </template>
 
 <script lang="ts" setup>
-
 import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
 import FileUtils from "../utils/FileUtils";
 import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
 import * as DownloadUtils from '../utils/DownloadUtils';
+import { getStore } from '../providers/generic/store/StoreProvider';
+import { State } from '../store';
+
+const store = getStore<State>();
 </script>
 
 <style lang="scss" scoped>

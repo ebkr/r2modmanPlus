@@ -12,7 +12,7 @@
         <div class="mod-list-content">
             <div class="draggable-content">
                 <draggable v-model='draggableList' group="local-mods" handle=".handle"
-                           @start="drag=$store.getters['profile/canSortMods']"
+                           @start="drag=store.getters['profile/canSortMods']"
                            @end="drag=false"
                            :force-fallback="true"
                            :scroll-sensitivity="100">
