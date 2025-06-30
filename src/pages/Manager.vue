@@ -147,7 +147,7 @@ import ThemeManager from '../r2mm/manager/ThemeManager';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-import { homedir } from 'os';
+import os from '../providers/node/os/os';
 import FsProvider from '../providers/generic/file/FsProvider';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
@@ -213,9 +213,9 @@ function computeDefaultInstallDirectory(): string {
                 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName
             );
         case 'linux':
-            return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
+            return path.resolve(os.homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
         case 'darwin':
-            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam',
+            return path.resolve(os.homedir(), 'Library', 'Application Support', 'Steam',
                 'steamapps', 'common', activeGame.value.steamFolderName);
         default:
             return '';
@@ -289,9 +289,9 @@ function computeDefaultSteamDirectory(): string {
                 'Steam'
             );
         case 'linux':
-            return path.resolve(homedir(), '.local', 'share', 'Steam');
+            return path.resolve(os.homedir(), '.local', 'share', 'Steam');
         case 'darwin':
-            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam');
+            return path.resolve(os.homedir(), 'Library', 'Application Support', 'Steam');
         default:
             return '';
     }
