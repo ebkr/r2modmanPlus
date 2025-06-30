@@ -2,13 +2,33 @@
     color: var(--text, #363636);
 }
 
-.menu-list li {
+.menu-list {
+    li {
 
-    * {
-        color: var(--text, #363636);
+        * {
+            color: var(--text, #363636);
+        }
+
+        *.is-active {
+            color: var(--text, #363636) !important;
+        }
     }
 
-    *.is-active {
-        color: var(--text, #363636) !important;
+    a {
+        border-radius: 2px;
+        color: var(--menu-item-color,var(--text,#4a4a4a));
+        display: block;
+        padding: 0.5em 0.75em;
+        border: 0;
+
+        &:hover {
+            background-color: var(--menu-item-hover-background-color,#e9eaed);
+            color: var(--menu-item-hover-color,var(--text-strong,#363636));
+        }
+
+        &.is-active {
+            background-color: #485fc7;
+            color: #fff;
+        }
     }
 }
