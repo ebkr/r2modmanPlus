@@ -1,22 +1,19 @@
 .menu-label {
-    color: var(--text, #363636);
+    color: var(--v2-inactive-menu-item-color, #363636);
 }
 
 .menu-list {
     li {
+        color: var(--v2-inactive-menu-item-color);
+    }
 
-        * {
-            color: var(--text, #363636);
-        }
-
-        *.is-active {
-            color: var(--text, #363636) !important;
-        }
+    .is-active {
+        color: var(--v2-active-menu-item-color);
     }
 
     a {
         border-radius: 2px;
-        color: var(--menu-item-color,var(--text,#4a4a4a));
+        color: var(--v2-inactive-menu-item-color);
         display: block;
         padding: 0.5em 0.75em;
         border: 0;
@@ -28,7 +25,7 @@
 
         &.is-active {
             background-color: #485fc7;
-            color: #fff;
+            color: var(--v2-active-menu-item-color) !important;
         }
     }
 }

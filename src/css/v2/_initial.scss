@@ -18,11 +18,14 @@
     --v2-table-row-text-color: var(--v2-primary-text-color);
     --v2-table-row-border-color: #b3b3b3;
 
-    --v2-active-tag-background-color: #222;
-    --v2-active-tag-color: #f3f3f3;
+    --v2-active-tag-background-color: #f3f3f3;
+    --v2-active-tag-color: #222;
 
     --v2-inactive-tag-background-color: #485fc7;
     --v2-inactive-tag-color: white;
+
+    --v2-active-menu-item-color: white;
+    --v2-inactive-menu-item-color: #222;
 }
 
 html[class="html--dark"] {
@@ -50,4 +53,7 @@ html[class="html--dark"] {
 
     --v2-inactive-tag-background-color: #485fc7;
     --v2-inactive-tag-color: white;
+
+    --v2-active-menu-item-color: white;
+    --v2-inactive-menu-item-color: #bdcbdb;
 }
