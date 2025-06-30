@@ -235,7 +235,6 @@ function updatePageNumber(page: number) {
 }
 
 function toggleModPreview(mod: ThunderstoreMod) {
-    console.log("Toggled mod preview")
     if (previewMod.value === mod) {
         previewMod.value = null;
     } else {
