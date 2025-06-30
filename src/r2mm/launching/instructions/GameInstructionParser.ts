@@ -40,7 +40,7 @@ export default class GameInstructionParser {
 
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
-            if (["linux"].includes(process.platform.toLowerCase())) {
+            if (["linux"].includes(window.app.getPlatform().toLowerCase())) {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
                 const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath("BepInEx", "core"));
                 const preloaderPath = path.join(corePath,

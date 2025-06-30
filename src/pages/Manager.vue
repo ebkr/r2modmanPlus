@@ -196,7 +196,7 @@ async function validateSteamInstallation() {
 }
 
 function computeDefaultInstallDirectory(): string {
-    switch(process.platform){
+    switch(window.app.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
@@ -272,7 +272,7 @@ function changeGameInstallDirectoryGamePass() {
 }
 
 function computeDefaultSteamDirectory(): string {
-    switch(process.platform){
+    switch(window.app.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
@@ -288,7 +288,7 @@ function computeDefaultSteamDirectory(): string {
 }
 
 async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
-    switch(process.platform){
+    switch(window.app.getPlatform()){
         case 'win32':
             return path.basename(file).toLowerCase() === "steam.exe"
         case 'linux':

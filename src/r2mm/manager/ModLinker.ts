@@ -15,13 +15,13 @@ export default class ModLinker {
 
     public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
         if (game.packageLoader == PackageLoader.BEPINEX) {
-            if (process.platform === 'linux') {
+            if (window.app.getPlatform() === 'linux') {
                 const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
                 if (!isProton) {
                     // Game is native, BepInEx doesn't require moving. No linked files.
                     return [];
                 }
-            } else if (process.platform === 'darwin') {
+            } else if (window.app.getPlatform() === 'darwin') {
                 // Linux games don't require moving BepInEx files.
                 return [];
             }
