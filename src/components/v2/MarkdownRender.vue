@@ -33,8 +33,8 @@ function captureClick(e: Event) {
 </template>
 
 <style lang="scss">
-    @import '~modern-normalize/modern-normalize.css';
-    @import "~github-markdown-css/github-markdown.css";
+    @import 'modern-normalize/modern-normalize.css';
+    @import 'github-markdown-css/github-markdown.css';
 
     table th {
         color: inherit;

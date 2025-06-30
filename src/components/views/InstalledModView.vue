@@ -22,9 +22,9 @@
                         <div class="notification is-warning margin-right">
                             <span>
                                 You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
-                                Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?
+                                Would you like to <a @click="store.commit('openUpdateAllModsModal')">update all</a>?
                             </span>
-                            <a class="float-right cursor-pointer" @click="$store.commit('profile/dismissUpdateAll')">
+                            <a class="float-right cursor-pointer" @click="store.commit('profile/dismissUpdateAll')">
                                 <i class="fas fa-times" />
                             </a>
                         </div>
