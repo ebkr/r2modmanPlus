@@ -17,6 +17,12 @@
     --v2-table-row-alt-background-color: #dee2e3;
     --v2-table-row-text-color: var(--v2-primary-text-color);
     --v2-table-row-border-color: #b3b3b3;
+
+    --v2-active-tag-background-color: #222;
+    --v2-active-tag-color: #f3f3f3;
+
+    --v2-inactive-tag-background-color: #485fc7;
+    --v2-inactive-tag-color: white;
 }
 
 html[class="html--dark"] {
@@ -38,4 +44,10 @@ html[class="html--dark"] {
     --v2-table-row-alt-background-color: #1d2532;
     --v2-table-row-text-color: var(--v2-primary-text-color);
     --v2-table-row-border-color: #313c4e;
+
+    --v2-active-tag-background-color: #f3f3f3;
+    --v2-active-tag-color: #222;
+
+    --v2-inactive-tag-background-color: #485fc7;
+    --v2-inactive-tag-color: white;
 }

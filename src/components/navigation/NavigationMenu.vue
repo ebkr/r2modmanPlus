@@ -106,7 +106,7 @@ const thunderstoreModCount = computed(() =>
 
 function getTagLinkClasses(routeNames: string[]) {
     const base = ["tag", "tagged-link__tag"];
-    return router.value && routeNames.includes(router.value.currentRoute.name || "") ? base : [...base, "is-link"];
+    return router && router.currentRoute.value && routeNames.includes(router.currentRoute.value.name as string || "") ? [...base, "is-link"] : [...base, "is-inactive-link"];
 }
 
 function openProfileManagementModal() {
