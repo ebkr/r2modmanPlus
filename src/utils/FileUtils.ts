@@ -3,10 +3,6 @@ import path from 'path';
 
 export default class FileUtils {
 
-    public static requireImage(image: string) {
-        return require("../assets/images/game_selection/" + image);
-    }
-
     public static async copyFileOrFolder(source: string, target: string) {
         if ((await FsProvider.instance.stat(source)).isFile()) {
             await FsProvider.instance.copyFile(source, target);
