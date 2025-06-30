@@ -10,13 +10,13 @@ const routes: RouteRecordRaw[] = [
         name: 'index',
         path: '/',
         component: () => import("pages/GameSelectionScreen.vue"),
-        meta: {title: appTitle()}
+        meta: {title: appTitle}
     },
     {
         name: 'splash',
         path: '/splash/',
         component: () => import('pages/Splash.vue'),
-        meta: {title: appTitle()}
+        meta: {title: appTitle}
     },
     {
         name: 'linux',
@@ -30,18 +30,18 @@ const routes: RouteRecordRaw[] = [
         name: 'profiles',
         path: '/profiles/',
         component: () => import('pages/Profiles.vue'),
-        meta: {title: appTitle()}
+        meta: {title: appTitle}
     },
     {
         path: '/',
         component: () => import('components/navigation/NavigationLayout.vue'),
-        meta: {title: appTitle()},
+        meta: {title: appTitle},
         children: [
             {
                 name: 'manager',
                 path: 'manager/',
                 component: () => import('pages/Manager.vue'),
-                meta: {title: profileTitle},
+                meta: {title: () => profileTitle()},
                 children: [
                     {
                         name: 'manager.installed',
@@ -50,7 +50,7 @@ const routes: RouteRecordRaw[] = [
                         components: {
                             subview: () => import('components/views/InstalledModView.vue')
                         },
-                        meta: {title: profileTitle}
+                        meta: {title: () => profileTitle()}
                     },
                     {
                         name: 'manager.online',
@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
                         components: {
                             subview: () => import('components/views/OnlineModView.vue')
                         },
-                        meta: {title: profileTitle}
+                        meta: {title: () => profileTitle()}
                     },
                     {
                         name: 'manager.settings',
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
                         components: {
                             subview: () => import('components/settings-components/SettingsView.vue')
                         },
-                        meta: {title: profileTitle}
+                        meta: {title: () => profileTitle()}
                     }
                 ]
             },
@@ -74,19 +74,19 @@ const routes: RouteRecordRaw[] = [
                 name: 'config-editor',
                 path: 'config-editor/',
                 component: () => import('pages/ConfigEditor.vue'),
-                meta: {title: profileTitle}
+                meta: {title: () => profileTitle()}
             },
             {
                 name: 'help',
                 path: 'help/',
                 component: () => import('pages/Help.vue'),
-                meta: {title: profileTitle}
+                meta: {title: () => profileTitle()}
             },
             {
                 name: 'downloads',
                 path: 'downloads/',
                 component: () => import('pages/DownloadMonitor.vue'),
-                meta: {title: profileTitle}
+                meta: {title: () => profileTitle()}
             }
         ]
     }
