@@ -23,7 +23,7 @@
                                     <button
                                         id="thunderstore-category-filter"
                                         class="button"
-                                        @click="$store.commit('openOnlineSortModal')"
+                                        @click="store.commit('openOnlineSortModal')"
                                     >
                                         Sort
                                     </button>
@@ -36,7 +36,7 @@
                                     <button
                                         id="thunderstore-category-filter"
                                         class="button"
-                                        @click="$store.commit('openCategoryFilterModal')"
+                                        @click="store.commit('openCategoryFilterModal')"
                                     >
                                         Filter
                                     </button>
@@ -46,15 +46,21 @@
                     </div>
                 </div>
             </div>
-            <ModListUpdateBanner />
             <div id="view-content">
-                <OnlineModList
-                    :local-mod-list="localModList"
-                    :paged-mod-list="pagedThunderstoreModList"
-                    :selected-mod="previewMod"
-                    @selected-mod="toggleModPreview"
-                    :read-only="false"
-                />
+                <div id="mod-list-update-banner-t">
+                    <ModListUpdateBanner />
+                </div>
+                <div id="online-ml-t">
+                    <template v-if="OnlineModList !== undefined">
+                        <OnlineModList
+                            :local-mod-list="localModList"
+                            :paged-mod-list="pagedThunderstoreModList"
+                            :selected-mod="previewMod"
+                            @selected-mod="toggleModPreview"
+                            :read-only="false"
+                        />
+                    </template>
+                </div>
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
                         Use the numbers below to change page
@@ -96,7 +102,7 @@ import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted, Ref, defineAsyncComponent } from 'vue';
 
 const store = getStore<State>();
 
@@ -109,7 +115,7 @@ const sortedThunderstoreModList = ref<ThunderstoreMod[]>([]);
 const thunderstoreSearchFilter = ref<string>("");
 const previewMod = ref<ThunderstoreMod | null>(null);
 
-const OnlineModList = computed(() => OnlineModListProvider.provider);
+const OnlineModList = defineAsyncComponent(() => OnlineModListProvider.provider());
 
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
 const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods.mods);
