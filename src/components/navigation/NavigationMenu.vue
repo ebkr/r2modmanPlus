@@ -61,7 +61,7 @@
                 </div>
                 <div class="menu-bottom">
                     <div id="profile-switcher" @click="openProfileManagementModal">
-                        <img :src="getGameImage()" alt="Game icon"/>
+                        <img :src="`/images/game_selection/${activeGame.gameImage}`" alt="Game icon"/>
                         <div>
                             <p>{{ profile.getProfileName() }}</p>
                             <p class="sub-action">Profile</p>
@@ -89,14 +89,10 @@ import FileUtils from '../../utils/FileUtils';
 import { ref, computed, onMounted, getCurrentInstance } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter from 'vue-router';
+import VueRouter, { useRouter } from 'vue-router';
 
 const store = getStore<State>();
-const router = ref<VueRouter>();
-
-onMounted(() => {
-    router.value = getCurrentInstance()!.proxy.$router;
-});
+const router = useRouter();
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
@@ -111,10 +107,6 @@ const thunderstoreModCount = computed(() =>
 function getTagLinkClasses(routeNames: string[]) {
     const base = ["tag", "tagged-link__tag"];
     return router.value && routeNames.includes(router.value.currentRoute.name || "") ? base : [...base, "is-link"];
-}
-
-function getGameImage() {
-    return FileUtils.requireImage(activeGame.value.gameImage);
 }
 
 function openProfileManagementModal() {
