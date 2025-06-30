@@ -38,36 +38,36 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
     <div>
         <div
             id='downloadProgressModal'
-            :class="['modal', {'is-active':$store.state.download.isModProgressModalOpen}]"
-            v-if="$store.getters['download/currentDownload'] !== null"
+            :class="['modal', {'is-active':store.state.download.isModProgressModalOpen}]"
+            v-if="store.getters['download/currentDownload'] !== null"
         >
             <div class="modal-background" @click="setIsModProgressModalOpen(false);"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
 
-                    <h3 v-if="$store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
-                        Downloading {{$store.getters['download/currentDownload'].modName}}
+                    <h3 v-if="store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
+                        Downloading {{store.getters['download/currentDownload'].modName}}
                     </h3>
                     <h3 v-else class='title'>
-                        Installing {{$store.getters['download/currentDownload'].modName}}
+                        Installing {{store.getters['download/currentDownload'].modName}}
                     </h3>
 
-                    <p>Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete</p>
+                    <p>Downloading: {{store.getters['download/currentDownload'].downloadProgress}}% complete</p>
 
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].downloadProgress"
+                        :value="store.getters['download/currentDownload'].downloadProgress"
                         :className="['is-dark']"
                     />
 
-                    <p v-if="$store.getters['download/currentDownload'].installProgress">
-                        Installing: {{$store.getters['download/currentDownload'].installProgress}}% complete
+                    <p v-if="store.getters['download/currentDownload'].installProgress">
+                        Installing: {{store.getters['download/currentDownload'].installProgress}}% complete
                     </p>
                     <p v-else>Installing: waiting for download to finish</p>
 
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].installProgress"
+                        :value="store.getters['download/currentDownload'].installProgress"
                         :className="['is-dark']"
                     />
                 </div>
