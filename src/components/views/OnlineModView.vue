@@ -47,20 +47,14 @@
                 </div>
             </div>
             <div id="view-content">
-                <div id="mod-list-update-banner-t">
-                    <ModListUpdateBanner />
-                </div>
-                <div id="online-ml-t">
-                    <template v-if="OnlineModList !== undefined">
-                        <OnlineModList
-                            :local-mod-list="localModList"
-                            :paged-mod-list="pagedThunderstoreModList"
-                            :selected-mod="previewMod"
-                            @selected-mod="toggleModPreview"
-                            :read-only="false"
-                        />
-                    </template>
-                </div>
+                <ModListUpdateBanner />
+                <OnlineModList
+                    :local-mod-list="localModList"
+                    :paged-mod-list="pagedThunderstoreModList"
+                    :selected-mod="previewMod"
+                    @selected-mod="toggleModPreview"
+                    :read-only="false"
+                />
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
                         Use the numbers below to change page
@@ -241,6 +235,7 @@ function updatePageNumber(page: number) {
 }
 
 function toggleModPreview(mod: ThunderstoreMod) {
+    console.log("Toggled mod preview")
     if (previewMod.value === mod) {
         previewMod.value = null;
     } else {
