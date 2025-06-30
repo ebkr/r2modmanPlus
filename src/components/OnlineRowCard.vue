@@ -1,6 +1,6 @@
 <template>
     <keep-alive>
-        <div class='row-card is-shadowless' :class="[{'row-card--expanded': isSelected}]" @click="$emit('click')">
+        <div class='row-card is-shadowless' :class="[{'row-card--expanded': isSelected}]">
             <div class='cursor-pointer'>
                 <header class='card-header is-shadowless' :id='id'>
                     <div class='card-header-icon mod-logo' v-if="image !== ''">

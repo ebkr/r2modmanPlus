@@ -4,15 +4,16 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import MarkdownRender from './MarkdownRender.vue';
 import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineModList from '../views/OnlineModList.vue';
-import useStore from '../../store';
+import { State } from '../../store';
 import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieStore';
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
 import debounce from 'lodash.debounce';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import { getStore } from '../../providers/generic/store/StoreProvider';
 
-const store = useStore();
+const store = getStore<State>();
 
 interface ModPreviewPanelProps {
     mod: ThunderstoreMod;
