@@ -6,4 +6,12 @@
     &:hover {
         color: var(--button-color,var(--text-strong,#363636));
     }
+
+    &[disabled] {
+        color: var(--button-disabled-color, var(--button-color, var(--text-strong, #363636)));
+        background-color: var(--button-disabled-background-color,var(--button-background-color,var(--background,#fff)));
+        border-color: var(--button-disabled-border-color,var(--button-border-color,var(--border,#e1e1e1)));
+        box-shadow: none;
+        opacity: 0.5;
+    }
 }
