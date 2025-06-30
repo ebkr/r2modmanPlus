@@ -15,7 +15,8 @@ const Router = createRouter({
 
 Router.afterEach((to: RouteLocationNormalized, ignored: RouteLocationNormalized) => {
     const meta: RouteMeta = to.meta;
-    document.title = meta.title as string;
+    const title = meta.title as Function;
+    document.title = title();
 });
 
 export default Router;
