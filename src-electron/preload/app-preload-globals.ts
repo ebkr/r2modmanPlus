@@ -43,3 +43,7 @@ export async function checkForApplicationUpdates(): Promise<void> {
         ipcRenderer.send('update-app');
     });
 }
+
+export function getStaticsDirectory(): string {
+    return ipcRenderer.sendSync('get-statics-directory');
+}
