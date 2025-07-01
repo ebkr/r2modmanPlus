@@ -67,7 +67,6 @@ export const ProfilesModule = {
 
         async setSelectedProfile({rootGetters, state, dispatch}, params: { profileName: string, prewarmCache: boolean }) {
             await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
-
             if (params.prewarmCache) {
                 await dispatch('profile/updateModListFromFile', null, { root: true });
                 await dispatch('tsMods/prewarmCache', null, { root: true });
