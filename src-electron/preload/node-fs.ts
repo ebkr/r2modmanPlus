@@ -49,17 +49,13 @@ export async function readFile(path: string) {
 export async function readdir(path: string): Promise<string[]> {
     const identifier = readdirIdentifier++;
     return new Promise(async (resolve, reject) => {
-        try {
-            once(`node:fs:readdir:${identifier}`, (result: any) => {
-                if (result instanceof Error) {
-                    reject(result);
-                } else {
-                    resolve(result);
-                }
-            });
-        } catch (e) {
-            console.log("Failed once hook", e);
-        }
+        once(`node:fs:readdir:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
         return ipcRenderer.send('node:fs:readdir', identifier, path);
     });
 }
@@ -76,7 +72,16 @@ export async function mkdirs(path: string) {
 
 export async function exists(path: string) {
     const identifier = existsIdentifier++;
-    return ipcRenderer.send('node:fs:exists', identifier, path);
+    return new Promise(async (resolve, reject) => {
+        once(`node:fs:exists:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        return ipcRenderer.send('node:fs:exists', identifier, path);
+    });
 }
 
 export async function unlink(path: string) {

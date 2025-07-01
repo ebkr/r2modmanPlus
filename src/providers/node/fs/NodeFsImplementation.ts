@@ -30,7 +30,7 @@ export const NodeFsImplementation: NodeFsProvider = {
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.mkdirs(...args).then(resolve).catch(reject));
     },
     exists: async (...args) => {
-        const [ path ] = args;
+        const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.exists(...args).then(resolve).catch(reject));
     },
     unlink: async (...args) => window.node.fs.unlink(...args),
