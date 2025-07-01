@@ -1,6 +1,8 @@
 import { ipcMain, dialog } from 'electron';
 import electronUpdater from 'electron-updater';
 import os from 'os';
+import {fileURLToPath} from "url";
+import path from "path";
 
 let browserWindow;
 let app;
@@ -73,3 +75,8 @@ ipcMain.on('get-process-platform', (event) => {
     event.returnValue = process.platform;
 });
 
+ipcMain.on('get-statics-directory', (event) => {
+    const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+    const __dirname = path.dirname(__filename);
+    event.returnValue = __dirname;
+})
