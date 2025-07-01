@@ -185,13 +185,14 @@ async function moveToNextScreen() {
 }
 
 async function ensureWrapperInGameFolder() {
+    const staticsDirectory = window.app.getStaticsDirectory();
     const wrapperName = window.app.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
     const activeGame: Game = store.state.activeGame;
     console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
     try {
         await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
         const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
-        const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
+        const newBuf = (await FsProvider.instance.readFile(path.join(staticsDirectory, wrapperName)));
         if (!oldBuf.equals(newBuf)) {
             throw new Error('Outdated buffer');
         }
@@ -199,7 +200,7 @@ async function ensureWrapperInGameFolder() {
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
-        await FsProvider.instance.copyFile(path.join(__statics, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
+        await FsProvider.instance.copyFile(path.join(staticsDirectory, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
     }
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
 }
