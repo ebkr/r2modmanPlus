@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="setSelectedProfile(profileName)">
+                  <a @click="setSelectedProfile(profileName, false)">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -103,10 +103,11 @@ function openImportProfileModal() {
 }
 
 async function moveToNextScreen() {
+    await setSelectedProfile(activeProfileName.value, true);
     await router.push({name: 'manager.installed'});
 }
 
-async function setSelectedProfile(profileName: string, prewarmCache = true) {
+async function setSelectedProfile(profileName: string, prewarmCache: boolean) {
     try {
         await store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: prewarmCache });
     } catch (e) {
@@ -133,7 +134,6 @@ onMounted( async () => {
     console.debug("Profiles view entered with active game", store.state.activeGame.settingsIdentifier);
 
     const settings = await store.getters.settings;
-    await settings.load();
 
     settings.load()
         .then(() => store.dispatch('profile/loadLastSelectedProfile'))
@@ -145,7 +145,7 @@ onMounted( async () => {
             // no point to trigger this when returning from the manager view and the
             // mods are already cached.
             if (store.state.tsMods.cache.size === 0) {
-                setSelectedProfile(profileName);
+                setSelectedProfile(profileName, false);
             }
         })
         .then(updateProfileList);
