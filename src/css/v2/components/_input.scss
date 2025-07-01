@@ -5,7 +5,7 @@
     color: var(--input-color,var(--text-strong,#363636));
 
     &::placeholder {
-        color: var(--input-placeholder-color,var(--text-strong,#363636));
+        color: var(--input-placeholder-color, var(--text-strong,#363636));
     }
 
     &:active, &:focus {

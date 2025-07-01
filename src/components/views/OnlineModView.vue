@@ -96,7 +96,7 @@ import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed, ref, watch, onMounted, Ref, defineAsyncComponent } from 'vue';
+import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue';
 
 const store = getStore<State>();
 
