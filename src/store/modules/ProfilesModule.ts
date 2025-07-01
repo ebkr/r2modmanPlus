@@ -4,7 +4,7 @@ import { ActionTree } from "vuex";
 import { State as RootState } from "../../store";
 import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../../providers/node/path/path";
 
 interface State {
     profileList: string[];
@@ -65,7 +65,7 @@ export const ProfilesModule = {
             await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: true });
         },
 
-        async setSelectedProfile({rootGetters, state, dispatch}, params: { profileName: string, prewarmCache: boolean }) {
+        async setSelectedProfile({dispatch}, params: { profileName: string, prewarmCache: boolean }) {
             await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
             if (params.prewarmCache) {
                 await dispatch('profile/updateModListFromFile', null, { root: true });
@@ -93,7 +93,8 @@ export const ProfilesModule = {
             const profilesDirectory = Profile.getRootDir();
             let profilesDirectoryContents = await FsProvider.instance.readdir(profilesDirectory);
             let promises = profilesDirectoryContents.map(async function(file) {
-                return ((await FsProvider.instance.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
+                const fileStat = await FsProvider.instance.stat(path.join(profilesDirectory, file));
+                return (fileStat.isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
                     ? file : undefined;
             });
             Promise.all(promises).then((profileList) => {

@@ -91,7 +91,16 @@ export async function unlink(path: string) {
 
 export async function stat(path: string) {
     const identifier = statIdentifier++;
-    return ipcRenderer.send('node:fs:stat', identifier, path);
+    return new Promise(async (resolve, reject) => {
+        once(`node:fs:stat:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        return ipcRenderer.send('node:fs:stat', identifier, path);
+    });
 }
 
 export async function lstat(path: string) {

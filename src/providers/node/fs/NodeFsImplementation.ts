@@ -11,6 +11,15 @@ function acquireLockAndDo(path: string, action: (resolve: any, reject: any) => P
     })
 }
 
+function resolveStat(statLike: any) {
+    return {
+        ...statLike,
+        isDirectory: () => {
+            return statLike.isDirectory;
+        }
+    }
+}
+
 export const NodeFsImplementation: NodeFsProvider = {
     writeFile: async (...args) => {
         const path = [...args][0] as string;
@@ -34,7 +43,12 @@ export const NodeFsImplementation: NodeFsProvider = {
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.exists(...args).then(resolve).catch(reject));
     },
     unlink: async (...args) => window.node.fs.unlink(...args),
-    stat: async (...args) => window.node.fs.stat(...args),
+    stat: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.stat(...args).then(result => {
+            resolve(resolveStat(result));
+        }).catch(reject));
+    },
     lstat: async (...args) => window.node.fs.lstat(...args),
     realpath: async (...args) => window.node.fs.realpath(...args),
     rename: async (...args) => window.node.fs.rename(...args),
