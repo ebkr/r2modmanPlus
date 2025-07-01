@@ -45,8 +45,8 @@ import { State } from '../../store';
 
 const store = getStore<State>();
 
-const LocalModList = computed(() => LocalModListProvider.provider);
-// const LocalModList = defineAsyncComponent(() => LocalModListProvider.provider());
+// const LocalModList = computed(() => LocalModListProvider.provider);
+const LocalModList = defineAsyncComponent(() => LocalModListProvider.provider());
 
 const dismissedUpdateAll = computed<boolean>(() => store.state.profile.dismissedUpdateAll);
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
