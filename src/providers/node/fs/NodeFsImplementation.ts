@@ -26,16 +26,16 @@ export const NodeFsImplementation: NodeFsProvider = {
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.writeFile(...args).then(resolve).catch(reject));
     },
     readFile: async (...args) => {
-        const [ path ] = args;
+        const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.readFile(...args).then(resolve).catch(reject));
     },
     readdir: async (...args) => {
-        const [ path ] = args;
+        const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.readdir(...args).then(resolve).catch(reject));
     },
     rmdir: async (...args) => window.node.fs.rmdir(...args),
     mkdirs: async (...args) => {
-        const [ path ] = args;
+        const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.mkdirs(...args).then(resolve).catch(reject));
     },
     exists: async (...args) => {

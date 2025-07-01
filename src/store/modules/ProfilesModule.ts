@@ -91,6 +91,7 @@ export const ProfilesModule = {
 
         async updateProfileList({commit, rootGetters}) {
             const profilesDirectory = Profile.getRootDir();
+            await FileUtils.ensureDirectory(profilesDirectory);
             let profilesDirectoryContents = await FsProvider.instance.readdir(profilesDirectory);
             let promises = profilesDirectoryContents.map(async function(file) {
                 const fileStat = await FsProvider.instance.stat(path.join(profilesDirectory, file));
