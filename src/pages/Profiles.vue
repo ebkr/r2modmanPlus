@@ -130,38 +130,22 @@ async function backToGameSelection() {
 }
 
 onMounted( async () => {
-    console.log("In vue:", window.hooks)
-
     const settings = await store.getters.settings;
     await settings.load();
 
-    // Set default paths
-    if (settings.getContext().gameSpecific.gameDirectory === null) {
-        const result = await GameDirectoryResolverProvider.instance.getDirectory(store.state.activeGame);
-        if (!(result instanceof R2Error)) {
-            await settings.setGameDirectory(result);
-        }
-    }
-
-    if (settings.getContext().global.steamDirectory === null) {
-        const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-        if (!(result instanceof R2Error)) {
-            await settings.setSteamDirectory(result);
-        }
-    }
-
-    const lastProfileName = await store.dispatch('profile/loadLastSelectedProfile');
-
-    // If the view was entered via game selection, the mod list was updated
-    // and the cache cleared. The profile is already set in the Vuex store
-    // but we want to trigger the cache prewarming. Always doing this for
-    // empty profiles is deemed a fair tradeoff. On the other hand there's
-    // no point to trigger this when returning from the manager view and the
-    // mods are already cached.
-    if (store.state.tsMods.cache.size === 0) {
-        await setSelectedProfile(lastProfileName);
-    }
-
-    await updateProfileList();
+    settings.load()
+        .then(() => store.dispatch('profile/loadLastSelectedProfile'))
+        .then((profileName: string) => {
+            // If the view was entered via game selection, the mod list was updated
+            // and the cache cleared. The profile is already set in the Vuex store
+            // but we want to trigger the cache prewarming. Always doing this for
+            // empty profiles is deemed a fair tradeoff. On the other hand there's
+            // no point to trigger this when returning from the manager view and the
+            // mods are already cached.
+            if (store.state.tsMods.cache.size === 0) {
+                setSelectedProfile(profileName);
+            }
+        })
+        .then(updateProfileList);
 })
 </script>

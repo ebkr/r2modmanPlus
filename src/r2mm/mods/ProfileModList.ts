@@ -35,7 +35,6 @@ export default class ProfileModList {
     public static async getModList(profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(profile.getProfilePath());
-        console.log("Mods.yml exists?", await fs.exists(profile.joinToProfilePath('mods.yml')));
         if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
             await fs.writeFile(profile.joinToProfilePath('mods.yml'), JSON.stringify([]));
         }

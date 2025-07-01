@@ -106,7 +106,6 @@ onMounted(async () => {
 
     // TODO QUASAR UPGRADE
     window.app.getAppDataDirectory().then(async (appData: string) => {
-        console.log("Got AppDataDirectory", appData);
         PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
         // Legacy path. Needed for migration.
         PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
@@ -129,7 +128,6 @@ onMounted(async () => {
         await ThemeManager.apply();
 
         window.app.isApplicationPortable().then((isPortable: boolean) => {
-            console.log("Is portable?", isPortable);
             ManagerInformation.IS_PORTABLE = isPortable;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             visible.value = true;

@@ -177,23 +177,28 @@ export const TsModsModule = {
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
         },
-        prewarmCacheMod(state: State, mod: ThunderstoreMod) {
-            const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
+        prewarmCacheMod(state: State, mods: ThunderstoreMod[]) {
 
-            if (state.cache.get(cacheKey) === undefined) {
-                const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
+            const localState = new Map<string, CachedMod>(state.cache.entries());
+            mods.forEach(mod => {
+                const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
 
-                // Updating Vuex state directly instead of mutations is a bad
-                // practice but everything seems to work here since we only
-                // mutate the map instead of replacing it altogether.
-                if (tsMod === undefined) {
-                    state.cache.set(cacheKey, {tsMod: undefined, isLatest: true});
-                } else {
-                    const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
-                    const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
-                    state.cache.set(cacheKey, {tsMod, isLatest});
+                if (localState.get(cacheKey) === undefined) {
+                    const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
+
+                    // Updating Vuex state directly instead of mutations is a bad
+                    // practice but everything seems to work here since we only
+                    // mutate the map instead of replacing it altogether.
+                    if (tsMod === undefined) {
+                        localState.set(cacheKey, {tsMod: undefined, isLatest: true});
+                    } else {
+                        const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
+                        const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
+                        localState.set(cacheKey, {tsMod, isLatest});
+                    }
                 }
-            }
+            });
+            state.cache = localState;
         }
     },
 
@@ -362,9 +367,7 @@ export const TsModsModule = {
 
         async prewarmCache({rootGetters, commit}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
-            for (const mod of profileMods) {
-                commit('prewarmCacheMod', mod);
-            }
+            commit('prewarmCacheMod', profileMods);
         },
 
         async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
