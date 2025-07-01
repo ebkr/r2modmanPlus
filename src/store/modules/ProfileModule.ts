@@ -93,7 +93,7 @@ export default {
         // of the latest version, which we need when showing how mods will be updated.
         modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreMod[] {
             return state.modList.map((mod): CachedMod => rootGetters['tsMods/cachedMod'](mod))
-                                .filter(cachedMod => !cachedMod.isLatest && cachedMod.tsMod)
+                                .filter(cachedMod => cachedMod && !cachedMod.isLatest && cachedMod.tsMod)
                                 .map(cachedMod => cachedMod.tsMod!);
         },
 
@@ -452,11 +452,8 @@ export default {
         },
 
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
-            console.log("Updating active profile");
             commit('setActiveProfile', profileName);
-            console.log("Set active profile commit");
             rootGetters['settings'].setProfile(profileName);
-            console.log("Set root getter");
         },
 
         async updateDirection({commit, rootGetters}, value: SortDirection) {
