@@ -35,20 +35,23 @@ export default class ProfileModList {
     public static async getModList(profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
         const fs = FsProvider.instance;
         await FileUtils.ensureDirectory(profile.getProfilePath());
+        console.log("Mods.yml exists?", await fs.exists(profile.joinToProfilePath('mods.yml')));
         if (!await fs.exists(profile.joinToProfilePath('mods.yml'))) {
             await fs.writeFile(profile.joinToProfilePath('mods.yml'), JSON.stringify([]));
         }
         try {
             try {
-                const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
-                for(let modIndex in value){
-                    const mod = new ManifestV2().fromJsObject(value[modIndex]);
+                const fileContent = (await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString();
+                const parsedYaml = yaml.parse(fileContent) || [];
+                for(let modIndex in parsedYaml){
+                    const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
                     await this.setIconPath(mod, profile);
-                    value[modIndex] = mod;
+                    parsedYaml[modIndex] = mod;
                 }
-                return value;
+                return parsedYaml;
             } catch(e) {
                 const err: Error = e as Error;
+                console.error(err);
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
                     err.message,

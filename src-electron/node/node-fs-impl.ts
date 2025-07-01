@@ -13,10 +13,12 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
 
     ipcMain.on('node:fs:readFile', (event, identifier, path, content) => {
         try {
-            const result = fs.readFileSync(path, content);
-            browserWindow.webContents.send(`node:fs:writeFile:${identifier}`, result);
+            const result = fs.readFileSync(path, {
+                encoding: 'utf8',
+            });
+            browserWindow.webContents.send(`node:fs:readFile:${identifier}`, result);
         } catch (e) {
-            browserWindow.webContents.send(`node:fs:writeFile:${identifier}`, e);
+            browserWindow.webContents.send(`node:fs:readFile:${identifier}`, e);
         }
     });
 
@@ -24,6 +26,7 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
         const result = await fs.promises.access(path, fs.constants.F_OK)
             .then(() => true)
             .catch(() => false);
+        console.log("node:fs:exists", path, result);
         browserWindow.webContents.send(`node:fs:exists:${identifier}`, result);
     });
 
