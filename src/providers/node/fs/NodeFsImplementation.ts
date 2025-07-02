@@ -33,7 +33,10 @@ export const NodeFsImplementation: NodeFsProvider = {
         const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.readdir(...args).then(resolve).catch(reject));
     },
-    rmdir: async (...args) => window.node.fs.rmdir(...args),
+    rmdir: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.rmdir(...args).then(resolve).catch(reject));
+    },
     mkdirs: async (...args) => {
         const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.mkdirs(...args).then(resolve).catch(reject));
@@ -42,19 +45,49 @@ export const NodeFsImplementation: NodeFsProvider = {
         const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.exists(...args).then(resolve).catch(reject));
     },
-    unlink: async (...args) => window.node.fs.unlink(...args),
+    unlink: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.unlink(...args).then(resolve).catch(reject));
+    },
     stat: async (...args) => {
         const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.stat(...args).then(result => {
             resolve(resolveStat(result));
         }).catch(reject));
     },
-    lstat: async (...args) => window.node.fs.lstat(...args),
-    realpath: async (...args) => window.node.fs.realpath(...args),
-    rename: async (...args) => window.node.fs.rename(...args),
-    chmod: async (...args) => window.node.fs.chmod(...args),
-    copyFile: async (...args) => window.node.fs.copyFile(...args),
-    copyFolder: async (...args) => window.node.fs.copyFolder(...args),
-    base64FromZip: async (...args) => window.node.fs.base64FromZip(...args),
-    setModifiedTime: async (...args) => window.node.fs.setModifiedTime(...args),
+    lstat: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.lstat(...args).then(result => {
+            // TODO QUASAR UPGRADE - Need to verify this
+            resolve(resolveStat(result));
+        }).catch(reject));
+    },
+    realpath: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.realpath(...args).then(resolve).catch(reject));
+    },
+    rename: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.rename(...args).then(resolve).catch(reject));
+    },
+    chmod: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.chmod(...args).then(resolve).catch(reject));
+    },
+    copyFile: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.copyFile(...args).then(resolve).catch(reject));
+    },
+    copyFolder: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.copyFolder(...args).then(resolve).catch(reject));
+    },
+    base64FromZip: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.base64FromZip(...args).then(resolve).catch(reject));
+    },
+    setModifiedTime: async (...args) => {
+        const path = args[0];
+        return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.setModifiedTime(...args).then(resolve).catch(reject));
+    },
 }
