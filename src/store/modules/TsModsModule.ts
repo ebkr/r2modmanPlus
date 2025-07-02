@@ -126,7 +126,7 @@ export const TsModsModule = {
 
         /*** Return ThunderstoreMod representation of a ManifestV2 */
         tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
-            return getters.cachedMod(mod).tsMod;
+            return getters.cachedMod(mod)?.tsMod;
         },
 
         undeprecatedModCount(state) {

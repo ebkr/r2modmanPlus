@@ -118,8 +118,6 @@
 </template>
 
 <script lang='ts' setup>
-// TODO QUASAR UPGRADE
-// import { ipcRenderer } from 'electron';
 import { ExternalLink, Hero, Progress } from '../components/all';
 import Game from '../model/game/Game';
 import FsProvider from '../providers/generic/file/FsProvider';
