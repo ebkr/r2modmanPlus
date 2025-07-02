@@ -8,21 +8,17 @@ import ZipEntryInterface from './ZipEntryInterface';
 export default class AdmZipProvider extends ZipProvider {
 
     async extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void> {
-        // const adm = new AdmZip(zip);
-        // outputFolder = outputFolder.replace(/\\/g, '/');
-        // adm.extractAllTo(outputFolder, true);
+        return window.zip.extractAllTo(zip, outputFolder);
     }
 
     // Type is Promise<Buffer | null>
     async readFile(zip: string | Buffer, file: string): Promise<any> {
-        // const adm = new AdmZip(zip);
-        // return adm.readFile(file);
+        return window.zip.readFile(zip, file);
     }
 
     // Type is Promise<ZipEntryInterface[]>
-    async getEntries(zip: string | Buffer): Promise<any> {
-        // const adm = new AdmZip(zip);
-        // return (adm.getEntries() as unknown as ZipEntryInterface[]);
+    async getEntries(zip: string): Promise<any> {
+        return window.zip.getEntries(zip) as ZipEntryInterface[];
     }
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
