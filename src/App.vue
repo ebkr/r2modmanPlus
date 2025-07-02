@@ -104,7 +104,6 @@ onMounted(async () => {
     InstallationRules.apply();
     InstallationRules.validate();
 
-    // TODO QUASAR UPGRADE
     window.app.getAppDataDirectory().then(async (appData: string) => {
         PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
         // Legacy path. Needed for migration.
