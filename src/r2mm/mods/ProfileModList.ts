@@ -282,17 +282,29 @@ export default class ProfileModList {
 
     public static async setIconPath(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
         const paths = [
-            path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
+            path.join(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
             path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"),
         ]
 
-        for (const iconPath of paths) {
-            if (await FsProvider.instance.exists(iconPath)) {
-                mod.setIcon(iconPath);
-                return;
+        return new Promise(async (resolve, reject) => {
+            try {
+                for (const iconPath of paths) {
+                    const exists = await FsProvider.instance.exists(iconPath);
+                    if (exists) {
+                        const content = await FsProvider.instance.base64FromZip(iconPath);
+                        mod.setIcon(`data:image/png;base64,${content}`);
+                        resolve(true);
+                        break;
+                    }
+                }
+                resolve(false);
+            } catch (e) {
+                reject(e);
             }
-        }
-
-        mod.setIcon("/unknown.png");
+        }).then(resolved => {
+            if (!resolved) {
+                mod.setIcon("/unknown.png");
+            }
+        });
     }
 }
