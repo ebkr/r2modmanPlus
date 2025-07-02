@@ -29,7 +29,7 @@ export async function writeFile(path: string, content: string | Buffer): Promise
             }
         });
         ipcRenderer.send('node:fs:writeFile', identifier, path, content);
-    })
+    });
 }
 
 export async function readFile(path: string) {
@@ -43,7 +43,7 @@ export async function readFile(path: string) {
             }
         });
         ipcRenderer.send('node:fs:readFile', identifier, path);
-    })
+    });
 }
 
 export async function readdir(path: string): Promise<string[]> {
@@ -62,12 +62,30 @@ export async function readdir(path: string): Promise<string[]> {
 
 export async function rmdir(path: string) {
     const identifier = rmdirIdentifier++;
-    return ipcRenderer.send('node:fs:rmdir', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:rmdir:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:rmdir', identifier, path);
+    })
 }
 
 export async function mkdirs(path: string) {
     const identifier = mkdirsIdentifier++;
-    return ipcRenderer.send('node:fs:mkdirs', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:mkdirs:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:mkdirs', identifier, path);
+    })
 }
 
 export async function exists(path: string) {
@@ -86,7 +104,16 @@ export async function exists(path: string) {
 
 export async function unlink(path: string) {
     const identifier = unlinkIdentifier++;
-    return ipcRenderer.send('node:fs:unlink', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:unlink:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:unlink', identifier, path);
+    })
 }
 
 export async function stat(path: string) {
@@ -105,40 +132,112 @@ export async function stat(path: string) {
 
 export async function lstat(path: string) {
     const identifier = lstatIdentifier++;
-    return ipcRenderer.send('node:fs:lstat', identifier, path);
+    return new Promise(async (resolve, reject) => {
+        once(`node:fs:lstat:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        return ipcRenderer.send('node:fs:lstat', identifier, path);
+    });
 }
 
 export async function realpath(path: string) {
     const identifier = realpathIdentifier++;
-    return ipcRenderer.send('node:fs:realpath', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:realpath:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:realpath', identifier, path);
+    })
 }
 
 export async function rename(path: string, newPath: string) {
     const identifier = renameIdentifier++;
-    return ipcRenderer.send('node:fs:rename', identifier, path, newPath);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:rename:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:rename', identifier, path, newPath);
+    })
 }
 
 export async function chmod(path: string, mode: string | number) {
     const identifier = chmodIdentifier++;
-    return ipcRenderer.send('node:fs:chmod', identifier, path, mode);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:chmod:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:chmod', identifier, path, mode);
+    })
 }
 
 export async function copyFile(from: string, to: string) {
     const identifier = copyFileIdentifier++;
-    return ipcRenderer.send('node:fs:copyFile', identifier, from, to);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:copyFile:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:copyFile', identifier, from, to);
+    })
 }
 
 export async function copyFolder(from: string, to: string) {
     const identifier = copyFolderIdentifier++;
-    return ipcRenderer.send('node:fs:copyFolder', identifier, from, to);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:copyFolder:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:copyFolder', identifier, from, to);
+    })
 }
 
 export async function base64FromZip(path: string) {
     const identifier = base64FromZipIdentifier++;
-    return ipcRenderer.send('node:fs:base64FromZip', identifier, path);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:base64FromZip:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:base64FromZip', identifier, path);
+    })
 }
 
 export async function setModifiedTime(path: string, time: Date) {
     const identifier = setModifiedTimeIdentifier++;
-    return ipcRenderer.send('node:fs:setModifiedTime', identifier, path, time);
+    return new Promise((resolve, reject) => {
+        once(`node:fs:setModifiedTime:${identifier}`, (result: any) => {
+            if (result instanceof Error) {
+                reject(result);
+            } else {
+                resolve(result);
+            }
+        });
+        ipcRenderer.send('node:fs:setModifiedTime', identifier, path, time);
+    })
 }
