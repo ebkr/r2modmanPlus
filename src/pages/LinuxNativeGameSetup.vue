@@ -10,7 +10,7 @@
 			<code ref="copyableArgs">{{ launchArgs }}</code>
 			<br/>
 			<br/>
-			<a ref="copyAction" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
+			<a id="copy-action" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
 			<a class="button is-info" @click="acknowledge">Continue</a>
 		</div>
 	</div>
@@ -23,6 +23,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
 import path from '../providers/node/path/path';
+import InteractionProviderImpl from "../r2mm/system/InteractionProviderImpl";
 import {getWrapperLaunchArgs} from "../utils/LaunchUtils";
 
 const store = getStore<State>();
@@ -33,7 +34,6 @@ onMounted(() => {
 })
 
 const copyableArgs = ref<HTMLInputElement>();
-const copyAction = ref<HTMLElement>();
 
 const launchArgs = ref<string>("");
 getWrapperLaunchArgs().then(value => launchArgs.value = value);
@@ -49,10 +49,13 @@ function copy(){
         selection.removeAllRanges();
         selection.addRange(range);
     }
-    document.execCommand("copy");
-    (copyAction.value as Element).innerHTML = "Copied!";
+    InteractionProviderImpl.instance.copyToClipboard(launchArgs.value);
+    document.getElementById('copy-action')!.innerHTML = 'Copied!';
     setTimeout(() => {
-        (copyAction.value as Element).innerHTML = "Copy to clipboard";
+        const element = document.getElementById('copy-action');
+        if (element) {
+            element.innerHTML = 'Copy to clipboard';
+        }
     }, 2000);
 }
 
