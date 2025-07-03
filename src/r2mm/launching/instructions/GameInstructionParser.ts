@@ -1,7 +1,7 @@
 import { DynamicGameInstruction } from './DynamicGameInstruction';
 import Profile from '../../../model/Profile';
 import Game from '../../../model/game/Game';
-import path from 'path';
+import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import R2Error from '../../../model/errors/R2Error';
 import * as process from 'process';

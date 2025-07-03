@@ -4,7 +4,7 @@ import {
     InstallArgs,
     PackageInstaller
 } from './PackageInstaller';
-import path from 'path';
+import path from "../providers/node/path/path";
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
 import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';

@@ -1,6 +1,6 @@
 import os from "../../../../providers/node/os/os";
 import FsProvider from '../../../../providers/generic/file/FsProvider';
-import path from 'path';
+import path from "../../../../providers/node/path/path";
 import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
 import Game from '../../../../model/game/Game';
 import R2Error from '../../../../model/errors/R2Error';

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "../providers/node/path/path";
 
 import {
     disableModByRenamingFiles,
