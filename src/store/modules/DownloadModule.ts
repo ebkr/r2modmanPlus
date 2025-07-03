@@ -80,7 +80,7 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        async _addDownload({state}, params: {
+        async _addDownload({state, commit}, params: {
             initialMods: ThunderstoreCombo[],
             modsWithDependencies: ThunderstoreCombo[],
             installMode: InstallMode,
@@ -104,7 +104,7 @@ export const DownloadModule = {
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            commit('addDownload', downloadObject);
             return downloadId;
         },
 
@@ -287,6 +287,11 @@ export const DownloadModule = {
                 newDownloads[index] = {...newDownloads[index], ...update};
                 state.allDownloads = newDownloads;
             }
+        },
+        addDownload(state: State, download: UpdateObject) {
+            // @ts-ignore
+            const downloadObject = download as DownloadProgress;
+            state.allDownloads = [...state.allDownloads, downloadObject];
         },
         setDone(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
