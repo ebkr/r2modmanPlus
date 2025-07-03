@@ -1,7 +1,7 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../providers/node/path/path";
 import ManifestV2 from "../model/ManifestV2";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
