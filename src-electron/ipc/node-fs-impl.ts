@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import fs, { StatsBase } from 'fs';
-import * as url from 'node:url';
+import path from "src/providers/node/path/path";
 
 export function hookFsIpc(browserWindow: BrowserWindow) {
     ipcMain.on('node:fs:writeFile', (event, identifier, path, content) => {
@@ -17,14 +17,13 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
             .catch(e => browserWindow.webContents.send(`node:fs:readFile:${identifier}`, e))
     });
 
-    ipcMain.on('node:fs:exists',  (event, identifier, path) => {
-        fs.promises.access(path, fs.constants.F_OK)
-            .then(() => browserWindow.webContents.send(`node:fs:exists:${identifier}`, true))
-            .catch(() => browserWindow.webContents.send(`node:fs:exists:${identifier}`, false));
+    ipcMain.on('node:fs:exists',  async (event, identifier, path) => {
+        const doesExist = await exists(path);
+        browserWindow.webContents.send(`node:fs:exists:${identifier}`, doesExist);
     });
 
     ipcMain.on('node:fs:mkdirs',  async (event, identifier, path) => {
-        fs.promises.mkdir(path, { recursive: true })
+        mkdirs(path)
             .then(() => browserWindow.webContents.send(`node:fs:mkdirs:${identifier}`))
             .catch(e => browserWindow.webContents.send(`node:fs:mkdirs:${identifier}`, e));
     });
@@ -81,13 +80,13 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
     });
 
     ipcMain.on('node:fs:copyFile', (event, identifier, from, to) => {
-        fs.promises.copyFile(from, to)
+        copyFile(from, to)
             .then(() => browserWindow.webContents.send(`node:fs:copyFile:${identifier}`))
             .catch(e => browserWindow.webContents.send(`node:fs:copyFile:${identifier}`, e))
     });
 
-    ipcMain.on('node:fs:copyFolder', (event, identifier, from, to) => {
-        fs.promises.copyFile(from, to)
+    ipcMain.on('node:fs:copyFolder', async (event, identifier, from, to) => {
+        copyFolder(from, to)
             .then(() => browserWindow.webContents.send(`node:fs:copyFolder:${identifier}`))
             .catch(e => browserWindow.webContents.send(`node:fs:copyFolder:${identifier}`, e))
     });
@@ -105,6 +104,38 @@ export function hookFsIpc(browserWindow: BrowserWindow) {
             .then(() => browserWindow.webContents.send(`node:fs:setModifiedTime:${identifier}`))
             .catch(e => browserWindow.webContents.send(`node:fs:setModifiedTime:${identifier}`, e))
     });
+}
+
+async function copyFile(from: string, to: string) {
+    return fs.promises.copyFile(from, to)
+}
+
+async function copyFolder(from: string, to: string) {
+    return fs.promises.readdir(from)
+        .then(async result => {
+            for (const item of result) {
+                const fromLstat = await fs.promises.lstat(path.join(from, item));
+                if (fromLstat.isDirectory()) {
+                    const toDirectoryExists = await exists(path.join(to, item));
+                    if (!toDirectoryExists) {
+                        await mkdirs(path.join(to, item));
+                    }
+                    await copyFolder(path.join(from, item), path.join(to, item));
+                } else {
+                    await copyFile(path.join(from, item), path.join(to, item));
+                }
+            }
+        });
+}
+
+async function mkdirs(mkdirPath: string) {
+    return fs.promises.mkdir(mkdirPath, { recursive: true });
+}
+
+async function exists(path: string) {
+    return fs.promises.access(path, fs.constants.F_OK)
+        .then(() => true)
+        .catch(() => false);
 }
 
 function generateInlineStat<T extends fs.StatsBase<number>>(statLike: fs.Stats): T {
