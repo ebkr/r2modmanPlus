@@ -204,7 +204,9 @@ export default class ProfileModList {
                 this.SUPPORTED_CONFIG_FILE_EXTENSIONS.some(value => fileLower.endsWith(value)) &&
                 !fileLower.endsWith('mods.yml')
             ) {
-                await builder.addBuffer(path.relative(profile.getProfilePath(), file), await FsProvider.instance.readFile(file));
+                const content = await FsProvider.instance.readFile(file);
+                const bufferContent = window.node.buffer.from(content, 'utf8');
+                await builder.addBuffer(path.relative(profile.getProfilePath(), file), bufferContent);
             }
         }
         return builder;

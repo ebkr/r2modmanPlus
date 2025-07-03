@@ -1,3 +1,3 @@
-export function from(data: any) {
-    return Buffer.from(data);
+export function from(data: any, encoding?: 'utf8') {
+    return Buffer.from(data, encoding);
 }
