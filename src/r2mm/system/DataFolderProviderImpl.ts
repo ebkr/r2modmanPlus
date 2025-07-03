@@ -1,5 +1,4 @@
-import path from "path";
-
+import path from "../../providers/node/path/path";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import R2Error from "../../model/errors/R2Error";
 import FsProvider from "../../providers/generic/file/FsProvider";

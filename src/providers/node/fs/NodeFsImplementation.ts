@@ -16,6 +16,9 @@ function resolveStat(statLike: any) {
         ...statLike,
         isDirectory: () => {
             return statLike.isDirectory;
+        },
+        isFile: () => {
+            return statLike.isFile;
         }
     }
 }
