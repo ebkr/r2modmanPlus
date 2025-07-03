@@ -10,7 +10,7 @@
 			<code ref="copyableArgs">{{ ComputedWrapperLaunchArguments }}</code>
 			<br/>
 			<br/>
-			<a ref="copyAction" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
+			<a id="copy-action" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
 			<a class="button is-info" @click="acknowledge">Continue</a>
 		</div>
 	</div>
@@ -23,6 +23,7 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
+import InteractionProviderImpl from "../r2mm/system/InteractionProviderImpl";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -32,7 +33,6 @@ onMounted(() => {
 })
 
 const copyableArgs = ref<HTMLInputElement>();
-const copyAction = ref<HTMLElement>();
 
 const activeGame = computed(() => store.state.activeGame.displayName);
 const platformName = computed<string>(() => process.platform === 'darwin' ? 'macOS' : process.platform);
@@ -45,10 +45,13 @@ function copy(){
         selection.removeAllRanges();
         selection.addRange(range);
     }
-    document.execCommand("copy");
-    (copyAction.value as Element).innerHTML = "Copied!";
+    InteractionProviderImpl.instance.copyToClipboard(launchArgs.value);
+    document.getElementById('copy-action')!.innerHTML = 'Copied!';
     setTimeout(() => {
-        (copyAction.value as Element).innerHTML = "Copy to clipboard";
+        const element = document.getElementById('copy-action');
+        if (element) {
+            element.innerHTML = 'Copy to clipboard';
+        }
     }, 2000);
 }
 
