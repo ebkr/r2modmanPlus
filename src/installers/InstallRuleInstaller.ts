@@ -59,7 +59,8 @@ async function installSubDir(
             for (const content of (await FsProvider.instance.readdir(source))) {
                 const cacheContentLocation = path.join(source, content);
                 const contentDest = path.join(subDir, content);
-                if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                const isCacheContentLocationFile = (await FsProvider.instance.lstat(cacheContentLocation)).isFile();
+                if (isCacheContentLocationFile) {
                     await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                 } else {
                     await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
@@ -279,7 +280,8 @@ export class InstallRuleInstaller implements PackageInstaller {
             mod,
             files,
         );
-        if (result instanceof R2Error) {
+        if (result instanceof Error) {
+            console.error(result);
             throw result;
         }
     }
@@ -288,7 +290,7 @@ export class InstallRuleInstaller implements PackageInstaller {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-
+            console.log("Resolving BepInExTree for", mod, "with folder", folderName, "with rule", rule);
             const args: InstallRuleArgs = {
                 profile,
                 coreRule: this.rule,

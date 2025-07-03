@@ -195,10 +195,10 @@ async function ensureWrapperInGameFolder() {
             throw new Error('Outdated buffer');
         }
     } catch (_) {
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
-        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
         const wrapperFileResult = await fetch(`/${wrapperName}`).then(res => res.arrayBuffer());
         const wrapperFileContent = window.node.buffer.from(wrapperFileResult);
         await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
