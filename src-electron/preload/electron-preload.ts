@@ -7,3 +7,7 @@ export function openExternal(url: string) {
 export function selectFile(url: string) {
     ipcRenderer.send('electron:shell:selectFile', url);
 }
+
+export function openPath(url: string) {
+    ipcRenderer.send('electron:shell:openPath', url);
+}
