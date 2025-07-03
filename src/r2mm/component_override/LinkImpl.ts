@@ -1,6 +1,4 @@
 import LinkProvider from '../../providers/components/LinkProvider';
-// TODO QUASAR UPGRADE
-// import { shell } from "electron";
 
 export default class LinkImpl extends LinkProvider {
 
