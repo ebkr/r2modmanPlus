@@ -5,8 +5,8 @@ import path from 'path';
 import ipcServer from 'node-ipc';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import './node/init-node-ipc';
-import { hookIpc } from 'app/src-electron/node/init-node-ipc';
+import 'app/src-electron/ipc/init-ipc';
+import { hookIpc } from 'app/src-electron/ipc/init-ipc';
 
 app.allowRendererProcessReuse = true;
 
