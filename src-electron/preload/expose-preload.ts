@@ -6,6 +6,7 @@ import * as fs from './node-fs';
 import * as buffer from './node-buffer';
 import * as zip from './zip-preload';
 import * as appGlobals from "./app-preload-globals";
+import * as electron from "./electron-preload";
 
 contextBridge.exposeInMainWorld('node', {
     path: path,
@@ -17,3 +18,4 @@ contextBridge.exposeInMainWorld('node', {
 contextBridge.exposeInMainWorld('hooks', hooks);
 contextBridge.exposeInMainWorld('app', appGlobals);
 contextBridge.exposeInMainWorld('zip', zip);
+contextBridge.exposeInMainWorld('electron', electron);

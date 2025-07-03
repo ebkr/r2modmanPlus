@@ -113,6 +113,7 @@ function generateInlineStat<T extends fs.StatsBase<number>>(statLike: fs.Stats):
     } as fs.StatsBase<number>;
     return {
         ...unpackedStatLike,
-        isDirectory: statLike.isDirectory()
+        isDirectory: statLike.isDirectory(),
+        isFile: statLike.isFile(),
     } as unknown as T;
 }
