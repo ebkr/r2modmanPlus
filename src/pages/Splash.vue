@@ -131,6 +131,7 @@ import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
 import path from '../providers/node/path/path';
 import { UpdateRequestItemBody } from '../store/modules/SplashModule';
+import FileUtils from "../utils/FileUtils";
 
 const store = getStore<State>();
 const router = useRouter();
@@ -198,7 +199,10 @@ async function ensureWrapperInGameFolder() {
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
-        await FsProvider.instance.copyFile(path.join(staticsDirectory, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
+        const wrapperFileResult = await fetch(`/${wrapperName}`).then(res => res.arrayBuffer());
+        const wrapperFileContent = window.node.buffer.from(wrapperFileResult);
+        await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
     }
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
 }
