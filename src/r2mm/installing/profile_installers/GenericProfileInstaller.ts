@@ -149,6 +149,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             await this.legacyInstaller.install(args);
             return null;
         } catch (e) {
+            console.error(e);
             return R2Error.fromThrownValue(e);
         }
     }
