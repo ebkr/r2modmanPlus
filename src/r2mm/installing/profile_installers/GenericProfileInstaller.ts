@@ -4,7 +4,7 @@ import { ImmutableProfile } from '../../../model/Profile';
 import FileTree from '../../../model/file/FileTree';
 import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
-import path from 'path';
+import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import yaml from 'yaml';

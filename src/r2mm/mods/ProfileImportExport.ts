@@ -1,6 +1,6 @@
 import { retry } from "../../utils/Common";
 import FileUtils from '../../utils/FileUtils';
-import path from 'path';
+import path from "../../providers/node/path/path";
 import R2Error from "../../model/errors/R2Error";
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
