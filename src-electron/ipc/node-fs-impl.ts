@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron';
-import fs, { StatsBase } from 'fs';
-import path from "src/providers/node/path/path";
+import fs from 'fs';
+import path from 'path';
 
 export function hookFsIpc(browserWindow: BrowserWindow) {
     ipcMain.on('node:fs:writeFile', (event, identifier, path, content) => {
@@ -122,6 +122,7 @@ async function copyFolder(from: string, to: string) {
                     }
                     await copyFolder(path.join(from, item), path.join(to, item));
                 } else {
+                    await mkdirs(path.dirname(path.join(to, item)))
                     await copyFile(path.join(from, item), path.join(to, item));
                 }
             }
