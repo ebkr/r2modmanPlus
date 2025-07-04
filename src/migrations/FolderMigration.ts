@@ -17,7 +17,6 @@ export class FolderMigration {
 
     public static async runMigration() {
         if (!await this.needsMigration()) {
-            console.log("Does not need migration");
             return;
         }
 
@@ -31,6 +30,5 @@ export class FolderMigration {
         }
 
         await fs.rename(path.join(PathResolver.ROOT, "mods"), rorPath);
-        console.log("Directory migration done");
     }
 }
