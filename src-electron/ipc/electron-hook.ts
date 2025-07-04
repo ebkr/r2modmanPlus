@@ -1,5 +1,4 @@
-import { BrowserWindow, ipcMain } from 'electron';
-import { shell } from 'electron';
+import { BrowserWindow, ipcMain, shell, clipboard } from 'electron';
 
 export function hookElectronIpc(browserWindow: BrowserWindow) {
     ipcMain.on('electron:shell:openExternal', (event, url) => {
@@ -12,5 +11,10 @@ export function hookElectronIpc(browserWindow: BrowserWindow) {
 
     ipcMain.on('electron:shell:openPath', (event, filePath) => {
         shell.openPath(filePath)
+    });
+
+    ipcMain.on('electron:clipboard:copyText', (event, text) => {
+        clipboard.writeText(text);
+        event.returnValue = true;
     });
 }
