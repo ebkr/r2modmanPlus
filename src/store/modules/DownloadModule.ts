@@ -86,7 +86,7 @@ export const DownloadModule = {
             profile: ImmutableProfile
         }): UUID {
             const { combos, installMode, game, profile } = params;
-            const downloadId = UUID.create();
+            const downloadId = UUID.create().toString();
             const downloadObject: DownloadProgress = {
                 downloadId: downloadId,
                 initialMods: [...combos],
@@ -275,10 +275,9 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
-        addDownload(state: State, download: UpdateObject) {
+        addDownload(state: State, download: DownloadProgress) {
             // @ts-ignore
-            const downloadObject = download as DownloadProgress;
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            state.allDownloads = [...state.allDownloads, download];
         },
         setDone(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
