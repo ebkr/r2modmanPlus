@@ -100,7 +100,7 @@ export const TsModsModule = {
 
         /*** Is the version of a mod defined by ManifestV2 the newest version? */
         isLatestVersion: (_state, getters) => (mod: ManifestV2): boolean => {
-            return getters.cachedMod(mod).isLatest;
+            return getters.cachedMod(mod)?.isLatest || false;
         },
 
         /*** Was the last successful mod list update more than an hour ago? */
@@ -178,7 +178,6 @@ export const TsModsModule = {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
         },
         prewarmCacheMod(state: State, mods: ThunderstoreMod[]) {
-
             const localState = new Map<string, CachedMod>(state.cache.entries());
             mods.forEach(mod => {
                 const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
