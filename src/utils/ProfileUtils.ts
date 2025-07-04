@@ -79,7 +79,6 @@ export async function installModsToProfile(
     let modName = 'Unknown';
     let preDiskSaveError: R2Error | undefined;
 
-    console.log("In try/catch")
     try {
         for (const [index, comboMod] of comboList.entries()) {
             modName = comboMod.getMod().getName();
