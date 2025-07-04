@@ -467,6 +467,7 @@ export default {
         },
 
         async updateModList({commit}, modList: ManifestV2[]) {
+            commit('tsMods/prewarmCacheMod', modList, { root: true });
             commit('setModList', modList);
         },
 
