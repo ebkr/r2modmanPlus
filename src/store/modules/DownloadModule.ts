@@ -88,9 +88,8 @@ export const DownloadModule = {
             profile: ImmutableProfile
         }): Promise<UUID> {
             const { initialMods, modsWithDependencies, installMode, game, profile } = params;
-            const downloadId = UUID.create();
+            const downloadId = UUID.create().toString();
             const totalDownloadSize = await DownloadUtils.getTotalDownloadSizeInBytes(modsWithDependencies, state.ignoreCache);
-
             const downloadObject: DownloadProgress = {
                 downloadId,
                 initialMods: [...initialMods],
@@ -288,10 +287,9 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
-        addDownload(state: State, download: UpdateObject) {
+        addDownload(state: State, download: DownloadProgress) {
             // @ts-ignore
-            const downloadObject = download as DownloadProgress;
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            state.allDownloads = [...state.allDownloads, download];
         },
         setDone(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
