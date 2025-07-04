@@ -290,7 +290,6 @@ export class InstallRuleInstaller implements PackageInstaller {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-            console.log("Resolving BepInExTree for", mod, "with folder", folderName, "with rule", rule);
             const args: InstallRuleArgs = {
                 profile,
                 coreRule: this.rule,
