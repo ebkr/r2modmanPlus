@@ -13,9 +13,12 @@ import { providePathImplementation } from './providers/node/path/path';
 import { NodePathImplementation } from './providers/node/path/NodePathImplementation';
 import { provideChildProcessImplementation } from './providers/node/child_process/child_process';
 import { NodeChildProcessImplementation } from './providers/node/child_process/ChildProcessImplementation';
+import {provideOsImplementation} from "./providers/node/os/os";
+import {NodeOsImplementation} from "./providers/node/os/NodeOsImplementation";
 
 providePathImplementation(() => NodePathImplementation);
-provideChildProcessImplementation(() => NodeChildProcessImplementation)
+provideChildProcessImplementation(() => NodeChildProcessImplementation);
+provideOsImplementation(() => NodeOsImplementation);
 
 function logError(error: R2Error) {
     console.error(error.name, error.message, error.stack);

@@ -4,6 +4,7 @@ import * as path from './node-path';
 import * as child_process from './node-child-process';
 import * as fs from './node-fs';
 import * as buffer from './node-buffer';
+import * as os from './node-os';
 import * as zip from './zip-preload';
 import * as appGlobals from "./app-preload-globals";
 import * as electron from "./electron-preload";
@@ -13,6 +14,7 @@ contextBridge.exposeInMainWorld('node', {
     child_process: child_process,
     fs: fs,
     buffer: buffer,
+    os: os,
 });
 
 contextBridge.exposeInMainWorld('hooks', hooks);
