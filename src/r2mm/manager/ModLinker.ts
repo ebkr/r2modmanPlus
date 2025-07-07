@@ -10,6 +10,7 @@ import Game from '../../model/game/Game';
 import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
 import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
+import path from "../../providers/node/path/path";
 
 export default class ModLinker {
 
