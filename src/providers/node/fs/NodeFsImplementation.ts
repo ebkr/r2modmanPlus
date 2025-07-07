@@ -19,7 +19,8 @@ function resolveStat(statLike: any) {
         },
         isFile: () => {
             return statLike.isFile;
-        }
+        },
+        mtime: new Date(statLike.mtimeMs),
     }
 }
 
