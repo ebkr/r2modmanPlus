@@ -9,6 +9,7 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import FileTree from '../../model/file/FileTree';
 import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
+import path from "../../providers/node/path/path";
 import { isProtonRequired } from '../../utils/LaunchUtils';
 
 export default class ModLinker {
