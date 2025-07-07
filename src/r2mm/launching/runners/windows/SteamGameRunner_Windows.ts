@@ -40,7 +40,7 @@ export default class SteamGameRunner_Windows extends GameRunnerProvider {
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            ChildProcess.exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`, (err => {
+            ChildProcess.exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`, undefined, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
