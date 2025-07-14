@@ -6,7 +6,9 @@ import { defineBoot } from '#q-app/wrappers';
 const i18n = createI18n({
     locale: 'en-US',
     globalInjection: true,
-    messages
+    allowComposition: true,
+    legacy: false,
+    messages,
 })
 
 // @ts-ignore
