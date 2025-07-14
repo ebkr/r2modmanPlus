@@ -41,7 +41,7 @@ export function getEntries(zip: string): Promise<any> {
             if (result instanceof Error) {
                 reject(result);
             } else {
-                resolve(result);
+                resolve(JSON.parse(result));
             }
         });
         ipcRenderer.send(`zip:getEntries`, identifier, zip);
