@@ -93,8 +93,10 @@ export const SplashModule = {
                 console.error('SplashModule failed to fetch mod list index from API.', e);
                 return undefined;
             } finally {
-                const requestItem = await dispatch('getRequestItem', 'PackageListIndex') as RequestItem;
-                requestItem.setProgress(100);
+                await dispatch('updateRequestItem', {
+                    requestName: 'PackageListIndex',
+                    value: 100
+                } as UpdateRequestItemBody);
             }
         },
         async doesGameHaveLocalCache({dispatch, commit}): Promise<boolean> {

@@ -49,7 +49,7 @@ export const ProfilesModule = {
             }
         },
 
-        async removeSelectedProfile({rootGetters, state, dispatch}) {
+        async removeSelectedProfile({rootGetters, state, dispatch, commit}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
             const path = activeProfile.getProfilePath();
             const profileName = activeProfile.getProfileName();
@@ -61,7 +61,11 @@ export const ProfilesModule = {
                 throw R2Error.fromThrownValue(e, 'Error whilst deleting profile from disk');
             }
 
-            state.profileList = state.profileList.filter((p: string) => p !== profileName || p === 'Default')
+            const filteredProfileList = state.profileList.filter((p: string) => p !== profileName || p === 'Default');
+            commit(
+                'setProfileList',
+                filteredProfileList
+            );
             await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: true });
         },
 
