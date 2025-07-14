@@ -29,7 +29,7 @@ export function hookZipIpc(browserWindow: BrowserWindow) {
         const adm = new AdmZip(zip);
         try {
             const entries = adm.getEntries();
-            browserWindow.webContents.send(`zip:getEntries:${identifier}`, entries);
+            browserWindow.webContents.send(`zip:getEntries:${identifier}`, JSON.stringify(entries));
         } catch (e) {
             browserWindow.webContents.send(`zip:getEntries:${identifier}`, e);
         }
