@@ -67,7 +67,13 @@ export default defineConfig((ctx) => {
             // distDir
 
             // extendViteConf (viteConf) {},
-            // viteVuePluginOptions: {},
+            viteVuePluginOptions: {
+                template: {
+                    compilerOptions: {
+                        isCustomElement: (tag) => ["strike"].includes(tag)
+                    }
+                }
+            },
 
             win: {
                 publish: {
