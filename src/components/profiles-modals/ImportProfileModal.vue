@@ -82,7 +82,7 @@ watch(store.state.tsMods.mods, async() => {
 async function onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
     if (mode === 'FILE') {
         activeStep.value = 'IMPORT_FILE';
-        process.nextTick(async () => {
+        Promise.resolve().then(async () => {
             const files = await InteractionProvider.instance.selectFile({
                 title: 'Import Profile',
                 filters: [{
