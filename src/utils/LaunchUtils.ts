@@ -1,4 +1,4 @@
-import Profile, { ImmutableProfile } from '../model/Profile';
+import Profile, {ImmutableProfile} from '../model/Profile';
 import R2Error from '../model/errors/R2Error';
 import Game from '../model/game/Game';
 import FsProvider from '../providers/generic/file/FsProvider';
@@ -6,8 +6,9 @@ import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ModLinker from '../r2mm/manager/ModLinker';
-import { Platform } from '../assets/data/ecosystemTypes';
+import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
+import {LaunchType} from "src/model/real_enums/launch/LaunchType";
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -74,4 +75,14 @@ export async function isProtonRequired(activeGame: Game) {
     return [Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.activePlatform.storePlatform)
         ? await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)
         : false;
+}
+
+export async function getDeterminedLaunchType(game: Game, launchType: LaunchType): Promise<LaunchType> {
+    if (launchType !== LaunchType.AUTO) {
+        return launchType;
+    }
+    if (await isProtonRequired(game)) {
+        return LaunchType.PROTON;
+    }
+    return LaunchType.NATIVE;
 }

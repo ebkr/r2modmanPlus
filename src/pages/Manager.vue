@@ -128,6 +128,7 @@
         <DownloadProgressModal />
         <DownloadModVersionSelectModal />
         <UpdateAllInstalledModsModal />
+        <LaunchTypeModal/>
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
@@ -167,6 +168,7 @@ import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledM
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import LaunchTypeModal from "components/modals/launch-type/LaunchTypeModal.vue";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -538,7 +540,7 @@ async function handleSettingsCallbacks(invokedSetting: any) {
 store.dispatch('profile/loadOrderingSettings');
 store.commit('modFilters/reset');
 
-onMounted(() => {
+onMounted(async () => {
     router = getCurrentInstance()!.proxy.$router;
     launchParametersModel.value = settings.value.getContext().gameSpecific.launchParameters;
     isManagerUpdateAvailable();
