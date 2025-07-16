@@ -12,6 +12,7 @@ import { exec } from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
+import {isProtonRequired} from "src/utils/LaunchUtils";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -22,7 +23,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
 
-        const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+        const isProton = await isProtonRequired(game);
         if (isProton instanceof R2Error) {
             return isProton;
         }

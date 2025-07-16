@@ -165,8 +165,11 @@ export default class ManagerSettings {
         }
     }
 
-    public getLaunchType(): LaunchType {
-        return EnumResolver.from<LaunchType>(LaunchType, ManagerSettings.CONTEXT.gameSpecific.launchType);
+    public getLaunchType(): LaunchType | undefined {
+        if (ManagerSettings.CONTEXT.gameSpecific.launchType) {
+            return EnumResolver.from<LaunchType>(LaunchType, ManagerSettings.CONTEXT.gameSpecific.launchType);
+        }
+        return undefined;
     }
 
     public async setInstalledDisablePosition(disablePosition: string) {
