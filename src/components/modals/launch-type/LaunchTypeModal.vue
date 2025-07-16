@@ -8,6 +8,7 @@ import {State} from "../../../store";
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
 import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
 import EnumResolver from "../../../model/enums/_EnumResolver";
+import CopyToClipboardButton from "components/buttons/CopyToClipboardButton.vue";
 
 const store = getStore<State>();
 
@@ -71,10 +72,9 @@ getLaunchType(activeGame.value)
               </code>
             </div>
             <div class="margin-top">
-              <button class="button">
-                <i class="fas fa-clipboard"></i>
-                <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
-              </button>
+              <CopyToClipboardButton :copy-value="launchArgs">
+                Copy launch arguments
+              </CopyToClipboardButton>
             </div>
           </div>
         </template>
