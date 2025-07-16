@@ -17,9 +17,8 @@ import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter from 'vue-router';
-import {getLaunchType} from "src/model/real_enums/launch/LaunchType";
-import {LaunchTypeModalOpen} from "components/modals/launch-type/LaunchTypeRefs";
-import * as process from "process";
+import {getLaunchType} from "../../model/real_enums/launch/LaunchType";
+import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
 
 const store = getStore<State>();
 let router!: VueRouter;
