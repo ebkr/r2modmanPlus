@@ -68,6 +68,9 @@ export const throwIfNoGameDir = async (game: Game): Promise<void> => {
 };
 
 export async function isProtonRequired(activeGame: Game) {
+    if (process.platform !== 'linux') {
+        return false;
+    }
     return [Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.activePlatform.storePlatform)
         ? await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)
         : false;
