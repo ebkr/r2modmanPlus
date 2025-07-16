@@ -8,7 +8,7 @@ import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import ModLinker from '../r2mm/manager/ModLinker';
 import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
-import {LaunchType} from "src/model/real_enums/launch/LaunchType";
+import {LaunchType} from "../model/real_enums/launch/LaunchType";
 
 export enum LaunchMode { VANILLA, MODDED };
 

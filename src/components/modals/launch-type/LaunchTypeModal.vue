@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import ModalCard from '../../ModalCard.vue';
 import {LaunchTypeModalOpen} from "../../../components/modals/launch-type/LaunchTypeRefs";
-import ManagerSettings from "src/r2mm/manager/ManagerSettings";
 import {computed, ref, watchEffect} from "vue";
-import Game from "src/model/game/Game";
-import {getStore} from "src/providers/generic/store/StoreProvider";
-import {State} from "src/store";
-import {getLaunchType, LaunchType} from "src/model/real_enums/launch/LaunchType";
-import {getDeterminedLaunchType, isProtonRequired} from "src/utils/LaunchUtils";
-import EnumResolver from "src/model/enums/_EnumResolver";
+import Game from "../../../model/game/Game";
+import {getStore} from "../../../providers/generic/store/StoreProvider";
+import {State} from "../../../store";
+import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
+import {getDeterminedLaunchType} from "../../../utils/LaunchUtils";
+import EnumResolver from "../../../model/enums/_EnumResolver";
 
 const store = getStore<State>();
 
@@ -62,7 +61,3 @@ getLaunchType(activeGame.value)
         </template>
     </ModalCard>
 </template>
-
-<style scoped lang="scss">
-
-</style>

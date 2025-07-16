@@ -168,7 +168,7 @@ import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledM
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
-import LaunchTypeModal from "components/modals/launch-type/LaunchTypeModal.vue";
+import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 
 const store = getStore<State>();
 let router!: VueRouter;
