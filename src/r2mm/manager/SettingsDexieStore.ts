@@ -7,6 +7,7 @@ import { SortLocalDisabledMods } from '../../model/real_enums/sort/SortLocalDisa
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
 import GameManager from '../../model/game/GameManager'
+import {LaunchType} from "../../model/real_enums/launch/LaunchType";
 
 export const SETTINGS_DB_NAME = "settings";
 
@@ -129,7 +130,8 @@ export default class SettingsDexieStore extends Dexie {
                 installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
                 lastSelectedProfile: "Default",
                 launchParameters: "",
-                linkedFiles: []
+                linkedFiles: [],
+                launchType: LaunchType.AUTO,
             }
         }
     }
@@ -211,6 +213,7 @@ export interface ManagerSettingsInterfaceGame_V2 {
     installedSortBy: string;
     installedSortDirection: string;
     installedDisablePosition: string;
+    launchType: string;
 }
 
 /**
