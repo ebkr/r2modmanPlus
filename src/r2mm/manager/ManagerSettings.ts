@@ -7,6 +7,7 @@ import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDe
 import Game from '../../model/game/Game';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
+import {LaunchType} from "src/model/real_enums/launch/LaunchType";
 
 export default class ManagerSettings {
 
@@ -164,6 +165,10 @@ export default class ManagerSettings {
         }
     }
 
+    public getLaunchType(): LaunchType {
+        return EnumResolver.from<LaunchType>(LaunchType, ManagerSettings.CONTEXT.gameSpecific.launchType);
+    }
+
     public async setInstalledDisablePosition(disablePosition: string) {
         ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
         await this.save();
@@ -195,6 +200,11 @@ export default class ManagerSettings {
 
     public async setGameSelectionViewMode(viewMode: GameSelectionViewMode) {
         ManagerSettings.CONTEXT.global.gameSelectionViewMode = viewMode;
+        await this.save();
+    }
+
+    public async setLaunchType(launchType: LaunchType) {
+        ManagerSettings.CONTEXT.gameSpecific.launchType = launchType;
         await this.save();
     }
 }

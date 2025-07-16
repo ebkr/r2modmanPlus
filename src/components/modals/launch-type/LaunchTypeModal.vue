@@ -8,13 +8,10 @@ import {State} from "../../../store";
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
 import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
 import EnumResolver from "../../../model/enums/_EnumResolver";
-import CopyToClipboardButton from "components/buttons/CopyToClipboardButton.vue";
+import CopyToClipboardButton from "../../buttons/CopyToClipboardButton.vue";
+import ManagerSettings from "src/r2mm/manager/ManagerSettings";
 
 const store = getStore<State>();
-
-function closeModal() {
-    LaunchTypeModalOpen.value = false;
-}
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const launchOption = ref<string>(LaunchType.AUTO);
@@ -32,7 +29,17 @@ watchEffect(async () => {
 })
 
 getLaunchType(activeGame.value)
-    .then(launchType => launchOption.value = launchType)
+    .then(launchType => launchOption.value = LaunchType[launchType]);
+
+function closeModal() {
+  LaunchTypeModalOpen.value = false;
+}
+
+async function updateAndClose() {
+  const settings = await ManagerSettings.getSingleton(activeGame.value);
+  await settings.setLaunchType(launchOption.value);
+  closeModal();
+}
 
 </script>
 
@@ -79,8 +86,8 @@ getLaunchType(activeGame.value)
           </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal">
-                Close
+            <button class="button is-info" @click="updateAndClose">
+                Update
             </button>
         </template>
     </ModalCard>
