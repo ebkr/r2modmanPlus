@@ -18,5 +18,5 @@ export async function getLaunchType(game: Game) {
             return EnumResolver.from<LaunchType>(LaunchType, settings.getContext().gameSpecific.launchType);
         }
     }
-    return LaunchType.AUTO;
+    return EnumResolver.from<LaunchType>(LaunchType, LaunchType.AUTO);
 }
