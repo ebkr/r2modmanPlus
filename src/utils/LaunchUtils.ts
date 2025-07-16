@@ -9,6 +9,9 @@ import ModLinker from '../r2mm/manager/ModLinker';
 import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
+import path from "path";
+import PathResolver from "src/r2mm/manager/PathResolver";
+import {computed} from "vue";
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -85,4 +88,15 @@ export async function getDeterminedLaunchType(game: Game, launchType: LaunchType
         return LaunchType.PROTON;
     }
     return LaunchType.NATIVE;
+}
+
+export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> {
+    return Promise.resolve()
+        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game))
+        .then(launchArgs => typeof launchArgs === 'string' && launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')))
+        .catch(() => false);
+}
+
+export async function getWrapperLaunchArgs(): Promise<string> {
+    return `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
 }

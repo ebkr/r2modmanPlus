@@ -6,7 +6,7 @@ import Game from "../../../model/game/Game";
 import {getStore} from "../../../providers/generic/store/StoreProvider";
 import {State} from "../../../store";
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
-import {getDeterminedLaunchType} from "../../../utils/LaunchUtils";
+import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
 import EnumResolver from "../../../model/enums/_EnumResolver";
 
 const store = getStore<State>();
@@ -17,12 +17,17 @@ function closeModal() {
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const launchOption = ref<string>(LaunchType.AUTO);
-const determinedLaunchType = ref(LaunchType.AUTO);
+const determinedLaunchType = ref<LaunchType>(LaunchType.AUTO);
+const wrapperProvided = ref<boolean>(false);
+
+const launchArgs = ref<string>("");
+getWrapperLaunchArgs().then(value => launchArgs.value = value);
 
 watchEffect(async () => {
     const launchTypeString = launchOption.value;
     const launchType = EnumResolver.from<LaunchType>(LaunchType, launchTypeString);
     determinedLaunchType.value = await getDeterminedLaunchType(activeGame.value, LaunchType[launchType]);
+    wrapperProvided.value = await areWrapperArgumentsProvided(activeGame.value);
 })
 
 getLaunchType(activeGame.value)
@@ -36,23 +41,42 @@ getLaunchType(activeGame.value)
             <h2 class="modal-title">Set launch behaviour</h2>
         </template>
         <template v-slot:body>
-            <div>
-                <input id="launch-type-option-auto" type="radio" name="launch-type-option" :value="LaunchType.AUTO" v-model="launchOption"/>
-                <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>Auto</label>
-            </div>
-            <div>
-                <input id="launch-type-option-native" type="radio" name="launch-type-option" :value="LaunchType.NATIVE" v-model="launchOption"/>
-                <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>Native</label>
-            </div>
-            <div>
-                <input id="launch-type-option-proton" type="radio" name="launch-type-option" :value="LaunchType.PROTON" v-model="launchOption"/>
-                <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>Proton</label>
-            </div>
-            <p v-if="launchOption === LaunchType.AUTO" class="margin-top">
-                By selecting <strong>Auto</strong> we have determined that {{ activeGame.displayName }} will be launched under
-                <strong class="tag">{{ determinedLaunchType }}</strong>
-                mode.
+          <div>
+              <input id="launch-type-option-auto" type="radio" name="launch-type-option" :value="LaunchType.AUTO" v-model="launchOption"/>
+              <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>Auto</label>
+          </div>
+          <div>
+              <input id="launch-type-option-native" type="radio" name="launch-type-option" :value="LaunchType.NATIVE" v-model="launchOption"/>
+              <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>Native</label>
+          </div>
+          <div>
+              <input id="launch-type-option-proton" type="radio" name="launch-type-option" :value="LaunchType.PROTON" v-model="launchOption"/>
+              <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>Proton</label>
+          </div>
+          <p v-if="launchOption === LaunchType.AUTO" class="margin-top">
+              By selecting <strong>Auto</strong> we have determined that {{ activeGame.displayName }} will be launched under
+              <strong class="tag">{{ determinedLaunchType }}</strong>
+              mode.
+          </p>
+          <div v-if="determinedLaunchType === LaunchType.PROTON && !wrapperProvided" class="margin-top">
+            <p>
+              We were unable to determine if the required wrapper arguments have been set.
             </p>
+            <p>
+              If you have not yet done this manually, please add the following launch arguments to the game's properties on Steam:
+            </p>
+            <div>
+              <code>
+                {{ launchArgs }}
+              </code>
+            </div>
+            <div class="margin-top">
+              <button class="button">
+                <i class="fas fa-clipboard"></i>
+                <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
+              </button>
+            </div>
+          </div>
         </template>
         <template v-slot:footer>
             <button class="button is-info" @click="closeModal">
