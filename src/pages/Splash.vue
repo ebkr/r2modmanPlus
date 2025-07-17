@@ -169,7 +169,7 @@ async function moveToNextScreen() {
     if (process.platform === 'linux') {
         const activeGame: Game = store.state.activeGame;
 
-        if (await isProtonRequired(activeGame)) {
+        if (!(await isProtonRequired(activeGame))) {
             console.log('Not proton game');
             await ensureWrapperInGameFolder();
             const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
