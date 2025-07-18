@@ -47,7 +47,7 @@
                     For Steam, this would be located in the game's properties.
                     <br/><br/>
                     Your current argument would be:
-                    <code v-if="doorstopTarget.length > 0">{{ doorstopTarget }}</code>
+                    <code v-if="launchArgs.length > 0">{{ launchArgs }}</code>
                     <code v-else>These parameters will be available after installing BepInEx.</code>
                     <br/>
                 </p>
@@ -100,13 +100,16 @@
 </template>
 
 <script lang="ts" setup>
-import { Hero, ExternalLink } from '../components/all';
+import {ExternalLink, Hero} from '../components/all';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-import { onMounted, ref } from 'vue';
-import { getStore } from '../providers/generic/store/StoreProvider';
-import { State } from '../store';
+import {onMounted, ref, watchEffect} from 'vue';
+import {getStore} from '../providers/generic/store/StoreProvider';
+import {State} from '../store';
+import {getDeterminedLaunchType} from "../utils/LaunchUtils";
+import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
+import {getLaunchType, LaunchType} from "../model/real_enums/launch/LaunchType";
 
 const store = getStore<State>();
 
@@ -114,6 +117,23 @@ const activeTab = ref('General');
 const tabs = ref(['General', 'Game won\'t start', 'Mods not appearing', 'Updating']);
 const doorstopTarget = ref("");
 const copyingDoorstopText = ref(false);
+const launchArgs = ref("");
+
+watchEffect(async () => {
+    const loaderArgs = doorstopTarget.value;
+    const prerequisiteText = ComputedWrapperLaunchArguments.value;
+    if (process.platform === 'win32') {
+        launchArgs.value = loaderArgs;
+        return;
+    }
+    const launchTypeString = await getLaunchType(store.state.activeGame);
+    const launchType = await getDeterminedLaunchType(store.state.activeGame, LaunchType[launchTypeString]);
+    if (launchType === LaunchType.NATIVE) {
+        launchArgs.value = `${prerequisiteText} ${loaderArgs} ${launchType}`;
+    } else {
+        launchArgs.value = `${loaderArgs} ${launchType}`;
+    }
+});
 
 function changeTab(key: string) {
     activeTab.value = key;
@@ -136,6 +156,7 @@ onMounted(() => {
     ).then(target => {
         if (target instanceof R2Error) {
             doorstopTarget.value = "";
+            return;
         } else {
             doorstopTarget.value = target;
         }

@@ -79,9 +79,10 @@ export async function isProtonRequired(activeGame: Game) {
         : false;
 }
 
-export async function getDeterminedLaunchType(game: Game, launchType: LaunchType): Promise<LaunchType> {
+export async function getDeterminedLaunchType<T>(game: Game, launchTypeKey: T): Promise<LaunchType> {
+    const launchType = launchTypeKey as unknown as LaunchType;
     if (launchType !== LaunchType.AUTO) {
-        return launchType;
+        return launchType as unknown as LaunchType;
     }
     if (await isProtonRequired(game)) {
         return LaunchType.PROTON;
