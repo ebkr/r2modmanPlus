@@ -129,9 +129,9 @@ watchEffect(async () => {
     const launchTypeString = await getLaunchType(store.state.activeGame);
     const launchType = await getDeterminedLaunchType(store.state.activeGame, LaunchType[launchTypeString]);
     if (launchType === LaunchType.NATIVE) {
-        launchArgs.value = `${prerequisiteText} ${loaderArgs} ${launchType}`;
+        launchArgs.value = `${prerequisiteText} ${loaderArgs}`;
     } else {
-        launchArgs.value = `${loaderArgs} ${launchType}`;
+        launchArgs.value = loaderArgs;
     }
 });
 
