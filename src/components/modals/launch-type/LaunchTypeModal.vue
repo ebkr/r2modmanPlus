@@ -66,7 +66,7 @@ async function updateAndClose() {
               <strong class="tag">{{ determinedLaunchType }}</strong>
               mode.
           </p>
-          <div v-if="determinedLaunchType === LaunchType.PROTON && !wrapperProvided" class="margin-top">
+          <div v-if="determinedLaunchType === LaunchType.NATIVE && !wrapperProvided" class="margin-top">
             <p>
               We were unable to determine if the required wrapper arguments have been set.
             </p>
