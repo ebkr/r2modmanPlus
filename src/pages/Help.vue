@@ -140,7 +140,7 @@ function changeTab(key: string) {
 }
 
 function copyDoorstopTargetToClipboard() {
-    InteractionProvider.instance.copyToClipboard(doorstopTarget.value);
+    InteractionProvider.instance.copyToClipboard(launchArgs.value);
     copyingDoorstopText.value = true;
     setTimeout(stopShowingCopy, 400);
 }
