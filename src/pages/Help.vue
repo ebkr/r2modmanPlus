@@ -54,7 +54,7 @@
                 <br/>
                 <template v-if="doorstopTarget.length > 0">
                     <p>
-                        <button class="button" @click="copyDoorstopTargetToClipboard" v-if="!copyingDoorstopText">
+                        <button class="button" @click="copyLaunchArgsToClipboard" v-if="!copyingDoorstopText">
                             <i class="fas fa-clipboard"></i>
                             <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
                         </button>
@@ -139,7 +139,7 @@ function changeTab(key: string) {
     activeTab.value = key;
 }
 
-function copyDoorstopTargetToClipboard() {
+function copyLaunchArgsToClipboard() {
     InteractionProvider.instance.copyToClipboard(launchArgs.value);
     copyingDoorstopText.value = true;
     setTimeout(stopShowingCopy, 400);
