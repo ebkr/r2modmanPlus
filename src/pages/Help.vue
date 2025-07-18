@@ -131,7 +131,7 @@ watchEffect(async () => {
     if (launchType === LaunchType.NATIVE) {
         launchArgs.value = `${prerequisiteText} ${loaderArgs}`;
     } else {
-        launchArgs.value = loaderArgs;
+        launchArgs.value = `%command% ${loaderArgs}`;
     }
 });
 
