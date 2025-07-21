@@ -18688,6 +18688,125 @@
       },
       "r2modman": null
     },
+    "bad-north": {
+      "uuid": "f59327ea-5b65-4817-b347-7c08fdda0fdd",
+      "label": "bad-north",
+      "meta": {
+        "displayName": "Bad North",
+        "iconUrl": "bad-north.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "688420"
+            }
+          ],
+          "steamFolderName": "BadNorth",
+          "dataFolderName": "BadNorth_Data",
+          "exeNames": [
+            "BadNorth.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Bad North",
+            "iconUrl": "bad-north.webp"
+          },
+          "settingsIdentifier": "BadNorth",
+          "internalFolderName": "BadNorth",
+          "packageIndex": "https://thunderstore.io/c/bad-north/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Bad North",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://bad-north.fandom.com/wiki/Bad_North_Wiki",
+        "discordUrl": "https://discord.gg/bNeqTNB23c",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "cobalt-core": {
       "uuid": "d03f61b8-9604-4cc7-8d77-4647db475aa9",
       "label": "cobalt-core",
@@ -25216,6 +25335,48 @@
       "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
       "autolistPackageIds": []
     },
+    "bad-north": {
+      "displayName": "Bad North",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://bad-north.fandom.com/wiki/Bad_North_Wiki",
+      "discordUrl": "https://discord.gg/bNeqTNB23c",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "cobalt-core": {
       "displayName": "Cobalt Core",
       "categories": {
@@ -26086,6 +26247,11 @@
     {
       "packageId": "BepInEx-BepInExPack_Muck",
       "rootFolder": "BepInExPack_Muck",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Mycopunk",
+      "rootFolder": "BepInExPack_Mycopunk",
       "loader": "bepinex"
     },
     {
