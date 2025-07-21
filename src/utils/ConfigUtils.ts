@@ -14,8 +14,13 @@ export type ConfigurationSection = {
 
 export type ConfigurationEntry = {
     entryName: string;
-    commentLines: string[];
+    commentLines: CommentLine[];
     value: string;
+}
+
+export type CommentLine = {
+    isDescription: boolean;
+    displayValue: string;
 }
 
 export async function buildConfigurationFileFromPath(configFile: ConfigFile): Promise<ConfigurationFile> {
@@ -62,7 +67,7 @@ async function buildConfigurationSections(configData: string): Promise<Configura
 async function buildConfigurationEntries(configLines: string[]): Promise<ConfigurationEntry[]> {
     const entries: ConfigurationEntry[] = [];
     let comments: string[] = [];
-    configLines.forEach((line) => {
+    for (const line of configLines) {
         if (line.trim().startsWith("#")) {
             comments.push(line);
         } else if (line.trim().length > 0 && line.indexOf("=") > 0) {
@@ -72,9 +77,28 @@ async function buildConfigurationEntries(configLines: string[]): Promise<Configu
             entries.push({
                 entryName: name,
                 value: value,
-                commentLines: comments,
+                commentLines: await buildComments(comments),
             } as ConfigurationEntry);
+            comments = [];
+        }
+    }
+    return entries;
+}
+
+async function buildComments(comments: string[]): Promise<CommentLine[]> {
+    return comments
+        .filter(value => value.trim().substring(1).length > 0)
+        .map((commentLine) => {
+        if (commentLine.trim().startsWith("##")) {
+            return {
+                isDescription: true,
+                displayValue: commentLine.trim().substring(2).trim(),
+            } as CommentLine;
+        } else {
+            return {
+                isDescription: false,
+                displayValue: commentLine.trim().substring(1).trim(),
+            } as CommentLine;
         }
     });
-    return entries;
 }

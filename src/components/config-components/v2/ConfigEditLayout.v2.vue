@@ -1,14 +1,15 @@
 <template>
     <div>
         <Hero
+            v-if="configFile"
             :title="configFile.getName()"
             subtitle="Editing config file"
             hero-type="primary"
         />
         <div class="margin-top"></div>
         <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width">Save</button>
+            <button class="button is-danger">Cancel</button>
         </div>
         <ConfigEntryEditor :config-file="configFile" v-if="isEntryEditor"/>
         <ConfigRawEditor v-else/>
