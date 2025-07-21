@@ -1,10 +1,11 @@
 <template>
     <div id="config-editor">
         <ConfigSelectionLayout v-show="editing === null" @edit="bindEdit($event)"/>
-        <ConfigEditLayout
-            :config-file="editing"
-            @changed="editing = null"
-            v-if="editing !== null"/>
+<!--        <ConfigEditLayout-->
+<!--            :config-file="editing"-->
+<!--            @changed="editing = null"-->
+<!--            v-if="editing !== null"/>-->
+        <ConfigEditLayout :config-file="editing"/>
     </div>
 </template>
 
@@ -12,7 +13,7 @@
 
 import ConfigSelectionLayout from '../components/config-components/ConfigSelectionLayout.vue';
 import ConfigFile from '../model/file/ConfigFile';
-import ConfigEditLayout from '../components/config-components/ConfigEditLayout.vue';
+import ConfigEditLayout from '../components/config-components/v2/ConfigEditLayout.v2.vue';
 import { ref } from 'vue';
 
 const editing = ref<ConfigFile | null>(null);
