@@ -1,6 +1,13 @@
 <template>
     <div class="container">
         <div id="config-overview" v-if="configurationFile">
+            <h3 class='subtitle is-3'>Sections</h3>
+            <ul>
+                <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
+                    <a :href="`#${key}`">{{ section.sectionName }}</a>
+                </li>
+            </ul>
+            <hr/>
             <div class="outer-row margin-top" v-for="(section, sectionIndex) of configurationFile.sections" :key="`section-${sectionIndex}-${section.sectionName}`">
                 <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                     {{ section.sectionName }}
