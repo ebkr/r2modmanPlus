@@ -76,6 +76,7 @@ import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -113,7 +114,7 @@ const sortedConfigFiles = computed(() => {
 
 onMounted(async () => {
     const fs = FsProvider.instance;
-    const configLocation = store.getters['profile/activeProfile'].getProfilePath();
+    const configLocation = MobxProfileInstance.activeProfileOrThrow().getProfilePath();
     const tree = await FileTree.buildFromLocation(configLocation);
     if (tree instanceof R2Error) {
         return;

@@ -20,9 +20,9 @@ import ModListSort from '../../r2mm/mods/ModListSort';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import FileUtils from '../../utils/FileUtils';
 import SearchUtils from '../../utils/SearchUtils';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 interface State {
-    activeProfile: Profile | null;
     expandedByDefault: boolean;
     funkyMode: boolean;
     modList: ManifestV2[];
@@ -40,7 +40,6 @@ export default {
     namespaced: true,
 
     state: (): State => ({
-        activeProfile: null,
         expandedByDefault: false,
         funkyMode: false,
         modList: [],
@@ -52,33 +51,6 @@ export default {
     }),
 
     getters: <GetterTree<State, RootState>>{
-        activeProfile(state) {
-            if (state.activeProfile !== null) {
-                return state.activeProfile;
-            }
-
-            console.debug("Called profile/activeProfile but profile is not set. Falling back to Profile provider.");
-            const profile = Profile.getActiveProfile();
-
-            if (profile !== undefined) {
-                return profile;
-            }
-
-            console.debug("Called Profile.getActiveProfile but profile is not set. Falling back to Default profile.");
-            return new Profile('Default');
-        },
-
-        activeProfileOrThrow(state): Profile {
-            // Sanity check before attempting to alter the profile state.
-            if (state.activeProfile === null) {
-                throw new R2Error(
-                    'No active profile found',
-                    'Unable to modify mod list state when active profile is not set.'
-                )
-            }
-
-            return state.activeProfile;
-        },
 
         activeProfileName(_state, getters) {
             return getters.activeProfile.getProfileName();
@@ -146,9 +118,7 @@ export default {
         // settings are updated.
         setActiveProfile(state: State, profileName: string) {
             // Stores the active profile in Profile.ts.
-            const profile = new Profile(profileName);
-
-            state.activeProfile = profile;
+            MobxProfileInstance.setActiveProfile({ profileName: profileName, prewarmCache: false });
         },
 
         setExpandedByDefault(state: State, value: boolean) {
@@ -324,7 +294,7 @@ export default {
 
         async loadLastSelectedProfile({commit, rootGetters}): Promise<string> {
             const profileName = rootGetters['settings'].getContext().gameSpecific.lastSelectedProfile;
-            commit('setActiveProfile', profileName);
+            await MobxProfileInstance.setActiveProfile({profileName: profileName, prewarmCache: false})
             return profileName;
         },
 
@@ -452,8 +422,8 @@ export default {
         },
 
         async updateActiveProfile({commit, rootGetters}, profileName: string) {
-            commit('setActiveProfile', profileName);
-            rootGetters['settings'].setProfile(profileName);
+            await MobxProfileInstance.setActiveProfile({ profileName: profileName, prewarmCache: false })
+            await rootGetters['settings'].setProfile(profileName);
         },
 
         async updateDirection({commit, rootGetters}, value: SortDirection) {

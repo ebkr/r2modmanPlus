@@ -5,6 +5,7 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, nextTick, ref, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -20,7 +21,7 @@ const renamingInProgress = ref<boolean>(false);
 const isOpen = computed(() => store.state.modals.isRenameProfileModalOpen);
 
 watchEffect(() => {
-    newProfileName.value = store.getters['profile/activeProfileName'];
+    newProfileName.value = MobxProfileInstance.activeProfile;
 })
 
 watchEffect(() => {

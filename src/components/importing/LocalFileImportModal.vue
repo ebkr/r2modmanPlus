@@ -101,6 +101,7 @@ import { ref, computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -312,8 +313,8 @@ async function importFile() {
         return;
     }
 
-    const profile: ImmutableProfile|null = store.state.profile.activeProfile
-        ? store.state.profile.activeProfile.asImmutableProfile()
+    const profile: ImmutableProfile|null = MobxProfileInstance.activeProfile
+        ? MobxProfileInstance.activeProfile.asImmutableProfile()
         : null;
 
     if (profile === null) {

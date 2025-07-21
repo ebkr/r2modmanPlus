@@ -15,6 +15,7 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -187,7 +188,7 @@ function onCreateOrUpdateSelect(mode: 'CREATE' | 'UPDATE') {
     importUpdateSelection.value = mode;
 
     if (mode === 'UPDATE') {
-        targetProfileName.value = store.getters['profile/activeProfileName'];
+        targetProfileName.value = MobxProfileInstance.activeProfile.getProfileName();
     }
 
     activeStep.value = 'ADDING_PROFILE';

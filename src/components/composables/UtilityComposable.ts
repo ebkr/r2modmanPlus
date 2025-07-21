@@ -7,6 +7,7 @@ import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { Router } from 'vue-router';
 import { InstallMode } from '../../utils/DependencyUtils';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 export function useUtilityComposable() {
 
@@ -36,12 +37,12 @@ export function useUtilityComposable() {
 
             try {
                 const game = store.state.activeGame;
-                const profile = store.getters['profile/activeProfile'].asImmutableProfile();
+                const activeProfile = MobxProfileInstance.activeProfileOrThrow().asImmutableProfile();
                 const combos = [throwForR2Error(await ThunderstoreCombo.fromProtocol(protocolUrl, game))];
                 const installMode = InstallMode.INSTALL_SPECIFIC;
-                await store.dispatch('download/downloadAndInstallCombos', {combos, game, installMode, profile});
+                await store.dispatch('download/downloadAndInstallCombos', {combos, game, installMode, activeProfile});
 
-                const modList = throwForR2Error(await ProfileModList.getModList(profile));
+                const modList = throwForR2Error(await ProfileModList.getModList(activeProfile));
                 await store.dispatch('profile/updateModList', modList);
             } catch (err) {
                 store.commit('error/handleError', {

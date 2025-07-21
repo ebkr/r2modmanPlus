@@ -90,12 +90,13 @@ import { ref, computed, onMounted, getCurrentInstance } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter, { useRouter } from 'vue-router';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 const router = useRouter();
 
 const activeGame = computed<Game>(() => store.state.activeGame);
-const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
+const profile = computed<Profile>(() => MobxProfileInstance.activeProfile);
 const localModCount = computed<number>(() => store.state.profile.modList.length);
 
 const thunderstoreModCount = computed(() =>
