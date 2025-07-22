@@ -7,11 +7,7 @@
             hero-type="primary"
         />
         <div class="margin-top"></div>
-        <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info margin-right margin-right--half-width">Save</button>
-            <button class="button is-danger">Cancel</button>
-        </div>
-        <ConfigEntryEditor :config-file="configFile" v-if="isEntryEditor"/>
+        <ConfigEntryEditor :config-file="configFile" v-if="isEntryEditor" @changed="() => emits('changed')"/>
         <ConfigRawEditor v-else/>
     </div>
 </template>
@@ -28,6 +24,9 @@ export type ConfigEditLayoutProps = {
 }
 
 const props = defineProps<ConfigEditLayoutProps>();
+const emits = defineEmits<{
+    (e: 'changed'): void;
+}>();
 
 const isEntryEditor = computed(() => {
     if (props.configFile && props.configFile.getName()) {
