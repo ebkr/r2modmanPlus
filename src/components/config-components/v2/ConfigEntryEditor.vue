@@ -8,7 +8,7 @@
                 </li>
             </ul>
             <hr/>
-            <div class="outer-row margin-top" v-for="(section, sectionIndex) of configurationFile.sections" :key="`section-${sectionIndex}-${section.sectionName}`">
+            <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections" :key="`section-${sectionIndex}-${section.sectionName}`">
                 <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                     {{ section.sectionName }}
                     <br/>
@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 
 import ConfigFile from "../../../model/file/ConfigFile";
-import { buildConfigurationFileFromPath, ConfigurationFile, ConfigurationSection } from 'src/utils/ConfigUtils';
+import { buildConfigurationFileFromPath, ConfigurationFile, ConfigurationSection } from '../../../utils/ConfigUtils';
 import { reactive, ref } from 'vue';
 
 export type ConfigEntryEditorProps = {
