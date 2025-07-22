@@ -42,11 +42,12 @@ import LocalModCard from './LocalModList/LocalModCard.vue';
 import SearchAndSort from './LocalModList/SearchAndSort.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
+import { observe } from 'mobx';
 
 const store = getStore<State>();
 
-const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
 const draggableList = computed({
     get() {
         return store.getters['profile/visibleModList'];
@@ -55,7 +56,7 @@ const draggableList = computed({
         try {
             store.dispatch(
                 'profile/saveModListToDisk',
-                {mods: newList, profile: profile.value}
+                {mods: newList, profile: MobxProfileInstance.activeProfile}
             );
         } catch (e) {
             store.commit('error/handleError', R2Error.fromThrownValue(e));

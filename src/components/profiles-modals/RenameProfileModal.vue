@@ -21,7 +21,7 @@ const renamingInProgress = ref<boolean>(false);
 const isOpen = computed(() => store.state.modals.isRenameProfileModalOpen);
 
 watchEffect(() => {
-    newProfileName.value = MobxProfileInstance.activeProfile;
+    newProfileName.value = MobxProfileInstance.activeProfile.getProfileName();
 })
 
 watchEffect(() => {

@@ -65,6 +65,7 @@ import { computed, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import ThunderstoreMod from '../../model/ThunderstoreMod';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -111,7 +112,7 @@ watch(() => store.state.modals.downloadModModalMod, async () => {
             }
         }
 
-        const modListResult = await ProfileModList.getModList(store.getters['profile/activeProfile'].asImmutableProfile());
+        const modListResult = await ProfileModList.getModList(MobxProfileInstance.activeProfile.asImmutableProfile());
         if (!(modListResult instanceof R2Error)) {
             const manifestMod = modListResult.find((local: ManifestV2) => local.getName() === thunderstoreMod.value!.getFullName());
             if (manifestMod !== undefined) {

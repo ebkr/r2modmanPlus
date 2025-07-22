@@ -161,6 +161,8 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
 import path from '../providers/node/path/path';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
+import { observe } from 'mobx';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -179,7 +181,12 @@ const vanillaLaunchArgs = ref<string>("");
 
 const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
-const profile = computed(() => store.getters['profile/activeProfile']);
+
+const profile = ref(MobxProfileInstance.activeProfile);
+observe(MobxProfileInstance, change => {
+    profile.value = MobxProfileInstance.activeProfile;
+});
+
 const localModList = computed(() => store.state.profile.modList);
 
 function closeSteamInstallationValidationModal() {

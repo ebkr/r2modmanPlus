@@ -7,6 +7,7 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { InstallMode } from '../../utils/DependencyUtils';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -24,7 +25,7 @@ async function updateAllToLatestVersion() {
 
     await store.dispatch('download/downloadAndInstallCombos', {
         combos,
-        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
+        profile: MobxProfileInstance.activeProfile.asImmutableProfile(),
         game: store.state.activeGame,
         installMode: InstallMode.UPDATE_ALL
     });

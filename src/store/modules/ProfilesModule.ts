@@ -5,6 +5,7 @@ import { State as RootState } from "../../store";
 import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
 import path from "../../providers/node/path/path";
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 interface State {
     profileList: string[];
@@ -41,7 +42,7 @@ export const ProfilesModule = {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
 
             if (!(await FsProvider.instance.exists(activeProfile.getProfilePath()))) {
-                await dispatch('profile/updateActiveProfile', 'Default', { root: true });
+                await MobxProfileInstance.setActiveProfile({ profileName: 'Default', prewarmCache: false });
                 commit(
                     'setProfileList',
                     state.profileList.filter((p) => p !== activeProfile.getProfileName())
@@ -70,11 +71,8 @@ export const ProfilesModule = {
         },
 
         async setSelectedProfile({dispatch}, params: { profileName: string, prewarmCache: boolean }) {
-            await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
-            if (params.prewarmCache) {
-                await dispatch('profile/updateModListFromFile', null, { root: true });
-                await dispatch('tsMods/prewarmCache', null, { root: true });
-            }
+            // await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
+            await MobxProfileInstance.setActiveProfile(params);
         },
 
         async renameProfile({commit, rootGetters, state, dispatch}, params: { newName: string }) {

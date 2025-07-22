@@ -5,6 +5,7 @@ import { ImmutableProfile } from '../../model/Profile';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { installModsToProfile } from '../../utils/ProfileUtils';
 import ConflictManagementProvider from '../../providers/generic/installing/ConflictManagementProvider';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 export function useDownloadComposable() {
     const store = getStore<any>();
@@ -20,7 +21,7 @@ export function useDownloadComposable() {
     async function downloadCompletedCallback(downloadedMods: ThunderstoreCombo[], downloadId: number): Promise<void> {
         try {
             store.commit('download/setInstalling', downloadId);
-            await installModsAndResolveConflicts(downloadedMods, store.getters['profile/activeProfile'].asImmutableProfile(), downloadId);
+            await installModsAndResolveConflicts(downloadedMods, MobxProfileInstance.activeProfile.asImmutableProfile(), downloadId);
             store.commit('download/setDone', downloadId);
         } catch (e) {
             store.commit('download/setFailed', downloadId);

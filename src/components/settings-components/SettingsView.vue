@@ -17,6 +17,9 @@ import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter from 'vue-router';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
+import { observe } from 'mobx';
+import Profile from 'src/model/Profile';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -36,6 +39,11 @@ const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
 const localModList = computed(() => store.state.profile.modList);
 const appName = computed(() => ManagerInformation.APP_NAME);
+
+const activeProfile = ref(Profile.getActiveProfile());
+observe(MobxProfileInstance, change => {
+    activeProfile.value = MobxProfileInstance.activeProfile;
+});
 
 let settingsList = [
     new SettingsRow(
@@ -76,7 +84,7 @@ let settingsList = [
         'Browse profile folder',
         'Open the folder where mods are stored for the current profile.',
         async () => {
-            return store.getters['profile/activeProfile'].getProfilePath();
+            return activeProfile.value.getProfilePath();
         },
         'fa-door-open',
         () => emitInvoke('BrowseProfileFolder')
@@ -160,7 +168,7 @@ let settingsList = [
         'Change profile',
         'Change the mod profile.',
         async () => {
-            return `Current profile: ${store.getters['profile/activeProfile'].getProfileName()}`
+            return `Current profile: ${activeProfile.value.getProfileName()}`
         },
         'fa-file-import',
         () => emitInvoke('ChangeProfile')

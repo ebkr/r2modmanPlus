@@ -107,6 +107,7 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import { onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -132,7 +133,7 @@ function stopShowingCopy() {
 onMounted(() => {
     GameRunnerProvider.instance.getGameArguments(
         store.state.activeGame,
-        store.getters['profile/activeProfile']
+        MobxProfileInstance.activeProfile
     ).then(target => {
         if (target instanceof R2Error) {
             doorstopTarget.value = "";

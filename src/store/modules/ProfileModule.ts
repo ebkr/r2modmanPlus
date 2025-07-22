@@ -53,7 +53,7 @@ export default {
     getters: <GetterTree<State, RootState>>{
 
         activeProfileName(_state, getters) {
-            return getters.activeProfile.getProfileName();
+            return MobxProfileInstance.activeProfile.getProfileName();
         },
 
         // For easier access from other Vuex submodules.

@@ -9,6 +9,7 @@ import { useDownloadComposable } from '../composables/DownloadComposable';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { InstallMode } from "../../utils/DependencyUtils";
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
 
 const store = getStore<State>();
 
@@ -26,7 +27,7 @@ async function downloadHandler(tsMod: ThunderstoreMod, tsVersion: ThunderstoreVe
 
     await store.dispatch('download/downloadAndInstallCombos', {
         combos,
-        profile: store.getters['profile/activeProfile'].asImmutableProfile(),
+        profile: MobxProfileInstance.activeProfile.asImmutableProfile(),
         game: store.state.activeGame,
         installMode: InstallMode.INSTALL_SPECIFIC
     });

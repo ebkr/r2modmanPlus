@@ -75,16 +75,22 @@ import DeleteProfileModal from '../components/profiles-modals/DeleteProfileModal
 import RenameProfileModal from '../components/profiles-modals/RenameProfileModal.vue';
 import CreateProfileModal from '../components/profiles-modals/CreateProfileModal.vue';
 import ImportProfileModal from '../components/profiles-modals/ImportProfileModal.vue';
-import { computed, getCurrentInstance, onMounted } from 'vue';
+import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter, { useRouter } from 'vue-router';
+import { MobxProfileInstance } from 'src/store/modules/mobx/MobxProfile';
+import { observe } from 'mobx';
 
 const store = getStore<State>();
 const router = useRouter();
 
 const profileList = computed(() => store.state.profiles.profileList);
-const activeProfileName = computed(() => store.getters['profile/activeProfileName']);
+
+const activeProfileName = ref(MobxProfileInstance.activeProfile.getProfileName());
+observe(MobxProfileInstance, change => {
+    activeProfileName.value = MobxProfileInstance.activeProfile.getProfileName();
+});
 
 function openCreateProfileModal() {
     store.commit('openCreateProfileModal');
