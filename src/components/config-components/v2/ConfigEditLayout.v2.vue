@@ -20,8 +20,8 @@
 import {Hero} from "../../all";
 import ConfigFile from "../../../model/file/ConfigFile";
 import {computed} from "vue";
-import ConfigEntryEditor from "components/config-components/v2/ConfigEntryEditor.vue";
-import ConfigRawEditor from "components/config-components/v2/ConfigRawEditor.vue";
+import ConfigEntryEditor from "./ConfigEntryEditor.vue";
+import ConfigRawEditor from "./ConfigRawEditor.vue";
 
 export type ConfigEditLayoutProps = {
     configFile: ConfigFile;
