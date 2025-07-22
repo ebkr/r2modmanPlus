@@ -8,7 +8,7 @@
             <div id="config-overview" v-if="configurationFile">
                 <h3 class='subtitle is-3'>Sections</h3>
                 <ul>
-                    <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
+                    <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`" v-if="section.sectionName.length > 0">
                         <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
                     </li>
                 </ul>
