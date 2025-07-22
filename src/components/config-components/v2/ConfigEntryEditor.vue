@@ -4,11 +4,11 @@
             <h3 class='subtitle is-3'>Sections</h3>
             <ul>
                 <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
-                    <a :href="`#${key}`">{{ section.sectionName }}</a>
+                    <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
                 </li>
             </ul>
             <hr/>
-            <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections" :key="`section-${sectionIndex}-${section.sectionName}`">
+            <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
                 <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                     {{ section.sectionName }}
                     <br/>
@@ -27,9 +27,20 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="settings-input-container">
-                            <input type="text" class="input"/>
-                        </div>
+                        <template v-if="entry.displayType === 'single-select'">
+                            <div class="settings-input-container">
+                                <select class="select select--full" v-model="entry.value">
+                                    <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
+                                        {{ opt }}
+                                    </option>
+                                </select>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="settings-input-container">
+                                <input type="text" class="input" v-model="entry.value"/>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -40,7 +51,12 @@
 <script lang="ts" setup>
 
 import ConfigFile from "../../../model/file/ConfigFile";
-import { buildConfigurationFileFromPath, ConfigurationFile, ConfigurationSection } from '../../../utils/ConfigUtils';
+import {
+    buildConfigurationFileFromPath,
+    ConfigurationFile,
+    ConfigurationSection,
+    getSelectOptions
+} from '../../../utils/ConfigUtils';
 import { reactive, ref } from 'vue';
 
 export type ConfigEntryEditorProps = {
