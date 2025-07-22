@@ -1,5 +1,5 @@
-import FsProvider from "src/providers/generic/file/FsProvider";
-import ConfigFile from "src/model/file/ConfigFile";
+import FsProvider from "../providers/generic/file/FsProvider";
+import ConfigFile from "../model/file/ConfigFile";
 
 export type ConfigurationFile = {
     filename: string;
