@@ -78,8 +78,8 @@ async function buildConfigurationEntries(configLines: string[]): Promise<Configu
             comments.push(line);
         } else if (line.trim().length > 0 && line.indexOf("=") > 0) {
             const entryInfo = line.split("=");
-            const name = entryInfo.shift();
-            const value = entryInfo.join("=").trimStart(); // Re-add separated "=" symbols.
+            const name = entryInfo.shift()!.trim();
+            const value = entryInfo.join("=").trim(); // Re-add separated "=" symbols.
             entries.push({
                 entryName: name,
                 value: value,
@@ -127,6 +127,9 @@ async function buildComments(comments: string[]): Promise<CommentLine[]> {
 }
 
 export function getSelectOptions(entry: ConfigurationEntry): string[] {
+    if (entry.displayType === "boolean") {
+        return ["true", "false"];
+    }
     if (!['single-select', 'multi-select'].includes(entry.displayType)) {
         throw new Error(`Invalid display type for select options. Got ${entry.displayType} for entry: ${entry.entryName}`);
     }
@@ -134,5 +137,20 @@ export function getSelectOptions(entry: ConfigurationEntry): string[] {
     if (!acceptableValuesComment) {
         throw new Error(`Could not find metadata comment for acceptable values on entry: ${entry.entryName}`);
     }
-    return acceptableValuesComment.rawValue.substring("# Acceptable values: ".length).split(",");
+    return acceptableValuesComment.rawValue.substring("# Acceptable values: ".length).split(",").map(value => value.trim());
+}
+
+export async function saveConfigurationFile(configurationFile: ConfigurationFile) {
+    let writeString = "";
+    for (const section of configurationFile.sections) {
+        if (section.sectionName.trim().length > 0) {
+            writeString += `[${section.sectionName}]\n\n`;
+        }
+        for (let entry of section.entries) {
+            const comments = entry.commentLines.map(value => value.rawValue).join("\n")
+            writeString += `${comments}\n`
+            writeString += `${entry.entryName} = ${entry.value}\n\n`;
+        }
+    }
+    await FsProvider.instance.writeFile(configurationFile.path, writeString);
 }

@@ -1,46 +1,52 @@
 <template>
-    <div class="container">
-        <div id="config-overview" v-if="configurationFile">
-            <h3 class='subtitle is-3'>Sections</h3>
-            <ul>
-                <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
-                    <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
-                </li>
-            </ul>
-            <hr/>
-            <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
-                <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
-                    {{ section.sectionName }}
-                    <br/>
-                    <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
-                </span></p>
-                <div>
-                    <div class="inner-row" v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`" v-if="!collapsedSections.includes(section)">
-                        <div class="entry-info">
-                            <p><strong>{{ entry.entryName }}</strong></p>
-                            <div v-for="(comment, commentIndex) of entry.commentLines" :key="`description-comment-${commentIndex}-${section.sectionName}`">
-                                <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
+    <div>
+        <div class="sticky-top sticky-top--buttons margin-right">
+            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
+            <button class="button is-danger" @click="cancel">Cancel</button>
+        </div>
+        <div class="container">
+            <div id="config-overview" v-if="configurationFile">
+                <h3 class='subtitle is-3'>Sections</h3>
+                <ul>
+                    <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
+                        <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
+                    </li>
+                </ul>
+                <hr/>
+                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
+                    <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
+                        {{ section.sectionName }}
+                        <br/>
+                        <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
+                    </span></p>
+                    <div>
+                        <div class="inner-row" v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`" v-if="!collapsedSections.includes(section)">
+                            <div class="entry-info">
+                                <p><strong>{{ entry.entryName }}</strong></p>
+                                <div v-for="(comment, commentIndex) of entry.commentLines" :key="`description-comment-${commentIndex}-${section.sectionName}`">
+                                    <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
+                                </div>
+                                <div v-for="(comment, commentIndex) of entry.commentLines" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
+                                    <span class="smaller-font metadata-text" v-if="!comment.isDescription">
+                                        {{ comment.displayValue }}
+                                    </span>
+                                </div>
                             </div>
-                            <div v-for="(comment, commentIndex) of entry.commentLines" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
-                                <span class="smaller-font metadata-text" v-if="!comment.isDescription">
-                                    {{ comment.displayValue }}
-                                </span>
-                            </div>
+                            <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
+                                <div class="settings-input-container">
+                                    <select class="select select--full" v-model="entry.value">
+                                        <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
+                                            {{ opt }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="settings-input-container">
+                                    <input type="text" class="input" v-model="entry.value"/>
+                                </div>
+                            </template>
                         </div>
-                        <template v-if="entry.displayType === 'single-select'">
-                            <div class="settings-input-container">
-                                <select class="select select--full" v-model="entry.value">
-                                    <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
-                                        {{ opt }}
-                                    </option>
-                                </select>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div class="settings-input-container">
-                                <input type="text" class="input" v-model="entry.value"/>
-                            </div>
-                        </template>
                     </div>
                 </div>
             </div>
@@ -55,7 +61,7 @@ import {
     buildConfigurationFileFromPath,
     ConfigurationFile,
     ConfigurationSection,
-    getSelectOptions
+    getSelectOptions, saveConfigurationFile
 } from '../../../utils/ConfigUtils';
 import { reactive, ref } from 'vue';
 
@@ -64,6 +70,10 @@ export type ConfigEntryEditorProps = {
 }
 
 const props = defineProps<ConfigEntryEditorProps>();
+const emits = defineEmits<{
+    (e: 'changed'): void
+}>();
+
 const configurationFile = ref<ConfigurationFile | null>(null);
 const collapsedSections = reactive<ConfigurationSection[]>([]);
 
@@ -77,6 +87,15 @@ function toggleSectionVisibility(section: ConfigurationSection) {
     } else {
         collapsedSections.push(section);
     }
+}
+
+function save() {
+    saveConfigurationFile(configurationFile.value!);
+    emits('changed');
+}
+
+function cancel() {
+    emits('changed');
 }
 
 </script>
