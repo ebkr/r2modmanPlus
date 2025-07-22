@@ -1,5 +1,5 @@
-import FsProvider from "../providers/generic/file/FsProvider";
-import ConfigFile from "../model/file/ConfigFile";
+import FsProvider from '../providers/generic/file/FsProvider';
+import ConfigFile from '../model/file/ConfigFile';
 
 export type ConfigurationFile = {
     filename: string;
@@ -12,15 +12,21 @@ export type ConfigurationSection = {
     entries: ConfigurationEntry[];
 }
 
+export type ConfigurationEntryDisplayType = 'input' | 'single-select' | 'multi-select' | 'boolean';
 export type ConfigurationEntry = {
     entryName: string;
     commentLines: CommentLine[];
+    // Value since last load
+    cachedValue: string;
+    // Can be modified but not saved to disk
     value: string;
+    displayType: ConfigurationEntryDisplayType;
 }
 
 export type CommentLine = {
     isDescription: boolean;
     displayValue: string;
+    rawValue: string;
 }
 
 export async function buildConfigurationFileFromPath(configFile: ConfigFile): Promise<ConfigurationFile> {
@@ -73,16 +79,31 @@ async function buildConfigurationEntries(configLines: string[]): Promise<Configu
         } else if (line.trim().length > 0 && line.indexOf("=") > 0) {
             const entryInfo = line.split("=");
             const name = entryInfo.shift();
-            const value = entryInfo.join("="); // Re-add separated "=" symbols.
+            const value = entryInfo.join("=").trimStart(); // Re-add separated "=" symbols.
             entries.push({
                 entryName: name,
                 value: value,
+                cachedValue: value,
                 commentLines: await buildComments(comments),
+                displayType: await determineEntryDisplayType(comments),
             } as ConfigurationEntry);
             comments = [];
         }
     }
     return entries;
+}
+
+async function determineEntryDisplayType(comments: string[]): Promise<ConfigurationEntryDisplayType> {
+    if (comments.findIndex(comment => comment.includes('# Setting type: Boolean')) >= 0) {
+        return 'boolean';
+    }
+    if (comments.findIndex(comment => comment.includes('# Multiple values can be set at the same time by separating them with')) >= 0) {
+        return 'multi-select';
+    }
+    if (comments.findIndex(comment => comment.includes('# Acceptable values:')) >= 0) {
+        return 'single-select';
+    }
+    return 'input';
 }
 
 async function buildComments(comments: string[]): Promise<CommentLine[]> {
@@ -93,12 +114,25 @@ async function buildComments(comments: string[]): Promise<CommentLine[]> {
             return {
                 isDescription: true,
                 displayValue: commentLine.trim().substring(2).trim(),
+                rawValue: commentLine.trim()
             } as CommentLine;
         } else {
             return {
                 isDescription: false,
                 displayValue: commentLine.trim().substring(1).trim(),
+                rawValue: commentLine.trim()
             } as CommentLine;
         }
     });
+}
+
+export function getSelectOptions(entry: ConfigurationEntry): string[] {
+    if (!['single-select', 'multi-select'].includes(entry.displayType)) {
+        throw new Error(`Invalid display type for select options. Got ${entry.displayType} for entry: ${entry.entryName}`);
+    }
+    const acceptableValuesComment = entry.commentLines.find(value => value.rawValue.includes("# Acceptable values:"));
+    if (!acceptableValuesComment) {
+        throw new Error(`Could not find metadata comment for acceptable values on entry: ${entry.entryName}`);
+    }
+    return acceptableValuesComment.rawValue.substring("# Acceptable values: ".length).split(",");
 }
