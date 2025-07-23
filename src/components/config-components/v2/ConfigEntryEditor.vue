@@ -23,13 +23,19 @@
                         <div class="inner-row" v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`" v-if="!collapsedSections.includes(section)">
                             <div class="entry-info">
                                 <p><strong>{{ entry.entryName }}</strong></p>
-                                <div v-for="(comment, commentIndex) of entry.commentLines" :key="`description-comment-${commentIndex}-${section.sectionName}`">
+                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry, entriesWithExpandedComments)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
                                     <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
                                 </div>
-                                <div v-for="(comment, commentIndex) of entry.commentLines" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
+                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry, entriesWithExpandedComments)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
                                     <span class="smaller-font metadata-text" v-if="!comment.isDescription">
                                         {{ comment.displayValue }}
                                     </span>
+                                </div>
+                                <div v-if="isDisplayTooLong(entry) && entriesWithExpandedComments.includes(entry)">
+                                    <a href="#" @click="() => toggleEntryExpansion(entry)">Show less</a>
+                                </div>
+                                <div v-else-if="isDisplayTooLong(entry)">
+                                    <a href="#" @click="() => toggleEntryExpansion(entry)">Show more</a>
                                 </div>
                             </div>
                             <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
@@ -58,7 +64,7 @@
 
 import ConfigFile from "../../../model/file/ConfigFile";
 import {
-    buildConfigurationFileFromPath,
+    buildConfigurationFileFromPath, CommentLine, ConfigurationEntry,
     ConfigurationFile,
     ConfigurationSection,
     getSelectOptions, saveConfigurationFile
@@ -75,17 +81,18 @@ const emits = defineEmits<{
 }>();
 
 const configurationFile = ref<ConfigurationFile | null>(null);
-const collapsedSections = reactive<ConfigurationSection[]>([]);
+const collapsedSections = ref<ConfigurationSection[]>([]);
+const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
 
 buildConfigurationFileFromPath(props.configFile)
     .then(value => configurationFile.value = value);
 
 function toggleSectionVisibility(section: ConfigurationSection) {
-    const collapsedSectionIndex = collapsedSections.indexOf(section);
+    const collapsedSectionIndex = collapsedSections.value.indexOf(section);
     if (collapsedSectionIndex >= 0) {
-        collapsedSections.splice(collapsedSectionIndex, 1);
+        collapsedSections.value.splice(collapsedSectionIndex, 1);
     } else {
-        collapsedSections.push(section);
+        collapsedSections.value.push(section);
     }
 }
 
@@ -96,6 +103,38 @@ function save() {
 
 function cancel() {
     emits('changed');
+}
+
+function isDisplayTooLong(entry: ConfigurationEntry): boolean {
+    if (entry.commentLines.length > 5) {
+        return true;
+    }
+    return entry.commentLines.findIndex(value => value.displayValue.length >= 200) >= 0;
+}
+
+function getAppropriateCommentLines(entry: ConfigurationEntry, entriesWithExpandedComments: ConfigurationEntry[]) {
+    if (!entriesWithExpandedComments.includes(entry)) {
+        const commentLines = [...entry.commentLines]
+            .slice(0, 5)
+            .map(value => {
+                return {
+                    ...value
+                };
+            });
+
+        commentLines.forEach(value => value.displayValue = value.displayValue.substring(0, 200));
+        return commentLines;
+    }
+    return entry.commentLines;
+}
+
+function toggleEntryExpansion(entry: ConfigurationEntry) {
+    const entryIndex = entriesWithExpandedComments.value.indexOf(entry);
+    if (entryIndex >= 0) {
+        entriesWithExpandedComments.value.splice(entryIndex, 1);
+    } else {
+        entriesWithExpandedComments.value.push(entry);
+    }
 }
 
 </script>
