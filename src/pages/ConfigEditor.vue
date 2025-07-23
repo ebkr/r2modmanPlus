@@ -5,7 +5,7 @@
 <!--            :config-file="editing"-->
 <!--            @changed="editing = null"-->
 <!--            v-if="editing !== null"/>-->
-        <ConfigEditLayout :config-file="editing" @changed="editing = null"/>
+        <ConfigEditLayout :config-file="editing" @changed="editing = null" v-if="editing"/>
     </div>
 </template>
 
