@@ -12,7 +12,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import QuillEditor from "../../QuillEditor.vue";
+import QuillEditor from "../QuillEditor.vue";
 import {ref} from "vue";
 import FsProvider from "src/providers/generic/file/FsProvider";
 
