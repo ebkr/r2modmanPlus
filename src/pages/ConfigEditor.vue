@@ -13,7 +13,7 @@
 
 import ConfigSelectionLayout from '../components/config-components/ConfigSelectionLayout.vue';
 import ConfigFile from '../model/file/ConfigFile';
-import ConfigEditLayout from '../components/config-components/v2/ConfigEditLayout.v2.vue';
+import ConfigEditLayout from 'components/config-components/ConfigEditLayout.vue';
 import { ref } from 'vue';
 
 const editing = ref<ConfigFile | null>(null);
