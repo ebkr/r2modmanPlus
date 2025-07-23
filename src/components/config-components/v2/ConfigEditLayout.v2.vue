@@ -8,7 +8,7 @@
         />
         <div class="margin-top"></div>
         <ConfigEntryEditor :config-file="configFile" v-if="isEntryEditor" @changed="() => emits('changed')"/>
-        <ConfigRawEditor v-else/>
+        <ConfigRawEditor :file-path="configFile.getPath()" @changed="() => emits('changed')" v-else />
     </div>
 </template>
 
@@ -29,10 +29,6 @@ const emits = defineEmits<{
 }>();
 
 const isEntryEditor = computed(() => {
-    if (props.configFile && props.configFile.getName()) {
-        console.log("Config file:", props.configFile);
-        return props.configFile.getName().endsWith(".cfg")
-    }
-    return false;
+    return props.configFile.getName().endsWith(".cfg")
 });
 </script>
