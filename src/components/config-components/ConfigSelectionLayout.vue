@@ -72,7 +72,7 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import LinkProvider from '../../providers/components/LinkProvider';
 import ProfileModList from '../../r2mm/mods/ProfileModList';
-import { computed, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';

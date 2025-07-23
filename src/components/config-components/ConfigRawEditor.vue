@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import QuillEditor from "../QuillEditor.vue";
 import {ref} from "vue";
-import FsProvider from "src/providers/generic/file/FsProvider";
+import FsProvider from "../../providers/generic/file/FsProvider";
 
 export type ConfigRawEditorProps = {
     filePath: string;
