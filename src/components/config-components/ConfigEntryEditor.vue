@@ -61,15 +61,14 @@
 </template>
 
 <script lang="ts" setup>
-
 import ConfigFile from "../../model/file/ConfigFile";
 import {
-    buildConfigurationFileFromPath, CommentLine, ConfigurationEntry,
+    buildConfigurationFileFromPath, ConfigurationEntry,
     ConfigurationFile,
     ConfigurationSection,
     getSelectOptions, saveConfigurationFile
 } from '../../utils/ConfigUtils';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 export type ConfigEntryEditorProps = {
     configFile: ConfigFile;
