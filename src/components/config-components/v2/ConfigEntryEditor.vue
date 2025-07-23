@@ -23,10 +23,10 @@
                         <div class="inner-row" v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`" v-if="!collapsedSections.includes(section)">
                             <div class="entry-info">
                                 <p><strong>{{ entry.entryName }}</strong></p>
-                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry, entriesWithExpandedComments)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
+                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
                                     <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
                                 </div>
-                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry, entriesWithExpandedComments)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
+                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
                                     <span class="smaller-font metadata-text" v-if="!comment.isDescription">
                                         {{ comment.displayValue }}
                                     </span>
@@ -112,8 +112,8 @@ function isDisplayTooLong(entry: ConfigurationEntry): boolean {
     return entry.commentLines.findIndex(value => value.displayValue.length >= 200) >= 0;
 }
 
-function getAppropriateCommentLines(entry: ConfigurationEntry, entriesWithExpandedComments: ConfigurationEntry[]) {
-    if (!entriesWithExpandedComments.includes(entry)) {
+function getAppropriateCommentLines(entry: ConfigurationEntry) {
+    if (!entriesWithExpandedComments.value.includes(entry)) {
         const commentLines = [...entry.commentLines]
             .slice(0, 5)
             .map(value => {
