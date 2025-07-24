@@ -132,7 +132,7 @@ import { State } from '../store';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import VueRouter from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
-import { isProtonRequired } from '../utils/LaunchUtils';
+import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -172,9 +172,7 @@ async function moveToNextScreen() {
         if (!(await isProtonRequired(activeGame))) {
             console.log('Not proton game');
             await ensureWrapperInGameFolder();
-            const launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(activeGame);
-            console.log(`Launch arguments for this game:`, launchArgs);
-            if (typeof launchArgs === 'string' && !launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh'))) {
+            if (!(await areWrapperArgumentsProvided(activeGame))) {
                 router.push({name: 'linux'});
                 return;
             }
