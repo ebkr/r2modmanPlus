@@ -77,7 +77,7 @@
         </div>
         <div id="mod-preview">
             <template v-if="previewMod !== null">
-                <OnlinePreviewPanel :mod="previewMod"/>
+                <OnlinePreviewPanel :mod="previewMod" @close="() => previewMod = null"/>
             </template>
         </div>
     </div>

@@ -17,6 +17,10 @@ interface ModPreviewPanelProps {
 }
 
 const props = defineProps<ModPreviewPanelProps>();
+const emits = defineEmits<{
+    (e: 'close'): void
+}>();
+
 const readme = ref<string | null>(null);
 const readmeError = ref<R2Error | null>(null);
 const changelog = ref<string | null>(null);
@@ -138,7 +142,12 @@ function showDownloadModal(mod: ThunderstoreMod) {
 <template>
     <div class="c-preview-panel">
         <div class="c-preview-panel__header">
-            <h1 class="title">{{ mod.getName() }}</h1>
+            <button class="close-button button" @click="() => emits('close')">
+                <i class="fas fa-times"/>
+            </button>
+            <h1 class="title">
+                {{ mod.getName() }}
+            </h1>
             <h2 class="subtitle">
                 By {{ mod.getOwner() }}
             </h2>
@@ -238,5 +247,9 @@ function showDownloadModal(mod: ThunderstoreMod) {
     display: flex;
     flex-grow: 0;
     gap: 0.5rem;
+}
+
+.close-button {
+    float: right;
 }
 </style>
