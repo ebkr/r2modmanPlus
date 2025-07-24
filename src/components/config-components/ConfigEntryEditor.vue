@@ -5,15 +5,15 @@
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
         <div class="container">
-            <div id="config-overview" v-if="configurationFile">
+            <div id="config-overview" v-if="configurationFileHolder.configurationFile">
                 <h3 class='subtitle is-3'>Sections</h3>
                 <ul>
-                    <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`" v-if="section.sectionName.length > 0">
+                    <li v-for="(section, sectionIndex) of configurationFileHolder.configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`" v-if="section.sectionName.length > 0">
                         <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
                     </li>
                 </ul>
                 <hr/>
-                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
+                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFileHolder.configurationFile.sections">
                     <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                         {{ section.sectionName }}
                         <br/>
@@ -47,6 +47,13 @@
                                     </select>
                                 </div>
                             </template>
+                            <template v-else-if="entry.displayType === 'multi-select'">
+                                <MultiSelect
+                                    placeholder="Select an option"
+                                    :selected="entry.value.split(',')"
+                                    :options="getSelectOptions(entry)"
+                                    @selection-changed="(e, newSelection) => updateEntryMultiSelect(entry, e)"/>
+                            </template>
                             <template v-else>
                                 <div class="settings-input-container">
                                     <input type="text" class="input" v-model="entry.value"/>
@@ -68,7 +75,8 @@ import {
     ConfigurationSection,
     getSelectOptions, saveConfigurationFile
 } from '../../utils/ConfigUtils';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
+import MultiSelect from '../input/MultiSelect.vue';
 
 export type ConfigEntryEditorProps = {
     configFile: ConfigFile;
@@ -79,12 +87,14 @@ const emits = defineEmits<{
     (e: 'changed'): void
 }>();
 
-const configurationFile = ref<ConfigurationFile | null>(null);
+const configurationFileHolder = reactive({
+    configurationFile: {} as ConfigurationFile,
+});
 const collapsedSections = ref<ConfigurationSection[]>([]);
 const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
 
 buildConfigurationFileFromPath(props.configFile)
-    .then(value => configurationFile.value = value);
+    .then(value => configurationFileHolder.configurationFile = reactive(value));
 
 function toggleSectionVisibility(section: ConfigurationSection) {
     const collapsedSectionIndex = collapsedSections.value.indexOf(section);
@@ -96,7 +106,7 @@ function toggleSectionVisibility(section: ConfigurationSection) {
 }
 
 function save() {
-    saveConfigurationFile(configurationFile.value!);
+    saveConfigurationFile(configurationFileHolder.configurationFile);
     emits('changed');
 }
 
@@ -134,6 +144,10 @@ function toggleEntryExpansion(entry: ConfigurationEntry) {
     } else {
         entriesWithExpandedComments.value.push(entry);
     }
+}
+
+function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string[]) {
+    entry.value = newSelections.map(value => value.trim()).join(', ');
 }
 
 </script>
