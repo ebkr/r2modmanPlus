@@ -9,16 +9,16 @@ import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirecto
 import FileUtils from '../../utils/FileUtils';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
-import LinuxGameDirectoryResolver from './linux/GameDirectoryResolver';
 import FileTree from '../../model/file/FileTree';
 import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
+import { isProtonRequired } from '../../utils/LaunchUtils';
 
 export default class ModLinker {
 
     public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
         if (game.packageLoader == PackageLoader.BEPINEX) {
             if (process.platform === 'linux') {
-                const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+                const isProton = await isProtonRequired(game);
                 if (!isProton) {
                     // Game is native, BepInEx doesn't require moving. No linked files.
                     return [];

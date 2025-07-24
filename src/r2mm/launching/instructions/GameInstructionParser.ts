@@ -5,8 +5,7 @@ import path from 'path';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import R2Error from '../../../model/errors/R2Error';
 import * as process from 'process';
-import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../../../r2mm/manager/linux/GameDirectoryResolver';
+import { isProtonRequired } from '../../../utils/LaunchUtils';
 
 export default class GameInstructionParser {
 
@@ -41,7 +40,7 @@ export default class GameInstructionParser {
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
             if (["linux"].includes(process.platform.toLowerCase())) {
-                const isProton = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(game);
+                const isProton = await isProtonRequired(game);
                 const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath("BepInEx", "core"));
                 const preloaderPath = path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))

@@ -1,11 +1,13 @@
-import Profile, { ImmutableProfile } from "../model/Profile";
-import R2Error from "../model/errors/R2Error";
-import Game from "../model/game/Game";
-import FsProvider from "../providers/generic/file/FsProvider";
-import GameRunnerProvider from "../providers/generic/game/GameRunnerProvider";
-import GameDirectoryResolverProvider from "../providers/ror2/game/GameDirectoryResolverProvider";
-import ManagerSettings from "../r2mm/manager/ManagerSettings";
-import ModLinker from "../r2mm/manager/ModLinker";
+import Profile, { ImmutableProfile } from '../model/Profile';
+import R2Error from '../model/errors/R2Error';
+import Game from '../model/game/Game';
+import FsProvider from '../providers/generic/file/FsProvider';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ModLinker from '../r2mm/manager/ModLinker';
+import { Platform } from '../assets/data/ecosystemTypes';
+import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -64,3 +66,9 @@ export const throwIfNoGameDir = async (game: Game): Promise<void> => {
         throw error;
     }
 };
+
+export async function isProtonRequired(activeGame: Game) {
+    return [Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.activePlatform.storePlatform)
+        ? await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)
+        : false;
+}
