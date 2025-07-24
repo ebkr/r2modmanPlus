@@ -17,14 +17,12 @@
 </template>
 
 <script lang='ts' setup>
-import PathResolver from '../r2mm/manager/PathResolver';
 import { Hero } from '../components/all';
-import * as path from 'path';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
-import {getWrapperLaunchArgs} from "src/utils/LaunchUtils";
+import {getWrapperLaunchArgs} from "../utils/LaunchUtils";
 
 const store = getStore<State>();
 let router!: VueRouter;
