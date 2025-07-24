@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import InteractionProvider from "src/providers/ror2/system/InteractionProvider";
+import InteractionProvider from "../../providers/ror2/system/InteractionProvider";
 import { ref } from "vue";
 
 export type CopyToClipboardButtonProps = {

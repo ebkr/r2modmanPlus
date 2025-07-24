@@ -128,7 +128,7 @@
         <DownloadProgressModal />
         <DownloadModVersionSelectModal />
         <UpdateAllInstalledModsModal />
-        <LaunchTypeModal/>
+        <LaunchTypeModal v-if="canRenderLaunchTypeModal"/>
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
@@ -189,6 +189,10 @@ const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
 const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
+
+function canRenderLaunchTypeModal() {
+    return ['linux', 'darwin'].includes(process.platform);
+}
 
 function closeSteamInstallationValidationModal() {
     isValidatingSteamInstallation.value = false;

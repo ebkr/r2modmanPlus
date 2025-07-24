@@ -7,7 +7,7 @@ import SettingsDexieStore, { ManagerSettingsInterfaceHolder } from './SettingsDe
 import Game from '../../model/game/Game';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import { GameSelectionViewMode } from '../../model/enums/GameSelectionViewMode';
-import {LaunchType} from "src/model/real_enums/launch/LaunchType";
+import { LaunchType } from "../../model/real_enums/launch/LaunchType";
 
 export default class ManagerSettings {
 

@@ -15,7 +15,7 @@ export async function getLaunchType(game: Game) {
         const settings = await ManagerSettings.getSingleton(game);
         const savedLaunchType = settings.getContext().gameSpecific.launchType;
         if (savedLaunchType !== undefined) {
-            return EnumResolver.from<LaunchType>(LaunchType, settings.getContext().gameSpecific.launchType);
+            return EnumResolver.from<LaunchType>(LaunchType, savedLaunchType);
         }
     }
     return EnumResolver.from<LaunchType>(LaunchType, LaunchType.AUTO);

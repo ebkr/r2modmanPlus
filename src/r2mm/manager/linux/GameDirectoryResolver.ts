@@ -12,8 +12,8 @@ import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
 import DepotLoader from '../../../depots/loader/DepotLoader';
-import {getLaunchType, LaunchType} from "src/model/real_enums/launch/LaunchType";
-import EnumResolver from "src/model/enums/_EnumResolver";
+import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
+import EnumResolver from "../../../model/enums/_EnumResolver";
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 

@@ -12,7 +12,7 @@ import { exec } from 'child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
-import {isProtonRequired} from "src/utils/LaunchUtils";
+import {isProtonRequired} from "../../../../utils/LaunchUtils";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 

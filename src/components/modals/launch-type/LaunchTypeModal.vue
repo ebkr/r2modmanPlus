@@ -9,7 +9,7 @@ import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/Launch
 import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
 import EnumResolver from "../../../model/enums/_EnumResolver";
 import CopyToClipboardButton from "../../buttons/CopyToClipboardButton.vue";
-import ManagerSettings from "src/r2mm/manager/ManagerSettings";
+import ManagerSettings from "../../../r2mm/manager/ManagerSettings";
 
 const store = getStore<State>();
 

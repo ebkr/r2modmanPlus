@@ -10,8 +10,7 @@ import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
 import path from "path";
-import PathResolver from "src/r2mm/manager/PathResolver";
-import {computed} from "vue";
+import PathResolver from "../r2mm/manager/PathResolver";
 
 export enum LaunchMode { VANILLA, MODDED };
 
