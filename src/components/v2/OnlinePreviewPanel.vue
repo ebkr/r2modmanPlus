@@ -25,6 +25,12 @@ const activeTab = ref<"README" | "CHANGELOG" | "Dependencies">("README");
 const loadingPanel = ref<boolean>(true);
 const dependencies = ref<ThunderstoreMod[]>([]);
 
+const maxPanelWidth = ref(getMaxPanelWidth());
+
+function getMaxPanelWidth(): number {
+    return window.outerWidth - document.getElementsByClassName("nav-column")[0].scrollWidth;
+}
+
 function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
     activeTab.value = tab;
 }
@@ -139,6 +145,7 @@ watchEffect(() => {
     const varWidth = previewPanelWidth.value;
     const root = document.querySelector(':root')!;
     root.style.setProperty('--preview-panel-width', varWidth);
+    maxPanelWidth.value = getMaxPanelWidth();
 });
 
 function resizePreviewPanel(event: DragEvent) {
@@ -156,7 +163,7 @@ function startDrag(event: DragEvent) {
         <div class="c-drag-pane" @drag.prevent.stop="() => {}" @dragstart="startDrag" @dragend="resizePreviewPanel" draggable="true">
             <i class="fas fa-grip-lines-vertical"></i>
         </div>
-        <div class="c-preview-panel" :style="`width: calc(${previewPanelWidth}px - 2.5rem + 5px)`">
+        <div class="c-preview-panel" :style="`width: calc(${previewPanelWidth}px - 2.5rem + 5px); max-width: ${maxPanelWidth}px`">
             <div class="c-preview-panel__header">
                 <h1 class="title">{{ mod.getName() }}</h1>
                 <h2 class="subtitle">
@@ -235,6 +242,7 @@ function startDrag(event: DragEvent) {
 .c-panel-window {
     display: flex;
     flex-direction: row;
+    max-width: 80vw;
 }
 
 .c-drag-pane {
@@ -252,6 +260,7 @@ function startDrag(event: DragEvent) {
     flex-flow: column;
     margin: 1rem;
     color: var(--v2-primary-text-color);
+    min-width: 300px;
 
     &__container {
         flex: 0;
@@ -264,6 +273,7 @@ function startDrag(event: DragEvent) {
         height: max-content;
         overflow-y: auto;
         overflow-x: hidden;
+        max-width: 100%;
     }
 }
 
