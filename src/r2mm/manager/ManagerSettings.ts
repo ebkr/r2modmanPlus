@@ -172,6 +172,13 @@ export default class ManagerSettings {
         return undefined;
     }
 
+    public getLastSelectedPlatform(): Platform | null {
+        if (ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform) {
+            return EnumResolver.from<Platform>(Platform, ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform);
+        }
+        return null;
+    }
+
     public async setInstalledDisablePosition(disablePosition: string) {
         ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
         await this.save();
@@ -208,6 +215,11 @@ export default class ManagerSettings {
 
     public async setLaunchType(launchType: LaunchType) {
         ManagerSettings.CONTEXT.gameSpecific.launchType = launchType;
+        await this.save();
+    }
+
+    public async setLastSelectedPlatform(platform: Platform) {
+        ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform = platform;
         await this.save();
     }
 }
