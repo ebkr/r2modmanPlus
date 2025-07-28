@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import R2Error from '../../model/errors/R2Error';
+import CdnProvider from '../../providers/generic/connection/CdnProvider';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed, ComputedRef } from 'vue';
+import { computed } from 'vue';
 
 const store = getStore<State>();
 
-const error: ComputedRef<R2Error | null> = computed(() => store.state.error.error);
+const error = computed(() => store.state.error.error);
+const currentCdnName = computed(() => CdnProvider.current.label);
+
 const name = computed(() => error.value ? error.value.name : '');
 const message = computed(() => error.value ? error.value.message : '');
 const solution = computed(() => error.value ? error.value.solution : '');
+const showCurrentCdn = computed(() => error.value ? error.value.showCurrentCdn : false);
 
 function close() {
     store.commit('error/discardError');
@@ -26,11 +29,15 @@ function close() {
                 <p>{{message}}</p>
                 <div v-if="solution">
                     <h5 class="title is-5">Suggestion</h5>
-                    <p>{{solution}}</p>
+                    <p>{{solution + (showCurrentCdn ? ` Current CDN: ${currentCdnName}` : '')}}</p>
                 </div>
-                <div class="mt-3 text-right" v-if="error.action">
-                    <button class="button is-white" @click="() => { error.action.function(); close(); }">
-                        {{error.action.label}}
+                <div class="mt-3 text-right" v-if="error.actions">
+                    <button 
+                        v-for="action in error.actions"
+                        class="button is-white ml-3"
+                        @click="action.function(); if(action.closeModal) close()"
+                    >
+                        {{action.label}}
                     </button>
                 </div>
             </div>
