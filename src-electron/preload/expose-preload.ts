@@ -6,7 +6,7 @@ import * as buffer from './node-buffer';
 import * as os from './node-os';
 import * as zip from './zip-preload';
 import * as appGlobals from "./app-preload-globals";
-import * as electron from "./electron-preload";
+import * as electron from "./electron-ipc-preload";
 
 contextBridge.exposeInMainWorld('node', {
     path: path,
