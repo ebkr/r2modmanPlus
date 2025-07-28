@@ -75,21 +75,21 @@ The only thing you have to consider when suggesting a feature is the impact it w
 
 Game selection
 
-![](https://i.imgur.com/mmzY9xQ.png)
+![](https://i.imgur.com/sz1HZP7.png)
 
 Installed mod view
 
-![](https://i.imgur.com/d7w4qEl.png)
+![](https://i.imgur.com/oqOREkh.png)
 
 Downloadable mods
 
-![](https://i.imgur.com/eoIAMMP.png)
+![](https://i.imgur.com/o6EydOd.png)
 
 Config editor
 
-![](https://i.imgur.com/RT6HsxF.png)
+![](https://i.imgur.com/A01ntPm.png)
 
 Profiles
 
-![](https://i.imgur.com/nLfNaQJ.png)
+![](https://i.imgur.com/ocwFGkS.png)
 

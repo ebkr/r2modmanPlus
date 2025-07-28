@@ -1,3 +1,17 @@
+### 3.2.2
+#### Games added
+- Bad North
+- Logic World
+- Lost Skies Island Creator
+- Mycopunk
+- Vellum
+- Word Play
+
+#### Other changes
+This release primarily focuses on improved Linux support, of which:
+- The `Other` platform option no longer hangs the application on Linux
+- You can now manually choose between Native, Proton, and Auto launch behaviour
+
 ### 3.2.1
 #### Games added
 - PEAK
