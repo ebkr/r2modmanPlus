@@ -29,7 +29,6 @@ import FileUtils from './utils/FileUtils';
 import LinkProvider from './providers/components/LinkProvider';
 import LinkImpl from './r2mm/component_override/LinkImpl';
 import FsProvider from './providers/generic/file/FsProvider';
-import NodeFs from './providers/generic/file/NodeFs';
 import { DataFolderProvider } from './providers/ror2/system/DataFolderProvider';
 import { DataFolderProviderImpl } from './r2mm/system/DataFolderProviderImpl';
 import InteractionProvider from './providers/ror2/system/InteractionProvider';
@@ -48,8 +47,9 @@ import { provideStoreImplementation } from './providers/generic/store/StoreProvi
 import baseStore from './store';
 import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
-import { Dark, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
+import contextMenu from 'src/providers/node/context_menu/context_menu';
 
 const store = baseStore;
 provideStoreImplementation(() => store);
@@ -139,6 +139,23 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
+});
+
+document.addEventListener('contextmenu', e => {
+    if (e.target) {
+        const target = e.target as HTMLElement;
+        switch (true) {
+            case target instanceof HTMLInputElement: {
+                contextMenu.showContextMenu({ readonly: false });
+                break;
+            }
+            case ['code', 'pre'].includes(target.tagName.toLowerCase()): {
+                contextMenu.showContextMenu({ readonly: true });
+                break;
+            }
+            default: { break; }
+        }
+    }
 })
 </script>
 
