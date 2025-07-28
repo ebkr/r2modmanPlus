@@ -16,7 +16,7 @@
             <div class="download-monitor-action-buttons border-at-bottom">
                 <button
                     class="button ghost"
-                    @click="$store.commit('download/removeAllInactive')"
+                    @click="$store.commit('download/removeAllInactiveDownloads')"
                 >
                     <i class="fas fa-times mr-2" />Clear finished
                 </button>

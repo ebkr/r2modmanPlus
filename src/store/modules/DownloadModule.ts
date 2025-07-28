@@ -279,7 +279,7 @@ export const DownloadModule = {
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
             state.ignoreCache = ignoreCache;
         },
-        removeAllInactive(state: State) {
+        removeAllInactiveDownloads(state: State) {
             state.allDownloads = filterKeepOnlyActiveDownloads(state.allDownloads);
         }
     },
