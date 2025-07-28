@@ -77,27 +77,20 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        _addDownload({state}, params: {
+        _addDownload({state}, download: DownloadProgress) {
+            state.allDownloads = [...state.allDownloads, download];
+        },
+
+        _createAndAddDownload({dispatch}, params: {
             combos: ThunderstoreCombo[],
             installMode: InstallMode,
             game: Game,
             profile: ImmutableProfile
         }): UUID {
             const { combos, installMode, game, profile } = params;
-            const downloadId = UUID.create();
-            const downloadObject: DownloadProgress = {
-                downloadId: downloadId,
-                initialMods: [...combos],
-                installMode,
-                game,
-                profile,
-                modName: '',
-                downloadProgress: 0,
-                installProgress: 0,
-                status: DownloadStatusEnum.DOWNLOADING
-            };
-            state.allDownloads = [...state.allDownloads, downloadObject];
-            return downloadId;
+            const downloadProgress = createDownloadProgressObject(combos, installMode, game, profile);
+            dispatch('_addDownload', downloadProgress);
+            return downloadProgress.downloadId;
         },
 
         async toggleIgnoreCache({commit, rootGetters}) {
@@ -120,7 +113,7 @@ export const DownloadModule = {
                 if (!hideModal) {
                     commit('openDownloadProgressModal', null, { root: true });
                 }
-                downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
+                downloadId = await dispatch('_createAndAddDownload', { combos, installMode, game, profile });
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
@@ -290,6 +283,28 @@ export const DownloadModule = {
             state.allDownloads = filterKeepOnlyActiveDownloads(state.allDownloads);
         }
     },
+}
+
+
+function createDownloadProgressObject(
+    combos: ThunderstoreCombo[],
+    installMode: InstallMode,
+    game: Game,
+    profile: ImmutableProfile
+): DownloadProgress {
+    const downloadId = UUID.create();
+    const downloadProgress: DownloadProgress = {
+        downloadId: downloadId,
+        initialMods: [...combos],
+        installMode,
+        game,
+        profile,
+        modName: '',
+        downloadProgress: 0,
+        installProgress: 0,
+        status: DownloadStatusEnum.DOWNLOADING
+    };
+    return downloadProgress;
 }
 
 function findIndexOfDownload(allDownloads: DownloadProgress[], downloadId: UUID): number {
