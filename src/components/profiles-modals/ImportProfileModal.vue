@@ -12,7 +12,7 @@ import * as ProfileUtils from "../../utils/ProfileUtils";
 import { ModalCard } from "../all";
 import OnlineModList from "../views/OnlineModList.vue";
 import { useProfilesComposable } from '../composables/ProfilesComposable';
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 
@@ -53,6 +53,10 @@ const knownProfileMods = computed(() => profileMods.value.known.map((combo) => c
 const unknownProfileModNames = computed(() => profileMods.value.unknown.join(', '));
 const isProfileCodeValid = computed(() => VALID_PROFILE_CODE_REGEX.test(profileImportCode.value));
 
+const profileCodeInput = ref<HTMLInputElement>();
+const profileNameInput = ref<HTMLInputElement>();
+const reviewConfirmedButton = ref<HTMLButtonElement>();
+
 function closeModal() {
     activeStep.value = 'FILE_CODE_SELECTION';
     targetProfileName.value = '';
@@ -64,6 +68,22 @@ function closeModal() {
     profileMods.value = {known: [], unknown: []};
     store.commit('closeImportProfileModal');
 }
+
+watchEffect(async () => {
+    if (activeStep.value === 'IMPORT_CODE') {
+        await nextTick();
+        profileCodeInput.value && profileCodeInput.value.focus();
+    }
+    else if (activeStep.value === 'ADDING_PROFILE') {
+        await nextTick();
+        profileNameInput.value && profileNameInput.value.focus();
+    }
+    else if (activeStep.value === 'REVIEW_IMPORT') {
+        await nextTick();
+        reviewConfirmedButton.value && reviewConfirmedButton.value.focus();
+    }
+});
+
 
 // Required to trigger a re-render of the modlist in preview step
 // when the online modlist is refreshed.
@@ -369,6 +389,7 @@ function onContentOrPathNotSet() {
 
             <button
                 id="modal-review-confirmed"
+                ref="reviewConfirmedButton"
                 class="button is-info"
                 :disabled="knownProfileMods.length === 0 || (profileMods.unknown.length > 0 && !isPartialImportAllowed)"
                 @click="onProfileReviewConfirmed"
@@ -406,6 +427,7 @@ function onContentOrPathNotSet() {
             <br/>
             <input
                 v-model="targetProfileName"
+                @keyup.enter="!doesProfileExist(targetProfileName) && onImportTargetSelected()"
                 id="import-profile-modal-new-profile-name"
                 class="input"
                 type="text"

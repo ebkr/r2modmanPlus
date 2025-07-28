@@ -2,7 +2,7 @@
 import { ModalCard } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { useProfilesComposable } from '../composables/ProfilesComposable';
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 
@@ -13,10 +13,18 @@ const {
     makeProfileNameSafe,
 } = useProfilesComposable();
 
+const nameInput = ref<HTMLInputElement>();
 const creatingInProgress = ref<boolean>(false);
 const newProfileName = ref<string>('');
 
-const isOpen = computed(() => store.state.modals.isCreateProfileModalOpen);
+const isOpen = computed<boolean>(() => store.state.modals.isCreateProfileModalOpen);
+
+watch(isOpen, async (isNowOpen) => {
+    if (isNowOpen) {
+        await nextTick();
+        nameInput.value && nameInput.value.focus();
+    }
+});
 
 function closeModal() {
     newProfileName.value = '';

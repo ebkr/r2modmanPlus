@@ -1,11 +1,16 @@
-import Profile, { ImmutableProfile } from "../model/Profile";
-import R2Error from "../model/errors/R2Error";
-import Game from "../model/game/Game";
-import FsProvider from "../providers/generic/file/FsProvider";
-import GameRunnerProvider from "../providers/generic/game/GameRunnerProvider";
-import GameDirectoryResolverProvider from "../providers/ror2/game/GameDirectoryResolverProvider";
-import ManagerSettings from "../r2mm/manager/ManagerSettings";
-import ModLinker from "../r2mm/manager/ModLinker";
+import Profile, {ImmutableProfile} from '../model/Profile';
+import R2Error from '../model/errors/R2Error';
+import Game from '../model/game/Game';
+import FsProvider from '../providers/generic/file/FsProvider';
+import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
+import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import ModLinker from '../r2mm/manager/ModLinker';
+import {Platform} from '../assets/data/ecosystemTypes';
+import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
+import {LaunchType} from "../model/real_enums/launch/LaunchType";
+import path from "path";
+import PathResolver from "../r2mm/manager/PathResolver";
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -64,3 +69,33 @@ export const throwIfNoGameDir = async (game: Game): Promise<void> => {
         throw error;
     }
 };
+
+export async function isProtonRequired(activeGame: Game) {
+    if (process.platform !== 'linux') {
+        return false;
+    }
+    return [Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.activePlatform.storePlatform)
+        ? await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).isProtonGame(activeGame)
+        : false;
+}
+
+export async function getDeterminedLaunchType(game: Game, launchType: LaunchType): Promise<LaunchType> {
+    if (launchType !== LaunchType.AUTO) {
+        return launchType;
+    }
+    if (await isProtonRequired(game)) {
+        return LaunchType.PROTON;
+    }
+    return LaunchType.NATIVE;
+}
+
+export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> {
+    return Promise.resolve()
+        .then(async () => await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game))
+        .then(launchArgs => typeof launchArgs === 'string' && launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')))
+        .catch(() => false);
+}
+
+export async function getWrapperLaunchArgs(): Promise<string> {
+    return `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
+}

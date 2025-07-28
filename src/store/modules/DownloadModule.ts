@@ -39,7 +39,6 @@ interface UpdateObject {
 interface State {
     allDownloads: DownloadProgress[],
     ignoreCache: boolean,
-    isModProgressModalOpen: boolean,
 }
 
 /**
@@ -51,7 +50,6 @@ export const DownloadModule = {
     state: (): State => ({
         allDownloads: [],
         ignoreCache: false,
-        isModProgressModalOpen: false,
     }),
 
     actions: <ActionTree<State, RootState>>{
@@ -120,7 +118,7 @@ export const DownloadModule = {
 
             try {
                 if (!hideModal) {
-                    commit('setIsModProgressModalOpen', true);
+                    commit('openDownloadProgressModal', null, { root: true });
                 }
                 downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
@@ -143,7 +141,7 @@ export const DownloadModule = {
                 commit('error/handleError', r2Error, { root: true });
             } finally {
                 if (!hideModal) {
-                    commit('setIsModProgressModalOpen', false);
+                    commit('closeDownloadProgressModal', null, { root: true });
                 }
             }
         },
@@ -208,7 +206,7 @@ export const DownloadModule = {
             const { downloadId, downloadProgress, modName, status, err} = params;
 
             if (status === StatusEnum.FAILURE) {
-                commit('setIsModProgressModalOpen', false);
+                commit('closeDownloadProgressModal', null, { root: true });
                 commit('setFailed', params.downloadId);
                 if (params.err !== null) {
                     DownloadUtils.addSolutionsToError(params.err);
@@ -287,9 +285,6 @@ export const DownloadModule = {
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
             state.ignoreCache = ignoreCache;
-        },
-        setIsModProgressModalOpen(state: State, isModProgressModalOpen: boolean) {
-            state.isModProgressModalOpen = isModProgressModalOpen;
         },
         removeAllInactive(state: State) {
             state.allDownloads = getOnlyActiveDownloads(state.allDownloads);

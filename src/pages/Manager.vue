@@ -125,7 +125,10 @@
         <SortModal />
         <LocalFileImportModal :visible="importingLocalMod" @close-modal="importingLocalMod = false" />
         <ProfileCodeExportModal />
-        <DownloadModModal />
+        <DownloadProgressModal />
+        <DownloadModVersionSelectModal />
+        <UpdateAllInstalledModsModal />
+        <LaunchTypeModal v-if="canRenderLaunchTypeModal"/>
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
@@ -149,7 +152,6 @@ import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import { homedir } from 'os';
 import * as path from 'path';
 import FsProvider from '../providers/generic/file/FsProvider';
-import DownloadModModal from '../components/views/DownloadModModal.vue';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
@@ -160,9 +162,13 @@ import CategoryFilterModal from '../components/modals/CategoryFilterModal.vue';
 import ModalCard from '../components/ModalCard.vue';
 import ProfileCodeExportModal from '../components/modals/ProfileCodeExportModal.vue';
 import SortModal from '../components/modals/SortModal.vue';
+import DownloadModVersionSelectModal from '../components/views/DownloadModVersionSelectModal.vue';
+import DownloadProgressModal from '../components/views/DownloadProgressModal.vue';
+import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledModsModal.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -183,6 +189,10 @@ const activeGame = computed(() => store.state.activeGame);
 const settings = computed(() => store.getters['settings']);
 const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
+
+function canRenderLaunchTypeModal() {
+    return ['linux', 'darwin'].includes(process.platform);
+}
 
 function closeSteamInstallationValidationModal() {
     isValidatingSteamInstallation.value = false;
@@ -534,7 +544,7 @@ async function handleSettingsCallbacks(invokedSetting: any) {
 store.dispatch('profile/loadOrderingSettings');
 store.commit('modFilters/reset');
 
-onMounted(() => {
+onMounted(async () => {
     router = getCurrentInstance()!.proxy.$router;
     launchParametersModel.value = settings.value.getContext().gameSpecific.launchParameters;
     isManagerUpdateAvailable();

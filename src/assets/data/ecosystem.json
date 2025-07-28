@@ -1590,7 +1590,7 @@
           }
         },
         "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
-        "discordUrl": "https://discord.gg/atlyss",
+        "discordUrl": "https://discord.gg/hQceRJ7pEW",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
@@ -10820,6 +10820,36 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "world": {
+            "label": "World"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "client": {
+            "label": "Client Side"
+          },
+          "host": {
+            "label": "Host Only"
+          },
+          "all": {
+            "label": "All Clients"
+          },
+          "translation": {
+            "label": "Translations"
+          },
+          "optimization": {
+            "label": "Optimization"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
+          },
+          "faces": {
+            "label": "Faces"
           }
         },
         "sections": {
@@ -17191,6 +17221,33 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "language": {
+            "label": "Language"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "console": {
+            "label": "Console"
+          },
+          "kerfur": {
+            "label": "Kerfur"
+          },
+          "signals": {
+            "label": "Signals"
+          },
+          "crafts": {
+            "label": "Crafts"
+          },
+          "placeables": {
+            "label": "Placeables"
+          },
+          "nsfw": {
+            "label": "NSFW"
           }
         },
         "sections": {
@@ -17207,6 +17264,7 @@
             ]
           }
         },
+        "wikiUrl": "https://modding.ariral.space/",
         "discordUrl": "https://discord.gg/WKBvqu4tjV"
       }
     },
@@ -18630,6 +18688,125 @@
       },
       "r2modman": null
     },
+    "bad-north": {
+      "uuid": "f59327ea-5b65-4817-b347-7c08fdda0fdd",
+      "label": "bad-north",
+      "meta": {
+        "displayName": "Bad North",
+        "iconUrl": "bad-north.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "688420"
+            }
+          ],
+          "steamFolderName": "BadNorth",
+          "dataFolderName": "BadNorth_Data",
+          "exeNames": [
+            "BadNorth.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Bad North",
+            "iconUrl": "bad-north.webp"
+          },
+          "settingsIdentifier": "BadNorth",
+          "internalFolderName": "BadNorth",
+          "packageIndex": "https://thunderstore.io/c/bad-north/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Bad North",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://bad-north.fandom.com/wiki/Bad_North_Wiki",
+        "discordUrl": "https://discord.gg/bNeqTNB23c",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "cobalt-core": {
       "uuid": "d03f61b8-9604-4cc7-8d77-4647db475aa9",
       "label": "cobalt-core",
@@ -18989,6 +19166,228 @@
       },
       "r2modman": null
     },
+    "logic-world": {
+      "uuid": "20e72fc7-3ff5-4c8e-b2aa-9a4857e50c6f",
+      "label": "logic-world",
+      "meta": {
+        "displayName": "Logic World",
+        "iconUrl": "logic-world.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1054340"
+            }
+          ],
+          "steamFolderName": "Logic World",
+          "dataFolderName": "Logic_World_Data",
+          "exeNames": [
+            "Logic_World.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Logic World",
+            "iconUrl": "logic-world.webp"
+          },
+          "settingsIdentifier": "LogicWorld",
+          "internalFolderName": "LogicWorld",
+          "packageIndex": "https://thunderstore.io/c/logic-world/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Logic World",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/C5Qkk53",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "lost-skies-ic": {
+      "uuid": "76651ab2-90fc-4aa1-bb3f-677dcf924c2c",
+      "label": "lost-skies-ic",
+      "meta": {
+        "displayName": "Lost Skies Island Creator",
+        "iconUrl": "lost-skies-island-creator.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "2102670"
+        }
+      ],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2102670"
+            }
+          ],
+          "steamFolderName": "Lost Skies Island Creator",
+          "dataFolderName": "IslandCreator_Data",
+          "exeNames": [
+            "IslandCreator.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Lost Skies Island Creator",
+            "iconUrl": "lost-skies-island-creator.webp"
+          },
+          "settingsIdentifier": "LostSkiesIslandCreator",
+          "internalFolderName": "LostSkiesIslandCreator",
+          "packageIndex": "https://thunderstore.io/c/lost-skies-ic/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "lsic"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Lost Skies Island Creator",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "fixes": {
+            "label": "Fixes"
+          },
+          "misc": {
+            "label": "Misc"
+          }
+        },
+        "sections": {},
+        "wikiUrl": "https://lostskies.wiki.gg/",
+        "discordUrl": "https://discord.com/invite/QWtTAnbvqz",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -19036,6 +19435,143 @@
         "discordUrl": "https://discord.gg/gV8QW6F"
       },
       "r2modman": null
+    },
+    "mycopunk": {
+      "uuid": "ae70137d-e23a-46d1-bae2-56916f686018",
+      "label": "mycopunk",
+      "meta": {
+        "displayName": "Mycopunk",
+        "iconUrl": "mycopunk.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3247750"
+            }
+          ],
+          "steamFolderName": "Mycopunk",
+          "dataFolderName": "Mycopunk_Data",
+          "exeNames": [
+            "Mycopunk.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Mycopunk",
+            "iconUrl": "mycopunk.webp"
+          },
+          "settingsIdentifier": "Mycopunk",
+          "internalFolderName": "Mycopunk",
+          "packageIndex": "https://thunderstore.io/c/mycopunk/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Mycopunk",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "animation": {
+            "label": "Animation"
+          },
+          "gameplay": {
+            "label": "Gameplay"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "qol": {
+            "label": "Quality Of Life"
+          },
+          "client": {
+            "label": "Client-Side"
+          },
+          "server": {
+            "label": "Server-Side"
+          },
+          "all": {
+            "label": "All Clients"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
+        "autolistPackageIds": []
+      }
     },
     "phasmophobia": {
       "uuid": "59abf0d2-1f59-4378-897e-2b4c94c87245",
@@ -19136,6 +19672,55 @@
       },
       "r2modman": null
     },
+    "spaghetti-kart": {
+      "uuid": "e9398d86-9fc8-4a68-83e0-90bdacc50289",
+      "label": "spaghetti-kart",
+      "meta": {
+        "displayName": "Spaghetti Kart",
+        "iconUrl": "spaghetti-kart.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Spaghetti Kart",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/shipofharkinian",
+        "autolistPackageIds": []
+      }
+    },
     "starship": {
       "uuid": "367e77fa-c7d6-4ca0-a8c6-a35e3f10d300",
       "label": "starship",
@@ -19235,6 +19820,85 @@
       },
       "r2modman": null
     },
+    "vellum": {
+      "uuid": "940cd817-fa5b-464e-88a3-0de6d04388c0",
+      "label": "vellum",
+      "meta": {
+        "displayName": "Vellum",
+        "iconUrl": "vellum.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "917950"
+            }
+          ],
+          "steamFolderName": "Vellum",
+          "dataFolderName": "Vellum_Data",
+          "exeNames": [
+            "Vellum.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Vellum",
+            "iconUrl": "vellum.webp"
+          },
+          "settingsIdentifier": "Vellum",
+          "internalFolderName": "Vellum",
+          "packageIndex": "https://thunderstore.io/c/vellum/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Vellum",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://vellum.fandom.com/wiki/Vellum_Wiki",
+        "discordUrl": "https://discord.gg/vellum",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "will-you-snail": {
       "uuid": "3a02eb9f-a4f2-4e9a-811c-fd2775f68157",
       "label": "will-you-snail",
@@ -19282,6 +19946,123 @@
         "discordUrl": "https://discord.gg/C8wWcRW5eX"
       },
       "r2modman": null
+    },
+    "word-play": {
+      "uuid": "a932f5bb-8871-400f-be6f-f9e8a0a47754",
+      "label": "word-play",
+      "meta": {
+        "displayName": "Word Play",
+        "iconUrl": "word-play.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3586660"
+            }
+          ],
+          "steamFolderName": "Word Play",
+          "dataFolderName": "Word Play_Data",
+          "exeNames": [
+            "Word Play.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Word Play",
+            "iconUrl": "word-play.webp"
+          },
+          "settingsIdentifier": "WordPlay",
+          "internalFolderName": "WordPlay",
+          "packageIndex": "https://thunderstore.io/c/word-play/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Word Play",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "zelda-64-recompiled": {
       "uuid": "9a90746b-6ae2-426b-92ac-cf4e06ab0564",
@@ -19750,7 +20531,7 @@
         }
       },
       "wikiUrl": "https://atlyss.wiki.gg/wiki/ATLYSS_Wiki",
-      "discordUrl": "https://discord.gg/atlyss",
+      "discordUrl": "https://discord.gg/hQceRJ7pEW",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -22290,6 +23071,36 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "world": {
+          "label": "World"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "client": {
+          "label": "Client Side"
+        },
+        "host": {
+          "label": "Host Only"
+        },
+        "all": {
+          "label": "All Clients"
+        },
+        "translation": {
+          "label": "Translations"
+        },
+        "optimization": {
+          "label": "Optimization"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
+        },
+        "faces": {
+          "label": "Faces"
         }
       },
       "sections": {
@@ -23970,6 +24781,33 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "language": {
+          "label": "Language"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "console": {
+          "label": "Console"
+        },
+        "kerfur": {
+          "label": "Kerfur"
+        },
+        "signals": {
+          "label": "Signals"
+        },
+        "crafts": {
+          "label": "Crafts"
+        },
+        "placeables": {
+          "label": "Placeables"
+        },
+        "nsfw": {
+          "label": "NSFW"
         }
       },
       "sections": {
@@ -23986,6 +24824,7 @@
           ]
         }
       },
+      "wikiUrl": "https://modding.ariral.space/",
       "discordUrl": "https://discord.gg/WKBvqu4tjV"
     },
     "void-crew": {
@@ -24496,6 +25335,48 @@
       "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
       "autolistPackageIds": []
     },
+    "bad-north": {
+      "displayName": "Bad North",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://bad-north.fandom.com/wiki/Bad_North_Wiki",
+      "discordUrl": "https://discord.gg/bNeqTNB23c",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "cobalt-core": {
       "displayName": "Cobalt Core",
       "categories": {
@@ -24785,6 +25666,67 @@
       },
       "discordUrl": "https://discord.gg/c5Ee98GNvb"
     },
+    "logic-world": {
+      "displayName": "Logic World",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/C5Qkk53",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
+    "lost-skies-ic": {
+      "displayName": "Lost Skies Island Creator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "fixes": {
+          "label": "Fixes"
+        },
+        "misc": {
+          "label": "Misc"
+        }
+      },
+      "sections": {},
+      "wikiUrl": "https://lostskies.wiki.gg/",
+      "discordUrl": "https://discord.com/invite/QWtTAnbvqz",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -24822,6 +25764,66 @@
         }
       },
       "discordUrl": "https://discord.gg/gV8QW6F"
+    },
+    "mycopunk": {
+      "displayName": "Mycopunk",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "animation": {
+          "label": "Animation"
+        },
+        "gameplay": {
+          "label": "Gameplay"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "qol": {
+          "label": "Quality Of Life"
+        },
+        "client": {
+          "label": "Client-Side"
+        },
+        "server": {
+          "label": "Server-Side"
+        },
+        "all": {
+          "label": "All Clients"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
+      "autolistPackageIds": []
     },
     "phasmophobia": {
       "displayName": "Phasmophobia",
@@ -24899,6 +25901,45 @@
         }
       },
       "wikiUrl": "https://gamebanana.com/games/16121",
+      "discordUrl": "https://discord.com/invite/shipofharkinian",
+      "autolistPackageIds": []
+    },
+    "spaghetti-kart": {
+      "displayName": "Spaghetti Kart",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
@@ -24981,6 +26022,48 @@
       "discordUrl": "https://discord.gg/vXmCVnsPE5",
       "autolistPackageIds": []
     },
+    "vellum": {
+      "displayName": "Vellum",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://vellum.fandom.com/wiki/Vellum_Wiki",
+      "discordUrl": "https://discord.gg/vellum",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "will-you-snail": {
       "displayName": "Will You Snail",
       "categories": {
@@ -25018,6 +26101,46 @@
         }
       },
       "discordUrl": "https://discord.gg/C8wWcRW5eX"
+    },
+    "word-play": {
+      "displayName": "Word Play",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "zelda-64-recompiled": {
       "displayName": "Zelda 64: Recompiled",
@@ -25124,6 +26247,11 @@
     {
       "packageId": "BepInEx-BepInExPack_Muck",
       "rootFolder": "BepInExPack_Muck",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Mycopunk",
+      "rootFolder": "BepInExPack_Mycopunk",
       "loader": "bepinex"
     },
     {

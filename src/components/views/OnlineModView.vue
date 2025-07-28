@@ -220,7 +220,7 @@ watch(() => [
 watch(() => [
     store.state.modFilters.sortDirection,
     store.state.modFilters.sortBehaviour,
-    thunderstoreModList,
+    thunderstoreModList.value,
 ], () => {
     sortThunderstoreModList();
 })

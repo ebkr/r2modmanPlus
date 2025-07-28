@@ -17,6 +17,8 @@ import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter from 'vue-router';
+import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
+import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -338,6 +340,24 @@ onMounted(async () => {
                 () => emitInvoke('ValidateSteamInstallation')
             )
         )
+    }
+
+    if (['linux', 'darwin'].includes(process.platform) && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
+        settingsList.push(
+            new SettingsRow(
+                'Debugging',
+                'Change launch behaviour',
+                'Select specific launch behaviour such as forcing Steam to launch with Proton',
+                async () => {
+                    const launchType = await getLaunchType(activeGame.value);
+                    return `The current launch behaviour is set to: ${LaunchType[launchType]}`;
+                },
+                'fa-gamepad',
+                () => {
+                    LaunchTypeModalOpen.value = true;
+                }
+            )
+        );
     }
     settingsList = settingsList.sort((a, b) => a.action.localeCompare(b.action));
     searchableSettings.value = settingsList;

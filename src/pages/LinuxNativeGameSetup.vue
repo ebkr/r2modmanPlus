@@ -7,7 +7,7 @@
 			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
 			<br/>
 			Please copy and paste the following to your {{ activeGame }} launch options:<br/>
-			<code ref="copyableArgs">{{ launchArgs }} %command%</code>
+			<code ref="copyableArgs">{{ launchArgs }}</code>
 			<br/>
 			<br/>
 			<a ref="copyAction" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
@@ -17,13 +17,12 @@
 </template>
 
 <script lang='ts' setup>
-import PathResolver from '../r2mm/manager/PathResolver';
 import { Hero } from '../components/all';
-import * as path from 'path';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import {getWrapperLaunchArgs} from "../utils/LaunchUtils";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -35,8 +34,10 @@ onMounted(() => {
 const copyableArgs = ref<HTMLInputElement>();
 const copyAction = ref<HTMLElement>();
 
+const launchArgs = ref<string>("");
+getWrapperLaunchArgs().then(value => launchArgs.value = value);
+
 const activeGame = computed(() => store.state.activeGame.displayName);
-const launchArgs = computed(() => `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}"`);
 const platformName = computed<string>(() => process.platform === 'darwin' ? 'macOS' : process.platform);
 
 function copy(){

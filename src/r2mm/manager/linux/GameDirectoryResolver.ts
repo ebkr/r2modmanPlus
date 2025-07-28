@@ -12,6 +12,8 @@ import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import { getPropertyFromPath } from '../../../utils/Common';
 import DepotLoader from '../../../depots/loader/DepotLoader';
+import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
+import EnumResolver from "../../../model/enums/_EnumResolver";
 
 const FORCE_PROTON_FILENAME = ".forceproton";
 
@@ -96,6 +98,13 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
     }
 
     public async isProtonGame(game: Game) {
+
+        // Skip isProtonGame check if user has explicitly declared launch behaviour.
+        const manualLaunchType = await getLaunchType(game);
+        if (manualLaunchType !== EnumResolver.from<LaunchType>(LaunchType, LaunchType.AUTO)) {
+            return manualLaunchType === EnumResolver.from<LaunchType>(LaunchType, LaunchType.PROTON);
+        }
+
         try {
             if (await this._isProtonForced(game)) {
                 console.log(`Proton was forced due to presence of ${FORCE_PROTON_FILENAME} file`);

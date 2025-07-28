@@ -4,18 +4,20 @@ import ThunderstoreMod from "../../model/ThunderstoreMod";
 interface State {
     associatedModsModalMod: ManifestV2 | null;
     disableModModalMod: ManifestV2 | null;
-    downloadModModalMod: ThunderstoreMod | null;
+    downloadModalMod: ThunderstoreMod | null;
     isAssociatedModsModOpen: boolean;
     isCategoryFilterModalOpen: boolean;
     isOnlineSortModalOpen: boolean;
     isCreateProfileModalOpen: boolean;
     isDeleteProfileModalOpen: boolean;
     isDisableModModalOpen: boolean;
-    isDownloadModModalOpen: boolean;
+    isDownloadModVersionSelectModalOpen: boolean;
+    isDownloadProgressModalOpen: boolean;
     isGameRunningModalOpen: boolean;
     isImportProfileModalOpen: boolean;
     isRenameProfileModalOpen: boolean;
     isUninstallModModalOpen: boolean;
+    isUpdateAllModsModalOpen: boolean;
     uninstallModModalMod: ManifestV2 | null;
     isProfileManagementModalOpen: boolean;
     isProfileCodeExportModalOpen: boolean;
@@ -26,18 +28,20 @@ export default {
     state: (): State => ({
         associatedModsModalMod: null,
         disableModModalMod: null,
-        downloadModModalMod: null,
+        downloadModalMod: null,
         isAssociatedModsModOpen: false,
         isCategoryFilterModalOpen: false,
         isOnlineSortModalOpen: false,
         isCreateProfileModalOpen: false,
         isDeleteProfileModalOpen: false,
         isDisableModModalOpen: false,
-        isDownloadModModalOpen: false,
+        isDownloadModVersionSelectModalOpen: false,
+        isDownloadProgressModalOpen: false,
         isGameRunningModalOpen: false,
         isImportProfileModalOpen: false,
         isRenameProfileModalOpen: false,
         isUninstallModModalOpen: false,
+        isUpdateAllModsModalOpen: false,
         uninstallModModalMod: null,
         isProfileManagementModalOpen: false,
         isProfileCodeExportModalOpen: false,
@@ -71,9 +75,13 @@ export default {
             state.disableModModalMod = null;
         },
 
-        closeDownloadModModal: function(state: State): void {
-            state.isDownloadModModalOpen = false;
-            state.downloadModModalMod = null;
+        closeDownloadModVersionSelectModal: function(state: State): void {
+            state.isDownloadModVersionSelectModalOpen = false;
+            state.downloadModalMod = null;
+        },
+
+        closeDownloadProgressModal: function(state: State): void {
+            state.isDownloadProgressModalOpen = false;
         },
 
         closeGameRunningModal: function(state: State): void {
@@ -91,6 +99,10 @@ export default {
         closeUninstallModModal: function(state: State): void {
             state.isUninstallModModalOpen = false;
             state.uninstallModModalMod = null;
+        },
+
+        closeUpdateAllModsModal: function(state: State): void {
+            state.isUpdateAllModsModalOpen = false;
         },
 
         closeProfileManagementModal: function(state: State): void {
@@ -131,9 +143,13 @@ export default {
             state.isDisableModModalOpen = true;
         },
 
-        openDownloadModModal: function(state: State, mod: ThunderstoreMod): void {
-            state.downloadModModalMod = mod;
-            state.isDownloadModModalOpen = true;
+        openDownloadModVersionSelectModal: function(state: State, mod: ThunderstoreMod): void {
+            state.downloadModalMod = mod;
+            state.isDownloadModVersionSelectModalOpen = true;
+        },
+
+        openDownloadProgressModal: function(state: State): void {
+            state.isDownloadProgressModalOpen = true;
         },
 
         openGameRunningModal: function(state: State): void {
@@ -154,8 +170,7 @@ export default {
         },
 
         openUpdateAllModsModal: function(state: State): void {
-            state.downloadModModalMod = null;
-            state.isDownloadModModalOpen = true;
+            state.isUpdateAllModsModalOpen = true;
         },
 
         openProfileManagementModal: function(state: State): void {
