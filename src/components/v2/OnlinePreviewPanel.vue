@@ -9,6 +9,7 @@ import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieSto
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
+import debounce from 'lodash.debounce';
 
 const store = useStore();
 
@@ -152,20 +153,27 @@ watchEffect(() => {
     maxPanelWidth.value = getMaxPanelWidth();
 });
 
-function resizePreviewPanel(event: DragEvent) {
-    previewPanelWidth.value = window.innerWidth - event.clientX;
+const resizeDebounce = debounce((event: DragEvent) => {
+    // Require conditional as on-release this is reset.
+    if (event.clientX > 0) {
+        previewPanelWidth.value = window.innerWidth - event.clientX;
+    }
+}, 1);
+
+function dragStart(event: DragEvent) {
+    event.target.style.opacity = 0;
 }
 
-function startDrag(event: DragEvent) {
-
+function dragEnd(event: DragEvent) {
+    event.target.style.opacity = 1;
 }
 
 </script>
 
 <template>
     <div class="c-panel-window">
-        <div class="c-drag-pane" @drag.prevent.stop="() => {}" @dragstart="startDrag" @dragend="resizePreviewPanel" draggable="true">
-            <i class="fas fa-grip-lines-vertical"></i>
+        <div class="c-drag-pane" @drag.prevent.stop="resizeDebounce" @dragstart="dragStart" @dragend="dragEnd" draggable="true">
+            <i class="fas fa-grip-lines-vertical drag-item"></i>
         </div>
         <div class="c-preview-panel" :style="`width: calc(${previewPanelWidth}px - 2.5rem + 5px); max-width: ${maxPanelWidth}px`">
             <div class="c-preview-panel__header">
@@ -261,6 +269,11 @@ function startDrag(event: DragEvent) {
     display: flex;
     align-items: center;
     padding-left: 1rem;
+    user-select: none !important;
+}
+
+.c-drag-pane:active {
+    cursor: none;
 }
 
 .c-preview-panel {
@@ -269,7 +282,7 @@ function startDrag(event: DragEvent) {
     flex-flow: column;
     margin: 1rem;
     color: var(--v2-primary-text-color);
-    min-width: 300px;
+    min-width: 350px;
 
     &__container {
         flex: 0;
