@@ -223,7 +223,7 @@ export const DownloadModule = {
             return getters.activeDownloads.length;
         },
         activeDownloads(state) {
-            return getOnlyActiveDownloads(state.allDownloads);
+            return filterKeepOnlyActiveDownloads(state.allDownloads);
         },
         currentDownload(state) {
             return state.allDownloads[state.allDownloads.length-1] || null;
@@ -235,7 +235,7 @@ export const DownloadModule = {
             return getters.profileActiveDownloads.length;
         },
         profileActiveDownloads(_state, getters) {
-            return getOnlyActiveDownloads(getters.profileDownloads);
+            return filterKeepOnlyActiveDownloads(getters.profileDownloads);
         },
         profileDownloads(state, _getters, _rootState, rootGetters) {
             return state.allDownloads.filter((dl: DownloadProgress) => {
@@ -287,7 +287,7 @@ export const DownloadModule = {
             state.ignoreCache = ignoreCache;
         },
         removeAllInactive(state: State) {
-            state.allDownloads = getOnlyActiveDownloads(state.allDownloads);
+            state.allDownloads = filterKeepOnlyActiveDownloads(state.allDownloads);
         }
     },
 }
@@ -302,7 +302,7 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
     return index;
 }
 
-function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
+function filterKeepOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
     const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
     return downloads.filter(dl => active.includes(dl.status));
 }
