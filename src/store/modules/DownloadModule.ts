@@ -117,13 +117,13 @@ export const DownloadModule = {
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
                 await dispatch('_executeDownload', { combos: modsWithDependencies, downloadId });
-                commit('setInstalling', downloadId);
+                commit('setDownloadInstalling', downloadId);
                 await dispatch('_installAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
-                commit('setDone', downloadId);
+                commit('setDownloadDone', downloadId);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
                 if (downloadId) {
-                    commit('setFailed', downloadId);
+                    commit('setDownloadFailed', downloadId);
                     if (profile.getProfilePath() === rootGetters['profile/activeProfile'].getProfilePath()) {
                         r2Error.setAction({
                             label: 'Retry',
@@ -160,7 +160,7 @@ export const DownloadModule = {
                     }
                 );
             } catch (e) {
-                commit('setFailed', params.downloadId);
+                commit('setDownloadFailed', params.downloadId);
                 throw e;
             }
         },
@@ -200,7 +200,7 @@ export const DownloadModule = {
 
             if (status === StatusEnum.FAILURE) {
                 commit('closeDownloadProgressModal', null, { root: true });
-                commit('setFailed', params.downloadId);
+                commit('setDownloadFailed', params.downloadId);
                 if (params.err !== null) {
                     DownloadUtils.addSolutionsToError(params.err);
                     throw params.err;
@@ -266,13 +266,13 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
-        setDone(state: State, downloadId: number) {
+        setDownloadDone(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
         },
-        setFailed(state: State, downloadId: number) {
+        setDownloadFailed(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
         },
-        setInstalling(state: State, downloadId: number) {
+        setDownloadInstalling(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
