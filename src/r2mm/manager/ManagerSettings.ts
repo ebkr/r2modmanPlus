@@ -210,4 +210,13 @@ export default class ManagerSettings {
         ManagerSettings.CONTEXT.gameSpecific.launchType = launchType;
         await this.save();
     }
+
+    public async getPreviewPanelWidth() {
+        return ManagerSettings.CONTEXT.global.previewPanelWidth;
+    }
+
+    public async setPreviewPanelWidth(width: number) {
+        ManagerSettings.CONTEXT.global.previewPanelWidth = width;
+        await this.save();
+    }
 }
