@@ -118,7 +118,7 @@ export const DownloadModule = {
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
                 await dispatch('_executeDownload', { combos: modsWithDependencies, downloadId });
                 commit('setInstalling', downloadId);
-                await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
+                await dispatch('_installAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
                 commit('setDone', downloadId);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
@@ -165,7 +165,7 @@ export const DownloadModule = {
             }
         },
 
-        async _installModsAndResolveConflicts({commit, dispatch}, params: {
+        async _installAndResolveConflicts({commit, dispatch}, params: {
             combos: ThunderstoreCombo[],
             profile: ImmutableProfile,
             downloadId: UUID
