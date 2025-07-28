@@ -260,13 +260,13 @@ export const DownloadModule = {
 
     mutations: {
         removeDownload(state: State, download: UpdateObject) {
-            const index = getIndexOfDownloadProgress(state.allDownloads, download.downloadId);
+            const index = findIndexOfDownload(state.allDownloads, download.downloadId);
             if (index > -1) {
                 state.allDownloads.splice(index, 1);
             }
         },
         updateDownload(state: State, update: UpdateObject) {
-            const index: number = getIndexOfDownloadProgress(state.allDownloads, update.downloadId);
+            const index: number = findIndexOfDownload(state.allDownloads, update.downloadId);
             if (index > -1) {
                 const newDownloads = [...state.allDownloads];
                 newDownloads[index] = {...newDownloads[index], ...update};
@@ -292,7 +292,7 @@ export const DownloadModule = {
     },
 }
 
-function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId: UUID): number {
+function findIndexOfDownload(allDownloads: DownloadProgress[], downloadId: UUID): number {
     const index = [...allDownloads].findIndex((downloadProgress) => downloadProgress.downloadId === downloadId);
 
     if (index === -1) {
@@ -308,7 +308,7 @@ function filterKeepOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadP
 }
 
 function updateDownloadStatus(downloads: DownloadProgress[], downloadId: UUID, status: DownloadStatusEnum): DownloadProgress[] {
-    const index: number = getIndexOfDownloadProgress(downloads, downloadId);
+    const index: number = findIndexOfDownload(downloads, downloadId);
     if (index > -1) {
         downloads[index].status = status;
     }
