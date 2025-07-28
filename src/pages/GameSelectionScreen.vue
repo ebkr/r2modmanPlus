@@ -240,7 +240,15 @@ function selectGame(game: Game) {
     selectedGame.value = game;
     isSettingDefaultPlatform.value = false;
     if (game.storePlatformMetadata.length > 1) {
-        selectedPlatform.value = null;
+        ManagerSettings.getSingleton(game)
+            .then(settings => settings.getLastSelectedPlatform())
+            .then(platform => {
+                if (platform) {
+                    selectedPlatform.value = Platform[platform]
+                } else {
+                    selectedPlatform.value = null;
+                }
+            });
         showPlatformModal.value = true;
     } else {
         selectedPlatform.value = game.storePlatformMetadata[0].storePlatform;
@@ -297,6 +305,7 @@ async function proceed() {
 
     const settings = await ManagerSettings.getSingleton(selectedGame.value);
     await settings.setLastSelectedGame(selectedGame.value);
+    await settings.setLastSelectedPlatform(selectedPlatform.value);
     await GameManager.activate(selectedGame.value, selectedPlatform.value);
     await store.dispatch("setActiveGame", selectedGame.value);
 
@@ -312,7 +321,7 @@ async function proceedDefault() {
     await settings.setDefaultGame(selectedGame.value);
     await settings.setDefaultStorePlatform(selectedPlatform.value);
 
-    proceed();
+    return proceed();
 }
 
 function toggleFavourite(game: Game) {
