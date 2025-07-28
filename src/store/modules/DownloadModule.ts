@@ -156,7 +156,7 @@ export const DownloadModule = {
                     params.combos,
                     state.ignoreCache,
                     (downloadProgress, modName, status, err) => {
-                        dispatch('_downloadProgressCallback', { downloadId: params.downloadId, downloadProgress, modName, status, err });
+                        dispatch('_handleDownloadProgressUpdate', { downloadId: params.downloadId, downloadProgress, modName, status, err });
                     }
                 );
             } catch (e) {
@@ -189,7 +189,7 @@ export const DownloadModule = {
             });
         },
 
-        async _downloadProgressCallback({commit}, params: {
+        async _handleDownloadProgressUpdate({commit}, params: {
             downloadId: UUID,
             downloadProgress: number,
             modName: string,
