@@ -10,6 +10,7 @@ import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
 import debounce from 'lodash.debounce';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 
 const store = useStore();
 
@@ -146,6 +147,9 @@ function showDownloadModal(mod: ThunderstoreMod) {
 
 
 const previewPanelWidth = ref(500);
+ManagerSettings.getSingleton(store.state.activeGame)
+    .then(async settings => previewPanelWidth.value = await settings.getPreviewPanelWidth())
+
 watchEffect(() => {
     const varWidth = previewPanelWidth.value;
     const root = document.querySelector(':root')!;
@@ -166,6 +170,8 @@ function dragStart(event: DragEvent) {
 
 function dragEnd(event: DragEvent) {
     event.target.style.opacity = 1;
+    ManagerSettings.getSingleton(store.state.activeGame)
+        .then(settings => settings.setPreviewPanelWidth(previewPanelWidth.value));
 }
 
 </script>
