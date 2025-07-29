@@ -8,8 +8,10 @@ import StubInteractionProvider from './stubs/providers/stub.InteractionProvider'
 import InteractionProvider from '../../../src/providers/ror2/system/InteractionProvider';
 import StubLinkProvider from './stubs/providers/stub.LinkProvider';
 import LinkProvider from '../../../src/providers/components/LinkProvider';
-import StubProfileProvider from 'app/test/jest/__tests__/stubs/providers/stub.ProfileProvider';
+import StubProfileProvider from '../../jest/__tests__/stubs/providers/stub.ProfileProvider';
 import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
+import {providePathImplementation} from "../../../src/providers/node/path/path";
+import {TestPathProvider} from "../../jest/__tests__/stubs/providers/node/Node.Path.Provider";
 
 export default class TestSetup {
 
@@ -18,6 +20,8 @@ export default class TestSetup {
         FsProvider.provide(() => fs);
         PathResolver.APPDATA_DIR = '__test_data__';
         new Profile('Default');
+
+        providePathImplementation(() => TestPathProvider);
     }
 
     public static async tearDown() {

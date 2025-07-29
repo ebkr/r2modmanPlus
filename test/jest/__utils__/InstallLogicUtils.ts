@@ -16,6 +16,8 @@ import ConflictManagementProviderImpl from '../../../src/r2mm/installing/Conflic
 import InstallationRules from '../../../src/r2mm/installing/InstallationRules';
 import GenericProfileInstaller from '../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import PathResolver from '../../../src/r2mm/manager/PathResolver';
+import {providePathImplementation} from "../../../src/providers/node/path/path";
+import {TestPathProvider} from "../__tests__/stubs/providers/node/Node.Path.Provider";
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
@@ -30,6 +32,7 @@ class ProfileProviderImpl extends ProfileProvider {
  * - Create a profile
  */
 export async function installLogicBeforeEach(internalFolderName: string) {
+    providePathImplementation(() => TestPathProvider);
     const inMemoryFs = new InMemoryFsProvider();
     FsProvider.provide(() => inMemoryFs);
     InMemoryFsProvider.clear();
@@ -50,6 +53,7 @@ export async function installLogicBeforeEach(internalFolderName: string) {
     InstallationRules.apply();
     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
     InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
+    providePathImplementation(() => TestPathProvider);
 }
 
 /**
