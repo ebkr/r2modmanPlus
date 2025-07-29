@@ -3,19 +3,20 @@ import TestSetup from '../../../../jest/__tests__/test-setup';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
 import Profile, { ImmutableProfile } from 'src/model/Profile';
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
+import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
+import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
 import yaml from 'yaml';
-import ModFileTracker from 'src/model/installing/ModFileTracker';
-import ConflictManagementProviderImpl from 'src/r2mm/installing/ConflictManagementProviderImpl';
-import StateTracker from 'src/model/installing/StateTracker';
-import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import GameManager from 'src/model/game/GameManager';
-import ConflictManagementProvider from 'src/providers/generic/installing/ConflictManagementProvider';
+import ModFileTracker from '../../../../../src/model/installing/ModFileTracker';
+import ConflictManagementProviderImpl from '../../../../../src/r2mm/installing/ConflictManagementProviderImpl';
+import StateTracker from '../../../../../src/model/installing/StateTracker';
+import GenericProfileInstaller from '../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
+import GameManager from '../../../../../src/model/game/GameManager';
+import ConflictManagementProvider from '../../../../../src/providers/generic/installing/ConflictManagementProvider';
 import { addToStateFile } from '../../../../../src/installers/InstallRuleInstaller';
 import { describe, beforeEach, afterEach, test, expect } from 'vitest';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
 import {TestPathProvider} from "../../../../jest/__tests__/stubs/providers/node/Node.Path.Provider";
+import StubProfileProvider from '../../../../jest/__tests__/stubs/providers/stub.ProfileProvider';
 
 providePathImplementation(() => TestPathProvider);
 
@@ -30,6 +31,10 @@ let beforeSetup = () => {
     conflictManagement = new ConflictManagementProviderImpl();
     GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
     ConflictManagementProvider.provide(() => conflictManagement);
+
+    const profileProvider = new StubProfileProvider();
+    const stubbedProfileProvider = sandbox.stub(profileProvider);
+    ProfileProvider.provide(() => stubbedProfileProvider);
 }
 
 describe("State testing", () => {
@@ -47,7 +52,7 @@ describe("State testing", () => {
             const files: [string, string][] = [["cachedFileA", "fileInstallLocationA"], ["cachedFileB", "fileInstallLocationB"]];
             const fileMap = new Map<string, string>(files);
 
-            sandbox.stub(ProfileProvider.instance);
+            process.stdout.write(`profile instance: ${!!ProfileProvider.instance}\n`);
             const profile = new ImmutableProfile("stub");
 
             const fsStub = sandbox.stub(FsProvider.instance);
@@ -75,7 +80,6 @@ describe("State testing", () => {
             const fakeMod = createMod("Author", "Mod", "1.0.0");
             const files: [string, string][] = [["cachedFileA", "fileInstallLocationA"], ["cachedFileB", "fileInstallLocationB"]];
 
-            sandbox.stub(ProfileProvider.instance);
             const profile = new ImmutableProfile("stub");
 
             const fsStub = sandbox.stub(FsProvider.instance);
@@ -219,7 +223,6 @@ let createMod = (author: string, name: string, versionNumber: string) => {
 }
 
 let processConflictManagement = async (modA: ManifestV2, modFileTrackerA: ModFileTracker, modB: ManifestV2, modFileTrackerB: ModFileTracker): Promise<StateTracker> => {
-    sandbox.stub(ProfileProvider.instance);
     const profile = new Profile("stub");
 
     const fsStub = sandbox.stub(FsProvider.instance);
