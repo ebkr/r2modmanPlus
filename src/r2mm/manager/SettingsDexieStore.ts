@@ -125,9 +125,9 @@ export default class SettingsDexieStore extends Dexie {
             gameSpecific: {
                 version: 2,
                 gameDirectory: null,
-                installedDisablePosition: EnumResolver.from(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM)!,
-                installedSortBy: EnumResolver.from(SortNaming, SortNaming.CUSTOM)!,
-                installedSortDirection: EnumResolver.from(SortDirection, SortDirection.STANDARD)!,
+                installedDisablePosition: EnumResolver.from<SortLocalDisabledMods>(SortLocalDisabledMods, SortLocalDisabledMods.CUSTOM),
+                installedSortBy: EnumResolver.from<SortNaming>(SortNaming, SortNaming.CUSTOM),
+                installedSortDirection: EnumResolver.from<SortDirection>(SortDirection, SortDirection.STANDARD),
                 lastSelectedProfile: "Default",
                 launchParameters: "",
                 linkedFiles: [],
