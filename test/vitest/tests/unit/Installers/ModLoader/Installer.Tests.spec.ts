@@ -6,7 +6,7 @@ import ProfileInstallerProvider from '../../../../../../src/providers/ror2/insta
 import GameManager from '../../../../../../src/model/game/GameManager';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
-import { createManifest, installLogicBeforeEach } from '../../../../../jest/__utils__/InstallLogicUtils';
+import { createManifest, installLogicBeforeEach } from '../../../../utils/InstallLogicUtils';
 import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import { describe, beforeEach, test, expect } from 'vitest';
 import { providePathImplementation } from '../../../../../../src/providers/node/path/path';

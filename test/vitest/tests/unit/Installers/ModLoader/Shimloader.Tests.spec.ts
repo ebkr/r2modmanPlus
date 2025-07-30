@@ -4,7 +4,7 @@ import {
     expectFilesToBeCopied,
     expectFilesToBeRemoved,
     installLogicBeforeEach
-} from '../../../../../jest/__utils__/InstallLogicUtils';
+} from '../../../../utils/InstallLogicUtils';
 import R2Error from '../../../../../../src/model/errors/R2Error';
 import Profile from '../../../../../../src/model/Profile';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
