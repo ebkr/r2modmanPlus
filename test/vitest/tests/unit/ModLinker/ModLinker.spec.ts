@@ -28,36 +28,32 @@ describe.skipIf(process.platform !== 'win32')('ModLinker', async () => {
     let settings!: ManagerSettings;
 
     beforeAll(async () => {
-        try {
             providePathImplementation(() => TestPathProvider);
-            provideAppWindowImplementation(() => TestAppWindowProvider);
+        provideAppWindowImplementation(() => TestAppWindowProvider);
 
-            new Profile('TestProfile');
+        new Profile('TestProfile');
 
-            const inMemoryFs = new InMemoryFsProvider();
-            FsProvider.provide(() => inMemoryFs);
-            InMemoryFsProvider.clear();
-            PathResolver.MOD_ROOT = 'MODS';
-            await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
-            ProfileProvider.provide(() => new ProfileProviderImpl());
-            await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
-            await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
-            settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
-            await settings.load(true);
-            // Hack to work around Dexie loading issue during test
-            (ManagerSettings['CONTEXT'] as any) = ({
-                global: {
-                    steamDirectory: "TEST_STEAM_PATH"
-                },
-                gameSpecific: {
-                    gameDirectory: "TEST_GAME_DIRECTORY"
-                }
-            } as ManagerSettingsInterfaceHolder)
-            // await settings.setGameDirectory("GAME_DIR");
-            await FileUtils.ensureDirectory(settings.getContext().gameSpecific.gameDirectory!);
-        } catch (e) {
-            process.stdout.write(e.toString());
-        }
+        const inMemoryFs = new InMemoryFsProvider();
+        FsProvider.provide(() => inMemoryFs);
+        InMemoryFsProvider.clear();
+        PathResolver.MOD_ROOT = 'MODS';
+        await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+        ProfileProvider.provide(() => new ProfileProviderImpl());
+        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
+        await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
+        settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
+        await settings.load(true);
+        // Hack to work around Dexie loading issue during test
+        (ManagerSettings['CONTEXT'] as any) = ({
+            global: {
+                steamDirectory: "TEST_STEAM_PATH"
+            },
+            gameSpecific: {
+                gameDirectory: "TEST_GAME_DIRECTORY"
+            }
+        } as ManagerSettingsInterfaceHolder)
+        // await settings.setGameDirectory("GAME_DIR");
+        await FileUtils.ensureDirectory(settings.getContext().gameSpecific.gameDirectory!);
     });
 
     test('Install, no existing files', async () => {
