@@ -1,7 +1,7 @@
 import InteractionProvider, {
     InteractionProviderFileProperties,
     InteractionProviderFolderProperties
-} from '../../../../../src/providers/ror2/system/InteractionProvider';
+} from 'src/providers/ror2/system/InteractionProvider';
 
 export default class StubInteractionProvider extends InteractionProvider {
 

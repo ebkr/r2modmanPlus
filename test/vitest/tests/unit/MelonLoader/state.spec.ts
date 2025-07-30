@@ -15,8 +15,8 @@ import ConflictManagementProvider from '../../../../../src/providers/generic/ins
 import { addToStateFile } from '../../../../../src/installers/InstallRuleInstaller';
 import { describe, beforeEach, afterEach, test, expect } from 'vitest';
 import {providePathImplementation} from "../../../../../src/providers/node/path/path";
-import {TestPathProvider} from "../../../../jest/__tests__/stubs/providers/node/Node.Path.Provider";
-import StubProfileProvider from '../../../../jest/__tests__/stubs/providers/stub.ProfileProvider';
+import {TestPathProvider} from "../../../stubs/providers/node/Node.Path.Provider";
+import StubProfileProvider from '../../../stubs/providers/stub.ProfileProvider';
 
 providePathImplementation(() => TestPathProvider);
 

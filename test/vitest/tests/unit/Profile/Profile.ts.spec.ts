@@ -1,6 +1,5 @@
 import * as path from 'path';
-
-import InMemoryFsProvider from '../../../../jest/__tests__/stubs/providers/InMemory.FsProvider';
+import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import GameManager from '../../../../../src/model/game/GameManager';
 import Profile, { ImmutableProfile } from '../../../../../src/model/Profile';
 import { Platform } from '../../../../../src/model/schema/ThunderstoreSchema';
@@ -9,7 +8,7 @@ import ProfileProvider from '../../../../../src/providers/ror2/model_implementat
 import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { providePathImplementation } from '../../../../../src/providers/node/path/path';
-import { TestPathProvider } from '../../../../jest/__tests__/stubs/providers/node/Node.Path.Provider';
+import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 
 
 class ProfileProviderImpl extends ProfileProvider {

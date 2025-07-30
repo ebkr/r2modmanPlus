@@ -1,16 +1,16 @@
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import PathResolver from 'src/r2mm/manager/PathResolver';
+import FsProvider from '../../../../../../src/providers/generic/file/FsProvider';
+import PathResolver from '../../../../../../src/r2mm/manager/PathResolver';
 import * as path from 'path';
-import Profile from 'src/model/Profile';
-import ProfileInstallerProvider from 'src/providers/ror2/installing/ProfileInstallerProvider';
-import GameManager from 'src/model/game/GameManager';
-import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import InstallationRules from 'src/r2mm/installing/InstallationRules';
+import Profile from '../../../../../../src/model/Profile';
+import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
+import GameManager from '../../../../../../src/model/game/GameManager';
+import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
+import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../../../jest/__utils__/InstallLogicUtils';
-import { TrackingMethod } from 'src/model/schema/ThunderstoreSchema';
+import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import { describe, beforeEach, test, expect } from 'vitest';
-import { providePathImplementation } from 'src/providers/node/path/path';
-import { TestPathProvider } from '../../../../../jest/__tests__/stubs/providers/node/Node.Path.Provider';
+import { providePathImplementation } from '../../../../../../src/providers/node/path/path';
+import { TestPathProvider } from '../../../../stubs/providers/node/Node.Path.Provider';
 
 describe('Installer Tests', () => {
 

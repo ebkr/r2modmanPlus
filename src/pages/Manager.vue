@@ -167,6 +167,7 @@ import { State } from '../store';
 import VueRouter from 'vue-router';
 import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -189,7 +190,7 @@ const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
 
 function canRenderLaunchTypeModal() {
-    return ['linux', 'darwin'].includes(process.platform);
+    return ['linux', 'darwin'].includes(appWindow.getPlatform());
 }
 
 function closeSteamInstallationValidationModal() {
@@ -206,7 +207,7 @@ async function validateSteamInstallation() {
 }
 
 function computeDefaultInstallDirectory(): string {
-    switch(window.app.getPlatform()){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
@@ -282,7 +283,7 @@ function changeGameInstallDirectoryGamePass() {
 }
 
 function computeDefaultSteamDirectory(): string {
-    switch(window.app.getPlatform()){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
@@ -298,7 +299,7 @@ function computeDefaultSteamDirectory(): string {
 }
 
 async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
-    switch(window.app.getPlatform()){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.basename(file).toLowerCase() === "steam.exe"
         case 'linux':

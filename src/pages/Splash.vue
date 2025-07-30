@@ -133,6 +133,7 @@ import path from '../providers/node/path/path';
 import { UpdateRequestItemBody } from '../store/modules/SplashModule';
 import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -163,7 +164,7 @@ function checkForUpdates() {
 }
 
 async function moveToNextScreen() {
-    if (window.app.getPlatform() === 'linux') {
+    if (appWindow.getPlatform() === 'linux') {
         const activeGame: Game = store.state.activeGame;
 
         if (!(await isProtonRequired(activeGame))) {
@@ -174,7 +175,7 @@ async function moveToNextScreen() {
                 return;
             }
         }
-    } else if (window.app.getPlatform() === 'darwin') {
+    } else if (appWindow.getPlatform() === 'darwin') {
         await ensureWrapperInGameFolder();
         router.push({name: 'linux'});
         return;
@@ -184,7 +185,7 @@ async function moveToNextScreen() {
 
 async function ensureWrapperInGameFolder() {
     const staticsDirectory = window.app.getStaticsDirectory();
-    const wrapperName = window.app.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
+    const wrapperName = appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
     const activeGame: Game = store.state.activeGame;
     console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
     try {
