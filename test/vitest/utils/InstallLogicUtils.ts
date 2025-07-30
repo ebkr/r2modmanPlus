@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import InMemoryFsProvider from '../../vitest/stubs/providers/InMemory.FsProvider';
+import InMemoryFsProvider from '../stubs/providers/InMemory.FsProvider';
 import R2Error from '../../../src/model/errors/R2Error';
 import FileTree from '../../../src/model/file/FileTree';
 import GameManager from '../../../src/model/game/GameManager';
@@ -17,7 +17,7 @@ import InstallationRules from '../../../src/r2mm/installing/InstallationRules';
 import GenericProfileInstaller from '../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import PathResolver from '../../../src/r2mm/manager/PathResolver';
 import {providePathImplementation} from "../../../src/providers/node/path/path";
-import {TestPathProvider} from "../../vitest/stubs/providers/node/Node.Path.Provider";
+import {TestPathProvider} from "../stubs/providers/node/Node.Path.Provider";
 import {expect} from 'vitest';
 
 class ProfileProviderImpl extends ProfileProvider {
