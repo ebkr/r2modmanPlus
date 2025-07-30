@@ -1,12 +1,15 @@
-import * as path from "path";
+import * as path from 'path';
 
-import InMemoryFsProvider from "../stubs/providers/InMemory.FsProvider";
-import GameManager from "../../../../src/model/game/GameManager";
-import Profile, { ImmutableProfile } from "../../../../src/model/Profile";
-import { Platform } from "../../../../src/model/schema/ThunderstoreSchema";
-import FsProvider from "../../../../src/providers/generic/file/FsProvider";
-import ProfileProvider from "../../../../src/providers/ror2/model_implementation/ProfileProvider";
-import PathResolver from "../../../../src/r2mm/manager/PathResolver";
+import InMemoryFsProvider from '../../../../jest/__tests__/stubs/providers/InMemory.FsProvider';
+import GameManager from '../../../../../src/model/game/GameManager';
+import Profile, { ImmutableProfile } from '../../../../../src/model/Profile';
+import { Platform } from '../../../../../src/model/schema/ThunderstoreSchema';
+import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
+import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
+import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
+import { beforeAll, describe, expect, test } from 'vitest';
+import { providePathImplementation } from '../../../../../src/providers/node/path/path';
+import { TestPathProvider } from '../../../../jest/__tests__/stubs/providers/node/Node.Path.Provider';
 
 
 class ProfileProviderImpl extends ProfileProvider {
@@ -21,20 +24,20 @@ function activateGame(name: string) {
     if (!game) {
         throw new Error(`Unknown Game "${name}"`);
     }
-
     GameManager.activate(game, Platform.STEAM);
 }
 
 describe("ImmutableProfile", () => {
+
     beforeAll(async () => {
+        providePathImplementation(() => TestPathProvider);
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
-        InMemoryFsProvider.clear();
-
         ProfileProvider.provide(() => new ProfileProviderImpl());
+        InMemoryFsProvider.clear();
     });
 
-    it("Initializing ImmutableProfile doesn't affect Profile", () => {
+    test("Initializing ImmutableProfile doesn't affect Profile", () => {
         activateGame("RiskOfRain2");
         new Profile("ActiveProfile");
         const immutable = new ImmutableProfile("Immutable");
@@ -45,7 +48,7 @@ describe("ImmutableProfile", () => {
         expect(Profile.getActiveProfile().getProfilePath()).toMatch(/ActiveProfile$/);
     });
 
-    it("joinToProfilePath is immutable if active game changes", () => {
+    test("joinToProfilePath is immutable if active game changes", () => {
         activateGame("Valheim");
         const profile = new ImmutableProfile("MyProfile");
         const expected = path.join(PathResolver.MOD_ROOT, "profiles", "MyProfile", "foo", "bar");
@@ -57,7 +60,7 @@ describe("ImmutableProfile", () => {
         expect(expected).toStrictEqual(actual);
     });
 
-    it("joinToProfilePath is immutable if active profile changes", () => {
+    test("joinToProfilePath is immutable if active profile changes", () => {
         activateGame("Valheim");
         const profile = new ImmutableProfile("MyProfile");
         const expected = path.join(PathResolver.MOD_ROOT, "profiles", "MyProfile", "BepInEx");
@@ -73,6 +76,7 @@ describe("ImmutableProfile", () => {
 describe("Profile", () => {
 
     beforeAll(async () => {
+        providePathImplementation(() => TestPathProvider);
         const inMemoryFs = new InMemoryFsProvider();
         FsProvider.provide(() => inMemoryFs);
         InMemoryFsProvider.clear();
@@ -80,7 +84,7 @@ describe("Profile", () => {
         ProfileProvider.provide(() => new ProfileProviderImpl());
     });
 
-    it("Initializing Profile doesn't affect ImmutableProfile", () => {
+    test("Initializing Profile doesn't affect ImmutableProfile", () => {
         activateGame("RiskOfRain2");
         const immutable = new ImmutableProfile("Immutable");
         new Profile("ActiveProfile");
@@ -93,7 +97,7 @@ describe("Profile", () => {
 
     // Active game shouldn't change without the active profile resetting but test
     // the cases separately anyway for better granularity.
-    it("joinToProfilePath mutates if active game changes", () => {
+    test("joinToProfilePath mutates if active game changes", () => {
         activateGame("Valheim");
         new Profile("Original");
         let expected = path.join(PathResolver.MOD_ROOT, "profiles", "Original", "foo", "bar");
@@ -106,7 +110,7 @@ describe("Profile", () => {
         expect(expected).toStrictEqual(actual);
     });
 
-    it("joinToProfilePath mutates if active profile changes", () => {
+    test("joinToProfilePath mutates if active profile changes", () => {
         activateGame("Valheim");
         new Profile("MyProfile");
         let expected = path.join(PathResolver.MOD_ROOT, "profiles", "MyProfile", "BepInEx");
