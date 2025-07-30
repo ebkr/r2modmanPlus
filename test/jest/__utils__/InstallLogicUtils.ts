@@ -18,6 +18,7 @@ import GenericProfileInstaller from '../../../src/r2mm/installing/profile_instal
 import PathResolver from '../../../src/r2mm/manager/PathResolver';
 import {providePathImplementation} from "../../../src/providers/node/path/path";
 import {TestPathProvider} from "../__tests__/stubs/providers/node/Node.Path.Provider";
+import {expect} from 'vitest';
 
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
