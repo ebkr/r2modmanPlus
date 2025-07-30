@@ -1,5 +1,3 @@
-import { expect, jest, it } from '@jest/globals';
-
 import Game from "../../../../src/model/game/Game";
 import { GameInstanceType, GameSelectionDisplayMode } from '../../../../src/model/schema/ThunderstoreSchema';
 import ManifestV2 from '../../../../src/model/ManifestV2';
@@ -10,6 +8,9 @@ import ThunderstoreVersion from "../../../../src/model/ThunderstoreVersion";
 import VersionNumber from "../../../../src/model/VersionNumber";
 import * as PackageDexieStoreMockables from '../../../../src/r2mm/manager/PackageDexieStoreMockables';
 import { getFullDependencyList, InstallMode } from "../../../../src/utils/DependencyUtils";
+import {describe, beforeEach, test, expect, vi} from 'vitest';
+import { providePathImplementation } from '../../../../src/providers/node/path/path';
+import { TestPathProvider } from '../../stubs/providers/node/Node.Path.Provider';
 
 type MockDexieVersion = Partial<PackageDexieStoreMockables.DexieVersion>;
 type MockDexiePackage = Partial<Omit<PackageDexieStoreMockables.DexiePackage, "versions">> & {
@@ -20,7 +21,7 @@ type MockDexiePackage = Partial<Omit<PackageDexieStoreMockables.DexiePackage, "v
 let mockPackageStorage: MockDexiePackage[] = [];
 
 // Use spyOn to mock only single method, leaving rest of the module unaltered.
-jest.spyOn(PackageDexieStoreMockables, "fetchPackagesByCommunityPackagePairs").mockImplementation(async (
+vi.spyOn(PackageDexieStoreMockables, "fetchPackagesByCommunityPackagePairs").mockImplementation(async (
     db: any,
     communityPackagePairs: [string, string][]
 ): Promise<PackageDexieStoreMockables.DexiePackage[]> => {
@@ -100,11 +101,12 @@ function addMockPackage(modData: {
 describe("DependencyUtils.getFullDependencyList", () => {
     beforeEach(() => {
         mockPackageStorage = [];
+        providePathImplementation(() => TestPathProvider);
     });
 
 
     describe("Empty combo list", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, []],
             [InstallMode.UPDATE_ALL, []],
         ])
@@ -116,7 +118,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("Single mod without dependencies", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-mod-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-mod-2.0.0"]],
         ])
@@ -137,7 +139,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("Single mod with a dependency", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithADependency-2.0.0", "author-mod-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithADependency-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -163,7 +165,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A mod pack with a dependency", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modPack-2.0.0", "author-mod-1.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modPack-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -190,7 +192,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
     });
 
     describe("A mod pack first and a mod with the same dependency last", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modPack-2.0.0", "author-modWithDependency-2.0.0", "author-mod-1.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modPack-2.0.0", "author-modWithDependency-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -224,7 +226,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
     });
 
     describe("A mod first and a mod pack with the same dependency last", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithDependency-2.0.0", "author-modPack-2.0.0", "author-mod-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithDependency-2.0.0", "author-modPack-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -259,7 +261,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("Two mods both having a dependency to the same mod", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-mod-2.0.0", "author-modWithDependency-2.0.0", "author-modWithTheSameDependency-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-mod-2.0.0", "author-modWithDependency-2.0.0", "author-modWithTheSameDependency-2.0.0"]],
         ])
@@ -293,7 +295,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A mod with a deep dependency", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithDeepDependency-2.0.0", "author-modWithAnotherDependency-2.0.0", "author-anotherMod-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithDeepDependency-2.0.0", "author-modWithAnotherDependency-2.0.0", "author-anotherMod-2.0.0"]],
         ])
@@ -327,7 +329,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A loop dependency of two mods, starting from the mod with a dependency to older version", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependencyA-1.0.0", "author-modWithLoopDependencyB-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithLoopDependencyA-1.0.0", "author-modWithLoopDependencyB-2.0.0"]],
         ])
@@ -354,7 +356,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A loop dependency of two mods, starting from the mod with a dependency to newer version", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependencyB-1.0.0", "author-modWithLoopDependencyA-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithLoopDependencyB-1.0.0", "author-modWithLoopDependencyA-2.0.0"]],
         ])
@@ -381,7 +383,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A loop dependency of a mod and a modpack, starting from the mod", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithLoopDependency-2.0.0", "author-modPackWithLoopDependency-2.0.0"]],
         ])
@@ -409,7 +411,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A loop dependency of a mod and a modpack, starting from the modpack", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modPackWithLoopDependency-1.0.0", "author-modWithLoopDependency-1.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modPackWithLoopDependency-1.0.0", "author-modWithLoopDependency-2.0.0"]],
         ])
@@ -437,7 +439,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A mod with two dependencies that have the same dependency", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithTwoDependeciesThatHaveTheSameDependency-2.0.0", "author-modWithDependency-2.0.0", "author-modWithTheSameDependency-2.0.0", "author-mod-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithTwoDependeciesThatHaveTheSameDependency-2.0.0", "author-modWithDependency-2.0.0", "author-modWithTheSameDependency-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -478,7 +480,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("Single mod with a dependency to a mod that's already installed", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modWithDependency-2.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modWithDependency-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -511,7 +513,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("mod pack with it's dependency to a mod already installed", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modPack-2.0.0", "author-mod-1.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modPack-2.0.0", "author-mod-2.0.0"]],
         ])
@@ -540,7 +542,7 @@ describe("DependencyUtils.getFullDependencyList", () => {
 
 
     describe("A mod pack with a dependency, with a newer version of the dependency already installed", () => {
-        it.each([
+        test.each([
             [InstallMode.INSTALL_SPECIFIC, ["author-modPack-2.0.0", "author-mod-1.0.0"]],
             [InstallMode.UPDATE_ALL, ["author-modPack-2.0.0", "author-mod-2.0.0"]],
         ])

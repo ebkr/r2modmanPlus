@@ -1,7 +1,8 @@
 import { chunk } from "../../../../src/utils/ArrayUtils";
+import {describe, test, expect} from 'vitest';
 
 describe("ArrayUtils.chunk", () => {
-    it("Validates chunkSize parameter", () => {
+    test("Validates chunkSize parameter", () => {
         const expected = new Error("chunk requires positive integer as chunkSize");
         expect(() => chunk([], -1)).toThrowError(expected);
         expect(() => chunk([], 0)).toThrowError(expected);
@@ -10,7 +11,7 @@ describe("ArrayUtils.chunk", () => {
         expect(() => chunk([], Infinity)).toThrowError(expected);
     });
 
-    it("Doesn't mutate the original array", () => {
+    test("Doesn't mutate the original array", () => {
         let original = [0, 1];
         chunk(original, 1);
         expect(original.length).toBe(2);
@@ -18,13 +19,13 @@ describe("ArrayUtils.chunk", () => {
         expect(original[1]).toStrictEqual(1);
     });
 
-    it("Chunks empty arrays", () => {
+    test("Chunks empty arrays", () => {
         const actual = chunk([], 1);
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual.length).toStrictEqual(0);
     });
 
-    it("Chunks divisible arrays", () => {
+    test("Chunks divisible arrays", () => {
         const actual1 = chunk([1, 2, 3, 4], 1);
         expect(Array.isArray(actual1)).toBeTruthy();
         expect(actual1.length).toStrictEqual(4);
@@ -50,7 +51,7 @@ describe("ArrayUtils.chunk", () => {
         expect(Array.isArray(actual3[0][3]["x"])).toBeTruthy();
     });
 
-    it("Chunks arrays with orphans", () => {
+    test("Chunks arrays with orphans", () => {
         const actual1 = chunk([1, 2, 3], 2);
         expect(Array.isArray(actual1)).toBeTruthy();
         expect(actual1.length).toStrictEqual(2);

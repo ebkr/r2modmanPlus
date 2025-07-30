@@ -1,7 +1,8 @@
 import FileUtils from "../../../../src/utils/FileUtils";
+import {describe, test, expect} from 'vitest';
 
 describe("FileUtils.hideWindowsUsername", () => {
-    it("Doesn't change slashes", () => {
+    test("Doesn't change slashes", () => {
         expect(
             FileUtils.hideWindowsUsername('C:\\Users\\Alice\\appData')
         ).toStrictEqual('C:\\Users\\***\\appData');
@@ -11,7 +12,7 @@ describe("FileUtils.hideWindowsUsername", () => {
         ).toStrictEqual('C:/Users/***/appData');
     });
 
-    it("Doesn't change drive letters", () => {
+    test("Doesn't change drive letters", () => {
         expect(
             FileUtils.hideWindowsUsername('C:\\Users\\Charlie\\appData')
         ).toStrictEqual('C:\\Users\\***\\appData');
@@ -21,7 +22,7 @@ describe("FileUtils.hideWindowsUsername", () => {
         ).toStrictEqual('x:\\Users\\***\\appData');
     });
 
-    it("Doesn't change the rest of the path", () => {
+    test("Doesn't change the rest of the path", () => {
         expect(
             FileUtils.hideWindowsUsername('C:\\Users\\Eve\\')
         ).toStrictEqual('C:\\Users\\***\\');
@@ -39,7 +40,7 @@ describe("FileUtils.hideWindowsUsername", () => {
         ).toStrictEqual('C:\\Users\\***\\Desktop\\file.txt');
     });
 
-    it("Doesn't affect other paths", () => {
+    test("Doesn't affect other paths", () => {
         expect(
             FileUtils.hideWindowsUsername('C:\\LUsers\\Ivan\\')
         ).toStrictEqual('C:\\LUsers\\Ivan\\');
@@ -49,7 +50,7 @@ describe("FileUtils.hideWindowsUsername", () => {
         ).toStrictEqual('C:\\temp\\Users\\Judy\\');
     });
 
-    it("Isn't tricked by odd usernames", () => {
+    test("Isn't tricked by odd usernames", () => {
         expect(
             FileUtils.hideWindowsUsername('C:\\Users\\123\\')
         ).toStrictEqual('C:\\Users\\***\\');
