@@ -22,8 +22,6 @@ describe('BONEWORKS Install Logic', () => {
 
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
-        process.stdout.write(`Profile: ${Profile.getActiveProfile().getProfilePath()}\n`);
-
         // Correct folder name casing conversion should happen within the ProfileInstaller.
         // Tests would get fairly heavily hard-coded if recorded here.
         InMemoryFsProvider.setMatchMode("CASE_INSENSITIVE");
