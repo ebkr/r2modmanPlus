@@ -12,16 +12,13 @@ export type NodePathProvider = {
 let implementation: () => NodePathProvider;
 
 function getImplementation() {
-    process.stdout.write(`Implementation exists? ${!!implementation}\n`);
     if (implementation === undefined) {
-        process.stdout.write(`Implementation does not exist\n`);
         return NodePathImplementation;
     }
     return implementation();
 }
 
 export function providePathImplementation(provider: () => NodePathProvider) {
-    process.stdout.write(`provider: ${JSON.stringify(provider())}`);
     implementation = provider;
 }
 
