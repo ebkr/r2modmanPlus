@@ -33,6 +33,9 @@ jobs:
             - name: Install Yarn dependencies
               run: yarn install --frozen-lockfile
 
+            - name: Prepare Quasar files
+              run: npx @quasar/cli prepare
+
             - name: Run tests
               run: >
                   node test/folder-structure-testing/populator.mjs &&
