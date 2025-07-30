@@ -1,5 +1,5 @@
 import Sinon from 'sinon';
-import TestSetup from '../../../../jest/__tests__/test-setup';
+import TestSetup from '../../test-setup';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
 import Profile, { ImmutableProfile } from 'src/model/Profile';
