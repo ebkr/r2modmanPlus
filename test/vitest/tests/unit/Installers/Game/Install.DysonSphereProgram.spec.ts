@@ -9,7 +9,7 @@ import {
     setupFolderStructureTestFiles,
     testSubdirTrackedFileStructure,
     testUntrackedFileStructure,
-} from '../../../../../jest/__utils__/InstallLogicUtils';
+} from '../../../../utils/InstallLogicUtils';
 import {describe, beforeAll, afterAll, test} from 'vitest';
 
 let pkg: ManifestV2;
