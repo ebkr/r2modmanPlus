@@ -6,10 +6,10 @@ import {
     expectFilesToBeRemoved,
     expectFilesToExistInProfile,
     installLogicBeforeEach
-} from '../../../../jest/__utils__/InstallLogicUtils';
-import Profile, { ImmutableProfile } from '../../../../../src/model/Profile';
-import R2Error from '../../../../../src/model/errors/R2Error';
-import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
+} from '../../../../../jest/__utils__/InstallLogicUtils';
+import Profile, { ImmutableProfile } from 'src/model/Profile';
+import R2Error from 'src/model/errors/R2Error';
+import ProfileInstallerProvider from 'src/providers/ror2/installing/ProfileInstallerProvider';
 import {describe, beforeEach, test, expect} from 'vitest';
 
 
