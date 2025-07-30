@@ -15,6 +15,7 @@ import SteamGameRunner_Linux from '../../../../r2mm/launching/runners/linux/Stea
 import SteamGameRunner_Darwin from '../../../../r2mm/launching/runners/darwin/SteamGameRunner_Darwin';
 import EgsGameRunner from '../../../../r2mm/launching/runners/multiplatform/EgsGameRunner';
 import XboxGamePassGameRunner from '../../../../r2mm/launching/runners/windows/XboxGamePassGameRunner';
+import appWindow from '../../../node/app/app_window';
 
 type PlatformRunnersType = {
     [procKey: string]: GameRunnerProvider
@@ -121,15 +122,15 @@ const RESOLVERS: ResolverType = {
 export default class PlatformInterceptorImpl extends PlatformInterceptorProvider {
 
     public getRunnerForPlatform(platform: Platform, loader: PackageLoader): GameRunnerProvider | undefined {
-        if (RUNNERS[platform][loader][window.app.getPlatform()] !== undefined) {
-            return RUNNERS[platform][loader][window.app.getPlatform()];
+        if (RUNNERS[platform][loader][appWindow.getPlatform()] !== undefined) {
+            return RUNNERS[platform][loader][appWindow.getPlatform()];
         }
         return undefined;
     }
 
     public getDirectoryResolverForPlatform(platform: Platform): GameDirectoryResolverProvider | undefined {
-        if (RESOLVERS[platform][window.app.getPlatform()] !== undefined) {
-            return RESOLVERS[platform][window.app.getPlatform()];
+        if (RESOLVERS[platform][appWindow.getPlatform()] !== undefined) {
+            return RESOLVERS[platform][appWindow.getPlatform()];
         }
         return undefined;
     }

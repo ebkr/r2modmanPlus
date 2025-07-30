@@ -9,44 +9,55 @@ import ManagerSettings from '../../../../../src/r2mm/manager/ManagerSettings';
 import FileUtils from '../../../../../src/utils/FileUtils';
 import GameDirectoryResolverProvider from '../../../../../src/providers/ror2/game/GameDirectoryResolverProvider';
 import { ManagerSettingsInterfaceHolder } from '../../../../../src/r2mm/manager/SettingsDexieStore';
+import InMemoryFsProvider from "../../../stubs/providers/InMemory.FsProvider";
+import SettingsRedirectGameDirectoryResolver from "../../../stubs/providers/SettingsRedirectGameDirectoryResolver";
 import { describe, beforeAll, test, expect } from 'vitest';
-import InMemoryFsProvider from "../../../../jest/__tests__/stubs/providers/InMemory.FsProvider";
-import SettingsRedirectGameDirectoryResolver
-    from "../../../../jest/__tests__/stubs/providers/SettingsRedirectGameDirectoryResolver";
-
+import { providePathImplementation } from '../../../../../src/providers/node/path/path';
+import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
+import { provideAppWindowImplementation } from '../../../../../src/providers/node/app/app_window';
+import { TestAppWindowProvider } from '../../../stubs/providers/node/AppWindow.Provider';
+2
 class ProfileProviderImpl extends ProfileProvider {
     ensureProfileDirectory(directory: string, profile: string): void {
         FsProvider.instance.mkdirs(path.join(directory, profile));
     }
 }
 
-const def = () => describe('ModLinker (win32)', () => {
+describe.skipIf(process.platform !== 'win32')('ModLinker', async () => {
 
     let settings!: ManagerSettings;
 
     beforeAll(async () => {
-        const inMemoryFs = new InMemoryFsProvider();
-        FsProvider.provide(() => inMemoryFs);
-        InMemoryFsProvider.clear();
-        PathResolver.MOD_ROOT = 'MODS';
-        await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
-        ProfileProvider.provide(() => new ProfileProviderImpl());
-        new Profile('TestProfile');
-        await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
-        await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
-        settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
-        await settings.load(true);
-        // Hack to work around Dexie loading issue during test
-        (ManagerSettings['CONTEXT'] as any) = ({
-            global: {
-                steamDirectory: "STEAM_DIR"
-            },
-            gameSpecific: {
-                gameDirectory: "GAME_DIR"
-            }
-        } as ManagerSettingsInterfaceHolder)
-        // await settings.setGameDirectory("GAME_DIR");
-        await FileUtils.ensureDirectory(settings.getContext().gameSpecific.gameDirectory!);
+        try {
+            providePathImplementation(() => TestPathProvider);
+            provideAppWindowImplementation(() => TestAppWindowProvider);
+
+            new Profile('TestProfile');
+
+            const inMemoryFs = new InMemoryFsProvider();
+            FsProvider.provide(() => inMemoryFs);
+            InMemoryFsProvider.clear();
+            PathResolver.MOD_ROOT = 'MODS';
+            await inMemoryFs.mkdirs(PathResolver.MOD_ROOT);
+            ProfileProvider.provide(() => new ProfileProviderImpl());
+            await inMemoryFs.mkdirs(Profile.getActiveProfile().getProfilePath());
+            await GameDirectoryResolverProvider.provide(() => new SettingsRedirectGameDirectoryResolver());
+            settings = await ManagerSettings.getSingleton(GameManager.defaultGame);
+            await settings.load(true);
+            // Hack to work around Dexie loading issue during test
+            (ManagerSettings['CONTEXT'] as any) = ({
+                global: {
+                    steamDirectory: "TEST_STEAM_PATH"
+                },
+                gameSpecific: {
+                    gameDirectory: "TEST_GAME_DIRECTORY"
+                }
+            } as ManagerSettingsInterfaceHolder)
+            // await settings.setGameDirectory("GAME_DIR");
+            await FileUtils.ensureDirectory(settings.getContext().gameSpecific.gameDirectory!);
+        } catch (e) {
+            process.stdout.write(e.toString());
+        }
     });
 
     test('Install, no existing files', async () => {
@@ -89,16 +100,3 @@ const def = () => describe('ModLinker (win32)', () => {
     });
 
 });
-
-// Wrapper to provide ModLinker test functionality regardless of platform
-describe("ModLinker", () => {
-    if (process.platform === "win32") {
-        def();
-    } else {
-        // Skip above test suite and run a basic passing test
-        // At least one test must be defined in a suite
-        test("Force pass (not Win32)", async () => {
-            return true;
-        })
-    }
-})
