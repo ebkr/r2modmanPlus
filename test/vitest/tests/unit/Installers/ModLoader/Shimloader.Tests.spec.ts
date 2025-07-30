@@ -4,11 +4,11 @@ import {
     expectFilesToBeCopied,
     expectFilesToBeRemoved,
     installLogicBeforeEach
-} from '../../../../jest/__utils__/InstallLogicUtils';
-import R2Error from '../../../../../src/model/errors/R2Error';
-import Profile from '../../../../../src/model/Profile';
-import ProfileInstallerProvider from '../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
-import GenericProfileInstaller from '../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
+} from '../../../../../jest/__utils__/InstallLogicUtils';
+import R2Error from 'src/model/errors/R2Error';
+import Profile from 'src/model/Profile';
+import ProfileInstallerProvider from 'src/providers/ror2/installing/ProfileInstallerProvider';
+import GenericProfileInstaller from 'src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import {describe, beforeEach, test, expect} from 'vitest';
 
 describe('Shimloader Installer Tests', () => {
