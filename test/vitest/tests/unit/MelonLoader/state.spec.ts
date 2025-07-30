@@ -52,7 +52,6 @@ describe("State testing", () => {
             const files: [string, string][] = [["cachedFileA", "fileInstallLocationA"], ["cachedFileB", "fileInstallLocationB"]];
             const fileMap = new Map<string, string>(files);
 
-            process.stdout.write(`profile instance: ${!!ProfileProvider.instance}\n`);
             const profile = new ImmutableProfile("stub");
 
             const fsStub = sandbox.stub(FsProvider.instance);
