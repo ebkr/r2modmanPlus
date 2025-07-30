@@ -88,7 +88,6 @@
     "electron-devtools-installer": "^3.0.0",
     "electron-packager": "14.1.1",
     "identity-obj-proxy": "^3.0.0",
-    "minimist": "^1.2.2",
     "mock-require": "^3.0.3",
     "quicktype-core": "^23.0.171",
     "postcss": "^8.5.6",
