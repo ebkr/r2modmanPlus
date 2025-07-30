@@ -1,23 +1,25 @@
 import ThunderstoreMod from "../../../../src/model/ThunderstoreMod";
 import ThunderstoreVersion from "../../../../src/model/ThunderstoreVersion";
 import { Deprecations } from "../../../../src/utils/Deprecations";
+import {describe, beforeEach, afterEach, test, expect, vi} from 'vitest';
+import { MockInstance } from '@vitest/spy';
 
 
 // TODO: The implementation is currently intentionally broken (see the
 // TODO comment in the function). Commented out test cases in this test
 // suite will work once the implementation is unbroken.
 describe("Deprecations.getDeprecatedPackageMap", () => {
-    let spyedPopulator: jest.SpyInstance;
+    let spiedPopulator: MockInstance;
 
     beforeEach(() => {
-        spyedPopulator = jest.spyOn(Deprecations, '_populateDeprecatedPackageMapForModChain');
+        spiedPopulator = vi.spyOn(Deprecations, '_populateDeprecatedPackageMapForModChain');
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();  // restore the spy created with spyOn
+        vi.restoreAllMocks();  // restore the spy created with spyOn
     });
 
-    it("Handles simple undeprecated chain", () => {
+    test("Handles simple undeprecated chain", () => {
         const mods =[
             createStubMod('TeamA-Mod1', false, ['TeamA-Mod2', 'TeamB-Mod1']),
             createStubMod('TeamA-Mod2'),
@@ -34,7 +36,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
         expect(actual.get('TeamC-Mod1')).toStrictEqual(false);
     });
 
-    // it("Handles simple chain with deprecation", () => {
+    // test("Handles simple chain with deprecation", () => {
     //     const mods =[
     //         createStubMod('TeamA-Mod1', false, ['TeamA-Mod2', 'TeamB-Mod1']),
     //         createStubMod('TeamA-Mod2'),
@@ -51,7 +53,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     expect(actual.get('TeamC-Mod1')).toStrictEqual(false);
     // });
 
-    it("Doesn't infinite-loop on direct dependency loop", () => {
+    test("Doesn't infinite-loop on direct dependency loop", () => {
         const mods =[
             createStubMod('Degrec-Alfie_Knee', false, ['Degrec-Alfie_Other_Knee']),
             createStubMod('Degrec-Alfie_Other_Knee', false, ['Degrec-Alfie_Knee']),
@@ -64,7 +66,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
         expect(actual.get('Degrec-Alfie_Other_Knee')).toStrictEqual(false);
     });
 
-    it("Doesn't infinite-loop on three-way dependency loop", () => {
+    test("Doesn't infinite-loop on three-way dependency loop", () => {
         const mods =[
             createStubMod('Loop1-Mod1', false, ['Loop1-Mod2']),
             createStubMod('Loop1-Mod2', false, ['Loop1-Mod3']),
@@ -79,7 +81,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
         expect(actual.get('Loop1-Mod3')).toStrictEqual(false);
     });
 
-    // it("Marks all mods deprecated on dependency loop", () => {
+    // test("Marks all mods deprecated on dependency loop", () => {
     //     const mods =[
     //         createStubMod('Loop2-Mod1', false, ['Loop2-Mod4']),
     //         createStubMod('Loop2-Mod2', false, ['Loop2-Mod3']),
@@ -96,7 +98,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     expect(actual.get('Loop2-Mod4')).toStrictEqual(true);
     // });
 
-    // it("Doesn't recheck already processed chains (top-down)", () => {
+    // test("Doesn't recheck already processed chains (top-down)", () => {
     //     const mods =[
     //         createStubMod('X-Root1', false, ['X-ChainTop']),
     //         createStubMod('X-Root2', false, ['X-ChainTop']),
@@ -123,7 +125,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     jest.restoreAllMocks();  // restore the spy created with spyOn
     // });
 
-    // it("Doesn't recheck already processed chains (bottom-up)", () => {
+    // test("Doesn't recheck already processed chains (bottom-up)", () => {
     //     const mods =[
     //         createStubMod('X-ChainBottom'),
     //         createStubMod('X-ChainMiddle', false, ['X-ChainBottom']),
@@ -148,7 +150,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     expect(actual.get('X-ChainBottom')).toStrictEqual(false);
     // });
 
-    // it("Doesn't recheck already processed chains of deprecated mods (top-down)", () => {
+    // test("Doesn't recheck already processed chains of deprecated mods (top-down)", () => {
     //     const mods =[
     //         createStubMod('X-Root1', false, ['X-ChainTop']),
     //         createStubMod('X-Root2', false, ['X-ChainTop']),
@@ -174,7 +176,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     expect(actual.get('X-ChainBottom')).toStrictEqual(false);
     // });
 
-    // it("Doesn't recheck already processed chains of deprecated mods (bottom-up)", () => {
+    // test("Doesn't recheck already processed chains of deprecated mods (bottom-up)", () => {
     //     const mods =[
     //         createStubMod('X-ChainBottom'),
     //         createStubMod('X-ChainMiddle', false, ['X-ChainBottom']),
@@ -200,7 +202,7 @@ describe("Deprecations.getDeprecatedPackageMap", () => {
     //     expect(actual.get('X-ChainBottom')).toStrictEqual(false);
     // });
 
-    // it("Ingores unknown dependencies", () => {
+    // test("Ingores unknown dependencies", () => {
     //     const mods =[
     //         createStubMod('Known-Mod1', false, ['Unknown-Mod1', 'Known-Mod2', 'Unknown-Mod2']),
     //         createStubMod('Known-Mod2'),
