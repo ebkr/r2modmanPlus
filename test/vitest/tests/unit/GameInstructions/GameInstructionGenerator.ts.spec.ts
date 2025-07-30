@@ -3,12 +3,19 @@ import GameManager from "../../../../../src/model/game/GameManager";
 import Profile from "../../../../../src/model/Profile";
 import { DynamicGameInstruction } from "../../../../../src/r2mm/launching/instructions/DynamicGameInstruction";
 import { CustomInstructions, ModsPathInstructions } from "../../../../../src/r2mm/launching/instructions/instructions/loader/CustomInstructions";
-import {describe, test, expect} from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { providePathImplementation } from '../../../../../src/providers/node/path/path';
+import { TestPathProvider } from '../../../stubs/providers/node/Node.Path.Provider';
 
 const game = GameManager.findByFolderName("RiskOfRain2")!;
 const profile = new Profile("Default");
 
 describe("CustomInstructions", () => {
+
+    beforeEach(() => {
+        providePathImplementation(() => TestPathProvider);
+    })
+
     test("Returns empty launch args by default", async () => {
         const expected = {
             moddedParameters: "",

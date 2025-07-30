@@ -1,4 +1,4 @@
-import {NodePathProvider} from "../../../../../../src/providers/node/path/path";
+import {NodePathProvider} from "src/providers/node/path/path";
 import path from "node:path";
 
 export const TestPathProvider = {

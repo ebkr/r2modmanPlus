@@ -1,5 +1,5 @@
 import FsProvider from '../../../../src/providers/generic/file/FsProvider';
-import InMemoryFsProvider from '../../../jest/__tests__/stubs/providers/InMemory.FsProvider';
+import InMemoryFsProvider from '../../stubs/providers/InMemory.FsProvider';
 import * as path from 'path';
 import {describe, beforeEach, test, expect} from 'vitest';
 
