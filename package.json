@@ -17,7 +17,8 @@
     "build-osx": "quasar build --mode electron -T mac",
     "publish": "quasar build --mode electron --publish always",
     "publish-win": "quasar build --mode electron -T win32 --publish always",
-    "publish-linux": "quasar build --mode electron -T linux --publish always"
+    "publish-linux": "quasar build --mode electron -T linux --publish always",
+    "test:unit:ci": "vitest run ./test/vitest"
   },
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
