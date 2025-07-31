@@ -131,7 +131,7 @@ export function getSelectOptions(entry: ConfigurationEntry): string[] {
         return ["true", "false"];
     }
     if (!['single-select', 'multi-select'].includes(entry.displayType)) {
-        throw new Error(`Invalid display type for select options. Got ${entry.displayType} for entry: ${entry.entryName}`);
+        throw new Error(`Invalid display type for select options. Got [${entry.displayType}] for entry: ${entry.entryName}`);
     }
     const acceptableValuesComment = entry.commentLines.find(value => value.rawValue.includes("# Acceptable values:"));
     if (!acceptableValuesComment) {
