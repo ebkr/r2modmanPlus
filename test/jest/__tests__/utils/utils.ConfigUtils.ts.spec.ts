@@ -2,8 +2,8 @@ import FsProvider from '../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../stubs/providers/InMemory.FsProvider';
 import {
     buildConfigurationFileFromPath,
-    ConfigurationEntry, ConfigurationEntryDisplayType,
-    getSelectOptions
+    ConfigurationEntry, ConfigurationEntryDisplayType, ConfigurationFile,
+    getSelectOptions, saveConfigurationFile
 } from '../../../../src/utils/ConfigUtils';
 import path from 'path';
 
@@ -237,3 +237,89 @@ describe('getSelectOptions', () => {
 
 });
 
+describe('saveConfigurationFile', () => {
+
+    beforeAll(() => {
+        const fsProvider = new InMemoryFsProvider();
+        FsProvider.provide(() => fsProvider);
+    });
+
+    beforeEach(() => {
+        InMemoryFsProvider.clear();
+    });
+
+    test('saves', async () => {
+        const fileDirectory = path.join("config", "saved");
+        const fileName = "configurationFileToSave.cfg";
+        const configurationFile: ConfigurationFile = {
+            filename: fileName,
+            path: path.join(fileDirectory, fileName),
+            sections: [
+                {
+                    sectionName: "First Section",
+                    entries: [
+                        {
+                            entryName: "FirstSectionEntry",
+                            value: "Saved value",
+                            cachedValue: "Old value",
+                            displayType: 'input',
+                            commentLines: [],
+                        }
+                    ]
+                },
+                {
+                    sectionName: "Second Section",
+                    entries: [
+                        {
+                            entryName: "SecondSectionFirstEntry",
+                            value: "First entry new value",
+                            cachedValue: "First entry old value",
+                            displayType: 'input',
+                            commentLines: [
+                                {
+                                    rawValue: '## First comment line',
+                                    displayValue: 'First comment line',
+                                    isDescription: true,
+                                },
+                                {
+                                    rawValue: '# Metadata comment line',
+                                    displayValue: 'Metadata comment line',
+                                    isDescription: false,
+                                },
+                            ],
+                        },
+                        {
+                            entryName: "SecondSectionSecondEntry",
+                            value: "Second entry new value",
+                            cachedValue: "Second entry old value",
+                            displayType: 'input',
+                            commentLines: [],
+                        }
+                    ]
+                }
+            ]
+        }
+
+        await FsProvider.instance.mkdirs(fileDirectory);
+        await saveConfigurationFile(configurationFile);
+
+        const fileContent = (await FsProvider.instance.readFile(configurationFile.path)).toString();
+
+        expect(fileContent).toEqual(
+`[First Section]
+
+FirstSectionEntry = Saved value
+
+[Second Section]
+
+## First comment line
+# Metadata comment line
+SecondSectionFirstEntry = First entry new value
+
+SecondSectionSecondEntry = Second entry new value
+
+`
+        )
+    })
+
+});
