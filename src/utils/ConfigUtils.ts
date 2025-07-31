@@ -148,7 +148,9 @@ export async function saveConfigurationFile(configurationFile: ConfigurationFile
         }
         for (let entry of section.entries) {
             const comments = entry.commentLines.map(value => value.rawValue).join("\n")
-            writeString += `${comments}\n`
+            if (comments.length > 0) {
+                writeString += `${comments}\n`
+            }
             writeString += `${entry.entryName} = ${entry.value}\n\n`;
         }
     }
