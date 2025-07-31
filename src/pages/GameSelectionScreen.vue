@@ -2,7 +2,7 @@
     <div>
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
-                <h2 class='modal-title'>Which store manages your game?</h2>
+                <h2 class='modal-title'>{{ t("translations.pages.gameSelection.platformModal.header") }}</h2>
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
@@ -188,9 +188,11 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 const router = useRouter();
+const { t } = useI18n();
 
 const runningMigration = ref<boolean>(false);
 const selectedGame = ref<Game | null>(null);
