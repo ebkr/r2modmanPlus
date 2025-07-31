@@ -1,5 +1,5 @@
 import FsProvider from '../providers/generic/file/FsProvider';
-import ConfigFile from '../model/file/ConfigFile';
+import path from 'path';
 
 export type ConfigurationFile = {
     filename: string;
@@ -29,11 +29,11 @@ export type CommentLine = {
     rawValue: string;
 }
 
-export async function buildConfigurationFileFromPath(configFile: ConfigFile): Promise<ConfigurationFile> {
-    const configFileData = (await FsProvider.instance.readFile(configFile.getPath())).toString();
+export async function buildConfigurationFileFromPath(filePath: string): Promise<ConfigurationFile> {
+    const configFileData = (await FsProvider.instance.readFile(filePath)).toString();
     return {
-        filename: configFile.getName(),
-        path: configFile.getPath(),
+        filename: path.basename(filePath),
+        path: filePath,
         sections: await buildConfigurationSections(configFileData),
     };
 }
