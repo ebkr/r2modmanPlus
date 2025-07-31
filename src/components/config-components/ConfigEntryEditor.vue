@@ -83,7 +83,7 @@ const configurationFile = ref<ConfigurationFile | null>(null);
 const collapsedSections = ref<ConfigurationSection[]>([]);
 const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
 
-buildConfigurationFileFromPath(props.configFile)
+buildConfigurationFileFromPath(props.configFile.getPath())
     .then(value => configurationFile.value = value);
 
 function toggleSectionVisibility(section: ConfigurationSection) {
