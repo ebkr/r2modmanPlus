@@ -1,6 +1,10 @@
 import FsProvider from '../../../../src/providers/generic/file/FsProvider';
 import InMemoryFsProvider from '../stubs/providers/InMemory.FsProvider';
-import { buildConfigurationFileFromPath, CommentLine, ConfigurationEntry } from '../../../../src/utils/ConfigUtils';
+import {
+    buildConfigurationFileFromPath,
+    ConfigurationEntry, ConfigurationEntryDisplayType,
+    getSelectOptions
+} from '../../../../src/utils/ConfigUtils';
 import path from 'path';
 
 describe('buildConfigurationFileFromPath', () => {
@@ -71,7 +75,7 @@ describe('buildConfigurationFileFromPath', () => {
             '# This is a metadata comment',
             '',
             '# A further metadata comment',
-            'Key = Value',
+            'Key = Value'
         ].join('\r\n');
 
         const pathToFileFolder = 'config';
@@ -117,17 +121,17 @@ describe('buildConfigurationFileFromPath', () => {
         ] as ConfigurationEntry[]);
     });
 
-    describe("Additional input type identification", () => {
+    describe('Additional input type identification', () => {
 
-        test("Single select", async () => {
+        test('Single select', async () => {
             const fileContent = [
                 '[Section Name]',
                 '# Acceptable values: a, b',
-                'FirstKey = Identifier',
+                'FirstKey = Identifier'
             ].join('\r\n');
 
             const pathToFileFolder = 'config';
-            const fileName = 'standard_keyvalue_with_section.cfg';
+            const fileName = 'single_selection_option.cfg';
             const filePath = path.join(pathToFileFolder, fileName);
             await FsProvider.instance.mkdirs(pathToFileFolder);
             await FsProvider.instance.writeFile(filePath, fileContent);
@@ -138,16 +142,16 @@ describe('buildConfigurationFileFromPath', () => {
             expect(entry.displayType).toStrictEqual('single-select');
         });
 
-        test("Multi select", async () => {
+        test('Multi select', async () => {
             const fileContent = [
                 '[Section Name]',
                 '# Multiple values can be set at the same time by separating them with commas',
                 '# Acceptable values: a, b',
-                'FirstKey = Identifier',
+                'FirstKey = Identifier'
             ].join('\r\n');
 
             const pathToFileFolder = 'config';
-            const fileName = 'standard_keyvalue_with_section.cfg';
+            const fileName = 'multi_select_option.cfg';
             const filePath = path.join(pathToFileFolder, fileName);
             await FsProvider.instance.mkdirs(pathToFileFolder);
             await FsProvider.instance.writeFile(filePath, fileContent);
@@ -158,16 +162,16 @@ describe('buildConfigurationFileFromPath', () => {
             expect(entry.displayType).toStrictEqual('multi-select');
         });
 
-        test("Boolean", async () => {
+        test('Boolean', async () => {
             const fileContent = [
                 '[Section Name]',
                 '# Setting type: Boolean',
                 '# Acceptable values: true, false',
-                'FirstKey = Identifier',
+                'FirstKey = Identifier'
             ].join('\r\n');
 
             const pathToFileFolder = 'config';
-            const fileName = 'standard_keyvalue_with_section.cfg';
+            const fileName = 'boolean_option.cfg';
             const filePath = path.join(pathToFileFolder, fileName);
             await FsProvider.instance.mkdirs(pathToFileFolder);
             await FsProvider.instance.writeFile(filePath, fileContent);
@@ -178,7 +182,58 @@ describe('buildConfigurationFileFromPath', () => {
             expect(entry.displayType).toStrictEqual('boolean');
         });
 
-    })
+    });
+
+});
+
+describe('getSelectOptions', () => {
+
+    test('input', () => {
+        const configurationEntry: ConfigurationEntry = {
+            entryName: 'InputEntry',
+            displayType: 'input',
+            value: "value",
+            cachedValue: "value",
+            commentLines: [],
+        };
+
+        expect(() => getSelectOptions(configurationEntry)).toThrowError(
+            new Error(`Invalid display type for select options. Got [input] for entry: InputEntry`)
+        );
+    });
+
+    test.each([
+        'single-select',
+        'multi-select',
+    ])("%s", (displayType) => {
+        const configurationEntry: ConfigurationEntry = {
+            entryName: 'Entry',
+            displayType: displayType as ConfigurationEntryDisplayType,
+            value: "value",
+            cachedValue: "value",
+            commentLines: [
+                {
+                    rawValue: '# Acceptable values: valueOne, valueTwo, valueThree',
+                    displayValue: 'Acceptable values: valueOne, valueTwo, valueThree',
+                    isDescription: false,
+                }
+            ],
+        };
+
+        expect(getSelectOptions(configurationEntry)).toMatchObject(['valueOne', 'valueTwo', 'valueThree']);
+    });
+
+    test('boolean', () => {
+        const configurationEntry: ConfigurationEntry = {
+            entryName: 'Entry',
+            displayType: 'boolean',
+            value: "value",
+            cachedValue: "value",
+            commentLines: [],
+        };
+
+        expect(getSelectOptions(configurationEntry)).toMatchObject(['true', 'false']);
+    });
 
 });
 
