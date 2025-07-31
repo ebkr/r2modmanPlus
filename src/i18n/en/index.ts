@@ -6,7 +6,7 @@ import { Message } from '../index';
 export default {
     metadata: {
         name: 'English',
-        locale: 'enUS'
+        locale: 'en'
     },
     translations: {
         pages: {
