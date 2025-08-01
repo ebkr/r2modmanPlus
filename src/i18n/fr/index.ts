@@ -88,7 +88,10 @@ const message = {
                         },
                         startingWithMods: {
                             title: 'Démarrer le jeu avec des mods',
-                            body: "Vous devez lancer le jeu depuis l'application. Le démarrer via Steam ne fonctionnera pas sans modifications manuelles."
+                            body: `
+                            Vous devez lancer le jeu depuis l'application.
+                            Le démarrer via Steam ne fonctionnera pas sans modifications manuelles.
+                            `
                         }
                     }
                 },
