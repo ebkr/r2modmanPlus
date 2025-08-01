@@ -176,7 +176,6 @@ function checkForUpdates() {
 }
 
 async function moveToNextScreen() {
-    return;
     if (window.app.getPlatform() === 'linux') {
         const activeGame: Game = store.state.activeGame;
 
