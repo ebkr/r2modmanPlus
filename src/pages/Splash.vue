@@ -103,28 +103,22 @@
                                         </span>
                                         <strong>FAQ</strong>
                                     </p>
-                                    <ul>
-                                        <li>
-                                            <p>
-                                                <strong>
-                                                    {{ t('translations.pages.splash.content.faq.howToGetStarted.title') }}
-                                                </strong>
-                                            </p>
-                                            <p>
-                                                {{ t('translations.pages.splash.content.faq.howToGetStarted.body') }}
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <p>
-                                                <strong>
-                                                    {{ t('translations.pages.splash.content.faq.startingWithMods.title') }}
-                                                </strong>
-                                            </p>
-                                            <p>
-                                                {{ t('translations.pages.splash.content.faq.startingWithMods.body') }}
-                                            </p>
-                                        </li>
-                                    </ul>
+                                    <p>
+                                        <strong>
+                                            {{ t('translations.pages.splash.content.faq.howToGetStarted.title') }}
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        {{ t('translations.pages.splash.content.faq.howToGetStarted.body') }}
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            {{ t('translations.pages.splash.content.faq.startingWithMods.title') }}
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        {{ t('translations.pages.splash.content.faq.startingWithMods.body') }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
