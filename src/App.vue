@@ -145,7 +145,7 @@ watchEffect(() => {
 const { locale } = useI18n();
 
 document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.altKey && e.key === 'l') {
+    if (e.altKey && ['l', '¬'].includes(e.key.toLowerCase())) {
         console.log("Switch lang");
         if (locale.value === 'en') {
             locale.value = 'fr';

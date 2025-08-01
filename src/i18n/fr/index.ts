@@ -49,8 +49,42 @@ const message: MessageFormat = {
             },
             splash: {
                 pageTitle: 'Démarrage de {appName}',
+                gameUpdatesWarning: 'Les mises à jour du jeu peuvent endommager les mods. Si une nouvelle mise à jour est disponible, merci de patienter.',
+                menu: {
+                    helpLabel: 'Aide',
+                    helpItems: {
+                        about: 'À propos',
+                        faq: 'FAQ'
+                    }
+                },
+                actions: {
+                    goBack: 'Retour',
+                },
+                content: {
+                    main: {
+                        didYouKnow: 'Saviez-vous ?',
+                        externalInstallWithModManager: `
+                        Vous pouvez utiliser le bouton « Install with Mod Manager » sur Thunderstore pour installer des mods à l'aide de {appName}.
+                        `,
+                        goToThunderstore: 'Aller à Thunderstore',
+                        exportProfile: `
+                        Tu peux exporter le profil que tu as sélectionné depuis les paramètres d'écran, soit sous forme de fichier, soit en tant que code. Comme ça, c'est facile de partager ta liste de mods avec tes potes !
+                        `,
+                        havingTrouble: {
+                            title: 'Besoin d\'aide ?',
+                            body: 'Envoie une capture d\'écran de l\'erreur sur le canal d\'assistance du serveur Discord de {appName}.',
+                            serverLinkText: 'Rejoignez le serveur Discord {appName}'
+                        }
+                    }
+                },
                 states: {
-
+                   preparing: 'Préparation',
+                    checkingForUpdates: 'Vérification des mises à jour',
+                    checkingForLocalCache: 'Vérification de la liste des mods dans le cache local',
+                    checkingForThunderstoreUpdates: 'Vérification des mises à jour de la liste des mods depuis Thunderstore',
+                    loadingLatestThunderstoreList: 'Chargement de la dernière liste de mods depuis Thunderstore',
+                    pruningLocalCache: 'Élagage des mods qui ne sont plus disponibles dans le cache local',
+                    processingModList: 'Traitement de la liste des mods'
                 }
             }
         },
