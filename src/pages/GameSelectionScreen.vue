@@ -2,35 +2,31 @@
     <div>
         <ModalCard id="select-platform-modal" v-show="showPlatformModal" :is-active="showPlatformModal" @close-modal="() => {showPlatformModal = false;}" class="z-max z-top">
             <template v-slot:header>
-                <h2 class='modal-title'>{{ t("translations.pages.gameSelection.platformModal.header") }}</h2>
+                <h2 class='modal-title'>{{ t('translations.pages.gameSelection.platformModal.header') }}</h2>
             </template>
             <template v-slot:body>
                 <div v-if="selectedGame !== null">
                     <div v-for="(platform, index) of selectedGame.storePlatformMetadata" :key="`${index}-${platform.storePlatform}`">
                         <input type="radio" :id="`${index}-${platform.storePlatform}`" :value="platform.storePlatform" v-model="selectedPlatform"/>
-                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ platformLabels[platform.storePlatform] }}</label>
+                        <label :for="`${index}-${platform.storePlatform}`"><span class="margin-right margin-right--half-width"/>{{ t(`translations.platforms.${getPlatformKey(platform.storePlatform)}`) }}</label>
                     </div>
                 </div>
             </template>
             <template v-slot:footer>
                 <button class='button is-info' @click='selectPlatform'>
-                    Select platform
+                    {{ t('translations.pages.gameSelection.platformModal.selectAction') }}
                 </button>
             </template>
         </ModalCard>
         <hero
-            :title="`${capitalize(activeTab)} selection`"
-            :subtitle="
-                activeTab === GameInstanceType.GAME
-                    ? 'Which game are you managing your mods for?'
-                    : 'Which dedicated server are you managing your mods for?'
-            "
+            :title="t(`translations.pages.gameSelection.pageTitle.title.${activeTab}`)"
+            :subtitle="t(`translations.pages.gameSelection.pageTitle.subtitle.${activeTab}`)"
             :heroType="activeTab === GameInstanceType.GAME ? 'primary' : 'warning'"
         />
         <div class="notification is-warning is-square" v-if="runningMigration">
             <div class="container">
-                <p>An update to the manager has occurred and needs to do background work.</p>
-                <p>The options to select a game are disabled until the work has completed.</p>
+                <p>{{ t('translations.pages.gameSelection.migrationNotice.requiresUpdate') }}</p>
+                <p>{{ t('translations.pages.gameSelection.migrationNotice.actionsDisabled') }}</p>
             </div>
         </div>
         <div class="columns">
@@ -46,7 +42,7 @@
                                             id="game-selection-list-search"
                                             class="input margin-right"
                                             type="text"
-                                            placeholder="Search for a game"
+                                            :placeholder="t(`translations.pages.gameSelection.filter.placeholder.${activeTab}`)"
                                             autocomplete="off"
                                         />
                                     </div>
@@ -54,11 +50,11 @@
                             </div>
                             <div class="margin-right">
                                 <button class="button is-info"
-                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectGame(selectedGame)">Select {{ activeTab.toLowerCase() }}</button>
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectGame(selectedGame)">{{ t(`translations.pages.gameSelection.actions.select.${activeTab}`) }}</button>
                             </div>
                             <div class="margin-right">
                                 <button class="button"
-                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectDefaultGame(selectedGame)">Set as default</button>
+                                   :disabled="!isAnyGameSelected() && !runningMigration" @click="selectDefaultGame(selectedGame)">{{ t('translations.pages.gameSelection.actions.setAsDefault') }}</button>
                             </div>
                             <div>
                                 <i class="button fas fa-th-large" @click="toggleViewMode"></i>
@@ -73,7 +69,7 @@
                                             id="game-selection-cards-search"
                                             class="input margin-right"
                                             type="text"
-                                            placeholder="Search for a game"
+                                            :placeholder="t(`translations.pages.gameSelection.filter.placeholder.${activeTab}`)"
                                             autocomplete="off"
                                         />
                                     </div>
@@ -89,7 +85,7 @@
                                     <ul class="text-center">
                                         <li v-for="(value) in GameInstanceType" :key="`tab-${value}`"
                                             :class="[{'is-active': activeTab === value}]">
-                                            <a @click="changeTab(value)">{{capitalize(value)}}</a>
+                                            <a @click="changeTab(value)">{{ t(`translations.pages.gameSelection.tabs.${value}`) }}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -141,10 +137,13 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="absolute-center text-center">
-                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">Select
-                                                                        {{ activeTab.toLowerCase() }}</button>
+                                                                    <button class="button is-info" @click="selectGame(game)" :class="[{'is-disabled': selectedGame === null}]">
+                                                                        {{ t(`translations.pages.gameSelection.actions.select.${activeTab}`) }}
+                                                                    </button>
                                                                     <br/><br/>
-                                                                    <button class="button" @click="selectDefaultGame(game)">Set as default</button>
+                                                                    <button class="button" @click="selectDefaultGame(game)">
+                                                                        {{ t('translations.pages.gameSelection.actions.setAsDefault') }}
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -190,6 +189,7 @@ import { State } from '../store';
 import { useRouter } from 'vue-router';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 import { useI18n } from 'vue-i18n';
+import EnumResolver from '../model/enums/_EnumResolver';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -206,6 +206,10 @@ const isSettingDefaultPlatform = ref<boolean>(false);
 const viewMode = ref<GameSelectionViewMode>(GameSelectionViewMode.LIST);
 const activeTab = ref<GameInstanceType>(GameInstanceType.GAME);
 const gameImages = reactive({});
+
+function getPlatformKey(platform: Platform) {
+    return EnumResolver.from(Platform, platform);
+}
 
 const filteredGameList = computed(() => {
     const displayNameInAdditionalSearch = (game: Game, filterText: string): boolean => {
@@ -278,16 +282,6 @@ function selectDefaultGame(game: Game) {
         showPlatformModal.value = false;
         proceedDefault();
     }
-}
-
-const platformLabels = {
-    [Platform.STEAM]: "Steam",
-    [Platform.STEAM_DIRECT]: "Steam",
-    [Platform.EPIC_GAMES_STORE]: "Epic Games Store",
-    [Platform.OCULUS_STORE]: "Oculus Store",
-    [Platform.ORIGIN]: "Origin / EA Desktop",
-    [Platform.XBOX_GAME_PASS]: "Xbox Game Pass",
-    [Platform.OTHER]: "Other"
 }
 
 function selectPlatform() {
