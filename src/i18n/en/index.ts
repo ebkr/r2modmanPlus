@@ -80,7 +80,7 @@ const message: MessageFormat = {
                     },
                     about: {
                         title: 'About {appName}',
-                        creator: 'It\'s created by Ebkr',
+                        creator: 'It\'s created by Ebkr.',
                         techStack: {
                             builtUsing: 'The application has been built using Quasar, which provides the following tech stack:',
                             electron: 'Electron',
