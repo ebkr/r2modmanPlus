@@ -1,7 +1,11 @@
-import enUS from './en';
+import langEn from './en';
+import langFr from './fr';
+import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
+import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFormat';
 
 export default {
-  'en': enUS,
+    'en': langEn,
+    'fr': langFr,
 };
 
 // TODO - Use for language selection screens
@@ -10,15 +14,12 @@ export type MessageMetadata = {
     locale: string;
 }
 
-export type Message = {
+export type MessageFormat = {
     metadata: MessageMetadata;
     translations: {
         pages: {
-            gameSelection: {
-                platformModal: {
-                    header: string;
-                }
-            }
-        }
+            gameSelection: GameSelectionMessageFormat
+        },
+        platforms: PlatformMessageFormat;
     }
 }
