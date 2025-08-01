@@ -36,7 +36,7 @@ const message: MessageFormat = {
                 actions: {
                     select: {
                         game: 'Sélectionner',
-                        server: 'Sélectionner'
+                        server: 'Sélectionner',
                     },
                     setAsDefault: 'Définir par défaut'
                 },
@@ -45,6 +45,12 @@ const message: MessageFormat = {
                         game: 'Rechercher un jeu',
                         server: 'Rechercher un serveur'
                     }
+                }
+            },
+            splash: {
+                pageTitle: 'Démarrage de {appName}',
+                states: {
+
                 }
             }
         },

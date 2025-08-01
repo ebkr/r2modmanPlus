@@ -1,20 +1,28 @@
 <template>
     <div>
-        <hero :title=heroTitle :subtitle='splashText' :heroType=heroType />
+        <hero :title="t('translations.pages.splash.pageTitle', {appName: appName})" :subtitle='t(splashText)' :heroType=heroType />
         <div class='notification is-warning'>
-            <p>Game updates may break mods. If a new update has been released, please be patient.</p>
+            <p>{{ t('translations.pages.splash.gameUpdatesWarning') }}</p>
         </div>
         <Progress
             :max='store.state.splash.requests.length * 100'
             :value='reduceRequests().getProgress() > 0 ? reduceRequests().getProgress() : undefined'
             :className='[reduceRequests().getProgress() > 0 ? "is-info" : ""]' />
-        <div class='columns'>
+        <div class='columns margin-top'>
             <div class='column is-one-quarter'>
                 <aside class='menu'>
-                    <p class='menu-label'>Help</p>
+                    <p class='menu-label'>{{ t('translations.pages.splash.menu.helpLabel') }}</p>
                     <ul class='menu-list'>
-                        <li><a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">About</a></li>
-                        <li><a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">FAQ</a></li>
+                        <li>
+                            <a @click="view = 'about'" :class="[view === 'about' ? 'is-active' : '']">
+                                {{ t('translations.pages.splash.menu.helpItems.about') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a @click="view = 'faq'" :class="[view === 'faq' ? 'is-active' : '']">
+                                {{ t('translations.pages.splash.menu.helpItems.faq') }}
+                            </a>
+                        </li>
                         <li>
                             <ExternalLink url="https://github.com/ebkr/r2modmanPlus">
                                 <i class='fab fa-github fa-lg' aria-hidden='true' />
@@ -30,7 +38,11 @@
                             <div class='content'>
                                 <div class='container' v-if="view !== 'main'">
                                     <i class='fas fa-long-arrow-alt-left margin-right' />
-                                    <strong><a @click="view = 'main'">Go back</a></strong>
+                                    <strong>
+                                        <a @click="view = 'main'">
+                                            {{ t('translations.pages.splash.actions.goBack') }}
+                                        </a>
+                                    </strong>
                                     <br /><br />
                                 </div>
                                 <div class='container' v-if="view === 'main'">
@@ -38,34 +50,32 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-info-circle' />
                                         </span>
-                                        <strong>Did you know?</strong>
+                                        <strong>{{ t('translations.pages.splash.content.main.didYouKnow') }}</strong>
                                     </p>
                                     <ul class='margin-right'>
                                         <li>
-                                            <p>
-                                                You can use the "Install with Mod Manager" button on
-                                                <ExternalLink url="https://thunderstore.io">Thunderstore</ExternalLink>
-                                                with r2modman.
-                                            </p>
+                                            <p>{{ t('translations.pages.splash.content.main.externalInstallWithModManager', {appName: appName}) }}</p>
                                         </li>
                                         <li>
-                                            <p>
-                                                You can export the selected profile from the settings screen as either a
-                                                file, or a code.
-                                                This makes it easy to share your mod list with friends!
-                                            </p>
+                                            <p>{{ t('translations.pages.splash.content.main.exportProfile') }}</p>
                                         </li>
                                     </ul>
                                     <p>
-                                        <span class='icon margin-right margin-right--half-width'>
-                                          <i class='fas fa-question-circle' />
-                                        </span>
-                                        <strong>Having trouble?</strong>
+                                        <ExternalLink url="https://thunderstore.io">
+                                            {{ t('translations.pages.splash.content.main.goToThunderstore') }}
+                                        </ExternalLink>
                                     </p>
                                     <p>
-                                        Send a screenshot of the error in the Thunderstore modding discord server. Feel
-                                        free to ping me
-                                        if it doesn't get resolved.
+                    <span class='icon margin-right margin-right--half-width margin-top'>
+                                          <i class='fas fa-question-circle' />
+                                        </span>
+                                        <strong>{{ t('translations.pages.splash.content.main.havingTrouble.title') }}</strong>
+                                    </p>
+                                    <p>{{ t('translations.pages.splash.content.main.havingTrouble.body') }}</p>
+                                    <p>
+                                        <ExternalLink url="https://discord.gg/p4yW4bxfSa">
+                                            {{ t('translations.pages.splash.content.main.havingTrouble.serverLinkText', appName) }}
+                                        </ExternalLink>
                                     </p>
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
@@ -73,15 +83,17 @@
                                         <span class='icon margin-right margin-right--half-width'>
                                           <i class='fas fa-address-card' />
                                         </span>
-                                        <strong>About r2modman</strong>
+                                        <strong>
+                                            {{ t('translations.pages.splash.content.about.title') }}
+                                        </strong>
                                     </p>
-                                    <p>It's created by Ebkr, using Quasar.</p>
-                                    <p>Quasar provides the following development tools that r2modman is built upon:</p>
+                                    <p>{{ t('translations.pages.splash.content.about.creator') }}</p>
+                                    <p>{{ t('translations.pages.splash.content.about.techStack.builtUsing') }}</p>
                                     <ul>
-                                        <li>Electron</li>
-                                        <li>Node</li>
-                                        <li>Vue</li>
-                                        <li>TypeScript</li>
+                                        <li>{{ t('translations.pages.splash.content.about.techStack.electron') }}</li>
+                                        <li>{{ t('translations.pages.splash.content.about.techStack.node') }}</li>
+                                        <li>{{ t('translations.pages.splash.content.about.techStack.vue') }}</li>
+                                        <li>{{ t('translations.pages.splash.content.about.techStack.typescript') }}</li>
                                     </ul>
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
@@ -93,17 +105,23 @@
                                     </p>
                                     <ul>
                                         <li>
-                                            <p><strong>How do I get started?</strong></p>
                                             <p>
-                                                Head on over to the online tab, and download BepInEx and R2API.
+                                                <strong>
+                                                    {{ t('translations.pages.splash.content.faq.howToGetStarted.title') }}
+                                                </strong>
+                                            </p>
+                                            <p>
+                                                {{ t('translations.pages.splash.content.faq.howToGetStarted.body') }}
                                             </p>
                                         </li>
                                         <li>
-                                            <p><strong>Starting the game with mods</strong></p>
                                             <p>
-                                                You have to start the game from within the manager. Starting through
-                                                Steam will not work
-                                                without taking manual steps.
+                                                <strong>
+                                                    {{ t('translations.pages.splash.content.faq.startingWithMods.title') }}
+                                                </strong>
+                                            </p>
+                                            <p>
+                                                {{ t('translations.pages.splash.content.faq.startingWithMods.body') }}
                                             </p>
                                         </li>
                                     </ul>
@@ -133,24 +151,27 @@ import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
 import Buffer from '../providers/node/buffer/buffer';
+import { useI18n } from 'vue-i18n';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
 const router = useRouter();
+const { t } = useI18n();
 
 const {
     reduceRequests
 } = useSplashComposable();
 
-const heroTitle = ref<string>('Starting r2modman');
 const heroType = ref<string>('primary');
 const view = ref<string>('main');
 const splashText = computed(() => store.state.splash.splashText);
+const appName = computed(() => ManagerInformation.APP_NAME);
 
 store.commit('splash/initialiseRequests');
 
 // Ensure that the manager isn't outdated.
 function checkForUpdates() {
-    store.dispatch('splash/setSplashText', 'Preparing');
+    store.dispatch('splash/setSplashText', 'translations.pages.splash.states.preparing');
     window.app.checkForApplicationUpdates()
         .then(async () => {
             store.commit('splash/updateRequestItem', {
@@ -207,7 +228,7 @@ async function ensureWrapperInGameFolder() {
 }
 
 onMounted(() => {
-    store.dispatch('splash/setSplashText', 'Checking for updates');
+    store.dispatch('splash/setSplashText', 'translations.pages.splash.states.checkingForUpdates');
     setTimeout(checkForUpdates, 100);
 })
 </script>
