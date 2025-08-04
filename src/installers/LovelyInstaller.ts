@@ -4,7 +4,7 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 import FileTree from "../model/file/FileTree";
 import R2Error from "../model/errors/R2Error";
-import path from "path";
+import path from "../providers/node/path/path";
 
 export class LovelyInstaller implements PackageInstaller {
     async install(args: InstallArgs) {

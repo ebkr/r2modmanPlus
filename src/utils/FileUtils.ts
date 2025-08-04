@@ -1,11 +1,7 @@
 import FsProvider from '../providers/generic/file/FsProvider';
-import path from 'path';
+import path from "../providers/node/path/path";
 
 export default class FileUtils {
-
-    public static requireImage(image: string) {
-        return require("../assets/images/game_selection/" + image);
-    }
 
     public static async copyFileOrFolder(source: string, target: string) {
         if ((await FsProvider.instance.stat(source)).isFile()) {

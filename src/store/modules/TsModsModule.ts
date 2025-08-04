@@ -84,22 +84,6 @@ export const TsModsModule = {
          */
         cachedMod: (state) => (mod: ManifestV2): CachedMod => {
             const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
-
-            if (state.cache.get(cacheKey) === undefined) {
-                const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
-
-                // Updating Vuex state directly instead of mutations is a bad
-                // practice but everything seems to work here since we only
-                // mutate the map instead of replacing it altogether.
-                if (tsMod === undefined) {
-                    state.cache.set(cacheKey, {tsMod: undefined, isLatest: true});
-                } else {
-                    const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
-                    const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
-                    state.cache.set(cacheKey, {tsMod, isLatest});
-                }
-            }
-
             return state.cache.get(cacheKey) as CachedMod;
         },
 
@@ -116,7 +100,7 @@ export const TsModsModule = {
 
         /*** Is the version of a mod defined by ManifestV2 the newest version? */
         isLatestVersion: (_state, getters) => (mod: ManifestV2): boolean => {
-            return getters.cachedMod(mod).isLatest;
+            return getters.cachedMod(mod)?.isLatest || false;
         },
 
         /*** Was the last successful mod list update more than an hour ago? */
@@ -142,7 +126,7 @@ export const TsModsModule = {
 
         /*** Return ThunderstoreMod representation of a ManifestV2 */
         tsMod: (_state, getters) => (mod: ManifestV2): ThunderstoreMod | undefined => {
-            return getters.cachedMod(mod).tsMod;
+            return getters.cachedMod(mod)?.tsMod;
         },
 
         undeprecatedModCount(state) {
@@ -192,6 +176,28 @@ export const TsModsModule = {
         },
         updateDeprecated(state, allMods: ThunderstoreMod[]) {
             state.deprecated = Deprecations.getDeprecatedPackageMap(allMods);
+        },
+        prewarmCacheMod(state: State, mods: ThunderstoreMod[]) {
+            const localState = new Map<string, CachedMod>(state.cache.entries());
+            mods.forEach(mod => {
+                const cacheKey = `${mod.getName()}-${mod.getVersionNumber()}`;
+
+                if (localState.get(cacheKey) === undefined) {
+                    const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
+
+                    // Updating Vuex state directly instead of mutations is a bad
+                    // practice but everything seems to work here since we only
+                    // mutate the map instead of replacing it altogether.
+                    if (tsMod === undefined) {
+                        localState.set(cacheKey, {tsMod: undefined, isLatest: true});
+                    } else {
+                        const latestVersionNumber = new VersionNumber(tsMod.getLatestVersion());
+                        const isLatest = mod.getVersionNumber().isEqualOrNewerThan(latestVersionNumber);
+                        localState.set(cacheKey, {tsMod, isLatest});
+                    }
+                }
+            });
+            state.cache = localState;
         }
     },
 
@@ -358,9 +364,9 @@ export const TsModsModule = {
             return state.activeGameCacheStatus || 'Unknown status';
         },
 
-        async prewarmCache({getters, rootGetters}) {
+        async prewarmCache({rootGetters, commit}) {
             const profileMods: ManifestV2[] = rootGetters['profile/modList'];
-            profileMods.forEach(getters['cachedMod']);
+            commit('prewarmCacheMod', profileMods);
         },
 
         async pruneRemovedModsFromCache({rootState}, cutoff: Date) {
@@ -388,7 +394,7 @@ export const TsModsModule = {
 
         async updateExclusions({commit}) {
             // Read exclusion list from a bundled file to have some values available ASAP.
-            const exclusionList: {exclusions: string[]} = require('../../../modExclusions.json');
+            const exclusionList: {exclusions: string[]} = await import('../../../modExclusions.json');
             commit('setExclusions', exclusionList.exclusions);
 
             const timeout = 20000;

@@ -2,8 +2,8 @@ import Game from '../../model/game/Game';
 import StorePlatformMetadata from '../../model/game/StorePlatformMetadata';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FileUtils from '../../utils/FileUtils';
-import * as path from 'path';
 import { EcosystemSchema, Platform } from '../schema/ThunderstoreSchema';
+import path from '../../providers/node/path/path';
 
 export default class GameManager {
 

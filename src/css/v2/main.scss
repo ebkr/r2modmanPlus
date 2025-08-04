@@ -5,3 +5,7 @@ body {
 html {
     //overflow-y: hidden !important;
 }
+
+strong {
+    color: var(--text, #363636);
+}

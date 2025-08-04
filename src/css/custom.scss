@@ -306,12 +306,12 @@ select {
 
 .input-group {
 
+    display: block;
+    white-space: nowrap;
+
     &--flex {
         flex: 1;
     }
-
-    display: block;
-    white-space: nowrap;
 
     & label {
         display: block;

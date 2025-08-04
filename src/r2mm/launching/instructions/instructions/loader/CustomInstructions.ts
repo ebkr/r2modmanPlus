@@ -1,9 +1,9 @@
 import GameInstructionGenerator from "../GameInstructionGenerator";
 import Game from "../../../../../model/game/Game";
 import Profile from "../../../../../model/Profile";
-import * as path from 'path';
 import { GameInstruction } from "../../GameInstructions";
 import { DynamicGameInstruction } from "../../DynamicGameInstruction";
+import path from '../../../../../providers/node/path/path';
 
 export class CustomInstructions extends GameInstructionGenerator {
     private readonly instructions: GameInstruction;

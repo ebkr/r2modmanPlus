@@ -77,14 +77,14 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        _addDownload({state}, params: {
+        _addDownload({state, commit}, params: {
             combos: ThunderstoreCombo[],
             installMode: InstallMode,
             game: Game,
             profile: ImmutableProfile
         }): UUID {
             const { combos, installMode, game, profile } = params;
-            const downloadId = UUID.create();
+            const downloadId = UUID.create().toString();
             const downloadObject: DownloadProgress = {
                 downloadId: downloadId,
                 initialMods: [...combos],
@@ -96,7 +96,7 @@ export const DownloadModule = {
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            commit('addDownload', downloadObject);
             return downloadId;
         },
 
@@ -272,6 +272,10 @@ export const DownloadModule = {
                 newDownloads[index] = {...newDownloads[index], ...update};
                 state.allDownloads = newDownloads;
             }
+        },
+        addDownload(state: State, download: DownloadProgress) {
+            // @ts-ignore
+            state.allDownloads = [...state.allDownloads, download];
         },
         setDone(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
