@@ -70,7 +70,7 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
     _DATA = "plugins_data";
     _CONFIG = "config"
 
-    readonly installer = new InstallRuleInstaller({
+    readonly installer = () => new InstallRuleInstaller({
         gameName: "none" as any,  // This isn't actually used for actual installation but needs some value
         rules: [
             {
@@ -98,7 +98,7 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
 
 
     async install(args: InstallArgs) {
-        await this.installer.install(args);
+        await this.installer().install(args);
     }
 
     async uninstall(args: InstallArgs): Promise<void> {

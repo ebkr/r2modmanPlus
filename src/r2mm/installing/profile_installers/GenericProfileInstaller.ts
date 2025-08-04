@@ -48,7 +48,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             installer instanceof ShimloaderPluginInstaller ||
             installer instanceof ReturnOfModdingPluginInstaller
         ) {
-            rule = installer.installer.rule;
+            rule = installer.installer().rule;
         }
         if (!rule) {
             return;
