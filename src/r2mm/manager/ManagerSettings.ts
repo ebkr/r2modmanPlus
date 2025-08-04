@@ -138,7 +138,7 @@ export default class ManagerSettings {
     }
 
     public async setInstalledSortBy(sortNaming: string) {
-        ManagerSettings.CONTEXT.gameSpecific.installedSortBy = EnumResolver.from(SortNaming, sortNaming)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedSortBy = EnumResolver.from<SortNaming>(SortNaming, sortNaming);
         await this.save();
     }
 
@@ -152,7 +152,7 @@ export default class ManagerSettings {
     }
 
     public async setInstalledSortDirection(sortDirection: string) {
-        ManagerSettings.CONTEXT.gameSpecific.installedSortDirection = EnumResolver.from(SortDirection, sortDirection)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedSortDirection = EnumResolver.from<SortDirection>(SortDirection, sortDirection);
         await this.save();
     }
 
@@ -173,7 +173,7 @@ export default class ManagerSettings {
     }
 
     public async setInstalledDisablePosition(disablePosition: string) {
-        ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from(SortLocalDisabledMods, disablePosition)!;
+        ManagerSettings.CONTEXT.gameSpecific.installedDisablePosition = EnumResolver.from<SortLocalDisabledMods>(SortLocalDisabledMods, disablePosition);
         await this.save();
     }
 

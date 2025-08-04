@@ -14229,6 +14229,9 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "vanilla": {
+            "label": "Vanilla compatible"
           }
         },
         "sections": {
@@ -19118,6 +19121,123 @@
       },
       "r2modman": null
     },
+    "lens-island": {
+      "uuid": "5dd42723-fd94-4592-8a87-b509d5402a72",
+      "label": "lens-island",
+      "meta": {
+        "displayName": "Len's Island",
+        "iconUrl": "lens-island.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1335830"
+            }
+          ],
+          "steamFolderName": "Len's Island",
+          "dataFolderName": "Len's Island_Data",
+          "exeNames": [
+            "Len's Island.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Len's Island",
+            "iconUrl": "lens-island.webp"
+          },
+          "settingsIdentifier": "LensIsland",
+          "internalFolderName": "LensIsland",
+          "packageIndex": "https://thunderstore.io/c/lens-island/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Len's Island",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://lensisland.wiki.gg/",
+        "discordUrl": "https://discord.gg/lensisland",
+        "autolistPackageIds": []
+      }
+    },
     "lizards-must-die": {
       "uuid": "37b2e210-0f07-4386-9d3e-97f767eacca2",
       "label": "lizards-must-die",
@@ -19388,6 +19508,124 @@
         ]
       }
     },
+    "mage-arena": {
+      "uuid": "8952eb1d-3b5f-4f97-816a-617d183c206a",
+      "label": "mage-arena",
+      "meta": {
+        "displayName": "Mage Arena",
+        "iconUrl": "mage-arena.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3716600"
+            }
+          ],
+          "steamFolderName": "Mage Arena",
+          "dataFolderName": "MageArena_Data",
+          "exeNames": [
+            "MageArena.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Mage Arena",
+            "iconUrl": "mage-arena.webp"
+          },
+          "settingsIdentifier": "MageArena",
+          "internalFolderName": "MageArena",
+          "packageIndex": "https://thunderstore.io/c/mage-arena/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Mage Arena",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -19536,6 +19774,9 @@
           "gameplay": {
             "label": "Gameplay"
           },
+          "sandbox": {
+            "label": "Sandbox"
+          },
           "audio": {
             "label": "Audio"
           },
@@ -19571,6 +19812,257 @@
         },
         "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
         "autolistPackageIds": []
+      }
+    },
+    "ostranauts": {
+      "uuid": "376711bd-6557-4c98-8efc-acc903868386",
+      "label": "ostranauts",
+      "meta": {
+        "displayName": "Ostranauts",
+        "iconUrl": "ostranauts.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1022980"
+            }
+          ],
+          "steamFolderName": "Ostranauts",
+          "dataFolderName": "Ostranauts_Data",
+          "exeNames": [
+            "Ostranauts.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Ostranauts",
+            "iconUrl": "ostranauts.webp"
+          },
+          "settingsIdentifier": "Ostranauts",
+          "internalFolderName": "Ostranauts",
+          "packageIndex": "https://thunderstore.io/c/ostranauts/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Ostranauts",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://ostranauts.wiki.gg/",
+        "discordUrl": "https://discord.gg/UxZg8Ur",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "patapon-1-2-replay": {
+      "uuid": "d6dfad59-d6df-4398-b5d8-84dbbbace85f",
+      "label": "patapon-1-2-replay",
+      "meta": {
+        "displayName": "PATAPON 1+2 REPLAY",
+        "iconUrl": "patapon-1-2-replay.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2383200"
+            }
+          ],
+          "steamFolderName": "PATAPON12_REPLAY",
+          "dataFolderName": "PATAPON12_REPLAY_Data",
+          "exeNames": [
+            "PATAPON12_REPLAY.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "PATAPON 1+2 REPLAY",
+            "iconUrl": "patapon-1-2-replay.webp"
+          },
+          "settingsIdentifier": "Patapon12Replay",
+          "internalFolderName": "Patapon12Replay",
+          "packageIndex": "https://thunderstore.io/c/patapon-1-2-replay/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/hexpatches",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "state",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PATAPON 1+2 REPLAY",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "game-mechanics": {
+            "label": "Game mechanics"
+          },
+          "qol": {
+            "label": "QoL"
+          },
+          "sound": {
+            "label": "Sound"
+          },
+          "graphics": {
+            "label": "Graphics"
+          },
+          "content": {
+            "label": "Content"
+          },
+          "patapon-1": {
+            "label": "Patapon 1"
+          },
+          "patapon-2": {
+            "label": "Patapon 2"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://docs.google.com/document/d/1Z6nNyxQ-dySw7uQe4bvEkCqd19usxHlAIi2j8O5VWYA",
+        "discordUrl": "https://discord.gg/bdSpz9Jjy2",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
       }
     },
     "phasmophobia": {
@@ -24029,6 +24521,9 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "vanilla": {
+          "label": "Vanilla compatible"
         }
       },
       "sections": {
@@ -25628,6 +26123,46 @@
       },
       "discordUrl": "https://discord.gg/Hu2cTCr2m2"
     },
+    "lens-island": {
+      "displayName": "Len's Island",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://lensisland.wiki.gg/",
+      "discordUrl": "https://discord.gg/lensisland",
+      "autolistPackageIds": []
+    },
     "lizards-must-die": {
       "displayName": "Lizards Must Die",
       "categories": {
@@ -25727,6 +26262,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "mage-arena": {
+      "displayName": "Mage Arena",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -25789,6 +26365,9 @@
         "gameplay": {
           "label": "Gameplay"
         },
+        "sandbox": {
+          "label": "Sandbox"
+        },
         "audio": {
           "label": "Audio"
         },
@@ -25824,6 +26403,105 @@
       },
       "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
       "autolistPackageIds": []
+    },
+    "ostranauts": {
+      "displayName": "Ostranauts",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://ostranauts.wiki.gg/",
+      "discordUrl": "https://discord.gg/UxZg8Ur",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
+    "patapon-1-2-replay": {
+      "displayName": "PATAPON 1+2 REPLAY",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "game-mechanics": {
+          "label": "Game mechanics"
+        },
+        "qol": {
+          "label": "QoL"
+        },
+        "sound": {
+          "label": "Sound"
+        },
+        "graphics": {
+          "label": "Graphics"
+        },
+        "content": {
+          "label": "Content"
+        },
+        "patapon-1": {
+          "label": "Patapon 1"
+        },
+        "patapon-2": {
+          "label": "Patapon 2"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://docs.google.com/document/d/1Z6nNyxQ-dySw7uQe4bvEkCqd19usxHlAIi2j8O5VWYA",
+      "discordUrl": "https://discord.gg/bdSpz9Jjy2",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
     },
     "phasmophobia": {
       "displayName": "Phasmophobia",
