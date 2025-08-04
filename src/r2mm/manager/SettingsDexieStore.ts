@@ -120,7 +120,8 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
+                linuxUseFlatpak: null,
             },
             gameSpecific: {
                 version: 2,
@@ -199,6 +200,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     defaultGame: string | undefined;
     defaultStore: Platform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
+    linuxUseFlatpak: boolean | null;
 }
 
 /**

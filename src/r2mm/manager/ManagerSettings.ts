@@ -98,6 +98,11 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public async setLinuxUseFlatpak(enabled: boolean) {
+        ManagerSettings.CONTEXT.global.linuxUseFlatpak = enabled;
+        await this.save();
+    }
+
     public async expandCards() {
         ManagerSettings.CONTEXT.global.expandedCards = true;
         await this.save();
