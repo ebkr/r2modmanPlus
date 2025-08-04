@@ -50,6 +50,7 @@ import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
 import { Dark, useQuasar } from 'quasar';
 import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
+import { useI18n } from 'vue-i18n';
 
 const store = baseStore;
 provideStoreImplementation(() => store);
@@ -139,6 +140,19 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
+})
+
+const { locale } = useI18n();
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.altKey && e.key === 'l') {
+        console.log("Switch lang");
+        if (locale.value === 'en') {
+            locale.value = 'fr';
+        } else {
+            locale.value = 'en';
+        }
+    }
 })
 </script>
 
