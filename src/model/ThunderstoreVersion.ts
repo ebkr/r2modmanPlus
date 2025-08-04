@@ -12,6 +12,7 @@ export default class ThunderstoreVersion  {
     private enabled: boolean = true;
     private downloads: number = 0;
     private downloadUrl: string = '';
+    private fileSize: number = 0;
 
     public static parseFromThunderstoreData(data: any): ThunderstoreVersion {
         const version = new ThunderstoreVersion();
@@ -28,6 +29,7 @@ export default class ThunderstoreVersion  {
         this.setIcon(version.icon);
         this.setDownloadCount(version.downloads);
         this.setDownloadUrl(version.download_url);
+        this.setFileSize(version.file_size);
         return this;
     }
 
@@ -105,5 +107,13 @@ export default class ThunderstoreVersion  {
 
     public setDownloadUrl(url: string) {
         this.downloadUrl = url;
+    }
+
+    public setFileSize(size: number) {
+        this.fileSize = size;
+    }
+
+    public getFileSize(): number {
+        return this.fileSize;
     }
 }

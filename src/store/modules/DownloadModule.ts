@@ -24,6 +24,8 @@ interface DownloadProgress {
     profile: ImmutableProfile;
     modName: string;
     downloadProgress: number;
+    downloadedSize: number;
+    totalDownloadSize: number;
     installProgress: number;
     status: DownloadStatusEnum;
 }
@@ -31,6 +33,8 @@ interface DownloadProgress {
 interface UpdateObject {
     downloadId: UUID;
     downloadProgress?: number;
+    downloadedSize?: number;
+    totalDownloadSize?: number;
     installProgress?: number;
     modName?: string;
     status?: DownloadStatusEnum;
@@ -77,12 +81,12 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        _addDownload({state}, params: {
+        async _addDownload({state, rootGetters}, params: {
             combos: ThunderstoreCombo[],
             installMode: InstallMode,
             game: Game,
             profile: ImmutableProfile
-        }): UUID {
+        }): Promise<UUID> {
             const { combos, installMode, game, profile } = params;
             const downloadId = UUID.create();
             const downloadObject: DownloadProgress = {
@@ -93,6 +97,8 @@ export const DownloadModule = {
                 profile,
                 modName: '',
                 downloadProgress: 0,
+                downloadedSize: 0,
+                totalDownloadSize: 0,
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
@@ -115,6 +121,7 @@ export const DownloadModule = {
         }) {
             const { combos, game, installMode, profile, hideModal } = params;
             let downloadId: UUID | undefined;
+            const settings: ManagerSettings = rootGetters['settings'];
 
             try {
                 if (!hideModal) {
@@ -123,6 +130,7 @@ export const DownloadModule = {
                 downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
+                commit('updateDownload', { downloadId, totalDownloadSize: await ThunderstoreDownloaderProvider.instance.getTotalDownloadSizeInBytes(modsWithDependencies, settings) });
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
                 commit('setInstalling', downloadId);
                 await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
@@ -148,7 +156,7 @@ export const DownloadModule = {
 
         async downloadToCache({state}, params: {
             combos: ThunderstoreCombo[],
-            progressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+            progressCallback: (progress: number, downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
         }) {
             const { combos, progressCallback } = params;
             await ThunderstoreDownloaderProvider.instance.download(combos, state.ignoreCache, progressCallback);
@@ -162,8 +170,8 @@ export const DownloadModule = {
                 await ThunderstoreDownloaderProvider.instance.download(
                     params.combos,
                     state.ignoreCache,
-                    (downloadProgress, modName, status, err) => {
-                        dispatch('_downloadProgressCallback', { downloadId: params.downloadId, downloadProgress, modName, status, err });
+                    (downloadProgress, downloadedSize, modName, status, err) => {
+                        dispatch('_downloadProgressCallback', { downloadId: params.downloadId, downloadProgress, downloadedSize, modName, status, err });
                     }
                 );
             } catch (e) {
@@ -199,11 +207,12 @@ export const DownloadModule = {
         async _downloadProgressCallback({commit}, params: {
             downloadId: UUID,
             downloadProgress: number,
+            downloadedSize: number,
             modName: string,
             status: number,
             err: R2Error | null
         }) {
-            const { downloadId, downloadProgress, modName, status, err} = params;
+            const { downloadId, downloadProgress, downloadedSize, modName, status, err} = params;
 
             if (status === StatusEnum.FAILURE) {
                 commit('closeDownloadProgressModal', null, { root: true });
@@ -213,7 +222,7 @@ export const DownloadModule = {
                     throw params.err;
                 }
             } else if (status === StatusEnum.PENDING || status === StatusEnum.SUCCESS) {
-                commit('updateDownload', { downloadId, modName, downloadProgress });
+                commit('updateDownload', { downloadId, modName, downloadProgress, downloadedSize });
             }
         },
     },

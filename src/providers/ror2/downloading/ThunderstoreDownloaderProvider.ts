@@ -1,6 +1,7 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
 import R2Error from '../../../model/errors/R2Error';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
 
 export default abstract class ThunderstoreDownloaderProvider {
 
@@ -19,7 +20,7 @@ export default abstract class ThunderstoreDownloaderProvider {
     public abstract download(
         combos: ThunderstoreCombo[],
         ignoreCache: boolean,
-        totalProgressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+        totalProgressCallback: (progress: number, downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
     ): Promise<void>;
 
     /**
@@ -40,4 +41,5 @@ export default abstract class ThunderstoreDownloaderProvider {
      */
     public abstract isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>;
 
+    public abstract getTotalDownloadSizeInBytes(combos: ThunderstoreCombo[], settings: ManagerSettings): Promise<number>;
 }
