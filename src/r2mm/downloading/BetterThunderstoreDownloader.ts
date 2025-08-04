@@ -9,42 +9,52 @@ import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
-import { generateProgressPercentage } from '../../utils/DownloadUtils';
+import * as DownloadUtils from '../../utils/DownloadUtils';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
     public async download(
         combos: ThunderstoreCombo[],
         ignoreCache: boolean,
-        totalProgressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+        totalProgressCallback: (downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
     ): Promise<void> {
-        let modInProgressName = combos[0].getMod().getName();
-        let downloadCount = 0;
+        if (combos.length === 0) {
+            throw new R2Error('No mods to download', 'An empty list of mods was passed to the downloader');
+        }
 
-        // Mark the mod 80% processed when the download completes, save the remaining 20% for extracting.
-        const singleModProgressCallback = (downloadProgress: number, status: number, err: R2Error | null) => {
+        let modInProgressName = combos[0].getMod().getName();
+        let finishedModsDownloadedSize = 0;
+        let modInProgressSizeProgress = 0;
+
+        const singleModProgressCallback = (downloadProgress: number, modInProgressSize: number, status: number, err: R2Error | null) => {
+            const clampedProgress = Math.max(0, Math.min(100, downloadProgress));
             if (status === StatusEnum.FAILURE) {
                 throw err;
             }
 
-            let totalDownloadProgress: number;
             if (status === StatusEnum.PENDING) {
-                totalDownloadProgress = generateProgressPercentage(downloadProgress * 0.8, downloadCount, combos.length);
+                modInProgressSizeProgress = (clampedProgress / 100) * modInProgressSize;
             } else if (status === StatusEnum.SUCCESS) {
-                totalDownloadProgress = generateProgressPercentage(100, downloadCount, combos.length);
-                downloadCount += 1;
+                finishedModsDownloadedSize += modInProgressSize;
+                modInProgressSizeProgress = 0;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
                 return;
             }
-            totalProgressCallback(Math.round(totalDownloadProgress), modInProgressName, status, err);
+
+            totalProgressCallback(
+                finishedModsDownloadedSize + modInProgressSizeProgress,
+                modInProgressName,
+                status,
+                err
+            );
         }
 
         for (const comboInProgress of combos) {
             modInProgressName = comboInProgress.getMod().getName();
 
-            if (!ignoreCache && await this.isVersionAlreadyDownloaded(comboInProgress)) {
-                singleModProgressCallback(100, StatusEnum.SUCCESS, null);
+            if (!ignoreCache && await DownloadUtils.isVersionAlreadyDownloaded(comboInProgress)) {
+                singleModProgressCallback(100, 0, StatusEnum.SUCCESS, null);
                 continue;
             }
 
@@ -57,10 +67,15 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
     }
 
-    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, comboSize: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
         return axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => {
-                callback((progress.loaded / progress.total) * 100, StatusEnum.PENDING, null);
+                callback(
+                    (progress.loaded / progress.total) * 100,
+                    combo.getVersion().getFileSize(),
+                    StatusEnum.PENDING,
+                    null
+                );
             },
             responseType: 'arraybuffer',
             headers: {
@@ -70,14 +85,14 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, status: number, err: R2Error | null) => void): Promise<void> {
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, downloadedSize: number, status: number, err: R2Error | null) => void): Promise<void> {
         const buf: Buffer = Buffer.from(response.data)
-        callback(100, StatusEnum.PENDING, null);
+        callback(100, combo.getVersion().getFileSize(), StatusEnum.PENDING, null);
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
             if (success) {
-                callback(100, StatusEnum.SUCCESS, error || null);
+                callback(100, combo.getVersion().getFileSize(), StatusEnum.SUCCESS, null);
             } else {
-                callback(100, StatusEnum.FAILURE, error || null);
+                callback(100, combo.getVersion().getFileSize(), StatusEnum.FAILURE, error || null);
             }
         });
     }
@@ -106,17 +121,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
                 `Failed to write downloaded zip of ${combo.getMod().getFullName()} cache folder. \nReason: ${(e as Error).message}`,
                 `Try running ${ManagerInformation.APP_NAME} as an administrator`
             ));
-        }
-    }
-
-    public async isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>  {
-        const fs = FsProvider.instance;
-        const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
-        try {
-            await fs.readdir(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
-            return true;
-        } catch(e) {
-            return false;
         }
     }
 
