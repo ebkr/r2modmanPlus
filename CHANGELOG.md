@@ -1,3 +1,10 @@
+### 3.2.3
+#### Games added
+- Len's Island
+- Mage Arena
+- Ostranauts
+- Patapon 1+2 Replay
+
 ### 3.2.2
 #### Games added
 - Bad North
