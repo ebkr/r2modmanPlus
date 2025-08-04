@@ -3,6 +3,7 @@ import langFr from './fr';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFormat';
 import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
+import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMessageFormat';
 
 export default {
     'en': langEn,
@@ -21,6 +22,7 @@ export type MessageFormat = {
         pages: {
             gameSelection: GameSelectionMessageFormat,
             splash: SplashMessageFormat,
+            profileSelection: ProfileSelectionMessageFormat,
         },
         platforms: PlatformMessageFormat;
     }
