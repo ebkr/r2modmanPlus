@@ -85,7 +85,7 @@ export const SplashModule = {
             }
         },
         async fetchPackageListIndex({commit, dispatch}): Promise<PackageListIndex | undefined> {
-             commit('setSplashText', 'Checking for mod list updates from Thunderstore');
+             commit('setSplashText', 'translations.pages.splash.states.checkingForThunderstoreUpdates');
 
             try {
                 return await dispatch('tsMods/fetchPackageListIndex', null, {root: true});
@@ -100,7 +100,7 @@ export const SplashModule = {
             }
         },
         async doesGameHaveLocalCache({dispatch, commit}): Promise<boolean> {
-            commit('setSplashText', 'Checking for mod list in local cache');
+            commit('setSplashText', 'translations.pages.splash.states.checkingForLocalCache');
             let hasCache = false;
 
             try {
@@ -128,7 +128,7 @@ export const SplashModule = {
                 return false;
             }
 
-            commit('setSplashText', 'Loading latest mod list from Thunderstore');
+            commit('setSplashText', 'translations.pages.splash.states.loadingLatestThunderstoreList');
 
             const progressCallback = async (progress: number) => {
                 const packageListChunks = await dispatch('getRequestItem', 'PackageListChunks');
@@ -160,7 +160,7 @@ export const SplashModule = {
                 return;
             }
 
-            commit('setSplashText', 'Pruning removed mods from local cache');
+            commit('setSplashText', 'translations.pages.splash.states.pruningLocalCache');
 
             try {
                 await dispatch('tsMods/pruneRemovedModsFromCache', packageListIndex.dateFetched, {root: true});
@@ -169,7 +169,7 @@ export const SplashModule = {
             }
         },
         async triggerStoreModListUpdate({ commit, dispatch }): Promise<void> {
-            commit('setSplashText', 'Processing the mod list');
+            commit('setSplashText', 'translations.pages.splash.states.processingModList');
 
             try {
                 await dispatch('tsMods/updateMods', null, {root: true});
