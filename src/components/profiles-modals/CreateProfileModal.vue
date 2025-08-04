@@ -5,8 +5,10 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, nextTick, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const {
     doesProfileExist,
@@ -56,11 +58,13 @@ async function createProfile() {
     <ModalCard id="create-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Create a profile</h2>
+            <h2 class="modal-title">{{ t('translations.pages.profileSelection.createProfileModal.title') }}</h2>
         </template>
 
         <template v-slot:body>
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>
+                {{ t('translations.pages.profileSelection.createProfileModal.description')}}
+            </p>
             <br/>
             <input
                 v-model="newProfileName"
@@ -72,19 +76,23 @@ async function createProfile() {
             />
             <br/><br/>
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
+                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.required') }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
+                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+                {{ t('translations.pages.profileSelection.createProfileModal.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
         </template>
 
         <template v-slot:footer>
-            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Create</button>
-            <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>Create</button>
+            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>
+                {{ t('translations.pages.profileSelection.createProfileModal.actions.create') }}
+            </button>
+            <button id="modal-create-profile" class="button is-info" @click="createProfile()" :disabled="creatingInProgress" v-else>
+                {{ t('translations.pages.profileSelection.createProfileModal.actions.create') }}
+            </button>
         </template>
 
     </ModalCard>
