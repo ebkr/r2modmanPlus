@@ -16,8 +16,27 @@ export type ProfileSelectionMessageFormat = {
         updateProfileList: string;
     },
     createProfileModal: {
+        title: string;
+        description: string;
+        tagStates: {
+            required: string;
+            valid: string;
+            error: string;
+        },
+        actions: {
+            create: string;
+        }
     },
     deleteProfileModal: {
+        title: string;
+        content: {
+            resultingAction: string;
+            preventAction: string;
+            confirmation: string;
+        },
+        action: {
+            delete: string;
+        }
     },
     renameProfileModal: {
     },
