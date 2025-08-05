@@ -34,11 +34,21 @@ export type ProfileSelectionMessageFormat = {
             preventAction: string;
             confirmation: string;
         },
-        action: {
+        actions: {
             delete: string;
         }
     },
     renameProfileModal: {
+        title: string;
+        content: string;
+        actions: {
+            rename: string;
+        },
+        tagStates: {
+            required: string;
+            valid: string;
+            error: string;
+        },
     },
     importProfileModal: {
     }

@@ -5,8 +5,10 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, nextTick, ref, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const {
     doesProfileExist,
@@ -60,10 +62,14 @@ async function performRename() {
     <ModalCard id="rename-profile-modal" v-if="isOpen" :is-active="isOpen" @close-modal="closeModal">
 
         <template v-slot:header>
-            <h2 class="modal-title">Rename a profile</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.renameProfileModal.title') }}
+            </h2>
         </template>
         <template v-slot:body>
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>
+                {{ t('translations.pages.profileSelection.renameProfileModal.content') }}
+            </p>
 
             <input
                 v-model="newProfileName"
@@ -75,18 +81,22 @@ async function performRename() {
             />
 
             <span class="tag is-dark" v-if="newProfileName === '' || makeProfileNameSafe(newProfileName) === ''">
-                Profile name required
+                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.required') }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is available
+                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.valid', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
             <span class="tag is-danger" v-else-if="doesProfileExist(newProfileName)">
-                "{{makeProfileNameSafe(newProfileName)}}" is either already in use, or contains invalid characters
+                {{ t('translations.pages.profileSelection.renameProfileModal.tagStates.error', { profileName: makeProfileNameSafe(newProfileName) }) }}
             </span>
         </template>
         <template v-slot:footer>
-            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>Rename</button>
-            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>Rename</button>
+            <button class="button is-danger" v-if="doesProfileExist(newProfileName)" disabled>
+                {{ t('translations.pages.profileSelection.renameProfileModal.actions.rename') }}
+            </button>
+            <button class="button is-info" @click="performRename()" :disabled="renamingInProgress" v-else>
+                {{ t('translations.pages.profileSelection.renameProfileModal.actions.rename') }}
+            </button>
         </template>
 
     </ModalCard>
