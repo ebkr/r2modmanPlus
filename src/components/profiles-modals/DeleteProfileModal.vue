@@ -54,7 +54,7 @@ async function removeProfile() {
                 :disabled="deletingInProgress"
                 class="button is-danger"
                 @click="removeProfile()">
-                {{ t('translations.pages.profileSelection.deleteProfileModal.action.delete') }}
+                {{ t('translations.pages.profileSelection.deleteProfileModal.actions.delete') }}
             </button>
         </template>
 
