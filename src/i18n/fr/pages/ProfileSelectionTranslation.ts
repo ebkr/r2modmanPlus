@@ -36,11 +36,21 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
             preventAction: 'Si c\'est une erreur, cliquez sur la zone assombrie ou sur la croix en haut à droite.',
             confirmation: 'Êtes-vous sûr de vouloir supprimer ce profil ?'
         },
-        action: {
+        actions: {
             delete: 'Supprimer le profil'
         }
     },
     renameProfileModal: {
+        title: 'Renommer un profil',
+        content: 'Ce profil stockera ses propres mods indépendamment des autres profils.',
+        actions: {
+            rename: 'Renommer',
+        },
+        tagStates: {
+            required: 'Vous devez entrer un nom de profil',
+            valid: '"{profileName}" est un nom de profil valide',
+            error: '"{profileName}" est déjà utilisé ou contient des caractères non valides'
+        },
     },
     importProfileModal: {
     }

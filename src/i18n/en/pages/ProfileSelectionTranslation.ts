@@ -36,11 +36,21 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
             preventAction: 'If this was an accident, click either the darkened area, or the cross inside located in the top right.',
             confirmation: 'Are you sure you\'d like to delete this profile?',
         },
-        action: {
+        actions: {
             delete: 'Delete profile',
         }
     },
     renameProfileModal: {
+        title: 'Rename a profile',
+        content: 'This profile will store its own mods independently from other profiles.',
+        actions: {
+            rename: 'Rename',
+        },
+        tagStates: {
+            required: 'You must enter a profile name',
+            valid: '"{profileName}" is a valid profile name',
+            error: '"{profileName}" is either already in use or contains invalid characters'
+        },
     },
     importProfileModal: {
     }
