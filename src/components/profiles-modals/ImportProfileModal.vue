@@ -17,10 +17,12 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import FileUtils from "../../utils/FileUtils";
 import * as DownloadUtils from "../../utils/DownloadUtils";
+import {useI18n} from "vue-i18n";
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const {
     doesProfileExist,
@@ -253,9 +255,11 @@ async function onImportTargetSelected() {
 async function importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
     activeStep.value = 'PROFILE_IS_BEING_IMPORTED';
     importPhaseDescription.value = 'Downloading mods: 0%';
-    const progressCallback = (downloadedSize: number) => {
-        importPhaseDescription.value = `Downloading mods: ${DownloadUtils.generateProgressPercentage(downloadedSize, profileTotalDownloadSize.value)}%` +
-         ` of ${FileUtils.humanReadableSize(profileTotalDownloadSize.value)}`;
+    const progressCallback = (progress: number|string, modName: string, status: number) => {
+        console.log(progress);
+        return typeof progress === "number"
+            ? importPhaseDescription.value = t('translations.pages.profileSelection.importProfileModal.states.importInProgress.title.downloadingMods', {progress: Math.floor(progress), totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value)})
+            : importPhaseDescription.value = t(`translations.pages.profileSelection.importProfileModal.states.importInProgress.title.${progress}`, {progress: status, totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value)})
     };
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
@@ -288,31 +292,42 @@ function onContentOrPathNotSet() {
 <template>
     <ModalCard id="import-profile-from-file-or-code-modal" v-if="activeStep === 'FILE_CODE_SELECTION'" key="FILE_CODE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'CREATE'">How are you importing a profile?</h2>
-            <h2 class="modal-title" v-if="importUpdateSelection === 'UPDATE'">How are you updating your profile?</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.fileCodeSelection.title') }}
+            </h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-profile-file"
                     class="button is-info"
-                    @click="onFileOrCodeSelect('FILE')">From file</button>
+                    @click="onFileOrCodeSelect('FILE')">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.fileCodeSelection.actions.fromFile') }}
+            </button>
             <button id="modal-import-profile-code"
                     class="button is-primary"
-                    @click="onFileOrCodeSelect('CODE')">From code</button>
+                    @click="onFileOrCodeSelect('CODE')">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.fileCodeSelection.actions.fromCode') }}
+            </button>
         </template>
     </ModalCard>
 
     <ModalCard id="import-profile-from-file-modal" v-else-if="activeStep === 'IMPORT_FILE'" key="IMPORT_FILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Loading file</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.fromFile.title') }}
+            </h2>
         </template>
         <template v-slot:footer>
-            <p>A file selection window will appear. Once a profile has been selected it may take a few moments.</p>
+            <p>
+                {{ t('translations.pages.profileSelection.importProfileModal.states.fromFile.content') }}
+            </p>
         </template>
     </ModalCard>
 
     <ModalCard id="import-profile-from-code-modal" v-else-if="activeStep === 'IMPORT_CODE'" :can-close="!importViaCodeInProgress" key="IMPORT_CODE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Enter the profile code</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.importCode.title') }}
+            </h2>
         </template>
         <template v-slot:body>
             <input
@@ -322,13 +337,13 @@ function onContentOrPathNotSet() {
                 class="input"
                 type="text"
                 ref="profileCodeInput"
-                placeholder="Enter the profile code"
+                :placeholder="t('translations.pages.profileSelection.importProfileModal.states.importCode.enterCodePlaceholder')"
                 autocomplete="off"
             />
             <br />
             <br />
             <span class="tag is-danger" v-if="profileImportCode !== '' && !isProfileCodeValid">
-                Invalid code, check for typos
+                {{ t('translations.pages.profileSelection.importProfileModal.states.importCode.tagStates.invalid') }}
             </span>
         </template>
         <template v-slot:footer>
@@ -337,26 +352,32 @@ function onContentOrPathNotSet() {
                 id="modal-import-profile-from-code"
                 class="button is-info"
                 @click="onProfileCodeEntered();">
-                {{importViaCodeInProgress ? 'Loading...' : 'Continue'}}
+                <template v-if="importViaCodeInProgress">
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.importCode.actions.loading') }}
+                </template>
+                <template v-else>
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.importCode.actions.proceed') }}
+                </template>
             </button>
         </template>
     </ModalCard>
 
     <ModalCard id="import-profile-refresh-mod-list-modal" v-else-if="activeStep === 'REFRESH_MOD_LIST'" key="REFRESH_MOD_LIST" :is-active="isOpen" :can-close="false">
         <template v-slot:header>
-            <h2 class="modal-title">Refreshing online mod list</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.refresh.title') }}
+            </h2>
         </template>
         <template v-slot:footer>
             <div>
                 <p>
-                    Some of the packages in the profile are not recognized by the mod manager.
-                    Refreshing the online mod list might fix the problem. Please wait...
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.refresh.description') }}
                 </p>
                 <p v-if="store.getters['download/activeDownloadCount'] > 0" class="margin-top">
-                    Waiting for mod downloads to finish before refreshing the online mod list...
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.refresh.waitingForModDownloads') }}
                 </p>
                 <p v-else class="margin-top">
-                    {{store.state.tsMods.thunderstoreModListUpdateStatus}}
+                    {{ t(`translations.pages.profileSelection.importProfileModal.states.refresh.refreshStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`, { progress: store.state.tsMods.thunderstoreModListUpdateProgress }) }}
                 </p>
             </div>
         </template>
@@ -364,19 +385,25 @@ function onContentOrPathNotSet() {
 
     <ModalCard id="review-profile-import-modal" v-else-if="activeStep === 'REVIEW_IMPORT'" key="REVIEW_IMPORT" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Packages to be installed</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.title') }}
+            </h2>
         </template>
         <template v-slot:body>
             <div v-if="knownProfileMods.length === 0 || profileMods.unknown.length > 0" class="notification is-warning">
-                <p>These packages in the profile were not found on Thunderstore and will not be installed:</p>
+                <p>
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.content.notFoundDisclaimer') }}
+                </p>
                 <p class="margin-top">{{ unknownProfileModNames }}</p>
 
                 <p v-if="knownProfileMods.length === 0" class="margin-top">
-                    Ensure the profile is intended for the currently selected game.
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.content.ensureCorrectProfile') }}
                 </p>
             </div>
 
-            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">These packages will be installed:</p>
+            <p v-if="knownProfileMods.length > 0 && profileMods.unknown.length > 0" class="margin-bottom">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.content.packagesWillBeInstalled') }}
+            </p>
             <OnlineModList
                 v-if="knownProfileMods.length > 0"
                 :paged-mod-list="knownProfileMods"
@@ -392,7 +419,9 @@ function onContentOrPathNotSet() {
                     class="is-checkradio has-background-color"
                     type="checkbox"
                 >
-                <label for="partialImportAllowedCheckbox">I understand that some of the mods won't be imported</label>
+                <label for="partialImportAllowedCheckbox">
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.actions.acknowledgement') }}
+                </label>
             </div>
 
             <button
@@ -402,7 +431,7 @@ function onContentOrPathNotSet() {
                 :disabled="knownProfileMods.length === 0 || (profileMods.unknown.length > 0 && !isPartialImportAllowed)"
                 @click="onProfileReviewConfirmed"
             >
-                Import
+                {{ t('translations.pages.profileSelection.importProfileModal.states.reviewImport.actions.proceed') }}
             </button>
 
         </template>
@@ -410,28 +439,34 @@ function onContentOrPathNotSet() {
 
     <ModalCard id="import-or-update-profile-selection-modal" v-else-if="activeStep === 'IMPORT_UPDATE_SELECTION'" key="IMPORT_UPDATE_SELECTION" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Are you going to be updating an existing profile or creating a new one?</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.willImportOrUpdate.title') }}
+            </h2>
         </template>
         <template v-slot:footer>
             <button id="modal-import-new-profile"
                     class="button is-info"
                     @click="onCreateOrUpdateSelect('CREATE')">
-                Import new profile
+                {{ t('translations.pages.profileSelection.importProfileModal.states.willImportOrUpdate.actions.newProfile') }}
             </button>
             <button id="modal-update-existing-profile"
                     class="button is-primary"
                     @click="onCreateOrUpdateSelect('UPDATE')">
-                Update existing profile
+                {{ t('translations.pages.profileSelection.importProfileModal.states.willImportOrUpdate.actions.existingProfile') }}
             </button>
         </template>
     </ModalCard>
 
     <ModalCard id="import-add-profile-modal" v-else-if="activeStep === 'ADDING_PROFILE'" key="ADDING_PROFILE" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 v-if="importUpdateSelection === 'CREATE'" class="modal-title">Import a profile</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.title') }}
+            </h2>
         </template>
         <template v-slot:body v-if="importUpdateSelection === 'CREATE'">
-            <p>This profile will store its own mods independently from other profiles.</p>
+            <p>
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.content.create.description') }}
+            </p>
             <br/>
             <input
                 v-model="targetProfileName"
@@ -444,32 +479,44 @@ function onContentOrPathNotSet() {
             />
             <br/><br/>
             <span class="tag is-dark" v-if="makeProfileNameSafe(targetProfileName) === ''">
-                Profile name required
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.tagStates.required') }}
             </span>
             <span class="tag is-success" v-else-if="!doesProfileExist(targetProfileName)">
-                "{{makeProfileNameSafe(targetProfileName)}}" is available
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.tagStates.valid', { profileName: makeProfileNameSafe(targetProfileName) }) }}
             </span>
             <span class="tag is-danger" v-else>
-                "{{makeProfileNameSafe(targetProfileName)}}" is either already in use, or contains invalid characters
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.tagStates.error', { profileName: makeProfileNameSafe(targetProfileName) }) }}
             </span>
         </template>
         <template v-slot:body v-else-if="importUpdateSelection === 'UPDATE'">
             <div class="notification is-warning">
-                <p>All contents of the profile will be overwritten with the contents of the code/file.</p>
+                <p>
+                    {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.content.update.contentsWillBeOverwritten') }}
+                </p>
             </div>
-            <p>Select a profile below:</p>
+            <p>
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.content.update.selectProfile') }}
+            </p>
             <br/>
             <select class="select" v-model="targetProfileName">
                 <option v-for="profile of profileList" :key="profile">{{ profile }}</option>
             </select>
         </template>
         <template v-slot:footer v-if="importUpdateSelection === 'CREATE'">
-            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(targetProfileName)">Create</button>
-            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">Create</button>
+            <button id="modal-create-profile-invalid" class="button is-danger" v-if="doesProfileExist(targetProfileName)">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.actions.create') }}
+            </button>
+            <button id="modal-create-profile" class="button is-info" v-else @click="onImportTargetSelected()">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.actions.create') }}
+            </button>
         </template>
         <template v-slot:footer v-else-if="importUpdateSelection === 'UPDATE'">
-            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(targetProfileName)">Update profile: {{ targetProfileName }}</button>
-            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">Update profile: {{ targetProfileName }}</button>
+            <button id="modal-update-profile-invalid" class="button is-danger" v-if="!doesProfileExist(targetProfileName)">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.actions.update', { profileName: targetProfileName }) }}
+            </button>
+            <button id="modal-update-profile" class="button is-info" v-else @click="onImportTargetSelected()">
+                {{ t('translations.pages.profileSelection.importProfileModal.states.addProfile.actions.update', { profileName: targetProfileName }) }}
+            </button>
         </template>
     </ModalCard>
 
@@ -479,9 +526,9 @@ function onContentOrPathNotSet() {
         </template>
         <template v-slot:footer>
             <p>
-                This may take a while, as files are being downloaded, extracted, and copied.
+                {{ t('translations.pages.profileSelection.importProfileModal.states.importInProgress.content.waitMessage') }}
                 <br><br>
-                Please do not close {{appName}}.
+                {{ t('translations.pages.profileSelection.importProfileModal.states.importInProgress.content.doNotClose', { appName: appName }) }}
             </p>
         </template>
     </ModalCard>

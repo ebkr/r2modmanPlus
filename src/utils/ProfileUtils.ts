@@ -37,7 +37,7 @@ export async function exportModsToCombos(
 async function extractConfigsToImportedProfile(
     file: string,
     profileName: string,
-    progressCallback: (status: string) => void
+    progressCallback: (status: string, modName?: string, progress?: number) => void
 ) {
     const zipEntries = await ZipProvider.instance.getEntries(file);
     const excludedFiles = ["export.r2x", "mods.yml"];
@@ -54,7 +54,7 @@ async function extractConfigsToImportedProfile(
         }
 
         const progress = Math.floor(((index + 1) / zipEntries.length) * 100);
-        progressCallback(`Copying configs to profile: ${progress}%`);
+        progressCallback('copyingConfigsToProfile', undefined, progress);
     }
 }
 
@@ -114,7 +114,7 @@ export async function installModsToProfile(
 
             if (typeof progressCallback === "function") {
                 const progress = Math.floor(((index + 1) / comboList.length) * 100);
-                progressCallback(`Copying mods to profile: ${progress}%`, modName, progress);
+                progressCallback('copyingModsToProfile', modName, progress);
             }
         }
     } catch (e) {
@@ -131,7 +131,7 @@ export async function installModsToProfile(
     throwForR2Error(preDiskSaveError || diskSaveError);
 
     if (typeof progressCallback === "function") {
-        progressCallback("Copying mods to profile: 100%", modName, 100);
+        progressCallback('copyingModsToProfile', modName, 100);
     }
 
     return profileMods;
@@ -189,12 +189,12 @@ export async function populateImportedProfile(
     profileName: string,
     isUpdate: boolean,
     zipPath: string,
-    progressCallback: (status: string) => void
+    progressCallback: (status: string, modName?: string, progress?: number) => void
 ) {
     const profile = new ImmutableProfile(isUpdate ? '_profile_update' : profileName);
 
     if (isUpdate) {
-        progressCallback('Cleaning up...');
+        progressCallback('cleaningUp');
         await FileUtils.recursiveRemoveDirectoryIfExists(profile.getProfilePath());
     }
 
@@ -208,7 +208,7 @@ export async function populateImportedProfile(
     }
 
     if (isUpdate) {
-        progressCallback('Applying changes to updated profile...');
+        progressCallback('applyingChanges');
         const targetProfile = new ImmutableProfile(profileName);
         await FileUtils.recursiveRemoveDirectoryIfExists(targetProfile.getProfilePath());
         await FsProvider.instance.rename(profile.getProfilePath(), targetProfile.getProfilePath());
