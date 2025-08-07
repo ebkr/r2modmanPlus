@@ -69,6 +69,16 @@ export const ManagerTranslation: ManagerMessageFormat = {
                     }
                 }
             }
+        },
+        localModCard: {
+            labels: {
+                deprecated: 'Deprecated',
+                disabled: 'Disabled'
+            },
+            display: {
+                byline: 'v{version} by {author}',
+                installedAt: 'Installed on: {formattedDate}'
+            }
         }
     }
 }
