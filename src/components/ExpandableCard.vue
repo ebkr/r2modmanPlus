@@ -6,20 +6,20 @@
                     <header class='card-header is-shadowless' :id='id'>
                         <div class='card-header-icon mod-logo' v-if="image !== ''">
                             <figure class='image is-48x48 image-parent'>
-                                <img :src='image' alt='Mod Logo' class='image-overlap'/>
-                                <img v-if="store.state.profile.funkyMode" src='../assets/funky_mode.png' alt='Mod Logo' class='image-overlap'/>
+                                <img :src='image' :alt="t('translations.pages.manager.installed.expandableCard.imageAltText')" class='image-overlap'/>
+                                <img v-if="store.state.profile.funkyMode" src='../assets/funky_mode.png' :alt="t('translations.pages.manager.installed.expandableCard.funkyModeAltText')" class='image-overlap'/>
                             </figure>
                         </div>
                         <span ref="title" class='card-header-title'><slot name='title'></slot></span>
                         <slot name='other-icons'></slot>
                         <!-- Allow movement of mod order -->
                         <a v-if='showSort' class='card-header-icon handle'>
-                            <i class="fas fa-grip-vertical" v-tooltip.left="'Drag to reorder'"></i>
+                            <i class="fas fa-grip-vertical" :v-tooltip.left="t('translations.pages.manager.installed.expandableCard.tooltips.dragToReorder')"></i>
                         </a>
                         <a class='card-header-icon'>
                             <span class='icon'>
-                                <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible' v-tooltip.left="'Expand'"></i>
-                                <i class='fas fa-angle-down' aria-hidden='true' v-if='visible' v-tooltip.left="'Collapse'"></i>
+                                <i class='fas fa-angle-right' aria-hidden='true' v-if='!visible' v-tooltip.left="t('translations.pages.manager.installed.expandableCard.tooltips.expand')"></i>
+                                <i class='fas fa-angle-down' aria-hidden='true' v-if='visible' v-tooltip.left="t('translations.pages.manager.installed.expandableCard.tooltips.collapse')"></i>
                             </span>
                         </a>
                     </header>
@@ -43,8 +43,10 @@
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
+import { useI18n } from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 type ExpandableCardProps = {
     image?: string;
