@@ -209,11 +209,12 @@ function openReviewModal() {
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
                 class='card-header-icon'>
-                <i class='fas fa-cloud-upload-alt' v-tooltip.left="'An update is available'"></i>
+                <i class='fas fa-cloud-upload-alt'
+                   v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.updateAvailable')"></i>
             </span>
             <span v-if="disabledDependencies.length || missingDependencies.length"
                 class='card-header-icon'>
-                <i v-tooltip.left="`There is an issue with the dependencies for this mod`"
+                <i v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.dependencyIssue')"
                     class='fas fa-exclamation-circle'
                 ></i>
             </span>
@@ -225,47 +226,51 @@ function openReviewModal() {
                         type="checkbox"
                         :class="['switch', 'is-small', {'switch is-info' : mod.isEnabled()}]"
                         :checked="mod.isEnabled()" />
-                    <label :for="`switch-${mod.getName()}`"
-                        v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
+                    <label v-if="mod.isEnabled()"
+                           :for="`switch-${mod.getName()}`"
+                           v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.disable')"></label>
+                    <label v-else
+                           :for="`switch-${mod.getName()}`"
+                           v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.enable')"></label>
                 </div>
             </span>
         </template>
 
         <!-- Show bottom button row -->
         <button @click="uninstallMod(props.mod)" class='button'>
-            Uninstall
+            {{ t('translations.pages.manager.installed.localModCard.actions.uninstall') }}
         </button>
 
         <button v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='button'>
-            Disable
+            {{ t('translations.pages.manager.installed.localModCard.actions.disable') }}
         </button>
         <button v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='button' >
-            Enable
+            {{ t('translations.pages.manager.installed.localModCard.actions.enable') }}
         </button>
 
         <button @click="viewAssociatedMods()" class='button'>
-            Associated
+            {{ t('translations.pages.manager.installed.localModCard.actions.associated') }}
         </button>
 
         <ExternalLink :url="mod.getWebsiteUrl()" class="button">
-            Website
+            {{ t('translations.pages.manager.installed.localModCard.actions.openWebsite') }}
             <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
         </ExternalLink>
 
         <button v-if="!isLatestVersion" @click="updateMod()" class='button'>
-            Update
+            {{ t('translations.pages.manager.installed.localModCard.actions.update') }}
         </button>
 
         <button v-if="missingDependencies.length"
             @click="downloadDependency(missingDependencies[0]!)"
             class='button'>
-            Download dependency
+            {{ t('translations.pages.manager.installed.localModCard.actions.downloadDependency') }}
         </button>
 
         <button v-if="disabledDependencies.length"
             @click="enableMod(disabledDependencies[0]!)"
             class='button'>
-            Enable {{disabledDependencies[0]!.getDisplayName()}}
+            {{ t('translations.pages.manager.installed.localModCard.actions.enableSpecific', { dependencyName: disabledDependencies[0]!.getDisplayName() }) }}
         </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>
