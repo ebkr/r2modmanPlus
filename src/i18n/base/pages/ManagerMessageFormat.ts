@@ -73,6 +73,24 @@ export type ManagerMessageFormat = {
             display: {
                 byline: string;
                 installedAt: string;
+            },
+            tooltips: {
+                updateAvailable: string;
+                dependencyIssue: string;
+                disable: string;
+                enable: string;
+                donate: string;
+            },
+            actions: {
+                uninstall: string;
+                disable: string;
+                enable: string;
+                associated: string;
+                openWebsite: string;
+                update: string;
+                downloadDependency: string;
+                enableSpecific: string
+                donate: string;
             }
         }
     }

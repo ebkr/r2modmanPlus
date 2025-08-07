@@ -77,7 +77,25 @@ export const ManagerTranslation: ManagerMessageFormat = {
             },
             display: {
                 byline: 'v{version} by {author}',
-                installedAt: 'Installed on: {formattedDate}'
+                installedAt: 'Installed on: {formattedDate}',
+            },
+            tooltips: {
+                updateAvailable: 'An update is available',
+                dependencyIssue: 'There is an issue with the dependencies for this mod',
+                disable: 'Disable',
+                enable: 'Enable',
+                donate: 'Donate to the mod author',
+            },
+            actions: {
+                uninstall: 'Uninstall',
+                disable: 'Disable',
+                enable: 'Enable',
+                associated: 'Associated',
+                openWebsite: 'Website',
+                update: 'Update',
+                downloadDependency: 'Download dependency',
+                enableSpecific: 'Enable {dependencyName}',
+                donate: 'Donate',
             }
         }
     }
