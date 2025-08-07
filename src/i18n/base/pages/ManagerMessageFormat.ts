@@ -23,5 +23,15 @@ export type ManagerMessageFormat = {
             label: string;
             gameIconAltText: string;
         }
+    },
+    installed: {
+        noModsInstalled: {
+            title: string;
+            content: string;
+        },
+        updatableModsBanner: {
+            text: string;
+            updateAction: string;
+        },
     }
 }

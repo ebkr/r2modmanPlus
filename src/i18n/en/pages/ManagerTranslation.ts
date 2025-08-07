@@ -25,5 +25,18 @@ export const ManagerTranslation: ManagerMessageFormat = {
             label: 'Profile',
             gameIconAltText: 'Game image'
         }
+    },
+    installed: {
+        noModsInstalled: {
+            title: 'Looks like you don\'t have any mods installed',
+            content: 'You can click the Online tab on the left to browse all available mods.',
+        },
+        updatableModsBanner: {
+            text: `
+            You have {numberOfModsWithUpdates} mod with an update available. |
+            You have {numberOfModsWithUpdates} mods with updates available
+            .`,
+            updateAction: 'Update all?'
+        },
     }
 }
