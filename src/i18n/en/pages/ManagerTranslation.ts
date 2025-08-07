@@ -34,9 +34,41 @@ export const ManagerTranslation: ManagerMessageFormat = {
         updatableModsBanner: {
             text: `
             You have {numberOfModsWithUpdates} mod with an update available. |
-            You have {numberOfModsWithUpdates} mods with updates available
-            .`,
+            You have {numberOfModsWithUpdates} mods with updates available.
+            `,
             updateAction: 'Update all?'
         },
+        searchAndSort: {
+            search: {
+                label: 'Search',
+                placeholder: 'Search for an installed mod',
+            },
+            sort: {
+                label: 'Sort',
+                order: {
+                    options: {
+                        CUSTOM: 'Custom',
+                        MOD_NAME: 'Mod name',
+                        AUTHOR: 'Author name',
+                        INSTALL_DATE: 'Install date'
+                    }
+                },
+                directions: {
+                    options: {
+                        STANDARD: 'Standard',
+                        REVERSE: 'Reverse'
+                    }
+                },
+                disabledPositions: {
+                    label: 'Disabled',
+                    options: {
+                        NONE: 'None',
+                        CUSTOM: 'Custom',
+                        FIRST: 'First',
+                        LAST: 'Last',
+                    }
+                }
+            }
+        }
     }
 }
