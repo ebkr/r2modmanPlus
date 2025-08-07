@@ -92,6 +92,15 @@ export type ManagerMessageFormat = {
                 enableSpecific: string
                 donate: string;
             }
+        },
+        expandableCard: {
+            imageAltText: string;
+            funkyModeAltText: string;
+            tooltips: {
+                dragToReorder: string;
+                expand: string;
+                collapse: string;
+            }
         }
     }
 }
