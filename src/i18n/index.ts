@@ -4,6 +4,7 @@ import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFormat';
 import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
 import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMessageFormat';
+import { ManagerMessageFormat } from './base/pages/ManagerMessageFormat';
 
 export default {
     'en': langEn,
@@ -23,6 +24,7 @@ export type MessageFormat = {
             gameSelection: GameSelectionMessageFormat,
             splash: SplashMessageFormat,
             profileSelection: ProfileSelectionMessageFormat,
+            manager: ManagerMessageFormat,
         },
         platforms: PlatformMessageFormat;
     }
