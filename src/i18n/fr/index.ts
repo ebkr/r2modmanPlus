@@ -2,6 +2,7 @@ import {GameSelectionTranslation} from "./pages/GameSelectionTranslation";
 import {SplashTranslation} from "./pages/SplashTranslation";
 import {PlatformTranslation} from "./platforms/PlatformTranslation";
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
+import {ManagerTranslation} from './pages/ManagerTranslation';
 
 const message = {
     metadata: {
@@ -13,6 +14,7 @@ const message = {
             gameSelection: GameSelectionTranslation,
             splash: SplashTranslation,
             profileSelection: ProfileSelectionTranslation,
+            manager: ManagerTranslation,
         },
         platforms: PlatformTranslation
     }
