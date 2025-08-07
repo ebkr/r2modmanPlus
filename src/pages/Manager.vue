@@ -3,9 +3,9 @@
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
-					An update is available.
+					{{ t('translations.pages.manager.updateAvailable.title') }}
 					<ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
-                        Click here to go to the release page.
+                        {{ t('translations.pages.manager.updateAvailable.linkText') }}
 					</ExternalLink>
 				</p>
 			</div>
@@ -168,8 +168,10 @@ import VueRouter from 'vue-router';
 import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 let router!: VueRouter;
 
 const portableUpdateAvailable = ref<boolean>(false);
@@ -557,6 +559,7 @@ onMounted(async () => {
     display: flex;
     flex: 1;
     width: 100%;
+    flex-direction: column;
 }
 
 .router-view {
