@@ -63,7 +63,16 @@ export type ManagerMessageFormat = {
                         LAST: string;
                     }
                 },
-
+            }
+        },
+        localModCard: {
+            labels: {
+                deprecated: string;
+                disabled: string;
+            },
+            display: {
+                byline: string;
+                installedAt: string;
             }
         }
     }

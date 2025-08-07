@@ -12,8 +12,10 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 import { computed, ref, watch } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 type LocalModCardProps = {
     mod: ManifestV2;
@@ -194,21 +196,18 @@ function dependencyStringToModName(x: string) {
                 <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
                     v-tooltip.right="'This mod is deprecated and could be broken'">
-                    Deprecated
+                    {{ t('translations.pages.manager.installed.localModCard.labels.deprecated') }}
                 </span>
                 <span v-if="!mod.isEnabled()"
                     class="tag is-warning margin-right margin-right--half-width"
                     v-tooltip.right="'This mod will not be used in-game'">
-                    Disabled
+                    {{ t('translations.pages.manager.installed.localModCard.labels.disabled') }}
                 </span>
                 <span class="card-title selectable">
                     <component :is="mod.isEnabled() ? 'span' : 'strike'" class="selectable">
-                        {{mod.getDisplayName()}}
+                        {{ mod.getDisplayName() }}
                         <span class="selectable card-byline">
-                            v{{mod.getVersionNumber()}}
-                        </span>
-                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`">
-                            by {{mod.getAuthorName()}}
+                            {{ t('translations.pages.manager.installed.localModCard.display.byline', { version: mod.getVersionNumber(), author: mod.getAuthorName() }) }}
                         </span>
                     </component>
                 </span>
@@ -216,7 +215,9 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <template v-slot:description>
-            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0">
+                {{ t('translations.pages.manager.installed.localModCard.display.installedAt', { formattedDate: d(mod.getInstalledAtTime(), 'long', messages[locale].metadata.locale)}) }}
+            </p>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
