@@ -97,6 +97,15 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 enableSpecific: 'Enable {dependencyName}',
                 donate: 'Donate',
             }
+        },
+        expandableCard: {
+            imageAltText: 'Mod image',
+            funkyModeAltText: 'Funky mode overlay',
+            tooltips: {
+                dragToReorder: 'Drag to reorder',
+                expand: 'Expand',
+                collapse: 'Collapse',
+            }
         }
     }
 }
