@@ -33,5 +33,38 @@ export type ManagerMessageFormat = {
             text: string;
             updateAction: string;
         },
+        searchAndSort: {
+            search: {
+                label: string;
+                placeholder: string;
+            },
+            sort: {
+                label: string;
+                order: {
+                    options: {
+                        CUSTOM: string;
+                        MOD_NAME: string;
+                        AUTHOR: string;
+                        INSTALL_DATE: string;
+                    }
+                },
+                directions: {
+                    options: {
+                        STANDARD: string;
+                        REVERSE: string;
+                    }
+                },
+                disabledPositions: {
+                    label: string;
+                    options: {
+                        NONE: string;
+                        CUSTOM: string;
+                        FIRST: string;
+                        LAST: string;
+                    }
+                },
+
+            }
+        }
     }
 }
