@@ -1,0 +1,27 @@
+export type ManagerMessageFormat = {
+    updateAvailable: {
+        title: string;
+        linkText: string;
+    },
+    navigation: {
+        gameActions: {
+            startModded: string;
+            startVanilla: string;
+        },
+        modsActions: {
+            label: string;
+            installed: string;
+            online: string;
+        },
+        otherActions: {
+            label: string;
+            configEditor: string;
+            settings: string;
+            help: string;
+        },
+        profileSwitcher: {
+            label: string;
+            gameIconAltText: string;
+        }
+    }
+}
