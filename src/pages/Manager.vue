@@ -559,7 +559,6 @@ onMounted(async () => {
     display: flex;
     flex: 1;
     width: 100%;
-    flex-direction: column;
 }
 
 .router-view {
