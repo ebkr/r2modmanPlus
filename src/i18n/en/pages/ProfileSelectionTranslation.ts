@@ -72,7 +72,7 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
                     invalid: 'Invalid code, check for typos',
                 },
                 actions: {
-                    loading: 'Loading...',
+                    loading: 'Loading',
                     proceed: 'Continue'
                 }
             },
