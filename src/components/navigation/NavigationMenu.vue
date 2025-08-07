@@ -6,19 +6,27 @@
                     <p class="menu-label">{{ activeGame.displayName }}</p>
                     <ul class="menu-list">
                         <li>
-                            <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>Start modded</a>
+                            <a href="#" @click="launchGame(LaunchMode.MODDED)"><i class="fas fa-play-circle icon--margin-right"/>
+                                {{ t('translations.pages.manager.navigation.gameActions.startModded') }}
+                            </a>
                         </li>
                         <li>
-                            <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>Start vanilla</a>
+                            <a href="#" @click="launchGame(LaunchMode.VANILLA)"><i class="far fa-play-circle icon--margin-right"/>
+                                {{ t('translations.pages.manager.navigation.gameActions.startVanilla') }}
+                            </a>
                         </li>
                     </ul>
-                    <p class="menu-label">Mods</p>
+                    <p class="menu-label">
+                        {{ t('translations.pages.manager.navigation.modsActions.label') }}
+                    </p>
                     <div>
                         <ul class="menu-list">
                             <li>
                                 <router-link :to="{name: 'manager.installed'}" class="tagged-link">
                                     <i class="fas fa-folder tagged-link__icon icon--margin-right" />
-                                    <span class="tagged-link__content">Installed</span>
+                                    <span class="tagged-link__content">
+                                        {{ t('translations.pages.manager.navigation.modsActions.installed') }}
+                                    </span>
                                     <span :class="getTagLinkClasses(['manager.installed', 'manager'])">{{localModCount}}</span>
                                 </router-link>
                             </li>
@@ -26,7 +34,9 @@
                                 <router-link :to="{name: 'manager.online'}"
                                              :class="['tagged-link', {'is-active': $route.name === 'downloads'}]">
                                     <i class="fas fa-globe tagged-link__icon icon--margin-right" />
-                                    <span class="tagged-link__content">Online</span>
+                                    <span class="tagged-link__content">
+                                        {{ t('translations.pages.manager.navigation.modsActions.online') }}
+                                    </span>
 
                                     <router-link :to="{name: 'downloads'}" class="margin-right--half-width">
                                         <i class="tag fas fa-download is-primary" />
@@ -36,24 +46,26 @@
                             </li>
                         </ul>
                     </div>
-                    <p class='menu-label'>Other</p>
+                    <p class='menu-label'>
+                        {{ t('translations.pages.manager.navigation.otherActions.label') }}
+                    </p>
                     <ul class='menu-list'>
                         <li>
                             <router-link :to="{name: 'config-editor'}">
                                 <i class="fas fa-edit icon--margin-right" />
-                                Config editor
+                                {{ t('translations.pages.manager.navigation.otherActions.configEditor') }}
                             </router-link>
                         </li>
                         <li>
                             <router-link :to="{name: 'manager.settings'}">
                                 <i class="fas fa-cog icon--margin-right" />
-                                Settings
+                                {{ t('translations.pages.manager.navigation.otherActions.settings') }}
                             </router-link>
                         </li>
                         <li>
                             <router-link :to="{name: 'help'}">
                                 <i class="fas fa-question-circle icon--margin-right" />
-                                Help
+                                {{ t('translations.pages.manager.navigation.otherActions.help') }}
                             </router-link>
                         </li>
                     </ul>
@@ -61,10 +73,12 @@
                 </div>
                 <div class="menu-bottom">
                     <div id="profile-switcher" @click="openProfileManagementModal">
-                        <img :src="`/images/game_selection/${activeGame.gameImage}`" alt="Game icon"/>
+                        <img :src="`/images/game_selection/${activeGame.gameImage}`" :alt="t('translations.pages.manager.navigation.profileSwitcher.gameIconAltText')"/>
                         <div>
                             <p>{{ profile.getProfileName() }}</p>
-                            <p class="sub-action">Profile</p>
+                            <p class="sub-action">
+                                {{ t('translations.pages.manager.navigation.profileSwitcher.label') }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -90,9 +104,11 @@ import { ref, computed, onMounted, getCurrentInstance } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter, { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
 const router = useRouter();
+const { t } = useI18n();
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const profile = computed<Profile>(() => store.getters['profile/activeProfile']);
