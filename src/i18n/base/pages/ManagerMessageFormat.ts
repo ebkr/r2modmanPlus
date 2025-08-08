@@ -135,6 +135,26 @@ export type ManagerMessageFormat = {
             pleaseNote: string;
             placeholder: string;
             updateArguments: string;
+        },
+        categorySelector: {
+            selectCategory: string;
+            noCategoriesSelected: string;
+        }
+    },
+    online: {
+        modals: {
+            modFilter: {
+                title: string;
+                languageDisclaimer: string;
+                selectors: {
+                    atLeastOneCategory: string;
+                    allCategories: string;
+                    noneCategories: string;
+                },
+                allowNsfw: string;
+                showDeprecated: string;
+                apply: string;
+            }
         }
     }
 }
