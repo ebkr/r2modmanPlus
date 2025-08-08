@@ -2,81 +2,107 @@
     <div>
         <ModalCard id="import-mod-from-file-modal" :can-close="true" @close-modal="closeModal" :is-active="isOpen">
             <template v-slot:header>
-                <h2 class='modal-title'>Import mod from file</h2>
+                <h2 class='modal-title'>
+                    {{ t('translations.pages.manager.modals.importLocalMod.title') }}
+                </h2>
             </template>
             <template v-slot:footer v-if="fileToImport === null">
-                <button class="button is-info" @click="selectFile">Select file</button>
+                <button class="button is-info" @click="selectFile">
+                    {{ t('translations.pages.manager.modals.importLocalMod.actions.selectFile') }}
+                </button>
             </template>
             <template v-slot:footer v-else>
-                <button class="button is-info" @click="importFile">Import local mod</button>
+                <button class="button is-info" @click="importFile">
+                    {{ t('translations.pages.manager.modals.importLocalMod.actions.importLocalMod') }}
+                </button>
             </template>
 
             <template slot="body" v-if="fileToImport === null">
                 <template v-if="!waitingForSelection">
-                    <p>Please select a zip or DLL to be imported.</p>
-                    <p>Zip files that contain a manifest file will have the some information pre-filled. If a manifest is not available, this will have to be entered manually.</p>
+                    <p>
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.instructToSelect') }}
+                    </p>
+                    <p>
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.dataEntryInfo') }}
+                    </p>
                 </template>
                 <template v-else>
-                    <p>Waiting for file. This may take a minute.</p>
+                    <p>
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.waitingForSelection') }}
+                    </p>
                 </template>
             </template>
 
             <template v-slot:body v-if="fileToImport !== null">
                 <div class="notification is-warning" v-if="validationMessage !== null">
-                    <p>{{ validationMessage }}</p>
+                    <p>{{ t(`translations.pages.manager.modals.importLocalMod.validationMessages.${validationMessage}`) }}</p>
                 </div>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-name" class="non-selectable">Mod name</label>
+                    <label for="mod-name" class="non-selectable">
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.form.modName.label') }}
+                    </label>
                     <input
                         v-model="modName"
                         id="mod-name"
                         class="input margin-right"
                         ref="mod-name"
                         type="text"
-                        placeholder="Enter the name of the mod"
+                        :placeholder="t('translations.pages.manager.modals.importLocalMod.content.form.modName.placeholder')"
                         autocomplete="off"
                     />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Author</label>
+                    <label for="mod-author" class="non-selectable">
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.form.modAuthor.label') }}
+                    </label>
                     <input
                         v-model="modAuthor"
                         id="mod-author"
                         class="input margin-right"
                         ref="mod-author"
                         type="text"
-                        placeholder="Enter the author name"
+                        :placeholder="t('translations.pages.manager.modals.importLocalMod.content.form.modAuthor.placeholder')"
                         autocomplete="off"
                     />
                 </div>
                 <br/>
                 <div class="input-group input-group--flex margin-right">
-                    <label for="mod-author" class="non-selectable">Description (optional)</label>
+                    <label for="mod-author" class="non-selectable">
+                        {{ t('translations.pages.manager.modals.importLocalMod.content.form.description.label') }}
+                    </label>
                     <input
                         v-model="modDescription"
                         id="mod-description"
                         class="input margin-right"
                         ref="mod-description"
                         type="text"
-                        placeholder="Enter a description"
+                        :placeholder="t('translations.pages.manager.modals.importLocalMod.content.form.description.placeholder')"
                         autocomplete="off"
                     />
                 </div>
                 <hr/>
-                <h3 class="title is-6">Version</h3>
+                <h3 class="title is-6">
+                    {{ t('translations.pages.manager.modals.importLocalMod.content.form.version.label') }}
+                </h3>
                 <div class="input-group input-group--flex margin-right non-selectable">
                     <div class="is-flex">
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-major">Major</label>
+                            <label for="mod-version-major">
+                                {{ t('translations.pages.manager.modals.importLocalMod.content.form.version.majorLabel') }}
+                            </label>
                             <input id="mod-version-major" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMajor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div class="margin-right margin-right--half-width">
-                            <label for="mod-version-minor">Minor</label>
+                            <label for="mod-version-minor">
+                                {{ t('translations.pages.manager.modals.importLocalMod.content.form.version.minorLabel') }}
+                            </label>
                             <input id="mod-version-minor" ref="mod-version" class="input margin-right" type="number" v-model="modVersionMinor" min="0" step="1" placeholder="0"/>
                         </div>
                         <div>
-                            <label for="mod-version-patch">Patch</label>
+                            <label for="mod-version-patch">
+                                {{ t('translations.pages.manager.modals.importLocalMod.content.form.version.patchLabel') }}
+                            </label>
                             <input id="mod-version-patch" ref="mod-version" class="input margin-right" type="number" v-model="modVersionPatch" min="0" step="1" placeholder="0"/>
                         </div>
                     </div>
@@ -101,8 +127,10 @@ import { ref, computed } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 type LocalFileImportModalProps = {
     visible: boolean;
@@ -284,10 +312,10 @@ async function importFile() {
 
     switch (0) {
         case modName.value.trim().length:
-            validationMessage.value = "The mod name must not be empty.";
+            validationMessage.value = "modNameEmpty";
             return;
         case modAuthor.value.trim().length:
-            validationMessage.value = "The mod author must not be empty.";
+            validationMessage.value = "authorNameEmpty";
             return;
     }
 
@@ -295,20 +323,20 @@ async function importFile() {
         case Number(modVersionMajor.value):
         case Number(modVersionMinor.value):
         case Number(modVersionPatch.value):
-            validationMessage.value = "Major, minor, and patch must all be numbers.";
+            validationMessage.value = "nonNumericVersion";
             return;
     }
 
     if (modVersionMajor.value < 0) {
-        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        validationMessage.value = "invalidVersion";
         return;
     }
     if (modVersionMinor.value < 0) {
-        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        validationMessage.value = "invalidVersion";
         return;
     }
     if (modVersionPatch.value < 0) {
-        validationMessage.value = "Major, minor, and patch must be whole numbers greater than 0.";
+        validationMessage.value = "invalidVersion";
         return;
     }
 
@@ -317,7 +345,7 @@ async function importFile() {
         : null;
 
     if (profile === null) {
-        validationMessage.value = "Profile is not selected";
+        validationMessage.value = "noProfileSelected";
         return;
     }
 
