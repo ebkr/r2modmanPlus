@@ -40,28 +40,8 @@ export type ManagerMessageFormat = {
             },
             sort: {
                 label: string;
-                order: {
-                    options: {
-                        CUSTOM: string;
-                        MOD_NAME: string;
-                        AUTHOR: string;
-                        INSTALL_DATE: string;
-                    }
-                },
-                directions: {
-                    options: {
-                        STANDARD: string;
-                        REVERSE: string;
-                    }
-                },
                 disabledPositions: {
                     label: string;
-                    options: {
-                        NONE: string;
-                        CUSTOM: string;
-                        FIRST: string;
-                        LAST: string;
-                    }
                 },
             }
         },
@@ -154,6 +134,12 @@ export type ManagerMessageFormat = {
                 allowNsfw: string;
                 showDeprecated: string;
                 apply: string;
+            },
+            sort: {
+                title: string;
+                sortBehaviour: string;
+                sortDirection: string;
+                close: string;
             }
         }
     }

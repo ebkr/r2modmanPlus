@@ -82,7 +82,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         id="local-sort-order"
                         class="select select--content-spacing margin-right margin-right--half-width">
                         <option v-for="(option) in orderOptions" :key="`order-option-${option}`">
-                            {{ t(`translations.pages.manager.installed.searchAndSort.sort.order.options.${EnumResolver.from(SortNaming, option)}`) }}
+                            {{ t(`translations.enums.sortNaming.${EnumResolver.from(SortNaming, option)}`) }}
                         </option>
                     </select>
                     <select
@@ -90,7 +90,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         id="local-sort-direction"
                         class="select select--content-spacing">
                         <option v-for="(option) in directionOptions" :key="`direction-option-${option}`">
-                            {{ t(`translations.pages.manager.installed.searchAndSort.sort.directions.options.${EnumResolver.from(SortDirection, option)}`) }}
+                            {{ t(`translations.enums.sortDirection.${EnumResolver.from(SortDirection, option)}`) }}
                         </option>
                     </select>
                 </div>
@@ -104,7 +104,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         id="local-deprecated-position"
                         class="select select--content-spacing">
                         <option v-for="(option) in disabledOptions" :key="`disabled-option-${option}`">
-                            {{ t(`translations.pages.manager.installed.searchAndSort.sort.disabledPositions.options.${EnumResolver.from(SortLocalDisabledMods, option)}`) }}
+                            {{ t(`translations.enums.sortLocalDisabledMods.${EnumResolver.from(SortLocalDisabledMods, option)}`) }}
                         </option>
                     </select>
                 </div>
