@@ -136,6 +136,48 @@ export const ManagerTranslation: ManagerMessageFormat = {
         categorySelector: {
             selectCategory: 'Select a category',
             noCategoriesSelected: 'No categories selected',
+        },
+        importLocalMod: {
+            title: 'Import mod from file',
+            actions: {
+                selectFile: 'Select file',
+                importLocalMod: 'Import local mod',
+            },
+            content: {
+                instructToSelect: 'Please select a zip or DLL to be imported.',
+                dataEntryInfo: `
+                Zip files that contain a manifest file will have the some information pre-filled.
+                If a manifest is not available, this will have to be entered manually.
+                `,
+                waitingForSelection: 'Waiting for file. This may take a minute.',
+                form: {
+                    modName: {
+                        label: 'Mod name',
+                        placeholder: 'Enter the name of the mod',
+                    },
+                    modAuthor: {
+                        label: 'Author',
+                        placeholder: 'Enter the author name',
+                    },
+                    description: {
+                        label: 'Description (optional)',
+                        placeholder: 'Enter a description'
+                    },
+                    version: {
+                        label: 'Version',
+                        majorLabel: 'Major',
+                        minorLabel: 'Minor',
+                        patchLabel: 'Patch'
+                    }
+                }
+            },
+            validationMessages: {
+                modNameEmpty: 'The mod name must not be empty.',
+                authorNameEmpty: 'The mod author must not be empty.',
+                invalidVersion: 'Major, minor, and patch must be whole numbers greater than 0.',
+                nonNumericVersion: 'Major, minor, and patch must all be numbers.',
+                noProfileSelected: 'Profile is not selected.'
+            }
         }
     },
     online: {
@@ -157,7 +199,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 sortBehaviour: 'Sort behaviour',
                 sortDirection: 'Sort direction',
                 close: 'Close'
-            }
+            },
         }
     }
 }

@@ -119,7 +119,47 @@ export type ManagerMessageFormat = {
         categorySelector: {
             selectCategory: string;
             noCategoriesSelected: string;
+        },
+        importLocalMod: {
+            title: string;
+            actions: {
+                selectFile: string;
+                importLocalMod: string;
+            }
+            content: {
+                waitingForSelection: string;
+                instructToSelect: string;
+                dataEntryInfo: string;
+                form: {
+                    modName: {
+                        label: string;
+                        placeholder: string;
+                    },
+                    modAuthor: {
+                        label: string;
+                        placeholder: string;
+                    },
+                    description: {
+                        label: string;
+                        placeholder: string;
+                    },
+                    version: {
+                        label: string;
+                        majorLabel: string;
+                        minorLabel: string;
+                        patchLabel: string;
+                    }
+                }
+            },
+            validationMessages: {
+                modNameEmpty: string;
+                authorNameEmpty: string;
+                nonNumericVersion: string;
+                invalidVersion: string;
+                noProfileSelected: string;
+            },
         }
+
     },
     online: {
         modals: {
@@ -140,7 +180,7 @@ export type ManagerMessageFormat = {
                 sortBehaviour: string;
                 sortDirection: string;
                 close: string;
-            }
+            },
         }
     }
 }
