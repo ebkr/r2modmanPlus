@@ -5,6 +5,7 @@ import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFor
 import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
 import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMessageFormat';
 import { ManagerMessageFormat } from './base/pages/ManagerMessageFormat';
+import {EnumMessageFormat} from "./base/enums/EnumMessageFormat";
 
 export default {
     'en': langEn,
@@ -32,6 +33,7 @@ export type MessageFormat = {
             manager: ManagerMessageFormat,
         },
         platforms: PlatformMessageFormat;
+        enums: EnumMessageFormat;
     }
 }
 
