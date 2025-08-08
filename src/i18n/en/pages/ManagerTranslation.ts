@@ -106,6 +106,52 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 expand: 'Expand',
                 collapse: 'Collapse',
             }
+        },
+    },
+    modals: {
+        failedToSetSteamFolder: {
+            title: 'Failed to set the Steam folder',
+            steamExecutableNotSelected: 'The steam executable was not selected.',
+            solution: 'If this error has appeared but the executable is correct, please run as administrator.'
+        },
+        failedToSetTheGameFolder: {
+            title: 'Failed to set the {gameName} folder',
+            listedExecutableNames: 'The executable must be either of the following: "{options}".',
+            solution: 'If this error has appeared but the executable is correct, please run as administrator.'
+        },
+        clearingGameDirectory: {
+            title: 'Clearing the {gameName} installation directory',
+            waitToLaunchGame: `
+                You will not not be able to launch the game until
+                Steam has verified the integrity of the game files.
+                `,
+            steamWillBeStarted: `
+                Steam will be started and will attempt to verify the
+                integrity of {{ activeGame.displayName }}.
+                `,
+            checkSteamForProgress: `
+                Please check the Steam window for validation progress.
+                If the window has not yet appeared, please be patient.
+                `,
+            confirmation: 'I understand'
+        },
+        dependencyStrings: {
+            title: 'Dependency string list',
+            dependency: '{modName}-{versionNumber}',
+            close: 'Close'
+        },
+        launchArguments: {
+            title: 'Set custom launch arguments',
+            someProvidedByDefault: 'Some arguments are provided by default:',
+            moddedLabel: 'Modded:',
+            availableAfterInstallingLoader: 'These arguments will be available after installing a mod loader.',
+            vanillaLabel: 'Vanilla:',
+            pleaseNote: `
+                Please note that these are called against the Steam executable.
+                Be careful when entering custom launch arguments.
+                `,
+            placeholder: 'Enter arguments',
+            updateArguments: 'Update launch arguments',
         }
     }
 }
