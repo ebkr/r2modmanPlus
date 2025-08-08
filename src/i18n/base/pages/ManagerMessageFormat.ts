@@ -101,6 +101,40 @@ export type ManagerMessageFormat = {
                 expand: string;
                 collapse: string;
             }
+        },
+    },
+    modals: {
+        failedToSetSteamFolder: {
+            title: string;
+            steamExecutableNotSelected: string;
+            solution: string;
+        },
+        failedToSetTheGameFolder: {
+            title: string;
+            listedExecutableNames: string;
+            solution: string;
+        },
+        clearingGameDirectory: {
+            title: string;
+            waitToLaunchGame: string;
+            steamWillBeStarted: string;
+            checkSteamForProgress: string;
+            confirmation: string;
+        },
+        dependencyStrings: {
+            title: string;
+            dependency: string;
+            close: string;
+        },
+        launchArguments: {
+            title: string;
+            someProvidedByDefault: string;
+            moddedLabel: string;
+            availableAfterInstallingLoader: string;
+            vanillaLabel: string;
+            pleaseNote: string;
+            placeholder: string;
+            updateArguments: string;
         }
     }
 }
