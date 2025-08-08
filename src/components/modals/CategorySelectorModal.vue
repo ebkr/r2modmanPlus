@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n();
 
 type CategorySelectorModalProps = {
     title: string;
@@ -27,7 +30,7 @@ function emitDeselected(key: string) {
         <div class="input-group margin-bottom">
             <select class="select select--content-spacing" @change="emitSelected">
                 <option selected disabled>
-                    Select a category
+                    {{ t('translations.pages.manager.modals.categorySelector.selectCategory') }}
                 </option>
                 <option v-for="(key, index) in selectableCategories" :key="`category--${key}-${index}`">
                     {{ key }}
@@ -46,7 +49,9 @@ function emitDeselected(key: string) {
         </div>
         <div class="field has-addons" v-else>
             <span class="tags">
-                <span class="tag">No categories selected</span>
+                <span class="tag">
+                    {{ t('translations.pages.manager.modals.categorySelector.noCategoriesSelected') }}
+                </span>
             </span>
         </div>
     </div>
