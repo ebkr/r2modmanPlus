@@ -45,28 +45,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
             },
             sort: {
                 label: 'Sort',
-                order: {
-                    options: {
-                        CUSTOM: 'Custom',
-                        MOD_NAME: 'Mod name',
-                        AUTHOR: 'Author name',
-                        INSTALL_DATE: 'Install date'
-                    }
-                },
-                directions: {
-                    options: {
-                        STANDARD: 'Standard',
-                        REVERSE: 'Reverse'
-                    }
-                },
                 disabledPositions: {
                     label: 'Disabled',
-                    options: {
-                        NONE: 'None',
-                        CUSTOM: 'Custom',
-                        FIRST: 'First',
-                        LAST: 'Last',
-                    }
                 }
             }
         },
@@ -171,6 +151,12 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 allowNsfw: 'Allow NSFW (potentially explicit) mods',
                 showDeprecated: 'Show deprecated mods',
                 apply: 'Apply filters'
+            },
+            sort: {
+                title: 'Change the ordering of mods',
+                sortBehaviour: 'Sort behaviour',
+                sortDirection: 'Sort direction',
+                close: 'Close'
             }
         }
     }
