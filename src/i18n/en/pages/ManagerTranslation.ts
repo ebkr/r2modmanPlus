@@ -127,7 +127,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 `,
             steamWillBeStarted: `
                 Steam will be started and will attempt to verify the
-                integrity of {{ activeGame.displayName }}.
+                integrity of {gameName}.
                 `,
             checkSteamForProgress: `
                 Please check the Steam window for validation progress.
@@ -152,6 +152,26 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 `,
             placeholder: 'Enter arguments',
             updateArguments: 'Update launch arguments',
+        },
+        categorySelector: {
+            selectCategory: 'Select a category',
+            noCategoriesSelected: 'No categories selected',
+        }
+    },
+    online: {
+        modals: {
+            modFilter: {
+                title: 'Filter mod categories',
+                languageDisclaimer: 'Categories are provided Thunderstore and are unable to be translated.',
+                selectors: {
+                    atLeastOneCategory: 'Mods must contain at least one of these categories',
+                    allCategories: 'Mods must contain all of these categories',
+                    noneCategories: 'Mods cannot contain any of these categories'
+                },
+                allowNsfw: 'Allow NSFW (potentially explicit) mods',
+                showDeprecated: 'Show deprecated mods',
+                apply: 'Apply filters'
+            }
         }
     }
 }
