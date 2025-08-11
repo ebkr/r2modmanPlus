@@ -9,8 +9,10 @@ import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/Launch
 import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
 import CopyToClipboardButton from "../../buttons/CopyToClipboardButton.vue";
 import ManagerSettings from "../../../r2mm/manager/ManagerSettings";
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const activeGame = computed<Game>(() => store.state.activeGame);
 const launchOption = ref<LaunchType>(LaunchType.AUTO);
@@ -49,32 +51,39 @@ async function updateAndClose() {
 <template>
     <ModalCard id="launch-type-modal" v-show="LaunchTypeModalOpen" :is-active="LaunchTypeModalOpen" :can-close="true" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class="modal-title">Set launch behaviour</h2>
+            <h2 class="modal-title">
+                {{ t('translations.pages.manager.modals.launchType.title') }}
+            </h2>
         </template>
         <template v-slot:body>
           <div>
               <input id="launch-type-option-auto" type="radio" name="launch-type-option" :value="LaunchType.AUTO" v-model="launchOption"/>
-              <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>Auto</label>
+              <label for="launch-type-option-auto"><span class="margin-right margin-right--half-width"/>
+                {{ t('translations.enums.launchType.AUTO') }}
+              </label>
           </div>
           <div>
               <input id="launch-type-option-native" type="radio" name="launch-type-option" :value="LaunchType.NATIVE" v-model="launchOption"/>
-              <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>Native</label>
+              <label for="launch-type-option-native"><span class="margin-right margin-right--half-width"/>
+                {{ t('translations.enums.launchType.NATIVE') }}
+              </label>
           </div>
           <div>
               <input id="launch-type-option-proton" type="radio" name="launch-type-option" :value="LaunchType.PROTON" v-model="launchOption"/>
-              <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>Proton</label>
+              <label for="launch-type-option-proton"><span class="margin-right margin-right--half-width"/>
+                {{ t('translations.enums.launchType.PROTON') }}
+              </label>
           </div>
-          <p v-if="launchOption === LaunchType.AUTO" class="margin-top">
-              By selecting <strong>Auto</strong> we have determined that {{ activeGame.displayName }} will be launched under
-              <strong class="tag">{{ determinedLaunchType }}</strong>
-              mode.
-          </p>
+            <div class="notification margin-top" v-if="launchOption === LaunchType.AUTO">
+                {{ t(`translations.pages.manager.modals.launchType.auto.${EnumResolver.from(LaunchType, determinedLaunchType)}`) }}
+            </div>
+
           <div v-if="determinedLaunchType === LaunchType.NATIVE && !wrapperProvided" class="margin-top">
             <p>
-              We were unable to determine if the required wrapper arguments have been set.
+              {{ t('translations.pages.manager.modals.launchType.native.unsureWrapperArgsPresent') }}
             </p>
             <p>
-              If you have not yet done this manually, please add the following launch arguments to the game's properties on Steam:
+              {{ t('translations.pages.manager.modals.launchType.native.addArgumentsInfo') }}
             </p>
             <div>
               <code>
@@ -83,14 +92,14 @@ async function updateAndClose() {
             </div>
             <div class="margin-top">
               <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button">
-                Copy launch arguments
+                {{ t('translations.pages.manager.modals.launchType.actions.copyLaunchArgs') }}
               </CopyToClipboardButton>
             </div>
           </div>
         </template>
         <template v-slot:footer>
             <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose">
-                Update
+                {{ t('translations.pages.manager.modals.launchType.actions.update') }}
             </button>
         </template>
     </ModalCard>
