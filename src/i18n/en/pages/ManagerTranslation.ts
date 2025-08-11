@@ -206,6 +206,23 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 outdated: '{version} is an outdated version'
             },
             download: 'Download with dependencies',
+        },
+        updateAllInstalledMods: {
+            noModsToUpdate: {
+                title: 'No mods to update',
+                content: 'Either all installed mods are up to date, or there are no installed mods.',
+                close: 'Close',
+            },
+            hasModsToUpdate: {
+                title: 'Update all installed mods',
+                content: {
+                    willBeUpdated: 'All installed mods will be updated to their latest versions.',
+                    missingDependenciesInstalled: 'Any missing dependencies will be installed.',
+                    whatWillHappen: 'The following mods will be downloaded and installed:',
+                    modUpdatedTo: '{modName} will be updated to: {version}',
+                },
+                updateAll: 'Update all',
+            }
         }
     },
     online: {
