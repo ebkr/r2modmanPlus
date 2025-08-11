@@ -192,6 +192,20 @@ export const ManagerTranslation: ManagerMessageFormat = {
             downloadProgress: 'Downloading: {progress}% complete',
             installProgress: 'Installing: {progress}% complete',
             waitingForDownload: 'Installing: waiting for download to finish',
+        },
+        downloadModVersionSelect: {
+            title: 'Select a version of {modName} to download',
+            content: {
+                recommendedDisclaimer: 'It\'s recommended to select the latest version of all mods.',
+                outdatedModsAdvice: 'Using outdated versions may cause problems.',
+            },
+            tags: {
+                select: 'You must select a version',
+                recommended: '{version} is the recommended version',
+                latest: '{version} is the latest version',
+                outdated: '{version} is an outdated version'
+            },
+            download: 'Download with dependencies',
         }
     },
     online: {
