@@ -223,6 +223,21 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 },
                 updateAll: 'Update all',
             }
+        },
+        launchType: {
+            title: 'Set launch behaviour',
+            auto: {
+                NATIVE: 'Your game will be started using the "Native" option',
+                PROTON: 'Your game will be started using the "Proton" option',
+            },
+            native: {
+                unsureWrapperArgsPresent: 'We were unable to determine if the required wrapper arguments have been set.',
+                addArgumentsInfo: 'If you have not yet done this manually, please add the following launch arguments to the game\'s properties on Steam:',
+            },
+            actions: {
+                copyLaunchArgs: 'Copy launch arguments',
+                update: 'Update'
+            }
         }
     },
     online: {
