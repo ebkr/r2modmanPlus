@@ -178,6 +178,11 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 nonNumericVersion: 'Major, minor, and patch must all be numbers.',
                 noProfileSelected: 'Profile is not selected.'
             }
+        },
+        codeExport: {
+            title: 'Profile exported',
+            description: 'Your code has been copied to your clipboard but may also be copied manually below:',
+            done: 'Done',
         }
     },
     online: {
