@@ -183,6 +183,15 @@ export const ManagerTranslation: ManagerMessageFormat = {
             title: 'Profile exported',
             description: 'Your code has been copied to your clipboard but may also be copied manually below:',
             done: 'Done',
+        },
+        downloadProgress: {
+            states: {
+                downloading: 'Downloading {modName}',
+                installing: 'Installing {modName}',
+            },
+            downloadProgress: 'Downloading: {progress}% complete',
+            installProgress: 'Installing: {progress}% complete',
+            waitingForDownload: 'Installing: waiting for download to finish',
         }
     },
     online: {
