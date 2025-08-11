@@ -172,6 +172,20 @@ export type ManagerMessageFormat = {
             downloadProgress: string;
             installProgress: string;
             waitingForDownload: string;
+        },
+        downloadModVersionSelect: {
+            title: string;
+            content: {
+                recommendedDisclaimer: string;
+                outdatedModsAdvice: string;
+            }
+            tags: {
+                select: string;
+                recommended: string;
+                latest: string;
+                outdated: string;
+            }
+            download: string;
         }
     },
     online: {
