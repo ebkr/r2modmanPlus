@@ -158,8 +158,12 @@ export type ManagerMessageFormat = {
                 invalidVersion: string;
                 noProfileSelected: string;
             },
+        },
+        codeExport: {
+            title: string;
+            description: string;
+            done: string;
         }
-
     },
     online: {
         modals: {
