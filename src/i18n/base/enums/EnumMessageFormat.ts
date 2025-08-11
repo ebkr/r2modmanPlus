@@ -23,5 +23,10 @@ export type EnumMessageFormat = {
         ALPHABETICAL: string;
         DOWNLOADS: string;
         RATING: string;
+    },
+    launchType: {
+        AUTO: string;
+        NATIVE: string;
+        PROTON: string;
     }
 }
