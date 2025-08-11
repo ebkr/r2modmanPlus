@@ -241,5 +241,11 @@ export type ManagerMessageFormat = {
                 close: string;
             },
         }
+    },
+    actions: {
+        locateGameExecutable: string;
+        selectExecutable: string;
+        locateGameLaunchHelper: string;
+        locateSteamExecutable: string;
     }
 }
