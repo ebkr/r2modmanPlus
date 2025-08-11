@@ -186,6 +186,23 @@ export type ManagerMessageFormat = {
                 outdated: string;
             }
             download: string;
+        },
+        updateAllInstalledMods: {
+            noModsToUpdate: {
+                title: string;
+                content: string;
+                close: string;
+            },
+            hasModsToUpdate: {
+                title: string;
+                content: {
+                    willBeUpdated: string;
+                    missingDependenciesInstalled: string;
+                    whatWillHappen: string;
+                    modUpdatedTo: string;
+                },
+                updateAll: string;
+            }
         }
     },
     online: {
