@@ -163,6 +163,15 @@ export type ManagerMessageFormat = {
             title: string;
             description: string;
             done: string;
+        },
+        downloadProgress: {
+            states: {
+                downloading: string;
+                installing: string;
+            },
+            downloadProgress: string;
+            installProgress: string;
+            waitingForDownload: string;
         }
     },
     online: {
