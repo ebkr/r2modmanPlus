@@ -203,6 +203,21 @@ export type ManagerMessageFormat = {
                 },
                 updateAll: string;
             }
+        },
+        launchType: {
+            title: string;
+            auto: {
+                NATIVE: string;
+                PROTON: string;
+            },
+            native: {
+                unsureWrapperArgsPresent: string;
+                addArgumentsInfo: string;
+            },
+            actions: {
+                copyLaunchArgs: string;
+                update: string;
+            }
         }
     },
     online: {

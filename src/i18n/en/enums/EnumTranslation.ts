@@ -23,5 +23,10 @@ export const EnumTranslation: EnumMessageFormat = {
         ALPHABETICAL: 'Alphabetical',
         DOWNLOADS: 'Download count',
         RATING: 'Rating',
+    },
+    launchType: {
+        AUTO: 'Auto',
+        NATIVE: 'Native',
+        PROTON: 'Proton',
     }
 }
