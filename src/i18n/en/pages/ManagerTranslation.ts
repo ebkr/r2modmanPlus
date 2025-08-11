@@ -261,5 +261,11 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 close: 'Close'
             },
         }
+    },
+    actions: {
+        locateGameExecutable: 'Locate {gameName} executable',
+        selectExecutable: 'Select Executable',
+        locateGameLaunchHelper: 'Locate gamelaunchhelper Executable',
+        locateSteamExecutable: 'Locate Steam Executable',
     }
 }
