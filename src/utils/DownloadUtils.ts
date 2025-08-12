@@ -1,3 +1,4 @@
+import CdnProvider from "../providers/generic/connection/CdnProvider";
 import R2Error from "../model/errors/R2Error";
 
 export function addSolutionsToError(err: R2Error): void {
@@ -10,7 +11,12 @@ export function addSolutionsToError(err: R2Error): void {
         err.name.includes("Failed to download mod") ||
         err.name.includes("System.Net.WebException")
     ) {
-        err.solution = "Try toggling the preferred Thunderstore CDN in the settings";
+        err.solution = "Try toggling the preferred Thunderstore CDN by clicking the button below (or in the settings).";
+        err.showCurrentCdn = true;
+        err.addAction({
+            label: 'Toggle CDN',
+            function: async () => CdnProvider.togglePreferredCdn(),
+        });
     }
 
     if (err.message.includes("System.IO.PathTooLongException")) {
