@@ -276,6 +276,27 @@ export type ManagerMessageFormat = {
             changePageInfo: string;
             noFoundMods: string;
             noMods: string;
+        },
+        modList: {
+            tooltips: {
+                pinned: {
+                    short: string;
+                    long: string;
+                },
+                deprecated: {
+                    short: string;
+                    long: string;
+                },
+                donate: string;
+                installed: string;
+            },
+            mod: {
+                author: string;
+            },
+            actions: {
+                download: string;
+                website: string;
+            }
         }
     },
     actions: {
