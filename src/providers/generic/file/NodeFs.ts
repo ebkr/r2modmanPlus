@@ -91,6 +91,25 @@ export default class NodeFs extends FsProvider {
         })
     }
 
+    async writeStreamToFile(path: string, content: ReadableStream): Promise<void> {
+        return new Promise((resolve, reject) => {
+            NodeFs.lock.acquire(path, async () => {
+                const writeStream = fs.createWriteStream(path, { flags : 'w' });
+                writeStream.on('finish', () => resolve());
+
+                const reader = content.getReader();
+                while (true) {
+                    const line = await reader.read();
+                    if (line.done) {
+                        break;
+                    }
+                    writeStream.write(line.value);
+                }
+                writeStream.end();
+            }).catch(reject);
+        });
+    }
+
     async rename(path: string, newPath: string): Promise<void> {
         return new Promise((resolve, reject) => {
             NodeFs.lock.acquire([path, newPath], async () => {
