@@ -296,6 +296,27 @@ export const ManagerTranslation: ManagerMessageFormat = {
             changePageInfo: 'Use the numbers below to change page',
             noFoundMods: 'No mods matching search found',
             noMods: 'No mods available',
+        },
+        modList: {
+            tooltips: {
+                pinned: {
+                    short: 'Pinned',
+                    long: 'Pinned on Thunderstore'
+                },
+                deprecated: {
+                    short: 'Deprecated',
+                    long: 'This mod is potentially broken'
+                },
+                donate: 'Donate to the mod author',
+                installed: 'Mod already installed',
+            },
+            mod: {
+                author: 'By {author}'
+            },
+            actions: {
+                download: 'Download',
+                website: 'Website',
+            }
         }
     },
     actions: {
