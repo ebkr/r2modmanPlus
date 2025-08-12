@@ -8037,6 +8037,9 @@
           "furniture": {
             "label": "Furniture"
           },
+          "vehicles": {
+            "label": "Vehicles"
+          },
           "clientside": {
             "label": "Client-side"
           },
@@ -16762,6 +16765,9 @@
           },
           "misc": {
             "label": "Misc"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
           }
         },
         "sections": {
@@ -19620,7 +19626,7 @@
             ]
           }
         },
-        "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+        "discordUrl": "https://discord.gg/YXY5XZHG8R",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
@@ -20113,6 +20119,68 @@
         "discordUrl": "https://discord.gg/phasmophobia"
       },
       "r2modman": null
+    },
+    "r5reloaded": {
+      "uuid": "35a9dbb7-a4f8-4faf-a032-66352aa690cc",
+      "label": "r5reloaded",
+      "meta": {
+        "displayName": "R5Reloaded",
+        "iconUrl": ""
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "R5Reloaded",
+        "sections": {},
+        "categories": {
+          "legend": {
+            "label": "Legend"
+          },
+          "weapon": {
+            "label": "Weapon"
+          },
+          "gamemode": {
+            "label": "Gamemode"
+          },
+          "map": {
+            "label": "Map"
+          },
+          "framework": {
+            "label": "Framework"
+          },
+          "modpack": {
+            "label": "Modpack"
+          },
+          "client-side": {
+            "label": "Client-side"
+          },
+          "server-side": {
+            "label": "Server-side"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "sound": {
+            "label": "Sound"
+          },
+          "animation": {
+            "label": "Animation"
+          },
+          "qol": {
+            "label": "QoL"
+          }
+        },
+        "wikiUrl": "https://docs.r5reloaded.com/",
+        "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+        "autolistPackageIds": [],
+        "shortDescription": "Modded Apex Legends!"
+      }
     },
     "ship-of-harkinian": {
       "uuid": "9fb26233-032a-43e3-bbe7-6e058f5daf15",
@@ -22814,6 +22882,9 @@
         "furniture": {
           "label": "Furniture"
         },
+        "vehicles": {
+          "label": "Vehicles"
+        },
         "clientside": {
           "label": "Client-side"
         },
@@ -25200,6 +25271,9 @@
         },
         "misc": {
           "label": "Misc"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
         }
       },
       "sections": {
@@ -26298,7 +26372,7 @@
           ]
         }
       },
-      "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+      "discordUrl": "https://discord.gg/YXY5XZHG8R",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -26541,6 +26615,58 @@
       },
       "wikiUrl": "https://phasmophobia.fandom.com/wiki/Main_Page",
       "discordUrl": "https://discord.gg/phasmophobia"
+    },
+    "r5reloaded": {
+      "displayName": "R5Reloaded",
+      "sections": {},
+      "categories": {
+        "legend": {
+          "label": "Legend"
+        },
+        "weapon": {
+          "label": "Weapon"
+        },
+        "gamemode": {
+          "label": "Gamemode"
+        },
+        "map": {
+          "label": "Map"
+        },
+        "framework": {
+          "label": "Framework"
+        },
+        "modpack": {
+          "label": "Modpack"
+        },
+        "client-side": {
+          "label": "Client-side"
+        },
+        "server-side": {
+          "label": "Server-side"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "model": {
+          "label": "Model"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "sound": {
+          "label": "Sound"
+        },
+        "animation": {
+          "label": "Animation"
+        },
+        "qol": {
+          "label": "QoL"
+        }
+      },
+      "wikiUrl": "https://docs.r5reloaded.com/",
+      "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+      "autolistPackageIds": [],
+      "shortDescription": "Modded Apex Legends!"
     },
     "ship-of-harkinian": {
       "displayName": "Ship of Harkinian",
@@ -27200,6 +27326,21 @@
     {
       "packageId": "BepInEx-BepInExPack_PEAK",
       "rootFolder": "BepInExPack_PEAK",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_LensIsland",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Ostranauts",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Patapon",
+      "rootFolder": "BepInExPack",
       "loader": "bepinex"
     }
   ]
