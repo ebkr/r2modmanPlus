@@ -59,12 +59,12 @@
                 />
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
-                        {{ t('translations.pages.manager.online.navigation.changePageInfo') }}
+                        {{ t('translations.pages.manager.online.pagination.changePageInfo') }}
                     </p>
                 </div>
                 <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
                     <p class="notification margin-right">
-                        {{ t(`translations.pages.manager.online.navigation.${store.state.tsMods.mods.length ? 'noFoundMods' : 'noMods'}`) }}
+                        {{ t(`translations.pages.manager.online.pagination.${store.state.tsMods.mods.length ? 'noFoundMods' : 'noMods'}`) }}
                     </p>
                 </div>
             </div>
