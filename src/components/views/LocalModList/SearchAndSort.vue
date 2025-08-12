@@ -81,7 +81,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         v-model="order"
                         id="local-sort-order"
                         class="select select--content-spacing margin-right margin-right--half-width">
-                        <option v-for="(option) in orderOptions" :key="`order-option-${option}`">
+                        <option v-for="(option) in orderOptions" :key="`order-option-${option}`" :value="option">
                             {{ t(`translations.enums.sortNaming.${EnumResolver.from(SortNaming, option)}`) }}
                         </option>
                     </select>
@@ -89,7 +89,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         v-model="direction"
                         id="local-sort-direction"
                         class="select select--content-spacing">
-                        <option v-for="(option) in directionOptions" :key="`direction-option-${option}`">
+                        <option v-for="(option) in directionOptions" :key="`direction-option-${option}`" :value="option">
                             {{ t(`translations.enums.sortDirection.${EnumResolver.from(SortDirection, option)}`) }}
                         </option>
                     </select>
@@ -103,7 +103,7 @@ const disabledOptions = computed(() => Object.values(SortLocalDisabledMods));
                         v-model="disabledPosition"
                         id="local-deprecated-position"
                         class="select select--content-spacing">
-                        <option v-for="(option) in disabledOptions" :key="`disabled-option-${option}`">
+                        <option v-for="(option) in disabledOptions" :key="`disabled-option-${option}`" :value="option">
                             {{ t(`translations.enums.sortLocalDisabledMods.${EnumResolver.from(SortLocalDisabledMods, option)}`) }}
                         </option>
                     </select>
