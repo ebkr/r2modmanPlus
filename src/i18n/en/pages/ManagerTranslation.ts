@@ -283,6 +283,19 @@ export const ManagerTranslation: ManagerMessageFormat = {
             noDependencies: 'This mod has no dependencies',
             unableToFetchReadme: 'Unable to fetch README',
             unableToFetchChangelog: 'Unable to fetch CHANGELOG',
+        },
+        topbar: {
+            search: {
+                label: 'Search',
+                placeholder: 'Search',
+            },
+            sort: 'Sort',
+            filter: 'Filter',
+        },
+        pagination: {
+            changePageInfo: 'Use the numbers below to change page',
+            noFoundMods: 'No mods matching search found',
+            noMods: 'No mods available',
         }
     },
     actions: {

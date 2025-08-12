@@ -263,6 +263,19 @@ export type ManagerMessageFormat = {
             noDependencies: string;
             unableToFetchReadme: string;
             unableToFetchChangelog: string;
+        },
+        topbar: {
+            search: {
+                label: string;
+                placeholder: string;
+            },
+            sort: string;
+            filter: string;
+        },
+        pagination: {
+            changePageInfo: string;
+            noFoundMods: string;
+            noMods: string;
         }
     },
     actions: {
