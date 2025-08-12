@@ -4,6 +4,7 @@ import {PlatformTranslation} from "./platforms/PlatformTranslation";
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import {ManagerTranslation} from './pages/ManagerTranslation';
 import { DateTimeFormat } from 'src/i18n';
+import { EnumTranslation } from './enums/EnumTranslation';
 
 const message = {
     metadata: {
@@ -17,7 +18,8 @@ const message = {
             profileSelection: ProfileSelectionTranslation,
             manager: ManagerTranslation,
         },
-        platforms: PlatformTranslation
+        platforms: PlatformTranslation,
+        enums: EnumTranslation
     }
 };
 
