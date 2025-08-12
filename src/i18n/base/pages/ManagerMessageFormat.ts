@@ -240,6 +240,29 @@ export type ManagerMessageFormat = {
                 sortDirection: string;
                 close: string;
             },
+        },
+        previewPanel: {
+            author: string;
+            metadata: {
+                downloads: string;
+                likes: string;
+                lastUpdated: string;
+                categories: string;
+            },
+            actions: {
+                download: string;
+                viewOnline: string;
+                donate: string;
+            },
+            tabs: {
+                readme: string;
+                changelog: string;
+                dependencies: string;
+            },
+            fetchingData: string;
+            noDependencies: string;
+            unableToFetchReadme: string;
+            unableToFetchChangelog: string;
         }
     },
     actions: {

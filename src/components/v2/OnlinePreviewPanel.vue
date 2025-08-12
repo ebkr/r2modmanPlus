@@ -13,8 +13,10 @@ import debounce from 'lodash.debounce';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 interface ModPreviewPanelProps {
     mod: ThunderstoreMod;
@@ -191,27 +193,65 @@ function dragEnd(event: DragEvent) {
                 {{ mod.getName() }}
             </h1>
                 <h2 class="subtitle">
-                    By {{ mod.getOwner() }}
+                    {{ t('translations.pages.manager.online.previewPanel.author', { author: mod.getOwner() }) }}
                 </h2>
                 <div class="margin-top margin-bottom">
                     <p class="description">{{ mod.getDescription() }}</p>
                 </div>
-                <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
-                <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
-                <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
-                <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
+                <p class='card-timestamp'><strong>Downloads:</strong>
+                    <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.downloads">
+                        <template v-slot:downloads>
+                            <span class="font-weight-normal">{{ mod.getDownloadCount() }}</span>
+                        </template>
+                    </i18n-t>
+                </p>
+                <p class='card-timestamp'>
+                    <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.likes">
+                        <template v-slot:likes>
+                            <span class="font-weight-normal">{{ mod.getRating() }}</span>
+                        </template>
+                    </i18n-t>
+                </p>
+                <p class='card-timestamp'>
+                    <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.lastUpdated">
+                        <template v-slot:date>
+                        <span class="font-weight-normal">
+                            {{ d(mod.getDateUpdated(), 'long', messages[locale].metadata.locale) }}
+                        </span>
+                        </template>
+                    </i18n-t>
+                </p>
+                <p class='card-timestamp'>
+                    <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.categories">
+                        <template v-slot:categories>
+                            <span class="font-weight-normal">{{ getReadableCategories(mod) }}</span>
+                        </template>
+                    </i18n-t>
+                </p>
             </div>
             <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
                 <div class="button-group">
-                    <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
-                    <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
-                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
+                    <button class="button is-info" @click="showDownloadModal(mod)">
+                        {{ t('translations.pages.manager.online.previewPanel.actions.download') }}
+                    </button>
+                    <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">
+                        {{ t('translations.pages.manager.online.previewPanel.actions.viewOnline') }}
+                    </ExternalLink>
+                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">
+                        {{ t('translations.pages.manager.online.previewPanel.actions.donate') }}
+                    </ExternalLink>
                 </div>
                 <div class="tabs margin-top">
                     <ul>
-                        <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
-                        <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
-                        <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies ({{ dependencies.length }})</a></li>
+                        <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">
+                            {{ t('translations.pages.manager.online.previewPanel.tabs.readme') }}
+                        </a></li>
+                        <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">
+                            {{ t('translations.pages.manager.online.previewPanel.tabs.changelog') }}
+                        </a></li>
+                        <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">
+                            {{ t('translations.pages.manager.online.previewPanel.tabs.dependencies', { dependencyCount: dependencies.length }) }}
+                        </a></li>
                     </ul>
                 </div>
             </div>
@@ -219,7 +259,7 @@ function dragEnd(event: DragEvent) {
                 <template v-if="loadingPanel">
                     <div class="notification">
                         <div class="container">
-                            <p>Fetching {{ activeTab }} for {{ props.mod.getFullName() }}</p>
+                            <p>{{ t('translations.pages.manager.online.previewPanel.fetchingData') }}</p>
                         </div>
                     </div>
                 </template>
@@ -230,7 +270,7 @@ function dragEnd(event: DragEvent) {
                     <template v-else>
                         <div class="notification">
                             <div class="container">
-                                <p>{{ props.mod.getName() }} has no dependencies</p>
+                                <p>{{ t('translations.pages.manager.online.previewPanel.noDependencies') }}</p>
                             </div>
                         </div>
                     </template>
@@ -238,7 +278,9 @@ function dragEnd(event: DragEvent) {
                 <template v-else-if="activeTab === 'README'">
                     <template v-if="readmeError !== null">
                         <div class="notification is-danger">
-                            <h2 class="title is-6">Unable to fetch README for {{ props.mod.getFullName() }}</h2>
+                            <h2 class="title is-6">
+                                {{ t('translations.pages.manager.online.previewPanel.tabs.unableToFetchReadme') }}
+                            </h2>
                             <p>{{ readmeError.message }}</p>
                         </div>
                     </template>
@@ -249,7 +291,9 @@ function dragEnd(event: DragEvent) {
                 <template v-else-if="activeTab === 'CHANGELOG'">
                     <template v-if="changelogError !== null">
                         <div class="notification is-danger">
-                            <h2 class="title is-6">Unable to fetch CHANGELOG for {{ props.mod.getFullName() }}</h2>
+                            <h2 class="title is-6">
+                                {{ t('translations.pages.manager.online.previewPanel.unableToFetchChangelog') }}
+                            </h2>
                             <p>{{ changelogError.message }}</p>
                         </div>
                     </template>
@@ -311,6 +355,10 @@ function dragEnd(event: DragEvent) {
     display: flex;
     flex-grow: 0;
     gap: 0.5rem;
+}
+
+.font-weight-normal {
+    font-weight: normal;
 }
 
 .close-button {

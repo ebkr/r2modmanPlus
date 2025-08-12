@@ -260,6 +260,29 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 sortDirection: 'Sort direction',
                 close: 'Close'
             },
+        },
+        previewPanel: {
+            author: 'By {author}',
+            metadata: {
+                downloads: 'Downloads: {downloads}',
+                likes: 'Likes: {likes}',
+                lastUpdated: 'Last updated: {date}',
+                categories: 'Categories: {categories}',
+            },
+            actions: {
+                download: 'Download',
+                viewOnline: 'View online',
+                donate: 'Donate',
+            },
+            tabs: {
+                readme: 'README',
+                changelog: 'CHANGELOG',
+                dependencies: 'Dependencies ({dependencyCount})',
+            },
+            fetchingData: 'Fetching data',
+            noDependencies: 'This mod has no dependencies',
+            unableToFetchReadme: 'Unable to fetch README',
+            unableToFetchChangelog: 'Unable to fetch CHANGELOG',
         }
     },
     actions: {
