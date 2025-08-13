@@ -1,4 +1,8 @@
 export type HelpMessageFormat = {
+    hero: {
+        title: string;
+        subtitle: string;
+    },
     tabs: {
         general: string;
         gameWontStart: string;

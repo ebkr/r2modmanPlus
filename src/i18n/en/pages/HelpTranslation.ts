@@ -1,6 +1,10 @@
 import { HelpMessageFormat } from '../../base/pages/HelpMessageFormat';
 
 export const HelpTranslation: HelpMessageFormat = {
+    hero: {
+        title: 'Help',
+        subtitle: 'Common problems and their potential solutions'
+    },
     tabs: {
         general: 'General',
         gameWontStart: 'Game not starting',
@@ -11,7 +15,7 @@ export const HelpTranslation: HelpMessageFormat = {
         gettingStarted: {
             title: 'Get started by installing mods',
             whereToFindMods: `
-            Go to the "Online" tab, find a mod, and hit download.
+            Go to the "{''}@:translations.pages.manager.navigation.modsActions.online{''}" tab, find a mod, and hit download.
             It'll also download the dependencies saving you time.
             `,
             onceInstalled: 'Once you\'ve installed the mods you\'d like to use, just click {startModdedAction} in the top left.',
