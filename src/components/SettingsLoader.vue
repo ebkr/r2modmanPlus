@@ -25,7 +25,7 @@
                             games will be lost and this can't be undone.
                         </p>
                         <br />
-                        <button @click="resetSettings" class="button is-white">
+                        <button @click="resetSettings" :disabled="resettingInProgress" class="button is-white">
                             Reset settings
                         </button>
                     </div>
@@ -80,6 +80,7 @@ const props = defineProps<SettingsLoaderType>();
 
 const error = ref<R2Error|null>(null);
 const phase = ref<PHASES>(PHASES.INITIAL);
+const resettingInProgress = ref<boolean>(false);
 
 function handleError(name: string, message: string) {
     error.value = new R2Error(name, message);
@@ -119,11 +120,13 @@ async function loadSettings(game: Game) {
 }
 
 async function resetSettings() {
+    resettingInProgress.value = true;
     try {
         await resetIndexedDB();
     } catch (e) {
         handleError("Failed to reset IndexedDB", `${e}`);
         phase.value = PHASES.RESET_FAILED;
+        resettingInProgress.value = false;
         return;
     }
 
@@ -137,6 +140,8 @@ async function resetSettings() {
     } catch (e) {
         handleError("Unexpected ManagerSettings error", `${e}`);
         phase.value = PHASES.RETRY_FAILED;
+    } finally {
+        resettingInProgress.value = false;
     }
 }
 
