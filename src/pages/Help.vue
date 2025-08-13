@@ -1,7 +1,7 @@
 <template>
     <ManagerActivityBar />
     <div id="help-view">
-        <Hero title="Help" subtitle="Common problems and their potential solutions" hero-type="primary"/>
+        <Hero :title="t('translations.pages.help.hero.title')" :subtitle="t('translations.pages.help.hero.subtitle')" hero-type="primary"/>
         <div class="margin-right" id="help-content">
             <div
                 class="tabs sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding has-background-">
