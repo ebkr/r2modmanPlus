@@ -8,6 +8,7 @@ import {PlatformTranslation} from "./platforms/PlatformTranslation";
 import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import { ManagerTranslation } from './pages/ManagerTranslation';
 import {EnumTranslation} from "./enums/EnumTranslation";
+import {HelpTranslation} from './pages/HelpTranslation';
 
 const message: MessageFormat = {
     metadata: {
@@ -20,6 +21,7 @@ const message: MessageFormat = {
             splash: SplashTranslation,
             profileSelection: ProfileSelectionTranslation,
             manager: ManagerTranslation,
+            help: HelpTranslation
         },
         platforms: PlatformTranslation,
         enums: EnumTranslation,

@@ -7,93 +7,118 @@
                 <li v-for="(key, index) in tabs" :key="`tab-${key}`"
                     :class="[{'is-active': activeTab === key}]"
                     @click="changeTab(key)">
-                    <a>{{key}}</a>
+                    <a>{{ t(`translations.pages.help.tabs.${key}`) }}</a>
                 </li>
             </ul>
         </div>
         <div class="margin-right">
             <br/>
-            <div ref="General" v-if="activeTab === 'General'">
-                <h2 class="title is-5">Getting started with installing mods</h2>
-                <p>
-                    Go to the "Online" tab, find a mod, and hit download.
-                    It'll also download the dependencies saving you time.
-                </p>
-                <p>Once you've installed the mods you'd like, just click <strong>Start modded</strong> in the top left.</p>
+            <div ref="general" v-if="activeTab === 'general'">
+                <h2 class="title is-5">
+                    {{ t('translations.pages.help.general.gettingStarted.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.general.gettingStarted.whereToFindMods') }}</p>
+                <i18n-t tag="p" keypath="translations.pages.help.general.gettingStarted.onceInstalled">
+                    <template v-slot:startModdedAction>
+                        <strong>{{ t('translations.pages.manager.navigation.gameActions.startModded') }}</strong>
+                    </template>
+                </i18n-t>
                 <hr/>
-                <h2 class='title is-5'>Slow game with mods / stuttering?</h2>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.general.slowGame.title') }}
+                </h2>
                 <p>
-                    This is likely due to a mod throwing errors.
-                    One solution is to attempt to disable half of your mods and check to see if the issue persists.
-                    <br/>
-                    If the issue still remains then disable another half. Continue doing this until the issue is
-                    solved.
-                    <br/><br/>
-                    In the case of stuttering there may be optimization mods to help with this.
+                    {{ t('translations.pages.help.general.slowGame.likelyCause') }}
+                </p>
+                <p>
+                    {{ t('translations.pages.help.general.slowGame.issuePersisting') }}
+                </p>
+                <p class="margin-top">
+                    {{ t('translations.pages.help.general.slowGame.ifStutters') }}
                 </p>
                 <hr/>
-                <h2 class='title is-5'>Dedicated servers</h2>
-                <p>
-                    Dedicated servers aren't directly supported through the manager however a solution is to instead
-                    copy the contents of your profile folder into your dedicated server folder yourself.
-                </p>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.general.dedicatedServers.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.general.dedicatedServers.content') }}</p>
                 <hr/>
-                <h2 class='title is-5'>Launching the game from outside the mod manager</h2>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.general.launchingExternally.title') }}
+                </h2>
                 <p>
-                    By design your experience by starting the game through Steam will be vanilla (un-modded).
-                    <br/><br/>
-                    You will need to place the corresponding argument in your platform's relevant launch parameter area.
-                    <br/>
-                    For Steam, this would be located in the game's properties.
-                    <br/><br/>
-                    Your current argument would be:
+                    {{ t('translations.pages.help.general.launchingExternally.howTo') }}
+                </p>
+                <p class="margin-top">
+                    {{ t('translations.pages.help.general.launchingExternally.whereToPlace') }}
+                </p>
+                <p>
+                    {{ t('translations.pages.help.general.launchingExternally.forSteam') }}
+                </p>
+                <p class="margin-top">
+                    {{ t('translations.pages.help.general.launchingExternally.yourCurrentArgument') }}
                     <code v-if="launchArgs.length > 0">{{ launchArgs }}</code>
-                    <code v-else>These parameters will be available after installing BepInEx.</code>
+                    <code v-else>{{ t('translations.pages.help.general.launchingExternally.loaderNotInstalled') }}</code>
                     <br/>
                 </p>
-                <br/>
                 <template v-if="doorstopTarget.length > 0">
                     <p>
                         <button class="button" @click="copyLaunchArgsToClipboard" v-if="!copyingDoorstopText">
                             <i class="fas fa-clipboard"></i>
-                            <span class="margin-left--half-width smaller-font">Copy launch arguments</span>
+                            <span class="margin-left--half-width smaller-font">
+                                {{ t('translations.pages.help.general.launchingExternally.copyArguments') }}
+                            </span>
                         </button>
-                        <button class="button is-loading" v-else>Copy launch arguments</button>
+                        <button class="button is-loading" v-else>
+                            {{ t('translations.pages.help.general.launchingExternally.copyArguments') }}
+                        </button>
                     </p>
-                    <br/>
                 </template>
             </div>
-            <div ref="Game won't start" v-if="activeTab === `Game won't start`">
-                <h2 class='title is-5'>A red box appears when I try to start the game</h2>
-                <p>Read the suggestion at the bottom of the red box.</p>
+            <div ref="gameWontStart" v-if="activeTab === 'gameWontStart'">
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.gameWontStart.errorModal.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.gameWontStart.errorModal.solution') }}</p>
                 <hr/>
-                <h2 class='title is-5'>I'm taken to the Steam store page</h2>
-                <p>That's because you don't legally own the game. The manager only supports legal copies.</p>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.gameWontStart.redirectedToStorePage.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.gameWontStart.redirectedToStorePage.solution', { appName: appName }) }}</p>
                 <hr/>
-                <h2 class='title is-5'>A text window appears and closes immediately.</h2>
-                <p>Try running "Reset {{store.state.activeGame.displayName}} installation" on the Settings screen.</p>
-                <p>If it persists, force exit Steam and start modded with Steam closed.</p>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.gameWontStart.consoleCloses.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.gameWontStart.consoleCloses.tryRunning') }}</p>
+                <p>{{ t('translations.pages.help.gameWontStart.consoleCloses.ifPersists') }}</p>
             </div>
-            <div ref="Mods not appearing" v-if="activeTab === 'Mods not appearing'">
-                <h2 class='title is-5'>Potential solutions</h2>
-                <p>The most common issues are solved by following the instructions exactly as listed
+            <div ref="modsNotShowing" v-if="activeTab === 'modsNotShowing'">
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.modsNotShowing.potentialSolutions.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.modsNotShowing.potentialSolutions.instructToWiki') }}</p>
+                <p class="margin-top">
                     <ExternalLink url="https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F">
-                        here
+                        {{ t('translations.pages.help.modsNotShowing.potentialSolutions.goToWiki') }}
                     </ExternalLink>
                 </p>
             </div>
-            <div ref="Updating" v-if="activeTab === 'Updating'">
-                <h2 class='title is-5'>Auto-updates</h2>
-                <p>The manager updates automatically on close assuming an update is available.</p>
-                <p>Updates are downloaded in the background.</p>
-                <p>You may receive a prompt to run <i>old_uninstaller</i> as an admin. This is the updater.</p>
-                <p>If a problem occurs with an update, download and run the latest installer.</p>
+            <div ref="updating" v-if="activeTab === 'updating'">
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.updating.autoUpdates.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.updating.autoUpdates.whenDoesItUpdate') }}</p>
+                <p>{{ t('translations.pages.help.updating.autoUpdates.downloadedInBackground') }}</p>
+                <i18n-t tag="p" keypath="translations.pages.help.updating.autoUpdates.promptToRunOldInstaller" class="margin-top">
+                    <template v-slot:oldInstaller>
+                        <i>old_uninstaller</i>
+                    </template>
+                </i18n-t>
+                <p class="margin-top">{{ t('translations.pages.help.updating.autoUpdates.ifProblemOccurs') }}</p>
                 <hr/>
-                <h2 class='title is-5'>I don't want updates</h2>
-                <p>
-                    On GitHub there is a portable version that doesn't auto update. You are however prompted that an
-                    update is available.
-                </p>
+                <h2 class='title is-5'>
+                    {{ t('translations.pages.help.updating.ignoreUpdates.title') }}
+                </h2>
+                <p>{{ t('translations.pages.help.updating.ignoreUpdates.content') }}</p>
             </div>
         </div>
     </div>
@@ -104,20 +129,24 @@ import {ExternalLink, Hero} from '../components/all';
 import GameRunnerProvider from '../providers/generic/game/GameRunnerProvider';
 import R2Error from '../model/errors/R2Error';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-import {onMounted, ref, watchEffect} from 'vue';
+import {onMounted, ref, watchEffect, computed} from 'vue';
 import {getStore} from '../providers/generic/store/StoreProvider';
 import {State} from '../store';
 import {getDeterminedLaunchType} from "../utils/LaunchUtils";
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
 import {getLaunchType, LaunchType} from "../model/real_enums/launch/LaunchType";
+import { useI18n } from 'vue-i18n';
+import ManagerInformation from '../_managerinf/ManagerInformation';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
-const activeTab = ref('General');
-const tabs = ref(['General', 'Game won\'t start', 'Mods not appearing', 'Updating']);
+const activeTab = ref('general');
+const tabs = ref(['general', 'gameWontStart', 'modsNotShowing', 'updating']);
 const doorstopTarget = ref("");
 const copyingDoorstopText = ref(false);
 const launchArgs = ref("");
+const appName = computed(() => ManagerInformation.APP_NAME);
 
 watchEffect(async () => {
     const loaderArgs = doorstopTarget.value;
