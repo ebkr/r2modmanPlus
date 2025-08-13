@@ -6,14 +6,16 @@
                     <div class="is-shadowless is-square">
                         <div class="no-padding-left card-header-title">
                             <div class="input-group input-group--flex margin-right">
-                                <label for="thunderstore-search-filter">Search</label>
+                                <label for="thunderstore-search-filter">
+                                    {{ t('translations.pages.manager.online.topbar.search.label') }}
+                                </label>
                                 <DeferredInput
                                     :modelValue="thunderstoreSearchFilter"
                                     @update:modelValue="$event => (thunderstoreSearchFilter = $event)"
                                     id="thunderstore-search-filter"
                                     class="input"
                                     type="text"
-                                    placeholder="Search"
+                                    :placeholder="t('translations.pages.manager.online.topbar.search.placeholder')"
                                     autocomplete="off"
                                 />
                             </div>
@@ -25,7 +27,7 @@
                                         class="button"
                                         @click="store.commit('openOnlineSortModal')"
                                     >
-                                        Sort
+                                        {{ t('translations.pages.manager.online.topbar.sort') }}
                                     </button>
                                 </div>
                             </div>
@@ -38,7 +40,7 @@
                                         class="button"
                                         @click="store.commit('openCategoryFilterModal')"
                                     >
-                                        Filter
+                                        {{ t('translations.pages.manager.online.topbar.filter') }}
                                     </button>
                                 </div>
                             </div>
@@ -57,12 +59,12 @@
                 />
                 <div class="in-mod-list" v-if="getPaginationSize() > 1">
                     <p class="notification margin-right">
-                        Use the numbers below to change page
+                        {{ t('translations.pages.manager.online.pagination.changePageInfo') }}
                     </p>
                 </div>
                 <div class="in-mod-list" v-else-if="getPaginationSize() === 0">
                     <p class="notification margin-right">
-                        {{thunderstoreModList.length ? "No mods matching search found": "No mods available"}}
+                        {{ t(`translations.pages.manager.online.pagination.${thunderstoreModList.length ? 'noFoundMods' : 'noMods'}`) }}
                     </p>
                 </div>
             </div>
@@ -97,8 +99,10 @@ import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 const PAGE_SIZE = 40;
 

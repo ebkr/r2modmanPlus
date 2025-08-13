@@ -2,8 +2,10 @@
 import { Progress } from '../all';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 function closeModal() {
     store.commit("closeDownloadProgressModal");
@@ -23,13 +25,15 @@ function closeModal() {
                 <div class='notification is-info'>
 
                     <h3 v-if="store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
-                        Downloading {{store.getters['download/currentDownload'].modName}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.states.downloading', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
                     <h3 v-else class='title'>
-                        Installing {{store.getters['download/currentDownload'].modName}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.states.installing', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
 
-                    <p>Downloading: {{store.getters['download/currentDownload'].downloadProgress}}% complete</p>
+                    <p>
+                        {{ t('translations.pages.manager.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress }) }}
+                    </p>
 
                     <Progress
                         :max='100'
@@ -38,9 +42,11 @@ function closeModal() {
                     />
 
                     <p v-if="store.getters['download/currentDownload'].installProgress">
-                        Installing: {{store.getters['download/currentDownload'].installProgress}}% complete
+                        {{ t('translations.pages.manager.modals.downloadProgress.installProgress', { progress: store.getters['download/currentDownload'].installProgress }) }}
                     </p>
-                    <p v-else>Installing: waiting for download to finish</p>
+                    <p v-else>
+                        {{ t('translations.pages.manager.modals.downloadProgress.waitingForDownload') }}
+                    </p>
 
                     <Progress
                         :max='100'
