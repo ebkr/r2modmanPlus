@@ -33,6 +33,7 @@ export type MessageFormat = {
             profileSelection: ProfileSelectionMessageFormat,
             manager: ManagerMessageFormat,
             help: HelpMessageFormat,
+            // settings: SettingsMessageFormat,
         },
         platforms: PlatformMessageFormat;
         enums: EnumMessageFormat;
