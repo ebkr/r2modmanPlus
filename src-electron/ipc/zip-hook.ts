@@ -59,19 +59,28 @@ export function hookZipIpc(browserWindow: BrowserWindow) {
     });
 
     ipcMain.on(`zip:create:addBuffer`, (event, identifier, fileName: string, data: Buffer) => {
-        const zip = zipCreatorCache.get(identifier)!;
+        const zip = zipCreatorCache.get(identifier);
+        if (zip === undefined) {
+            throw new Error(`No zip was present in temporary creator with identifier: ${identifier}`);
+        }
         zip.addFile(fileName, data);
         browserWindow.webContents.send(`zip:create:addBuffer:${identifier}`);
     });
 
     ipcMain.on(`zip:create:addFolder`, (event, identifier, zippedFolderName: string, folderNameOnDisk: string) => {
-        const zip = zipCreatorCache.get(identifier)!;
+        const zip = zipCreatorCache.get(identifier);
+        if (zip === undefined) {
+            throw new Error(`No zip was present in temporary creator with identifier: ${identifier}`);
+        }
         zip.addLocalFolder(folderNameOnDisk, zippedFolderName);
         browserWindow.webContents.send(`zip:create:addFolder:${identifier}`);
     });
 
     ipcMain.on(`zip:create:finalize`, (event, identifier, outputPath: string) => {
-        const zip = zipCreatorCache.get(identifier)!;
+        const zip = zipCreatorCache.get(identifier);
+        if (zip === undefined) {
+            throw new Error(`No zip was present in temporary creator with identifier: ${identifier}`);
+        }
         zip.writeZip(outputPath, err => {
             browserWindow.webContents.send(`zip:create:finalize:${identifier}`);
         });
