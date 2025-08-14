@@ -281,7 +281,6 @@ export class InstallRuleInstaller implements PackageInstaller {
             files,
         );
         if (result instanceof Error) {
-            console.error(result);
             throw result;
         }
     }
