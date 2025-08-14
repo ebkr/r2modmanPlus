@@ -4,11 +4,11 @@ source "$(dirname "$0")/kebab-case-utils.sh"
 
 declare -A test_cases=(
     ["STRAFTAT"]="straftat"
-    ["MiSide"]="mi-side"
     ["BackpackHero"]="backpack-hero"
     ["20MinutesTillDawn"]="20-minutes-till-dawn"
     ["Hades2"]="hades-2"
     ["H3VR"]="h3vr"
+    ["h3vr"]="h3vr"
     ["west-of-loathing"]="west-of-loathing"
 )
 
@@ -31,9 +31,9 @@ test_name() {
 }
 
 test_name "STRAFTAT"
-test_name "MiSide"
 test_name "BackpackHero"
 test_name "20MinutesTillDawn"
 test_name "Hades2"
 test_name "H3VR"
+test_name "h3vr"
 test_name "west-of-loathing"

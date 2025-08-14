@@ -4,7 +4,11 @@ convert_to_kebab_case() {
     local base="$1"
     local kebab=""
 
-    if [[ "$base" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] && [[ ! "$base" =~ [A-Z] ]]; then
+    # Check if base name is all caps (only uppercase letters and numbers)
+    if [[ "$base" =~ ^[[:upper:][:digit:]]+$ ]]; then
+        kebab=$(echo "$base" | tr '[:upper:]' '[:lower:]')
+    # Check if the name is already in kebab-case
+    elif [[ "$base" =~ ^[[:lower:][:digit:]]+(-[[:lower:][:digit:]]+)*$ ]]; then
         kebab="$base" # Name is already in kebab-case
     else
         kebab=$(echo "$base" | sed 's/[_-]/ /g') # Replace underscores and other separators with spaces
