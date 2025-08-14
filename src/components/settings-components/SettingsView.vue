@@ -13,19 +13,17 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter from 'vue-router';
+import {useRouter} from 'vue-router';
 import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+let router = useRouter();
+const { t } = useI18n();
 
 const activeTab = ref<string>('All');
 const tabs = ref<string[]>(['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other']);
@@ -41,9 +39,9 @@ const appName = computed(() => ManagerInformation.APP_NAME);
 
 let settingsList = [
     new SettingsRow(
-        'Locations',
-        'Browse data folder',
-        'Open the folder where mods are stored for all games and profiles.',
+        'locations',
+        t('translations.pages.settings.locations.browseDataFolder.title'),
+        t('translations.pages.settings.locations.browseDataFolder.description'),
         async () => PathResolver.ROOT,
         'fa-door-open',
         () => {
@@ -51,9 +49,9 @@ let settingsList = [
         }
     ),
     new SettingsRow(
-        'Locations',
-        `Change ${activeGame.value.displayName} folder`,
-        `Change the location of the ${activeGame.value.displayName} folder that ${appName.value} uses.`,
+        'locations',
+        t('translations.pages.settings.locations.changeGameFolder.title', { gameName: activeGame.value.displayName }),
+        t('translations.pages.settings.locations.changeGameFolder.description', { gameName: activeGame.value.displayName, appName: appName.value }),
         async () => {
             if (settings.value.getContext().gameSpecific.gameDirectory !== null) {
                 const directory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
@@ -61,7 +59,7 @@ let settingsList = [
                     return directory;
                 }
             }
-            return 'Please set manually';
+            return t('translations.pages.settings.locations.changeGameFolder.setManually');
         },
         'fa-folder-open',
         () => {
@@ -74,9 +72,9 @@ let settingsList = [
         }
     ),
     new SettingsRow(
-        'Locations',
-        'Browse profile folder',
-        'Open the folder where mods are stored for the current profile.',
+        'locations',
+        t('translations.pages.settings.locations.browseProfileFolder.title'),
+        t('translations.pages.settings.locations.browseProfileFolder.description'),
         async () => {
             return store.getters['profile/activeProfile'].getProfilePath();
         },
@@ -84,9 +82,9 @@ let settingsList = [
         () => emitInvoke('BrowseProfileFolder')
     ),
     new SettingsRow(
-        'Locations',
-        'Change data folder',
-        'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
+        'locations',
+        t('translations.pages.settings.locations.changeDataFolder.title'),
+        t('translations.pages.settings.locations.changeDataFolder.description'),
         async () => {
             return PathResolver.ROOT;
         },
@@ -94,10 +92,10 @@ let settingsList = [
         () => emitInvoke('ChangeDataFolder')
     ),
     new SettingsRow(
-        'Debugging',
-        'Copy log file contents to clipboard',
-        'Copy the text inside the LogOutput.log file to the clipboard, with Discord formatting.',
-        async () => logOutput.value.exists ? 'Log file exists' : 'Log file does not exist',
+        'debugging',
+        t('translations.pages.settings.debugging.copyLogFile.title'),
+        t('translations.pages.settings.debugging.copyLogFile.description'),
+        async () =>  t(`translations.pages.settings.debugging.copyLogFile.${logOutput.value.exists ? 'logFileExists' : 'logFileDoesNotExist'}`),
         'fa-clipboard',
         () => {
             if (logOutput.value.exists) {
@@ -106,54 +104,54 @@ let settingsList = [
         }
     ),
     new SettingsRow(
-        'Debugging',
-        'Copy troubleshooting information to clipboard',
-        'Copy settings and other information to the clipboard, with Discord formatting.',
-        async () => 'Share this information when requesting support on Discord.',
+        'debugging',
+        t('translations.pages.settings.debugging.copyTroubleshootingInfo.title'),
+        t('translations.pages.settings.debugging.copyTroubleshootingInfo.description'),
+        async () => t('translations.pages.settings.debugging.copyTroubleshootingInfo.value'),
         'fa-clipboard',
         () => emitInvoke('CopyTroubleshootingInfoToClipboard')
     ),
     new SettingsRow(
-        'Debugging',
-        'Toggle download cache',
-        'Downloading a mod will ignore mods stored in the cache. Mods will still be placed in the cache.',
+        'debugging',
+        t('translations.pages.settings.debugging.toggleDownloadCache.title'),
+        t('translations.pages.settings.debugging.toggleDownloadCache.description'),
         async () => {
             return store.state.download.ignoreCache
-                ? 'Current: cache is disabled'
-                : 'Current: cache is enabled (recommended)';
+                ? t('translations.pages.settings.debugging.toggleDownloadCache.enabled')
+                : t('translations.pages.settings.debugging.toggleDownloadCache.disabled');
         },
         'fa-exchange-alt',
         () => emitInvoke('ToggleDownloadCache')
     ),
     new SettingsRow(
-        'Debugging',
-        'Set launch parameters',
-        'Provide custom arguments used to start the game.',
-        async () => 'These commands are used against the Steam executable on game startup',
+        'debugging',
+        t('translations.pages.settings.debugging.setLaunchArguments.title'),
+        t('translations.pages.settings.debugging.setLaunchArguments.description'),
+        async () => t('translations.pages.settings.debugging.setLaunchArguments.value'),
         'fa-wrench',
         () => emitInvoke('SetLaunchParameters')
     ),
     new SettingsRow(
-        'Debugging',
-        'Clean mod cache',
-        'Free extra space caused by cached mods that are not currently in a profile.',
-        async () => 'Check all profiles for unused mods and clear cache',
+        'debugging',
+        t('translations.pages.settings.debugging.cleanModCache.title'),
+        t('translations.pages.settings.debugging.cleanModCache.description'),
+        async () => t('translations.pages.settings.debugging.cleanModCache.value'),
         'fa-trash',
         () => emitInvoke('CleanCache')
     ),
     new SettingsRow(
-        'Debugging',
-        'Clean online mod list',
-        'Deletes local copy of mod list, forcing the next refresh to fetch a new one.',
-        async () => store.dispatch('tsMods/getActiveGameCacheStatus'),
+        'debugging',
+        t('translations.pages.settings.debugging.cleanOnlineModList.title'),
+        t('translations.pages.settings.debugging.cleanOnlineModList.description'),
+        async () => store.dispatch('tsMods/getActiveGameCacheStatus').then(status => t(`translations.pages.settings.debugging.cleanOnlineModList.states.${status}`, { gameName: activeGame.value.displayName})),
         'fa-trash',
         () => store.dispatch('tsMods/resetActiveGameCache')
     ),
     new SettingsRow(
-        'Debugging',
-        'Toggle preferred Thunderstore CDN',
-        'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
-        async () => `Current: ${CdnProvider.current.label} (${CdnProvider.current.url})`,
+        'debugging',
+        t('translations.pages.settings.debugging.toggleThunderstoreCdn.title'),
+        t('translations.pages.settings.debugging.toggleThunderstoreCdn.description'),
+        async () => t('translations.pages.settings.debugging.toggleThunderstoreCdn.current', { label: CdnProvider.current.label, url: CdnProvider.current.url }),
         'fa-exchange-alt',
         CdnProvider.togglePreferredCdn
     ),
