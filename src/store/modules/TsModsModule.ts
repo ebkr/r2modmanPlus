@@ -184,10 +184,6 @@ export const TsModsModule = {
 
                 if (localState.get(cacheKey) === undefined) {
                     const tsMod = state.mods.find((m) => m.getFullName() === mod.getName());
-
-                    // Updating Vuex state directly instead of mutations is a bad
-                    // practice but everything seems to work here since we only
-                    // mutate the map instead of replacing it altogether.
                     if (tsMod === undefined) {
                         localState.set(cacheKey, {tsMod: undefined, isLatest: true});
                     } else {
