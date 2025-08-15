@@ -131,6 +131,7 @@ import path from '../providers/node/path/path';
 import { UpdateRequestItemBody } from '../store/modules/SplashModule';
 import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
+import Buffer from '../providers/node/buffer/buffer';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -198,7 +199,7 @@ async function ensureWrapperInGameFolder() {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
         const wrapperFileResult = await fetch(`/${wrapperName}`).then(res => res.arrayBuffer());
-        const wrapperFileContent = window.node.buffer.from(wrapperFileResult);
+        const wrapperFileContent = Buffer.from(wrapperFileResult);
         await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
     }
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
