@@ -1,0 +1,11 @@
+.modal-card-head, .modal-card-foot, .modal-card-body {
+    background-color: var(--modal-card-body-background-color,var(--background,#fff));
+}
+
+.modal-card-head {
+    border-bottom: 1px solid var(--modal-card-head-border-bottom,var(--border,#e1e1e1));
+}
+
+.modal-card-foot {
+    border-top: 1px solid var(--modal-card-foot-border-top,var(--border,#e1e1e1));
+}

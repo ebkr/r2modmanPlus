@@ -1,8 +1,8 @@
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import PathResolver from '../manager/PathResolver';
 import { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import FileUtils from '../../utils/FileUtils';
+import path from '../../providers/node/path/path';
 
 export class Logger {
 

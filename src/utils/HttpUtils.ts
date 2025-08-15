@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 import { decompressArrayBuffer } from "./GzipUtils";
+import Buffer from "../providers/node/buffer/buffer";
 
 const newAbortSignal = (timeoutMs: number) => {
     const abortController = new AbortController();
@@ -118,7 +119,8 @@ export const fetchAndProcessBlobFile = async (url: string) => {
     return {content, hash, dateFetched};
 }
 
-async function getSha256Hash(arrayBuffer: ArrayBuffer): Promise<string> {
+async function getSha256Hash(buffer: Buffer): Promise<string> {
+    const arrayBuffer = new Uint8Array(buffer);
     const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
     const hashByteArray = Array.from(new Uint8Array(hashBuffer));
     const hexHash = hashByteArray.map(b => b.toString(16).padStart(2, '0')).join('');

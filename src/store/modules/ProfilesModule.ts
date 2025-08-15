@@ -4,7 +4,7 @@ import { ActionTree } from "vuex";
 import { State as RootState } from "../../store";
 import Profile from "../../model/Profile";
 import FsProvider from "../../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../../providers/node/path/path";
 
 interface State {
     profileList: string[];
@@ -49,7 +49,7 @@ export const ProfilesModule = {
             }
         },
 
-        async removeSelectedProfile({rootGetters, state, dispatch}) {
+        async removeSelectedProfile({rootGetters, state, dispatch, commit}) {
             const activeProfile: Profile = rootGetters['profile/activeProfile'];
             const path = activeProfile.getProfilePath();
             const profileName = activeProfile.getProfileName();
@@ -61,13 +61,16 @@ export const ProfilesModule = {
                 throw R2Error.fromThrownValue(e, 'Error whilst deleting profile from disk');
             }
 
-            state.profileList = state.profileList.filter((p: string) => p !== profileName || p === 'Default')
+            const filteredProfileList = state.profileList.filter((p: string) => p !== profileName || p === 'Default');
+            commit(
+                'setProfileList',
+                filteredProfileList
+            );
             await dispatch('setSelectedProfile', { profileName: 'Default', prewarmCache: true });
         },
 
-        async setSelectedProfile({rootGetters, state, dispatch}, params: { profileName: string, prewarmCache: boolean }) {
+        async setSelectedProfile({dispatch}, params: { profileName: string, prewarmCache: boolean }) {
             await dispatch('profile/updateActiveProfile', params.profileName, { root: true });
-
             if (params.prewarmCache) {
                 await dispatch('profile/updateModListFromFile', null, { root: true });
                 await dispatch('tsMods/prewarmCache', null, { root: true });
@@ -92,10 +95,11 @@ export const ProfilesModule = {
 
         async updateProfileList({commit, rootGetters}) {
             const profilesDirectory = Profile.getRootDir();
-
+            await FileUtils.ensureDirectory(profilesDirectory);
             let profilesDirectoryContents = await FsProvider.instance.readdir(profilesDirectory);
             let promises = profilesDirectoryContents.map(async function(file) {
-                return ((await FsProvider.instance.stat(path.join(profilesDirectory, file))).isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
+                const fileStat = await FsProvider.instance.stat(path.join(profilesDirectory, file));
+                return (fileStat.isDirectory() && file.toLowerCase() !== 'default' && file.toLowerCase() !== "_profile_update")
                     ? file : undefined;
             });
             Promise.all(promises).then((profileList) => {

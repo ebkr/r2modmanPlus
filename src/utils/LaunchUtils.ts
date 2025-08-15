@@ -9,7 +9,7 @@ import ModLinker from '../r2mm/manager/ModLinker';
 import {Platform} from '../assets/data/ecosystemTypes';
 import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
-import path from "path";
+import path from "../providers/node/path/path";
 import PathResolver from "../r2mm/manager/PathResolver";
 
 export enum LaunchMode { VANILLA, MODDED };

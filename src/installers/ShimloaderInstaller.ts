@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import path from "path";
+import path from "../providers/node/path/path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";

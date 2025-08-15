@@ -4,12 +4,13 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import { generateProgressPercentage } from '../../utils/DownloadUtils';
+import path from '../../providers/node/path/path';
+import Buffer from '../../providers/node/buffer/buffer';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 

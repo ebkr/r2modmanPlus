@@ -5,10 +5,8 @@ import Profile from '../../../../model/Profile';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
-import { shell } from 'electron';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
-import * as path from 'path';
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
 import ConfigLine from '../../../../model/file/ConfigLine';
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
@@ -84,7 +82,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
         try {
             // Ignore errors to allow Thunderstore Mod Manager build without errors
             // @ts-ignore
-            await shell.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`);
+            window.electron.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`)
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to start the game", err.message, null);

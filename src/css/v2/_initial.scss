@@ -2,7 +2,7 @@
     --v2-primary-text-color: #222;
     --v2-secondary-text-color: #333;
 
-    --v2-link-text-color: #3f8ecf;
+    --v2-link-text-color: #3ba5fd;
     --v2-link-active-text-color: #222;
 
     --v2-hero-background-color: #3f8ecf;
@@ -17,13 +17,24 @@
     --v2-table-row-alt-background-color: #dee2e3;
     --v2-table-row-text-color: var(--v2-primary-text-color);
     --v2-table-row-border-color: #b3b3b3;
+
+    --v2-active-tag-background-color: #f3f3f3;
+    --v2-active-tag-color: #222;
+
+    --v2-inactive-tag-background-color: #485fc7;
+    --v2-inactive-tag-color: white;
+
+    --v2-active-menu-item-color: white;
+    --v2-inactive-menu-item-color: #222;
+
+    --input-placeholder-color: #b5b5b5;
 }
 
 html[class="html--dark"] {
     --v2-primary-text-color: white;
     --v2-secondary-text-color: #eaeaea;
 
-    --v2-link-text-color: #3f8ecf;
+    --v2-link-text-color: #3ba5fd;
     --v2-link-active-text-color: white;
 
     --v2-hero-background-color: #3f8ecf;
@@ -38,4 +49,15 @@ html[class="html--dark"] {
     --v2-table-row-alt-background-color: #1d2532;
     --v2-table-row-text-color: var(--v2-primary-text-color);
     --v2-table-row-border-color: #313c4e;
+
+    --v2-active-tag-background-color: #f3f3f3;
+    --v2-active-tag-color: #222;
+
+    --v2-inactive-tag-background-color: #485fc7;
+    --v2-inactive-tag-color: white;
+
+    --v2-active-menu-item-color: white;
+    --v2-inactive-menu-item-color: #bdcbdb;
+
+    --input-placeholder-color: #ededed;
 }
