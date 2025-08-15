@@ -6,6 +6,7 @@ import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
 import {AxiosResponse} from "axios";
+import Buffer from "../../providers/node/buffer/buffer";
 
 const IMPORT_CACHE_DIRNAME = "_import_cache";
 const PROFILE_DATA_PREFIX = "#r2modman";
@@ -39,7 +40,7 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
 
     const fs = FsProvider.instance;
     const b64 = profileData.substring(PROFILE_DATA_PREFIX.length).trim();
-    const decoded = window.node.buffer.from(b64, "base64");
+    const decoded = Buffer.from(b64, "base64");
     const destination = await getDownloadDestination();
     await fs.writeFile(destination, decoded);
     return destination;
