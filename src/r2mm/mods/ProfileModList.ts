@@ -288,25 +288,16 @@ export default class ProfileModList {
             path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"),
         ]
 
-        return new Promise(async (resolve, reject) => {
+        for (const iconPath of paths) {
             try {
-                for (const iconPath of paths) {
-                    const exists = await FsProvider.instance.exists(iconPath);
-                    if (exists) {
-                        const content = await FsProvider.instance.base64FromZip(iconPath);
-                        mod.setIcon(`data:image/png;base64,${content}`);
-                        resolve(true);
-                        break;
-                    }
-                }
-                resolve(false);
+                const content = await FsProvider.instance.base64FromZip(iconPath);
+                mod.setIcon(`data:image/png;base64,${content}`);
+                return;
             } catch (e) {
-                reject(e);
+                continue;
             }
-        }).then(resolved => {
-            if (!resolved) {
-                mod.setIcon("/unknown.png");
-            }
-        });
+        }
+
+        mod.setIcon("/unknown.png");
     }
 }

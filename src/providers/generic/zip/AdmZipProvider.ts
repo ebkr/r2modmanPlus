@@ -13,8 +13,7 @@ export default class AdmZipProvider extends ZipProvider {
         return window.zip.readFile(zip, file);
     }
 
-    // Type is Promise<ZipEntryInterface[]>
-    async getEntries(zip: string): Promise<any> {
+    async getEntries(zip: string): Promise<ZipEntryInterface[]> {
         return window.zip.getEntries(zip) as ZipEntryInterface[];
     }
 

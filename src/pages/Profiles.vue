@@ -134,20 +134,20 @@ onMounted( async () => {
     console.debug("Profiles view entered with active game", store.state.activeGame.settingsIdentifier);
 
     const settings = await store.getters.settings;
+    await settings.load();
 
-    settings.load()
-        .then(() => store.dispatch('profile/loadLastSelectedProfile'))
-        .then((profileName: string) => {
-            // If the view was entered via game selection, the mod list was updated
-            // and the cache cleared. The profile is already set in the Vuex store
-            // but we want to trigger the cache prewarming. Always doing this for
-            // empty profiles is deemed a fair tradeoff. On the other hand there's
-            // no point to trigger this when returning from the manager view and the
-            // mods are already cached.
-            if (store.state.tsMods.cache.size === 0) {
-                setSelectedProfile(profileName, false);
-            }
-        })
-        .then(updateProfileList);
+    const lastSelectedProfileName = await store.dispatch('profile/loadLastSelectedProfile');
+
+    // If the view was entered via game selection, the mod list was updated
+    // and the cache cleared. The profile is already set in the Vuex store
+    // but we want to trigger the cache prewarming. Always doing this for
+    // empty profiles is deemed a fair tradeoff. On the other hand there's
+    // no point to trigger this when returning from the manager view and the
+    // mods are already cached.
+    if (store.state.tsMods.cache.size === 0) {
+        await setSelectedProfile(lastSelectedProfileName, false);
+    }
+
+    await updateProfileList();
 })
 </script>
