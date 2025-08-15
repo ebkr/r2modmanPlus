@@ -15,6 +15,7 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import FileUtils from "../../utils/FileUtils";
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -250,15 +251,21 @@ async function onImportTargetSelected() {
 async function importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
     activeStep.value = 'PROFILE_IS_BEING_IMPORTED';
     importPhaseDescription.value = 'Downloading mods: 0%';
-    const progressCallback = (progress: number|string) => typeof progress === "number"
-        ? importPhaseDescription.value = `Downloading mods: ${Math.floor(progress)}%`
-        : importPhaseDescription.value = progress;
+    const progressCallback = (_progress: number, downloadedSize: number, totalDownloadSize: number) => {
+        importPhaseDescription.value = `Downloading mods: ${Math.floor(downloadedSize / totalDownloadSize * 100)}%` +
+         ` (${FileUtils.humanReadableSize(downloadedSize)} / ${FileUtils.humanReadableSize(totalDownloadSize)})`;
+    };
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
     try {
         const combos = profileMods.value.known as ThunderstoreCombo[];
+
+        //TODO: fix the total size of the download thingy
+
         await store.dispatch('download/downloadToCache', {combos, progressCallback});
-        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, (progress) => {
+            importPhaseDescription.value = progress;
+        });
     } catch (e) {
         await store.dispatch('profiles/ensureProfileExists');
         closeModal();

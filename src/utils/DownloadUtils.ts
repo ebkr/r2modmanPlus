@@ -1,4 +1,9 @@
-import R2Error from "../model/errors/R2Error";
+import R2Error from '../model/errors/R2Error';
+import ThunderstoreCombo from '../model/ThunderstoreCombo';
+import FsProvider from '../providers/generic/file/FsProvider';
+import PathResolver from '../r2mm/manager/PathResolver';
+
+import * as path from 'path';
 
 export function addSolutionsToError(err: R2Error): void {
     // Sanity check typing.
@@ -18,11 +23,31 @@ export function addSolutionsToError(err: R2Error): void {
     }
 }
 
-export function generateProgressPercentage(progress: number, currentIndex: number, total: number): number {
-    if (progress === 100 && currentIndex === total) {
-        return 100;
+export async function getTotalDownloadSizeInBytes(combos: ThunderstoreCombo[], ignoreCache: boolean): Promise<number> {
+    let filteredCombos = [];
+    if (ignoreCache) {
+        filteredCombos = combos;
+    } else {
+        for (const combo of combos) {
+            if (!(await isVersionAlreadyDownloaded(combo))) {
+                filteredCombos.push(combo);
+            }
+        }
     }
-    const completedProgress = (currentIndex / total) * 100;
-    const totalProgressPercentage = completedProgress + (progress * 1/total)
-    return Math.floor(totalProgressPercentage);
+    return filteredCombos.reduce((total, combo) => total + combo.getVersion().getFileSize(), 0);
+}
+
+export async function isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Promise<boolean>  {
+    const fs = FsProvider.instance;
+    const cacheDirectory = path.join(PathResolver.MOD_ROOT, 'cache');
+    try {
+        await fs.readdir(path.join(cacheDirectory, combo.getMod().getFullName(), combo.getVersion().getVersionNumber().toString()));
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+export function generateProgressPercentage(downloadedSize: number, totalDownloadSize: number): number {
+    return totalDownloadSize == 0 ? 100 : Math.round(downloadedSize / totalDownloadSize * 100);
 }
