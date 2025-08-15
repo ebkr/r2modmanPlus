@@ -10,6 +10,7 @@ import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/Thu
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import * as DownloadUtils from '../../utils/DownloadUtils';
 import path from '../../providers/node/path/path';
+import Buffer from '../../providers/node/buffer/buffer';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -77,7 +78,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     }
 
     private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<void> {
-        const buf: Buffer = window.node.buffer.from(response.data);
+        const buf: Buffer = Buffer.from(response.data);
         const comboSize = combo.getVersion().getFileSize();
         callback(comboSize, StatusEnum.PENDING, null);
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
