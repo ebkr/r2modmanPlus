@@ -274,7 +274,6 @@ export const DownloadModule = {
             }
         },
         addDownload(state: State, download: DownloadProgress) {
-            // @ts-ignore
             state.allDownloads = [...state.allDownloads, download];
         },
         setDone(state: State, downloadId: number) {

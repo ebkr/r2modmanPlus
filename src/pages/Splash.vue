@@ -121,8 +121,6 @@
 import { ExternalLink, Hero, Progress } from '../components/all';
 import Game from '../model/game/Game';
 import FsProvider from '../providers/generic/file/FsProvider';
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import PathResolver from '../r2mm/manager/PathResolver';
 import { computed, onMounted, ref } from 'vue';
 import { State } from '../store';
