@@ -20,6 +20,7 @@ import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
 import path from '../../providers/node/path/path';
+import Buffer from '../../providers/node/buffer/buffer';
 
 export default class ProfileModList {
 
@@ -175,7 +176,7 @@ export default class ProfileModList {
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
-        await builder.addBuffer("export.r2x", window.node.buffer.from(yaml.stringify(exportFormat)));
+        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
         if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
             await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }
@@ -205,7 +206,7 @@ export default class ProfileModList {
                 !fileLower.endsWith('mods.yml')
             ) {
                 const content = await FsProvider.instance.readFile(file);
-                const bufferContent = window.node.buffer.from(content, 'utf8');
+                const bufferContent = Buffer.from(content, 'utf8');
                 await builder.addBuffer(path.relative(profile.getProfilePath(), file), bufferContent);
             }
         }
