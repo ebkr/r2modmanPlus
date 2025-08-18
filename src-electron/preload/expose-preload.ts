@@ -1,5 +1,4 @@
 import { contextBridge } from 'electron';
-import * as hooks from "./hooks-preload";
 import * as path from './node-path';
 import * as child_process from './node-child-process';
 import * as fs from './node-fs';
@@ -17,7 +16,6 @@ contextBridge.exposeInMainWorld('node', {
     os: os,
 });
 
-contextBridge.exposeInMainWorld('hooks', hooks);
 contextBridge.exposeInMainWorld('app', appGlobals);
 contextBridge.exposeInMainWorld('zip', zip);
 contextBridge.exposeInMainWorld('electron', electron);
