@@ -1,30 +1,11 @@
 import {ipcRenderer} from "electron/renderer";
 
 export async function getAppDataDirectory(): Promise<string> {
-    return new Promise((resolve, reject) => {
-        ipcRenderer.on('receive-appData-directory', (event, path) => {
-            const result = path;
-            if (result instanceof Error) {
-                reject(result);
-            } else {
-                resolve(result);
-            }
-        });
-        ipcRenderer.send('get-appData-directory');
-    });
+    return ipcRenderer.invoke('get-appData-directory');
 }
 
 export async function isApplicationPortable(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        ipcRenderer.on('receive-is-portable', (event, isPortable) => {
-            if (isPortable instanceof Error) {
-                reject(isPortable);
-            } else {
-                resolve(isPortable);
-            }
-        })
-        ipcRenderer.send('get-is-portable');
-    });
+    return ipcRenderer.invoke('get-is-portable');
 }
 
 export function getPlatform(): string {
@@ -32,16 +13,7 @@ export function getPlatform(): string {
 }
 
 export async function checkForApplicationUpdates(): Promise<void> {
-    return new Promise((resolve, reject) => {
-        ipcRenderer.on('update-done', (event, error) => {
-            if (error && error instanceof Error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        })
-        ipcRenderer.send('update-app');
-    });
+    return ipcRenderer.invoke('update-app');
 }
 
 export function getStaticsDirectory(): string {

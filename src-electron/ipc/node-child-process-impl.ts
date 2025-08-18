@@ -6,9 +6,11 @@ export function hookChildProcessIpc(browserWindow: BrowserWindow) {
         event.returnValue = ChildProcess.execSync(path).toString();
     })
 
-    ipcMain.on("node:child_process:exec", (event, identifier, path, options) => {
-        ChildProcess.exec(path, options, err => {
-            browserWindow.webContents.send(`node:child_process:exec:${identifier}`, err);
-        });
+    ipcMain.handle("node:child_process:exec", (event, path, options) => {
+        return new Promise(resolve => {
+            ChildProcess.exec(path, options, err => {
+                resolve(err);
+            });
+        })
     })
 }
