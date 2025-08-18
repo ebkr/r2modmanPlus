@@ -44,7 +44,7 @@ async function createWindow() {
         width: windowSize.width,
         height: windowSize.height,
         useContentSize: true,
-        icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
+        icon: path.resolve(__dirname, 'icons/icon.png'),
         autoHideMenuBar: process.env.PROD,
         webPreferences: {
             preload: path.resolve(
@@ -52,6 +52,7 @@ async function createWindow() {
                 path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)
             ),
             // TODO - Remove and find an appropriate workaround for CORS blocking by Electron
+            // Likely workaround is to move network requests to backend
             webSecurity: false
         }
     });

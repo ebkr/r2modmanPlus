@@ -4,6 +4,10 @@ import { NodePathProvider } from '../src/providers/node/path/path';
 import { NodeOsProvider } from '../src/providers/node/os/os';
 import { NodeChildProcessProvider } from '../src/providers/node/child_process/child_process';
 import { NodeBufferProvider } from '../src/providers/node/buffer/buffer';
+import {
+    InteractionProviderFileProperties,
+    InteractionProviderFolderProperties
+} from 'src/providers/ror2/system/InteractionProvider';
 
 declare namespace NodeJS {
   interface ProcessEnv {
@@ -23,6 +27,22 @@ declare global {
             os: NodeOsProvider,
             child_process: NodeChildProcessProvider
             buffer: NodeBufferProvider
+        },
+        app: {
+            getPlatform: () => string;
+            restart: () => void;
+            hookModInstallProtocol: (callback: (data: any) => void) => void;
+            getAppDataDirectory: () => Promise<string>;
+            isApplicationPortable: () => Promise<boolean>;
+            getStaticsDirectory: () => string;
+        },
+        electron: {
+            selectFolderDialog: (opt: InteractionProviderFolderProperties) => Promise<string[]>;
+            selectFileDialog: (opt: InteractionProviderFileProperties) => Promise<string[]>;
+            copyToClipboard: (value: string) => void;
+            openPath: (path: string) => void;
+            openExternal: (path: string) => void;
+            selectFile: (path: string) => void;
         }
     }
 }

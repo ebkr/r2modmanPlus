@@ -152,7 +152,7 @@ function checkForUpdates() {
     store.dispatch('splash/setSplashText', 'Preparing');
     window.app.checkForApplicationUpdates()
         .then(async () => {
-            await store.dispatch('splash/updateRequestItem', {
+            store.commit('splash/updateRequestItem', {
                 requestName: 'UpdateCheck',
                 value: 100
             } as UpdateRequestItemBody);
