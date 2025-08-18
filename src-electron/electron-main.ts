@@ -33,15 +33,7 @@ if (process.env.PROD) {
 
 let mainWindow;
 
-function createWindow() {
-    /**
-     * Initial window options
-     */
-
-    console.log(path.resolve(
-        fileURLToPath(new URL('.', import.meta.url)),
-        path.join(process.env.QUASAR_ELECTRON_PRELOAD_FOLDER, 'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION)
-    ));
+async function createWindow() {
 
     const windowSize = Persist.getSize(app, {
         defaultWidth: 1200,
@@ -52,7 +44,7 @@ function createWindow() {
         width: windowSize.width,
         height: windowSize.height,
         useContentSize: true,
-        icon: path.join(__dirname, 'icon.png'),
+        icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
         autoHideMenuBar: process.env.PROD,
         webPreferences: {
             preload: path.resolve(
@@ -75,15 +67,19 @@ function createWindow() {
     // Initialise client to server communication listener
     new Listeners(mainWindow, app);
 
-    mainWindow.loadURL(process.env.APP_URL);
+    if (process.env.DEV) {
+        await mainWindow.loadURL(process.env.APP_URL);
+    } else {
+        await mainWindow.loadFile('index.html');
+    }
 
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
 }
 
-app.on('ready', () => {
-    createWindow();
+app.on('ready', async () => {
+    await createWindow();
     let reqLockSuccess = app.requestSingleInstanceLock();
     if (!reqLockSuccess) {
         // If this isn't the single instance,
@@ -111,15 +107,33 @@ app.on('ready', () => {
     }
 });
 
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme: 'public',
+        privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true
+        }
+    }
+])
+
 app.whenReady().then(() => {
     protocol.registerFileProtocol('file', (request, callback) => {
         const pathname = request.url.replace('file:///', '');
         if (fs.existsSync(pathname)) {
             callback(pathname);
         } else {
-            callback(path.join(__statics, 'unknown.png'));
+            callback(path.join(global.__statics, 'unknown.png'));
         }
     });
+
+    protocol.handle('public', async (req: any) => {
+        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER);
+        const filePath = (req.url as string).substring("public://".length).replace(/\\/g, path.sep);
+        const fileContent = await fs.promises.readFile(path.join(publicFolder, filePath))
+        return new Response(fileContent);
+    })
 });
 
 app.on('window-all-closed', () => {
