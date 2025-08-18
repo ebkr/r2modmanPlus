@@ -1,7 +1,12 @@
-import { createRouter, createWebHashHistory, createWebHistory, RouteLocationNormalized, RouteMeta } from 'vue-router';
+import {
+    createMemoryHistory,
+    createRouter,
+    RouteLocationNormalized,
+    RouteMeta
+} from 'vue-router';
 import routes from './routes';
 
-const createHistory = createWebHistory;
+const createHistory = createMemoryHistory;
 const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,

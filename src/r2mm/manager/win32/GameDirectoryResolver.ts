@@ -1,7 +1,7 @@
 import R2Error from '../../../model/errors/R2Error';
 import FileNotFoundError from '../../../model/errors/FileNotFoundError';
 import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
-import child from 'child_process';
+import child from '../../../providers/node/child_process/child_process';
 import * as vdf from '@node-steam/vdf';
 import ManagerSettings from '../ManagerSettings';
 import FsProvider from '../../../providers/generic/file/FsProvider';
