@@ -29,7 +29,6 @@ import FileUtils from './utils/FileUtils';
 import LinkProvider from './providers/components/LinkProvider';
 import LinkImpl from './r2mm/component_override/LinkImpl';
 import FsProvider from './providers/generic/file/FsProvider';
-import NodeFs from './providers/generic/file/NodeFs';
 import { DataFolderProvider } from './providers/ror2/system/DataFolderProvider';
 import { DataFolderProviderImpl } from './r2mm/system/DataFolderProviderImpl';
 import InteractionProvider from './providers/ror2/system/InteractionProvider';
@@ -46,12 +45,14 @@ import GenericProfileInstaller from './r2mm/installing/profile_installers/Generi
 import ErrorModal from './components/modals/ErrorModal.vue';
 import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
 import baseStore from './store';
-import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
-import { Dark, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
+import { useRouter } from 'vue-router';
 
 const store = baseStore;
+const router = useRouter();
 provideStoreImplementation(() => store);
 
 const quasar = useQuasar();
@@ -93,8 +94,6 @@ PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 BindLoaderImpl.bind();
 
 onMounted(async () => {
-    // Load settings using the default game before the actual game is selected.
-    const router = getCurrentInstance()!.proxy.$router;
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
 
     hookBackgroundUpdateThunderstoreModList(router);

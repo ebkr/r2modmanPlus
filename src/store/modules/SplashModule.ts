@@ -63,9 +63,6 @@ export const SplashModule = {
 
             return item;
         },
-        updateRequestItem({ commit }, body: UpdateRequestItemBody) {
-            commit('updateRequestItem', body);
-        },
         async getThunderstoreMods({commit, dispatch}) {
             commit('tsMods/startThunderstoreModListUpdate', null, {root: true});
             const hasPriorCache = await dispatch('doesGameHaveLocalCache');
@@ -93,7 +90,7 @@ export const SplashModule = {
                 console.error('SplashModule failed to fetch mod list index from API.', e);
                 return undefined;
             } finally {
-                await dispatch('updateRequestItem', {
+                commit('updateRequestItem', {
                     requestName: 'PackageListIndex',
                     value: 100
                 } as UpdateRequestItemBody);
@@ -110,11 +107,11 @@ export const SplashModule = {
             }
 
             if (hasCache) {
-                await dispatch('updateRequestItem', {
+                commit('updateRequestItem', {
                     requestName: 'PackageListIndex',
                     value: 100
                 } as UpdateRequestItemBody);
-                await dispatch('updateRequestItem', {
+                commit('updateRequestItem', {
                     requestName: 'PackageListChunks',
                     value: 100
                 } as UpdateRequestItemBody);
@@ -131,8 +128,10 @@ export const SplashModule = {
             commit('setSplashText', 'Loading latest mod list from Thunderstore');
 
             const progressCallback = async (progress: number) => {
-                const packageListChunks = await dispatch('getRequestItem', 'PackageListChunks');
-                packageListChunks.setProgress(progress);
+                commit('updateRequestItem', {
+                    requestName: 'PackageListChunks',
+                    value: progress
+                } as UpdateRequestItemBody);
             };
 
             try {
@@ -176,7 +175,7 @@ export const SplashModule = {
             } catch (e) {
                 console.error('Updating the store mod list by SplashModule failed.', e);
             } finally {
-                await dispatch('updateRequestItem', {
+                commit('updateRequestItem', {
                     requestName: 'Vuex',
                     value: 100
                 } as UpdateRequestItemBody);
