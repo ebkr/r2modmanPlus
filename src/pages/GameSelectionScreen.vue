@@ -150,7 +150,7 @@
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
                                                             <template v-if="activeTab === GameInstanceType.GAME">
-                                                                <img :src='`/images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                                <img :src='`public:///images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
                                                                 <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
