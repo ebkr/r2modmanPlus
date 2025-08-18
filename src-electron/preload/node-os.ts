@@ -1,7 +1,5 @@
-import {ipcRenderer} from "electron";
+import { ipcRenderer } from 'electron';
 
 export function homedir() {
-    const result = ipcRenderer.sendSync('node:os:homedir');
-    console.log("Homedir:", result);
-    return result;
+    return ipcRenderer.sendSync('node:os:homedir');
 }

@@ -1,5 +1,4 @@
 import { ipcRenderer } from 'electron/renderer';
-import { once } from "./hooks-preload";
 
 export async function writeFile(path: string, content: string | Buffer): Promise<any> {
     return ipcRenderer.invoke('node:fs:writeFile', path, content);

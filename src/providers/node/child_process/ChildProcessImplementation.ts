@@ -5,10 +5,16 @@ let execIdentifier = 0;
 export const NodeChildProcessImplementation: NodeChildProcessProvider = {
     execSync: path => window.node.child_process.execSync(path),
     exec: async (path, options, callback) => {
-        const identifier = execIdentifier++;
-        if (callback) {
-            window.hooks.once(`node:child_process:exec:${identifier}`, callback);
-        }
-        window.node.child_process.exec(identifier, path, options);
+        window.node.child_process.exec(path, options)
+            .then(err => {
+                if (callback) {
+                    callback(err as unknown as Error);
+                }
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err as Error);
+                }
+            })
     }
 }
