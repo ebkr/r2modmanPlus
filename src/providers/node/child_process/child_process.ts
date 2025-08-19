@@ -1,4 +1,4 @@
-import { NodeChildProcessImplementation } from 'src/providers/node/child_process/ChildProcessImplementation';
+import { NodeChildProcessImplementation } from './ChildProcessImplementation';
 
 export type NodeChildProcessProvider = {
     execSync: (path: string, options?: any) => string;
