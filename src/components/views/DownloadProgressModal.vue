@@ -31,8 +31,8 @@ function closeModal() {
                     </h3>
 
                     <p>
-                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete
-                        ({{FileUtils.humanReadableSize($store.getters['download/currentDownload'].downloadedSize)}} / {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}})
+                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete of
+                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
                     <Progress

@@ -255,7 +255,7 @@ async function importProfile(targetProfileName: string, mods: ExportMod[], zipPa
     importPhaseDescription.value = 'Downloading mods: 0%';
     const progressCallback = (downloadedSize: number) => {
         importPhaseDescription.value = `Downloading mods: ${DownloadUtils.generateProgressPercentage(downloadedSize, profileTotalDownloadSize.value)}%` +
-         ` (${FileUtils.humanReadableSize(downloadedSize)} / ${FileUtils.humanReadableSize(profileTotalDownloadSize.value)})`;
+         ` of ${FileUtils.humanReadableSize(profileTotalDownloadSize.value)}`;
     };
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
