@@ -34,7 +34,6 @@ interface UpdateObject {
     downloadId: UUID;
     downloadProgress?: number;
     downloadedSize?: number;
-    totalDownloadSize?: number;
     installProgress?: number;
     modName?: string;
     status?: DownloadStatusEnum;
@@ -81,24 +80,27 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        _addDownload({state}, params: {
-            combos: ThunderstoreCombo[],
+        async _addDownload({state}, params: {
+            initialMods: ThunderstoreCombo[],
+            modsWithDependencies: ThunderstoreCombo[],
             installMode: InstallMode,
             game: Game,
             profile: ImmutableProfile
-        }): UUID {
-            const { combos, installMode, game, profile } = params;
+        }): Promise<UUID> {
+            const { initialMods, modsWithDependencies, installMode, game, profile } = params;
             const downloadId = UUID.create();
+            const totalDownloadSize = await DownloadUtils.getTotalDownloadSizeInBytes(modsWithDependencies, state.ignoreCache);
+
             const downloadObject: DownloadProgress = {
-                downloadId: downloadId,
-                initialMods: [...combos],
+                downloadId,
+                initialMods: [...initialMods],
                 installMode,
                 game,
                 profile,
-                modName: '',
-                downloadProgress: 0,
+                modName: '',  // Mod currently being downloaded/installed.
+                totalDownloadSize,
                 downloadedSize: 0,
-                totalDownloadSize: 0,
+                downloadProgress: 0,
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
@@ -112,7 +114,7 @@ export const DownloadModule = {
             commit('setIgnoreCacheVuexOnly', settings.getContext().global.ignoreCache);
         },
 
-        async downloadAndInstallCombos({commit, dispatch, rootGetters, state}, params: {
+        async downloadAndInstallCombos({commit, dispatch, rootGetters}, params: {
             combos: ThunderstoreCombo[],
             game: Game,
             installMode: InstallMode,
@@ -126,12 +128,10 @@ export const DownloadModule = {
                 if (!hideModal) {
                     commit('openDownloadProgressModal', null, { root: true });
                 }
-                downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
+
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
-
-                const totalDownloadSize = await DownloadUtils.getTotalDownloadSizeInBytes(modsWithDependencies, state.ignoreCache);
-                commit('updateDownload', { downloadId, totalDownloadSize });
+                downloadId = await dispatch('_addDownload', { initialMods: combos, modsWithDependencies, installMode, game, profile });
 
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
 
