@@ -26,7 +26,7 @@ function resolveStat(statLike: any) {
 
 export const NodeFsImplementation: NodeFsProvider = {
     writeFile: async (...args) => {
-        const path = [...args][0] as string;
+        const path = args[0];
         return acquireLockAndDo(path, async (resolve, reject) => window.node.fs.writeFile(...args).then(resolve).catch(reject));
     },
     readFile: async (...args) => {
