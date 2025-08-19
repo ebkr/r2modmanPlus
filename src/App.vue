@@ -48,8 +48,10 @@ import baseStore from './store';
 import { onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
 import { useQuasar } from 'quasar';
-import { NodeFsImplementation } from 'src/providers/node/fs/NodeFsImplementation';
+import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
+import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
+import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 
 const store = baseStore;
 const router = useRouter();
@@ -90,6 +92,8 @@ InteractionProvider.provide(() => new InteractionProviderImpl());
 DataFolderProvider.provide(() => new DataFolderProviderImpl());
 
 PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
+
+provideProtocolImplementation(() => ProtocolProviderImplementation)
 
 BindLoaderImpl.bind();
 
