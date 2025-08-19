@@ -150,7 +150,7 @@
                                                         </div>
                                                         <div class="image is-fullwidth border border--border-box rounded" :class="[{'border--warning warning-shadow': isFavourited(game)}]">
                                                             <template v-if="activeTab === GameInstanceType.GAME">
-                                                                <img :src='`public:///images/game_selection/${game.gameImage}`' alt='Mod Logo' class="rounded game-thumbnail"/>
+                                                                <img :src='getImageHref(`/images/game_selection/${game.gameImage}`)' alt='Mod Logo' class="rounded game-thumbnail"/>
                                                             </template>
                                                             <template v-else>
                                                                 <h2 style="height: 250px; width: 188px" class="text-center pad pad--sides">{{ game.displayName }}</h2>
@@ -188,6 +188,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
+import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -231,6 +232,10 @@ const gameList = computed<Game[]>(() => {
         return a.displayName.toLowerCase().localeCompare(b.displayName.toLowerCase());
     });
 });
+
+function getImageHref(image: string) {
+    return ProtocolProvider.getPublicAssetUrl(image);
+}
 
 function changeTab(tab: GameInstanceType) {
     activeTab.value = tab;
