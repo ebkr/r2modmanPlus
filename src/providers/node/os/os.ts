@@ -1,4 +1,4 @@
-import ProviderUtils from 'src/providers/generic/ProviderUtils';
+import ProviderUtils from '../../generic/ProviderUtils';
 
 export type NodeOsProvider = {
     homedir: () => string;
