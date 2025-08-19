@@ -64,20 +64,24 @@ export async function isVersionAlreadyDownloaded(combo: ThunderstoreCombo): Prom
 }
 
 /**
- * Returns a rounded, clamped percentage based on the progress and the target progress.
- * Returns 100 if the target progress is 0.
+ * Returns a rounded, clamped percentage based on current and target progress numbers.
  *
- * @param progressSoFar The current progress so far.
+ * @param currentProgress The current progress so far.
  * @param targetProgress The total target progress.
  * @returns The progress as an integer percentage, between 0 and 100.
  */
-export function generateProgressPercentage(progressSoFar: number, targetProgress: number): number {
-    if (targetProgress == 0) {
+export function generateProgressPercentage(currentProgress: number, targetProgress: number): number {
+    // Target progress might be 0 e.g. if all mods are cached and
+    // nothing needs to be downloaded.
+    if (targetProgress === 0) {
         return 100;
     }
-    if (progressSoFar > targetProgress) {
-        console.warn(`When generating a progress percentage, the progress so far (${progressSoFar}) is greater than the target progress (${targetProgress})`);
+
+    if (currentProgress > targetProgress) {
+        console.warn(`Current progress (${currentProgress}) exceeds target progress (${targetProgress}) while generating a progress percentage`);
         return 100;
     }
-    return Math.max(0, Math.round(progressSoFar / targetProgress * 100));
+
+    const percentage = Math.round(currentProgress / targetProgress * 100);
+    return Math.max(0, Math.min(100, percentage));
 }
