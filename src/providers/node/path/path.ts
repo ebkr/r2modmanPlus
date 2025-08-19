@@ -1,4 +1,4 @@
-import { NodePathImplementation } from 'src/providers/node/path/NodePathImplementation';
+import { NodePathImplementation } from './NodePathImplementation';
 
 export type NodePathProvider = {
     join: (...paths: string[]) => string;
