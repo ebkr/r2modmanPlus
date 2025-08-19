@@ -24,26 +24,24 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
 
         let modInProgressName = combos[0].getMod().getName();
         let finishedModsDownloadedSize = 0;
-        let modInProgressSizeProgress = 0;
 
-        const singleModProgressCallback = (downloadProgress: number, modInProgressSize: number, status: number, err: R2Error | null) => {
-            const clampedProgress = Math.max(0, Math.min(100, downloadProgress));
+        const singleModProgressCallback = (downloadedBytes: number, status: number, err: R2Error | null) => {
+            let modInProgressDownloadedSize;
+
             if (status === StatusEnum.FAILURE) {
                 throw err;
-            }
-
-            if (status === StatusEnum.PENDING) {
-                modInProgressSizeProgress = (clampedProgress / 100) * modInProgressSize;
+            } else if (status === StatusEnum.PENDING) {
+                modInProgressDownloadedSize = downloadedBytes;
             } else if (status === StatusEnum.SUCCESS) {
-                finishedModsDownloadedSize += modInProgressSize;
-                modInProgressSizeProgress = 0;
+                finishedModsDownloadedSize += downloadedBytes;
+                modInProgressDownloadedSize = 0;
             } else {
                 console.error(`Ignore unknown status code "${status}"`);
                 return;
             }
 
             totalProgressCallback(
-                finishedModsDownloadedSize + modInProgressSizeProgress,
+                finishedModsDownloadedSize + modInProgressDownloadedSize,
                 modInProgressName,
                 status,
                 err
@@ -54,7 +52,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             modInProgressName = comboInProgress.getMod().getName();
 
             if (!ignoreCache && await DownloadUtils.isVersionAlreadyDownloaded(comboInProgress)) {
-                singleModProgressCallback(100, 0, StatusEnum.SUCCESS, null);
+                singleModProgressCallback(0, StatusEnum.SUCCESS, null);
                 continue;
             }
 
@@ -67,16 +65,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
     }
 
-    private async _downloadCombo(combo: ThunderstoreCombo, callback: (progress: number, comboSize: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
         return axios.get(combo.getVersion().getDownloadUrl(), {
-            onDownloadProgress: progress => {
-                callback(
-                    (progress.loaded / progress.total) * 100,
-                    combo.getVersion().getFileSize(),
-                    StatusEnum.PENDING,
-                    null
-                );
-            },
+            onDownloadProgress: progress => callback(progress.loaded, StatusEnum.PENDING, null),
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'application/zip',
@@ -85,14 +76,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (progress: number, downloadedSize: number, status: number, err: R2Error | null) => void): Promise<void> {
-        const buf: Buffer = Buffer.from(response.data)
-        callback(100, combo.getVersion().getFileSize(), StatusEnum.PENDING, null);
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<void> {
+        const buf: Buffer = Buffer.from(response.data);
+        const comboSize = combo.getVersion().getFileSize();
+        callback(comboSize, StatusEnum.PENDING, null);
+
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
             if (success) {
-                callback(100, combo.getVersion().getFileSize(), StatusEnum.SUCCESS, null);
+                callback(comboSize, StatusEnum.SUCCESS, null);
             } else {
-                callback(100, combo.getVersion().getFileSize(), StatusEnum.FAILURE, error || null);
+                callback(comboSize, StatusEnum.FAILURE, error || null);
             }
         });
     }
