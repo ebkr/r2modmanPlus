@@ -1,6 +1,6 @@
 let CDNS = [
-    "gcdn.thunderstore.io",
-    "hcdn-1.hcdn.thunderstore.io"
+    "https://gcdn.thunderstore.io",
+    "https://hcdn-1.hcdn.thunderstore.io"
 ];
 
 export function getCdns() {
