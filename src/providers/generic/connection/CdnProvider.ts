@@ -39,7 +39,7 @@ export default class CdnProvider {
         let res;
 
         for await (const cdn of cdns) {
-            const url = `https://${cdn}/${TEST_FILE}`;
+            const url = `${cdn}/${TEST_FILE}`;
 
             try {
                 res = await CdnProvider.axios.get(url, {headers, params});
