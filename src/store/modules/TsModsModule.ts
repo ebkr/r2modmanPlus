@@ -11,6 +11,7 @@ import { isEmptyArray, isStringArray } from '../../utils/ArrayUtils';
 import { retry } from '../../utils/Common';
 import { Deprecations } from '../../utils/Deprecations';
 import { fetchAndProcessBlobFile, getAxiosWithTimeouts, isNetworkError } from '../../utils/HttpUtils';
+import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 
 export interface CachedMod {
     tsMod: ThunderstoreMod | undefined;
@@ -259,7 +260,8 @@ export const TsModsModule = {
         },
 
         async fetchPackageListIndex({rootState}): Promise<PackageListIndex> {
-            const indexUrl = CdnProvider.addCdnQueryParameter(rootState.activeGame.thunderstoreUrl);
+            const packageIndexUrl = transformPackageUrl(rootState.activeGame.thunderstoreUrl);
+            const indexUrl = CdnProvider.addCdnQueryParameter(packageIndexUrl);
             const options = {attempts: 5, interval: 2000, throwLastErrorAsIs: true};
             const index = await retry(() => fetchAndProcessBlobFile(indexUrl), options);
 
