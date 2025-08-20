@@ -20226,6 +20226,125 @@
         ]
       }
     },
+    "paper-animal-adventure": {
+      "uuid": "c0935537-9ac9-43f6-9c30-64c4dd5945d1",
+      "label": "paper-animal-adventure",
+      "meta": {
+        "displayName": "Paper Animal Adventure",
+        "iconUrl": "paper-animal-adventure.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1982120"
+            }
+          ],
+          "steamFolderName": "Paper Animal Adventure",
+          "dataFolderName": "Paper Animal Adventure_Data",
+          "exeNames": [
+            "Paper Animal Adventure.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Paper Animal Adventure",
+            "iconUrl": "paper-animal-adventure.webp"
+          },
+          "settingsIdentifier": "PaperAnimalAdventure",
+          "internalFolderName": "PaperAnimalAdventure",
+          "packageIndex": "https://thunderstore.io/c/paper-animal-adventure/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "paa"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Paper Animal Adventure",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
     "patapon-1-2-replay": {
       "uuid": "d6dfad59-d6df-4398-b5d8-84dbbbace85f",
       "label": "patapon-1-2-replay",
@@ -26900,6 +27019,46 @@
     },
     "pac-man-world-re-pac": {
       "displayName": "PAC-MAN WORLD Re-PAC",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
+    "paper-animal-adventure": {
+      "displayName": "Paper Animal Adventure",
       "categories": {
         "mods": {
           "label": "Mods"
