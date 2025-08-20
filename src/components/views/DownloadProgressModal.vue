@@ -31,7 +31,7 @@ function closeModal() {
                     </h3>
 
                     <p>
-                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete of
+                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% of
                         {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
@@ -42,7 +42,7 @@ function closeModal() {
                     />
 
                     <p v-if="$store.getters['download/currentDownload'].installProgress">
-                        Installing: {{$store.getters['download/currentDownload'].installProgress}}% complete
+                        Installing: {{$store.getters['download/currentDownload'].installProgress}}%
                     </p>
                     <p v-else>Installing: waiting for download to finish</p>
 
