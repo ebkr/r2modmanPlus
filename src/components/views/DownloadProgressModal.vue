@@ -2,6 +2,7 @@
 import { Progress } from '../all';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import FileUtils from '../../utils/FileUtils';
 
 const store = getStore<State>();
 
@@ -29,7 +30,10 @@ function closeModal() {
                         Installing {{$store.getters['download/currentDownload'].modName}}
                     </h3>
 
-                    <p>Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% complete</p>
+                    <p>
+                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% of
+                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                    </p>
 
                     <Progress
                         :max='100'
@@ -38,7 +42,7 @@ function closeModal() {
                     />
 
                     <p v-if="$store.getters['download/currentDownload'].installProgress">
-                        Installing: {{$store.getters['download/currentDownload'].installProgress}}% complete
+                        Installing: {{$store.getters['download/currentDownload'].installProgress}}%
                     </p>
                     <p v-else>Installing: waiting for download to finish</p>
 

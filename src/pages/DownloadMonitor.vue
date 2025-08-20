@@ -54,7 +54,10 @@
                                 <div class="col">
                                     <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">Downloading: {{ downloadObject.modName }}</p>
                                     <p v-else>Downloading:</p>
-                                    <p>{{Math.min(Math.floor(downloadObject.downloadProgress), 100)}}% complete</p>
+                                    <p>
+                                        {{downloadObject.downloadProgress}}% of
+                                        {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}
+                                    </p>
                                     <Progress
                                         :max='100'
                                         :value='downloadObject.downloadProgress'
@@ -110,6 +113,7 @@
 
 import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
+import FileUtils from "../utils/FileUtils";
 import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
 </script>
 

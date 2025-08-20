@@ -15,6 +15,8 @@ import { useProfilesComposable } from '../composables/ProfilesComposable';
 import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import FileUtils from "../../utils/FileUtils";
+import * as DownloadUtils from "../../utils/DownloadUtils";
 
 const VALID_PROFILE_CODE_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -52,6 +54,7 @@ const profileList = computed(() => store.state.profiles.profileList);
 const knownProfileMods = computed(() => profileMods.value.known.map((combo) => combo.getMod()));
 const unknownProfileModNames = computed(() => profileMods.value.unknown.join(', '));
 const isProfileCodeValid = computed(() => VALID_PROFILE_CODE_REGEX.test(profileImportCode.value));
+const profileTotalDownloadSize = ref<number>(0);
 
 const profileCodeInput = ref<HTMLInputElement>();
 const profileNameInput = ref<HTMLInputElement>();
@@ -250,15 +253,20 @@ async function onImportTargetSelected() {
 async function importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
     activeStep.value = 'PROFILE_IS_BEING_IMPORTED';
     importPhaseDescription.value = 'Downloading mods: 0%';
-    const progressCallback = (progress: number|string) => typeof progress === "number"
-        ? importPhaseDescription.value = `Downloading mods: ${Math.floor(progress)}%`
-        : importPhaseDescription.value = progress;
+    const progressCallback = (downloadedSize: number) => {
+        importPhaseDescription.value = `Downloading mods: ${DownloadUtils.generateProgressPercentage(downloadedSize, profileTotalDownloadSize.value)}%` +
+         ` of ${FileUtils.humanReadableSize(profileTotalDownloadSize.value)}`;
+    };
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
     try {
         const combos = profileMods.value.known as ThunderstoreCombo[];
+        profileTotalDownloadSize.value = await DownloadUtils.getTotalDownloadSizeInBytes(combos, store.state.download.ignoreCache);
+
         await store.dispatch('download/downloadToCache', {combos, progressCallback});
-        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, progressCallback);
+        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, (progress) => {
+            importPhaseDescription.value = progress;
+        });
     } catch (e) {
         await store.dispatch('profiles/ensureProfileExists');
         closeModal();
