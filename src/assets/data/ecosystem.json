@@ -1573,6 +1573,15 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "maps": {
+            "label": "Maps"
+          },
+          "assets": {
+            "label": "Assets"
+          },
+          "emotes": {
+            "label": "Emotes"
           }
         },
         "sections": {
@@ -10853,6 +10862,12 @@
           },
           "faces": {
             "label": "Faces"
+          },
+          "afflictions": {
+            "label": "Afflications"
+          },
+          "accolades": {
+            "label": "Accolades"
           }
         },
         "sections": {
@@ -17931,6 +17946,42 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "hand-cosmetics": {
+            "label": "Hand Cosmetics"
+          },
+          "hand-packs": {
+            "label": "Hand Packs"
+          },
+          "maps": {
+            "label": "Maps"
+          },
+          "levels": {
+            "label": "Levels"
+          },
+          "gamemodes": {
+            "label": "Gamemodes"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "leaderboard-legal": {
+            "label": "Leaderboard Legal"
+          },
+          "language": {
+            "label": "Language"
+          },
+          "buffs": {
+            "label": "Buffs"
+          },
+          "artifacts": {
+            "label": "Artifacts"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "perks": {
+            "label": "Perks"
           }
         },
         "sections": {
@@ -18884,6 +18935,125 @@
         "discordUrl": "https://discord.gg/m8jhYA4TvV"
       },
       "r2modman": null
+    },
+    "darkwater": {
+      "uuid": "fde8a66c-d967-4505-adf3-5d9fe27bcc58",
+      "label": "darkwater",
+      "meta": {
+        "displayName": "Darkwater",
+        "iconUrl": "darkwater.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "619540"
+            }
+          ],
+          "steamFolderName": "Darkwater",
+          "dataFolderName": "Darkwater_Data",
+          "exeNames": [
+            "Darkwater.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Darkwater",
+            "iconUrl": "darkwater.webp"
+          },
+          "settingsIdentifier": "Darkwater",
+          "internalFolderName": "Darkwater",
+          "packageIndex": "https://thunderstore.io/c/darkwater/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "dw"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Darkwater",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "dicey-dungeons": {
       "uuid": "6332d5c4-1a74-4826-abb3-f18b212f26fd",
@@ -19936,6 +20106,123 @@
         "discordUrl": "https://discord.gg/UxZg8Ur",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "pac-man-world-re-pac": {
+      "uuid": "aa3deb5d-b580-4566-a549-4b65460b454f",
+      "label": "pac-man-world-re-pac",
+      "meta": {
+        "displayName": "PAC-MAN WORLD Re-PAC",
+        "iconUrl": "pac-man-world-re-pac.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1859470"
+            }
+          ],
+          "steamFolderName": "PAC-MAN WORLD Re-PAC",
+          "dataFolderName": "PAC-MAN WORLD Re-PAC_Data",
+          "exeNames": [
+            "PAC-MAN WORLD Re-PAC.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "PAC-MAN WORLD Re-PAC",
+            "iconUrl": "pac-man-world-re-pac.webp"
+          },
+          "settingsIdentifier": "PacManWorldRePac",
+          "internalFolderName": "PacManWorldRePac",
+          "packageIndex": "https://thunderstore.io/c/pac-man-world-re-pac/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PAC-MAN WORLD Re-PAC",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
         ]
       }
     },
@@ -21074,6 +21361,15 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "maps": {
+          "label": "Maps"
+        },
+        "assets": {
+          "label": "Assets"
+        },
+        "emotes": {
+          "label": "Emotes"
         }
       },
       "sections": {
@@ -23664,6 +23960,12 @@
         },
         "faces": {
           "label": "Faces"
+        },
+        "afflictions": {
+          "label": "Afflications"
+        },
+        "accolades": {
+          "label": "Accolades"
         }
       },
       "sections": {
@@ -25589,6 +25891,42 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "hand-cosmetics": {
+          "label": "Hand Cosmetics"
+        },
+        "hand-packs": {
+          "label": "Hand Packs"
+        },
+        "maps": {
+          "label": "Maps"
+        },
+        "levels": {
+          "label": "Levels"
+        },
+        "gamemodes": {
+          "label": "Gamemodes"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "leaderboard-legal": {
+          "label": "Leaderboard Legal"
+        },
+        "language": {
+          "label": "Language"
+        },
+        "buffs": {
+          "label": "Buffs"
+        },
+        "artifacts": {
+          "label": "Artifacts"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "perks": {
+          "label": "Perks"
         }
       },
       "sections": {
@@ -26004,6 +26342,46 @@
         }
       },
       "discordUrl": "https://discord.gg/m8jhYA4TvV"
+    },
+    "darkwater": {
+      "displayName": "Darkwater",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "dicey-dungeons": {
       "displayName": "Dicey Dungeons",
@@ -26518,6 +26896,46 @@
       "discordUrl": "https://discord.gg/UxZg8Ur",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
+      ]
+    },
+    "pac-man-world-re-pac": {
+      "displayName": "PAC-MAN WORLD Re-PAC",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
       ]
     },
     "patapon-1-2-replay": {
