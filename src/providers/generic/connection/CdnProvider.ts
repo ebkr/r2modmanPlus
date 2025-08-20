@@ -1,7 +1,7 @@
 import R2Error from '../../../model/errors/R2Error';
 import { getAxiosWithTimeouts } from '../../../utils/HttpUtils';
 import { addOrReplaceSearchParams, replaceHost } from '../../../utils/UrlUtils';
-import { getCdns } from 'src/providers/cdn/CdnHostList';
+import { getCdns } from '../../../providers/cdn/CdnHostList';
 
 const TEST_FILE = "healthz";
 
