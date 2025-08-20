@@ -1,11 +1,8 @@
 import R2Error from '../../../model/errors/R2Error';
 import { getAxiosWithTimeouts } from '../../../utils/HttpUtils';
 import { addOrReplaceSearchParams, replaceHost } from '../../../utils/UrlUtils';
+import { getCdns } from 'src/providers/cdn/CdnHostList';
 
-const CDNS = [
-    "gcdn.thunderstore.io",
-    "hcdn-1.hcdn.thunderstore.io"
-]
 const TEST_FILE = "healthz";
 
 const CONNECTION_ERROR = new R2Error(
@@ -23,7 +20,8 @@ export default class CdnProvider {
     private static preferredCdn = "";
 
     public static get current() {
-        const i = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const cdns = getCdns();
+        const i = cdns.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
         return {
             label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
             url: CdnProvider.preferredCdn
@@ -31,6 +29,7 @@ export default class CdnProvider {
     }
 
     public static async checkCdnConnection() {
+        const cdns = getCdns();
         const headers = {
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
@@ -39,7 +38,7 @@ export default class CdnProvider {
         const params = {"disableCache": new Date().getTime()};
         let res;
 
-        for await (const cdn of CDNS) {
+        for await (const cdn of cdns) {
             const url = `https://${cdn}/${TEST_FILE}`;
 
             try {
@@ -70,12 +69,13 @@ export default class CdnProvider {
     }
 
     public static togglePreferredCdn() {
-        let currentIndex = CDNS.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const cdns = getCdns();
+        let currentIndex = cdns.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
 
         if (currentIndex === -1) {
             currentIndex = 0;
         }
 
-        CdnProvider.preferredCdn = CDNS[currentIndex + 1] || CDNS[0];
+        CdnProvider.preferredCdn = cdns[currentIndex + 1] || cdns[0];
     }
 }
