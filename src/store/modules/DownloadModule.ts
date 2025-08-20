@@ -125,13 +125,13 @@ export const DownloadModule = {
             let downloadId: UUID | undefined;
 
             try {
-                if (!hideModal) {
-                    commit('openDownloadProgressModal', null, { root: true });
-                }
-
                 const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
                 const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
                 downloadId = await dispatch('_addDownload', { initialMods: combos, modsWithDependencies, installMode, game, profile });
+
+                if (!hideModal) {
+                    commit('openDownloadProgressModal', null, { root: true });
+                }
 
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
 
