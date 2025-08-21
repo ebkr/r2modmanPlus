@@ -1,7 +1,7 @@
 import R2Error from '../../../model/errors/R2Error';
 import { getAxiosWithTimeouts } from '../../../utils/HttpUtils';
 import { addOrReplaceSearchParams, replaceHost } from '../../../utils/UrlUtils';
-import { getCdns } from '../../../providers/cdn/CdnHostList';
+import { CdnDefinition, getCdns } from '../../../providers/cdn/CdnHostList';
 
 const TEST_FILE = "healthz";
 
@@ -17,14 +17,14 @@ const CONNECTION_ERROR = new R2Error(
 
 export default class CdnProvider {
     private static axios = getAxiosWithTimeouts(5000, 5000);
-    private static preferredCdn = "";
+    private static preferredCdn: CdnDefinition | undefined;
 
     public static get current() {
         const cdns = getCdns();
-        const i = cdns.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const i = cdns.findIndex((cdn) => cdn.host === CdnProvider.preferredCdn?.host);
         return {
             label: [-1, 0].includes(i) ? "Main CDN" : `Mirror #${i}`,
-            url: CdnProvider.preferredCdn
+            url: CdnProvider.preferredCdn?.host
         };
     }
 
@@ -39,7 +39,7 @@ export default class CdnProvider {
         let res;
 
         for await (const cdn of cdns) {
-            const url = `${cdn}/${TEST_FILE}`;
+            const url = `${cdn.protocol}://${cdn.host}/${TEST_FILE}`;
 
             try {
                 res = await CdnProvider.axios.get(url, {headers, params});
@@ -58,19 +58,19 @@ export default class CdnProvider {
 
     public static replaceCdnHost(url: string) {
         return CdnProvider.preferredCdn
-            ? replaceHost(url, CdnProvider.preferredCdn)
+            ? replaceHost(url, CdnProvider.preferredCdn.host)
             : url;
     }
 
     public static addCdnQueryParameter(url: string) {
         return CdnProvider.preferredCdn
-            ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn}`)
+            ? addOrReplaceSearchParams(url, `cdn=${CdnProvider.preferredCdn.host}`)
             : url;
     }
 
     public static togglePreferredCdn() {
-        const cdns = getCdns();
-        let currentIndex = cdns.findIndex((cdn) => cdn === CdnProvider.preferredCdn);
+        const cdns: CdnDefinition[] = getCdns();
+        let currentIndex = cdns.findIndex((cdn) => cdn.host === CdnProvider.preferredCdn?.host);
 
         if (currentIndex === -1) {
             currentIndex = 0;
