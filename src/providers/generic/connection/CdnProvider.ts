@@ -58,7 +58,7 @@ export default class CdnProvider {
 
     public static replaceCdnHost(url: string) {
         return CdnProvider.preferredCdn
-            ? replaceHost(url, CdnProvider.preferredCdn.host)
+            ? replaceHost(url, CdnProvider.preferredCdn)
             : url;
     }
 
