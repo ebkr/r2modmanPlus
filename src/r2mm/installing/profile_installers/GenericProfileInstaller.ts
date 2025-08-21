@@ -16,7 +16,7 @@ import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
-import { getPackageLoaderInstaller, getPluginInstaller } from "../../../installers/registry";
+import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
 import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
@@ -189,16 +189,8 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
     }
 
     async installModLoader(mapping: ModLoaderPackageMapping, args: InstallArgs): Promise<R2Error | null> {
-        const loaderInstaller = getPackageLoaderInstaller(mapping.loaderType);
-        if (loaderInstaller) {
-            await loaderInstaller.install(args);
-            return Promise.resolve(null);
-        } else {
-            return new R2Error(
-                "Installer not found",
-                `Failed to find an appropriate installer for the package ${mapping.packageName}`
-            );
-        }
+        await PackageLoaderInstallers[mapping.loaderType].install(args);
+        return null;
     }
 
     private async uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
@@ -330,7 +322,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
      */
     private async uninstallModLoaderWithInstaller(mod: ManifestV2, profile: ImmutableProfile): Promise<boolean> {
         const modLoader = this.getModLoader(mod);
-        const installer = modLoader ? getPackageLoaderInstaller(modLoader.loaderType) : null;
+        const installer = modLoader ? PackageLoaderInstallers[modLoader.loaderType] : null;
         return this.uninstallWithInstaller(installer, mod, profile);
     }
 
