@@ -26,7 +26,7 @@ export function addSolutionsToError(err: R2Error): void {
 /**
  * Returns the total download size for a list of mods.
  * If ignoreCache is set to true, all of the mods are included in the total download size.
- * Otherwise, it checks if the files are already downloaded and returns the 
+ * Otherwise, it checks if the files are already downloaded and returns the
  * total size of the files that actually need to be downloaded.
  *
  * @param combos The mods that need to be downloaded.
@@ -34,17 +34,13 @@ export function addSolutionsToError(err: R2Error): void {
  * @returns The total download file size of the mods to download (in bytes).
  */
 export async function getTotalDownloadSizeInBytes(combos: ThunderstoreCombo[], ignoreCache: boolean): Promise<number> {
-    let filteredCombos = [];
-    if (ignoreCache) {
-        filteredCombos = combos;
-    } else {
-        for (const combo of combos) {
-            if (!(await isVersionAlreadyDownloaded(combo))) {
-                filteredCombos.push(combo);
-            }
-        }
-    }
-    return filteredCombos.reduce((total, combo) => total + combo.getVersion().getFileSize(), 0);
+    const isCached = ignoreCache
+        ? Array(combos.length).fill(false)
+        : await Promise.all(combos.map((combo) => isVersionAlreadyDownloaded(combo)));
+
+    return combos
+        .filter((_combo, index) => !isCached[index])
+        .reduce((total, combo) => total + combo.getVersion().getFileSize(), 0);
 }
 
 /**
