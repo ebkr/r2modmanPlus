@@ -258,7 +258,7 @@ async function installState(args: InstallRuleArgs) {
 }
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using SUBDIR/SUBDIR_NO_FLATTEN tracking methods.
-export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<R2Error | void> {
+async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<void> {
     const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
         .filter(value => [TrackingMethod.SUBDIR, TrackingMethod.SUBDIR_NO_FLATTEN].includes(value.trackingMethod));
 
@@ -267,10 +267,9 @@ export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfil
             const dirContents = await FsProvider.instance.readdir(profile.joinToProfilePath(dir.route));
             for (const namespacedDir of dirContents) {
                 if (namespacedDir === mod.getName()) {
-                    const tree = await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir));
-                    if (tree instanceof R2Error) {
-                        return tree;
-                    }
+                    const tree = throwForR2Error(
+                        await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir))
+                    );
                     for (const value of tree.getRecursiveFiles()) {
                         if (mode === ModMode.DISABLED && mod.isEnabled() && !value.toLowerCase().endsWith(".old")) {
                             await FsProvider.instance.rename(value, `${value}.old`);
@@ -285,26 +284,22 @@ export async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfil
 }
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using STATE tracking method.
-export async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-    try {
-        const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
-        if (await FsProvider.instance.exists(modStateFilePath)) {
-            const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
-            const tracker: ModFileTracker = yaml.parse(fileContents);
-            for (const [key, value] of tracker.files) {
-                if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                    const filePath = profile.joinToProfilePath(value);
-                    if (await FsProvider.instance.exists(filePath)) {
-                        await FsProvider.instance.unlink(filePath);
-                    }
-                    if (mode === ModMode.ENABLED) {
-                        await FsProvider.instance.copyFile(key, filePath);
-                    }
+async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<void> {
+    const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
+    if (await FsProvider.instance.exists(modStateFilePath)) {
+        const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
+        const tracker: ModFileTracker = yaml.parse(fileContents);
+        for (const [key, value] of tracker.files) {
+            if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
+                const filePath = profile.joinToProfilePath(value);
+                if (await FsProvider.instance.exists(filePath)) {
+                    await FsProvider.instance.unlink(filePath);
+                }
+                if (mode === ModMode.ENABLED) {
+                    await FsProvider.instance.copyFile(key, filePath);
                 }
             }
         }
-    } catch (e) {
-        return R2Error.fromThrownValue(e, `Error installing mod: ${mod.getName()}`);
     }
 }
 
@@ -344,5 +339,19 @@ export class InstallRulePluginInstaller implements PackageInstaller {
                 case TrackingMethod.PACKAGE_ZIP: await installPackageZip(profile, managedRule, files, mod); break;
             }
         }
+    }
+
+    // PACKAGE_ZIP tracking method not supported currently.
+    // NONE tracking method won't implement enabling.
+    async enable(args: InstallArgs) {
+        await applyModeSubDirs(args.mod, args.profile, ModMode.ENABLED, this.rule);
+        await applyModeState(args.mod, args.profile, ModMode.ENABLED);
+    }
+
+    // PACKAGE_ZIP tracking method not supported currently.
+    // NONE tracking method won't implement disabling.
+    async disable(args: InstallArgs) {
+        await applyModeSubDirs(args.mod, args.profile, ModMode.DISABLED, this.rule);
+        await applyModeState(args.mod, args.profile, ModMode.DISABLED);
     }
 }

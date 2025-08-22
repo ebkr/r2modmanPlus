@@ -7,7 +7,6 @@ import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import yaml from 'yaml';
-import ModMode from '../../../model/enums/ModMode';
 import InstallationRules, { CoreRuleType } from '../../installing/InstallationRules';
 import PathResolver from '../../../r2mm/manager/PathResolver';
 import GameManager from '../../../model/game/GameManager';
@@ -16,8 +15,7 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { applyModeState, applyModeSubDirs, InstallRulePluginInstaller } from "../../../installers/InstallRulePluginInstaller";
-import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
+import { InstallRulePluginInstaller } from "../../../installers/InstallRulePluginInstaller";
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -31,40 +29,6 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         this.legacyInstaller = new InstallRulePluginInstaller(this.rule);
     }
 
-    private async applyModModeForSubdir(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-        // TODO: Call through the installer interface. For now we hardcode the only known cases because expanding the
-        //       installer system is out of scope.
-        //
-        //       In other words, this entire functionality of enabling & disabling mods should exist as a callable on
-        //       installers rather than here. Below is a dirty hack to fetch the install rules for the current only
-        //       known case.
-        let rule = this.rule;
-        const installer = getPluginInstaller(GameManager.activeGame.packageLoader);
-        if (installer instanceof ReturnOfModdingPluginInstaller) {
-            rule = installer.installer().rule;
-        }
-        if (!rule) {
-            return;
-        }
-
-        return await applyModeSubDirs(mod, profile, mode, rule);
-    }
-
-    private async applyModModeForState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-        return await applyModeState(mod, profile, mode);
-    }
-
-    private async applyModMode(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-        const appliedState = await this.applyModModeForState(mod, profile, mode);
-        if (appliedState instanceof R2Error) {
-            return appliedState;
-        }
-        const appliedSub = await this.applyModModeForSubdir(mod, profile, mode);
-        if (appliedSub instanceof R2Error) {
-            return appliedSub;
-        }
-    }
-
     async disableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
         // Support for installer specific disable methods are rolled out
         // gradually and therefore might not be defined yet. Disabling
@@ -73,11 +37,12 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             if (await this.disableModWithInstaller(mod, profile)) {
                 return;
             }
+
+            const args = this.getInstallArgs(mod, profile);
+            await this.legacyInstaller.disable(args);
         } catch (e) {
             return R2Error.fromThrownValue(e);
         }
-
-        return this.applyModMode(mod, profile, ModMode.DISABLED);
     }
 
     async enableMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | void> {
@@ -88,11 +53,12 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             if (await this.enableModWithInstaller(mod, profile)) {
                 return;
             }
+
+            const args = this.getInstallArgs(mod, profile);
+            await this.legacyInstaller.enable(args);
         } catch (e) {
             return R2Error.fromThrownValue(e);
         }
-
-        return this.applyModMode(mod, profile, ModMode.ENABLED);
     }
 
     async installForManifestV2(args: InstallArgs): Promise<R2Error | null> {
