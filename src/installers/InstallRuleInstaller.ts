@@ -3,7 +3,7 @@ import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
 import path from "../providers/node/path/path";
 import ManifestV2 from "../model/ManifestV2";
-import R2Error from "../model/errors/R2Error";
+import R2Error, { throwForR2Error } from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
 import InstallationRules, { CoreRuleType, ManagedRule, RuleSubtype } from "../r2mm/installing/InstallationRules";
 import FileUtils from "../utils/FileUtils";
@@ -269,23 +269,11 @@ export class InstallRulePluginInstaller implements PackageInstaller {
      */
     async install(args: InstallArgs) {
         const { mod, profile, packagePath } = args;
-        const files: FileTree | R2Error = await FileTree.buildFromLocation(packagePath);
-        if (files instanceof R2Error) {
-            throw files;
-        }
-        const result = await this.resolveBepInExTree(
-            profile,
-            packagePath,
-            path.basename(packagePath),
-            mod,
-            files,
-        );
-        if (result instanceof Error) {
-            throw result;
-        }
+        const fileTree = throwForR2Error(await FileTree.buildFromLocation(packagePath))
+        await this.resolveFileTreeInstall(profile, packagePath, path.basename(packagePath), mod, fileTree);
     }
 
-    async resolveBepInExTree(profile: ImmutableProfile, location: string, folderName: string, mod: ManifestV2, tree: FileTree): Promise<R2Error | void> {
+    private async resolveFileTreeInstall(profile: ImmutableProfile, location: string, folderName: string, mod: ManifestV2, tree: FileTree) {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
@@ -304,6 +292,5 @@ export class InstallRulePluginInstaller implements PackageInstaller {
                 case TrackingMethod.PACKAGE_ZIP: await installPackageZip(profile, managedRule, files, mod); break;
             }
         }
-        return Promise.resolve(undefined);
     }
 }
