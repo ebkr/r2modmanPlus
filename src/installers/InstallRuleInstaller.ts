@@ -256,7 +256,7 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
-export class InstallRuleInstaller implements PackageInstaller {
+export class InstallRulePluginInstaller implements PackageInstaller {
     public readonly rule: CoreRuleType;
 
     constructor(rules: CoreRuleType) {

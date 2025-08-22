@@ -1,5 +1,5 @@
 import path from "../providers/node/path/path";
-import { InstallRuleInstaller } from "./InstallRuleInstaller";
+import { InstallRulePluginInstaller } from "./InstallRuleInstaller";
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FileWriteError from "../model/errors/FileWriteError";
 import { PackageLoader } from "../model/schema/ThunderstoreSchema";
@@ -70,7 +70,7 @@ export class ReturnOfModdingPluginInstaller implements PackageInstaller {
     _DATA = "plugins_data";
     _CONFIG = "config"
 
-    readonly installer = () => new InstallRuleInstaller({
+    readonly installer = () => new InstallRulePluginInstaller({
         gameName: "none" as any,  // This isn't actually used for actual installation but needs some value
         rules: [
             {

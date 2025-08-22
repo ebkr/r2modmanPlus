@@ -18,7 +18,7 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { InstallRuleInstaller } from "../../../installers/InstallRuleInstaller";
+import { InstallRulePluginInstaller } from "../../../installers/InstallRuleInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
 import { TrackingMethod } from '../../../model/schema/ThunderstoreSchema';
 
@@ -26,12 +26,12 @@ import { TrackingMethod } from '../../../model/schema/ThunderstoreSchema';
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
 
     private readonly rule: CoreRuleType | undefined;
-    private readonly legacyInstaller: InstallRuleInstaller;
+    private readonly legacyInstaller: InstallRulePluginInstaller;
 
     constructor() {
         super();
         this.rule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
-        this.legacyInstaller = new InstallRuleInstaller(this.rule);
+        this.legacyInstaller = new InstallRulePluginInstaller(this.rule);
     }
 
     private async applyModModeForSubdir(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
