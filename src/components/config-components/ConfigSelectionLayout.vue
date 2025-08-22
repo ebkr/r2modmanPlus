@@ -167,7 +167,8 @@ function editConfig(file: ConfigFile) {
 }
 
 function openConfig(file: ConfigFile) {
-    LinkProvider.instance.openLink(file.getPath());
+    console.log(file.getPath());
+    LinkProvider.instance.openLink(`file://${file.getPath()}`);
 }
 
 </script>

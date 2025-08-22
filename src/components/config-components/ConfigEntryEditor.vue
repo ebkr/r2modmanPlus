@@ -117,11 +117,12 @@ function getAppropriateCommentLines(entry: ConfigurationEntry) {
             .slice(0, 5)
             .map(value => {
                 return {
-                    ...value
+                    ...value,
+                    displayValue: value.displayValue.length > 200
+                        ? value.displayValue.substring(0, 200) + "..."
+                        : value.displayValue,
                 };
             });
-
-        commentLines.forEach(value => value.displayValue = value.displayValue.substring(0, 200));
         return commentLines;
     }
     return entry.commentLines;
