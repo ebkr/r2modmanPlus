@@ -1,14 +1,12 @@
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
 import ManifestV2 from '../../../model/ManifestV2';
 import { ImmutableProfile } from '../../../model/Profile';
-import FileTree from '../../../model/file/FileTree';
 import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import ModFileTracker from '../../../model/installing/ModFileTracker';
 import yaml from 'yaml';
-import ConflictManagementProvider from '../../../providers/generic/installing/ConflictManagementProvider';
 import ModMode from '../../../model/enums/ModMode';
 import InstallationRules, { CoreRuleType } from '../../installing/InstallationRules';
 import PathResolver from '../../../r2mm/manager/PathResolver';
@@ -18,9 +16,8 @@ import FileWriteError from '../../../model/errors/FileWriteError';
 import FileUtils from '../../../utils/FileUtils';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { InstallRulePluginInstaller } from "../../../installers/InstallRuleInstaller";
+import { applyModeState, applyModeSubDirs, InstallRulePluginInstaller } from "../../../installers/InstallRuleInstaller";
 import { ReturnOfModdingPluginInstaller } from "../../../installers/ReturnOfModdingInstaller";
-import { TrackingMethod } from '../../../model/schema/ThunderstoreSchema';
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -50,53 +47,11 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             return;
         }
 
-        const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
-            .filter(value => [TrackingMethod.SUBDIR, TrackingMethod.SUBDIR_NO_FLATTEN].includes(value.trackingMethod));
-
-        for (const dir of subDirPaths) {
-            if (await FsProvider.instance.exists(profile.joinToProfilePath(dir.route))) {
-                const dirContents = await FsProvider.instance.readdir(profile.joinToProfilePath(dir.route));
-                for (const namespacedDir of dirContents) {
-                    if (namespacedDir === mod.getName()) {
-                        const tree = await FileTree.buildFromLocation(profile.joinToProfilePath(dir.route, namespacedDir));
-                        if (tree instanceof R2Error) {
-                            return tree;
-                        }
-                        for (const value of tree.getRecursiveFiles()) {
-                            if (mode === ModMode.DISABLED && mod.isEnabled() && !value.toLowerCase().endsWith(".old")) {
-                                await FsProvider.instance.rename(value, `${value}.old`);
-                            } else if (mode === ModMode.ENABLED && !mod.isEnabled() && value.toLowerCase().endsWith(".old")) {
-                                await FsProvider.instance.rename(value, value.substring(0, value.length - ('.old').length));
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return await applyModeSubDirs(mod, profile, mode, rule);
     }
 
     private async applyModModeForState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
-        profile.getProfilePath()
-        try {
-            const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
-            if (await FsProvider.instance.exists(modStateFilePath)) {
-                const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();
-                const tracker: ModFileTracker = yaml.parse(fileContents);
-                for (const [key, value] of tracker.files) {
-                    if (await ConflictManagementProvider.instance.isFileActive(mod, profile, value)) {
-                        const filePath = profile.joinToProfilePath(value);
-                        if (await FsProvider.instance.exists(filePath)) {
-                            await FsProvider.instance.unlink(filePath);
-                        }
-                        if (mode === ModMode.ENABLED) {
-                            await FsProvider.instance.copyFile(key, filePath);
-                        }
-                    }
-                }
-            }
-        } catch (e) {
-            return R2Error.fromThrownValue(e, `Error installing mod: ${mod.getName()}`);
-        }
+        return await applyModeState(mod, profile, mode);
     }
 
     private async applyModMode(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<R2Error | void> {
