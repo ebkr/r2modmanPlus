@@ -33,7 +33,7 @@ describe("CustomInstructions", () => {
             vanillaParameters: "--sleep 8"
         };
 
-        const actual = await new CustomInstructions(expected).generate(game, profile);
+        const actual = await new CustomInstructions(() => expected).generate(game, profile);
 
         expect(actual).toStrictEqual(expected);
     });
@@ -44,10 +44,12 @@ describe("CustomInstructions", () => {
             vanillaParameters: "@profileName"
         };
 
-        const actual = await new CustomInstructions({
+        const actualParameters = {
             moddedParameters: `--bep "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"`,
             vanillaParameters: DynamicGameInstruction.PROFILE_NAME
-        }).generate(game, profile);
+        };
+
+        const actual = await new CustomInstructions(() => actualParameters).generate(game, profile);
 
         expect(actual).toStrictEqual(expected);
     });
