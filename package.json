@@ -8,7 +8,6 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
     "run": "quasar dev -m electron --modern",
     "dev": "quasar dev -m electron --modern --devtools",
     "sync": "ts-node ./scripts/sync.ts",
@@ -18,7 +17,7 @@
     "publish": "quasar build --mode electron --publish always",
     "publish-win": "quasar build --mode electron -T win32 --publish always",
     "publish-linux": "quasar build --mode electron -T linux --publish always",
-    "test:unit:ci": "vitest run ./test/vitest"
+    "test": "vitest run ./test/vitest"
   },
   "dependencies": {
     "@node-steam/vdf": "^2.1.0",
@@ -102,7 +101,7 @@
     "wallaby-vue-compiler": "^1.0.3"
   },
   "engines": {
-    "node": ">= 18.0.0",
+    "node": "^20.19.0 || >=22.12.0",
     "npm": ">= 10.0.0",
     "yarn": ">= 1.21.1"
   }

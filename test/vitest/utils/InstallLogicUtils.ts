@@ -54,7 +54,6 @@ export async function installLogicBeforeEach(internalFolderName: string) {
     InstallationRules.apply();
     ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
     InMemoryFsProvider.setMatchMode("CASE_SENSITIVE");
-    providePathImplementation(() => TestPathProvider);
 }
 
 /**
