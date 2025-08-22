@@ -109,19 +109,19 @@ async function determineEntryDisplayType(comments: string[]): Promise<Configurat
 async function buildComments(comments: string[]): Promise<CommentLine[]> {
     return comments
         .filter(value => value.trim().substring(1).length > 0)
-        .map((commentLine) => {
+        .map((commentLine): CommentLine  => {
         if (commentLine.trim().startsWith("##")) {
             return {
                 isDescription: true,
                 displayValue: commentLine.trim().substring(2).trim(),
                 rawValue: commentLine.trim()
-            } as CommentLine;
+            };
         } else {
             return {
                 isDescription: false,
                 displayValue: commentLine.trim().substring(1).trim(),
                 rawValue: commentLine.trim()
-            } as CommentLine;
+            };
         }
     });
 }

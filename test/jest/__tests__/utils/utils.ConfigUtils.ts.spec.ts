@@ -6,6 +6,7 @@ import {
     getSelectOptions, saveConfigurationFile
 } from '../../../../src/utils/ConfigUtils';
 import path from 'path';
+import { test } from '@jest/globals';
 
 describe('buildConfigurationFileFromPath', () => {
 
@@ -232,7 +233,7 @@ describe('getSelectOptions', () => {
             commentLines: [],
         };
 
-        expect(getSelectOptions(configurationEntry)).toMatchObject(['true', 'false']);
+        expect(getSelectOptions(configurationEntry)).toEqual(['true', 'false']);
     });
 
 });
