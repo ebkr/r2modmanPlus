@@ -257,6 +257,74 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
+export async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
+    const fs = FsProvider.instance;
+
+    const recursiveDelete = async (mainPath: string, match: string) => {
+        for (const subpath of (await fs.readdir(mainPath))) {
+            const fullSubpath = path.join(mainPath, subpath);
+            const subpathInfo = await fs.lstat(fullSubpath);
+            if (subpathInfo.isDirectory()) {
+                await recursiveDelete(fullSubpath, match);
+            } else if (subpathInfo.isFile() && subpath == match) {
+                await fs.unlink(fullSubpath);
+            }
+        }
+    }
+
+    await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
+}
+
+export async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
+    const fs = FsProvider.instance;
+
+    const profilePath = profile.getProfilePath();
+    const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding", "UMM"];
+    for (const searchLocation of searchLocations) {
+        const bepInExLocation: string = path.join(profilePath, searchLocation);
+        if (!(await fs.exists(bepInExLocation))) {
+            continue
+        }
+
+        try {
+            for (const file of (await fs.readdir(bepInExLocation))) {
+                if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
+                    for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
+                        const folderPath: string = path.join(bepInExLocation, file, folder);
+                        if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
+                            await FileUtils.emptyDirectory(folderPath);
+                            await fs.rmdir(folderPath);
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            const name = 'Failed to remove files';
+            const solution = 'Is the game still running? If so, close it and try again.';
+            return R2Error.fromThrownValue(e, name, solution);
+        }
+    }
+    return Promise.resolve(null);
+}
+
+export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
+    const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
+    if (await FsProvider.instance.exists(stateFilePath)) {
+        const read = await FsProvider.instance.readFile(stateFilePath);
+        const tracker = (yaml.parse(read.toString()) as ModFileTracker);
+        for (const [cacheFile, installFile] of tracker.files) {
+            if (await FsProvider.instance.exists(profile.joinToProfilePath(installFile))) {
+                await FsProvider.instance.unlink(profile.joinToProfilePath(installFile));
+                if ((await FsProvider.instance.readdir(path.dirname(profile.joinToProfilePath(installFile)))).length === 0) {
+                    await FsProvider.instance.rmdir(path.dirname(profile.joinToProfilePath(installFile)));
+                }
+            }
+        }
+        await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
+    }
+    return Promise.resolve(null);
+}
+
 // Enables or disables a mod installed with InstallRulePluginInstaller using SUBDIR/SUBDIR_NO_FLATTEN tracking methods.
 async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<void> {
     const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)

@@ -5,17 +5,14 @@ import R2Error from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
-import ModFileTracker from '../../../model/installing/ModFileTracker';
-import yaml from 'yaml';
 import InstallationRules, { CoreRuleType } from '../../installing/InstallationRules';
 import PathResolver from '../../../r2mm/manager/PathResolver';
 import GameManager from '../../../model/game/GameManager';
 import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoaderVariantRecord';
 import FileWriteError from '../../../model/errors/FileWriteError';
-import FileUtils from '../../../utils/FileUtils';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { InstallRulePluginInstaller } from "../../../installers/InstallRulePluginInstaller";
+import { InstallRulePluginInstaller, uninstallPackageZip, uninstallState, uninstallSubDir } from "../../../installers/InstallRulePluginInstaller";
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -114,29 +111,10 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         return null;
     }
 
-    private async uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
-        const fs = FsProvider.instance;
-
-        const recursiveDelete = async (mainPath: string, match: string) => {
-            for (const subpath of (await fs.readdir(mainPath))) {
-                const fullSubpath = path.join(mainPath, subpath);
-                const subpathInfo = await fs.lstat(fullSubpath);
-                if (subpathInfo.isDirectory()) {
-                    await recursiveDelete(fullSubpath, match);
-                } else if (subpathInfo.isFile() && subpath == match) {
-                    await fs.unlink(fullSubpath);
-                }
-            }
-        }
-
-        await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
-    }
-
-    private async uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
+    private async uninstallModLoader(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
         const activeGame = GameManager.activeGame;
         const fs = FsProvider.instance;
 
-        // Uninstallation logic for mod loaders.
         const modLoaders = MOD_LOADER_VARIANTS[activeGame.internalFolderName];
         if (modLoaders.find(loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase())) {
             try {
@@ -150,59 +128,13 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
                     }
                 }
             } catch(e) {
-                const name = 'Failed to delete BepInEx file from profile root';
+                const name = 'Failed to delete mod loader files from profile root';
                 const solution = 'Is the game still running?';
                 return FileWriteError.fromThrownValue(e, name, solution);
             }
         }
 
-        // Uninstallation logic for regular mods.
-        // TODO: Move to work through the installer interface
-        const profilePath = profile.getProfilePath();
-        const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding", "UMM"];
-        for (const searchLocation of searchLocations) {
-            const bepInExLocation: string = path.join(profilePath, searchLocation);
-            if (!(await fs.exists(bepInExLocation))) {
-                continue
-            }
-
-            try {
-                for (const file of (await fs.readdir(bepInExLocation))) {
-                    if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
-                        for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
-                            const folderPath: string = path.join(bepInExLocation, file, folder);
-                            if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
-                                await FileUtils.emptyDirectory(folderPath);
-                                await fs.rmdir(folderPath);
-                            }
-                        }
-                    }
-                }
-            } catch (e) {
-                const name = 'Failed to remove files';
-                const solution = 'Is the game still running? If so, close it and try again.';
-                return R2Error.fromThrownValue(e, name, solution);
-            }
-        }
-        return Promise.resolve(null);
-    }
-
-    private async uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
-        const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
-        if (await FsProvider.instance.exists(stateFilePath)) {
-            const read = await FsProvider.instance.readFile(stateFilePath);
-            const tracker = (yaml.parse(read.toString()) as ModFileTracker);
-            for (const [cacheFile, installFile] of tracker.files) {
-                if (await FsProvider.instance.exists(profile.joinToProfilePath(installFile))) {
-                    await FsProvider.instance.unlink(profile.joinToProfilePath(installFile));
-                    if ((await FsProvider.instance.readdir(path.dirname(profile.joinToProfilePath(installFile)))).length === 0) {
-                        await FsProvider.instance.rmdir(path.dirname(profile.joinToProfilePath(installFile)));
-                    }
-                }
-            }
-            await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
-        }
-        return Promise.resolve(null);
+        return null;
     }
 
     async uninstallMod(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
@@ -220,16 +152,20 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         }
 
         // Fallback to legacy uninstallation.
-        const uninstallState = await this.uninstallState(mod, profile);
-        if (uninstallState instanceof R2Error) {
-            return uninstallState;
+        let result = await uninstallState(mod, profile);
+        if (result instanceof R2Error) {
+            return result;
         }
-        const uninstallSubDir = await this.uninstallSubDir(mod, profile);
-        if (uninstallSubDir instanceof R2Error) {
-            return uninstallSubDir;
+        result = await this.uninstallModLoader(mod, profile);
+        if (result instanceof R2Error) {
+            return result;
+        }
+        result = await uninstallSubDir(mod, profile);
+        if (result instanceof R2Error) {
+            return result;
         }
         try {
-            await this.uninstallPackageZip(mod, profile);
+            await uninstallPackageZip(mod, profile);
         } catch (e) {
             return R2Error.fromThrownValue(e, "Failed to remove files");
         }
