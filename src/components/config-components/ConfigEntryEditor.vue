@@ -41,6 +41,11 @@
                             <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
                                 <div class="settings-input-container">
                                     <select class="select select--full" v-model="entry.value">
+                                        <template v-if="!getSelectOptions(entry).includes(entry.value)">
+                                            <option :value="entry.value">
+                                                {{ entry.value }}
+                                            </option>
+                                        </template>
                                         <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
                                             {{ opt }}
                                         </option>
