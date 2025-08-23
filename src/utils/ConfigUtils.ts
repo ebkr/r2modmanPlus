@@ -137,7 +137,7 @@ export function getSelectOptions(entry: ConfigurationEntry): string[] {
     if (!acceptableValuesComment) {
         throw new Error(`Could not find metadata comment for acceptable values on entry: ${entry.entryName}`);
     }
-    return acceptableValuesComment.rawValue.substring("# Acceptable values: ".length).split(",").map(value => value.trim());
+    return acceptableValuesComment.rawValue.substring("# Acceptable values: ".length).split(",").map(value => value.trim()).sort();
 }
 
 export async function saveConfigurationFile(configurationFile: ConfigurationFile) {
