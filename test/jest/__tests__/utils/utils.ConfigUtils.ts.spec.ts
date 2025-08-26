@@ -6,7 +6,7 @@ import {
     getSelectOptions, saveConfigurationFile
 } from '../../../../src/utils/ConfigUtils';
 import path from 'path';
-import { test } from '@jest/globals';
+import { test, expect, describe, beforeAll, beforeEach } from '@jest/globals';
 
 describe('buildConfigurationFileFromPath', () => {
 
@@ -44,7 +44,7 @@ describe('buildConfigurationFileFromPath', () => {
         expect(sectionNames).toStrictEqual(['Section Name']);
 
         const section = configurationFile.sections[0];
-        expect(section.entries).toMatchObject([
+        expect(section.entries).toEqual([
             {
                 entryName: 'FirstKey',
                 value: 'Identifier',
@@ -95,7 +95,7 @@ describe('buildConfigurationFileFromPath', () => {
         expect(sectionNames).toStrictEqual(['Section Name']);
 
         const section = configurationFile.sections[0];
-        expect(section.entries).toMatchObject([
+        expect(section.entries).toEqual([
             {
                 entryName: 'Key',
                 value: 'Value',
@@ -221,7 +221,7 @@ describe('getSelectOptions', () => {
             ],
         };
 
-        expect(getSelectOptions(configurationEntry)).toMatchObject(['valueOne', 'valueTwo', 'valueThree']);
+        expect(getSelectOptions(configurationEntry)).toEqual(['valueOne', 'valueTwo', 'valueThree']);
     });
 
     test('boolean', () => {
