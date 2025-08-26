@@ -103,7 +103,7 @@ const configurationFileHolder = reactive({
 const collapsedSections = ref<ConfigurationSection[]>([]);
 const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
 
-buildConfigurationFileFromPath(props.configFile)
+buildConfigurationFileFromPath(props.configFile.getPath())
     .then(value => configurationFileHolder.configurationFile = reactive(value));
 
 function toggleSectionVisibility(section: ConfigurationSection) {
