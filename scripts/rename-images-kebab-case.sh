@@ -33,7 +33,7 @@ convert_to_kebab_case() {
     echo "$kebab"
 }
 
-target_dir="game_selection"
+target_dir="../src/assets/images/game_selection"
 
 for f in "$target_dir"/*.jpg "$target_dir"/*.jpeg "$target_dir"/*.png "$target_dir"/*.webp; do
     [ -f "$f" ] || continue

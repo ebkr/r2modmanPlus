@@ -1,6 +1,6 @@
 #!/bin/bash
 
-target_dir="game_selection"
+target_dir="../src/assets/images/game_selection"
 total_files=0
 error_files=()
 
