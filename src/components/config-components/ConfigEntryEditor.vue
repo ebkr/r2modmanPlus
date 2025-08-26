@@ -14,7 +14,7 @@
                 </ul>
                 <hr/>
                 <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
-                    <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
+                    <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--offset-1rem sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                         {{ section.sectionName }}
                         <br/>
                         <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
@@ -162,5 +162,11 @@ function toggleEntryExpansion(entry: ConfigurationEntry) {
 
 .metadata-text {
     color: var(--v2-secondary-text-color) !important;
+}
+
+.sticky-top {
+    &--offset-1rem {
+        top: 1rem;
+    }
 }
 </style>
