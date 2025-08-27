@@ -7,7 +7,7 @@
 			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
 			<br/>
 			Please copy and paste the following to your {{ activeGame }} launch options:<br/>
-			<code ref="copyableArgs">{{ launchArgs }}</code>
+			<code ref="copyableArgs">{{ ComputedWrapperLaunchArguments }}</code>
 			<br/>
 			<br/>
 			<a ref="copyAction" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
@@ -22,7 +22,7 @@ import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
-import {getWrapperLaunchArgs} from "../utils/LaunchUtils";
+import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -33,9 +33,6 @@ onMounted(() => {
 
 const copyableArgs = ref<HTMLInputElement>();
 const copyAction = ref<HTMLElement>();
-
-const launchArgs = ref<string>("");
-getWrapperLaunchArgs().then(value => launchArgs.value = value);
 
 const activeGame = computed(() => store.state.activeGame.displayName);
 const platformName = computed<string>(() => process.platform === 'darwin' ? 'macOS' : process.platform);

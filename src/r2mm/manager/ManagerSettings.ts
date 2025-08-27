@@ -166,8 +166,9 @@ export default class ManagerSettings {
     }
 
     public getLaunchType(): LaunchType | undefined {
-        if (ManagerSettings.CONTEXT.gameSpecific.launchType) {
-            return EnumResolver.from<LaunchType>(LaunchType, ManagerSettings.CONTEXT.gameSpecific.launchType);
+        const stored = ManagerSettings.CONTEXT.gameSpecific.launchType as LaunchType
+        if (Object.values(LaunchType).includes(stored)) {
+            return stored;
         }
         return undefined;
     }
