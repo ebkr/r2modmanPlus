@@ -10,6 +10,7 @@ import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchAr
 import CopyToClipboardButton from "../../buttons/CopyToClipboardButton.vue";
 import ManagerSettings from "../../../r2mm/manager/ManagerSettings";
 import { useI18n } from 'vue-i18n';
+import EnumResolver from '../../../model/enums/_EnumResolver';
 
 const store = getStore<State>();
 const { t } = useI18n();

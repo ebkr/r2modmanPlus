@@ -189,8 +189,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 downloading: 'Downloading {modName}',
                 installing: 'Installing {modName}',
             },
-            downloadProgress: 'Downloading: {progress}% complete',
-            installProgress: 'Installing: {progress}% complete',
+            downloadProgress: 'Downloading: {progress}% of {totalSize}',
+            installProgress: 'Installing: {progress}%',
             waitingForDownload: 'Installing: waiting for download to finish',
         },
         downloadModVersionSelect: {
