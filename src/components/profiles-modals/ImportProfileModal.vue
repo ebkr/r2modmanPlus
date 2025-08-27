@@ -254,12 +254,11 @@ async function onImportTargetSelected() {
 
 async function importProfile(targetProfileName: string, mods: ExportMod[], zipPath: string) {
     activeStep.value = 'PROFILE_IS_BEING_IMPORTED';
-    importPhaseDescription.value = 'Downloading mods: 0%';
-    const progressCallback = (progress: number|string, modName: string, status: number) => {
-        console.log(progress);
-        return typeof progress === "number"
-            ? importPhaseDescription.value = t('translations.pages.profileSelection.importProfileModal.states.importInProgress.title.downloadingMods', {progress: Math.floor(progress), totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value)})
-            : importPhaseDescription.value = t(`translations.pages.profileSelection.importProfileModal.states.importInProgress.title.${progress}`, {progress: status, totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value)})
+    importPhaseDescription.value = t('translations.pages.profileSelection.importProfileModal.states.importInProgress.title.downloadingMods');
+    const progressCallback = (state: number|string, modName: string, progress: number) => {
+        return typeof state === "number"
+            ? importPhaseDescription.value = t('translations.pages.profileSelection.importProfileModal.states.importInProgress.title.downloadingModsWithGoal', {progress: Math.floor((state / profileTotalDownloadSize.value) * 100), totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value), modName: modName })
+            : importPhaseDescription.value = t(`translations.pages.profileSelection.importProfileModal.states.importInProgress.title.${state}`, {progress: progress, totalSize: FileUtils.humanReadableSize(profileTotalDownloadSize.value), modName: modName })
     };
     const isUpdate = importUpdateSelection.value === 'UPDATE';
 
@@ -268,8 +267,8 @@ async function importProfile(targetProfileName: string, mods: ExportMod[], zipPa
         profileTotalDownloadSize.value = await DownloadUtils.getTotalDownloadSizeInBytes(combos, store.state.download.ignoreCache);
 
         await store.dispatch('download/downloadToCache', {combos, progressCallback});
-        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, (progress) => {
-            importPhaseDescription.value = progress;
+        await ProfileUtils.populateImportedProfile(combos, mods, targetProfileName, isUpdate, zipPath, (status, modName, progress) => {
+            importPhaseDescription.value = t(`translations.pages.profileSelection.importProfileModal.states.importInProgress.title.${status}`, { progress: progress, modName: modName });
         });
     } catch (e) {
         await store.dispatch('profiles/ensureProfileExists');
