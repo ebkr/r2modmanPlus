@@ -132,6 +132,7 @@ export type ProfileSelectionMessageFormat = {
             importInProgress: {
                 title: {
                     downloadingMods: string;
+                    downloadingModsWithGoal: string;
                     cleaningUp: string;
                     applyChanges: string,
                     copyingModsToProfile: string;

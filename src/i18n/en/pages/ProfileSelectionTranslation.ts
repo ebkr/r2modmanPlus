@@ -137,10 +137,12 @@ export const ProfileSelectionTranslation: ProfileSelectionMessageFormat = {
             importInProgress: {
                 title: {
                     downloadingMods: 'Downloading mods: {progress}%',
+                    downloadingModsWithGoal: `Downloading mods: {progress}% of {totalSize}`,
                     cleaningUp: 'Cleaning up',
                     applyChanges: 'Applying changes to updated profile',
                     copyingModsToProfile: 'Copying mods to profile: {progress}%',
-                    copyingConfigsToProfile: 'Copying configs to profile: {progress}%',
+                    copyingConfigsToProfile: 'Copying configs to profile: {progress}%'
+
                 },
                 content: {
                     waitMessage: 'This may take a while, as files are being downloaded, extracted, and copied.',
