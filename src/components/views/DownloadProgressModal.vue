@@ -34,14 +34,14 @@ function closeModal() {
                         {{ t('translations.pages.manager.modals.downloadProgress.states.installing', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
 
-
                     <p v-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
                         <i class="fas fa-download"/>
-                        {{ t('translations.pages.manager.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress, FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
+                        {{ t('translations.pages.manager.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
                         <i class="fas fa-box-open"/>
+                        // TODO - i18n/manager-view
                         Extracting: {{store.getters['download/currentDownload'].downloadProgress}}% of
                         {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>

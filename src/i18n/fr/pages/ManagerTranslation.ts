@@ -183,9 +183,9 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 downloading: 'Téléchargement de {modName}',
                 installing: 'Installation de {modName}',
             },
-            downloadProgress: 'Téléchargement : {progress}% terminé',
-            installProgress: 'Installation : {progress}% terminée',
-            waitingForDownload: 'Installation : en attente de la fin du téléchargement',
+            downloadProgress: 'Téléchargement en cours : {progress}% sur {totalSize}',
+            installProgress: 'Installation en cours : {progress}% terminée',
+            waitingForDownload: 'Installation en cours : en attente de la fin du téléchargement',
         },
         downloadModVersionSelect: {
             title: 'Sélectionnez une version de {modName} à télécharger',
@@ -305,7 +305,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
                 installed: 'Mod déjà installé',
             },
             mod: {
-                author: 'Par {author}'
+                author: 'par {author}'
             },
             actions: {
                 download: 'Télécharger',
