@@ -62,7 +62,7 @@
                     <br/>
                 </p>
                 <template v-if="doorstopTarget.length > 0">
-                    <p>
+                    <p class="margin-top">
                         <button class="button" @click="copyLaunchArgsToClipboard" v-if="!copyingDoorstopText">
                             <i class="fas fa-clipboard"></i>
                             <span class="margin-left--half-width smaller-font">
@@ -137,9 +137,9 @@ import {State} from '../store';
 import {getDeterminedLaunchType} from "../utils/LaunchUtils";
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
 import {getLaunchType, LaunchType} from "../model/real_enums/launch/LaunchType";
-import appWindow from '../providers/node/app/app_window';
 import { useI18n } from 'vue-i18n';
 import ManagerInformation from '../_managerinf/ManagerInformation';
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 const { t } = useI18n();
