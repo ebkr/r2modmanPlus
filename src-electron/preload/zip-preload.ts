@@ -9,7 +9,8 @@ export function readFile(zip: string | Buffer, file: string): Promise<string> {
 }
 
 export function getEntries(zip: string): Promise<any> {
-    return ipcRenderer.invoke('zip:getEntries', zip);
+    return ipcRenderer.invoke('zip:getEntries', zip)
+        .then(JSON.parse);
 }
 
 export function extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
