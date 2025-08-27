@@ -38,7 +38,7 @@
                                 </div>
                             </div>
 
-                            <div class="row" v-else-if="downloadObject.status === DownloadStatusEnum.DONE">
+                            <div class="row" v-else-if="downloadObject.status === DownloadStatusEnum.INSTALLED">
                                 <div class="col">
                                     <p>Download complete</p>
                                     <Progress
@@ -52,7 +52,14 @@
                             <div v-else class="row">
 
                                 <div class="col">
-                                    <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">Downloading: {{ downloadObject.modName }}</p>
+                                    <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">
+                                        Downloading: {{ downloadObject.modName }}
+                                    </p>
+                                    <p v-else-if="downloadObject.status === DownloadStatusEnum.EXTRACTING ||
+                                                    downloadObject.status === DownloadStatusEnum.EXTRACTED"
+                                    >
+                                        Extracting: {{ downloadObject.modName }}
+                                    </p>
                                     <p v-else>Downloading:</p>
                                     <p>
                                         {{downloadObject.downloadProgress}}% of
@@ -65,7 +72,11 @@
                                     />
                                 </div>
 
-                                <div v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING" class="col">
+                                <div v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING ||
+                                            downloadObject.status === DownloadStatusEnum.EXTRACTING ||
+                                            downloadObject.status === DownloadStatusEnum.EXTRACTED"
+                                    class="col"
+                                >
                                     <p>Installing:</p>
                                     <p>Waiting for download to finish</p>
                                     <Progress
@@ -95,7 +106,7 @@
                             <i class="fas fa-redo redo-icon" />
                         </button>
                         <button
-                            v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.DONE"
+                            v-if="downloadObject.status === DownloadStatusEnum.FAILED || downloadObject.status === DownloadStatusEnum.INSTALLED"
                             class="button download-item-action-button"
                             v-tooltip.left="'Remove'"
                             @click="$store.commit('download/removeDownload', downloadObject)"

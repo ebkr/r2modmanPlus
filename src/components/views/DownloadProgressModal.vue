@@ -3,6 +3,7 @@ import { Progress } from '../all';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import FileUtils from '../../utils/FileUtils';
+import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
 
 const store = getStore<State>();
 
@@ -23,17 +24,29 @@ function closeModal() {
             <div class='modal-content'>
                 <div class='notification is-info'>
 
-                    <h3 v-if="$store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
+                    <h3 v-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING ||
+                                    $store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING ||
+                                    $store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED"
+                        class='title'
+                    >
                         Downloading {{$store.getters['download/currentDownload'].modName}}
                     </h3>
-                    <h3 v-else class='title'>
+                    <h3 v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
                         Installing {{$store.getters['download/currentDownload'].modName}}
                     </h3>
 
-                    <p>
+
+                    <p v-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
                         Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% of
                         {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
+
+                    <p v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || $store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
+                        Extracting: {{$store.getters['download/currentDownload'].downloadProgress}}% of
+                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                    </p>
+
+                    <p v-else>Download complete</p>
 
                     <Progress
                         :max='100'

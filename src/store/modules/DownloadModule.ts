@@ -5,7 +5,6 @@ import Game from "../../model/game/Game";
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import { ImmutableProfile } from "../../model/Profile";
 import { DownloadStatusEnum } from "../../model/enums/DownloadStatusEnum";
-import StatusEnum from "../../model/enums/StatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
@@ -137,8 +136,7 @@ export const DownloadModule = {
 
                 commit('setInstalling', downloadId);
                 await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
-
-                commit('setDone', downloadId);
+                commit('setInstalled', downloadId);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
                 if (downloadId) {
@@ -217,15 +215,19 @@ export const DownloadModule = {
         }) {
             const { downloadId, downloadedSize, modName, status, err} = params;
 
-            if (status === StatusEnum.FAILURE) {
+            if (status === DownloadStatusEnum.FAILED) {
                 commit('closeDownloadProgressModal', null, { root: true });
                 commit('setFailed', downloadId);
                 if (err !== null) {
                     DownloadUtils.addSolutionsToError(err);
                     throw err;
                 }
-            } else if (status === StatusEnum.PENDING || status === StatusEnum.SUCCESS) {
-                commit('updateDownload', { downloadId, modName, downloadedSize });
+            } else if (
+                status === DownloadStatusEnum.DOWNLOADING ||
+                status === DownloadStatusEnum.EXTRACTING ||
+                status === DownloadStatusEnum.EXTRACTED
+            ) {
+                commit('updateDownload', { downloadId, modName, downloadedSize, status });
             }
         },
     },
@@ -288,14 +290,14 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
-        setDone(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
+        setInstalling(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
+        },
+        setInstalled(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLED);
         },
         setFailed(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
-        },
-        setInstalling(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
@@ -318,7 +320,12 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 }
 
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
-    const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
+    const active = [
+        DownloadStatusEnum.DOWNLOADING,
+        DownloadStatusEnum.EXTRACTING,
+        DownloadStatusEnum.EXTRACTED,
+        DownloadStatusEnum.INSTALLING
+    ];
     return downloads.filter(dl => active.includes(dl.status));
 }
 

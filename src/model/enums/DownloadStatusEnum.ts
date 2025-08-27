@@ -1,6 +1,8 @@
 export enum DownloadStatusEnum {
     DOWNLOADING = 0,
-    INSTALLING = 1,
-    DONE = 2,
-    FAILED = 3
+    EXTRACTING = 1,
+    EXTRACTED = 2,
+    INSTALLING = 3,
+    INSTALLED = 4,
+    FAILED = 5
 }
