@@ -61,7 +61,7 @@
                     <br/>
                 </p>
                 <template v-if="doorstopTarget.length > 0">
-                    <p>
+                    <p class="margin-top">
                         <button class="button" @click="copyLaunchArgsToClipboard" v-if="!copyingDoorstopText">
                             <i class="fas fa-clipboard"></i>
                             <span class="margin-left--half-width smaller-font">
@@ -151,7 +151,7 @@ const appName = computed(() => ManagerInformation.APP_NAME);
 watchEffect(async () => {
     const loaderArgs = doorstopTarget.value;
     const prerequisiteText = ComputedWrapperLaunchArguments.value;
-    if (process.platform === 'win32') {
+    if (window.app.getPlatform() === 'win32') {
         launchArgs.value = loaderArgs;
         return;
     }
