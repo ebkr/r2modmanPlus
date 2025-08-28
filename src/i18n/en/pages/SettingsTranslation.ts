@@ -22,6 +22,13 @@ export const SettingsTranslation: SettingsMessageFormat = {
         changeDataFolder: {
             title: 'Change data folder',
             description: 'Change the folder where mods are stored for all games and profiles. The folder will not be deleted, and existing profiles will not carry across.',
+        },
+        changeSteamFolder: {
+            title: `Change {''}@:translations.platforms.STEAM{''} folder`,
+            description: `Change the location of the @:translations.platforms.STEAM folder that {appName} uses.`,
+            state: {
+                setManually: 'You must click this setting and locate the folder manually'
+            }
         }
     },
     debugging: {
@@ -67,6 +74,16 @@ export const SettingsTranslation: SettingsMessageFormat = {
             title: 'Toggle preferred Thunderstore CDN',
             description: 'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
             current: 'Current: {label} ({url})'
+        },
+        resetGameInstallation: {
+            title: 'Reset {gameName} installation',
+            description: 'Fix problems caused by corrupted files or files left over from manual modding attempts.',
+            value: `This will delete all contents of the "{folderName}" folder and will verify files using @:translations.platforms.STEAM`
+        },
+        changeLaunchBehaviour: {
+            title: 'Change launch behaviour',
+            description: 'Select a specific launch behaviour such as forcing Steam to launch with Proton',
+            value: `The current launch behaviour is set to: @:translations.enums.launchType.{launchType}`
         }
     },
     profile: {
