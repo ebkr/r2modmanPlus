@@ -10,9 +10,9 @@ export default class NodeFs extends FsProvider {
 
     async exists(path: string): Promise<boolean> {
         await NodeFs.lock.acquire(path, async () => {
-            const result = await fs.promises.access(path, fs.constants.F_OK).catch(return false);
+            const result = await fs.promises.access(path, fs.constants.F_OK);
             return true;
-        }).catch(return false);
+        }).catch(()=>false);
     }
 
     async stat(path: string): Promise<StatInterface> {
@@ -29,9 +29,7 @@ export default class NodeFs extends FsProvider {
 
     async mkdirs(path: string): Promise<void> {
             return await NodeFs.lock.acquire(path, async () => {
-                return await fs.promises.mkdir(path, { recursive: true }).catch (e) {
-                throw e;
-             }
+                return await fs.promises.mkdir(path, { recursive: true });
             });
     }
 
@@ -39,9 +37,7 @@ export default class NodeFs extends FsProvider {
         return await NodeFs.lock.acquire(path, () => {
                 let content = fs.readFileSync(path);
                 return content;
-            }).catch (e) {
-                throw e;
-            }
+            });
     }
 
     async base64FromZip(path: string): Promise<string> {
