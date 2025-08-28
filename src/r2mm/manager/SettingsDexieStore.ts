@@ -147,7 +147,16 @@ export default class SettingsDexieStore extends Dexie {
             });
 
             // Update the active game's settings.
-            await this.games.put({ identifier: this.activeGame.settingsIdentifier, settings: JSON.stringify(holder.gameSpecific) });
+            try {
+                await this.games.put({
+                    identifier: this.activeGame.settingsIdentifier,
+                    settings: JSON.stringify(holder.gameSpecific)
+                });
+            } catch (e) {
+                throw new Error(
+                    `IDB.Put fail for key "${this.activeGame.settingsIdentifier}": ${e}`
+                );
+            }
         }
 
         await this.transaction("rw!", this.global, this.games, update);
