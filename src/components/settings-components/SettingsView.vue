@@ -17,13 +17,17 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import {useRouter} from 'vue-router';
-import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
+import {getLaunchType} from "../../model/real_enums/launch/LaunchType";
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
 import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
 let router = useRouter();
-const { t } = useI18n();
+const { t, d, messages, locale } = useI18n();
+
+function getLocaleMessages() {
+    return messages.value[locale.value];
+}
 
 const activeTab = ref<string>('All');
 const tabs = ref<string[]>(['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other']);
@@ -230,7 +234,7 @@ let settingsList = [
         () => emitInvoke('UpdateAllMods')
     ),
     new SettingsRow(
-        'Other',
+        'other',
         'Toggle funky mode',
         'Enable/disable funky mode.',
         async () => {
@@ -242,7 +246,7 @@ let settingsList = [
         () => emitInvoke('ToggleFunkyMode')
     ),
     new SettingsRow(
-        'Other',
+        'other',
         'Switch theme',
         'Switch between light and dark themes.',
         async () => {
@@ -254,7 +258,7 @@ let settingsList = [
         () => emitInvoke('SwitchTheme')
     ),
     new SettingsRow(
-        'Other',
+        'other',
         'Switch card display type',
         'Switch between expanded or collapsed cards.',
         async () => {
@@ -266,21 +270,23 @@ let settingsList = [
         () => emitInvoke('SwitchCard')
     ),
     new SettingsRow(
-        'Other',
+        'other',
         'Refresh online mod list',
         'Check for any new mod releases.',
         async () => {
                 if (store.state.tsMods.isThunderstoreModListUpdateInProgress) {
-                    return store.state.tsMods.thunderstoreModListUpdateStatus || "Refreshing...";
+                    return store.state.tsMods.thunderstoreModListUpdateStatus
+                        ? t(`translations.pages.profileSelection.importProfileModal.states.refresh.refreshStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`)
+                        : t('translations.pages.settings.other.refreshOnlineModList.states.refreshing');
                 }
                 if (store.state.tsMods.thunderstoreModListUpdateError) {
-                    return `Error refreshing the mod list: ${store.state.tsMods.thunderstoreModListUpdateError.message}`;
+                    return t('translations.pages.settings.other.refreshOnlineModList.states.errorRefreshing', { errorText: store.state.tsMods.thunderstoreModListUpdateError.message });
                 }
                 if (store.getters['download/activeDownloadCount'] > 0) {
-                    return "Refreshing the mod list is disabled while there are active downloads.";
+                    return t('translations.pages.settings.other.refreshOnlineModList.states.disabledWhilstDownloading');
                 }
                 if (store.state.tsMods.modsLastUpdated !== undefined) {
-                    return "Cache date: " + moment(store.state.tsMods.modsLastUpdated).format("MMMM Do YYYY, h:mm:ss a");
+                    return t('translations.pages.settings.other.refreshOnlineModList.states.cacheDate', { formattedDate: d(moment(store.state.tsMods.modsLastUpdated).toDate(), 'long', getLocaleMessages().metadata.locale) });
                 }
                 return "No API information available";
             },
@@ -288,7 +294,7 @@ let settingsList = [
         async () => await store.dispatch("tsMods/syncPackageList")
     ),
     new SettingsRow(
-      'Other',
+      'other',
       'Change game',
       'Change the current game',
       async () => "",
@@ -334,7 +340,7 @@ onMounted(async () => {
                             return directory;
                         }
                     }
-                    return t('translations.pages.settings.locations.changeSteamFolder.state.setManually');
+                    return t('translations.pages.settings.locations.changeSteamFolder.states.setManually');
                 },
                 'fa-folder-open',
                 () => emitInvoke('ChangeSteamDirectory')
