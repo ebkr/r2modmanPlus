@@ -26,7 +26,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         changeSteamFolder: {
             title: `Change {''}@:translations.platforms.STEAM{''} folder`,
             description: `Change the location of the @:translations.platforms.STEAM folder that {appName} uses.`,
-            state: {
+            states: {
                 setManually: 'You must click this setting and locate the folder manually'
             }
         }
@@ -133,6 +133,46 @@ export const SettingsTranslation: SettingsMessageFormat = {
             You have 1 mod with an update available |
             You have {count} mods with an update available
             `,
+        }
+    },
+    other: {
+        toggleFunkyMode: {
+            title: 'Toggle funky mode',
+            description: 'Enable / disable funky mode.',
+            states: {
+                enabled: 'Funky mode is enabled',
+                disabled: 'Funky mode is disabled',
+            },
+        },
+        switchTheme: {
+            title: 'Switch theme',
+            description: 'Switch between light and dark themes.',
+            themes: {
+                light: 'Current: Light theme (default)',
+                dark: 'Current: Dark theme',
+            },
+        },
+        switchCardDisplayType: {
+            title: 'Switch card display type',
+            description: 'Switch between expanded or collapsed cards.',
+            states: {
+                expanded: 'Current: Expanded',
+                collapsed: 'Current: Collapsed (default)'
+            }
+        },
+        refreshOnlineModList: {
+            title: 'Refresh online mod list',
+            description: 'Check for new mod releases.',
+            states: {
+                refreshing: 'Refreshing',
+                errorRefreshing: 'There was a problem refreshing the mod list: {errorText}',
+                disabledWhilstDownloading: 'Refreshing the mod list is disabled whilst there are active downloads',
+                cacheDate: 'Cache date: {formattedDate}',
+            }
+        },
+        changeGame: {
+            title: 'Change game',
+            description: 'Change the current game.',
         }
     }
 }
