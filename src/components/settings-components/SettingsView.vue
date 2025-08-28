@@ -324,9 +324,9 @@ onMounted(async () => {
     if ([Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.value.activePlatform.storePlatform)) {
         settingsList.push(
             new SettingsRow(
-                'Locations',
-                'Change Steam folder',
-                `Change the location of the Steam folder that ${appName.value} uses.`,
+                'locations',
+                t('translations.pages.settings.locations.changeSteamFolder.title'),
+                t('translations.pages.settings.locations.changeSteamFolder.description', { appName: appName.value }),
                 async () => {
                     if (settings.value.getContext().global.steamDirectory !== null) {
                         const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
@@ -334,16 +334,16 @@ onMounted(async () => {
                             return directory;
                         }
                     }
-                    return 'Please set manually';
+                    return t('translations.pages.settings.locations.changeSteamFolder.state.setManually');
                 },
                 'fa-folder-open',
                 () => emitInvoke('ChangeSteamDirectory')
             ),
             new SettingsRow(
-                'Debugging',
-                `Reset ${activeGame.value.displayName} installation`,
-                'Fix problems caused by corrupted files or files left over from manual modding attempts.',
-                async () => `This will delete all contents of the ${activeGame.value.steamFolderName} folder, and verify the files through Steam`,
+                'debugging',
+                t('translations.pages.settings.debugging.resetGameInstallation.title', { gameName: activeGame.value.displayName }),
+                t('translations.pages.settings.debugging.resetGameInstallation.description'),
+                async () => t('translations.pages.settings.debugging.resetGameInstallation.value', { folderName: activeGame.value.steamFolderName }),
                 'fa-wrench',
                 () => emitInvoke('ValidateSteamInstallation')
             )
@@ -353,13 +353,10 @@ onMounted(async () => {
     if (['linux', 'darwin'].includes(process.platform) && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
         settingsList.push(
             new SettingsRow(
-                'Debugging',
-                'Change launch behaviour',
-                'Select specific launch behaviour such as forcing Steam to launch with Proton',
-                async () => {
-                    const launchType = await getLaunchType(activeGame.value);
-                    return `The current launch behaviour is set to: ${launchType}`;
-                },
+                'debugging',
+                t('translations.pages.settings.debugging.changeLaunchBehaviour.title'),
+                t('translations.pages.settings.debugging.changeLaunchBehaviour.description'),
+                async () => t('translations.pages.settings.debugging.changeLaunchBehaviour.value', { launchType: await getLaunchType(activeGame.value) }),
                 'fa-gamepad',
                 () => {
                     LaunchTypeModalOpen.value = true;
