@@ -90,7 +90,11 @@ export async function getDeterminedLaunchType(game: Game, launchType: LaunchType
 }
 
 export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> {
-    let launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game).catch(()=>false);
+    try {
+        let launchArgs = await (GameDirectoryResolverProvider.instance as LinuxGameDirectoryResolver).getLaunchArgs(game);
+    } catch {
+        let launchArgs = false;
+    }
     return (typeof launchArgs === 'string' && launchArgs.startsWith(path.join(PathResolver.MOD_ROOT, 'linux_wrapper.sh')));
 }
 
