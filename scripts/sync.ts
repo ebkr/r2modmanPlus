@@ -11,23 +11,33 @@ const ECOSYSTEM_DATA_TYPES_PATH = "./src/assets/data/ecosystemTypes.ts";
 /**
  * This script synchronizes the in-repo ecosystem schema JSON to the latest
  * version and generates matching TypeScript types.
+ *
+ * To only generate the TypeScript types without syncing with the
+ * Thunderstore API, use `yarn sync -- --types-only`
  */
 async function updateSchema() {
-    console.log("Updating ecosystem.json...");
-    const response = await fetch(ECOSYSTEM_DATA_URL);
-    if (response.status !== 200) {
-        throw new Error(`Received non-200 status from schema API: ${response.status}`);
-    }
-    const data = Buffer.from(await response.arrayBuffer());
-    fs.writeFileSync(ECOSYSTEM_DATA_PATH, data);
+    let schema: Buffer;
 
-    console.log("Updating ecosystemJsonSchema.json...");
-    const schemaResponse = await fetch(ECOSYSTEM_JSON_SCHEMA_URL);
-    if (schemaResponse.status !== 200) {
-        throw new Error(`Received non-200 status from schema API: ${schemaResponse.status}`);
+    if (process.argv.includes('--types-only')) {
+        console.log("Skipping API update, reading JSON schema from disk...");
+        schema = fs.readFileSync(ECOSYSTEM_JSON_SCHEMA_PATH);
+    } else {
+        console.log("Updating ecosystem.json...");
+        const response = await fetch(ECOSYSTEM_DATA_URL);
+        if (response.status !== 200) {
+            throw new Error(`Received non-200 status from schema API: ${response.status}`);
+        }
+        const data = Buffer.from(await response.arrayBuffer());
+        fs.writeFileSync(ECOSYSTEM_DATA_PATH, data);
+
+        console.log("Updating ecosystemJsonSchema.json...");
+        const schemaResponse = await fetch(ECOSYSTEM_JSON_SCHEMA_URL);
+        if (schemaResponse.status !== 200) {
+            throw new Error(`Received non-200 status from schema API: ${schemaResponse.status}`);
+        }
+        schema = Buffer.from(await schemaResponse.arrayBuffer());
+        fs.writeFileSync(ECOSYSTEM_JSON_SCHEMA_PATH, schema);
     }
-    const schema = Buffer.from(await schemaResponse.arrayBuffer());
-    fs.writeFileSync(ECOSYSTEM_JSON_SCHEMA_PATH, schema);
 
     console.log("Updating ecosystemTypes.ts...");
     const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
