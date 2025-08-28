@@ -10,9 +10,9 @@ export default class NodeFs extends FsProvider {
 
     async exists(path: string): Promise<boolean> {
         await NodeFs.lock.acquire(path, async () => {
-            const result = await fs.promises.access(path, fs.constants.F_OK).catch(return false);
+            const result = await fs.promises.access(path, fs.constants.F_OK);
             return true;
-        }).catch(return false);
+        }).catch(()=>false);
     }
 
     async stat(path: string): Promise<StatInterface> {
@@ -29,9 +29,7 @@ export default class NodeFs extends FsProvider {
 
     async mkdirs(path: string): Promise<void> {
             return await NodeFs.lock.acquire(path, async () => {
-                return await fs.promises.mkdir(path, { recursive: true }).catch (e) {
-                throw e;
-             }
+                return await fs.promises.mkdir(path, { recursive: true });
             });
     }
 
@@ -39,9 +37,7 @@ export default class NodeFs extends FsProvider {
         return await NodeFs.lock.acquire(path, () => {
                 let content = fs.readFileSync(path);
                 return content;
-            }).catch (e) {
-                throw e;
-            }
+            });
     }
 
     async base64FromZip(path: string): Promise<string> {
@@ -59,25 +55,19 @@ export default class NodeFs extends FsProvider {
     async unlink(path: string): Promise<void> {
             return await NodeFs.lock.acquire(path, async () => {
                 return await fs.promises.unlink(path);
-            }).catch(e) {
-                throw e;
-            }
+            });
     }
 
     async writeFile(path: string, content: string | Buffer): Promise<void> {
             return await NodeFs.lock.acquire(path, () => {
                 fs.writeFileSync(path, content);
-            }).catch(e) {
-                throw e;
-            }
+            });
     }
 
     async rename(path: string, newPath: string): Promise<void> {
         return await NodeFs.lock.acquire([path, newPath], async () => {
             return await fs.promises.rename(path, newPath);
-            }).catch(e) {
-                throw e
-            }
+            });
     }
 
     async chmod(path: string, mode: string | number): Promise<void> {
@@ -87,13 +77,10 @@ export default class NodeFs extends FsProvider {
     async copyFile(from: string, to: string): Promise<void> {
         return await NodeFs.lock.acquire([from, to], async () => {
             return await fs.promises.copyFile(from, to);
-        }).catch(e) {
-            throw e;
-        }
+        });
     }
 
     async copyFolder(from: string, to: string): Promise<void> {
-        try {
             await this.mkdirs(to);
             let fromDirs = await fs.promises.readdir(from);
                 fromDirs.forEach(item => {
@@ -106,17 +93,12 @@ export default class NodeFs extends FsProvider {
                         this.copyFile(path.join(from, item), path.join(to, item));
                     }
                     return;
-            })
-        }.catch(e) {
-            throw e;
-        }
+            });
     }
 
     async setModifiedTime(path: string, time: Date): Promise<void> {
         return await NodeFs.lock.acquire(path, async () => {
             return await fs.promises.utimes(path, time, time);
-        }).catch(e) {
-            throw e;
-        };
+        });
     }
 }
