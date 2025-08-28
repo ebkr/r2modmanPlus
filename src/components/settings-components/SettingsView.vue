@@ -156,66 +156,76 @@ let settingsList = [
         CdnProvider.togglePreferredCdn
     ),
     new SettingsRow(
-        'Profile',
-        'Change profile',
-        'Change the mod profile.',
-        async () => {
-            return `Current profile: ${store.getters['profile/activeProfile'].getProfileName()}`
-        },
+        'profile',
+        t('translations.pages.settings.profile.changeProfile.title'),
+        t('translations.pages.settings.profile.changeProfile.description'),
+        async () => t('translations.pages.settings.profile.changeProfile.value', { profileName: store.getters['profile/activeProfile'].getProfileName() }),
         'fa-file-import',
         () => emitInvoke('ChangeProfile')
     ),
     new SettingsRow(
-        'Profile',
-        'Enable all mods',
-        'Enable all mods for the current profile',
-        async () => `${localModList.value.length - ProfileModList.getDisabledModCount(localModList.value)}/${localModList.value.length} enabled`,
+        'profile',
+        t('translations.pages.settings.profile.enableAllMods.title'),
+        t('translations.pages.settings.profile.enableAllMods.description'),
+        async () => t(
+            'translations.pages.settings.profile.enableAllMods.value',
+            localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
+            {
+                named: {
+                    enabledModCount: localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
+                    totalModCount: localModList.value.length
+                }
+            }
+        ),
         'fa-file-import',
         () => emitInvoke('EnableAll')
     ),
     new SettingsRow(
-        'Profile',
-        'Disable all mods',
-        'Disable all mods for the current profile',
-        async () => `${ProfileModList.getDisabledModCount(localModList.value)}/${localModList.value.length} disabled`,
+        'profile',
+        t('translations.pages.settings.profile.disableAllMods.title'),
+        t('translations.pages.settings.profile.disableAllMods.description'),
+        async () => t(
+            'translations.pages.settings.profile.disableAllMods.value',
+            ProfileModList.getDisabledModCount(localModList.value),
+            {
+                named: {
+                    disabledModCount: ProfileModList.getDisabledModCount(localModList.value),
+                    totalModCount: localModList.value.length
+                }
+            }
+        ),
         'fa-file-import',
         () => emitInvoke('DisableAll')
     ),
     new SettingsRow(
-        'Profile',
-        'Import local mod',
-        'Install a mod offline from your files.',
-        async () => 'Not all mods can be installed locally',
+        'profile',
+        t('translations.pages.settings.profile.importLocalMod.title'),
+        t('translations.pages.settings.profile.importLocalMod.description'),
+        async () => t('translations.pages.settings.profile.importLocalMod.value'),
         'fa-file-import',
         () => store.commit("openLocalFileImportModal")
     ),
     new SettingsRow(
-        'Profile',
-        'Export profile as a file',
-        'Export your mod list and configs as a file.',
-        async () => 'The exported file can be shared with friends to get an identical profile quickly and easily',
+        'profile',
+        t('translations.pages.settings.profile.exportProfileAsFile.title'),
+        t('translations.pages.settings.profile.exportProfileAsFile.description'),
+        async () => t('translations.pages.settings.profile.exportProfileAsFile.value'),
         'fa-file-export',
         () => store.dispatch("profileExport/exportProfileAsFile")
     ),
     new SettingsRow(
-        'Profile',
-        'Export profile as a code',
-        'Export your mod list and configs as a code.',
-        async () => 'The exported code can be shared with friends to get an identical profile quickly and easily',
+        'profile',
+        t('translations.pages.settings.profile.exportProfileAsCode.title'),
+        t('translations.pages.settings.profile.exportProfileAsCode.description'),
+        async () => t('translations.pages.settings.profile.exportProfileAsCode.value'),
         'fa-file-export',
         () => store.dispatch("profileExport/exportProfileAsCode")
     ),
     new SettingsRow(
-        'Profile',
-        'Update all mods',
-        'Quickly update every installed mod to their latest versions.',
-        async () => {
-            const outdatedMods = store.getters['profile/modsWithUpdates'];
-            if (outdatedMods.length === 1) {
-                return "1 mod has an update available";
-            }
-            return `${outdatedMods.length} mods have an update available`;
-        },
+        'profile',
+        t('translations.pages.settings.profile.updateAllMods.title'),
+        t('translations.pages.settings.profile.updateAllMods.description'),
+        async () => t('translations.pages.settings.profile.updateAllMods.value', store.getters['profile/modsWithUpdates'].length),
         'fa-cloud-upload-alt',
         () => emitInvoke('UpdateAllMods')
     ),

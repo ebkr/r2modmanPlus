@@ -68,5 +68,54 @@ export const SettingsTranslation: SettingsMessageFormat = {
             description: 'Switch the CDN until app is restarted. This might bypass issues with downloading mods.',
             current: 'Current: {label} ({url})'
         }
+    },
+    profile: {
+        changeProfile: {
+            title: 'Change profile',
+            description: 'Change the mod profile.',
+            value: 'Current profile: {profileName}',
+        },
+        enableAllMods: {
+            title: 'Enable all mods',
+            description: 'Enable all mods for the current profile.',
+            value: `
+            No mods are currently enabled. You have {totalModCount} mods |
+            1 mod is enabled out of {totalModCount} |
+            {enabledModCount} mods are enabled out of {totalModCount}
+            `
+        },
+        disableAllMods: {
+            title: 'Disable all mods',
+            description: 'Disable all mods for the current profile.',
+            value: `
+            No mods are currently disabled. You have {totalModCount} mods |
+            1 mod is disabled out of {totalModCount} |
+            {disabledModCount} mods are disabled out of {totalModCount}
+            `,
+        },
+        importLocalMod: {
+            title: 'Import a local mod',
+            description: `Install a mod that was not downloaded from the "{''}@:translations.pages.manager.navigation.modsActions.online{''}" tab.`,
+            value: 'The manager will attempt to install mods correctly. This is not guaranteed to install as expected.'
+        },
+        exportProfileAsFile: {
+            title: 'Export profile as a file',
+            description: 'Export your mod list and configs as a file.',
+            value: 'The exported file can be shared with friends to get an identical profile quickly and easily',
+        },
+        exportProfileAsCode: {
+            title: 'Export profile as a code',
+            description: 'Export your mod list and configs as a file.',
+            value: 'The exported code can be shared with friends to get an identical profile quickly and easily',
+        },
+        updateAllMods: {
+            title: 'Update all mods',
+            description: 'Quickly update every installed mod to their latest versions.',
+            value: `
+            There are no mods with an update available |
+            You have 1 mod with an update available |
+            You have {count} mods with an update available
+            `,
+        }
     }
 }
