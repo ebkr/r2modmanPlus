@@ -10868,18 +10868,31 @@
           },
           "accolades": {
             "label": "Accolades"
+          },
+          "asset-replacements": {
+            "label": "Asset Replacements"
           }
         },
         "sections": {
           "mods": {
             "name": "Mods",
             "excludeCategories": [
-              "modpacks"
+              "modpacks",
+              "asset-replacements"
             ]
           },
           "modpacks": {
             "name": "Modpacks",
             "requireCategories": [
+              "modpacks"
+            ]
+          },
+          "asset-replacements": {
+            "name": "Asset Replacements",
+            "requireCategories": [
+              "asset-replacements"
+            ],
+            "excludeCategories": [
               "modpacks"
             ]
           }
@@ -19802,6 +19815,126 @@
         ]
       }
     },
+    "malteses-fluffy-onsen": {
+      "uuid": "5ebb5fe3-e1fc-43e7-9598-063b0e3733f3",
+      "label": "malteses-fluffy-onsen",
+      "meta": {
+        "displayName": "Maltese's Fluffy Onsen",
+        "iconUrl": "malteses-fluffy-onsen.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3404470"
+            }
+          ],
+          "steamFolderName": "Animal Spa",
+          "dataFolderName": "AnimalSpa_Data",
+          "exeNames": [
+            "AnimalSpa.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Maltese's Fluffy Onsen",
+            "iconUrl": "malteses-fluffy-onsen.webp"
+          },
+          "settingsIdentifier": "MaltesesFluffyOnsen",
+          "internalFolderName": "MaltesesFluffyOnsen",
+          "packageIndex": "https://thunderstore.io/c/malteses-fluffy-onsen/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "mfo"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Maltese's Fluffy Onsen",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -20223,6 +20356,86 @@
         },
         "autolistPackageIds": [
           "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
+    "pair-a-dice": {
+      "uuid": "ba399eee-df9f-44e9-93a4-d9d181b9bf99",
+      "label": "pair-a-dice",
+      "meta": {
+        "displayName": "Pair A Dice",
+        "iconUrl": "pair-a-dice.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2842150"
+            }
+          ],
+          "steamFolderName": "PairADice",
+          "dataFolderName": "",
+          "exeNames": [
+            "PairADice.exe"
+          ],
+          "packageLoader": "godotml",
+          "meta": {
+            "displayName": "Pair A Dice",
+            "iconUrl": "pair-a-dice.webp"
+          },
+          "settingsIdentifier": "PairADice",
+          "internalFolderName": "PairADice",
+          "packageIndex": "https://thunderstore.io/c/pair-a-dice/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "pad"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Pair A Dice",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/sNHt43Fjs3",
+        "autolistPackageIds": [
+          "GodotModding-GodotModLoader"
         ]
       }
     },
@@ -24085,18 +24298,31 @@
         },
         "accolades": {
           "label": "Accolades"
+        },
+        "asset-replacements": {
+          "label": "Asset Replacements"
         }
       },
       "sections": {
         "mods": {
           "name": "Mods",
           "excludeCategories": [
-            "modpacks"
+            "modpacks",
+            "asset-replacements"
           ]
         },
         "modpacks": {
           "name": "Modpacks",
           "requireCategories": [
+            "modpacks"
+          ]
+        },
+        "asset-replacements": {
+          "name": "Asset Replacements",
+          "requireCategories": [
+            "asset-replacements"
+          ],
+          "excludeCategories": [
             "modpacks"
           ]
         }
@@ -26874,6 +27100,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "malteses-fluffy-onsen": {
+      "displayName": "Maltese's Fluffy Onsen",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -27055,6 +27322,47 @@
       },
       "autolistPackageIds": [
         "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
+    "pair-a-dice": {
+      "displayName": "Pair A Dice",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/sNHt43Fjs3",
+      "autolistPackageIds": [
+        "GodotModding-GodotModLoader"
       ]
     },
     "paper-animal-adventure": {
