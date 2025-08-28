@@ -26,6 +26,7 @@ const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
+    [PackageLoader.BEPISLOADER]: new BepInExInstaller(),
 };
 
 export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
@@ -40,7 +41,7 @@ export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstall
 /**
  * Plugin installer registry
  */
-type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR;
+type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.BEPISLOADER;
 type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
 
 const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
@@ -57,7 +58,8 @@ function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
         loader === PackageLoader.BEPINEX ||
         loader === PackageLoader.GODOTML ||
         loader === PackageLoader.MELONLOADER ||
-        loader === PackageLoader.NORTHSTAR
+        loader === PackageLoader.NORTHSTAR ||
+        loader === PackageLoader.BEPISLOADER
     );
 }
 
