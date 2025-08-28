@@ -210,7 +210,7 @@ export const DownloadModule = {
             downloadId: UUID,
             downloadedSize: number,
             modName: string,
-            status: number,
+            status: DownloadStatusEnum,
             err: R2Error | null
         }) {
             const { downloadId, downloadedSize, modName, status, err} = params;
@@ -222,11 +222,7 @@ export const DownloadModule = {
                     DownloadUtils.addSolutionsToError(err);
                     throw err;
                 }
-            } else if (
-                status === DownloadStatusEnum.DOWNLOADING ||
-                status === DownloadStatusEnum.EXTRACTING ||
-                status === DownloadStatusEnum.EXTRACTED
-            ) {
+            } else if (DownloadUtils.statusIsDownloadOrExtract(status)) {
                 commit('updateDownload', { downloadId, modName, downloadedSize, status });
             }
         },

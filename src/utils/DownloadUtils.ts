@@ -1,3 +1,4 @@
+import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
 import R2Error from '../model/errors/R2Error';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import FsProvider from '../providers/generic/file/FsProvider';
@@ -80,4 +81,8 @@ export function generateProgressPercentage(currentProgress: number, targetProgre
 
     const percentage = Math.round(currentProgress / targetProgress * 100);
     return Math.max(0, Math.min(100, percentage));
+}
+
+export function statusIsDownloadOrExtract(status: DownloadStatusEnum): boolean {
+    return status === DownloadStatusEnum.DOWNLOADING || status === DownloadStatusEnum.EXTRACTING || status === DownloadStatusEnum.EXTRACTED;
 }

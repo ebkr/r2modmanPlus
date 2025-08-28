@@ -1,5 +1,6 @@
 import ProviderUtils from '../../generic/ProviderUtils';
 import ThunderstoreCombo from '../../../model/ThunderstoreCombo';
+import { DownloadStatusEnum } from '../../../model/enums/DownloadStatusEnum';
 import R2Error from '../../../model/errors/R2Error';
 
 export default abstract class ThunderstoreDownloaderProvider {
@@ -19,7 +20,7 @@ export default abstract class ThunderstoreDownloaderProvider {
     public abstract download(
         combos: ThunderstoreCombo[],
         ignoreCache: boolean,
-        totalProgressCallback: (downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
+        totalProgressCallback: (downloadedSize: number, modName: string, status: DownloadStatusEnum, err: R2Error | null) => void
     ): Promise<void>;
 
     /**

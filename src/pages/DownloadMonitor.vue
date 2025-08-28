@@ -29,7 +29,10 @@
 
                             <div class="row" v-if="downloadObject.status === DownloadStatusEnum.FAILED">
                                 <div class="col">
-                                    <p>Download failed</p>
+                                    <p>
+                                        <i class="fas fa-exclamation-triangle" />
+                                        Download failed
+                                    </p>
                                     <Progress
                                         :max='100'
                                         :value='100'
@@ -40,7 +43,10 @@
 
                             <div class="row" v-else-if="downloadObject.status === DownloadStatusEnum.INSTALLED">
                                 <div class="col">
-                                    <p>Download complete</p>
+                                    <p>
+                                        <i class="fas fa-check" />
+                                        Download complete
+                                    </p>
                                     <Progress
                                         :max='100'
                                         :value='100'
@@ -49,18 +55,17 @@
                                 </div>
                             </div>
 
-                            <div v-else class="row">
+                            <div v-else-if="DownloadUtils.statusIsDownloadOrExtract(downloadObject.status)" class="row">
 
                                 <div class="col">
                                     <p v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING">
+                                        <i class="fas fa-download" />
                                         Downloading: {{ downloadObject.modName }}
                                     </p>
-                                    <p v-else-if="downloadObject.status === DownloadStatusEnum.EXTRACTING ||
-                                                    downloadObject.status === DownloadStatusEnum.EXTRACTED"
-                                    >
+                                    <p v-else>
+                                        <i class="fas fa-box-open" />
                                         Extracting: {{ downloadObject.modName }}
                                     </p>
-                                    <p v-else>Downloading:</p>
                                     <p>
                                         {{downloadObject.downloadProgress}}% of
                                         {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}
@@ -72,12 +77,11 @@
                                     />
                                 </div>
 
-                                <div v-if="downloadObject.status === DownloadStatusEnum.DOWNLOADING ||
-                                            downloadObject.status === DownloadStatusEnum.EXTRACTING ||
-                                            downloadObject.status === DownloadStatusEnum.EXTRACTED"
-                                    class="col"
-                                >
-                                    <p>Installing:</p>
+                                <div class="col">
+                                    <p>
+                                        <i class="fas fa-cog" />
+                                        Installing:
+                                    </p>
                                     <p>Waiting for download to finish</p>
                                     <Progress
                                         :max='100'
@@ -85,8 +89,22 @@
                                         :className="['is-info']"
                                     />
                                 </div>
-                                <div v-else class="col">
-                                    <p>Installing: {{ downloadObject.modName }}</p>
+                            </div>
+
+                            <div v-else class="row">
+                                <div class="col">
+                                    <p>
+                                        <i class="fas fa-check" />
+                                        Download complete
+                                    </p>
+                                    <p>100% of {{FileUtils.humanReadableSize(downloadObject.totalDownloadSize)}}</p>
+                                    <Progress :max='100' :value='100' :className="['is-success']" />
+                                </div>
+                                <div class="col">
+                                    <p>
+                                        <i class="fas fa-cog" spin />
+                                        Installing: {{ downloadObject.modName }}
+                                    </p>
                                     <p>{{Math.min(Math.floor(downloadObject.installProgress), 100)}}% complete</p>
                                     <Progress
                                         :max='100'
@@ -126,6 +144,7 @@ import { Hero } from '../components/all';
 import Progress from '../components/Progress.vue';
 import FileUtils from "../utils/FileUtils";
 import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
+import * as DownloadUtils from '../utils/DownloadUtils';
 </script>
 
 <style lang="scss" scoped>
@@ -151,10 +170,10 @@ import { DownloadStatusEnum } from '../model/enums/DownloadStatusEnum';
 
 // icons are different sizes, so we need to compensate for that
 .x-icon {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
 }
 
 .redo-icon {
-    font-size: 1.125rem; 
+    font-size: 1.125rem;
 }
 </style>

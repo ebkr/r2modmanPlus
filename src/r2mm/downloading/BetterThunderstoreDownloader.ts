@@ -17,7 +17,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
     public async download(
         combos: ThunderstoreCombo[],
         ignoreCache: boolean,
-        totalProgressCallback: (downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
+        totalProgressCallback: (downloadedSize: number, modName: string, status: DownloadStatusEnum, err: R2Error | null) => void
     ): Promise<void> {
         if (combos.length === 0) {
             throw new R2Error('No mods to download', 'An empty list of mods was passed to the downloader');
@@ -26,7 +26,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let modInProgressName = combos[0].getMod().getName();
         let finishedModsDownloadedSize = 0;
 
-        const singleModProgressCallback = (downloadedBytes: number, status: number, err: R2Error | null) => {
+        const singleModProgressCallback = (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => {
             let modInProgressDownloadedSize;
 
             if (status === DownloadStatusEnum.FAILED) {
@@ -66,7 +66,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
     }
 
-    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<AxiosResponse> {
         return axios.get(combo.getVersion().getDownloadUrl(), {
             onDownloadProgress: progress => callback(progress.loaded, DownloadStatusEnum.DOWNLOADING, null),
             responseType: 'arraybuffer',
@@ -77,7 +77,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<void> {
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<void> {
         const buf: Buffer = Buffer.from(response.data);
         const comboSize = combo.getVersion().getFileSize();
         callback(comboSize, DownloadStatusEnum.EXTRACTING, null);
