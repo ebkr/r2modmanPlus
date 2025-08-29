@@ -29,8 +29,8 @@ function getLocaleMessages() {
     return messages.value[locale.value];
 }
 
-const activeTab = ref<string>('All');
-const tabs = ref<string[]>(['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other']);
+const activeTab = ref<string>('all');
+const tabs = ref<string[]>(['all', 'profile', 'locations', 'debugging', 'modpacks', 'other']);
 const logOutput = ref<LogOutputProvider>(LogOutputProvider.instance);
 const search = ref<string>('');
 const managerVersionNumber = ref<VersionNumber>(ManagerInformation.VERSION);
@@ -418,12 +418,12 @@ function emitInvoke(invoked: string) {
                         <li v-for="(key, index) in tabs" :key="`tab-${key}`"
                             :class="[{'is-active': activeTab === key}]"
                             @click="changeTab(key)">
-                            <a>{{key}}</a>
+                            <a>{{ t(`translations.pages.settings.groups.${key}`) }}</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <template v-if="activeTab === 'All'">
+            <template v-if="activeTab === 'all'">
                 <SettingsItem v-for="(key, _) in searchableSettings" :key="`setting-${key.action}`"
                               :action="key.action"
                               :description="key.description"
