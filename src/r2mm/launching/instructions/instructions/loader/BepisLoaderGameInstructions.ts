@@ -10,7 +10,7 @@ export default class BepisLoaderGameInstructions extends GameInstructionGenerato
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
             moddedParameters: `--hookfxr-enable --bepinex-target ${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')}`,
-            vanillaParameters: `--hookfxr-disable` // Intentionally use the wrong target
+            vanillaParameters: `--hookfxr-disable`
         }
     }
 
