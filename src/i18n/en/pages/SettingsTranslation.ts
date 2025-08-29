@@ -2,8 +2,12 @@ import {SettingsMessageFormat} from "../../base/pages/SettingsMessageFormat";
 
 export const SettingsTranslation: SettingsMessageFormat = {
     groups: {
+        all: 'All',
+        profile: 'Profile',
         locations: 'Locations',
         debugging: 'Debugging',
+        other: 'Other',
+        modpacks: 'Modpacks',
     },
     locations: {
         browseDataFolder: {
