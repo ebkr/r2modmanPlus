@@ -168,11 +168,23 @@ export const SettingsTranslation: SettingsMessageFormat = {
                 errorRefreshing: 'There was a problem refreshing the mod list: {errorText}',
                 disabledWhilstDownloading: 'Refreshing the mod list is disabled whilst there are active downloads',
                 cacheDate: 'Cache date: {formattedDate}',
+                apiUnavailable: 'No API information available',
             }
         },
         changeGame: {
             title: 'Change game',
             description: 'Change the current game.',
+        }
+    },
+    modpacks: {
+        showDependencyStrings: {
+            title: 'Show dependency strings',
+            description: 'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
+            value: `
+            No dependency strings as there are no mods installed |
+            Show dependency strings for 1 mod |
+            Show dependency strings for {n} mods
+            `
         }
     }
 }

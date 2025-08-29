@@ -235,48 +235,48 @@ let settingsList = [
     ),
     new SettingsRow(
         'other',
-        'Toggle funky mode',
-        'Enable/disable funky mode.',
+        t('translations.pages.settings.other.toggleFunkyMode.title'),
+        t('translations.pages.settings.other.toggleFunkyMode.description'),
         async () => {
             return settings.value.getContext().global.funkyModeEnabled
-                ? 'Current: enabled'
-                : 'Current: disabled (default)';
+                ? t('translations.pages.settings.other.toggleFunkyMode.states.enabled')
+                : t('translations.pages.settings.other.toggleFunkyMode.states.disabled');
         },
         'fa-exchange-alt',
         () => emitInvoke('ToggleFunkyMode')
     ),
     new SettingsRow(
         'other',
-        'Switch theme',
-        'Switch between light and dark themes.',
+        t('translations.pages.settings.other.switchTheme.title'),
+        t('translations.pages.settings.other.switchTheme.description'),
         async () => {
             return settings.value.getContext().global.darkTheme
-                ? 'Current: dark theme'
-                : 'Current: light theme (default)';
+                ? t('translations.pages.settings.other.switchTheme.themes.dark')
+                : t('translations.pages.settings.other.switchTheme.themes.light');
         },
         'fa-exchange-alt',
         () => emitInvoke('SwitchTheme')
     ),
     new SettingsRow(
         'other',
-        'Switch card display type',
-        'Switch between expanded or collapsed cards.',
+        t('translations.pages.settings.other.switchCardDisplayType.title'),
+        t('translations.pages.settings.other.switchCardDisplayType.description'),
         async () => {
             return settings.value.getContext().global.expandedCards
-                ? 'Current: expanded'
-                : 'Current: collapsed (default)';
+                ? t('translations.pages.settings.other.switchCardDisplayType.states.expanded')
+                : t('translations.pages.settings.other.switchCardDisplayType.states.collapsed');
         },
         'fa-exchange-alt',
         () => emitInvoke('SwitchCard')
     ),
     new SettingsRow(
         'other',
-        'Refresh online mod list',
-        'Check for any new mod releases.',
+        t('translations.pages.settings.other.refreshOnlineModList.title'),
+        t('translations.pages.settings.other.refreshOnlineModList.description'),
         async () => {
                 if (store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                     return store.state.tsMods.thunderstoreModListUpdateStatus
-                        ? t(`translations.pages.profileSelection.importProfileModal.states.refresh.refreshStatus.${store.state.tsMods.thunderstoreModListUpdateStatus}`)
+                        ? t(`translations.pages.splash.states.${store.state.tsMods.thunderstoreModListUpdateStatus}`)
                         : t('translations.pages.settings.other.refreshOnlineModList.states.refreshing');
                 }
                 if (store.state.tsMods.thunderstoreModListUpdateError) {
@@ -288,15 +288,15 @@ let settingsList = [
                 if (store.state.tsMods.modsLastUpdated !== undefined) {
                     return t('translations.pages.settings.other.refreshOnlineModList.states.cacheDate', { formattedDate: d(moment(store.state.tsMods.modsLastUpdated).toDate(), 'long', getLocaleMessages().metadata.locale) });
                 }
-                return "No API information available";
+                return t('translations.pages.settings.other.refreshOnlineModList.states.apiUnavailable');
             },
         'fa-exchange-alt',
         async () => await store.dispatch("tsMods/syncPackageList")
     ),
     new SettingsRow(
       'other',
-      'Change game',
-      'Change the current game',
+        t('translations.pages.settings.other.changeGame.title'),
+        t('translations.pages.settings.other.changeGame.description'),
       async () => "",
         'fa-gamepad',
         async () => {
@@ -305,10 +305,10 @@ let settingsList = [
         }
     ),
     new SettingsRow(
-        'Modpacks',
-        'Show dependency strings',
-        'View a list of installed mods with their version strings. Used inside the dependencies array inside the manifest.json file.',
-        async () => `Show dependency strings for ${localModList.value.length} mod(s)`,
+        'modpacks',
+        t('translations.pages.settings.modpacks.showDependencyStrings.title'),
+        t('translations.pages.settings.modpacks.showDependencyStrings.description'),
+        async () => t('translations.pages.settings.modpacks.showDependencyStrings.value', localModList.value.length),
         'fa-file-alt',
         () => emitInvoke('ShowDependencyStrings')
     ),
