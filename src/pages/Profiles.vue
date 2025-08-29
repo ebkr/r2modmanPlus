@@ -22,18 +22,30 @@
                         <strong><a @click="backToGameSelection">Back to game selection</a></strong>
                     </div>
                 </div>
-                <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="setSelectedProfile(profileName)">
-                    <div class="container">
-                      <div class="border-at-bottom">
-                        <div class="card is-shadowless">
-                          <p
-                            :class="['card-header-title', {'has-text-info':activeProfileName === profileName}]"
-                          >{{profileName}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
+                <div class="container">
+                  <table class="profile-table background-bg">
+                    <thead class="profile-table-header border-at-bottom">
+                      <tr>
+                        <th class="profile-table-header-text no-border">Profile name</th>
+                        <th class="profile-table-header-text no-border">Size on disk</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr 
+                        v-for="(profileName) of profileList" 
+                        :key="profileName"
+                        @click="setSelectedProfile(profileName)"
+                        class="profile-row border-at-bottom"
+                      >
+                        <td
+                          :class="['no-border', {'has-text-info': activeProfileName === profileName}]"
+                        >
+                          {{profileName}}
+                        </td>
+                        <td class="no-border">{{  Math.round(Math.random() * 1000) }} MB</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
                 <div class="container">
@@ -164,3 +176,24 @@ async function backToGameSelection() {
     await router.push({name: "index"});
 }
 </script>
+
+<style scoped>
+.profile-row {
+  cursor: pointer;
+  border-top: none !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.profile-table-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: default;
+  user-select: none;
+}
+
+.profile-table-header-text {
+  color: var(--text);
+}
+
+</style>
