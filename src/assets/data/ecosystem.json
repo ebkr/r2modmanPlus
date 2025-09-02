@@ -1577,6 +1577,12 @@
           "maps": {
             "label": "Maps"
           },
+          "languages": {
+            "label": "Languages"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
           "assets": {
             "label": "Assets"
           },
@@ -18880,6 +18886,84 @@
         ]
       }
     },
+    "beton-brutal": {
+      "uuid": "2216ad36-7433-468c-addf-3db3ddc2d947",
+      "label": "beton-brutal",
+      "meta": {
+        "displayName": "BETON BRUTAL",
+        "iconUrl": "beton-brutal.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2330500"
+            }
+          ],
+          "steamFolderName": "BETON BRUTAL",
+          "dataFolderName": "BetonBrutal_Data",
+          "exeNames": [
+            "BetonBrutal.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "BETON BRUTAL",
+            "iconUrl": "beton-brutal.webp"
+          },
+          "settingsIdentifier": "BetonBrutal",
+          "internalFolderName": "BetonBrutal",
+          "packageIndex": "https://thunderstore.io/c/beton-brutal/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "BETON BRUTAL",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/DqKwJyugGv",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "cobalt-core": {
       "uuid": "d03f61b8-9604-4cc7-8d77-4647db475aa9",
       "label": "cobalt-core",
@@ -20801,6 +20885,162 @@
         "shortDescription": "Modded Apex Legends!"
       }
     },
+    "resonite": {
+      "uuid": "f5859576-bdf8-40bb-b08b-69f5506199a4",
+      "label": "resonite",
+      "meta": {
+        "displayName": "Resonite",
+        "iconUrl": "resonite.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2519830"
+            }
+          ],
+          "steamFolderName": "Resonite",
+          "dataFolderName": "Resonite_Data",
+          "exeNames": [
+            "Resonite.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Resonite",
+            "iconUrl": "resonite.webp"
+          },
+          "settingsIdentifier": "Resonite",
+          "internalFolderName": "Resonite",
+          "packageIndex": "https://thunderstore.io/c/resonite/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "hidden",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Resonite",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "assetimporting": {
+            "label": "Asset Importing"
+          },
+          "bugworkaround": {
+            "label": "Bug Workaround"
+          },
+          "contextmenu": {
+            "label": "Context Menu"
+          },
+          "controls": {
+            "label": "Controls"
+          },
+          "dashboard": {
+            "label": "Dashboard"
+          },
+          "hardwareintegration": {
+            "label": "Hardware Integration"
+          },
+          "inspectors": {
+            "label": "Inspectors"
+          },
+          "memes": {
+            "label": "Memes"
+          },
+          "optimization": {
+            "label": "Optimization"
+          },
+          "protoflux": {
+            "label": "Protoflux"
+          },
+          "technicaltweaks": {
+            "label": "Technical Tweaks"
+          },
+          "visualtweaks": {
+            "label": "Visual Tweaks"
+          },
+          "wizards": {
+            "label": "Wizards"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/vCDJK9xyvm",
+        "wikiUrl": "https://modding.resonite.net",
+        "autolistPackageIds": []
+      }
+    },
     "ship-of-harkinian": {
       "uuid": "9fb26233-032a-43e3-bbe7-6e058f5daf15",
       "label": "ship-of-harkinian",
@@ -21696,6 +21936,12 @@
         },
         "maps": {
           "label": "Maps"
+        },
+        "languages": {
+          "label": "Languages"
+        },
+        "tweaks": {
+          "label": "Tweaks"
         },
         "assets": {
           "label": "Assets"
@@ -26629,6 +26875,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "beton-brutal": {
+      "displayName": "BETON BRUTAL",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/DqKwJyugGv",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "cobalt-core": {
       "displayName": "Cobalt Core",
       "categories": {
@@ -27552,6 +27839,85 @@
       "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
       "autolistPackageIds": [],
       "shortDescription": "Modded Apex Legends!"
+    },
+    "resonite": {
+      "displayName": "Resonite",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "assetimporting": {
+          "label": "Asset Importing"
+        },
+        "bugworkaround": {
+          "label": "Bug Workaround"
+        },
+        "contextmenu": {
+          "label": "Context Menu"
+        },
+        "controls": {
+          "label": "Controls"
+        },
+        "dashboard": {
+          "label": "Dashboard"
+        },
+        "hardwareintegration": {
+          "label": "Hardware Integration"
+        },
+        "inspectors": {
+          "label": "Inspectors"
+        },
+        "memes": {
+          "label": "Memes"
+        },
+        "optimization": {
+          "label": "Optimization"
+        },
+        "protoflux": {
+          "label": "Protoflux"
+        },
+        "technicaltweaks": {
+          "label": "Technical Tweaks"
+        },
+        "visualtweaks": {
+          "label": "Visual Tweaks"
+        },
+        "wizards": {
+          "label": "Wizards"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/vCDJK9xyvm",
+      "wikiUrl": "https://modding.resonite.net",
+      "autolistPackageIds": []
     },
     "ship-of-harkinian": {
       "displayName": "Ship of Harkinian",
