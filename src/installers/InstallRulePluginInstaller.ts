@@ -277,19 +277,17 @@ async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
 
 async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
     const fs = FsProvider.instance;
+    const searchLocations = ["BepInEx", "shimloader", "UMM"].map((x) => profile.joinToProfilePath(x));
 
-    const profilePath = profile.getProfilePath();
-    const searchLocations = ["BepInEx", "shimloader", "UMM"];
     for (const searchLocation of searchLocations) {
-        const bepInExLocation: string = path.join(profilePath, searchLocation);
-        if (!(await fs.exists(bepInExLocation))) {
+        if (!(await fs.exists(searchLocation))) {
             continue
         }
 
-        for (const file of (await fs.readdir(bepInExLocation))) {
-            if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
-                for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
-                    const folderPath: string = path.join(bepInExLocation, file, folder);
+        for (const file of (await fs.readdir(searchLocation))) {
+            if ((await fs.lstat(path.join(searchLocation, file))).isDirectory()) {
+                for (const folder of (await fs.readdir(path.join(searchLocation, file)))) {
+                    const folderPath = path.join(searchLocation, file, folder);
                     if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
                         await FileUtils.emptyDirectory(folderPath);
                         await fs.rmdir(folderPath);
