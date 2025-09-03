@@ -279,7 +279,7 @@ async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
     const fs = FsProvider.instance;
 
     const profilePath = profile.getProfilePath();
-    const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding", "UMM"];
+    const searchLocations = ["BepInEx", "shimloader", "UMM"];
     for (const searchLocation of searchLocations) {
         const bepInExLocation: string = path.join(profilePath, searchLocation);
         if (!(await fs.exists(bepInExLocation))) {
