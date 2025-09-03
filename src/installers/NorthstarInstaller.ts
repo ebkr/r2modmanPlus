@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from './PackageInstaller';
+import { InstallArgs, PackageInstaller, uninstallModLoader } from './PackageInstaller';
 import path from "../providers/node/path/path";
 import FsProvider from '../providers/generic/file/FsProvider';
 import { MODLOADER_PACKAGES } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
@@ -38,5 +38,9 @@ export class NorthstarInstaller implements PackageInstaller {
                 }
             }
         }
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallModLoader(args.mod, args.profile);
     }
 }

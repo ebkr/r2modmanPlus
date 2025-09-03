@@ -1,8 +1,11 @@
+import FileWriteError from "../model/errors/FileWriteError";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
+import GameManager from "../model/game/GameManager";
 import { ImmutableProfile } from "../model/Profile";
 import ManifestV2 from "../model/ManifestV2";
 import FsProvider from "../providers/generic/file/FsProvider";
+import { MOD_LOADER_VARIANTS } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 
 export type InstallArgs = {
     mod: ManifestV2;
@@ -40,8 +43,35 @@ export async function enableModByRenamingFiles(folderName: string) {
         if (filePath.toLowerCase().endsWith(".old")) {
             await FsProvider.instance.rename(
                 filePath,
-                filePath.substring(0, filePath.length - ('.old').length)
+                filePath.substring(0, filePath.length - (".old").length)
             );
         }
+    }
+}
+
+// Implementation shared by BepInExInstaller, MelonLoaderInstaller and others.
+export async function uninstallModLoader(mod: ManifestV2, profile: ImmutableProfile) {
+    const fs = FsProvider.instance;
+
+    try {
+        const loader = MOD_LOADER_VARIANTS[GameManager.activeGame.internalFolderName].find(
+            loader => loader.packageName.toLowerCase() === mod.getName().toLowerCase()
+        );
+
+        if (loader) {
+            for (const file of (await fs.readdir(profile.getProfilePath()))) {
+                if (file.toLowerCase() === "mods.yml") {
+                    continue;
+                }
+                const filePath = profile.joinToProfilePath(file);
+                if ((await fs.lstat(filePath)).isFile()) {
+                    await fs.unlink(filePath);
+                }
+            }
+        }
+    } catch(e) {
+        const name = "Failed to delete mod loader files from profile root";
+        const solution = "Is the game still running?";
+        throw FileWriteError.fromThrownValue(e, name, solution);
     }
 }

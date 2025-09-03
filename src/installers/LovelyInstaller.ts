@@ -1,4 +1,4 @@
-import { InstallArgs, PackageInstaller } from "./PackageInstaller";
+import { InstallArgs, PackageInstaller, uninstallModLoader } from "./PackageInstaller";
 import { addToStateFile } from "./InstallRulePluginInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
@@ -41,6 +41,10 @@ export class LovelyInstaller implements PackageInstaller {
         }
 
         await addToStateFile(mod, fileRelocations, profile);
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallModLoader(args.mod, args.profile);
     }
 }
 
