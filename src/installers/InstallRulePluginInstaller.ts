@@ -257,7 +257,7 @@ async function installState(args: InstallRuleArgs) {
     await addToStateFile(mod, fileRelocations, profile);
 }
 
-export async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
+async function uninstallPackageZip(mod: ManifestV2, profile: ImmutableProfile) {
     const fs = FsProvider.instance;
 
     const recursiveDelete = async (mainPath: string, match: string) => {
@@ -275,7 +275,7 @@ export async function uninstallPackageZip(mod: ManifestV2, profile: ImmutablePro
     await recursiveDelete(profile.getProfilePath(), `${mod.getName()}.ts.zip`);
 }
 
-export async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
+async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
     const fs = FsProvider.instance;
 
     const profilePath = profile.getProfilePath();
@@ -286,28 +286,21 @@ export async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile
             continue
         }
 
-        try {
-            for (const file of (await fs.readdir(bepInExLocation))) {
-                if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
-                    for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
-                        const folderPath: string = path.join(bepInExLocation, file, folder);
-                        if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
-                            await FileUtils.emptyDirectory(folderPath);
-                            await fs.rmdir(folderPath);
-                        }
+        for (const file of (await fs.readdir(bepInExLocation))) {
+            if ((await fs.lstat(path.join(bepInExLocation, file))).isDirectory()) {
+                for (const folder of (await fs.readdir(path.join(bepInExLocation, file)))) {
+                    const folderPath: string = path.join(bepInExLocation, file, folder);
+                    if (folder === mod.getName() && (await fs.lstat(folderPath)).isDirectory()) {
+                        await FileUtils.emptyDirectory(folderPath);
+                        await fs.rmdir(folderPath);
                     }
                 }
             }
-        } catch (e) {
-            const name = 'Failed to remove files';
-            const solution = 'Is the game still running? If so, close it and try again.';
-            return R2Error.fromThrownValue(e, name, solution);
         }
     }
-    return Promise.resolve(null);
 }
 
-export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<R2Error | null> {
+async function uninstallState(mod: ManifestV2, profile: ImmutableProfile) {
     const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
     if (await FsProvider.instance.exists(stateFilePath)) {
         const read = await FsProvider.instance.readFile(stateFilePath);
@@ -322,7 +315,6 @@ export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile)
         }
         await FsProvider.instance.unlink(profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`));
     }
-    return Promise.resolve(null);
 }
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using SUBDIR/SUBDIR_NO_FLATTEN tracking methods.
@@ -406,6 +398,18 @@ export class InstallRulePluginInstaller implements PackageInstaller {
                 case TrackingMethod.SUBDIR_NO_FLATTEN: await installSubDirNoFlatten(profile, managedRule, files, mod); break;
                 case TrackingMethod.PACKAGE_ZIP: await installPackageZip(profile, managedRule, files, mod); break;
             }
+        }
+    }
+
+    async uninstall(args: InstallArgs) {
+        try {
+            await uninstallState(args.mod, args.profile);
+            await uninstallSubDir(args.mod, args.profile);
+            await uninstallPackageZip(args.mod, args.profile);
+        } catch (e) {
+            const name = 'Failed to remove files';
+            const solution = 'Is the game still running? If so, close it and try again.';
+            throw R2Error.fromThrownValue(e, name, solution);
         }
     }
 

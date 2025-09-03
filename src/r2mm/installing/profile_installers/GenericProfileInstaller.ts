@@ -1,7 +1,7 @@
 import ProfileInstallerProvider from '../../../providers/ror2/installing/ProfileInstallerProvider';
 import ManifestV2 from '../../../model/ManifestV2';
 import { ImmutableProfile } from '../../../model/Profile';
-import R2Error from '../../../model/errors/R2Error';
+import R2Error, { throwForR2Error } from '../../../model/errors/R2Error';
 import ModLoaderPackageMapping from '../../../model/installing/ModLoaderPackageMapping';
 import path from "../../../providers/node/path/path";
 import FsProvider from '../../../providers/generic/file/FsProvider';
@@ -12,7 +12,7 @@ import { MOD_LOADER_VARIANTS } from '../../installing/profile_installers/ModLoad
 import FileWriteError from '../../../model/errors/FileWriteError';
 import { getPluginInstaller, PackageLoaderInstallers } from "../../../installers/registry";
 import { InstallArgs, PackageInstaller } from "../../../installers/PackageInstaller";
-import { InstallRulePluginInstaller, uninstallPackageZip, uninstallState, uninstallSubDir } from "../../../installers/InstallRulePluginInstaller";
+import { InstallRulePluginInstaller } from "../../../installers/InstallRulePluginInstaller";
 
 
 export default class GenericProfileInstaller extends ProfileInstallerProvider {
@@ -147,27 +147,13 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
             ) {
                 return null;
             }
+
+            // Fallback to legacy uninstallation.
+            throwForR2Error(await this.uninstallModLoader(mod, profile));
+            const args = this.getInstallArgs(mod, profile);
+            await this.legacyInstaller.uninstall(args);
         } catch (e) {
             return R2Error.fromThrownValue(e);
-        }
-
-        // Fallback to legacy uninstallation.
-        let result = await uninstallState(mod, profile);
-        if (result instanceof R2Error) {
-            return result;
-        }
-        result = await this.uninstallModLoader(mod, profile);
-        if (result instanceof R2Error) {
-            return result;
-        }
-        result = await uninstallSubDir(mod, profile);
-        if (result instanceof R2Error) {
-            return result;
-        }
-        try {
-            await uninstallPackageZip(mod, profile);
-        } catch (e) {
-            return R2Error.fromThrownValue(e, "Failed to remove files");
         }
         return null;
     }
