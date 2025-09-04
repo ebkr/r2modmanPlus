@@ -128,7 +128,7 @@
         <DownloadProgressModal />
         <DownloadModVersionSelectModal />
         <UpdateAllInstalledModsModal />
-        <LaunchTypeModal v-if="canRenderLaunchTypeModal"/>
+        <LaunchTypeModal v-if="canRenderLaunchTypeModal()" />
 
         <div class="router-view">
             <router-view name="subview" v-on:setting-invoked="handleSettingsCallbacks($event)" />
