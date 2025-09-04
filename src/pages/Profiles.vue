@@ -107,6 +107,10 @@ async function moveToNextScreen() {
 }
 
 onMounted(async () => {
+    // For debugging issue where settingsIdentifier seems to be null
+    // when saving settings to Dexie store.
+    console.debug("Profiles view entered with active game", store.state.activeGame.settingsIdentifier);
+
     router = getCurrentInstance()!.proxy.$router;
     const settings = await store.getters.settings;
     await settings.load();
