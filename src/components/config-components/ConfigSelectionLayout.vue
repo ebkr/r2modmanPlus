@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="margin-right config-editor-selection-items">
+        <div class="margin-right config-editor-selection-items" v-if="!isLoadingFiles">
             <div v-for="(file, index) in sortedConfigFiles" :key="`config-file-${file.getName()}`">
                 <ExpandableCard
                     :id="`config-file-${index}`"
@@ -63,6 +63,14 @@
                     <a class='card-footer-item' @click="openConfig(file)">Open File</a>
                     <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
                 </ExpandableCard>
+            </div>
+        </div>
+        <div v-else>
+            <div id="config-lookup">
+                <div class="fa-3x">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                </div>
+                <p>Looking for config files</p>
             </div>
         </div>
     </div>
@@ -93,6 +101,7 @@ const emits = defineEmits<{
 
 const configFiles = ref<ConfigFile[]>([]);
 const shownConfigFiles = ref<ConfigFile[]>([]);
+const isLoadingFiles = ref<boolean>(true);
 
 const filterText = ref<string>('');
 const sortOrder = ref<SortConfigFile>(SortConfigFile.NAME);
@@ -153,6 +162,7 @@ onMounted(async () => {
     }
 
     shownConfigFiles.value = [...configFiles.value];
+    isLoadingFiles.value = false;
 });
 
 async function deleteConfig(file: ConfigFile) {
@@ -192,5 +202,11 @@ function openConfig(file: ConfigFile) {
 .config-editor-selection-items {
     overflow-y: auto;
     max-height: none;
+}
+
+#config-lookup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 </style>
