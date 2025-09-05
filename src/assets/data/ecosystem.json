@@ -10877,6 +10877,9 @@
           },
           "asset-replacements": {
             "label": "Asset Replacements"
+          },
+          "mixtapes": {
+            "label": "Mixtapes"
           }
         },
         "sections": {
@@ -19346,6 +19349,121 @@
       },
       "r2modman": null
     },
+    "hollow-knight-silksong": {
+      "uuid": "b8fc6f53-5269-4768-b7ec-f09742f0b0bc",
+      "label": "hollow-knight-silksong",
+      "meta": {
+        "displayName": "Hollow Knight: Silksong",
+        "iconUrl": "hollow-knight-silksong.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1030300"
+            }
+          ],
+          "steamFolderName": "Hollow Knight Silksong",
+          "dataFolderName": "Hollow Knight Silksong_Data",
+          "exeNames": [
+            "Hollow Knight Silksong.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Hollow Knight: Silksong",
+            "iconUrl": "hollow-knight-silksong.webp"
+          },
+          "settingsIdentifier": "HollowKnightSilksong",
+          "internalFolderName": "HollowKnightSilksong",
+          "packageIndex": "https://thunderstore.io/c/hollow-knight-silksong/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Hollow Knight: Silksong",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      }
+    },
     "kerbal-space-program-2": {
       "uuid": "a7b6e172-b2f7-48f7-ae4f-bf90c76aa8c5",
       "label": "kerbal-space-program-2",
@@ -20881,6 +20999,68 @@
         },
         "wikiUrl": "https://docs.r5reloaded.com/",
         "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+        "autolistPackageIds": [],
+        "shortDescription": "Modded Apex Legends!"
+      }
+    },
+    "r5valkyrie": {
+      "uuid": "ac6446c4-17ff-4027-b11d-fa7a39c0be2c",
+      "label": "r5valkyrie",
+      "meta": {
+        "displayName": "R5Valkyrie",
+        "iconUrl": ""
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "R5Valkyrie",
+        "categories": {
+          "legend": {
+            "label": "Legend"
+          },
+          "weapon": {
+            "label": "Weapon"
+          },
+          "gamemode": {
+            "label": "Gamemode"
+          },
+          "map": {
+            "label": "Map"
+          },
+          "framework": {
+            "label": "Framework"
+          },
+          "modpack": {
+            "label": "Modpack"
+          },
+          "client-side": {
+            "label": "Client-side"
+          },
+          "server-side": {
+            "label": "Server-side"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "sound": {
+            "label": "Sound"
+          },
+          "animation": {
+            "label": "Animation"
+          },
+          "qol": {
+            "label": "QoL"
+          }
+        },
+        "sections": {},
+        "wikiUrl": "https://playvalkyrie.org/docs",
+        "discordUrl": "https://discord.gg/GcJSMUGJyD",
         "autolistPackageIds": [],
         "shortDescription": "Modded Apex Legends!"
       }
@@ -24547,6 +24727,9 @@
         },
         "asset-replacements": {
           "label": "Asset Replacements"
+        },
+        "mixtapes": {
+          "label": "Mixtapes"
         }
       },
       "sections": {
@@ -27169,6 +27352,44 @@
         }
       }
     },
+    "hollow-knight-silksong": {
+      "displayName": "Hollow Knight: Silksong",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
+    },
     "kerbal-space-program-2": {
       "displayName": "Kerbal Space Program 2",
       "categories": {
@@ -27837,6 +28058,58 @@
       },
       "wikiUrl": "https://docs.r5reloaded.com/",
       "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+      "autolistPackageIds": [],
+      "shortDescription": "Modded Apex Legends!"
+    },
+    "r5valkyrie": {
+      "displayName": "R5Valkyrie",
+      "categories": {
+        "legend": {
+          "label": "Legend"
+        },
+        "weapon": {
+          "label": "Weapon"
+        },
+        "gamemode": {
+          "label": "Gamemode"
+        },
+        "map": {
+          "label": "Map"
+        },
+        "framework": {
+          "label": "Framework"
+        },
+        "modpack": {
+          "label": "Modpack"
+        },
+        "client-side": {
+          "label": "Client-side"
+        },
+        "server-side": {
+          "label": "Server-side"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "model": {
+          "label": "Model"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "sound": {
+          "label": "Sound"
+        },
+        "animation": {
+          "label": "Animation"
+        },
+        "qol": {
+          "label": "QoL"
+        }
+      },
+      "sections": {},
+      "wikiUrl": "https://playvalkyrie.org/docs",
+      "discordUrl": "https://discord.gg/GcJSMUGJyD",
       "autolistPackageIds": [],
       "shortDescription": "Modded Apex Legends!"
     },
@@ -28591,6 +28864,11 @@
     },
     {
       "packageId": "BepInEx-BepInExPack_Patapon",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Silksong",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
     }
