@@ -8,56 +8,60 @@
             <div id="config-overview" v-if="configurationFile">
                 <h3 class='subtitle is-3'>Sections</h3>
                 <ul>
-                    <li v-for="(section, sectionIndex) of configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`" v-if="section.sectionName.length > 0">
-                        <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
-                    </li>
+                    <template v-for="(section, sectionIndex) in configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
+                        <li v-if="section.sectionName.length > 0">
+                            <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
+                        </li>
+                    </template>
                 </ul>
                 <hr/>
                 <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
-                    <p class="title is-6" :id="sectionIndex"><span class="sticky-top sticky-top--offset-1rem sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
+                    <p class="title is-6" :id="sectionIndex.toString()"><span class="sticky-top sticky-top--offset-1rem sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
                         {{ section.sectionName }}
                         <br/>
                         <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
                     </span></p>
                     <div>
-                        <div class="inner-row" v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`" v-if="!collapsedSections.includes(section)">
-                            <div class="entry-info">
-                                <p><strong>{{ entry.entryName }}</strong></p>
-                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
-                                    <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
+                        <template v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`">
+                            <div class="inner-row" v-if="!collapsedSections.includes(section)">
+                                <div class="entry-info">
+                                    <p><strong>{{ entry.entryName }}</strong></p>
+                                    <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`description-comment-${commentIndex}-${section.sectionName}`">
+                                        <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
+                                    </div>
+                                    <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
+                                        <span class="smaller-font metadata-text" v-if="!comment.isDescription">
+                                            {{ comment.displayValue }}
+                                        </span>
+                                    </div>
+                                    <div v-if="isDisplayTooLong(entry) && entriesWithExpandedComments.includes(entry)">
+                                        <a href="#" @click="() => toggleEntryExpansion(entry)">Show less</a>
+                                    </div>
+                                    <div v-else-if="isDisplayTooLong(entry)">
+                                        <a href="#" @click="() => toggleEntryExpansion(entry)">Show more</a>
+                                    </div>
                                 </div>
-                                <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
-                                    <span class="smaller-font metadata-text" v-if="!comment.isDescription">
-                                        {{ comment.displayValue }}
-                                    </span>
-                                </div>
-                                <div v-if="isDisplayTooLong(entry) && entriesWithExpandedComments.includes(entry)">
-                                    <a href="#" @click="() => toggleEntryExpansion(entry)">Show less</a>
-                                </div>
-                                <div v-else-if="isDisplayTooLong(entry)">
-                                    <a href="#" @click="() => toggleEntryExpansion(entry)">Show more</a>
-                                </div>
-                            </div>
-                            <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
-                                <div class="settings-input-container">
-                                    <select class="select select--full" v-model="entry.value">
-                                        <template v-if="!getSelectOptions(entry).includes(entry.value)">
-                                            <option :value="entry.value">
-                                                {{ entry.value }}
+                                <template v-if="entry.displayType === 'single-select' || entry.displayType === 'boolean'">
+                                    <div class="settings-input-container">
+                                        <select class="select select--full" v-model="entry.value">
+                                            <template v-if="!getSelectOptions(entry).includes(entry.value)">
+                                                <option :value="entry.value">
+                                                    {{ entry.value }}
+                                                </option>
+                                            </template>
+                                            <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
+                                                {{ opt }}
                                             </option>
-                                        </template>
-                                        <option v-for="(opt, optIndex) in getSelectOptions(entry)" :value="opt">
-                                            {{ opt }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </template>
-                            <template v-else>
-                                <div class="settings-input-container">
-                                    <input type="text" class="input" v-model="entry.value"/>
-                                </div>
-                            </template>
-                        </div>
+                                        </select>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="settings-input-container">
+                                        <input type="text" class="input" v-model="entry.value"/>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </div>

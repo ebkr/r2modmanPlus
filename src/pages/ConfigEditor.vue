@@ -21,6 +21,9 @@ function bindEdit(editValue: ConfigFile | null) {
 
 <style lang="scss" scoped>
 #config-editor {
+    display: grid;
+    grid-template-rows: 1fr;
+    max-height: 100vh;
     width: 100%;
 }
 </style>

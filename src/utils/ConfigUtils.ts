@@ -1,5 +1,5 @@
 import FsProvider from '../providers/generic/file/FsProvider';
-import path from 'path';
+import path from '../providers/node/path/path';
 
 export type ConfigurationFile = {
     filename: string;
