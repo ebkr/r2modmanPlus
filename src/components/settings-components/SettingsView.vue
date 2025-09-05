@@ -13,7 +13,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import {useRouter} from 'vue-router';
@@ -41,239 +41,240 @@ const settings = computed(() => store.getters['settings']);
 const localModList = computed(() => store.state.profile.modList);
 const appName = computed(() => ManagerInformation.APP_NAME);
 
-let settingsList = [
-    new SettingsRow(
-        'locations',
-        t('translations.pages.settings.locations.browseDataFolder.title'),
-        t('translations.pages.settings.locations.browseDataFolder.description'),
-        async () => PathResolver.ROOT,
-        'fa-door-open',
-        () => {
-            emitInvoke('BrowseDataFolder');
-        }
-    ),
-    new SettingsRow(
-        'locations',
-        t('translations.pages.settings.locations.changeGameFolder.title', { gameName: activeGame.value.displayName }),
-        t('translations.pages.settings.locations.changeGameFolder.description', { gameName: activeGame.value.displayName, appName: appName.value }),
-        async () => {
-            if (settings.value.getContext().gameSpecific.gameDirectory !== null) {
-                const directory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
-                if (!(directory instanceof R2Error)) {
-                    return directory;
+let settingsList = computed(() => {
+    let settingsItems = [
+        new SettingsRow(
+            'locations',
+            t('translations.pages.settings.locations.browseDataFolder.title'),
+            t('translations.pages.settings.locations.browseDataFolder.description'),
+            async () => PathResolver.ROOT,
+            'fa-door-open',
+            () => {
+                emitInvoke('BrowseDataFolder');
+            }
+        ),
+        new SettingsRow(
+            'locations',
+            t('translations.pages.settings.locations.changeGameFolder.title', { gameName: activeGame.value.displayName }),
+            t('translations.pages.settings.locations.changeGameFolder.description', { gameName: activeGame.value.displayName, appName: appName.value }),
+            async () => {
+                if (settings.value.getContext().gameSpecific.gameDirectory !== null) {
+                    const directory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
+                    if (!(directory instanceof R2Error)) {
+                        return directory;
+                    }
                 }
-            }
-            return t('translations.pages.settings.locations.changeGameFolder.setManually');
-        },
-        'fa-folder-open',
-        () => {
-            if (Platform.XBOX_GAME_PASS == activeGame.value.activePlatform.storePlatform) {
-                emitInvoke('ChangeGameDirectoryGamePass');
-            }
-            else {
-                emitInvoke('ChangeGameDirectory');
-            }
-        }
-    ),
-    new SettingsRow(
-        'locations',
-        t('translations.pages.settings.locations.browseProfileFolder.title'),
-        t('translations.pages.settings.locations.browseProfileFolder.description'),
-        async () => {
-            return store.getters['profile/activeProfile'].getProfilePath();
-        },
-        'fa-door-open',
-        () => emitInvoke('BrowseProfileFolder')
-    ),
-    new SettingsRow(
-        'locations',
-        t('translations.pages.settings.locations.changeDataFolder.title'),
-        t('translations.pages.settings.locations.changeDataFolder.description'),
-        async () => {
-            return PathResolver.ROOT;
-        },
-        'fa-folder-open',
-        () => emitInvoke('ChangeDataFolder')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.copyLogFile.title'),
-        t('translations.pages.settings.debugging.copyLogFile.description'),
-        async () =>  t(`translations.pages.settings.debugging.copyLogFile.${logOutput.value.exists ? 'logFileExists' : 'logFileDoesNotExist'}`),
-        'fa-clipboard',
-        () => {
-            if (logOutput.value.exists) {
-                emitInvoke('CopyLogToClipboard')
-            }
-        }
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.copyTroubleshootingInfo.title'),
-        t('translations.pages.settings.debugging.copyTroubleshootingInfo.description'),
-        async () => t('translations.pages.settings.debugging.copyTroubleshootingInfo.value'),
-        'fa-clipboard',
-        () => emitInvoke('CopyTroubleshootingInfoToClipboard')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.toggleDownloadCache.title'),
-        t('translations.pages.settings.debugging.toggleDownloadCache.description'),
-        async () => {
-            return store.state.download.ignoreCache
-                ? t('translations.pages.settings.debugging.toggleDownloadCache.enabled')
-                : t('translations.pages.settings.debugging.toggleDownloadCache.disabled');
-        },
-        'fa-exchange-alt',
-        () => emitInvoke('ToggleDownloadCache')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.setLaunchArguments.title'),
-        t('translations.pages.settings.debugging.setLaunchArguments.description'),
-        async () => t('translations.pages.settings.debugging.setLaunchArguments.value'),
-        'fa-wrench',
-        () => emitInvoke('SetLaunchParameters')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.cleanModCache.title'),
-        t('translations.pages.settings.debugging.cleanModCache.description'),
-        async () => t('translations.pages.settings.debugging.cleanModCache.value'),
-        'fa-trash',
-        () => emitInvoke('CleanCache')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.cleanOnlineModList.title'),
-        t('translations.pages.settings.debugging.cleanOnlineModList.description'),
-        async () => store.dispatch('tsMods/getActiveGameCacheStatus').then(status => t(`translations.pages.settings.debugging.cleanOnlineModList.states.${status}`, { gameName: activeGame.value.displayName})),
-        'fa-trash',
-        () => store.dispatch('tsMods/resetActiveGameCache')
-    ),
-    new SettingsRow(
-        'debugging',
-        t('translations.pages.settings.debugging.toggleThunderstoreCdn.title'),
-        t('translations.pages.settings.debugging.toggleThunderstoreCdn.description'),
-        async () => t('translations.pages.settings.debugging.toggleThunderstoreCdn.current', { label: CdnProvider.current.label, url: CdnProvider.current.url }),
-        'fa-exchange-alt',
-        CdnProvider.togglePreferredCdn
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.changeProfile.title'),
-        t('translations.pages.settings.profile.changeProfile.description'),
-        async () => t('translations.pages.settings.profile.changeProfile.value', { profileName: store.getters['profile/activeProfile'].getProfileName() }),
-        'fa-file-import',
-        () => emitInvoke('ChangeProfile')
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.enableAllMods.title'),
-        t('translations.pages.settings.profile.enableAllMods.description'),
-        async () => t(
-            'translations.pages.settings.profile.enableAllMods.value',
-            localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
-            {
-                named: {
-                    enabledModCount: localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
-                    totalModCount: localModList.value.length
+                return t('translations.pages.settings.locations.changeGameFolder.setManually');
+            },
+            'fa-folder-open',
+            () => {
+                if (Platform.XBOX_GAME_PASS == activeGame.value.activePlatform.storePlatform) {
+                    emitInvoke('ChangeGameDirectoryGamePass');
+                }
+                else {
+                    emitInvoke('ChangeGameDirectory');
                 }
             }
         ),
-        'fa-file-import',
-        () => emitInvoke('EnableAll')
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.disableAllMods.title'),
-        t('translations.pages.settings.profile.disableAllMods.description'),
-        async () => t(
-            'translations.pages.settings.profile.disableAllMods.value',
-            ProfileModList.getDisabledModCount(localModList.value),
-            {
-                named: {
-                    disabledModCount: ProfileModList.getDisabledModCount(localModList.value),
-                    totalModCount: localModList.value.length
+        new SettingsRow(
+            'locations',
+            t('translations.pages.settings.locations.browseProfileFolder.title'),
+            t('translations.pages.settings.locations.browseProfileFolder.description'),
+            async () => {
+                return store.getters['profile/activeProfile'].getProfilePath();
+            },
+            'fa-door-open',
+            () => emitInvoke('BrowseProfileFolder')
+        ),
+        new SettingsRow(
+            'locations',
+            t('translations.pages.settings.locations.changeDataFolder.title'),
+            t('translations.pages.settings.locations.changeDataFolder.description'),
+            async () => {
+                return PathResolver.ROOT;
+            },
+            'fa-folder-open',
+            () => emitInvoke('ChangeDataFolder')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.copyLogFile.title'),
+            t('translations.pages.settings.debugging.copyLogFile.description'),
+            async () =>  t(`translations.pages.settings.debugging.copyLogFile.${logOutput.value.exists ? 'logFileExists' : 'logFileDoesNotExist'}`),
+            'fa-clipboard',
+            () => {
+                if (logOutput.value.exists) {
+                    emitInvoke('CopyLogToClipboard')
                 }
             }
         ),
-        'fa-file-import',
-        () => emitInvoke('DisableAll')
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.importLocalMod.title'),
-        t('translations.pages.settings.profile.importLocalMod.description'),
-        async () => t('translations.pages.settings.profile.importLocalMod.value'),
-        'fa-file-import',
-        () => store.commit("openLocalFileImportModal")
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.exportProfileAsFile.title'),
-        t('translations.pages.settings.profile.exportProfileAsFile.description'),
-        async () => t('translations.pages.settings.profile.exportProfileAsFile.value'),
-        'fa-file-export',
-        () => store.dispatch("profileExport/exportProfileAsFile")
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.exportProfileAsCode.title'),
-        t('translations.pages.settings.profile.exportProfileAsCode.description'),
-        async () => t('translations.pages.settings.profile.exportProfileAsCode.value'),
-        'fa-file-export',
-        () => store.dispatch("profileExport/exportProfileAsCode")
-    ),
-    new SettingsRow(
-        'profile',
-        t('translations.pages.settings.profile.updateAllMods.title'),
-        t('translations.pages.settings.profile.updateAllMods.description'),
-        async () => t('translations.pages.settings.profile.updateAllMods.value', store.getters['profile/modsWithUpdates'].length),
-        'fa-cloud-upload-alt',
-        () => emitInvoke('UpdateAllMods')
-    ),
-    new SettingsRow(
-        'other',
-        t('translations.pages.settings.other.toggleFunkyMode.title'),
-        t('translations.pages.settings.other.toggleFunkyMode.description'),
-        async () => {
-            return settings.value.getContext().global.funkyModeEnabled
-                ? t('translations.pages.settings.other.toggleFunkyMode.states.enabled')
-                : t('translations.pages.settings.other.toggleFunkyMode.states.disabled');
-        },
-        'fa-exchange-alt',
-        () => emitInvoke('ToggleFunkyMode')
-    ),
-    new SettingsRow(
-        'other',
-        t('translations.pages.settings.other.switchTheme.title'),
-        t('translations.pages.settings.other.switchTheme.description'),
-        async () => {
-            return settings.value.getContext().global.darkTheme
-                ? t('translations.pages.settings.other.switchTheme.themes.dark')
-                : t('translations.pages.settings.other.switchTheme.themes.light');
-        },
-        'fa-exchange-alt',
-        () => emitInvoke('SwitchTheme')
-    ),
-    new SettingsRow(
-        'other',
-        t('translations.pages.settings.other.switchCardDisplayType.title'),
-        t('translations.pages.settings.other.switchCardDisplayType.description'),
-        async () => {
-            return settings.value.getContext().global.expandedCards
-                ? t('translations.pages.settings.other.switchCardDisplayType.states.expanded')
-                : t('translations.pages.settings.other.switchCardDisplayType.states.collapsed');
-        },
-        'fa-exchange-alt',
-        () => emitInvoke('SwitchCard')
-    ),
-    new SettingsRow(
-        'other',
-        t('translations.pages.settings.other.refreshOnlineModList.title'),
-        t('translations.pages.settings.other.refreshOnlineModList.description'),
-        async () => {
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.copyTroubleshootingInfo.title'),
+            t('translations.pages.settings.debugging.copyTroubleshootingInfo.description'),
+            async () => t('translations.pages.settings.debugging.copyTroubleshootingInfo.value'),
+            'fa-clipboard',
+            () => emitInvoke('CopyTroubleshootingInfoToClipboard')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.toggleDownloadCache.title'),
+            t('translations.pages.settings.debugging.toggleDownloadCache.description'),
+            async () => {
+                return store.state.download.ignoreCache
+                    ? t('translations.pages.settings.debugging.toggleDownloadCache.enabled')
+                    : t('translations.pages.settings.debugging.toggleDownloadCache.disabled');
+            },
+            'fa-exchange-alt',
+            () => emitInvoke('ToggleDownloadCache')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.setLaunchArguments.title'),
+            t('translations.pages.settings.debugging.setLaunchArguments.description'),
+            async () => t('translations.pages.settings.debugging.setLaunchArguments.value'),
+            'fa-wrench',
+            () => emitInvoke('SetLaunchParameters')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.cleanModCache.title'),
+            t('translations.pages.settings.debugging.cleanModCache.description'),
+            async () => t('translations.pages.settings.debugging.cleanModCache.value'),
+            'fa-trash',
+            () => emitInvoke('CleanCache')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.cleanOnlineModList.title'),
+            t('translations.pages.settings.debugging.cleanOnlineModList.description'),
+            async () => store.dispatch('tsMods/getActiveGameCacheStatus').then(status => t(`translations.pages.settings.debugging.cleanOnlineModList.states.${status}`, { gameName: activeGame.value.displayName})),
+            'fa-trash',
+            () => store.dispatch('tsMods/resetActiveGameCache')
+        ),
+        new SettingsRow(
+            'debugging',
+            t('translations.pages.settings.debugging.toggleThunderstoreCdn.title'),
+            t('translations.pages.settings.debugging.toggleThunderstoreCdn.description'),
+            async () => t('translations.pages.settings.debugging.toggleThunderstoreCdn.current', { label: CdnProvider.current.label, url: CdnProvider.current.url }),
+            'fa-exchange-alt',
+            CdnProvider.togglePreferredCdn
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.changeProfile.title'),
+            t('translations.pages.settings.profile.changeProfile.description'),
+            async () => t('translations.pages.settings.profile.changeProfile.value', { profileName: store.getters['profile/activeProfile'].getProfileName() }),
+            'fa-file-import',
+            () => emitInvoke('ChangeProfile')
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.enableAllMods.title'),
+            t('translations.pages.settings.profile.enableAllMods.description'),
+            async () => t(
+                'translations.pages.settings.profile.enableAllMods.value',
+                localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
+                {
+                    named: {
+                        enabledModCount: localModList.value.length - ProfileModList.getDisabledModCount(localModList.value),
+                        totalModCount: localModList.value.length
+                    }
+                }
+            ),
+            'fa-file-import',
+            () => emitInvoke('EnableAll')
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.disableAllMods.title'),
+            t('translations.pages.settings.profile.disableAllMods.description'),
+            async () => t(
+                'translations.pages.settings.profile.disableAllMods.value',
+                ProfileModList.getDisabledModCount(localModList.value),
+                {
+                    named: {
+                        disabledModCount: ProfileModList.getDisabledModCount(localModList.value),
+                        totalModCount: localModList.value.length
+                    }
+                }
+            ),
+            'fa-file-import',
+            () => emitInvoke('DisableAll')
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.importLocalMod.title'),
+            t('translations.pages.settings.profile.importLocalMod.description'),
+            async () => t('translations.pages.settings.profile.importLocalMod.value'),
+            'fa-file-import',
+            () => store.commit("openLocalFileImportModal")
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.exportProfileAsFile.title'),
+            t('translations.pages.settings.profile.exportProfileAsFile.description'),
+            async () => t('translations.pages.settings.profile.exportProfileAsFile.value'),
+            'fa-file-export',
+            () => store.dispatch("profileExport/exportProfileAsFile")
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.exportProfileAsCode.title'),
+            t('translations.pages.settings.profile.exportProfileAsCode.description'),
+            async () => t('translations.pages.settings.profile.exportProfileAsCode.value'),
+            'fa-file-export',
+            () => store.dispatch("profileExport/exportProfileAsCode")
+        ),
+        new SettingsRow(
+            'profile',
+            t('translations.pages.settings.profile.updateAllMods.title'),
+            t('translations.pages.settings.profile.updateAllMods.description'),
+            async () => t('translations.pages.settings.profile.updateAllMods.value', store.getters['profile/modsWithUpdates'].length),
+            'fa-cloud-upload-alt',
+            () => emitInvoke('UpdateAllMods')
+        ),
+        new SettingsRow(
+            'other',
+            t('translations.pages.settings.other.toggleFunkyMode.title'),
+            t('translations.pages.settings.other.toggleFunkyMode.description'),
+            async () => {
+                return settings.value.getContext().global.funkyModeEnabled
+                    ? t('translations.pages.settings.other.toggleFunkyMode.states.enabled')
+                    : t('translations.pages.settings.other.toggleFunkyMode.states.disabled');
+            },
+            'fa-exchange-alt',
+            () => emitInvoke('ToggleFunkyMode')
+        ),
+        new SettingsRow(
+            'other',
+            t('translations.pages.settings.other.switchTheme.title'),
+            t('translations.pages.settings.other.switchTheme.description'),
+            async () => {
+                return settings.value.getContext().global.darkTheme
+                    ? t('translations.pages.settings.other.switchTheme.themes.dark')
+                    : t('translations.pages.settings.other.switchTheme.themes.light');
+            },
+            'fa-exchange-alt',
+            () => emitInvoke('SwitchTheme')
+        ),
+        new SettingsRow(
+            'other',
+            t('translations.pages.settings.other.switchCardDisplayType.title'),
+            t('translations.pages.settings.other.switchCardDisplayType.description'),
+            async () => {
+                return settings.value.getContext().global.expandedCards
+                    ? t('translations.pages.settings.other.switchCardDisplayType.states.expanded')
+                    : t('translations.pages.settings.other.switchCardDisplayType.states.collapsed');
+            },
+            'fa-exchange-alt',
+            () => emitInvoke('SwitchCard')
+        ),
+        new SettingsRow(
+            'other',
+            t('translations.pages.settings.other.refreshOnlineModList.title'),
+            t('translations.pages.settings.other.refreshOnlineModList.description'),
+            async () => {
                 if (store.state.tsMods.isThunderstoreModListUpdateInProgress) {
                     return store.state.tsMods.thunderstoreModListUpdateStatus
                         ? t(`translations.pages.splash.states.${store.state.tsMods.thunderstoreModListUpdateStatus}`)
@@ -290,45 +291,31 @@ let settingsList = [
                 }
                 return t('translations.pages.settings.other.refreshOnlineModList.states.apiUnavailable');
             },
-        'fa-exchange-alt',
-        async () => await store.dispatch("tsMods/syncPackageList")
-    ),
-    new SettingsRow(
-      'other',
-        t('translations.pages.settings.other.changeGame.title'),
-        t('translations.pages.settings.other.changeGame.description'),
-      async () => "",
-        'fa-gamepad',
-        async () => {
-            await ManagerSettings.resetDefaults();
-            await router.push({name: 'index'});
-        }
-    ),
-    new SettingsRow(
-        'modpacks',
-        t('translations.pages.settings.modpacks.showDependencyStrings.title'),
-        t('translations.pages.settings.modpacks.showDependencyStrings.description'),
-        async () => t('translations.pages.settings.modpacks.showDependencyStrings.value', localModList.value.length),
-        'fa-file-alt',
-        () => emitInvoke('ShowDependencyStrings')
-    ),
-];
-
-watch(search, () => {
-    searchableSettings.value = settingsList
-        .filter(value =>
-            value.action.toLowerCase().indexOf(search.value.toLowerCase()) >= 0
-            || value.description.toLowerCase().indexOf(search.value.toLowerCase()) >= 0);
-});
-
-function getFilteredSettings() {
-    return searchableSettings.value.filter(value => value.group.toLowerCase() === activeTab.value.toLowerCase())
-        .sort((a, b) => a.action.localeCompare(b.action));
-}
-
-onMounted(async () => {
+            'fa-exchange-alt',
+            async () => await store.dispatch("tsMods/syncPackageList")
+        ),
+        new SettingsRow(
+            'other',
+            t('translations.pages.settings.other.changeGame.title'),
+            t('translations.pages.settings.other.changeGame.description'),
+            async () => "",
+            'fa-gamepad',
+            async () => {
+                await ManagerSettings.resetDefaults();
+                await router.push({name: 'index'});
+            }
+        ),
+        new SettingsRow(
+            'modpacks',
+            t('translations.pages.settings.modpacks.showDependencyStrings.title'),
+            t('translations.pages.settings.modpacks.showDependencyStrings.description'),
+            async () => t('translations.pages.settings.modpacks.showDependencyStrings.value', localModList.value.length),
+            'fa-file-alt',
+            () => emitInvoke('ShowDependencyStrings')
+        ),
+    ];
     if ([Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.value.activePlatform.storePlatform)) {
-        settingsList.push(
+        settingsItems.push(
             new SettingsRow(
                 'locations',
                 t('translations.pages.settings.locations.changeSteamFolder.title'),
@@ -357,7 +344,7 @@ onMounted(async () => {
     }
 
     if (['linux', 'darwin'].includes(process.platform) && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
-        settingsList.push(
+        settingsItems.push(
             new SettingsRow(
                 'debugging',
                 t('translations.pages.settings.debugging.changeLaunchBehaviour.title'),
@@ -370,8 +357,27 @@ onMounted(async () => {
             )
         );
     }
-    settingsList = settingsList.sort((a, b) => a.action.localeCompare(b.action));
-    searchableSettings.value = settingsList;
+    settingsItems = settingsItems.sort((a, b) => a.action.localeCompare(b.action));
+    return settingsItems;
+});
+
+watchEffect(() => {
+    searchableSettings.value = settingsList.value;
+})
+
+watch(search, () => {
+    searchableSettings.value = settingsList.value
+        .filter(value =>
+            value.action.toLowerCase().indexOf(search.value.toLowerCase()) >= 0
+            || value.description.toLowerCase().indexOf(search.value.toLowerCase()) >= 0);
+});
+
+function getFilteredSettings() {
+    return searchableSettings.value.filter(value => value.group.toLowerCase() === activeTab.value.toLowerCase())
+        .sort((a, b) => a.action.localeCompare(b.action));
+}
+
+onMounted(async () => {
 
     const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
     if (!(gameDirectory instanceof R2Error)) {
