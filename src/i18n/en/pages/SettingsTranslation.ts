@@ -126,7 +126,7 @@ export const SettingsTranslation: SettingsMessageFormat = {
         },
         exportProfileAsCode: {
             title: 'Export profile as a code',
-            description: 'Export your mod list and configs as a file.',
+            description: 'Export your mod list and configs as a code.',
             value: 'The exported code can be shared with friends to get an identical profile quickly and easily',
         },
         updateAllMods: {
