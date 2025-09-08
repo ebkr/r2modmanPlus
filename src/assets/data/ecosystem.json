@@ -10887,7 +10887,8 @@
             "name": "Mods",
             "excludeCategories": [
               "modpacks",
-              "asset-replacements"
+              "asset-replacements",
+              "mixtapes"
             ]
           },
           "modpacks": {
@@ -10900,6 +10901,16 @@
             "name": "Asset Replacements",
             "requireCategories": [
               "asset-replacements"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "mixtapes"
+            ]
+          },
+          "resource-packs": {
+            "name": "Resource Packs",
+            "requireCategories": [
+              "mixtapes"
             ],
             "excludeCategories": [
               "modpacks"
@@ -21090,12 +21101,12 @@
           "packageLoader": "bepinex",
           "meta": {
             "displayName": "Resonite",
-            "iconUrl": "resonite.webp"
+            "iconUrl": "mage-arena.webp"
           },
           "settingsIdentifier": "Resonite",
           "internalFolderName": "Resonite",
           "packageIndex": "https://thunderstore.io/c/resonite/api/v1/package-listing-index/",
-          "gameSelectionDisplayMode": "hidden",
+          "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [],
           "installRules": [
             {
@@ -21107,6 +21118,13 @@
               "trackingMethod": "subdir",
               "subRoutes": []
             },
+              {
+                  "route": "Renderer/BepInEx/plugins",
+                  "defaultFileExtensions": [],
+                  "trackingMethod": "subdir",
+                  "subRoutes": [],
+                  "isDefaultLocation": false
+              },
             {
               "route": "BepInEx/core",
               "isDefaultLocation": false,
@@ -24737,7 +24755,8 @@
           "name": "Mods",
           "excludeCategories": [
             "modpacks",
-            "asset-replacements"
+            "asset-replacements",
+            "mixtapes"
           ]
         },
         "modpacks": {
@@ -24750,6 +24769,16 @@
           "name": "Asset Replacements",
           "requireCategories": [
             "asset-replacements"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "mixtapes"
+          ]
+        },
+        "resource-packs": {
+          "name": "Resource Packs",
+          "requireCategories": [
+            "mixtapes"
           ],
           "excludeCategories": [
             "modpacks"
@@ -28871,6 +28900,16 @@
       "packageId": "BepInEx-BepInExPack_Silksong",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
-    }
+    },
+      {
+          "packageId": "ResoniteModding-BepisLoader",
+          "rootFolder": "BepInExPack",
+          "loader": "bepisloader"
+      },
+      {
+          "packageId": "ResoniteModding-BepInExPack_Renderer",
+          "rootFolder": "BepInExPack",
+          "loader": "bepisloader"
+      }
   ]
 }

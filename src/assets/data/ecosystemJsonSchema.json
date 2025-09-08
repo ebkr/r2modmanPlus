@@ -223,6 +223,7 @@
                           "type": "string",
                           "enum": [
                             "bepinex",
+                            "bepisloader",
                             "melonloader",
                             "northstar",
                             "godotml",
@@ -373,6 +374,7 @@
                 "type": "string",
                 "enum": [
                   "bepinex",
+                  "bepisloader",
                   "melonloader",
                   "northstar",
                   "godotml",
