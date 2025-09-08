@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <div class="sticky-top sticky-top--buttons margin-right">
+    <div id="config-raw-editor">
+        <div id="config-raw-editor-actions">
             <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
-        <div class="notification margin-right">
+        <div id="config-raw-editor-component-wrapper" class="notification margin-right">
             <QuillEditor
                 :modelValue="fileText"
                 @update:modelValue="quillEditorValueUpdated"/>
@@ -48,3 +48,25 @@ function cancel() {
     emits('changed');
 }
 </script>
+
+<style lang="scss" scoped>
+#config-raw-editor {
+    height: 100%;
+    overflow-y: hidden;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    margin: 0;
+    padding: 0;
+}
+
+#config-raw-editor-actions {
+    text-align: right;
+    padding-right: 2rem;
+    padding-bottom: 1rem;
+}
+
+#config-raw-editor-component-wrapper {
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+</style>
