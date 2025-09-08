@@ -1,11 +1,11 @@
 <template>
-    <div>
-        <div class="sticky-top sticky-top--buttons margin-right">
+    <div id="config-entry-wrapper">
+        <div id="config-entry-actions">
             <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
-        <div class="container">
-            <div id="config-overview" v-if="configurationFile">
+        <div id="config-entry-main" v-if="configurationFile">
+            <div id="config-entry-sections">
                 <h3 class='subtitle is-3'>Sections</h3>
                 <ul>
                     <template v-for="(section, sectionIndex) in configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
@@ -15,13 +15,14 @@
                     </template>
                 </ul>
                 <hr/>
+            </div>
+            <div id="config-entries">
                 <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
-                    <p class="title is-6" :id="sectionIndex.toString()"><span class="sticky-top sticky-top--offset-1rem sticky-top--no-shadow sticky-top--no-padding" @click="() => toggleSectionVisibility(section)">
-                        {{ section.sectionName }}
-                        <br/>
+                    <div class="section-title" :id="sectionIndex.toString()">
+                        <p class="title is-6" @click="() => toggleSectionVisibility(section)">{{ section.sectionName }}</p>
                         <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
-                    </span></p>
-                    <div>
+                    </div>
+                    <div class="section-content">
                         <template v-for="(entry, entryIndex) of section.entries" :key="`entry-${entryIndex}-${section.sectionName}`">
                             <div class="inner-row" v-if="!collapsedSections.includes(section)">
                                 <div class="entry-info">
@@ -30,9 +31,9 @@
                                         <span v-if="comment.isDescription">{{ comment.displayValue }}</span>
                                     </div>
                                     <div v-for="(comment, commentIndex) of getAppropriateCommentLines(entry)" :key="`metadata-comment-${commentIndex}-${section.sectionName}`">
-                                        <span class="smaller-font metadata-text" v-if="!comment.isDescription">
-                                            {{ comment.displayValue }}
-                                        </span>
+                                            <span class="smaller-font metadata-text" v-if="!comment.isDescription">
+                                                {{ comment.displayValue }}
+                                            </span>
                                     </div>
                                     <div v-if="isDisplayTooLong(entry) && entriesWithExpandedComments.includes(entry)">
                                         <a href="#" @click="() => toggleEntryExpansion(entry)">Show less</a>
@@ -149,33 +150,54 @@ function toggleEntryExpansion(entry: ConfigurationEntry) {
 </script>
 
 <style lang="scss" scoped>
-#config-overview {
+
+#config-entry-wrapper {
+    height: 100%;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    overflow-y: hidden;
+}
+
+#config-entry-main {
+    height: 100%;
+    overflow-y: auto;
     width: 100%;
-
-    .outer-row {
-        display: grid;
-        grid-template-columns: 200px auto;
-        border-bottom: 1px solid var(--v2-table-row-border-color);
-    }
-
-    .inner-row {
-        width: 100%;
-        margin-bottom: 2rem;
-        border-bottom: 1px solid var(--v2-table-row-border-color);
-    }
-
-    .entry-info {
-        margin-bottom: 0.5rem;
-    }
+    display: grid;
+    grid-template-rows: min-content 1fr;
 }
 
-.metadata-text {
-    color: var(--v2-secondary-text-color) !important;
+#config-entries {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    grid-gap: 1rem;
+    height: 100%;
 }
 
-.sticky-top {
-    &--offset-1rem {
-        top: 1rem;
-    }
+.outer-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    height: 100%;
+    border-bottom: 1px solid var(--v2-table-row-border-color);
+}
+
+.section-title {
+    position: sticky;
+    top: 1rem;
+    height: min-content;
+    padding-bottom: 2rem;
+}
+
+.inner-row {
+    padding-bottom: 2rem;
+}
+
+.title {
+    margin-bottom: 0;
+}
+
+#config-entry-actions {
+    text-align: right;
+    width: 100%;
+    padding-right: 2rem;
 }
 </style>

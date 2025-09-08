@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="config-edit-layout">
         <Hero
             v-if="configFile"
             :title="configFile.getName()"
@@ -32,3 +32,12 @@ const isEntryEditor = computed(() => {
     return props.configFile.getName().endsWith(".cfg")
 });
 </script>
+
+<style lang="scss" scoped>
+#config-edit-layout {
+    display: grid;
+    grid-template-rows: min-content min-content 1fr;
+    height: 100vh;
+    overflow-y: hidden;
+}
+</style>
