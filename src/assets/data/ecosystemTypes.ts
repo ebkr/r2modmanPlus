@@ -116,6 +116,7 @@ export enum Loader {
     RECURSIVE_MELONLOADER = "recursive-melonloader",
     RETURN_OF_MODDING = "return-of-modding",
     SHIMLOADER = "shimloader",
+    BEPISLOADER = "bepisloader"
 }
 
 export interface ModloaderPackage {

@@ -18,6 +18,7 @@ type LoaderInstallers = Exclude<PackageLoader, PackageLoader.NONE>;
 
 const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.BEPINEX]: new BepInExInstaller(),
+    [PackageLoader.BEPISLOADER]: new BepInExInstaller(),
     [PackageLoader.GDWEAVE]: new GDWeaveInstaller(),
     [PackageLoader.GODOTML]: new GodotMLInstaller(),
     [PackageLoader.LOVELY]: new LovelyInstaller(),
@@ -26,7 +27,6 @@ const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
-    [PackageLoader.BEPISLOADER]: new BepInExInstaller(),
 };
 
 export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
@@ -41,7 +41,7 @@ export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstall
 /**
  * Plugin installer registry
  */
-type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.BEPISLOADER;
+type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.BEPISLOADER;
 type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
 
 const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
@@ -56,10 +56,10 @@ const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
 function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
     return !(
         loader === PackageLoader.BEPINEX ||
+        loader === PackageLoader.BEPISLOADER ||
         loader === PackageLoader.GODOTML ||
         loader === PackageLoader.MELONLOADER ||
-        loader === PackageLoader.NORTHSTAR ||
-        loader === PackageLoader.BEPISLOADER
+        loader === PackageLoader.NORTHSTAR
     );
 }
 
