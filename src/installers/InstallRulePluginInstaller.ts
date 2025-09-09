@@ -298,7 +298,7 @@ async function uninstallSubDir(mod: ManifestV2, profile: ImmutableProfile) {
     }
 }
 
-async function uninstallState(mod: ManifestV2, profile: ImmutableProfile) {
+export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
     const stateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
     if (await FsProvider.instance.exists(stateFilePath)) {
         const read = await FsProvider.instance.readFile(stateFilePath);
@@ -342,7 +342,7 @@ async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode
 }
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using STATE tracking method.
-async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<void> {
+export async function applyModeState(mod: ManifestV2, profile: ImmutableProfile, mode: number): Promise<void> {
     const modStateFilePath = profile.joinToProfilePath("_state", `${mod.getName()}-state.yml`);
     if (await FsProvider.instance.exists(modStateFilePath)) {
         const fileContents = (await FsProvider.instance.readFile(modStateFilePath)).toString();

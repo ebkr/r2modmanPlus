@@ -1,8 +1,9 @@
 import { InstallArgs, PackageInstaller, uninstallModLoader } from "./PackageInstaller";
-import { addToStateFile } from "./InstallRulePluginInstaller";
+import { addToStateFile, applyModeState, uninstallState } from "./InstallRulePluginInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 import FileTree from "../model/file/FileTree";
+import ModMode from "../model/enums/ModMode";
 import R2Error from "../model/errors/R2Error";
 import path from "../providers/node/path/path";
 
@@ -78,5 +79,17 @@ export class LovelyPluginInstaller implements PackageInstaller {
         }
 
         await addToStateFile(mod, fileRelocations, profile);
+    }
+
+    async uninstall(args: InstallArgs) {
+        await uninstallState(args.mod, args.profile);
+    }
+
+    async enable(args: InstallArgs) {
+        await applyModeState(args.mod, args.profile, ModMode.ENABLED);
+    }
+
+    async disable(args: InstallArgs) {
+        await applyModeState(args.mod, args.profile, ModMode.DISABLED);
     }
 }
