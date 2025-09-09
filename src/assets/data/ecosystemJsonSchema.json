@@ -232,7 +232,6 @@
                             "return-of-modding",
                             "gdweave",
                             "recursive-melonloader",
-                            "bepisloader",
                             "none"
                           ]
                         },
@@ -384,7 +383,6 @@
                   "return-of-modding",
                   "gdweave",
                   "recursive-melonloader",
-                  "bepisloader",
                   "none"
                 ]
               }

@@ -9,6 +9,7 @@ import { ReturnOfModdingInstaller, ReturnOfModdingPluginInstaller } from './Retu
 import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
 import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } from './RecursiveMelonLoaderInstaller';
 import { DirectCopyInstaller } from './DirectCopyInstaller';
+import { BepisLoaderInstaller } from './BepisLoaderInstaller';
 import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
 /**
@@ -18,7 +19,7 @@ type LoaderInstallers = Exclude<PackageLoader, PackageLoader.NONE>;
 
 const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.BEPINEX]: new BepInExInstaller(),
-    [PackageLoader.BEPISLOADER]: new BepInExInstaller(),
+    [PackageLoader.BEPISLOADER]: new BepisLoaderInstaller(),
     [PackageLoader.GDWEAVE]: new GDWeaveInstaller(),
     [PackageLoader.GODOTML]: new GodotMLInstaller(),
     [PackageLoader.LOVELY]: new LovelyInstaller(),
@@ -41,7 +42,7 @@ export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstall
 /**
  * Plugin installer registry
  */
-type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR | PackageLoader.BEPISLOADER;
+type InstallRuleInstallers = PackageLoader.BEPINEX | PackageLoader.BEPISLOADER | PackageLoader.GODOTML | PackageLoader.MELONLOADER | PackageLoader.NORTHSTAR;
 type PluginInstallers = Exclude<PackageLoader, InstallRuleInstallers>;
 
 const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
