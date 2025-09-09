@@ -15,7 +15,9 @@ export type InstallArgs = {
 
 export interface PackageInstaller {
     install(args: InstallArgs): Promise<void>;
-    uninstall?(args: InstallArgs): Promise<void>;
+    uninstall(args: InstallArgs): Promise<void>;
+
+    // Plugin installers only.
     enable?(args: InstallArgs): Promise<void>;
     disable?(args: InstallArgs): Promise<void>;
 }
