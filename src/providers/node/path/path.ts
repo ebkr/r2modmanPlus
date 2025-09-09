@@ -12,7 +12,7 @@ export type NodePathProvider = {
 let implementation: () => NodePathProvider;
 
 function getImplementation() {
-    if (!implementation) {
+    if (implementation === undefined) {
         return NodePathImplementation;
     }
     return implementation();
