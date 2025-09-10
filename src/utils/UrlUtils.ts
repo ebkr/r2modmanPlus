@@ -1,4 +1,4 @@
-import { CdnDefinition } from 'src/providers/cdn/CdnHostList';
+import { CdnDefinition } from '../providers/cdn/CdnHostList';
 
 /**
  * Append given search parameters to an URL which may or may not already

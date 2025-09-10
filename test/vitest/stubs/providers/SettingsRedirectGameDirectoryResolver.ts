@@ -1,9 +1,6 @@
-import GameDirectoryResolverProvider from 'src/providers/ror2/game/GameDirectoryResolverProvider';
-import R2Error from 'src/model/errors/R2Error';
-import Game from 'src/model/game/Game';
-import ManagerSettings from 'src/r2mm/manager/ManagerSettings';
-import GameManager from 'src/model/game/GameManager';
-import Profile from 'src/model/Profile';
+import GameDirectoryResolverProvider from '../../../../src/providers/ror2/game/GameDirectoryResolverProvider';
+import R2Error from '../../../../src/model/errors/R2Error';
+import Game from '../../../../src/model/game/Game';
 
 export default class SettingsRedirectGameDirectoryResolver extends GameDirectoryResolverProvider {
 

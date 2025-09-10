@@ -1,5 +1,5 @@
-import FsProvider from 'src/providers/generic/file/FsProvider';
-import StatInterface from 'src/providers/generic/file/StatInterface';
+import FsProvider from '../../../../src/providers/generic/file/FsProvider';
+import StatInterface from '../../../../src/providers/generic/file/StatInterface';
 
 export default class StubFsProvider extends FsProvider {
 
