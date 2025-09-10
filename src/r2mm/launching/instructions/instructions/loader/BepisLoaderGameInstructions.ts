@@ -21,7 +21,7 @@ export default class BepisLoaderGameInstructions extends GameInstructionGenerato
             }
         }
         return {
-            moddedParameters: `--hookfxr-enable --bepinex-target ${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')} --doorstop-enable true --doorstop-target "${DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
+            moddedParameters: `--hookfxr-enable --bepinex-target "${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')}" --doorstop-enable true --doorstop-target "${DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
             vanillaParameters: `--doorstop-enable false --hookfxr-disable`
         };
     }
