@@ -2,7 +2,9 @@
 import { Progress } from '../all';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import * as DownloadUtils from '../../utils/DownloadUtils';
 import FileUtils from '../../utils/FileUtils';
+import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
 
 const store = getStore<State>();
 
@@ -23,16 +25,29 @@ function closeModal() {
             <div class='modal-content'>
                 <div class='notification is-info'>
 
-                    <h3 v-if="$store.getters['download/currentDownload'].downloadProgress < 100" class='title'>
+                    <h3 v-if="DownloadUtils.statusIsDownloadOrExtract($store.getters['download/currentDownload'].status)" class='title'>
                         Downloading {{$store.getters['download/currentDownload'].modName}}
                     </h3>
-                    <h3 v-else class='title'>
+                    <h3 v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
                         Installing {{$store.getters['download/currentDownload'].modName}}
                     </h3>
 
-                    <p>
+
+                    <p v-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
+                        <i class="fas fa-download"/>
                         Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% of
                         {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                    </p>
+
+                    <p v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || $store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
+                        <i class="fas fa-box-open"/>
+                        Extracting: {{$store.getters['download/currentDownload'].downloadProgress}}% of
+                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                    </p>
+
+                    <p v-else>
+                        <i class="fas fa-check"/>
+                        Download complete
                     </p>
 
                     <Progress
@@ -42,9 +57,13 @@ function closeModal() {
                     />
 
                     <p v-if="$store.getters['download/currentDownload'].installProgress">
+                        <i class="fas fa-cog" spin />
                         Installing: {{$store.getters['download/currentDownload'].installProgress}}%
                     </p>
-                    <p v-else>Installing: waiting for download to finish</p>
+                    <p v-else>
+                        <i class="fas fa-cog" />
+                        Installing: waiting for download to finish
+                    </p>
 
                     <Progress
                         :max='100'

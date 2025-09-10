@@ -10,13 +10,14 @@ import FileWriteError from '../../model/errors/FileWriteError';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import * as DownloadUtils from '../../utils/DownloadUtils';
+import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
     public async download(
         combos: ThunderstoreCombo[],
         ignoreCache: boolean,
-        totalProgressCallback: (downloadedSize: number, modName: string, status: number, err: R2Error | null) => void
+        totalProgressCallback: (downloadedSize: number, modName: string, status: DownloadStatusEnum, err: R2Error | null) => void
     ): Promise<void> {
         if (combos.length === 0) {
             throw new R2Error('No mods to download', 'An empty list of mods was passed to the downloader');
@@ -25,14 +26,14 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         let modInProgressName = combos[0].getMod().getName();
         let finishedModsDownloadedSize = 0;
 
-        const singleModProgressCallback = (downloadedBytes: number, status: number, err: R2Error | null) => {
+        const singleModProgressCallback = (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => {
             let modInProgressDownloadedSize;
 
-            if (status === StatusEnum.FAILURE) {
+            if (status === DownloadStatusEnum.FAILED) {
                 throw err;
-            } else if (status === StatusEnum.PENDING) {
+            } else if (status === DownloadStatusEnum.DOWNLOADING || status === DownloadStatusEnum.EXTRACTING) {
                 modInProgressDownloadedSize = downloadedBytes;
-            } else if (status === StatusEnum.SUCCESS) {
+            } else if (status === DownloadStatusEnum.EXTRACTED) {
                 finishedModsDownloadedSize += downloadedBytes;
                 modInProgressDownloadedSize = 0;
             } else {
@@ -52,7 +53,7 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
             modInProgressName = comboInProgress.getMod().getName();
 
             if (!ignoreCache && await DownloadUtils.isVersionAlreadyDownloaded(comboInProgress)) {
-                singleModProgressCallback(0, StatusEnum.SUCCESS, null);
+                singleModProgressCallback(0, DownloadStatusEnum.EXTRACTED, null);
                 continue;
             }
 
@@ -65,9 +66,9 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         }
     }
 
-    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<AxiosResponse> {
+    private async _downloadCombo(combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<AxiosResponse> {
         return axios.get(combo.getVersion().getDownloadUrl(), {
-            onDownloadProgress: progress => callback(progress.loaded, StatusEnum.PENDING, null),
+            onDownloadProgress: progress => callback(progress.loaded, DownloadStatusEnum.DOWNLOADING, null),
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'application/zip',
@@ -76,16 +77,16 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         });
     }
 
-    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: number, err: R2Error | null) => void): Promise<void> {
+    private async _saveDownloadResponse(response: AxiosResponse, combo: ThunderstoreCombo, callback: (downloadedBytes: number, status: DownloadStatusEnum, err: R2Error | null) => void): Promise<void> {
         const buf: Buffer = Buffer.from(response.data);
         const comboSize = combo.getVersion().getFileSize();
-        callback(comboSize, StatusEnum.PENDING, null);
+        callback(comboSize, DownloadStatusEnum.EXTRACTING, null);
 
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
             if (success) {
-                callback(comboSize, StatusEnum.SUCCESS, null);
+                callback(comboSize, DownloadStatusEnum.EXTRACTED, null);
             } else {
-                callback(comboSize, StatusEnum.FAILURE, error || null);
+                callback(comboSize, DownloadStatusEnum.FAILED, error || null);
             }
         });
     }
