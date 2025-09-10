@@ -33,7 +33,13 @@ function closeModal() {
 }
 
 async function updateAndClose() {
+  console.debug(
+      "Updating launch type for game.",
+      `Active game in Vuex: "${store.state.activeGame.settingsIdentifier}".`,
+      `Active game in local ref: "${activeGame.value.settingsIdentifier}".`,
+  );
   const settings = await ManagerSettings.getSingleton(activeGame.value);
+  settings.logActiveGameInDexieStore();
   await settings.setLaunchType(launchOption.value);
   closeModal();
 }
@@ -76,14 +82,14 @@ async function updateAndClose() {
               </code>
             </div>
             <div class="margin-top">
-              <CopyToClipboardButton :copy-value="launchArgs">
+              <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button">
                 Copy launch arguments
               </CopyToClipboardButton>
             </div>
           </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="updateAndClose">
+            <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose">
                 Update
             </button>
         </template>
