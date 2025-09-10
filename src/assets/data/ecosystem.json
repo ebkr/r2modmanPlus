@@ -29185,6 +29185,11 @@
       "packageId": "ResoniteModding-BepisLoader",
       "rootFolder": "BepInExPack",
       "loader": "bepisloader"
+    },
+    {
+      "packageId": "ResoniteModding-BepInExRenderer",
+      "rootFolder": "BepInExPack",
+      "loader": "bepisloader"
     }
   ]
 }

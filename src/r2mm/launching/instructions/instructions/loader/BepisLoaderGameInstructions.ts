@@ -17,12 +17,12 @@ export default class BepisLoaderGameInstructions extends GameInstructionGenerato
                 extraArguments += ` --server`;
             }
             if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
-                extraArguments += ` --doorstop-dll-search-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
+                extraArguments += ` --doorstop-mono-dll-search-path-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
             }
         }
         return {
-            moddedParameters: `--hookfxr-enable --bepinex-target ${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')} --doorstop-enable true --doorstop-target "${DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
-            vanillaParameters: `--doorstop-enable false --hookfxr-disable`
+            moddedParameters: `--hookfxr-enable --bepinex-target ${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')} --doorstop-enabled true --doorstop-target-assembly "${DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
+            vanillaParameters: `--hookfxr-disable --doorstop-enabled true`
         };
     }
 
