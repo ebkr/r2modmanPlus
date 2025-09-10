@@ -17,10 +17,7 @@ export class BepInExInstaller implements PackageInstaller {
             profile,
         } = args;
 
-        const mapping = MODLOADER_PACKAGES.find((entry) =>
-            entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
-            entry.loaderType == PackageLoader.BEPINEX,
-        );
+        const mapping = MODLOADER_PACKAGES.find((entry) => entry.packageName.toLowerCase() == mod.getName().toLowerCase());
         const mappingRoot = mapping ? mapping.rootFolder : "";
 
         let bepInExRoot: string;

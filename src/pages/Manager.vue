@@ -421,6 +421,7 @@ async function copyLogToClipboard() {
     let logOutputPath = "";
     switch (activeGame.value.packageLoader) {
         case PackageLoader.BEPINEX:
+        case PackageLoader.BEPISLOADER:
             logOutputPath = path.join(profile.value.getProfilePath(), "BepInEx", "LogOutput.log");
             break;
         case PackageLoader.MELONLOADER:

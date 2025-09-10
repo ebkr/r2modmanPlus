@@ -59,6 +59,7 @@ const XBOX_RUNNERS = {
 function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
     return {
         [PackageLoader.BEPINEX]: runners,
+        [PackageLoader.BEPISLOADER]: runners,
         [PackageLoader.MELONLOADER]: runners,
         [PackageLoader.NORTHSTAR]: runners,
         [PackageLoader.NONE]: runners,
@@ -68,6 +69,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.RETURN_OF_MODDING]: runners,
         [PackageLoader.GDWEAVE]: runners,
         [PackageLoader.RECURSIVE_MELONLOADER]: runners,
+        [PackageLoader.BEPISLOADER]: runners,
     }
 }
 

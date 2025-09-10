@@ -11,6 +11,7 @@ import ShimloaderGameInstructions from './instructions/loader/ShimloaderGameInst
 import LovelyGameInstructions from './instructions/loader/LovelyGameInstructions';
 import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdingGameInstructions';
 import GDWeaveGameInstructions from './instructions/loader/GDWeaveGameInstructions';
+import BepisLoaderGameInstructions from './instructions/loader/BepisLoaderGameInstructions';
 
 export interface GameInstruction {
     moddedParameters: string,
@@ -25,6 +26,7 @@ export default class GameInstructions {
 
     public static LOADER_INSTRUCTIONS: Map<PackageLoader, GameInstructionGenerator> = new Map([
         [PackageLoader.BEPINEX, new BepInExGameInstructions()],
+        [PackageLoader.BEPISLOADER, new BepisLoaderGameInstructions()],
         [PackageLoader.MELONLOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.RECURSIVE_MELONLOADER, new MelonLoaderGameInstructions()],
         [PackageLoader.NORTHSTAR, new NorthstarGameInstructions()],

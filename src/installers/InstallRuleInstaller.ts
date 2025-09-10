@@ -113,6 +113,41 @@ async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRu
     }
 }
 
+function getBestFitRule(matchingRules: ManagedRule[], file: FileTree) {
+    if (matchingRules.length === 0) {
+        return undefined;
+    }
+    if (matchingRules.length === 1) {
+        return {
+            rule: matchingRules[0],
+            count: 0
+        };
+    }
+
+    const fileParts = file.getTarget().split(path.sep).reverse();
+    return matchingRules.map(value => {
+        const ruleParts = value.route.split('/').reverse();
+        let numberOfMatches = 0;
+        for (let i = 0; i < fileParts.length; i++) {
+            if (fileParts[i] === undefined || ruleParts[i] === undefined) {
+                break;
+            }
+            if (fileParts[i] === ruleParts[i]) {
+                numberOfMatches++;
+            }
+        }
+        return {
+            rule: value,
+            count: numberOfMatches
+        };
+    }).reduce((previousValue, currentValue) => {
+        if (currentValue.count > previousValue.count) {
+            return currentValue;
+        }
+        return previousValue;
+    });
+}
+
 async function buildInstallForRuleSubtype(
     rule: CoreRuleType,
     location: string,
@@ -149,9 +184,13 @@ async function buildInstallForRuleSubtype(
         installationIntent.set(subType, updatedArray);
     }
     for (const file of tree.getDirectories()) {
-        // Only expect one (for now).
-        // If multiple then will need to implement a way to reverse search folder path.
-        let matchingRule: ManagedRule | undefined = flatRules.find(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
+        let matchingRules: ManagedRule[] = flatRules.filter(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
+        let matchingRule: ManagedRule | undefined = undefined;
+
+        const bestFitRule = getBestFitRule(matchingRules, file);
+        if (bestFitRule) {
+            matchingRule = bestFitRule.rule;
+        }
         if (matchingRule === undefined) {
             const nested = await buildInstallForRuleSubtype(rule, path.join(location, file.getDirectoryName()), folderName, mod, file);
             for (let [rule, files] of nested.entries()) {

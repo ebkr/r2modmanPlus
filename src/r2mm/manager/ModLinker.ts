@@ -16,7 +16,7 @@ import { isProtonRequired } from '../../utils/LaunchUtils';
 export default class ModLinker {
 
     public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
-        if (game.packageLoader == PackageLoader.BEPINEX) {
+        if ([PackageLoader.BEPINEX, PackageLoader.BEPISLOADER].includes(game.packageLoader)) {
             if (process.platform === 'linux') {
                 const isProton = await isProtonRequired(game);
                 if (!isProton) {
