@@ -42,14 +42,17 @@ async function performRename() {
     if (renamingInProgress.value) {
         return;
     }
-    try {
-        renamingInProgress.value = true;
-        await store.dispatch('profiles/renameProfile', {newName: newProfileName.value});
-    } catch (e) {
-        const err = R2Error.fromThrownValue(e, 'Error whilst renaming profile');
-        store.commit('error/handleError', err);
+    const safeName = makeProfileNameSafe(newProfileName.value);
+    if (safeName !== '') {
+        try {
+            renamingInProgress.value = true;
+            await store.dispatch('profiles/renameProfile', { newName: safeName });
+        } catch (e) {
+            const err = R2Error.fromThrownValue(e, 'Error whilst renaming profile');
+            store.commit('error/handleError', err);
+        }
+        closeModal();
     }
-    closeModal();
 }
 
 </script>

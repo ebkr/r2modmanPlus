@@ -16,7 +16,7 @@ export function useProfilesComposable() {
     }
 
     function makeProfileNameSafe(nameToSanitize: string): string {
-        return sanitize(nameToSanitize);
+        return sanitize(nameToSanitize).trim();
     }
 
     return {
