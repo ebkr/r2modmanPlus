@@ -7,7 +7,7 @@ import { NodeBufferProvider } from '../src/providers/node/buffer/buffer';
 import {
     InteractionProviderFileProperties,
     InteractionProviderFolderProperties
-} from 'src/providers/ror2/system/InteractionProvider';
+} from './providers/ror2/system/InteractionProvider';
 
 declare namespace NodeJS {
   interface ProcessEnv {

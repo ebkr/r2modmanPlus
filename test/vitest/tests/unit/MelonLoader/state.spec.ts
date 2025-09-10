@@ -2,7 +2,7 @@ import Sinon from 'sinon';
 import TestSetup from '../../test-setup';
 import ManifestV2 from '../../../../../src/model/ManifestV2';
 import VersionNumber from '../../../../../src/model/VersionNumber';
-import Profile, { ImmutableProfile } from 'src/model/Profile';
+import Profile, { ImmutableProfile } from '../../../../../src/model/Profile';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import ProfileProvider from '../../../../../src/providers/ror2/model_implementation/ProfileProvider';
 import yaml from 'yaml';

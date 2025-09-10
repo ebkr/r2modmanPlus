@@ -1,5 +1,5 @@
-import {NodePathProvider} from "src/providers/node/path/path";
-import path from "node:path";
+import {NodePathProvider} from "../../../../../src/providers/node/path/path";
+import path from "path";
 
 export const TestPathProvider = {
     join: (...paths: string[]) => path.join(...paths),

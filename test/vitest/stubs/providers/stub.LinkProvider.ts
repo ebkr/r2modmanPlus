@@ -1,4 +1,4 @@
-import LinkProvider from 'src/providers/components/LinkProvider';
+import LinkProvider from '../../../../src/providers/components/LinkProvider';
 
 export default class StubLinkProvider extends LinkProvider {
 

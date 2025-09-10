@@ -1,4 +1,4 @@
-import ProfileProvider from 'src/providers/ror2/model_implementation/ProfileProvider';
+import ProfileProvider from '../../../../src/providers/ror2/model_implementation/ProfileProvider';
 
 export default class StubProfileProvider extends ProfileProvider {
 
