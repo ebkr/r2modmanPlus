@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import { BepInExInstaller } from 'src/installers/BepInExInstaller';
+import { BepInExInstaller } from './BepInExInstaller';
 
 export class BepisLoaderInstaller implements PackageInstaller {
 
