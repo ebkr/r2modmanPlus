@@ -10887,7 +10887,8 @@
             "name": "Mods",
             "excludeCategories": [
               "modpacks",
-              "asset-replacements"
+              "asset-replacements",
+              "mixtapes"
             ]
           },
           "modpacks": {
@@ -10900,6 +10901,16 @@
             "name": "Asset Replacements",
             "requireCategories": [
               "asset-replacements"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "mixtapes"
+            ]
+          },
+          "resource-packs": {
+            "name": "Resource Packs",
+            "requireCategories": [
+              "mixtapes"
             ],
             "excludeCategories": [
               "modpacks"
@@ -13123,6 +13134,10 @@
         {
           "platform": "steam",
           "identifier": "986130"
+        },
+        {
+          "platform": "other",
+          "identifier": null
         }
       ],
       "r2modman": [
@@ -13137,6 +13152,10 @@
             {
               "platform": "steam",
               "identifier": "986130"
+            },
+            {
+              "platform": "other",
+              "identifier": null
             }
           ],
           "settingsIdentifier": "ShadowsofDoubt",
@@ -19356,7 +19375,20 @@
         "displayName": "Hollow Knight: Silksong",
         "iconUrl": "hollow-knight-silksong.webp"
       },
-      "distributions": [],
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1030300"
+        },
+        {
+          "platform": "other",
+          "identifier": null
+        },
+        {
+          "platform": "xbox-game-pass",
+          "identifier": "TeamCherry.HollowKnightSilksong"
+        }
+      ],
       "r2modman": [
         {
           "gameInstanceType": "game",
@@ -19364,6 +19396,14 @@
             {
               "platform": "steam",
               "identifier": "1030300"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "TeamCherry.HollowKnightSilksong"
+            },
+            {
+              "platform": "other",
+              "identifier": null
             }
           ],
           "steamFolderName": "Hollow Knight Silksong",
@@ -19380,7 +19420,9 @@
           "internalFolderName": "HollowKnightSilksong",
           "packageIndex": "https://thunderstore.io/c/hollow-knight-silksong/api/v1/package-listing-index/",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "hkss"
+          ],
           "installRules": [
             {
               "route": "BepInEx/plugins",
@@ -19462,6 +19504,126 @@
           }
         },
         "autolistPackageIds": []
+      }
+    },
+    "house-of-legacy": {
+      "uuid": "3e5e018e-6d47-45cd-80eb-31317287ddb4",
+      "label": "house-of-legacy",
+      "meta": {
+        "displayName": "House of Legacy",
+        "iconUrl": "house-of-legacy.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2503770"
+            }
+          ],
+          "steamFolderName": "吾今有世家",
+          "dataFolderName": "House of Legacy_Data",
+          "exeNames": [
+            "House of Legacy.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "House of Legacy",
+            "iconUrl": "house-of-legacy.webp"
+          },
+          "settingsIdentifier": "HouseOfLegacy",
+          "internalFolderName": "HouseOfLegacy",
+          "packageIndex": "https://thunderstore.io/c/house-of-legacy/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "hol"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "House of Legacy",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/FBAN8hFB",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
       }
     },
     "kerbal-space-program-2": {
@@ -21087,7 +21249,7 @@
           "exeNames": [
             "Resonite.exe"
           ],
-          "packageLoader": "bepinex",
+          "packageLoader": "bepisloader",
           "meta": {
             "displayName": "Resonite",
             "iconUrl": "resonite.webp"
@@ -21095,7 +21257,7 @@
           "settingsIdentifier": "Resonite",
           "internalFolderName": "Resonite",
           "packageIndex": "https://thunderstore.io/c/resonite/api/v1/package-listing-index/",
-          "gameSelectionDisplayMode": "hidden",
+          "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [],
           "installRules": [
             {
@@ -21104,6 +21266,13 @@
               "defaultFileExtensions": [
                 ".dll"
               ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "Renderer/BepInEx/plugins",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
               "trackingMethod": "subdir",
               "subRoutes": []
             },
@@ -21369,6 +21538,55 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "super-mario-3d-world": {
+      "uuid": "88c3d6ea-d7d4-4225-819c-bac4f86b79d6",
+      "label": "super-mario-3d-world",
+      "meta": {
+        "displayName": "Super Mario 3D World",
+        "iconUrl": "super-mario-3d-world.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Super Mario 3D World",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/5uskscDR3m",
+        "autolistPackageIds": []
+      }
     },
     "the-choicer-voicer": {
       "uuid": "12bab0c0-24c5-4999-9a20-376abd6693e1",
@@ -24737,7 +24955,8 @@
           "name": "Mods",
           "excludeCategories": [
             "modpacks",
-            "asset-replacements"
+            "asset-replacements",
+            "mixtapes"
           ]
         },
         "modpacks": {
@@ -24750,6 +24969,16 @@
           "name": "Asset Replacements",
           "requireCategories": [
             "asset-replacements"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "mixtapes"
+          ]
+        },
+        "resource-packs": {
+          "name": "Resource Packs",
+          "requireCategories": [
+            "mixtapes"
           ],
           "excludeCategories": [
             "modpacks"
@@ -27390,6 +27619,47 @@
       },
       "autolistPackageIds": []
     },
+    "house-of-legacy": {
+      "displayName": "House of Legacy",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/FBAN8hFB",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "kerbal-space-program-2": {
       "displayName": "Kerbal Space Program 2",
       "categories": {
@@ -28311,6 +28581,45 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "super-mario-3d-world": {
+      "displayName": "Super Mario 3D World",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/5uskscDR3m",
+      "autolistPackageIds": []
+    },
     "the-choicer-voicer": {
       "displayName": "The Choicer Voicer",
       "categories": {
@@ -28871,6 +29180,11 @@
       "packageId": "BepInEx-BepInExPack_Silksong",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
+    },
+    {
+      "packageId": "ResoniteModding-BepisLoader",
+      "rootFolder": "BepInExPack",
+      "loader": "bepisloader"
     }
   ]
 }

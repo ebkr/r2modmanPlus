@@ -223,7 +223,6 @@
                           "type": "string",
                           "enum": [
                             "bepinex",
-                            "bepisloader",
                             "melonloader",
                             "northstar",
                             "godotml",
@@ -232,6 +231,7 @@
                             "return-of-modding",
                             "gdweave",
                             "recursive-melonloader",
+                            "bepisloader",
                             "none"
                           ]
                         },
@@ -374,7 +374,6 @@
                 "type": "string",
                 "enum": [
                   "bepinex",
-                  "bepisloader",
                   "melonloader",
                   "northstar",
                   "godotml",
@@ -383,6 +382,7 @@
                   "return-of-modding",
                   "gdweave",
                   "recursive-melonloader",
+                  "bepisloader",
                   "none"
                 ]
               }
