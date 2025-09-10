@@ -113,7 +113,18 @@ async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRu
     }
 }
 
-function getBestFitRule(matchingRules: ManagedRule[], fileParts: string[]) {
+function getBestFitRule(matchingRules: ManagedRule[], file: FileTree) {
+    if (matchingRules.length === 0) {
+        return undefined;
+    }
+    if (matchingRules.length === 1) {
+        return {
+            rule: matchingRules[0],
+            count: 0
+        };
+    }
+
+    const fileParts = file.getTarget().split(path.sep).reverse();
     return matchingRules.map(value => {
         const ruleParts = value.route.split('/').reverse();
         let numberOfMatches = 0;
@@ -176,15 +187,10 @@ async function buildInstallForRuleSubtype(
         let matchingRules: ManagedRule[] = flatRules.filter(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
         let matchingRule: ManagedRule | undefined = undefined;
 
-        if (matchingRules.length > 1) {
-            // Back-resolve path to find the best fitting rule.
-            const fileParts = file.getTarget().split(path.sep).reverse();
-            matchingRule = getBestFitRule(matchingRules, fileParts).rule;
-        } else if (matchingRules.length === 1) {
-            matchingRule = matchingRules[0];
+        const bestFitRule = getBestFitRule(matchingRules, file);
+        if (bestFitRule) {
+            matchingRule = bestFitRule.rule;
         }
-
-        if (matchingRule === undefined) {}
         if (matchingRule === undefined) {
             const nested = await buildInstallForRuleSubtype(rule, path.join(location, file.getDirectoryName()), folderName, mod, file);
             for (let [rule, files] of nested.entries()) {
