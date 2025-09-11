@@ -5,7 +5,6 @@ import path from "../providers/node/path/path";
 import ManifestV2 from "../model/ManifestV2";
 import R2Error, { throwForR2Error } from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
-import InstallationRules, { CoreRuleType, ManagedRule, RuleSubtype } from "../r2mm/installing/InstallationRules";
 import FileUtils from "../utils/FileUtils";
 import yaml from "yaml";
 import ModFileTracker from "../model/installing/ModFileTracker";
@@ -16,6 +15,29 @@ import { getGameConfigBySettingsIdentifier, TrackingMethod } from "../model/sche
 import ModMode from "../model/enums/ModMode";
 import GameManager from "../model/game/GameManager";
 
+type CoreRuleType = {
+    gameName: string,
+    rules: RuleSubtype[],
+    relativeFileExclusions: string[] | null,
+}
+
+
+type RuleSubtype = {
+    route: string,
+    trackingMethod: TrackingMethod,
+    subRoutes: RuleSubtype[],
+    defaultFileExtensions: string[],
+    isDefaultLocation?: boolean
+}
+
+type ManagedRule = {
+    route: string,
+    ref: RuleSubtype,
+    trackingMethod: TrackingMethod,
+    extensions: string[],
+    isDefaultLocation: boolean
+}
+
 type InstallRuleArgs = {
     profile: ImmutableProfile,
     coreRule: CoreRuleType,
@@ -23,6 +45,60 @@ type InstallRuleArgs = {
     installSources: string[],
     mod: ManifestV2,
 };
+
+/**
+ * Produce a flattened structure of all navigable paths maintained by the install rules.
+ * @param rules
+ * @param pathBuilder
+ */
+export function getAllManagedPaths(rules: RuleSubtype[], pathBuilder?: string): ManagedRule[] {
+    const paths: ManagedRule[] = [];
+    rules.forEach(value => {
+        const route = !pathBuilder ? value.route : path.join(pathBuilder, value.route);
+        paths.push({
+            route: route,
+            trackingMethod: value.trackingMethod,
+            extensions: value.defaultFileExtensions,
+            isDefaultLocation: value.isDefaultLocation || false,
+            ref: value
+        });
+        getAllManagedPaths(value.subRoutes, route).forEach(x => paths.push(x));
+    });
+    return paths;
+}
+
+function getRuleSubtypeFromManagedRule(managedRule: ManagedRule, rule: CoreRuleType): RuleSubtype {
+    for (const value of rule.rules) {
+        if (value.route === managedRule.route) {
+            return value;
+        } else {
+            const nested = getRuleSubtypeFromManagedRuleInner(managedRule, value, value.route);
+            if (nested !== undefined) {
+                return nested;
+            }
+        }
+    }
+
+    throw new Error("RuleSubtype does not exist for ManagedRule.");
+}
+
+function getRuleSubtypeFromManagedRuleInner(managedRule: ManagedRule, subType: RuleSubtype, realRoute: string): RuleSubtype | undefined {
+    if (realRoute === managedRule.route) {
+        return subType;
+    } else {
+        for (const subRoute of subType.subRoutes) {
+            const nested = getRuleSubtypeFromManagedRuleInner(managedRule, subRoute, path.join(realRoute, subRoute.route));
+            if (nested !== undefined) {
+                return nested;
+            }
+        }
+    }
+    return;
+}
+
+function getManagedRuleForSubtype(rule: CoreRuleType, subType: RuleSubtype): ManagedRule {
+    return getAllManagedPaths(rule.rules).find(value => getRuleSubtypeFromManagedRule(value, rule) === subType)!;
+}
 
 
 async function installUntracked(profile: ImmutableProfile, rule: ManagedRule, installSources: string[], mod: ManifestV2) {
@@ -158,7 +234,7 @@ async function buildInstallForRuleSubtype(
     mod: ManifestV2,
     tree: FileTree
 ): Promise<Map<RuleSubtype, string[]>> {
-    const flatRules = InstallationRules.getAllManagedPaths(rule.rules);
+    const flatRules = getAllManagedPaths(rule.rules);
     const installationIntent = new Map<RuleSubtype, string[]>();
     for (const file of tree.getFiles()) {
         // Find matching rule for file based on extension name.
@@ -181,7 +257,7 @@ async function buildInstallForRuleSubtype(
         if (matchingRule === undefined) {
             continue;
         }
-        const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, rule);
+        const subType = getRuleSubtypeFromManagedRule(matchingRule, rule);
         const updatedArray = installationIntent.get(subType) || [];
         updatedArray.push(file);
         installationIntent.set(subType, updatedArray);
@@ -202,7 +278,7 @@ async function buildInstallForRuleSubtype(
                 installationIntent.set(rule, arr);
             }
         } else {
-            const subType = InstallationRules.getRuleSubtypeFromManagedRule(matchingRule, rule);
+            const subType = getRuleSubtypeFromManagedRule(matchingRule, rule);
             const arr = installationIntent.get(subType) || [];
             arr.push(file.getTarget());
             installationIntent.set(subType, arr);
@@ -318,7 +394,7 @@ export async function uninstallState(mod: ManifestV2, profile: ImmutableProfile)
 
 // Enables or disables a mod installed with InstallRulePluginInstaller using SUBDIR/SUBDIR_NO_FLATTEN tracking methods.
 async function applyModeSubDirs(mod: ManifestV2, profile: ImmutableProfile, mode: number, rule: CoreRuleType): Promise<void> {
-    const subDirPaths = InstallationRules.getAllManagedPaths(rule.rules)
+    const subDirPaths = getAllManagedPaths(rule.rules)
         .filter(value => [TrackingMethod.SUBDIR, TrackingMethod.SUBDIR_NO_FLATTEN].includes(value.trackingMethod));
 
     for (const dir of subDirPaths) {
@@ -410,7 +486,8 @@ export class InstallRulePluginInstaller implements PackageInstaller {
     private async resolveFileTreeInstall(profile: ImmutableProfile, location: string, folderName: string, mod: ManifestV2, tree: FileTree) {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
-            const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
+            const managedRule = getManagedRuleForSubtype(this.rule, rule);
+
             const args: InstallRuleArgs = {
                 profile,
                 coreRule: this.rule,
