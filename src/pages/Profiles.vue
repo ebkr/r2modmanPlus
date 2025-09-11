@@ -31,8 +31,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr 
-                        v-for="(profileName) of profileList" 
+                      <tr
+                        v-for="(profileName) of profileList"
                         :key="profileName"
                         @click="setSelectedProfile(profileName)"
                         class="profile-row border-at-bottom"
@@ -42,7 +42,9 @@
                         >
                           {{profileName}}
                         </td>
-                        <td class="no-border">{{  Math.round(Math.random() * 1000) }} MB</td>
+                        <td class="no-border">
+                          <ProfileSizeDisplay :profileName="profileName" />
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -91,6 +93,7 @@ import { computed, getCurrentInstance, onMounted } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import ProfileSizeDisplay from '../components/ProfileSizeDisplay.vue';
 
 const store = getStore<State>();
 let router!: VueRouter;
