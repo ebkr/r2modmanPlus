@@ -36,10 +36,3 @@ export function updateModLoaderExports() {
             ])
     );
 }
-
-export const getModLoaderPackageNames = () => {
-    const deduplicated = new Set(EcosystemModloaderPackages.value.map((x) => x.packageId));
-    const names = Array.from(deduplicated);
-    names.sort();
-    return names;
-}

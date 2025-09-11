@@ -4,6 +4,7 @@ import DonateButton from '../../buttons/DonateButton.vue';
 import DonateIconButton from '../../buttons/DonateIconButton.vue';
 import R2Error from '../../../model/errors/R2Error';
 import ManifestV2 from '../../../model/ManifestV2';
+import { isModLoaderPackage } from '../../../model/schema/ThunderstoreSchema';
 import VersionNumber from '../../../model/VersionNumber';
 import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
@@ -36,7 +37,7 @@ const icon = useModIcon(() => props.mod);
 
 // Mod loader packages can't be disabled as it's hard to define
 // what that should even do in all cases.
-const canBeDisabled = computed(() => !store.getters['isModLoader'](props.mod.getName()));
+const canBeDisabled = computed(() => !isModLoaderPackage(props.mod.getName()));
 
 const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.getName()) || false);
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
