@@ -15,11 +15,10 @@ import R2Error from '../../../../../../src/model/errors/R2Error';
 import InMemoryFsProvider from '../../../../stubs/providers/InMemory.FsProvider';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
-import { RuleSubtype } from '../../../../../../src/r2mm/installing/InstallationRules';
 import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import {describe, beforeEach, test, expect} from 'vitest';
 
-function getShimloaderRules(includePakExtension: boolean): RuleSubtype[] {
+function getShimloaderRules(includePakExtension: boolean) {
     return [
         {
             route: 'shimloader/mod',
