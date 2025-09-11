@@ -21,3 +21,10 @@ export function getGameConfigBySettingsIdentifier(settingsIdentifier: string): G
 
     return config ? config[1] : undefined;
 }
+
+/**
+ * @param packageId Package's name in "TeamName-PackageName" format excluding version number.
+ */
+export function isModLoaderPackage(packageId: string): boolean {
+    return EcosystemModloaderPackages.value.some(pkg => pkg.packageId.toLowerCase() === packageId.toLowerCase());
+}
