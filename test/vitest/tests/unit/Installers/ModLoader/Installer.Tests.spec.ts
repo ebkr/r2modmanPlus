@@ -7,10 +7,12 @@ import GameManager from '../../../../../../src/model/game/GameManager';
 import GenericProfileInstaller from '../../../../../../src/r2mm/installing/profile_installers/GenericProfileInstaller';
 import InstallationRules from '../../../../../../src/r2mm/installing/InstallationRules';
 import { createManifest, installLogicBeforeEach } from '../../../../utils/InstallLogicUtils';
-import { TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
+import { EcosystemSchema, TrackingMethod } from '../../../../../../src/model/schema/ThunderstoreSchema';
 import { describe, beforeEach, test, expect } from 'vitest';
 import { providePathImplementation } from '../../../../../../src/providers/node/path/path';
 import { TestPathProvider } from '../../../../stubs/providers/node/Node.Path.Provider';
+import { InstallRulePluginInstaller } from '../../../../../../src/installers/InstallRulePluginInstaller';
+import { getInstallArgs } from '../../../../../../src/installers/PackageInstaller';
 
 describe('Installer Tests', () => {
 
@@ -103,7 +105,7 @@ describe('Installer Tests', () => {
         });
 
         test('Copy to root', async () => {
-            InstallationRules.RULES = [{
+            const installer = new InstallRulePluginInstaller({
                 gameName: 'RiskOfRain2',
                 rules: [{
                     route: '.',
@@ -113,7 +115,7 @@ describe('Installer Tests', () => {
                     isDefaultLocation: true
                 }],
                 relativeFileExclusions: null,
-            }];
+            });
 
             const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
@@ -122,7 +124,8 @@ describe('Installer Tests', () => {
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'manifest.json'), '');
 
             const profile = Profile.getActiveProfile().asImmutableProfile();
-            await ProfileInstallerProvider.instance.installMod(pkg, profile);
+            const args = getInstallArgs(pkg, profile);
+            await installer.install(args);
 
             expect(await FsProvider.instance.exists(
                 profile.joinToProfilePath(pkg.getName(), 'folder', 'subfolder', 'loose.file')
@@ -134,7 +137,7 @@ describe('Installer Tests', () => {
         });
 
         test('No default location', async () => {
-            InstallationRules.RULES = [{
+            const installer = new InstallRulePluginInstaller({
                 gameName: 'RiskOfRain2',
                 rules: [{
                     route: '.',
@@ -144,7 +147,7 @@ describe('Installer Tests', () => {
                     isDefaultLocation: false
                 }],
                 relativeFileExclusions: null,
-            }];
+            });
 
             const pkg = createManifest('test_mod', 'auth');
             const cachePkgRoot = path.join(PathResolver.MOD_ROOT, 'cache', pkg.getName(), pkg.getVersionNumber().toString());
@@ -152,7 +155,8 @@ describe('Installer Tests', () => {
             await FsProvider.instance.writeFile(path.join(cachePkgRoot, 'file'), '');
 
             const profile = Profile.getActiveProfile().asImmutableProfile();
-            await ProfileInstallerProvider.instance.installMod(pkg, profile);
+            const args = getInstallArgs(pkg, profile);
+            await installer.install(args);
 
             expect(await FsProvider.instance.exists(
                 profile.joinToProfilePath(pkg.getName(), 'folder')
@@ -182,8 +186,12 @@ describe('Installer Tests', () => {
             ProfileInstallerProvider.provide(() => new GenericProfileInstaller());
             await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
 
-            const coreRule = InstallationRules.RULES.find(value => value.gameName === GameManager.activeGame.internalFolderName)!;
-            const defaultRuleSubtype = InstallationRules.getAllManagedPaths(coreRule.rules)
+            const config = EcosystemSchema.getGameConfigBySettingsIdentifier(GameManager.activeGame.internalFolderName);
+            if (config === undefined) {
+                throw new Error(`Game config not found for ${GameManager.activeGame.internalFolderName}`);
+            }
+
+            const defaultRuleSubtype = InstallationRules.getAllManagedPaths(config.installRules)
                 .find(value => value.isDefaultLocation)!;
 
             // Expect DLL to be installed as intended

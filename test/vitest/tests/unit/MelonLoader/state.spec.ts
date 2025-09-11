@@ -27,9 +27,9 @@ let conflictManagement: ConflictManagementProviderImpl;
 let beforeSetup = () => {
     TestSetup.stubSetUp();
     sandbox = Sinon.createSandbox();
+    GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
     mlProfileInstaller = new GenericProfileInstaller();
     conflictManagement = new ConflictManagementProviderImpl();
-    GameManager.activeGame = GameManager.gameList.find(value => value.internalFolderName === "BONEWORKS")!;
     ConflictManagementProvider.provide(() => conflictManagement);
 
     const profileProvider = new StubProfileProvider();
