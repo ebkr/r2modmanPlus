@@ -22,7 +22,7 @@ export default class BepisLoaderGameInstructions extends GameInstructionGenerato
         }
         return {
             moddedParameters: `--hookfxr-enable --bepinex-target "${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'BepInEx')}" --doorstop-enabled true --doorstop-target-assembly "${DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
-            vanillaParameters: `--hookfxr-disable --doorstop-enabled true`
+            vanillaParameters: `--hookfxr-disable --doorstop-enabled false`
         };
     }
 
