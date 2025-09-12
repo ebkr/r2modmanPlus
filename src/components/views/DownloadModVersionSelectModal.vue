@@ -55,8 +55,8 @@
 import ModalCard from "../ModalCard.vue";
 import R2Error from "../../model/errors/R2Error";
 import ManifestV2 from "../../model/ManifestV2";
+import { getRecommendedVersion } from "../../model/schema/ThunderstoreSchema";
 import ThunderstoreVersion from "../../model/ThunderstoreVersion";
-import { MOD_LOADER_VARIANTS } from "../../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import * as PackageDb from "../../r2mm/manager/PackageDexieStore";
 import ProfileModList from "../../r2mm/mods/ProfileModList";
 import Game from '../../model/game/Game';
@@ -94,15 +94,17 @@ watch(() => store.state.modals.downloadModalMod, async () => {
             mod.getFullName()
         );
 
-        const foundRecommendedVersion = MOD_LOADER_VARIANTS[activeGame.internalFolderName]!
-            .find(value => value.packageName === mod.getFullName());
+        const foundRecommendedVersion = getRecommendedVersion(
+            mod.getFullName(),
+            activeGame.settingsIdentifier
+        );
 
-        if (foundRecommendedVersion && foundRecommendedVersion.recommendedVersion) {
-            recommendedVersion.value = foundRecommendedVersion.recommendedVersion.toString();
+        if (foundRecommendedVersion) {
+            recommendedVersion.value = foundRecommendedVersion;
 
             // Auto-select recommended version if it's found.
             const recommendedVersionToSelect = versionNumbers.value.find(
-                (ver) => ver === foundRecommendedVersion.recommendedVersion!.toString()
+                (ver) => ver === foundRecommendedVersion
             );
             if (recommendedVersionToSelect) {
                 selectedVersion.value = recommendedVersionToSelect;
