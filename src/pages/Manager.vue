@@ -3,9 +3,9 @@
 		<div class='notification is-warning' v-if="portableUpdateAvailable">
 			<div class='container'>
 				<p>
-					An update is available.
+					{{ t('translations.pages.manager.updateAvailable.title') }}
 					<ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
-                        Click here to go to the release page.
+                        {{ t('translations.pages.manager.updateAvailable.linkText') }}
 					</ExternalLink>
 				</p>
 			</div>
@@ -14,9 +14,15 @@
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the Steam folder</h3>
-					<p>The steam executable was not selected.</p>
-					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
+					<h3 class='title'>
+                        {{ t('translations.pages.manager.modals.failedToSetSteamFolder.title') }}
+                    </h3>
+					<p>
+                        {{ t('translations.pages.manager.modals.failedToSetSteamFolder.steamExecutableNotSelected') }}
+                    </p>
+					<p>
+                        {{ t('translations.pages.manager.modals.failedToSetSteamFolder.solution') }}
+                    </p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -26,9 +32,15 @@
 			<div class="modal-background" @click="showRor2IncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
 				<div class='notification is-danger'>
-					<h3 class='title'>Failed to set the {{ activeGame.displayName }} folder</h3>
-					<p>The executable must be either of the following: "{{ activeGame.exeName.join('", "') }}".</p>
-					<p>If this error has appeared but the executable is correct, please run as administrator.</p>
+					<h3 class='title'>
+                        {{ t('translations.pages.manager.modals.failedToSetTheGameFolder.title', { gameName: activeGame.displayName }) }}
+                    </h3>
+					<p>
+                        {{ t('translations.pages.manager.modals.failedToSetTheGameFolder.listedExecutableNames', { options: activeGame.exeName.join('", "') }) }}
+                    </p>
+					<p>
+                        {{ t('translations.pages.manager.modals.failedToSetSteamFolder.solution') }}
+                    </p>
 				</div>
 			</div>
 			<button class="modal-close is-large" aria-label="close"
@@ -36,65 +48,74 @@
 		</div>
 		<ModalCard id="steam-installation-validation-modal" :is-active="isValidatingSteamInstallation" @close-modal="closeSteamInstallationValidationModal" :can-close="true">
 			<template v-slot:header>
-				<h2 class='modal-title'>Clearing the {{activeGame.displayName}} installation directory</h2>
+				<h2 class='modal-title'>
+                    {{ t('translations.pages.manager.modals.clearingGameDirectory.title', { gameName: activeGame.displayName }) }}
+                </h2>
 			</template>
 			<template v-slot:body>
 				<div class='notification is-warning'>
 					<p>
-						You will not not be able to launch the game until
-						Steam has verified the integrity of the game files.
+						{{ t('translations.pages.manager.modals.clearingGameDirectory.waitToLaunchGame') }}
 					</p>
 				</div>
 				<p>
-					Steam will be started and will attempt to verify the
-					integrity of {{ activeGame.displayName }}.
+					{{ t('translations.pages.manager.modals.clearingGameDirectory.steamWillBeStarted', { gameName: activeGame.displayName }) }}
 				</p>
 				<br/>
 				<p>
-					Please check the Steam window for validation progress.
-					If the window has not yet appeared, please be patient.
+					{{ t('translations.pages.manager.modals.clearingGameDirectory.checkSteamForProgress') }}
 				</p>
 			</template>
 			<template v-slot:footer>
 				<button class="button is-info" @click="closeSteamInstallationValidationModal()">
-					I understand
+                    {{ t('translations.pages.manager.modals.clearingGameDirectory.confirmation') }}
 				</button>
 			</template>
 		</ModalCard>
         <ModalCard id="dependency-strings-modal" :is-active="showDependencyStrings" @close-modal="showDependencyStrings = false;" :can-close="true">
             <template v-slot:header>
-                <h2 class='modal-title'>Dependency string list</h2>
+                <h2 class='modal-title'>
+                    {{ t('translations.pages.manager.modals.dependencyStrings.title') }}
+                </h2>
             </template>
             <template v-slot:body>
                 <ul>
                     <li v-for="(key, index) in localModList" :key="`dep-str-${index}`">
-                        {{key.getName()}}-{{key.getVersionNumber().toString()}}
+                        {{ t('translations.pages.manager.modals.dependencyStrings.dependency', { modName: key.getName(), versionNumber: key.getVersionNumber().toString() }) }}
                     </li>
                 </ul>
             </template>
             <template v-slot:footer>
                 <button class="button is-info"
                         @click="showDependencyStrings = false;">
-                    Close
+                    {{ t('translations.pages.manager.modals.dependencyStrings.close') }}
                 </button>
             </template>
         </ModalCard>
 		<ModalCard id="launch-parameters-modal" :is-active="showLaunchParameterModal" @close-modal="() => {showLaunchParameterModal = false;}" :can-close="true">
 			<template v-slot:header>
-				<h2 class='modal-title'>Set custom launch parameters</h2>
+				<h2 class='modal-title'>
+                    {{ t('translations.pages.manager.modals.launchArguments.title') }}
+                </h2>
 			</template>
 			<template v-slot:body>
-				<p>Some parameters are provided by default:</p>
+				<p>
+                    {{ t('translations.pages.manager.modals.launchArguments.someProvidedByDefault') }}
+                </p>
 				<br/>
-				<p>Modded:
+				<p>
+                    {{ t('translations.pages.manager.modals.launchArguments.moddedLabel') }}
 					<br/>
 					<code v-if="doorstopTarget.length > 0">
 						{{ doorstopTarget }}
 					</code>
-                    <code v-else>These parameters will be available after installing a mod loader.</code>
+                    <code v-else>
+                        {{ t('translations.pages.manager.modals.launchArguments.availableAfterInstallingLoader') }}
+                    </code>
 				</p>
 				<br/>
-				<p>Vanilla:
+				<p>
+                    {{ t('translations.pages.manager.modals.launchArguments.vanillaLabel') }}
 					<br>
 					<code>
 						{{ vanillaLaunchArgs }}
@@ -102,21 +123,22 @@
 				</p>
 				<br/>
 				<p>
-					<strong>Please note that these are called against the Steam executable. Be careful when
-						entering custom launch parameters.</strong>
+					<strong>
+                        {{ t('translations.pages.manager.modals.launchArguments.pleaseNote') }}
+                    </strong>
 				</p>
 				<br/>
 				<input
 					v-model='launchParametersModel'
 					id='launch-parameters-modal-input'
 					class='input'
-					placeholder='Enter parameters'
+					:placeholder="t('translations.pages.manager.modals.launchArguments.placeholder')"
 					autocomplete='off'
 				/>
 			</template>
 			<template v-slot:footer>
 				<button class='button is-info' @click='updateLaunchParameters()'>
-					Update launch parameters
+					{{ t('translations.pages.manager.modals.launchArguments.updateArguments') }}
 				</button>
 			</template>
 		</ModalCard>
@@ -168,8 +190,10 @@ import VueRouter from 'vue-router';
 import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 let router!: VueRouter;
 
 const portableUpdateAvailable = ref<boolean>(false);
@@ -226,7 +250,7 @@ function computeDefaultInstallDirectory(): string {
 function changeGameInstallDirectory() {
     const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate ${activeGame.value.displayName} Executable`,
+        title: t('translations.pages.manager.actions.locateSteamExecutable', { gameName: activeGame.value.displayName }),
         // Lazy reduce. Assume Linux name and Windows name are identical besides extension.
         // Should fix if needed, although unlikely.
         filters: (activeGame.value.exeName.map(value => {
@@ -240,7 +264,7 @@ function changeGameInstallDirectory() {
             return previousValue;
         })),
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -261,10 +285,10 @@ function changeGameInstallDirectory() {
 function changeGameInstallDirectoryGamePass() {
     const ror2Directory: string = settings.value.getContext().gameSpecific.gameDirectory || computeDefaultInstallDirectory();
     InteractionProvider.instance.selectFile({
-        title: `Locate gamelaunchhelper Executable`,
+        title: t('translations.pages.manager.actions.locateGameLaunchHelper'),
         filters: [{ name: "gamelaunchhelper", extensions: ["exe"] }],
         defaultPath: ror2Directory,
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutables')
     }).then(async files => {
         if (files.length === 1) {
             try {
@@ -314,10 +338,10 @@ async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
 function changeSteamDirectory() {
     const steamDir: string = settings.value.getContext().global.steamDirectory || computeDefaultSteamDirectory();
     InteractionProvider.instance.selectFile({
-        title: 'Locate Steam Executable',
+        title: t('translations.pages.manager.actions.locateSteamExecutable'),
         defaultPath: steamDir,
         filters: [{name: "steam", extensions: ["exe", "sh", "app"]}],
-        buttonLabel: 'Select Executable'
+        buttonLabel: t('translations.pages.manager.actions.selectExecutable')
     }).then(async files => {
         if (files.length === 1) {
             try {

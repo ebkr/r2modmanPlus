@@ -5,8 +5,10 @@ import { State } from '../../store';
 import * as DownloadUtils from '../../utils/DownloadUtils';
 import FileUtils from '../../utils/FileUtils';
 import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 function closeModal() {
     store.commit("closeDownloadProgressModal");
@@ -26,23 +28,20 @@ function closeModal() {
                 <div class='notification is-info'>
 
                     <h3 v-if="DownloadUtils.statusIsDownloadOrExtract(store.getters['download/currentDownload'].status)" class='title'>
-                        Downloading {{store.getters['download/currentDownload'].modName}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.states.downloading', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
                     <h3 v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
-                        Installing {{store.getters['download/currentDownload'].modName}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.states.installing', { modName: store.getters['download/currentDownload'].modName }) }}
                     </h3>
-
 
                     <p v-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
                         <i class="fas fa-download"/>
-                        Downloading: {{store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.downloadProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
                         <i class="fas fa-box-open"/>
-                        Extracting: {{store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.extractionProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else>
@@ -58,11 +57,11 @@ function closeModal() {
 
                     <p v-if="store.getters['download/currentDownload'].installProgress">
                         <i class="fas fa-cog" spin />
-                        Installing: {{store.getters['download/currentDownload'].installProgress}}%
+                        {{ t('translations.pages.manager.modals.downloadProgress.installProgress', { progress: store.getters['download/currentDownload'].installProgress }) }}
                     </p>
                     <p v-else>
                         <i class="fas fa-cog" />
-                        Installing: waiting for download to finish
+                        {{ t('translations.pages.manager.modals.downloadProgress.waitingForDownload') }}
                     </p>
 
                     <Progress
