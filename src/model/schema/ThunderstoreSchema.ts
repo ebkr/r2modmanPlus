@@ -35,6 +35,19 @@ export function getModLoaderMapping(packageId: string): ModLoaderPackageMapping|
 
 /**
  * @param packageId Package's name in "TeamName-PackageName" format excluding version number.
+ * @param settingsIdentifier Game's settings identifier.
+ */
+export function getRecommendedVersion(packageId: string, settingsIdentifier: string): string|undefined {
+    // Use hardcoded values until this information available via Thunderstore Ecosystem API.
+    if (packageId === "LavaGang-MelonLoader" && settingsIdentifier === "BONEWORKS") {
+        return "0.5.4";
+    }
+
+    return undefined;
+}
+
+/**
+ * @param packageId Package's name in "TeamName-PackageName" format excluding version number.
  */
 export function isModLoaderPackage(packageId: string): boolean {
     return EcosystemModloaderPackages.value.some(pkg => pkg.packageId.toLowerCase() === packageId.toLowerCase());
