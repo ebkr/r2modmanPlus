@@ -172,6 +172,7 @@ export type ManagerMessageFormat = {
             downloadProgress: string;
             installProgress: string;
             waitingForDownload: string;
+            extractionProgress: string;
         },
         downloadModVersionSelect: {
             title: string;
