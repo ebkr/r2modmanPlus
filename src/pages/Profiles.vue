@@ -6,8 +6,8 @@
     <ImportProfileModal />
     <!-- Content -->
     <hero
-      title="Profile selection"
-      subtitle="Profiles help to organise mods easily"
+      :title="t('translations.pages.profileSelection.pageTitle.title')"
+      :subtitle="t('translations.pages.profileSelection.pageTitle.subtitle')"
       heroType="primary"
     />
     <div class="columns">
@@ -19,7 +19,7 @@
                 <div class='notification'>
                     <div class="container">
                         <i class='fas fa-long-arrow-alt-left margin-right' />
-                        <strong><a @click="backToGameSelection">Back to game selection</a></strong>
+                        <strong><a @click="backToGameSelection">{{ t('translations.pages.profileSelection.actions.backToGameSelection') }}</a></strong>
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
@@ -39,20 +39,32 @@
                 <div class="container">
                   <nav class="level">
                     <div class="level-item">
-                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">Select profile</a>
+                      <a id="select-profile" class="button is-info" @click="moveToNextScreen()">
+                          {{ t('translations.pages.profileSelection.actions.select') }}
+                      </a>
                     </div>
                       <div class="level-item">
-                          <a id="rename-profile-disabled" class="button" v-if="activeProfileName === 'Default'" :disabled="true">Rename</a>
-                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>Rename</a>
+                          <a id="rename-profile-disabled" class="button" v-if="activeProfileName === 'Default'" :disabled="true">
+                              {{ t('translations.pages.profileSelection.actions.rename') }}
+                          </a>
+                          <a id="rename-profile" class="button" @click="openRenameProfileModal()" v-else>
+                              {{ t('translations.pages.profileSelection.actions.rename') }}
+                          </a>
                       </div>
                     <div class="level-item">
-                      <a id="create-profile" class="button" @click="openCreateProfileModal()">Create new</a>
+                      <a id="create-profile" class="button" @click="openCreateProfileModal()">
+                          {{ t('translations.pages.profileSelection.actions.create') }}
+                      </a>
                     </div>
                     <div class="level-item">
-                      <a class="button" @click="openImportProfileModal()">Import / Update</a>
+                      <a class="button" @click="openImportProfileModal()">
+                          {{ t('translations.pages.profileSelection.actions.import') }}
+                      </a>
                     </div>
                     <div class="level-item">
-                        <a class="button is-danger" @click="openDeleteProfileModal()">Delete</a>
+                        <a class="button is-danger" @click="openDeleteProfileModal()">
+                            {{ t('translations.pages.profileSelection.actions.delete') }}
+                        </a>
                     </div>
                   </nav>
                 </div>
@@ -76,9 +88,11 @@ import { computed, onMounted } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import { useRouter } from 'vue-router';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
 const router = useRouter();
+const { t } = useI18n();
 
 const profileList = computed(() => store.state.profiles.profileList);
 const activeProfileName = computed(() => store.getters['profile/activeProfileName']);

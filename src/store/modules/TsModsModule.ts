@@ -28,6 +28,7 @@ interface State {
     modsLastUpdated?: Date;
     thunderstoreModListUpdateError: Error|undefined;
     thunderstoreModListUpdateStatus: string;
+    thunderstoreModListUpdateProgress: number;
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -73,7 +74,8 @@ export const TsModsModule = {
         /*** Error shown on UI after mod list refresh fails */
         thunderstoreModListUpdateError: undefined,
         /*** Status shown on UI during mod list refresh */
-        thunderstoreModListUpdateStatus: ''
+        thunderstoreModListUpdateStatus: '',
+        thunderstoreModListUpdateProgress: 0,
     }),
 
     getters: <GetterTree<State, RootState>>{
@@ -171,6 +173,9 @@ export const TsModsModule = {
         setThunderstoreModListUpdateStatus(state, status: string) {
             state.thunderstoreModListUpdateStatus = status;
         },
+        setThunderstoreModListUpdateProgress(state, progress: number) {
+            state.thunderstoreModListUpdateProgress = progress;
+        },
         startThunderstoreModListUpdate(state) {
             state.isThunderstoreModListUpdateInProgress = true;
             state.thunderstoreModListUpdateError = undefined;
@@ -211,7 +216,7 @@ export const TsModsModule = {
             commit('startThunderstoreModListUpdate');
 
             try {
-                commit('setThunderstoreModListUpdateStatus', 'Checking for mod list updates from Thunderstore...');
+                commit('setThunderstoreModListUpdateStatus', 'checkingForUpdates');
                 const packageListIndex = await dispatch('fetchPackageListIndex');
 
                 // If the package list is up to date, only update the timestamp. Otherwise,
@@ -223,15 +228,15 @@ export const TsModsModule = {
                         'fetchAndCachePackageListChunks',
                         {
                             packageListIndex,
-                            progressCallback: (progress: number) => commit(
-                                'setThunderstoreModListUpdateStatus',
-                                `Loading latest mod list from Thunderstore: ${progress}%`
-                            ),
+                            progressCallback: (progress: number) => {
+                                commit('setThunderstoreModListUpdateStatus', 'loadingLatestModList');
+                                commit('setThunderstoreModListUpdateProgress', progress);
+                            },
                         },
                     );
 
                     if (areAllChunksProcessedSuccessfully) {
-                        commit('setThunderstoreModListUpdateStatus', 'Pruning removed mods from local cache...');
+                        commit('setThunderstoreModListUpdateStatus', 'pruneCache');
                         await dispatch('pruneRemovedModsFromCache', packageListIndex.dateFetched);
                     }
                 }
@@ -245,9 +250,9 @@ export const TsModsModule = {
                 if (packageListIndex.isLatest && state.mods.length > 0) {
                     await dispatch('updateModsLastUpdated');
                 } else {
-                    commit('setThunderstoreModListUpdateStatus', 'Processing the mod list...');
+                    commit('setThunderstoreModListUpdateStatus', 'processingModList');
                     await dispatch('updateMods');
-                    commit('setThunderstoreModListUpdateStatus', 'Almost done...');
+                    commit('setThunderstoreModListUpdateStatus', 'almostDone');
                     await dispatch('profile/tryLoadModListFromDisk', null, {root: true});
                     await dispatch('prewarmCache');
                 }
@@ -381,7 +386,7 @@ export const TsModsModule = {
             const community = rootState.activeGame.internalFolderName;
 
             try {
-                commit('setThunderstoreModListUpdateStatus', 'Resetting mod list cache...');
+                commit('setThunderstoreModListUpdateStatus', 'resettingCache');
                 await PackageDb.resetCommunity(community);
                 commit('setModsLastUpdated', undefined);
             } finally {
