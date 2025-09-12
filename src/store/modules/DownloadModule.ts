@@ -288,9 +288,6 @@ export const DownloadModule = {
         addDownload(state: State, download: DownloadProgress) {
             state.allDownloads = [...state.allDownloads, download];
         },
-        setDone(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
-        },
         setFailed(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
         },
@@ -299,9 +296,6 @@ export const DownloadModule = {
         },
         setInstalled(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLED);
-        },
-        setFailed(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {

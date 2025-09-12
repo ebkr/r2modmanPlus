@@ -66,19 +66,16 @@
 
 <script lang='ts' setup>
 import { Hero } from '../components/all';
-
 import R2Error from '../model/errors/R2Error';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import DeleteProfileModal from '../components/profiles-modals/DeleteProfileModal.vue';
 import RenameProfileModal from '../components/profiles-modals/RenameProfileModal.vue';
 import CreateProfileModal from '../components/profiles-modals/CreateProfileModal.vue';
 import ImportProfileModal from '../components/profiles-modals/ImportProfileModal.vue';
-import { computed, getCurrentInstance, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter, { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const store = getStore<State>();
 const router = useRouter();

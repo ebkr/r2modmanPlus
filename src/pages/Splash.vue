@@ -35,9 +35,9 @@
                                 </div>
                                 <div class='container' v-if="view === 'main'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-info-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-info-circle' />
+                                        </span>
                                         <strong>Did you know?</strong>
                                     </p>
                                     <ul class='margin-right'>
@@ -57,9 +57,9 @@
                                         </li>
                                     </ul>
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-question-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-question-circle' />
+                                        </span>
                                         <strong>Having trouble?</strong>
                                     </p>
                                     <p>
@@ -70,9 +70,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-address-card' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-address-card' />
+                                        </span>
                                         <strong>About r2modman</strong>
                                     </p>
                                     <p>It's created by Ebkr, using Quasar.</p>
@@ -86,9 +86,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-question-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-question-circle' />
+                                        </span>
                                         <strong>FAQ</strong>
                                     </p>
                                     <ul>
