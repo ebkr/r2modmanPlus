@@ -1,5 +1,6 @@
 import {ModloaderPackage, R2Modman as GameConfig} from "../../assets/data/ecosystemTypes";
 import {ref} from "vue";
+import ModLoaderPackageMapping from "../installing/ModLoaderPackageMapping";
 
 // Re-export generated types/Enums to avoid having the whole codebase
 // tightly coupled with the generated ecosystemTypes.
@@ -20,6 +21,16 @@ export function getGameConfigBySettingsIdentifier(settingsIdentifier: string): G
     );
 
     return config ? config[1] : undefined;
+}
+
+/**
+ * @param packageId Package's name in "TeamName-PackageName" format excluding version number.
+ */
+export function getModLoaderMapping(packageId: string): ModLoaderPackageMapping|undefined {
+    const pkg = EcosystemModloaderPackages.value.find(pkg => pkg.packageId.toLowerCase() === packageId.toLowerCase());
+    return pkg
+        ? new ModLoaderPackageMapping(pkg.packageId, pkg.rootFolder, pkg.loader)
+        : undefined;
 }
 
 /**
