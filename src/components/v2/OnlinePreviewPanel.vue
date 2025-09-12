@@ -9,11 +9,11 @@ import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieSto
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
-import debounce from 'lodash.debounce';
-import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 import {useI18n} from "vue-i18n";
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import debounce from 'lodash.debounce';
 
 const store = getStore<State>();
 const { t, d, messages, locale } = useI18n();
@@ -198,7 +198,7 @@ function dragEnd(event: DragEvent) {
                 <div class="margin-top margin-bottom">
                     <p class="description">{{ mod.getDescription() }}</p>
                 </div>
-                <p class='card-timestamp'><strong>Downloads:</strong>
+                <p class='card-timestamp'>
                     <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.downloads">
                         <template v-slot:downloads>
                             <span class="font-weight-normal">{{ mod.getDownloadCount() }}</span>
