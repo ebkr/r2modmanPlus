@@ -9,7 +9,6 @@ vi.mock('../../../../../src/assets/data/ecosystemJsonSchema.json', () => ({
 import type {R2Modman, ThunderstoreEcosystem} from '../../../../../src/assets/data/ecosystemTypes';
 import {VersionedThunderstoreEcosystem, updateEcosystemReactives, updateLatestEcosystemSchema} from '../../../../../src/r2mm/ecosystem/EcosystemSchema';
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from '../../../../../src/model/schema/ThunderstoreSchema';
-import {MODLOADER_PACKAGES, MOD_LOADER_VARIANTS, updateModLoaderExports} from '../../../../../src/r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import InMemoryFsProvider from '../../../stubs/providers/InMemory.FsProvider';
 import FsProvider from '../../../../../src/providers/generic/file/FsProvider';
 import PathResolver from '../../../../../src/r2mm/manager/PathResolver';
@@ -68,7 +67,6 @@ describe('EcosystemSchema', () => {
         const loggerImpl = new StubLoggerProvider();
         LoggerProvider.provide(() => loggerImpl);
         spyLogger = vi.spyOn(LoggerProvider.instance, 'Log').mockImplementation(() => {});
-        updateModLoaderExports();
         mockAxiosGet.mockReset();
         mockPrefetchAll = vi.fn().mockResolvedValue(undefined);
         provideGameImageImplementation(() => ({
@@ -126,16 +124,6 @@ describe('EcosystemSchema', () => {
 
             expect(EcosystemSupportedGames.value.length).toBeGreaterThan(0);
             expect(spyLogger).toHaveBeenCalledOnce();
-        });
-
-        test('populates mod loader exports after updating reactives', async () => {
-            expect(MODLOADER_PACKAGES.length).toBe(0);
-            expect(Object.keys(MOD_LOADER_VARIANTS).length).toBe(0);
-
-            await updateEcosystemReactives();
-
-            expect(MODLOADER_PACKAGES.length).toBeGreaterThan(0);
-            expect(Object.keys(MOD_LOADER_VARIANTS).length).toBeGreaterThan(0);
         });
 
     });

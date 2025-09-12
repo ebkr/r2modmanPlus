@@ -11,7 +11,6 @@ import FsProvider from "../../providers/generic/file/FsProvider";
 import VersionNumber from "../../model/VersionNumber";
 import ManagerInformation from "../../_managerinf/ManagerInformation";
 import {EcosystemModloaderPackages, EcosystemSupportedGames} from "../../model/schema/ThunderstoreSchema";
-import {updateModLoaderExports} from "../installing/profile_installers/ModLoaderVariantRecord";
 import LoggerProvider, {LogSeverity} from "../../providers/ror2/logging/LoggerProvider";
 import {getAxiosWithTimeouts} from "../../utils/HttpUtils";
 import {retry} from "../../utils/Common";
@@ -264,7 +263,6 @@ async function internalUpdateEcosystemReactives(schema: ThunderstoreEcosystem): 
     }
     EcosystemSupportedGames.value = result;
     EcosystemModloaderPackages.value = schema.modloaderPackages;
-    updateModLoaderExports();
 }
 
 export async function updateEcosystemReactives() {
