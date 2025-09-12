@@ -224,6 +224,15 @@ export default class ManagerSettings {
         await this.save();
     }
 
+    public async getPreviewPanelWidth() {
+        return ManagerSettings.CONTEXT.global.previewPanelWidth;
+    }
+
+    public async setPreviewPanelWidth(width: number) {
+        ManagerSettings.CONTEXT.global.previewPanelWidth = width;
+        await this.save();
+    }
+
     public logActiveGameInDexieStore() {
         console.debug(`Active game in Dexie store: "${ManagerSettings.DEXIE_STORE.activeGame.settingsIdentifier}".`);
     }

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ThunderstoreMod from '../../model/ThunderstoreMod';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import MarkdownRender from './MarkdownRender.vue';
 import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineModList from '../views/OnlineModList.vue';
@@ -9,6 +9,8 @@ import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieSto
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
+import debounce from 'lodash.debounce';
+import ManagerSettings from '../../r2mm/manager/ManagerSettings';
 
 const store = useStore();
 
@@ -28,6 +30,12 @@ const changelogError = ref<R2Error | null>(null);
 const activeTab = ref<"README" | "CHANGELOG" | "Dependencies">("README");
 const loadingPanel = ref<boolean>(true);
 const dependencies = ref<ThunderstoreMod[]>([]);
+
+const maxPanelWidth = ref(getMaxPanelWidth());
+
+function getMaxPanelWidth(): number {
+    return window.outerWidth - document.getElementsByClassName("nav-column")[0].scrollWidth;
+}
 
 function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
     activeTab.value = tab;
@@ -137,96 +145,150 @@ function showDownloadModal(mod: ThunderstoreMod) {
     store.commit("openDownloadModVersionSelectModal", mod);
 }
 
+
+const previewPanelWidth = ref(500);
+ManagerSettings.getSingleton(store.state.activeGame)
+    .then(async settings => previewPanelWidth.value = await settings.getPreviewPanelWidth())
+
+watchEffect(() => {
+    const varWidth = previewPanelWidth.value;
+    const root = document.querySelector(':root')!;
+    root.style.setProperty('--preview-panel-width', varWidth);
+    maxPanelWidth.value = getMaxPanelWidth();
+});
+
+const resizeDebounce = debounce((event: DragEvent) => {
+    // Require conditional as on-release this is reset.
+    if (event.clientX > 0) {
+        previewPanelWidth.value = window.innerWidth - event.clientX;
+    }
+}, 1);
+
+function dragStart(event: DragEvent) {
+    event.target.style.opacity = 0;
+}
+
+function dragEnd(event: DragEvent) {
+    event.target.style.opacity = 1;
+    ManagerSettings.getSingleton(store.state.activeGame)
+        .then(settings => settings.setPreviewPanelWidth(previewPanelWidth.value));
+}
+
 </script>
 
 <template>
-    <div class="c-preview-panel">
-        <div class="c-preview-panel__header">
-            <button class="close-button button" @click="() => emits('close')">
+    <div class="c-panel-window">
+        <div class="c-drag-pane" @drag.prevent.stop="resizeDebounce" @dragstart="dragStart" @dragend="dragEnd" draggable="true">
+            <i class="fas fa-grip-lines-vertical drag-item"></i>
+        </div>
+        <div class="c-preview-panel" :style="`width: calc(${previewPanelWidth}px - 2.5rem + 5px); max-width: ${maxPanelWidth}px`">
+            <div class="c-preview-panel__header">
+                <button class="close-button button" @click="() => emits('close')">
                 <i class="fas fa-times"/>
             </button>
             <h1 class="title">
                 {{ mod.getName() }}
             </h1>
-            <h2 class="subtitle">
-                By {{ mod.getOwner() }}
-            </h2>
-            <div class="margin-top margin-bottom">
-                <p class="description">{{ mod.getDescription() }}</p>
-            </div>
-            <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
-            <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
-            <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
-            <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
-        </div>
-        <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
-            <div class="button-group">
-                <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
-                <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
-                <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
-            </div>
-            <div class="tabs margin-top">
-                <ul>
-                    <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
-                    <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
-                    <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies ({{ dependencies.length }})</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="c-preview-panel__content">
-            <template v-if="loadingPanel">
-                <div class="notification">
-                    <div class="container">
-                        <p>Fetching {{ activeTab }} for {{ props.mod.getFullName() }}</p>
-                    </div>
+                <h2 class="subtitle">
+                    By {{ mod.getOwner() }}
+                </h2>
+                <div class="margin-top margin-bottom">
+                    <p class="description">{{ mod.getDescription() }}</p>
                 </div>
-            </template>
-            <template v-else-if="activeTab === 'Dependencies'">
-                <template v-if="dependencies.length > 0">
-                    <OnlineModList :paged-mod-list="dependencies" :read-only="true" />
-                </template>
-                <template v-else>
+                <p class='card-timestamp'><strong>Downloads:</strong> {{mod.getDownloadCount()}}</p>
+                <p class='card-timestamp'><strong>Likes:</strong> {{mod.getRating()}}</p>
+                <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(mod.getDateUpdated())}}</p>
+                <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
+            </div>
+            <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
+                <div class="button-group">
+                    <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
+                    <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
+                    <ExternalLink v-if="props.mod.getDonationLink()" tag="button" class="button" :url="props.mod.getDonationLink()">Donate</ExternalLink>
+                </div>
+                <div class="tabs margin-top">
+                    <ul>
+                        <li :class="{'is-active': activeTab === 'README'}"><a @click="setActiveTab('README')">README</a></li>
+                        <li :class="{'is-active': activeTab === 'CHANGELOG'}"><a @click="setActiveTab('CHANGELOG')">CHANGELOG</a></li>
+                        <li :class="{'is-active': activeTab === 'Dependencies'}"><a @click="setActiveTab('Dependencies')">Dependencies ({{ dependencies.length }})</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="c-preview-panel__content">
+                <template v-if="loadingPanel">
                     <div class="notification">
                         <div class="container">
-                            <p>{{ props.mod.getName() }} has no dependencies</p>
+                            <p>Fetching {{ activeTab }} for {{ props.mod.getFullName() }}</p>
                         </div>
                     </div>
                 </template>
-            </template>
-            <template v-else-if="activeTab === 'README'">
-                <template v-if="readmeError !== null">
-                    <div class="notification is-danger">
-                        <h2 class="title is-6">Unable to fetch README for {{ props.mod.getFullName() }}</h2>
-                        <p>{{ readmeError.message }}</p>
-                    </div>
+                <template v-else-if="activeTab === 'Dependencies'">
+                    <template v-if="dependencies.length > 0">
+                        <OnlineModList :paged-mod-list="dependencies" :read-only="true" />
+                    </template>
+                    <template v-else>
+                        <div class="notification">
+                            <div class="container">
+                                <p>{{ props.mod.getName() }} has no dependencies</p>
+                            </div>
+                        </div>
+                    </template>
                 </template>
-                <template v-else-if="markdownToRender !== null">
-                    <MarkdownRender :markdown="markdownToRender" />
+                <template v-else-if="activeTab === 'README'">
+                    <template v-if="readmeError !== null">
+                        <div class="notification is-danger">
+                            <h2 class="title is-6">Unable to fetch README for {{ props.mod.getFullName() }}</h2>
+                            <p>{{ readmeError.message }}</p>
+                        </div>
+                    </template>
+                    <template v-else-if="markdownToRender !== null">
+                        <MarkdownRender :markdown="markdownToRender" />
+                    </template>
                 </template>
-            </template>
-            <template v-else-if="activeTab === 'CHANGELOG'">
-                <template v-if="changelogError !== null">
-                    <div class="notification is-danger">
-                        <h2 class="title is-6">Unable to fetch CHANGELOG for {{ props.mod.getFullName() }}</h2>
-                        <p>{{ changelogError.message }}</p>
-                    </div>
+                <template v-else-if="activeTab === 'CHANGELOG'">
+                    <template v-if="changelogError !== null">
+                        <div class="notification is-danger">
+                            <h2 class="title is-6">Unable to fetch CHANGELOG for {{ props.mod.getFullName() }}</h2>
+                            <p>{{ changelogError.message }}</p>
+                        </div>
+                    </template>
+                    <template v-else-if="markdownToRender !== null">
+                        <MarkdownRender :markdown="markdownToRender" />
+                    </template>
                 </template>
-                <template v-else-if="markdownToRender !== null">
-                    <MarkdownRender :markdown="markdownToRender" />
-                </template>
-            </template>
+            </div>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+.c-panel-window {
+    display: flex;
+    flex-direction: row;
+    max-width: 80vw;
+}
+
+.c-drag-pane {
+    height: 100%;
+    background-color: transparent;
+    cursor: col-resize;
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    user-select: none !important;
+}
+
+.c-drag-pane:active {
+    cursor: none;
+}
+
 .c-preview-panel {
     height: calc(100vh - 2.75rem);
     display: flex;
     flex-flow: column;
     margin: 1rem;
-    width: 500px;
     color: var(--v2-primary-text-color);
+    min-width: 350px;
 
     &__container {
         flex: 0;
@@ -239,6 +301,7 @@ function showDownloadModal(mod: ThunderstoreMod) {
         height: max-content;
         overflow-y: auto;
         overflow-x: hidden;
+        max-width: 100%;
     }
 }
 
