@@ -41,9 +41,7 @@ function closeModal() {
 
                     <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
                         <i class="fas fa-box-open"/>
-                        // TODO - i18n/manager-view
-                        Extracting: {{store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
+                        {{ t('translations.pages.manager.modals.downloadProgress.extractionProgress', { progress: store.getters['download/currentDownload'].downloadProgress, totalSize: FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize) }) }}
                     </p>
 
                     <p v-else>

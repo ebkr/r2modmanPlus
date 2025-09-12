@@ -191,6 +191,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             },
             downloadProgress: 'Downloading: {progress}% of {totalSize}',
             installProgress: 'Installing: {progress}%',
+            extractionProgress: 'Extracting: {progress}% of {totalSize}',
             waitingForDownload: 'Installing: waiting for download to finish',
         },
         downloadModVersionSelect: {
