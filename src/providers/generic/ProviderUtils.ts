@@ -7,6 +7,7 @@ import GameDirectoryResolverProvider from '../ror2/game/GameDirectoryResolverPro
 import GameRunnerProvider from './game/GameRunnerProvider';
 import PlatformInterceptorProvider from './game/platform_interceptor/PlatformInterceptorProvider';
 import ConflictManagementProvider from './installing/ConflictManagementProvider';
+import { useProviderStore } from '../../store/provider/provider_store';
 
 export default class ProviderUtils {
 
@@ -25,6 +26,8 @@ export default class ProviderUtils {
 
         GameRunnerProvider.provide(() => runner);
         GameDirectoryResolverProvider.provide(() => resolver);
+        const { setGameDirectoryResolverProvider } = useProviderStore();
+        setGameDirectoryResolverProvider(() => resolver);
         ConflictManagementProvider.provide(() => new ConflictManagementProviderImpl());
     }
 

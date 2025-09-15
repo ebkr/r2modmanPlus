@@ -5,10 +5,10 @@ import Profile from '../../../../model/Profile';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import ManagerSettings from '../../../manager/ManagerSettings';
-import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
 import ChildProcess from '../../../../providers/node/child_process/child_process';
+import { useProviderStore } from '../../../../store/provider/provider_store';
 
 export default class DirectGameRunner extends GameRunnerProvider {
 
@@ -33,7 +33,8 @@ export default class DirectGameRunner extends GameRunnerProvider {
     async start(game: Game, args: string): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
-            let gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
+            const { gameDirectoryResolverProvider } = useProviderStore();
+            let gameDir = await gameDirectoryResolverProvider().getDirectory(game);
             if (gameDir instanceof R2Error) {
                 return resolve(gameDir);
             }

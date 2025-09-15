@@ -2,7 +2,6 @@
 import SettingsItem from './SettingsItem.vue';
 import SettingsRow from '../../model/settings/SettingsRow';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
-import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
 import LogOutputProvider from '../../providers/ror2/data/LogOutputProvider';
@@ -13,19 +12,19 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { Platform } from '../../model/schema/ThunderstoreSchema';
 import moment from 'moment';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
-import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import VueRouter from 'vue-router';
-import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
+import { useRouter } from 'vue-router';
+import {getLaunchType} from "../../model/real_enums/launch/LaunchType";
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
+import { useProviderStore } from '../../store/provider/provider_store';
+import { storeToRefs } from 'pinia';
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+const providerStore = useProviderStore();
+const { gameDirectoryResolverProvider } = storeToRefs(providerStore)
+const router = useRouter();
 
 const activeTab = ref<string>('All');
 const tabs = ref<string[]>(['All', 'Profile', 'Locations', 'Debugging', 'Modpacks', 'Other']);
@@ -56,7 +55,7 @@ let settingsList = [
         `Change the location of the ${activeGame.value.displayName} folder that ${appName.value} uses.`,
         async () => {
             if (settings.value.getContext().gameSpecific.gameDirectory !== null) {
-                const directory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
+                const directory = await gameDirectoryResolverProvider.value().getDirectory(activeGame.value);
                 if (!(directory instanceof R2Error)) {
                     return directory;
                 }
@@ -321,7 +320,7 @@ onMounted(async () => {
                 `Change the location of the Steam folder that ${appName.value} uses.`,
                 async () => {
                     if (settings.value.getContext().global.steamDirectory !== null) {
-                        const directory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+                        const directory = await gameDirectoryResolverProvider.value().getSteamDirectory();
                         if (!(directory instanceof R2Error)) {
                             return directory;
                         }
@@ -362,12 +361,12 @@ onMounted(async () => {
     settingsList = settingsList.sort((a, b) => a.action.localeCompare(b.action));
     searchableSettings.value = settingsList;
 
-    const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(activeGame.value);
+    const gameDirectory = await gameDirectoryResolverProvider.value().getDirectory(activeGame.value);
     if (!(gameDirectory instanceof R2Error)) {
         await settings.value.setGameDirectory(gameDirectory);
     }
 
-    const steamDirectory = await GameDirectoryResolverProvider.instance.getSteamDirectory();
+    const steamDirectory = await gameDirectoryResolverProvider.value().getSteamDirectory();
     if (!(steamDirectory instanceof R2Error)) {
         await settings.value.setSteamDirectory(steamDirectory);
     }
