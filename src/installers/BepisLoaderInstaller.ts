@@ -1,9 +1,8 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import { BepInExInstaller } from './BepInExInstaller';
-import ProfileModList from 'src/r2mm/mods/ProfileModList';
-import R2Error from 'src/model/errors/R2Error';
-import FileUtils from 'src/utils/FileUtils';
-import FsProvider from 'src/providers/generic/file/FsProvider';
+import ProfileModList from '../r2mm/mods/ProfileModList';
+import R2Error from '../model/errors/R2Error';
+import FileUtils from '../utils/FileUtils';
 
 export class BepisLoaderInstaller implements PackageInstaller {
 
@@ -22,14 +21,11 @@ export class BepisLoaderInstaller implements PackageInstaller {
             throw modList;
         }
 
-        const hasRendererModLoaderInstalled = modList.findIndex(value => value.getName() === 'ResoniteModding-BepInExRenderer') >= 0;
+        const hasRendererModLoaderInstalled = modList.some(value => value.getName() === 'ResoniteModding-BepInExRenderer');
         if (!hasRendererModLoaderInstalled) {
             const rendererPath = profile.joinToProfilePath('Renderer');
-            await FileUtils.ensureDirectory(rendererPath);
-            await FileUtils.emptyDirectory(rendererPath);
-            await FsProvider.instance.rmdir(rendererPath);
+            await FileUtils.recursiveRemoveDirectoryIfExists(rendererPath);
         }
-        return;
     }
 
 }
