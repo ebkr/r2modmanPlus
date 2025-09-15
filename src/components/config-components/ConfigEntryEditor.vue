@@ -61,7 +61,7 @@
                                         placeholder="Select an option"
                                         :selected="entry.value.split(',')"
                                         :options="getSelectOptions(entry)"
-                                        @selection-changed="(e, newSelection) => updateEntryMultiSelect(entry, e)"/>
+                                        @selection-changed="(newSelection) => updateEntryMultiSelect(entry, newSelection)"/>
                                 </template>
                                 <template v-else>
                                     <div class="settings-input-container">

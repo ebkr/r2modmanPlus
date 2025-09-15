@@ -8,8 +8,8 @@
                 <option v-for="(entry, index) in selectableOptions" :value="entry" :selected="false">{{ entry }}</option>
             </select>
         </div>
-        <div class="tags has-addons margin-top" v-if="selected.length > 0">
-            <span class="margin-right" v-for="option in selected">
+        <div class="tags has-addons margin-top" v-if="visibleSelectedOptions.length > 0">
+            <span class="margin-right" v-for="option in visibleSelectedOptions">
                 <a href="#" @click="removeSelection(option)">
                     <div class="tag has-addons">
                         <span>{{ option }}</span>
@@ -41,6 +41,10 @@ const selectableOptions = computed(() => {
     return props.options
         .filter(entry => props.selected.findIndex(value => value.trim() === entry.trim()) === -1)
 });
+
+const visibleSelectedOptions = computed(() => {
+    return props.selected.filter(value => value.trim().length > 0);
+})
 
 function updateSelection(event: InputEvent) {
     const target = event.target as HTMLSelectElement;
