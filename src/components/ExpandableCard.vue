@@ -43,7 +43,7 @@
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
+import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 
