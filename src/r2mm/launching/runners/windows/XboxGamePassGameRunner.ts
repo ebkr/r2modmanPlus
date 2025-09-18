@@ -4,7 +4,7 @@ import R2Error from '../../../../model/errors/R2Error';
 import Profile from '../../../../model/Profile';
 import ManagerSettings from '../../../manager/ManagerSettings';
 import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
-import { exec } from 'child_process';
+import ChildProcess from '../../../../providers/node/child_process/child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
@@ -44,7 +44,7 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
+            ChildProcess.exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {

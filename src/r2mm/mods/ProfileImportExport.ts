@@ -1,11 +1,12 @@
 import { retry } from "../../utils/Common";
 import FileUtils from '../../utils/FileUtils';
-import path from 'path';
+import path from "../../providers/node/path/path";
 import R2Error from "../../model/errors/R2Error";
 import PathResolver from '../../r2mm/manager/PathResolver';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import { ProfileApiClient } from '../../r2mm/profiles/ProfilesClient';
 import {AxiosResponse} from "axios";
+import Buffer from "../../providers/node/buffer/buffer";
 
 const IMPORT_CACHE_DIRNAME = "_import_cache";
 const PROFILE_DATA_PREFIX = "#r2modman";

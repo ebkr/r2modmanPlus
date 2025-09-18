@@ -1,6 +1,6 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import FsProvider from "../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../providers/node/path/path";
 
 const basePackageFiles = ["manifest.json", "readme.md", "icon.png"];
 

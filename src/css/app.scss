@@ -1,7 +1,9 @@
 @charset "utf-8";
 @use "v2/main";
 @use "v2/initial";
-@import "quasar.css";
+@use "v2/components/all";
+@import "./quasar.css";
+@import "./quasar.variables";
 @import "fontawesome-free-5.11.2/css/all.min.css";
 
 // IMPORTANT:
@@ -12,10 +14,10 @@
 @import "scheme/dark";
 @import "scheme/funky";
 
-@import "~bulma";
-@import "~bulma-steps";
-@import "~bulma-divider";
-@import "~bulma-slider";
-@import "~bulma-checkradio";
+@import "bulma/css/bulma.css";
+@import "bulma-steps/dist/css/bulma-steps.min.css";
+@import "bulma-divider/dist/css/bulma-divider.min.css";
+@import "bulma-slider/dist/css/bulma-slider.min.css";
+@import "bulma-checkradio/dist/css/bulma-checkradio.min.css";
 
 @import "custom";

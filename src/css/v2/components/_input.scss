@@ -1,0 +1,15 @@
+.input, .select select, .textarea {
+    background-color: var(--input-background-color,var(--background,#fff));
+    border-color: var(--input-border-color,var(--border,#e1e1e1));
+    border-radius: 4px;
+    color: var(--input-color,var(--text-strong,#363636));
+
+    &::placeholder {
+        color: var(--input-placeholder-color, var(--text-strong,#363636));
+    }
+
+    &:active, &:focus {
+        border-color: var(--input-focus-border-color,#3273dc);
+        box-shadow: 0 0 0 0.125em rgba(71.6295,94.92035,198.6705,0.25);
+    }
+}

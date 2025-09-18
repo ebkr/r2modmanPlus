@@ -16,9 +16,8 @@ import LogOutput from './r2mm/data/LogOutput';
 import LogOutputProvider from './providers/ror2/data/LogOutputProvider';
 import ThunderstoreDownloaderProvider from './providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import BetterThunderstoreDownloader from './r2mm/downloading/BetterThunderstoreDownloader';
-import { ipcRenderer } from 'electron';
 import PathResolver from './r2mm/manager/PathResolver';
-import path from 'path';
+import path from './providers/node/path/path';
 import ThemeManager from './r2mm/manager/ThemeManager';
 import 'bulma-switch/dist/css/bulma-switch.min.css';
 import LoggerProvider, { LogSeverity } from './providers/ror2/logging/LoggerProvider';
@@ -30,7 +29,6 @@ import FileUtils from './utils/FileUtils';
 import LinkProvider from './providers/components/LinkProvider';
 import LinkImpl from './r2mm/component_override/LinkImpl';
 import FsProvider from './providers/generic/file/FsProvider';
-import NodeFs from './providers/generic/file/NodeFs';
 import { DataFolderProvider } from './providers/ror2/system/DataFolderProvider';
 import { DataFolderProviderImpl } from './r2mm/system/DataFolderProviderImpl';
 import InteractionProvider from './providers/ror2/system/InteractionProvider';
@@ -47,12 +45,19 @@ import GenericProfileInstaller from './r2mm/installing/profile_installers/Generi
 import ErrorModal from './components/modals/ErrorModal.vue';
 import { provideStoreImplementation } from './providers/generic/store/StoreProvider';
 import baseStore from './store';
-import { getCurrentInstance, onMounted, ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useUtilityComposable } from './components/composables/UtilityComposable';
-import { Dark } from 'quasar';
+import { useQuasar } from 'quasar';
+import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
+import { useRouter } from 'vue-router';
+import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
+import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
 
-const store = baseStore();
+const store = baseStore;
+const router = useRouter();
 provideStoreImplementation(() => store);
+
+const quasar = useQuasar();
 
 document.addEventListener('auxclick', e => {
     const target = e.target! as any;
@@ -70,7 +75,7 @@ const {
 
 const visible = ref<boolean>(false);
 
-FsProvider.provide(() => new NodeFs());
+FsProvider.provide(() => NodeFsImplementation);
 
 ProfileProvider.provide(() => new ProfileImpl());
 LogOutputProvider.provide(() => LogOutput.getSingleton());
@@ -88,11 +93,11 @@ DataFolderProvider.provide(() => new DataFolderProviderImpl());
 
 PlatformInterceptorProvider.provide(() => new PlatformInterceptorImpl());
 
+provideProtocolImplementation(() => ProtocolProviderImplementation)
+
 BindLoaderImpl.bind();
 
 onMounted(async () => {
-    // Load settings using the default game before the actual game is selected.
-    const router = getCurrentInstance()!.proxy.$router;
     const settings: ManagerSettings = await store.dispatch('resetActiveGame');
 
     hookBackgroundUpdateThunderstoreModList(router);
@@ -102,7 +107,7 @@ onMounted(async () => {
     InstallationRules.apply();
     InstallationRules.validate();
 
-    ipcRenderer.once('receive-appData-directory', async (_sender: any, appData: string) => {
+    window.app.getAppDataDirectory().then(async (appData: string) => {
         PathResolver.APPDATA_DIR = path.join(appData, 'r2modmanPlus-local');
         // Legacy path. Needed for migration.
         PathResolver.CONFIG_DIR = path.join(PathResolver.APPDATA_DIR, "config");
@@ -123,21 +128,20 @@ onMounted(async () => {
         await FileUtils.ensureDirectory(PathResolver.APPDATA_DIR);
 
         await ThemeManager.apply();
-        ipcRenderer.once('receive-is-portable', async (_sender: any, isPortable: boolean) => {
+
+        window.app.isApplicationPortable().then((isPortable: boolean) => {
             ManagerInformation.IS_PORTABLE = isPortable;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Starting manager on version ${ManagerInformation.VERSION.toString()}`);
             visible.value = true;
         });
-        ipcRenderer.send('get-is-portable');
     });
-    ipcRenderer.send('get-appData-directory');
 
     store.commit('updateModLoaderPackageNames');
     store.dispatch('tsMods/updateExclusions');
 });
 
 watchEffect(() => {
-    document.documentElement.classList.toggle('html--dark', Dark.isActive);
+    document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
 })
 </script>
 

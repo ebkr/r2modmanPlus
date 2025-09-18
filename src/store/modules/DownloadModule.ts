@@ -79,7 +79,7 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        async _addDownload({state}, params: {
+        async _addDownload({state, commit}, params: {
             initialMods: ThunderstoreCombo[],
             modsWithDependencies: ThunderstoreCombo[],
             installMode: InstallMode,
@@ -87,9 +87,8 @@ export const DownloadModule = {
             profile: ImmutableProfile
         }): Promise<UUID> {
             const { initialMods, modsWithDependencies, installMode, game, profile } = params;
-            const downloadId = UUID.create();
+            const downloadId = UUID.create().toString();
             const totalDownloadSize = await DownloadUtils.getTotalDownloadSizeInBytes(modsWithDependencies, state.ignoreCache);
-
             const downloadObject: DownloadProgress = {
                 downloadId,
                 initialMods: [...initialMods],
@@ -103,7 +102,7 @@ export const DownloadModule = {
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            commit('addDownload', downloadObject);
             return downloadId;
         },
 
@@ -286,14 +285,17 @@ export const DownloadModule = {
                 state.allDownloads = newDownloads;
             }
         },
+        addDownload(state: State, download: DownloadProgress) {
+            state.allDownloads = [...state.allDownloads, download];
+        },
+        setFailed(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
+        },
         setInstalling(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
         },
         setInstalled(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLED);
-        },
-        setFailed(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {

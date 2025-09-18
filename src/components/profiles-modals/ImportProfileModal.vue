@@ -105,7 +105,7 @@ watch(store.state.tsMods.mods, async() => {
 async function onFileOrCodeSelect(mode: 'FILE' | 'CODE') {
     if (mode === 'FILE') {
         activeStep.value = 'IMPORT_FILE';
-        process.nextTick(async () => {
+        Promise.resolve().then(async () => {
             const files = await InteractionProvider.instance.selectFile({
                 title: 'Import Profile',
                 filters: [{
@@ -352,11 +352,11 @@ function onContentOrPathNotSet() {
                     Some of the packages in the profile are not recognized by the mod manager.
                     Refreshing the online mod list might fix the problem. Please wait...
                 </p>
-                <p v-if="$store.getters['download/activeDownloadCount'] > 0" class="margin-top">
+                <p v-if="store.getters['download/activeDownloadCount'] > 0" class="margin-top">
                     Waiting for mod downloads to finish before refreshing the online mod list...
                 </p>
-                <p v-else class="margin-top"></p>
-                    {{$store.state.tsMods.thunderstoreModListUpdateStatus}}
+                <p v-else class="margin-top">
+                    {{store.state.tsMods.thunderstoreModListUpdateStatus}}
                 </p>
             </div>
         </template>

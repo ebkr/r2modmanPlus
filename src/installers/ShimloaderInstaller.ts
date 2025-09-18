@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import path from "path";
+import path from "../providers/node/path/path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import FileTree from "../model/file/FileTree";
 import FileUtils from "../utils/FileUtils";
@@ -57,7 +57,7 @@ export class ShimloaderInstaller implements PackageInstaller {
 }
 
 export class ShimloaderPluginInstaller implements PackageInstaller {
-    readonly installer = new InstallRuleInstaller({
+    readonly installer = () => new InstallRuleInstaller({
         gameName: "none" as any,  // This isn't acutally used for actual installation but needs some value
         rules: [
             {
@@ -84,6 +84,6 @@ export class ShimloaderPluginInstaller implements PackageInstaller {
     });
 
     async install(args: InstallArgs) {
-        await this.installer.install(args);
+        await this.installer().install(args);
     }
 }

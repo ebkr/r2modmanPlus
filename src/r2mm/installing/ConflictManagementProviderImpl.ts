@@ -2,12 +2,12 @@ import ConflictManagementProvider from '../../providers/generic/installing/Confl
 import R2Error from '../../model/errors/R2Error';
 import ManifestV2 from '../../model/ManifestV2';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import * as path from 'path';
 import yaml from 'yaml';
 import ModFileTracker from '../../model/installing/ModFileTracker';
 import StateTracker from '../../model/installing/StateTracker';
 import { ImmutableProfile } from '../../model/Profile';
 import FileUtils from '../../utils/FileUtils';
+import path from '../../providers/node/path/path';
 
 export default class ConflictManagementProviderImpl extends ConflictManagementProvider {
 

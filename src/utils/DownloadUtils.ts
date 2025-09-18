@@ -3,8 +3,7 @@ import R2Error from '../model/errors/R2Error';
 import ThunderstoreCombo from '../model/ThunderstoreCombo';
 import FsProvider from '../providers/generic/file/FsProvider';
 import PathResolver from '../r2mm/manager/PathResolver';
-
-import * as path from 'path';
+import path from "../providers/node/path/path";
 
 export function addSolutionsToError(err: R2Error): void {
     // Sanity check typing.

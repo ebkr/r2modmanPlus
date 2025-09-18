@@ -1,30 +1,27 @@
-import Vue from 'vue';
-import VueRouter, { Route } from 'vue-router';
-
+import {
+    createMemoryHistory,
+    createRouter,
+    RouteLocationNormalized,
+    RouteMeta
+} from 'vue-router';
 import routes from './routes';
 
-Vue.use(VueRouter);
+const createHistory = createMemoryHistory;
+const Router = createRouter({
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+    routes,
+    linkActiveClass: 'is-active',
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation
- */
+    // Leave this as is and make changes in the quasar.config file instead!
+    // quasar.config file -> build -> vueRouterMode
+    // quasar.config file -> build -> publicPath
+    history: createHistory(process.env.VUE_ROUTER_BASE)
+});
 
-export default function(/* { store, ssrContext } */) {
-    const Router = new VueRouter({
-        linkActiveClass: 'is-active',
-        scrollBehavior: () => ({ x: 0, y: 0 }),
-        routes,
+Router.afterEach((to: RouteLocationNormalized, ignored: RouteLocationNormalized) => {
+    const meta: RouteMeta = to.meta;
+    const title = meta.title as Function;
+    document.title = title();
+});
 
-        // Leave these as is and change from quasar.conf.js instead!
-        // quasar.conf.js -> build -> vueRouterMode
-        // quasar.conf.js -> build -> publicPath
-        mode: "hash",
-        base: "/"
-    });
-
-    Router.afterEach((to: Route, ignored: Route) => {
-        document.title = to.meta!.title();
-    });
-    return Router;
-}
+export default Router;

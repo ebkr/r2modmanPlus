@@ -1,8 +1,8 @@
 import FsProvider from './FsProvider';
 import * as fs from 'fs';
 import StatInterface from './StatInterface';
-import * as path from 'path';
 import Lock from 'async-lock';
+import path from '../../../providers/node/path/path';
 
 export default class NodeFs extends FsProvider {
 

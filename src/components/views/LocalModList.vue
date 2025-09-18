@@ -11,15 +11,18 @@
 
         <div class="mod-list-content">
             <div class="draggable-content">
-                <draggable v-model='draggableList' group="local-mods" handle=".handle"
-                           @start="drag=$store.getters['profile/canSortMods']"
+                <draggable v-model='draggableList'
+                           group="local-mods"
+                           handle=".handle"
+                           @start="drag=store.getters['profile/canSortMods']"
                            @end="drag=false"
                            :force-fallback="true"
-                           :scroll-sensitivity="100">
-                    <local-mod-card
-                        v-for='(mod, index) in draggableList'
-                        :key="`local-${profile.getProfileName()}-${mod.getName()}-${index}`"
-                        :mod="mod" />
+                           :scroll-sensitivity="100"
+                           item-key="id">
+                    <template #item="{element}">
+                        <local-mod-card
+                            :mod="element" />
+                    </template>
                 </draggable>
             </div>
         </div>

@@ -18,31 +18,31 @@ function closeModal() {
     <div>
         <div
             id='downloadProgressModal'
-            :class="['modal', {'is-active':$store.state.modals.isDownloadProgressModalOpen}]"
-            v-if="$store.getters['download/currentDownload'] !== null"
+            :class="['modal', {'is-active':store.state.modals.isDownloadProgressModalOpen}]"
+            v-if="store.getters['download/currentDownload'] !== null"
         >
             <div class="modal-background" @click="closeModal();"></div>
             <div class='modal-content'>
                 <div class='notification is-info'>
 
-                    <h3 v-if="DownloadUtils.statusIsDownloadOrExtract($store.getters['download/currentDownload'].status)" class='title'>
-                        Downloading {{$store.getters['download/currentDownload'].modName}}
+                    <h3 v-if="DownloadUtils.statusIsDownloadOrExtract(store.getters['download/currentDownload'].status)" class='title'>
+                        Downloading {{store.getters['download/currentDownload'].modName}}
                     </h3>
-                    <h3 v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
-                        Installing {{$store.getters['download/currentDownload'].modName}}
+                    <h3 v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.INSTALLING" class='title'>
+                        Installing {{store.getters['download/currentDownload'].modName}}
                     </h3>
 
 
-                    <p v-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
+                    <p v-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.DOWNLOADING">
                         <i class="fas fa-download"/>
-                        Downloading: {{$store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                        Downloading: {{store.getters['download/currentDownload'].downloadProgress}}% of
+                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
-                    <p v-else-if="$store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || $store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
+                    <p v-else-if="store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTING || store.getters['download/currentDownload'].status === DownloadStatusEnum.EXTRACTED">
                         <i class="fas fa-box-open"/>
-                        Extracting: {{$store.getters['download/currentDownload'].downloadProgress}}% of
-                        {{FileUtils.humanReadableSize($store.getters['download/currentDownload'].totalDownloadSize)}}
+                        Extracting: {{store.getters['download/currentDownload'].downloadProgress}}% of
+                        {{FileUtils.humanReadableSize(store.getters['download/currentDownload'].totalDownloadSize)}}
                     </p>
 
                     <p v-else>
@@ -52,13 +52,13 @@ function closeModal() {
 
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].downloadProgress"
+                        :value="store.getters['download/currentDownload'].downloadProgress"
                         :className="['is-dark']"
                     />
 
-                    <p v-if="$store.getters['download/currentDownload'].installProgress">
+                    <p v-if="store.getters['download/currentDownload'].installProgress">
                         <i class="fas fa-cog" spin />
-                        Installing: {{$store.getters['download/currentDownload'].installProgress}}%
+                        Installing: {{store.getters['download/currentDownload'].installProgress}}%
                     </p>
                     <p v-else>
                         <i class="fas fa-cog" />
@@ -67,7 +67,7 @@ function closeModal() {
 
                     <Progress
                         :max='100'
-                        :value="$store.getters['download/currentDownload'].installProgress"
+                        :value="store.getters['download/currentDownload'].installProgress"
                         :className="['is-dark']"
                     />
                 </div>

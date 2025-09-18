@@ -1,37 +1,23 @@
 import ZipProvider from './ZipProvider';
-import AdmZip from 'adm-zip';
-import * as path from 'path';
 import ZipBuilder from './ZipBuilder';
 import ZipEntryInterface from './ZipEntryInterface';
 
 export default class AdmZipProvider extends ZipProvider {
 
     async extractAllTo(zip: string | Buffer, outputFolder: string): Promise<void> {
-        const adm = new AdmZip(zip);
-        outputFolder = outputFolder.replace(/\\/g, '/');
-        adm.extractAllTo(outputFolder, true);
+        return window.zip.extractAllTo(zip, outputFolder);
     }
 
     async readFile(zip: string | Buffer, file: string): Promise<Buffer | null> {
-        const adm = new AdmZip(zip);
-        return adm.readFile(file);
+        return window.zip.readFile(zip, file);
     }
 
-    async getEntries(zip: string | Buffer): Promise<ZipEntryInterface[]> {
-        const adm = new AdmZip(zip);
-        return (adm.getEntries() as unknown as ZipEntryInterface[]);
+    async getEntries(zip: string): Promise<ZipEntryInterface[]> {
+        return window.zip.getEntries(zip);
     }
 
     async extractEntryTo(zip: string | Buffer, target: string, outputPath: string): Promise<void> {
-        const adm = new AdmZip(zip);
-        const safeTarget = target.replace(/\\/g, '/');
-        outputPath = outputPath.replace(/\\/g, '/');
-        var fullPath = path.join(outputPath, safeTarget).replace(/\\/g, '/');
-        if(!path.posix.normalize(fullPath).startsWith(outputPath))
-        {
-            throw Error("Entry " + target + " would extract outside of expected folder");
-        }
-        adm.extractEntryTo(target, outputPath, true, true);
+        return window.zip.extractEntryTo(zip, target, outputPath);
     }
 
     zipBuilder(): ZipBuilder {
@@ -41,23 +27,23 @@ export default class AdmZipProvider extends ZipProvider {
 
 export class AdmZipBuilder extends ZipBuilder {
 
-    private readonly zip: AdmZip;
+    private readonly identifier: number;
 
     constructor() {
         super();
-        this.zip = new AdmZip();
+        this.identifier = window.zip.createNewTemporaryZip();
     }
 
     async addBuffer(fileName: string, contents: Buffer): Promise<void> {
-        this.zip.addFile(fileName, contents);
+        return window.zip.addBufferToTemporaryZip(this.identifier, fileName, contents);
     }
 
     async addFolder(zippedFolderName: string, folderName: string): Promise<void> {
-        this.zip.addLocalFolder(folderName, zippedFolderName);
+        return window.zip.addFolderToTemporaryZip(this.identifier, zippedFolderName, folderName);
     }
 
     async createZip(outputPath: string): Promise<void> {
-        this.zip.writeZip(outputPath);
+        return window.zip.finalizeTemporaryZip(this.identifier, outputPath);
     }
 
 }

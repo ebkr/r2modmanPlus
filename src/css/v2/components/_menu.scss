@@ -1,0 +1,31 @@
+.menu-label {
+    color: var(--v2-inactive-menu-item-color, #363636);
+}
+
+.menu-list {
+    li {
+        color: var(--v2-inactive-menu-item-color);
+    }
+
+    .is-active {
+        color: var(--v2-active-menu-item-color);
+    }
+
+    a {
+        border-radius: 2px;
+        color: var(--v2-inactive-menu-item-color);
+        display: block;
+        padding: 0.5em 0.75em;
+        border: 0;
+
+        &:hover {
+            background-color: var(--menu-item-hover-background-color,#e9eaed);
+            color: var(--menu-item-hover-color,var(--text-strong,#363636));
+        }
+
+        &.is-active {
+            background-color: #485fc7;
+            color: var(--v2-active-menu-item-color) !important;
+        }
+    }
+}

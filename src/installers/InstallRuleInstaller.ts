@@ -1,7 +1,7 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../providers/node/path/path";
 import ManifestV2 from "../model/ManifestV2";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
@@ -59,7 +59,8 @@ async function installSubDir(
             for (const content of (await FsProvider.instance.readdir(source))) {
                 const cacheContentLocation = path.join(source, content);
                 const contentDest = path.join(subDir, content);
-                if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                const isCacheContentLocationFile = (await FsProvider.instance.lstat(cacheContentLocation)).isFile();
+                if (isCacheContentLocationFile) {
                     await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                 } else {
                     await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
@@ -279,7 +280,7 @@ export class InstallRuleInstaller implements PackageInstaller {
             mod,
             files,
         );
-        if (result instanceof R2Error) {
+        if (result instanceof Error) {
             throw result;
         }
     }
@@ -288,7 +289,6 @@ export class InstallRuleInstaller implements PackageInstaller {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-
             const args: InstallRuleArgs = {
                 profile,
                 coreRule: this.rule,

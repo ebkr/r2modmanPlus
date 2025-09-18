@@ -139,7 +139,6 @@
 <script lang='ts' setup>
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { ExternalLink } from '../components/all';
-
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator } from '../r2mm/manager/SteamInstallationValidator';
 import VersionNumber from '../model/VersionNumber';
@@ -148,9 +147,7 @@ import ThemeManager from '../r2mm/manager/ThemeManager';
 import ManagerInformation from '../_managerinf/ManagerInformation';
 import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
-
-import { homedir } from 'os';
-import * as path from 'path';
+import os from '../providers/node/os/os';
 import FsProvider from '../providers/generic/file/FsProvider';
 import CacheUtil from '../r2mm/mods/CacheUtil';
 import LinkProvider from '../providers/components/LinkProvider';
@@ -168,7 +165,9 @@ import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledM
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
 import VueRouter from 'vue-router';
+import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -191,7 +190,7 @@ const profile = computed(() => store.getters['profile/activeProfile']);
 const localModList = computed(() => store.state.profile.modList);
 
 function canRenderLaunchTypeModal() {
-    return ['linux', 'darwin'].includes(process.platform);
+    return ['linux', 'darwin'].includes(appWindow.getPlatform());
 }
 
 function closeSteamInstallationValidationModal() {
@@ -208,16 +207,16 @@ async function validateSteamInstallation() {
 }
 
 function computeDefaultInstallDirectory(): string {
-    switch(process.platform){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
                 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName
             );
         case 'linux':
-            return path.resolve(homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
+            return path.resolve(os.homedir(), '.local', 'share', 'Steam', 'steamapps', 'common', activeGame.value.steamFolderName);
         case 'darwin':
-            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam',
+            return path.resolve(os.homedir(), 'Library', 'Application Support', 'Steam',
                 'steamapps', 'common', activeGame.value.steamFolderName);
         default:
             return '';
@@ -284,23 +283,23 @@ function changeGameInstallDirectoryGamePass() {
 }
 
 function computeDefaultSteamDirectory(): string {
-    switch(process.platform){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.resolve(
                 process.env['ProgramFiles(x86)'] || process.env.PROGRAMFILES || 'C:\\Program Files (x86)',
                 'Steam'
             );
         case 'linux':
-            return path.resolve(homedir(), '.local', 'share', 'Steam');
+            return path.resolve(os.homedir(), '.local', 'share', 'Steam');
         case 'darwin':
-            return path.resolve(homedir(), 'Library', 'Application Support', 'Steam');
+            return path.resolve(os.homedir(), 'Library', 'Application Support', 'Steam');
         default:
             return '';
     }
 }
 
 async function checkIfSteamExecutableIsValid(file: string): Promise<boolean> {
-    switch(process.platform){
+    switch(appWindow.getPlatform()){
         case 'win32':
             return path.basename(file).toLowerCase() === "steam.exe"
         case 'linux':

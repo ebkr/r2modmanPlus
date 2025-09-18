@@ -23,7 +23,7 @@
                                     <button
                                         id="thunderstore-category-filter"
                                         class="button"
-                                        @click="$store.commit('openOnlineSortModal')"
+                                        @click="store.commit('openOnlineSortModal')"
                                     >
                                         Sort
                                     </button>
@@ -36,7 +36,7 @@
                                     <button
                                         id="thunderstore-category-filter"
                                         class="button"
-                                        @click="$store.commit('openCategoryFilterModal')"
+                                        @click="store.commit('openCategoryFilterModal')"
                                     >
                                         Filter
                                     </button>
@@ -46,8 +46,8 @@
                     </div>
                 </div>
             </div>
-            <ModListUpdateBanner />
             <div id="view-content">
+                <ModListUpdateBanner />
                 <OnlineModList
                     :local-mod-list="localModList"
                     :paged-mod-list="pagedThunderstoreModList"
@@ -96,7 +96,7 @@ import ModListUpdateBanner from "../ModListUpdateBanner.vue";
 import OnlinePreviewPanel from '../v2/OnlinePreviewPanel.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue';
 
 const store = getStore<State>();
 
@@ -109,7 +109,7 @@ const sortedThunderstoreModList = ref<ThunderstoreMod[]>([]);
 const thunderstoreSearchFilter = ref<string>("");
 const previewMod = ref<ThunderstoreMod | null>(null);
 
-const OnlineModList = computed(() => OnlineModListProvider.provider);
+const OnlineModList = defineAsyncComponent(() => OnlineModListProvider.provider());
 
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);
 const thunderstoreModList = computed<ThunderstoreMod[]>(() => store.state.tsMods.mods);
@@ -235,6 +235,7 @@ function updatePageNumber(page: number) {
 }
 
 function toggleModPreview(mod: ThunderstoreMod) {
+    console.log("Toggled mod preview")
     if (previewMod.value === mod) {
         previewMod.value = null;
     } else {

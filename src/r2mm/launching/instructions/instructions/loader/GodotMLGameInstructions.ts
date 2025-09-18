@@ -3,7 +3,7 @@ import Game from "../../../../../model/game/Game";
 import Profile from "../../../../../model/Profile";
 import { GameInstruction } from "../../GameInstructions";
 import { DynamicGameInstruction } from "../../DynamicGameInstruction";
-import path from "path";
+import path from "../../../../../providers/node/path/path";
 
 export class GodotMLGameInstructions extends GameInstructionGenerator {
 

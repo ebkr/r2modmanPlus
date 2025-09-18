@@ -22,9 +22,9 @@
                         <div class="notification is-warning margin-right">
                             <span>
                                 You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
-                                Would you like to <a @click="$store.commit('openUpdateAllModsModal')">update all</a>?
+                                Would you like to <a @click="store.commit('openUpdateAllModsModal')">update all</a>?
                             </span>
-                            <a class="float-right cursor-pointer" @click="$store.commit('profile/dismissUpdateAll')">
+                            <a class="float-right cursor-pointer" @click="store.commit('profile/dismissUpdateAll')">
                                 <i class="fas fa-times" />
                             </a>
                         </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 
 import ManifestV2 from '../../model/ManifestV2';
 import LocalModListProvider from '../../providers/components/loaders/LocalModListProvider';
@@ -45,7 +45,8 @@ import { State } from '../../store';
 
 const store = getStore<State>();
 
-const LocalModList = computed(() => LocalModListProvider.provider)
+// const LocalModList = computed(() => LocalModListProvider.provider);
+const LocalModList = defineAsyncComponent(() => LocalModListProvider.provider());
 
 const dismissedUpdateAll = computed<boolean>(() => store.state.profile.dismissedUpdateAll);
 const localModList = computed<ManifestV2[]>(() => store.state.profile.modList);

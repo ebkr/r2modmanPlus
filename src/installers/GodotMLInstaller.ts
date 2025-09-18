@@ -1,10 +1,8 @@
-import path from 'path';
-
+import path from "../providers/node/path/path";
 import { InstallArgs, PackageInstaller } from './PackageInstaller';
 import FileWriteError from '../model/errors/FileWriteError';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
-
 
 export class GodotMLInstaller implements PackageInstaller {
     // JSON_Schema_Validator present on v7.0.1+ only.

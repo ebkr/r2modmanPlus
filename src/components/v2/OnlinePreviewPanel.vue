@@ -4,15 +4,17 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import MarkdownRender from './MarkdownRender.vue';
 import { valueToReadableDate } from '../../utils/DateUtils';
 import OnlineModList from '../views/OnlineModList.vue';
-import useStore from '../../store';
+import { State } from '../../store';
 import { getCombosByDependencyStrings } from '../../r2mm/manager/PackageDexieStore';
 import { ExternalLink } from '../all';
 import R2Error from '../../model/errors/R2Error';
 import { getFullDependencyList, InstallMode } from '../../utils/DependencyUtils';
 import debounce from 'lodash.debounce';
 import ManagerSettings from '../../r2mm/manager/ManagerSettings';
+import { getStore } from '../../providers/generic/store/StoreProvider';
+import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 
-const store = useStore();
+const store = getStore<State>();
 
 interface ModPreviewPanelProps {
     mod: ThunderstoreMod;
@@ -42,7 +44,7 @@ function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
 }
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
-    return fetch(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/latest/${type}/`)
+    return fetch(transformPackageUrl(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/latest/${type}/`))
         .then(res => {
             if (!res.ok) {
                 throw new Error(`No ${type} available for ${mod.getName()}`)
@@ -53,7 +55,6 @@ function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promi
 }
 
 function fetchReadme(modToLoad: ThunderstoreMod) {
-    // TODO - Make sure that this is null on fetch failure.
     readmeError.value = null;
     readme.value = null;
     return fetchDataFor(props.mod, "readme").then(res => {

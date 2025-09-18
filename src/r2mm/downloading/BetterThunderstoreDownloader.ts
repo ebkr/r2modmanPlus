@@ -4,13 +4,14 @@ import ThunderstoreCombo from '../../model/ThunderstoreCombo';
 import ZipExtract from '../installing/ZipExtract';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../../r2mm/manager/PathResolver';
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileWriteError from '../../model/errors/FileWriteError';
 import ThunderstoreDownloaderProvider from '../../providers/ror2/downloading/ThunderstoreDownloaderProvider';
 import ManagerInformation from '../../_managerinf/ManagerInformation';
 import * as DownloadUtils from '../../utils/DownloadUtils';
 import { DownloadStatusEnum } from '../../model/enums/DownloadStatusEnum';
+import path from '../../providers/node/path/path';
+import Buffer from '../../providers/node/buffer/buffer';
 
 export default class BetterThunderstoreDownloader extends ThunderstoreDownloaderProvider {
 
@@ -81,7 +82,6 @@ export default class BetterThunderstoreDownloader extends ThunderstoreDownloader
         const buf: Buffer = Buffer.from(response.data);
         const comboSize = combo.getVersion().getFileSize();
         callback(comboSize, DownloadStatusEnum.EXTRACTING, null);
-
         await this.saveToFile(buf, combo, (success: boolean, error?: R2Error) => {
             if (success) {
                 callback(comboSize, DownloadStatusEnum.EXTRACTED, null);

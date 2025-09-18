@@ -1,7 +1,6 @@
 import R2Error from '../errors/R2Error';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
+import path from '../../providers/node/path/path';
 
 /**
  * The purpose of this class is to create a navigatable tree.

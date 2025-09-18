@@ -1,5 +1,4 @@
 import Profile from '../../model/Profile';
-import * as path from 'path';
 import ProfileModList from './ProfileModList';
 import R2Error from '../../model/errors/R2Error';
 import PathResolver from '../manager/PathResolver';
@@ -7,6 +6,7 @@ import FileUtils from '../../utils/FileUtils';
 import ManifestV2 from '../../model/ManifestV2';
 import VersionNumber from '../../model/VersionNumber';
 import FsProvider from '../../providers/generic/file/FsProvider';
+import path from '../../providers/node/path/path';
 
 export default class CacheUtil {
 

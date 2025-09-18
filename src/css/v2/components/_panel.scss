@@ -1,0 +1,16 @@
+.panel-block {
+    align-items: center;
+    color: var(--panel-block-color,var(--text-strong,#363636));
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.5em 0.75em;
+}
+
+.panel-block:not(:last-child), .panel-tabs:not(:last-child) {
+    border-bottom: 1px solid var(--panel-item-border,var(--border,#e1e1e1));
+}
+
+a.panel-block:hover, label.panel-block:hover {
+    background-color: var(--panel-block-hover-background-color,#f5f5f5);
+}
+

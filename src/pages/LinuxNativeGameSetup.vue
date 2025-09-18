@@ -7,10 +7,10 @@
 			This needs to be done because of how the BepInEx injection works on Unix systems.<br/>
 			<br/>
 			Please copy and paste the following to your {{ activeGame }} launch options:<br/>
-			<code ref="copyableArgs">{{ ComputedWrapperLaunchArguments }}</code>
+			<code id="copyableArgs">{{ ComputedWrapperLaunchArguments }}</code>
 			<br/>
 			<br/>
-			<a ref="copyAction" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
+			<a id="copy-action" class="button margin-right margin-right--half-width" @click="copy">Copy to clipboard</a>
 			<a class="button is-info" @click="acknowledge">Continue</a>
 		</div>
 	</div>
@@ -21,34 +21,31 @@ import { Hero } from '../components/all';
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter from 'vue-router';
+import VueRouter, {useRouter} from 'vue-router';
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
+import InteractionProviderImpl from "../r2mm/system/InteractionProviderImpl";
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
-
-const copyableArgs = ref<HTMLInputElement>();
-const copyAction = ref<HTMLElement>();
+let router = useRouter();
 
 const activeGame = computed(() => store.state.activeGame.displayName);
 const platformName = computed<string>(() => process.platform === 'darwin' ? 'macOS' : process.platform);
 
 function copy(){
     let range = document.createRange();
-    range.selectNode(copyableArgs.value as Node);
+    range.selectNode(document.getElementById('copyableArgs') as Node);
     const selection = window.getSelection();
     if(selection !== null) {
         selection.removeAllRanges();
         selection.addRange(range);
     }
-    document.execCommand("copy");
-    (copyAction.value as Element).innerHTML = "Copied!";
+    InteractionProviderImpl.instance.copyToClipboard(ComputedWrapperLaunchArguments.value);
+    document.getElementById('copy-action')!.innerHTML = 'Copied!';
     setTimeout(() => {
-        (copyAction.value as Element).innerHTML = "Copy to clipboard";
+        const element = document.getElementById('copy-action');
+        if (element) {
+            element.innerHTML = 'Copy to clipboard';
+        }
     }, 2000);
 }
 
