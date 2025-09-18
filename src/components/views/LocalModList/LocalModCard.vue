@@ -221,7 +221,7 @@ function dependencyStringToModName(x: string) {
 
         <!-- Show icon button row even when card is collapsed -->
         <template v-slot:other-icons>
-            <DonateIconButton :mod="tsMod"/>
+            <DonateIconButton :mod="tsMod" v-if="tsMod"/>
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
                 class='card-header-icon'>
