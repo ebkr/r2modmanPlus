@@ -25,7 +25,7 @@
                 </span>
             </template>
             <template v-slot:other-icons>
-                <DonateIconButton :mod="key" :extraRenderCondition="!readOnly"/>
+                <DonateIconButton :mod="key" :extraRenderCondition="!readOnly" v-if="key"/>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
                     <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
                 </span>
