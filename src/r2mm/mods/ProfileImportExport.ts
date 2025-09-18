@@ -40,7 +40,7 @@ async function saveDownloadedProfile(profileData: string): Promise<string> {
 
     const fs = FsProvider.instance;
     const b64 = profileData.substring(PROFILE_DATA_PREFIX.length).trim();
-    const decoded = Buffer.from(b64, "base64");
+    const decoded = window.node.buffer.from(b64, "base64");
     const destination = await getDownloadDestination();
     await fs.writeFile(destination, decoded);
     return destination;

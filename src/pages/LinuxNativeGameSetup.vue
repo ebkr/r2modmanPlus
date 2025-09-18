@@ -18,12 +18,12 @@
 
 <script lang='ts' setup>
 import { Hero } from '../components/all';
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter, {useRouter} from 'vue-router';
-import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
-import InteractionProviderImpl from "../r2mm/system/InteractionProviderImpl";
+import { useRouter } from 'vue-router';
+import { ComputedWrapperLaunchArguments } from '../components/computed/WrapperArguments';
+import InteractionProviderImpl from '../r2mm/system/InteractionProviderImpl';
 
 const store = getStore<State>();
 let router = useRouter();

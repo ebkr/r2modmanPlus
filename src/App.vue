@@ -52,6 +52,7 @@ import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
+import { useI18n } from 'vue-i18n';
 
 const store = baseStore;
 const router = useRouter();
@@ -142,6 +143,19 @@ onMounted(async () => {
 
 watchEffect(() => {
     document.documentElement.classList.toggle('html--dark', quasar.dark.isActive);
+})
+
+const { locale } = useI18n();
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.altKey && e.key === 'l') {
+        console.log("Switch lang");
+        if (locale.value === 'en') {
+            locale.value = 'fr';
+        } else {
+            locale.value = 'en';
+        }
+    }
 })
 </script>
 
