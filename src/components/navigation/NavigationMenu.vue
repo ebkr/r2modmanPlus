@@ -61,7 +61,7 @@
                 </div>
                 <div class="menu-bottom">
                     <div id="profile-switcher" @click="openProfileManagementModal">
-                        <img :src="`/images/game_selection/${activeGame.gameImage}`" alt="Game icon"/>
+                        <img :src="ProtocolProvider.getPublicAssetUrl(`/images/game_selection/${activeGame.gameImage}`)" alt="Game icon"/>
                         <div>
                             <p>{{ profile.getProfileName() }}</p>
                             <p class="sub-action">Profile</p>
@@ -90,6 +90,7 @@ import { ref, computed, onMounted, getCurrentInstance } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import VueRouter, { useRouter } from 'vue-router';
+import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 const router = useRouter();
