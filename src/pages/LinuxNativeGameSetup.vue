@@ -24,12 +24,13 @@ import { State } from '../store';
 import VueRouter, {useRouter} from 'vue-router';
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
 import InteractionProviderImpl from "../r2mm/system/InteractionProviderImpl";
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 let router = useRouter();
 
 const activeGame = computed(() => store.state.activeGame.displayName);
-const platformName = computed<string>(() => process.platform === 'darwin' ? 'macOS' : process.platform);
+const platformName = computed<string>(() => appWindow.getPlatform() === 'darwin' ? 'macOS' : appWindow.getPlatform());
 
 function copy(){
     let range = document.createRange();
