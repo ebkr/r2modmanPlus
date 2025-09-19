@@ -1,3 +1,7 @@
+### 3.2.6
+#### Changes
+- Linux wrapper is now resolved correctly if not previously present
+
 ### 3.2.5
 #### Changes
 - Fixed several bugs causing rendering issues
