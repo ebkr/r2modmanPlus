@@ -133,6 +133,7 @@ import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
 import Buffer from '../providers/node/buffer/buffer';
+import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -199,7 +200,7 @@ async function ensureWrapperInGameFolder() {
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
-        const wrapperFileResult = await fetch(`/${wrapperName}`).then(res => res.arrayBuffer());
+        const wrapperFileResult = await fetch(ProtocolProvider.getPublicAssetUrl(`/${wrapperName}`)).then(res => res.arrayBuffer());
         const wrapperFileContent = Buffer.from(wrapperFileResult);
         await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
     }
