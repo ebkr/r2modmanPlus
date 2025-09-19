@@ -11,6 +11,7 @@ import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResol
 import {LaunchType} from "../model/real_enums/launch/LaunchType";
 import path from "../providers/node/path/path";
 import PathResolver from "../r2mm/manager/PathResolver";
+import appWindow from '../providers/node/app/app_window';
 
 export enum LaunchMode { VANILLA, MODDED };
 
@@ -71,7 +72,7 @@ export const throwIfNoGameDir = async (game: Game): Promise<void> => {
 };
 
 export async function isProtonRequired(activeGame: Game) {
-    if (process.platform !== 'linux') {
+    if (appWindow.getPlatform() !== 'linux') {
         return false;
     }
     return [Platform.STEAM, Platform.STEAM_DIRECT].includes(activeGame.activePlatform.storePlatform)
@@ -97,5 +98,5 @@ export async function areWrapperArgumentsProvided(game: Game): Promise<boolean> 
 }
 
 export async function getWrapperLaunchArgs(): Promise<string> {
-    return `"${path.join(PathResolver.MOD_ROOT, process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
+    return `"${path.join(PathResolver.MOD_ROOT, appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh')}" %command%`;
 }

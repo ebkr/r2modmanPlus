@@ -110,6 +110,7 @@ import {State} from '../store';
 import {getDeterminedLaunchType} from "../utils/LaunchUtils";
 import {ComputedWrapperLaunchArguments} from "../components/computed/WrapperArguments";
 import {getLaunchType, LaunchType} from "../model/real_enums/launch/LaunchType";
+import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
 
@@ -122,7 +123,7 @@ const launchArgs = ref("");
 watchEffect(async () => {
     const loaderArgs = doorstopTarget.value;
     const prerequisiteText = ComputedWrapperLaunchArguments.value;
-    if (process.platform === 'win32') {
+    if (appWindow.getPlatform() === 'win32') {
         launchArgs.value = loaderArgs;
         return;
     }

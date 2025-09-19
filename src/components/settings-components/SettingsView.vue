@@ -19,6 +19,7 @@ import { State } from '../../store';
 import VueRouter from 'vue-router';
 import {getLaunchType, LaunchType} from "../../model/real_enums/launch/LaunchType";
 import {LaunchTypeModalOpen} from "../../components/modals/launch-type/LaunchTypeRefs";
+import appWindow from '../../providers/node/app/app_window';
 
 const store = getStore<State>();
 let router!: VueRouter;
@@ -342,7 +343,7 @@ onMounted(async () => {
         )
     }
 
-    if (['linux', 'darwin'].includes(process.platform) && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
+    if (['linux', 'darwin'].includes(appWindow.getPlatform()) && activeGame.value.activePlatform.storePlatform === Platform.STEAM) {
         settingsList.push(
             new SettingsRow(
                 'Debugging',
