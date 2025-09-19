@@ -16,6 +16,7 @@ export default class R2Error extends Error {
         this.name = name;
         this.message = message;
         this.solution = solution || '';
+        this.stack = new Error().stack;
         Object.setPrototypeOf(this, R2Error.prototype);
     }
 

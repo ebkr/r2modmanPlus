@@ -1573,6 +1573,21 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "maps": {
+            "label": "Maps"
+          },
+          "languages": {
+            "label": "Languages"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "assets": {
+            "label": "Assets"
+          },
+          "emotes": {
+            "label": "Emotes"
           }
         },
         "sections": {
@@ -8037,6 +8052,9 @@
           "furniture": {
             "label": "Furniture"
           },
+          "vehicles": {
+            "label": "Vehicles"
+          },
           "clientside": {
             "label": "Client-side"
           },
@@ -10850,18 +10868,51 @@
           },
           "faces": {
             "label": "Faces"
+          },
+          "afflictions": {
+            "label": "Afflications"
+          },
+          "accolades": {
+            "label": "Accolades"
+          },
+          "asset-replacements": {
+            "label": "Asset Replacements"
+          },
+          "mixtapes": {
+            "label": "Mixtapes"
           }
         },
         "sections": {
           "mods": {
             "name": "Mods",
             "excludeCategories": [
-              "modpacks"
+              "modpacks",
+              "asset-replacements",
+              "mixtapes"
             ]
           },
           "modpacks": {
             "name": "Modpacks",
             "requireCategories": [
+              "modpacks"
+            ]
+          },
+          "asset-replacements": {
+            "name": "Asset Replacements",
+            "requireCategories": [
+              "asset-replacements"
+            ],
+            "excludeCategories": [
+              "modpacks",
+              "mixtapes"
+            ]
+          },
+          "resource-packs": {
+            "name": "Resource Packs",
+            "requireCategories": [
+              "mixtapes"
+            ],
+            "excludeCategories": [
               "modpacks"
             ]
           }
@@ -13083,6 +13134,10 @@
         {
           "platform": "steam",
           "identifier": "986130"
+        },
+        {
+          "platform": "other",
+          "identifier": null
         }
       ],
       "r2modman": [
@@ -13097,6 +13152,10 @@
             {
               "platform": "steam",
               "identifier": "986130"
+            },
+            {
+              "platform": "other",
+              "identifier": null
             }
           ],
           "settingsIdentifier": "ShadowsofDoubt",
@@ -16762,6 +16821,9 @@
           },
           "misc": {
             "label": "Misc"
+          },
+          "cosmetics": {
+            "label": "Cosmetics"
           }
         },
         "sections": {
@@ -17925,6 +17987,42 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "hand-cosmetics": {
+            "label": "Hand Cosmetics"
+          },
+          "hand-packs": {
+            "label": "Hand Packs"
+          },
+          "maps": {
+            "label": "Maps"
+          },
+          "levels": {
+            "label": "Levels"
+          },
+          "gamemodes": {
+            "label": "Gamemodes"
+          },
+          "tweaks": {
+            "label": "Tweaks"
+          },
+          "leaderboard-legal": {
+            "label": "Leaderboard Legal"
+          },
+          "language": {
+            "label": "Language"
+          },
+          "buffs": {
+            "label": "Buffs"
+          },
+          "artifacts": {
+            "label": "Artifacts"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "perks": {
+            "label": "Perks"
           }
         },
         "sections": {
@@ -18810,6 +18908,84 @@
         ]
       }
     },
+    "beton-brutal": {
+      "uuid": "2216ad36-7433-468c-addf-3db3ddc2d947",
+      "label": "beton-brutal",
+      "meta": {
+        "displayName": "BETON BRUTAL",
+        "iconUrl": "beton-brutal.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2330500"
+            }
+          ],
+          "steamFolderName": "BETON BRUTAL",
+          "dataFolderName": "BetonBrutal_Data",
+          "exeNames": [
+            "BetonBrutal.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "BETON BRUTAL",
+            "iconUrl": "beton-brutal.webp"
+          },
+          "settingsIdentifier": "BetonBrutal",
+          "internalFolderName": "BetonBrutal",
+          "packageIndex": "https://thunderstore.io/c/beton-brutal/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "BETON BRUTAL",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/DqKwJyugGv",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "cobalt-core": {
       "uuid": "d03f61b8-9604-4cc7-8d77-4647db475aa9",
       "label": "cobalt-core",
@@ -18878,6 +19054,125 @@
         "discordUrl": "https://discord.gg/m8jhYA4TvV"
       },
       "r2modman": null
+    },
+    "darkwater": {
+      "uuid": "fde8a66c-d967-4505-adf3-5d9fe27bcc58",
+      "label": "darkwater",
+      "meta": {
+        "displayName": "Darkwater",
+        "iconUrl": "darkwater.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "619540"
+            }
+          ],
+          "steamFolderName": "Darkwater",
+          "dataFolderName": "Darkwater_Data",
+          "exeNames": [
+            "Darkwater.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Darkwater",
+            "iconUrl": "darkwater.webp"
+          },
+          "settingsIdentifier": "Darkwater",
+          "internalFolderName": "Darkwater",
+          "packageIndex": "https://thunderstore.io/c/darkwater/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "dw"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Darkwater",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "dicey-dungeons": {
       "uuid": "6332d5c4-1a74-4826-abb3-f18b212f26fd",
@@ -19072,6 +19367,264 @@
         }
       },
       "r2modman": null
+    },
+    "hollow-knight-silksong": {
+      "uuid": "b8fc6f53-5269-4768-b7ec-f09742f0b0bc",
+      "label": "hollow-knight-silksong",
+      "meta": {
+        "displayName": "Hollow Knight: Silksong",
+        "iconUrl": "hollow-knight-silksong.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "1030300"
+        },
+        {
+          "platform": "other",
+          "identifier": null
+        },
+        {
+          "platform": "xbox-game-pass",
+          "identifier": "TeamCherry.HollowKnightSilksong"
+        }
+      ],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1030300"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "TeamCherry.HollowKnightSilksong"
+            },
+            {
+              "platform": "other",
+              "identifier": null
+            }
+          ],
+          "steamFolderName": "Hollow Knight Silksong",
+          "dataFolderName": "Hollow Knight Silksong_Data",
+          "exeNames": [
+            "Hollow Knight Silksong.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Hollow Knight: Silksong",
+            "iconUrl": "hollow-knight-silksong.webp"
+          },
+          "settingsIdentifier": "HollowKnightSilksong",
+          "internalFolderName": "HollowKnightSilksong",
+          "packageIndex": "https://thunderstore.io/c/hollow-knight-silksong/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "hkss"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Hollow Knight: Silksong",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      }
+    },
+    "house-of-legacy": {
+      "uuid": "3e5e018e-6d47-45cd-80eb-31317287ddb4",
+      "label": "house-of-legacy",
+      "meta": {
+        "displayName": "House of Legacy",
+        "iconUrl": "house-of-legacy.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2503770"
+            }
+          ],
+          "steamFolderName": "吾今有世家",
+          "dataFolderName": "House of Legacy_Data",
+          "exeNames": [
+            "House of Legacy.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "House of Legacy",
+            "iconUrl": "house-of-legacy.webp"
+          },
+          "settingsIdentifier": "HouseOfLegacy",
+          "internalFolderName": "HouseOfLegacy",
+          "packageIndex": "https://thunderstore.io/c/house-of-legacy/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "hol"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "House of Legacy",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/FBAN8hFB",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "kerbal-space-program-2": {
       "uuid": "a7b6e172-b2f7-48f7-ae4f-bf90c76aa8c5",
@@ -19620,7 +20173,127 @@
             ]
           }
         },
-        "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+        "discordUrl": "https://discord.gg/YXY5XZHG8R",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "malteses-fluffy-onsen": {
+      "uuid": "5ebb5fe3-e1fc-43e7-9598-063b0e3733f3",
+      "label": "malteses-fluffy-onsen",
+      "meta": {
+        "displayName": "Maltese's Fluffy Onsen",
+        "iconUrl": "malteses-fluffy-onsen.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3404470"
+            }
+          ],
+          "steamFolderName": "Animal Spa",
+          "dataFolderName": "AnimalSpa_Data",
+          "exeNames": [
+            "AnimalSpa.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Maltese's Fluffy Onsen",
+            "iconUrl": "malteses-fluffy-onsen.webp"
+          },
+          "settingsIdentifier": "MaltesesFluffyOnsen",
+          "internalFolderName": "MaltesesFluffyOnsen",
+          "packageIndex": "https://thunderstore.io/c/malteses-fluffy-onsen/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "mfo"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Maltese's Fluffy Onsen",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
@@ -19933,6 +20606,322 @@
         ]
       }
     },
+    "pac-man-world-re-pac": {
+      "uuid": "aa3deb5d-b580-4566-a549-4b65460b454f",
+      "label": "pac-man-world-re-pac",
+      "meta": {
+        "displayName": "PAC-MAN WORLD Re-PAC",
+        "iconUrl": "pac-man-world-re-pac.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1859470"
+            }
+          ],
+          "steamFolderName": "PAC-MAN WORLD Re-PAC",
+          "dataFolderName": "PAC-MAN WORLD Re-PAC_Data",
+          "exeNames": [
+            "PAC-MAN WORLD Re-PAC.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "PAC-MAN WORLD Re-PAC",
+            "iconUrl": "pac-man-world-re-pac.webp"
+          },
+          "settingsIdentifier": "PacManWorldRePac",
+          "internalFolderName": "PacManWorldRePac",
+          "packageIndex": "https://thunderstore.io/c/pac-man-world-re-pac/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PAC-MAN WORLD Re-PAC",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
+    "pair-a-dice": {
+      "uuid": "ba399eee-df9f-44e9-93a4-d9d181b9bf99",
+      "label": "pair-a-dice",
+      "meta": {
+        "displayName": "Pair A Dice",
+        "iconUrl": "pair-a-dice.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2842150"
+            }
+          ],
+          "steamFolderName": "PairADice",
+          "dataFolderName": "",
+          "exeNames": [
+            "PairADice.exe"
+          ],
+          "packageLoader": "godotml",
+          "meta": {
+            "displayName": "Pair A Dice",
+            "iconUrl": "pair-a-dice.webp"
+          },
+          "settingsIdentifier": "PairADice",
+          "internalFolderName": "PairADice",
+          "packageIndex": "https://thunderstore.io/c/pair-a-dice/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "pad"
+          ],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Pair A Dice",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/sNHt43Fjs3",
+        "autolistPackageIds": [
+          "GodotModding-GodotModLoader"
+        ]
+      }
+    },
+    "paper-animal-adventure": {
+      "uuid": "c0935537-9ac9-43f6-9c30-64c4dd5945d1",
+      "label": "paper-animal-adventure",
+      "meta": {
+        "displayName": "Paper Animal Adventure",
+        "iconUrl": "paper-animal-adventure.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1982120"
+            }
+          ],
+          "steamFolderName": "Paper Animal Adventure",
+          "dataFolderName": "Paper Animal Adventure_Data",
+          "exeNames": [
+            "Paper Animal Adventure.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Paper Animal Adventure",
+            "iconUrl": "paper-animal-adventure.webp"
+          },
+          "settingsIdentifier": "PaperAnimalAdventure",
+          "internalFolderName": "PaperAnimalAdventure",
+          "packageIndex": "https://thunderstore.io/c/paper-animal-adventure/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "paa"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Paper Animal Adventure",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
     "patapon-1-2-replay": {
       "uuid": "d6dfad59-d6df-4398-b5d8-84dbbbace85f",
       "label": "patapon-1-2-replay",
@@ -20114,6 +21103,293 @@
       },
       "r2modman": null
     },
+    "r5reloaded": {
+      "uuid": "35a9dbb7-a4f8-4faf-a032-66352aa690cc",
+      "label": "r5reloaded",
+      "meta": {
+        "displayName": "R5Reloaded",
+        "iconUrl": ""
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "R5Reloaded",
+        "sections": {},
+        "categories": {
+          "legend": {
+            "label": "Legend"
+          },
+          "weapon": {
+            "label": "Weapon"
+          },
+          "gamemode": {
+            "label": "Gamemode"
+          },
+          "map": {
+            "label": "Map"
+          },
+          "framework": {
+            "label": "Framework"
+          },
+          "modpack": {
+            "label": "Modpack"
+          },
+          "client-side": {
+            "label": "Client-side"
+          },
+          "server-side": {
+            "label": "Server-side"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "sound": {
+            "label": "Sound"
+          },
+          "animation": {
+            "label": "Animation"
+          },
+          "qol": {
+            "label": "QoL"
+          }
+        },
+        "wikiUrl": "https://docs.r5reloaded.com/",
+        "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+        "autolistPackageIds": [],
+        "shortDescription": "Modded Apex Legends!"
+      }
+    },
+    "r5valkyrie": {
+      "uuid": "ac6446c4-17ff-4027-b11d-fa7a39c0be2c",
+      "label": "r5valkyrie",
+      "meta": {
+        "displayName": "R5Valkyrie",
+        "iconUrl": ""
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "R5Valkyrie",
+        "categories": {
+          "legend": {
+            "label": "Legend"
+          },
+          "weapon": {
+            "label": "Weapon"
+          },
+          "gamemode": {
+            "label": "Gamemode"
+          },
+          "map": {
+            "label": "Map"
+          },
+          "framework": {
+            "label": "Framework"
+          },
+          "modpack": {
+            "label": "Modpack"
+          },
+          "client-side": {
+            "label": "Client-side"
+          },
+          "server-side": {
+            "label": "Server-side"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "ui": {
+            "label": "UI"
+          },
+          "sound": {
+            "label": "Sound"
+          },
+          "animation": {
+            "label": "Animation"
+          },
+          "qol": {
+            "label": "QoL"
+          }
+        },
+        "sections": {},
+        "wikiUrl": "https://playvalkyrie.org/docs",
+        "discordUrl": "https://discord.gg/GcJSMUGJyD",
+        "autolistPackageIds": [],
+        "shortDescription": "Modded Apex Legends!"
+      }
+    },
+    "resonite": {
+      "uuid": "f5859576-bdf8-40bb-b08b-69f5506199a4",
+      "label": "resonite",
+      "meta": {
+        "displayName": "Resonite",
+        "iconUrl": "resonite.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2519830"
+            }
+          ],
+          "steamFolderName": "Resonite",
+          "dataFolderName": "Resonite_Data",
+          "exeNames": [
+            "Resonite.exe"
+          ],
+          "packageLoader": "bepisloader",
+          "meta": {
+            "displayName": "Resonite",
+            "iconUrl": "resonite.webp"
+          },
+          "settingsIdentifier": "Resonite",
+          "internalFolderName": "Resonite",
+          "packageIndex": "https://thunderstore.io/c/resonite/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "Renderer/BepInEx/plugins",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Resonite",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "assetimporting": {
+            "label": "Asset Importing"
+          },
+          "bugworkaround": {
+            "label": "Bug Workaround"
+          },
+          "contextmenu": {
+            "label": "Context Menu"
+          },
+          "controls": {
+            "label": "Controls"
+          },
+          "dashboard": {
+            "label": "Dashboard"
+          },
+          "hardwareintegration": {
+            "label": "Hardware Integration"
+          },
+          "inspectors": {
+            "label": "Inspectors"
+          },
+          "memes": {
+            "label": "Memes"
+          },
+          "optimization": {
+            "label": "Optimization"
+          },
+          "protoflux": {
+            "label": "Protoflux"
+          },
+          "technicaltweaks": {
+            "label": "Technical Tweaks"
+          },
+          "visualtweaks": {
+            "label": "Visual Tweaks"
+          },
+          "wizards": {
+            "label": "Wizards"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/vCDJK9xyvm",
+        "wikiUrl": "https://modding.resonite.net",
+        "autolistPackageIds": []
+      }
+    },
     "ship-of-harkinian": {
       "uuid": "9fb26233-032a-43e3-bbe7-6e058f5daf15",
       "label": "ship-of-harkinian",
@@ -20262,6 +21538,55 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "super-mario-3d-world": {
+      "uuid": "88c3d6ea-d7d4-4225-819c-bac4f86b79d6",
+      "label": "super-mario-3d-world",
+      "meta": {
+        "displayName": "Super Mario 3D World",
+        "iconUrl": "super-mario-3d-world.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Super Mario 3D World",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/5uskscDR3m",
+        "autolistPackageIds": []
+      }
     },
     "the-choicer-voicer": {
       "uuid": "12bab0c0-24c5-4999-9a20-376abd6693e1",
@@ -21006,6 +22331,21 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "maps": {
+          "label": "Maps"
+        },
+        "languages": {
+          "label": "Languages"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "assets": {
+          "label": "Assets"
+        },
+        "emotes": {
+          "label": "Emotes"
         }
       },
       "sections": {
@@ -22814,6 +24154,9 @@
         "furniture": {
           "label": "Furniture"
         },
+        "vehicles": {
+          "label": "Vehicles"
+        },
         "clientside": {
           "label": "Client-side"
         },
@@ -23593,18 +24936,51 @@
         },
         "faces": {
           "label": "Faces"
+        },
+        "afflictions": {
+          "label": "Afflications"
+        },
+        "accolades": {
+          "label": "Accolades"
+        },
+        "asset-replacements": {
+          "label": "Asset Replacements"
+        },
+        "mixtapes": {
+          "label": "Mixtapes"
         }
       },
       "sections": {
         "mods": {
           "name": "Mods",
           "excludeCategories": [
-            "modpacks"
+            "modpacks",
+            "asset-replacements",
+            "mixtapes"
           ]
         },
         "modpacks": {
           "name": "Modpacks",
           "requireCategories": [
+            "modpacks"
+          ]
+        },
+        "asset-replacements": {
+          "name": "Asset Replacements",
+          "requireCategories": [
+            "asset-replacements"
+          ],
+          "excludeCategories": [
+            "modpacks",
+            "mixtapes"
+          ]
+        },
+        "resource-packs": {
+          "name": "Resource Packs",
+          "requireCategories": [
+            "mixtapes"
+          ],
+          "excludeCategories": [
             "modpacks"
           ]
         }
@@ -25200,6 +26576,9 @@
         },
         "misc": {
           "label": "Misc"
+        },
+        "cosmetics": {
+          "label": "Cosmetics"
         }
       },
       "sections": {
@@ -25515,6 +26894,42 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "hand-cosmetics": {
+          "label": "Hand Cosmetics"
+        },
+        "hand-packs": {
+          "label": "Hand Packs"
+        },
+        "maps": {
+          "label": "Maps"
+        },
+        "levels": {
+          "label": "Levels"
+        },
+        "gamemodes": {
+          "label": "Gamemodes"
+        },
+        "tweaks": {
+          "label": "Tweaks"
+        },
+        "leaderboard-legal": {
+          "label": "Leaderboard Legal"
+        },
+        "language": {
+          "label": "Language"
+        },
+        "buffs": {
+          "label": "Buffs"
+        },
+        "artifacts": {
+          "label": "Artifacts"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "perks": {
+          "label": "Perks"
         }
       },
       "sections": {
@@ -25872,6 +27287,47 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "beton-brutal": {
+      "displayName": "BETON BRUTAL",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/DqKwJyugGv",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "cobalt-core": {
       "displayName": "Cobalt Core",
       "categories": {
@@ -25930,6 +27386,46 @@
         }
       },
       "discordUrl": "https://discord.gg/m8jhYA4TvV"
+    },
+    "darkwater": {
+      "displayName": "Darkwater",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "dicey-dungeons": {
       "displayName": "Dicey Dungeons",
@@ -26084,6 +27580,85 @@
           ]
         }
       }
+    },
+    "hollow-knight-silksong": {
+      "displayName": "Hollow Knight: Silksong",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
+    },
+    "house-of-legacy": {
+      "displayName": "House of Legacy",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/FBAN8hFB",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "kerbal-space-program-2": {
       "displayName": "Kerbal Space Program 2",
@@ -26298,7 +27873,48 @@
           ]
         }
       },
-      "discordUrl": "https://discord.com/invite/ZwVrhHyUgA",
+      "discordUrl": "https://discord.gg/YXY5XZHG8R",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
+    "malteses-fluffy-onsen": {
+      "displayName": "Maltese's Fluffy Onsen",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
@@ -26446,6 +28062,127 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "pac-man-world-re-pac": {
+      "displayName": "PAC-MAN WORLD Re-PAC",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
+    "pair-a-dice": {
+      "displayName": "Pair A Dice",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/sNHt43Fjs3",
+      "autolistPackageIds": [
+        "GodotModding-GodotModLoader"
+      ]
+    },
+    "paper-animal-adventure": {
+      "displayName": "Paper Animal Adventure",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
     "patapon-1-2-replay": {
       "displayName": "PATAPON 1+2 REPLAY",
       "categories": {
@@ -26541,6 +28278,189 @@
       },
       "wikiUrl": "https://phasmophobia.fandom.com/wiki/Main_Page",
       "discordUrl": "https://discord.gg/phasmophobia"
+    },
+    "r5reloaded": {
+      "displayName": "R5Reloaded",
+      "sections": {},
+      "categories": {
+        "legend": {
+          "label": "Legend"
+        },
+        "weapon": {
+          "label": "Weapon"
+        },
+        "gamemode": {
+          "label": "Gamemode"
+        },
+        "map": {
+          "label": "Map"
+        },
+        "framework": {
+          "label": "Framework"
+        },
+        "modpack": {
+          "label": "Modpack"
+        },
+        "client-side": {
+          "label": "Client-side"
+        },
+        "server-side": {
+          "label": "Server-side"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "model": {
+          "label": "Model"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "sound": {
+          "label": "Sound"
+        },
+        "animation": {
+          "label": "Animation"
+        },
+        "qol": {
+          "label": "QoL"
+        }
+      },
+      "wikiUrl": "https://docs.r5reloaded.com/",
+      "discordUrl": "https://discord.com/invite/jqMkUdXrBr",
+      "autolistPackageIds": [],
+      "shortDescription": "Modded Apex Legends!"
+    },
+    "r5valkyrie": {
+      "displayName": "R5Valkyrie",
+      "categories": {
+        "legend": {
+          "label": "Legend"
+        },
+        "weapon": {
+          "label": "Weapon"
+        },
+        "gamemode": {
+          "label": "Gamemode"
+        },
+        "map": {
+          "label": "Map"
+        },
+        "framework": {
+          "label": "Framework"
+        },
+        "modpack": {
+          "label": "Modpack"
+        },
+        "client-side": {
+          "label": "Client-side"
+        },
+        "server-side": {
+          "label": "Server-side"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "model": {
+          "label": "Model"
+        },
+        "ui": {
+          "label": "UI"
+        },
+        "sound": {
+          "label": "Sound"
+        },
+        "animation": {
+          "label": "Animation"
+        },
+        "qol": {
+          "label": "QoL"
+        }
+      },
+      "sections": {},
+      "wikiUrl": "https://playvalkyrie.org/docs",
+      "discordUrl": "https://discord.gg/GcJSMUGJyD",
+      "autolistPackageIds": [],
+      "shortDescription": "Modded Apex Legends!"
+    },
+    "resonite": {
+      "displayName": "Resonite",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "assetimporting": {
+          "label": "Asset Importing"
+        },
+        "bugworkaround": {
+          "label": "Bug Workaround"
+        },
+        "contextmenu": {
+          "label": "Context Menu"
+        },
+        "controls": {
+          "label": "Controls"
+        },
+        "dashboard": {
+          "label": "Dashboard"
+        },
+        "hardwareintegration": {
+          "label": "Hardware Integration"
+        },
+        "inspectors": {
+          "label": "Inspectors"
+        },
+        "memes": {
+          "label": "Memes"
+        },
+        "optimization": {
+          "label": "Optimization"
+        },
+        "protoflux": {
+          "label": "Protoflux"
+        },
+        "technicaltweaks": {
+          "label": "Technical Tweaks"
+        },
+        "visualtweaks": {
+          "label": "Visual Tweaks"
+        },
+        "wizards": {
+          "label": "Wizards"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/vCDJK9xyvm",
+      "wikiUrl": "https://modding.resonite.net",
+      "autolistPackageIds": []
     },
     "ship-of-harkinian": {
       "displayName": "Ship of Harkinian",
@@ -26659,6 +28579,45 @@
       },
       "wikiUrl": "https://gamebanana.com/games/21612",
       "discordUrl": "https://discord.com/invite/shipofharkinian",
+      "autolistPackageIds": []
+    },
+    "super-mario-3d-world": {
+      "displayName": "Super Mario 3D World",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/5uskscDR3m",
       "autolistPackageIds": []
     },
     "the-choicer-voicer": {
@@ -27201,6 +29160,36 @@
       "packageId": "BepInEx-BepInExPack_PEAK",
       "rootFolder": "BepInExPack_PEAK",
       "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_LensIsland",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Ostranauts",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Patapon",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Silksong",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "ResoniteModding-BepisLoader",
+      "rootFolder": "BepInExPack",
+      "loader": "bepisloader"
+    },
+    {
+      "packageId": "ResoniteModding-BepInExRenderer",
+      "rootFolder": "BepInExPack",
+      "loader": "bepisloader"
     }
   ]
 }

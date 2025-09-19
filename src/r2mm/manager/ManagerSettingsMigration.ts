@@ -1,4 +1,3 @@
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import * as yaml from 'yaml';
 import YamlParseError from '../../model/errors/Yaml/YamlParseError';
@@ -7,6 +6,7 @@ import PathResolver from './PathResolver';
 import ManagerSettings from './ManagerSettings';
 import { ManagerSettingsInterface_Legacy } from './SettingsDexieStore';
 import GameManager from '../../model/game/GameManager';
+import path from '../../providers/node/path/path';
 
 export default class ManagerSettingsMigration {
 

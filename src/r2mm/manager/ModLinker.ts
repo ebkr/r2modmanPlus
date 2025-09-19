@@ -1,8 +1,6 @@
 import R2Error from '../../model/errors/R2Error';
 import { ImmutableProfile } from '../../model/Profile';
 import FileWriteError from '../../model/errors/FileWriteError';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import LoggerProvider, { LogSeverity } from '../../providers/ror2/logging/LoggerProvider';
 import GameDirectoryResolverProvider from '../../providers/ror2/game/GameDirectoryResolverProvider';
@@ -11,19 +9,21 @@ import ManagerInformation from '../../_managerinf/ManagerInformation';
 import Game from '../../model/game/Game';
 import FileTree from '../../model/file/FileTree';
 import { PackageLoader } from "../../model/schema/ThunderstoreSchema";
+import path from "../../providers/node/path/path";
 import { isProtonRequired } from '../../utils/LaunchUtils';
+import appWindow from '../../providers/node/app/app_window';
 
 export default class ModLinker {
 
     public static async link(profile: ImmutableProfile, game: Game): Promise<string[] | R2Error> {
-        if (game.packageLoader == PackageLoader.BEPINEX) {
-            if (process.platform === 'linux') {
+        if ([PackageLoader.BEPINEX, PackageLoader.BEPISLOADER].includes(game.packageLoader)) {
+            if (appWindow.getPlatform() === 'linux') {
                 const isProton = await isProtonRequired(game);
                 if (!isProton) {
                     // Game is native, BepInEx doesn't require moving. No linked files.
                     return [];
                 }
-            } else if (process.platform === 'darwin') {
+            } else if (appWindow.getPlatform() === 'darwin') {
                 // Linux games don't require moving BepInEx files.
                 return [];
             }
@@ -128,7 +128,7 @@ export default class ModLinker {
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
                                 "_state", "userlibs", "qmods", "shimloader",
-                                "returnofmodding", "gdweave"
+                                "returnofmodding", "gdweave", "renderer"
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {

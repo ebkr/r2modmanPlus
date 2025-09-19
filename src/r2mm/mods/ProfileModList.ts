@@ -1,7 +1,5 @@
 import * as yaml from 'yaml';
 import { ImmutableProfile } from '../../model/Profile';
-
-import * as path from 'path';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
 import R2Error from '../../model/errors/R2Error';
@@ -21,8 +19,8 @@ import FileTree from '../../model/file/FileTree';
 import ZipBuilder from '../../providers/generic/zip/ZipBuilder';
 import InteractionProvider from '../../providers/ror2/system/InteractionProvider';
 import { ProfileApiClient } from '../profiles/ProfilesClient';
-
-const FALLBACK_ICON = require("../../../public/unknown.png");
+import path from '../../providers/node/path/path';
+import Buffer from '../../providers/node/buffer/buffer';
 
 export default class ProfileModList {
 
@@ -43,15 +41,17 @@ export default class ProfileModList {
         }
         try {
             try {
-                const value = (yaml.parse((await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString()) || []);
-                for(let modIndex in value){
-                    const mod = new ManifestV2().fromJsObject(value[modIndex]);
+                const fileContent = (await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString();
+                const parsedYaml = yaml.parse(fileContent) || [];
+                for(let modIndex in parsedYaml){
+                    const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
                     await this.setIconPath(mod, profile);
-                    value[modIndex] = mod;
+                    parsedYaml[modIndex] = mod;
                 }
-                return value;
+                return parsedYaml;
             } catch(e) {
                 const err: Error = e as Error;
+                console.error(err);
                 return new YamlParseError(
                     `Failed to parse yaml file of profile: ${profile.getProfileName()}/mods.yml`,
                     err.message,
@@ -205,7 +205,9 @@ export default class ProfileModList {
                 this.SUPPORTED_CONFIG_FILE_EXTENSIONS.some(value => fileLower.endsWith(value)) &&
                 !fileLower.endsWith('mods.yml')
             ) {
-                await builder.addBuffer(path.relative(profile.getProfilePath(), file), await FsProvider.instance.readFile(file));
+                const content = await FsProvider.instance.readFile(file);
+                const bufferContent = Buffer.from(content, 'utf8');
+                await builder.addBuffer(path.relative(profile.getProfilePath(), file), bufferContent);
             }
         }
         return builder;
@@ -283,17 +285,20 @@ export default class ProfileModList {
 
     public static async setIconPath(mod: ManifestV2, profile: ImmutableProfile): Promise<void> {
         const paths = [
-            path.resolve(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
+            path.join(profile.getProfilePath(), "BepInEx", "plugins", mod.getName(), "icon.png"),
             path.join(PathResolver.MOD_ROOT, "cache", mod.getName(), mod.getVersionNumber().toString(), "icon.png"),
         ]
 
         for (const iconPath of paths) {
-            if (await FsProvider.instance.exists(iconPath)) {
-                mod.setIcon(iconPath);
+            try {
+                const content = await FsProvider.instance.base64FromZip(iconPath);
+                mod.setIcon(`data:image/png;base64,${content}`);
                 return;
+            } catch (e) {
+                continue;
             }
         }
 
-        mod.setIcon(FALLBACK_ICON);
+        mod.setIcon("/unknown.png");
     }
 }

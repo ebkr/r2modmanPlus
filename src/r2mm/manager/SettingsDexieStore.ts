@@ -61,6 +61,7 @@ export default class SettingsDexieStore extends Dexie {
         })
 
         this.activeGame = game;
+        console.debug("SettingsDexieStore created with active game", this.activeGame.settingsIdentifier);
         this.global = this.table("value");
         this.games = this.table("games");
     }
@@ -120,7 +121,8 @@ export default class SettingsDexieStore extends Dexie {
                 favouriteGames: [],
                 defaultGame: undefined,
                 defaultStore: undefined,
-                gameSelectionViewMode: GameSelectionViewMode.CARD
+                gameSelectionViewMode: GameSelectionViewMode.CARD,
+                previewPanelWidth: 500,
             },
             gameSpecific: {
                 version: 2,
@@ -132,6 +134,7 @@ export default class SettingsDexieStore extends Dexie {
                 launchParameters: "",
                 linkedFiles: [],
                 launchType: LaunchType.AUTO,
+                lastSelectedPlatform: null,
             }
         }
     }
@@ -146,7 +149,16 @@ export default class SettingsDexieStore extends Dexie {
             });
 
             // Update the active game's settings.
-            await this.games.put({ identifier: this.activeGame.settingsIdentifier, settings: JSON.stringify(holder.gameSpecific) });
+            try {
+                await this.games.put({
+                    identifier: this.activeGame.settingsIdentifier,
+                    settings: JSON.stringify(holder.gameSpecific)
+                });
+            } catch (e) {
+                throw new Error(
+                    `IDB.Put fail for key "${this.activeGame.settingsIdentifier}": ${e}`
+                );
+            }
         }
 
         await this.transaction("rw!", this.global, this.games, update);
@@ -199,6 +211,7 @@ export interface ManagerSettingsInterfaceGlobal_V2 {
     defaultGame: string | undefined;
     defaultStore: Platform | undefined;
     gameSelectionViewMode: GameSelectionViewMode;
+    previewPanelWidth: number;
 }
 
 /**
@@ -214,6 +227,7 @@ export interface ManagerSettingsInterfaceGame_V2 {
     installedSortDirection: string;
     installedDisablePosition: string;
     launchType: string;
+    lastSelectedPlatform: string | null;
 }
 
 /**

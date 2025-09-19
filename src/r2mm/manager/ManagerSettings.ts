@@ -166,10 +166,18 @@ export default class ManagerSettings {
     }
 
     public getLaunchType(): LaunchType | undefined {
-        if (ManagerSettings.CONTEXT.gameSpecific.launchType) {
-            return EnumResolver.from<LaunchType>(LaunchType, ManagerSettings.CONTEXT.gameSpecific.launchType);
+        const stored = ManagerSettings.CONTEXT.gameSpecific.launchType as LaunchType
+        if (Object.values(LaunchType).includes(stored)) {
+            return stored;
         }
         return undefined;
+    }
+
+    public getLastSelectedPlatform(): Platform | null {
+        if (ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform) {
+            return EnumResolver.from<Platform>(Platform, ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform);
+        }
+        return null;
     }
 
     public async setInstalledDisablePosition(disablePosition: string) {
@@ -209,5 +217,23 @@ export default class ManagerSettings {
     public async setLaunchType(launchType: LaunchType) {
         ManagerSettings.CONTEXT.gameSpecific.launchType = launchType;
         await this.save();
+    }
+
+    public async setLastSelectedPlatform(platform: Platform) {
+        ManagerSettings.CONTEXT.gameSpecific.lastSelectedPlatform = platform;
+        await this.save();
+    }
+
+    public async getPreviewPanelWidth() {
+        return ManagerSettings.CONTEXT.global.previewPanelWidth;
+    }
+
+    public async setPreviewPanelWidth(width: number) {
+        ManagerSettings.CONTEXT.global.previewPanelWidth = width;
+        await this.save();
+    }
+
+    public logActiveGameInDexieStore() {
+        console.debug(`Active game in Dexie store: "${ManagerSettings.DEXIE_STORE.activeGame.settingsIdentifier}".`);
     }
 }

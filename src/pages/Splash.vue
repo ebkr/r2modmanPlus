@@ -35,9 +35,9 @@
                                 </div>
                                 <div class='container' v-if="view === 'main'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-info-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-info-circle' />
+                                        </span>
                                         <strong>Did you know?</strong>
                                     </p>
                                     <ul class='margin-right'>
@@ -57,9 +57,9 @@
                                         </li>
                                     </ul>
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-question-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-question-circle' />
+                                        </span>
                                         <strong>Having trouble?</strong>
                                     </p>
                                     <p>
@@ -70,9 +70,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'about'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-address-card' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-address-card' />
+                                        </span>
                                         <strong>About r2modman</strong>
                                     </p>
                                     <p>It's created by Ebkr, using Quasar.</p>
@@ -86,9 +86,9 @@
                                 </div>
                                 <div class='container' v-else-if="view === 'faq'">
                                     <p>
-                    <span class='icon margin-right margin-right--half-width'>
-                      <i class='fas fa-question-circle' />
-                    </span>
+                                        <span class='icon margin-right margin-right--half-width'>
+                                          <i class='fas fa-question-circle' />
+                                        </span>
                                         <strong>FAQ</strong>
                                     </p>
                                     <ul>
@@ -118,31 +118,26 @@
 </template>
 
 <script lang='ts' setup>
-import * as path from 'path';
-import { ipcRenderer } from 'electron';
 import { ExternalLink, Hero, Progress } from '../components/all';
 import Game from '../model/game/Game';
-import RequestItem from '../model/requests/RequestItem';
 import FsProvider from '../providers/generic/file/FsProvider';
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
-import LinuxGameDirectoryResolver from '../r2mm/manager/linux/GameDirectoryResolver';
 import PathResolver from '../r2mm/manager/PathResolver';
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { State } from '../store';
 import { getStore } from '../providers/generic/store/StoreProvider';
-import VueRouter from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
+import path from '../providers/node/path/path';
+import { UpdateRequestItemBody } from '../store/modules/SplashModule';
+import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
+import appWindow from '../providers/node/app/app_window';
+import Buffer from '../providers/node/buffer/buffer';
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+const router = useRouter();
 
 const {
-    getRequestItem,
     reduceRequests
 } = useSplashComposable();
 
@@ -156,17 +151,19 @@ store.commit('splash/initialiseRequests');
 // Ensure that the manager isn't outdated.
 function checkForUpdates() {
     store.dispatch('splash/setSplashText', 'Preparing');
-    ipcRenderer.once('update-done', async () => {
-        const updateCheck: RequestItem = await store.dispatch('splash/getRequestItem', 'UpdateCheck');
-        updateCheck.setProgress(100);
-        await store.dispatch('splash/getThunderstoreMods');
-        moveToNextScreen();
-    });
-    ipcRenderer.send('update-app');
+    window.app.checkForApplicationUpdates()
+        .then(async () => {
+            store.commit('splash/updateRequestItem', {
+                requestName: 'UpdateCheck',
+                value: 100
+            } as UpdateRequestItemBody);
+            await store.dispatch('splash/getThunderstoreMods');
+            moveToNextScreen();
+        })
 }
 
 async function moveToNextScreen() {
-    if (process.platform === 'linux') {
+    if (appWindow.getPlatform() === 'linux') {
         const activeGame: Game = store.state.activeGame;
 
         if (!(await isProtonRequired(activeGame))) {
@@ -177,7 +174,7 @@ async function moveToNextScreen() {
                 return;
             }
         }
-    } else if (process.platform === 'darwin') {
+    } else if (appWindow.getPlatform() === 'darwin') {
         await ensureWrapperInGameFolder();
         router.push({name: 'linux'});
         return;
@@ -186,21 +183,25 @@ async function moveToNextScreen() {
 }
 
 async function ensureWrapperInGameFolder() {
-    const wrapperName = process.platform === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
+    const staticsDirectory = window.app.getStaticsDirectory();
+    const wrapperName = appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
     const activeGame: Game = store.state.activeGame;
     console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
     try {
         await FsProvider.instance.stat(path.join(PathResolver.MOD_ROOT, wrapperName));
         const oldBuf = (await FsProvider.instance.readFile(path.join(PathResolver.MOD_ROOT, wrapperName)));
-        const newBuf = (await FsProvider.instance.readFile(path.join(__statics, wrapperName)));
+        const newBuf = (await FsProvider.instance.readFile(path.join(staticsDirectory, wrapperName)));
         if (!oldBuf.equals(newBuf)) {
             throw new Error('Outdated buffer');
         }
     } catch (_) {
+        await FileUtils.ensureDirectory(PathResolver.MOD_ROOT);
         if (await FsProvider.instance.exists(path.join(PathResolver.MOD_ROOT, wrapperName))) {
             await FsProvider.instance.unlink(path.join(PathResolver.MOD_ROOT, wrapperName));
         }
-        await FsProvider.instance.copyFile(path.join(__statics, wrapperName), path.join(PathResolver.MOD_ROOT, wrapperName));
+        const wrapperFileResult = await fetch(`/${wrapperName}`).then(res => res.arrayBuffer());
+        const wrapperFileContent = Buffer.from(wrapperFileResult);
+        await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, wrapperName), wrapperFileContent);
     }
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
 }

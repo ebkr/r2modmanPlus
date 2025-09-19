@@ -1,7 +1,5 @@
-import path from "path";
-
+import path from "../providers/node/path/path";
 import * as yaml from "yaml";
-
 import FileUtils from "./FileUtils";
 import R2Error, { throwForR2Error } from "../model/errors/R2Error";
 import ExportFormat from "../model/exports/ExportFormat";

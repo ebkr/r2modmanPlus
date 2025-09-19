@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div v-for="(profileName) of profileList" :key="profileName">
-                  <a @click="setSelectedProfile(profileName)">
+                  <a @click="setSelectedProfile(profileName, false)">
                     <div class="container">
                       <div class="border-at-bottom">
                         <div class="card is-shadowless">
@@ -66,22 +66,19 @@
 
 <script lang='ts' setup>
 import { Hero } from '../components/all';
-
 import R2Error from '../model/errors/R2Error';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
-
-import GameDirectoryResolverProvider from '../providers/ror2/game/GameDirectoryResolverProvider';
 import DeleteProfileModal from '../components/profiles-modals/DeleteProfileModal.vue';
 import RenameProfileModal from '../components/profiles-modals/RenameProfileModal.vue';
 import CreateProfileModal from '../components/profiles-modals/CreateProfileModal.vue';
 import ImportProfileModal from '../components/profiles-modals/ImportProfileModal.vue';
-import { computed, getCurrentInstance, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const store = getStore<State>();
-let router!: VueRouter;
+const router = useRouter();
 
 const profileList = computed(() => store.state.profiles.profileList);
 const activeProfileName = computed(() => store.getters['profile/activeProfileName']);
@@ -103,45 +100,11 @@ function openImportProfileModal() {
 }
 
 async function moveToNextScreen() {
+    await setSelectedProfile(activeProfileName.value, true);
     await router.push({name: 'manager.installed'});
 }
 
-onMounted(async () => {
-    router = getCurrentInstance()!.proxy.$router;
-    const settings = await store.getters.settings;
-    await settings.load();
-
-    const lastProfileName = await store.dispatch('profile/loadLastSelectedProfile');
-
-    // If the view was entered via game selection, the mod list was updated
-    // and the cache cleared. The profile is already set in the Vuex store
-    // but we want to trigger the cache prewarming. Always doing this for
-    // empty profiles is deemed a fair tradeoff. On the other hand there's
-    // no point to trigger this when returning from the manager view and the
-    // mods are already cached.
-    if (store.state.tsMods.cache.size === 0) {
-        await setSelectedProfile(lastProfileName);
-    }
-
-    // Set default paths
-    if (settings.getContext().gameSpecific.gameDirectory === null) {
-        const result = await GameDirectoryResolverProvider.instance.getDirectory(store.state.activeGame);
-        if (!(result instanceof R2Error)) {
-            await settings.setGameDirectory(result);
-        }
-    }
-
-    if (settings.getContext().global.steamDirectory === null) {
-        const result = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-        if (!(result instanceof R2Error)) {
-            await settings.setSteamDirectory(result);
-        }
-    }
-
-    await updateProfileList();
-});
-
-async function setSelectedProfile(profileName: string, prewarmCache = true) {
+async function setSelectedProfile(profileName: string, prewarmCache: boolean) {
     try {
         await store.dispatch('profiles/setSelectedProfile', { profileName: profileName, prewarmCache: prewarmCache });
     } catch (e) {
@@ -163,4 +126,25 @@ async function backToGameSelection() {
     await ManagerSettings.resetDefaults();
     await router.push({name: "index"});
 }
+
+onMounted( async () => {
+    console.debug("Profiles view entered with active game", store.state.activeGame.settingsIdentifier);
+
+    const settings = await store.getters.settings;
+    await settings.load();
+
+    const lastSelectedProfileName = await store.dispatch('profile/loadLastSelectedProfile');
+
+    // If the view was entered via game selection, the mod list was updated
+    // and the cache cleared. The profile is already set in the Vuex store
+    // but we want to trigger the cache prewarming. Always doing this for
+    // empty profiles is deemed a fair tradeoff. On the other hand there's
+    // no point to trigger this when returning from the manager view and the
+    // mods are already cached.
+    if (store.state.tsMods.cache.size === 0) {
+        await setSelectedProfile(lastSelectedProfileName, false);
+    }
+
+    await updateProfileList();
+})
 </script>

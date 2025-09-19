@@ -1,9 +1,9 @@
 import FileWriteError from '../../model/errors/FileWriteError';
 import FsProvider from '../../providers/generic/file/FsProvider';
-import * as path from 'path';
 import R2Error from '../../model/errors/R2Error';
 import FileUtils from '../../utils/FileUtils';
 import ZipProvider from '../../providers/generic/zip/ZipProvider';
+import path from '../../providers/node/path/path';
 
 export default class ZipExtract {
 

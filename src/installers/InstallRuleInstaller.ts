@@ -1,7 +1,7 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
 import { ImmutableProfile } from "../model/Profile";
 import FsProvider from "../providers/generic/file/FsProvider";
-import path from "path";
+import path from "../providers/node/path/path";
 import ManifestV2 from "../model/ManifestV2";
 import R2Error from "../model/errors/R2Error";
 import FileTree from "../model/file/FileTree";
@@ -59,7 +59,8 @@ async function installSubDir(
             for (const content of (await FsProvider.instance.readdir(source))) {
                 const cacheContentLocation = path.join(source, content);
                 const contentDest = path.join(subDir, content);
-                if ((await FsProvider.instance.lstat(cacheContentLocation)).isFile()) {
+                const isCacheContentLocationFile = (await FsProvider.instance.lstat(cacheContentLocation)).isFile();
+                if (isCacheContentLocationFile) {
                     await FsProvider.instance.copyFile(cacheContentLocation, contentDest);
                 } else {
                     await FsProvider.instance.copyFolder(cacheContentLocation, contentDest);
@@ -113,6 +114,41 @@ async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRu
     }
 }
 
+function getBestFitRule(matchingRules: ManagedRule[], file: FileTree) {
+    if (matchingRules.length === 0) {
+        return undefined;
+    }
+    if (matchingRules.length === 1) {
+        return {
+            rule: matchingRules[0],
+            count: 0
+        };
+    }
+
+    const fileParts = file.getTarget().split(path.sep).reverse();
+    return matchingRules.map(value => {
+        const ruleParts = value.route.split('/').reverse();
+        let numberOfMatches = 0;
+        for (let i = 0; i < fileParts.length; i++) {
+            if (fileParts[i] === undefined || ruleParts[i] === undefined) {
+                break;
+            }
+            if (fileParts[i] === ruleParts[i]) {
+                numberOfMatches++;
+            }
+        }
+        return {
+            rule: value,
+            count: numberOfMatches
+        };
+    }).reduce((previousValue, currentValue) => {
+        if (currentValue.count > previousValue.count) {
+            return currentValue;
+        }
+        return previousValue;
+    });
+}
+
 async function buildInstallForRuleSubtype(
     rule: CoreRuleType,
     location: string,
@@ -149,9 +185,13 @@ async function buildInstallForRuleSubtype(
         installationIntent.set(subType, updatedArray);
     }
     for (const file of tree.getDirectories()) {
-        // Only expect one (for now).
-        // If multiple then will need to implement a way to reverse search folder path.
-        let matchingRule: ManagedRule | undefined = flatRules.find(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
+        let matchingRules: ManagedRule[] = flatRules.filter(value => path.basename(value.route).toLowerCase() === file.getDirectoryName().toLowerCase());
+        let matchingRule: ManagedRule | undefined = undefined;
+
+        const bestFitRule = getBestFitRule(matchingRules, file);
+        if (bestFitRule) {
+            matchingRule = bestFitRule.rule;
+        }
         if (matchingRule === undefined) {
             const nested = await buildInstallForRuleSubtype(rule, path.join(location, file.getDirectoryName()), folderName, mod, file);
             for (let [rule, files] of nested.entries()) {
@@ -240,7 +280,7 @@ export class InstallRuleInstaller implements PackageInstaller {
             mod,
             files,
         );
-        if (result instanceof R2Error) {
+        if (result instanceof Error) {
             throw result;
         }
     }
@@ -249,7 +289,6 @@ export class InstallRuleInstaller implements PackageInstaller {
         const installationIntent = await buildInstallForRuleSubtype(this.rule, location, folderName, mod, tree);
         for (let [rule, files] of installationIntent.entries()) {
             const managedRule = InstallationRules.getManagedRuleForSubtype(this.rule, rule);
-
             const args: InstallRuleArgs = {
                 profile,
                 coreRule: this.rule,

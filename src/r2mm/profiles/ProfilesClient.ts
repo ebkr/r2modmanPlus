@@ -1,9 +1,10 @@
 import Axios, { AxiosResponse } from 'axios';
 import R2Error from '../../model/errors/R2Error';
 import CdnProvider from '../../providers/generic/connection/CdnProvider';
+import { transformPackageUrl } from '../../providers/cdn/PackageUrlTransformer';
 
 const getProfileUrl = (profileImportCode: string): string => {
-    return `https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`;
+    return transformPackageUrl(`https://thunderstore.io/api/experimental/legacyprofile/get/${profileImportCode}/`);
 }
 
 function formatApiError<T>(e: T, genericTitle: string): R2Error | T {
@@ -53,7 +54,7 @@ async function handleApiErrors<I, J>(
 
 function createProfile(payload: string): Promise<AxiosResponse<{ key: string }>> {
     return handleApiErrors(Axios.post(
-        "https://thunderstore.io/api/experimental/legacyprofile/create/",
+        transformPackageUrl("https://thunderstore.io/api/experimental/legacyprofile/create/"),
         payload,
         {
             headers: { 'Content-Type': 'application/octet-stream' }

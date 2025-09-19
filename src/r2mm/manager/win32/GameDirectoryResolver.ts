@@ -1,16 +1,15 @@
 import R2Error from '../../../model/errors/R2Error';
 import FileNotFoundError from '../../../model/errors/FileNotFoundError';
 import VdfParseError from '../../../model/errors/Vdf/VdfParseError';
-
-import child from 'child_process';
+import child from '../../../providers/node/child_process/child_process';
 import * as vdf from '@node-steam/vdf';
-import * as path from 'path';
 import ManagerSettings from '../ManagerSettings';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import GameDirectoryResolverProvider from '../../../providers/ror2/game/GameDirectoryResolverProvider';
 import Game from '../../../model/game/Game';
 import GameManager from '../../../model/game/GameManager';
 import LoggerProvider, { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
+import path from '../../../providers/node/path/path';
 
 const steamInstallDirectoryQuery = 'Get-ItemProperty -Path HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam -Name "InstallPath"';
 

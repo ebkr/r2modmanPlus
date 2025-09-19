@@ -1,3 +1,11 @@
+> [!WARNING] 
+> There has been a rise in third-party redistribution sites which are claiming to be official.
+>
+> There are only two legitimate places to download r2modman which are:
+>
+> - [Thunderstore](https://thunderstore.io/package/ebkr/r2modman/)
+> - [GitHub](https://github.com/ebkr/r2modmanPlus/releases/latest)
+
 # r2modman
 
 [![Discord](https://img.shields.io/discord/727304496522461185?label=r2modman%20Discord&style=for-the-badge)](https://discord.gg/jE2zWHY)

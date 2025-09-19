@@ -350,7 +350,7 @@ onMounted(async () => {
                 'Select specific launch behaviour such as forcing Steam to launch with Proton',
                 async () => {
                     const launchType = await getLaunchType(activeGame.value);
-                    return `The current launch behaviour is set to: ${LaunchType[launchType]}`;
+                    return `The current launch behaviour is set to: ${launchType}`;
                 },
                 'fa-gamepad',
                 () => {

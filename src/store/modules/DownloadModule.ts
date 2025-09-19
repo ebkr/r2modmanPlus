@@ -5,7 +5,6 @@ import Game from "../../model/game/Game";
 import R2Error, { throwForR2Error } from "../../model/errors/R2Error";
 import { ImmutableProfile } from "../../model/Profile";
 import { DownloadStatusEnum } from "../../model/enums/DownloadStatusEnum";
-import StatusEnum from "../../model/enums/StatusEnum";
 import ThunderstoreCombo from "../../model/ThunderstoreCombo";
 import ConflictManagementProvider from "../../providers/generic/installing/ConflictManagementProvider";
 import ThunderstoreDownloaderProvider from "../../providers/ror2/downloading/ThunderstoreDownloaderProvider";
@@ -24,6 +23,8 @@ interface DownloadProgress {
     profile: ImmutableProfile;
     modName: string;
     downloadProgress: number;
+    downloadedSize: number;
+    totalDownloadSize: number;
     installProgress: number;
     status: DownloadStatusEnum;
 }
@@ -31,6 +32,7 @@ interface DownloadProgress {
 interface UpdateObject {
     downloadId: UUID;
     downloadProgress?: number;
+    downloadedSize?: number;
     installProgress?: number;
     modName?: string;
     status?: DownloadStatusEnum;
@@ -77,26 +79,30 @@ export const DownloadModule = {
             dispatch('retryDownload', { download });
         },
 
-        _addDownload({state}, params: {
-            combos: ThunderstoreCombo[],
+        async _addDownload({state, commit}, params: {
+            initialMods: ThunderstoreCombo[],
+            modsWithDependencies: ThunderstoreCombo[],
             installMode: InstallMode,
             game: Game,
             profile: ImmutableProfile
-        }): UUID {
-            const { combos, installMode, game, profile } = params;
-            const downloadId = UUID.create();
+        }): Promise<UUID> {
+            const { initialMods, modsWithDependencies, installMode, game, profile } = params;
+            const downloadId = UUID.create().toString();
+            const totalDownloadSize = await DownloadUtils.getTotalDownloadSizeInBytes(modsWithDependencies, state.ignoreCache);
             const downloadObject: DownloadProgress = {
-                downloadId: downloadId,
-                initialMods: [...combos],
+                downloadId,
+                initialMods: [...initialMods],
                 installMode,
                 game,
                 profile,
-                modName: '',
+                modName: '',  // Mod currently being downloaded/installed.
+                totalDownloadSize,
+                downloadedSize: 0,
                 downloadProgress: 0,
                 installProgress: 0,
                 status: DownloadStatusEnum.DOWNLOADING
             };
-            state.allDownloads = [...state.allDownloads, downloadObject];
+            commit('addDownload', downloadObject);
             return downloadId;
         },
 
@@ -117,16 +123,19 @@ export const DownloadModule = {
             let downloadId: UUID | undefined;
 
             try {
+                const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
+                const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
+                downloadId = await dispatch('_addDownload', { initialMods: combos, modsWithDependencies, installMode, game, profile });
+
                 if (!hideModal) {
                     commit('openDownloadProgressModal', null, { root: true });
                 }
-                downloadId = await dispatch('_addDownload', { combos, installMode, game, profile });
-                const installedMods = throwForR2Error(await ProfileModList.getModList(profile));
-                const modsWithDependencies = await getFullDependencyList(combos, game, installedMods, installMode);
+
                 await dispatch('_download', { combos: modsWithDependencies, downloadId });
+
                 commit('setInstalling', downloadId);
                 await dispatch('_installModsAndResolveConflicts', { combos: modsWithDependencies, profile, downloadId });
-                commit('setDone', downloadId);
+                commit('setInstalled', downloadId);
             } catch (e) {
                 const r2Error = R2Error.fromThrownValue(e);
                 if (downloadId) {
@@ -148,7 +157,7 @@ export const DownloadModule = {
 
         async downloadToCache({state}, params: {
             combos: ThunderstoreCombo[],
-            progressCallback: (progress: number, modName: string, status: number, err: R2Error | null) => void
+            progressCallback: (downloadedSize: number) => void
         }) {
             const { combos, progressCallback } = params;
             await ThunderstoreDownloaderProvider.instance.download(combos, state.ignoreCache, progressCallback);
@@ -162,8 +171,8 @@ export const DownloadModule = {
                 await ThunderstoreDownloaderProvider.instance.download(
                     params.combos,
                     state.ignoreCache,
-                    (downloadProgress, modName, status, err) => {
-                        dispatch('_downloadProgressCallback', { downloadId: params.downloadId, downloadProgress, modName, status, err });
+                    (downloadedSize, modName, status, err) => {
+                        dispatch('_downloadProgressCallback', { downloadId: params.downloadId, downloadedSize, modName, status, err });
                     }
                 );
             } catch (e) {
@@ -198,22 +207,22 @@ export const DownloadModule = {
 
         async _downloadProgressCallback({commit}, params: {
             downloadId: UUID,
-            downloadProgress: number,
+            downloadedSize: number,
             modName: string,
-            status: number,
+            status: DownloadStatusEnum,
             err: R2Error | null
         }) {
-            const { downloadId, downloadProgress, modName, status, err} = params;
+            const { downloadId, downloadedSize, modName, status, err} = params;
 
-            if (status === StatusEnum.FAILURE) {
+            if (status === DownloadStatusEnum.FAILED) {
                 commit('closeDownloadProgressModal', null, { root: true });
-                commit('setFailed', params.downloadId);
-                if (params.err !== null) {
-                    DownloadUtils.addSolutionsToError(params.err);
-                    throw params.err;
+                commit('setFailed', downloadId);
+                if (err !== null) {
+                    DownloadUtils.addSolutionsToError(err);
+                    throw err;
                 }
-            } else if (status === StatusEnum.PENDING || status === StatusEnum.SUCCESS) {
-                commit('updateDownload', { downloadId, modName, downloadProgress });
+            } else if (DownloadUtils.statusIsDownloadOrExtract(status)) {
+                commit('updateDownload', { downloadId, modName, downloadedSize, status });
             }
         },
     },
@@ -269,18 +278,24 @@ export const DownloadModule = {
             const index: number = getIndexOfDownloadProgress(state.allDownloads, update.downloadId);
             if (index > -1) {
                 const newDownloads = [...state.allDownloads];
+                if (update.downloadedSize !== undefined) {
+                    update.downloadProgress = DownloadUtils.generateProgressPercentage(update.downloadedSize, newDownloads[index].totalDownloadSize);
+                }
                 newDownloads[index] = {...newDownloads[index], ...update};
                 state.allDownloads = newDownloads;
             }
         },
-        setDone(state: State, downloadId: number) {
-            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.DONE);
+        addDownload(state: State, download: DownloadProgress) {
+            state.allDownloads = [...state.allDownloads, download];
         },
         setFailed(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.FAILED);
         },
         setInstalling(state: State, downloadId: number) {
             state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLING);
+        },
+        setInstalled(state: State, downloadId: number) {
+            state.allDownloads = updateDownloadStatus(state.allDownloads, downloadId, DownloadStatusEnum.INSTALLED);
         },
         // Use actions.toggleIngoreCache to store the setting persistently.
         setIgnoreCacheVuexOnly(state: State, ignoreCache: boolean) {
@@ -303,7 +318,12 @@ function getIndexOfDownloadProgress(allDownloads: DownloadProgress[], downloadId
 }
 
 function getOnlyActiveDownloads(downloads: DownloadProgress[]): DownloadProgress[] {
-    const active = [DownloadStatusEnum.DOWNLOADING, DownloadStatusEnum.INSTALLING];
+    const active = [
+        DownloadStatusEnum.DOWNLOADING,
+        DownloadStatusEnum.EXTRACTING,
+        DownloadStatusEnum.EXTRACTED,
+        DownloadStatusEnum.INSTALLING
+    ];
     return downloads.filter(dl => active.includes(dl.status));
 }
 

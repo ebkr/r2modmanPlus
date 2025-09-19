@@ -7,14 +7,13 @@ import {getStore} from "../../../providers/generic/store/StoreProvider";
 import {State} from "../../../store";
 import {getLaunchType, LaunchType} from "../../../model/real_enums/launch/LaunchType";
 import {areWrapperArgumentsProvided, getDeterminedLaunchType, getWrapperLaunchArgs} from "../../../utils/LaunchUtils";
-import EnumResolver from "../../../model/enums/_EnumResolver";
 import CopyToClipboardButton from "../../buttons/CopyToClipboardButton.vue";
 import ManagerSettings from "../../../r2mm/manager/ManagerSettings";
 
 const store = getStore<State>();
 
 const activeGame = computed<Game>(() => store.state.activeGame);
-const launchOption = ref<string>(LaunchType.AUTO);
+const launchOption = ref<LaunchType>(LaunchType.AUTO);
 const determinedLaunchType = ref<LaunchType>(LaunchType.AUTO);
 const wrapperProvided = ref<boolean>(false);
 
@@ -22,21 +21,25 @@ const launchArgs = ref<string>("");
 getWrapperLaunchArgs().then(value => launchArgs.value = value);
 
 watchEffect(async () => {
-    const launchTypeString = launchOption.value;
-    const launchType = EnumResolver.from<LaunchType>(LaunchType, launchTypeString);
-    determinedLaunchType.value = await getDeterminedLaunchType(activeGame.value, LaunchType[launchType]);
+    determinedLaunchType.value = await getDeterminedLaunchType(activeGame.value, launchOption.value);
     wrapperProvided.value = await areWrapperArgumentsProvided(activeGame.value);
 })
 
 getLaunchType(activeGame.value)
-    .then(launchType => launchOption.value = LaunchType[launchType]);
+    .then(launchType => launchOption.value = launchType);
 
 function closeModal() {
   LaunchTypeModalOpen.value = false;
 }
 
 async function updateAndClose() {
+  console.debug(
+      "Updating launch type for game.",
+      `Active game in Vuex: "${store.state.activeGame.settingsIdentifier}".`,
+      `Active game in local ref: "${activeGame.value.settingsIdentifier}".`,
+  );
   const settings = await ManagerSettings.getSingleton(activeGame.value);
+  settings.logActiveGameInDexieStore();
   await settings.setLaunchType(launchOption.value);
   closeModal();
 }
@@ -79,14 +82,14 @@ async function updateAndClose() {
               </code>
             </div>
             <div class="margin-top">
-              <CopyToClipboardButton :copy-value="launchArgs">
+              <CopyToClipboardButton :copy-value="launchArgs" id="launch-type-modal-copy-button">
                 Copy launch arguments
               </CopyToClipboardButton>
             </div>
           </div>
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="updateAndClose">
+            <button id="launch-type-modal-update-button" class="button is-info" @click="updateAndClose">
                 Update
             </button>
         </template>

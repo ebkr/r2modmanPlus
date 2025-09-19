@@ -62,7 +62,6 @@
 
 <script lang="ts" setup>
 import ConfigFile from '../../model/file/ConfigFile';
-import * as path from 'path';
 import FileTree from '../../model/file/FileTree';
 import R2Error from '../../model/errors/R2Error';
 import { ExpandableCard, Hero } from '../all';
@@ -76,6 +75,7 @@ import ProfileModList from '../../r2mm/mods/ProfileModList';
 import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import path from '../../providers/node/path/path';
 
 const store = getStore<State>();
 

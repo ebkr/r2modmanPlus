@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Vuex, { ActionContext, Store } from 'vuex';
+import { ActionContext, createStore } from 'vuex';
 
 import ErrorModule from './modules/ErrorModule';
 import { DownloadModule } from './modules/DownloadModule';
@@ -16,8 +15,6 @@ import R2Error from '../model/errors/R2Error';
 import { getModLoaderPackageNames } from '../r2mm/installing/profile_installers/ModLoaderVariantRecord';
 import ManagerSettings from '../r2mm/manager/ManagerSettings';
 import { SplashModule } from './modules/SplashModule';
-
-Vue.use(Vuex);
 
 export interface State {
     activeGame: Game;
@@ -141,18 +138,13 @@ export const store = {
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEV === 'true'
+    strict: import.meta.env.MODE === 'development',
 };
 
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
-let singletonStore!: Store<State>;
+let singletonStore = createStore(store);
 
-export default (/* { ssrContext } */) => {
-    if (!singletonStore) {
-        singletonStore = new Store<State>(store);
-    }
-    return singletonStore;
-};
+export default singletonStore;

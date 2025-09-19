@@ -1,7 +1,7 @@
 import ConfigLine from '../model/file/ConfigLine';
 import FsProvider from '../providers/generic/file/FsProvider';
 import ConfigFile from '../model/file/ConfigFile';
-import * as path from 'path';
+import path from '../providers/node/path/path';
 
 export default class BepInExConfigUtils {
 

@@ -27,13 +27,16 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   # The talk on the street says this might be a good version for building.
-                  node-version: 20.11.0
+                  node-version: 20.19.0
                   cache: yarn
 
             - name: Install Yarn dependencies
               run: yarn install --frozen-lockfile
 
+            - name: Prepare Quasar files
+              run: npx @quasar/cli prepare
+
             - name: Run tests
               run: >
                   node test/folder-structure-testing/populator.mjs &&
-                  yarn run test:unit:ci
+                  yarn run test

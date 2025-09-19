@@ -34,6 +34,7 @@ export default class LogOutput {
         const game = GameManager.activeGame;
         switch (game.packageLoader) {
             case PackageLoader.BEPINEX:
+            case PackageLoader.BEPISLOADER:
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('BepInEx', 'LogOutput.log'))
                     .then(value => this._exists = value);
                 break;

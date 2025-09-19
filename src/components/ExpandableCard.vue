@@ -7,7 +7,7 @@
                         <div class='card-header-icon mod-logo' v-if="image !== ''">
                             <figure class='image is-48x48 image-parent'>
                                 <img :src='image' alt='Mod Logo' class='image-overlap'/>
-                                <img v-if="$store.state.profile.funkyMode" src='../assets/funky_mode.png' alt='Mod Logo' class='image-overlap'/>
+                                <img v-if="store.state.profile.funkyMode" :src='ProtocolProvider.getPublicAssetUrl("/funky_mode.png")' alt='Funky mode' class='image-overlap'/>
                             </figure>
                         </div>
                         <span ref="title" class='card-header-title'><slot name='title'></slot></span>
@@ -43,6 +43,7 @@
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
+import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 
@@ -57,7 +58,6 @@ type ExpandableCardProps = {
 const props = withDefaults(defineProps<ExpandableCardProps>(), {
     image: '',
     description: '',
-    id: undefined,
     allowSorting: false,
     enabled: true,
 })

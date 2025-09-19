@@ -1,5 +1,5 @@
 import { InstallArgs, PackageInstaller } from "./PackageInstaller";
-import path from "path";
+import path from "../providers/node/path/path";
 import FsProvider from "../providers/generic/file/FsProvider";
 import { MODLOADER_PACKAGES } from "../r2mm/installing/profile_installers/ModLoaderVariantRecord";
 import { PackageLoader } from "../model/schema/ThunderstoreSchema";
@@ -17,10 +17,7 @@ export class BepInExInstaller implements PackageInstaller {
             profile,
         } = args;
 
-        const mapping = MODLOADER_PACKAGES.find((entry) =>
-            entry.packageName.toLowerCase() == mod.getName().toLowerCase() &&
-            entry.loaderType == PackageLoader.BEPINEX,
-        );
+        const mapping = MODLOADER_PACKAGES.find((entry) => entry.packageName.toLowerCase() == mod.getName().toLowerCase());
         const mappingRoot = mapping ? mapping.rootFolder : "";
 
         let bepInExRoot: string;
