@@ -1,3 +1,7 @@
+### 3.2.5
+#### Changes
+- Fixed several bugs causing rendering issues
+
 ### 3.2.4
 #### Games added
 - Hollow Knight: Silksong
