@@ -1,3 +1,20 @@
+### 3.2.4
+#### Games added
+- Hollow Knight: Silksong
+- Resonite
+- House of Legacy
+- Beton Brutal
+- Pair A Dice
+- Maltese's Fluffy Onsen
+- Paper Animal Adventure
+- PAC-MAN WORLD Re-PAC
+- Darkwater
+
+#### Changes
+- Preview panel can now be resized
+- Download and install progress is now better reflected
+- The entire application has upgraded to Vue 3 along with some other internal tooling upgrades
+
 ### 3.2.3
 #### Games added
 - Len's Island
