@@ -133,7 +133,7 @@ import FileUtils from "../utils/FileUtils";
 import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
 import Buffer from '../providers/node/buffer/buffer';
-import ProtocolProvider from 'src/providers/generic/protocol/ProtocolProvider';
+import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
 
 const store = getStore<State>();
 const router = useRouter();
