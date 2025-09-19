@@ -6,12 +6,13 @@ import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 import { GameInstanceType } from '../../../../../model/schema/ThunderstoreSchema';
 import path from 'path';
+import appWindow from 'src/providers/node/app/app_window';
 
 export default class BepisLoaderGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         let extraArguments = "";
-        if (["linux", "darwin"].includes(process.platform.toLowerCase())) {
+        if (["linux", "darwin"].includes(appWindow.getPlatform().toLowerCase())) {
             extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
             if (game.instanceType === GameInstanceType.SERVER) {
                 extraArguments += ` --server`;
