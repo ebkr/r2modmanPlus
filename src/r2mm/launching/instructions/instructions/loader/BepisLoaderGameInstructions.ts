@@ -5,8 +5,8 @@ import Profile from '../../../../../model/Profile';
 import FsProvider from '../../../../../providers/generic/file/FsProvider';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 import { GameInstanceType } from '../../../../../model/schema/ThunderstoreSchema';
-import path from 'path';
-import appWindow from 'src/providers/node/app/app_window';
+import path from '../../../../../providers/node/path/path';
+import appWindow from '../../../../../providers/node/app/app_window';
 
 export default class BepisLoaderGameInstructions extends GameInstructionGenerator {
 
