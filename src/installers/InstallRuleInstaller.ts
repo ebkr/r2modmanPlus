@@ -115,6 +115,7 @@ async function installSubDirNoFlatten(profile: ImmutableProfile, rule: ManagedRu
 }
 
 function getBestFitRule(matchingRules: ManagedRule[], file: FileTree) {
+    console.log("Getting best fit rule", matchingRules, path.sep);
     if (matchingRules.length === 0) {
         return undefined;
     }
