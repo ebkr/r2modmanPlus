@@ -185,7 +185,7 @@ async function moveToNextScreen() {
 
 async function ensureWrapperInGameFolder() {
     const staticsDirectory = window.app.getStaticsDirectory();
-    const wrapperName = appWindow.getPlatform() === 'darwin' ? 'macos_proxy' : 'linux_wrapper.sh';
+    const wrapperName = 'linux_wrapper.sh';
     const activeGame: Game = store.state.activeGame;
     console.log(`Ensuring wrapper for current game ${activeGame.displayName} in ${path.join(PathResolver.MOD_ROOT, wrapperName)}`);
     try {
