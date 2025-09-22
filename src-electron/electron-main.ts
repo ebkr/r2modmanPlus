@@ -131,7 +131,10 @@ app.whenReady().then(() => {
 
     protocol.handle('public', async (req: any) => {
         const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER);
-        const filePath = (req.url as string).substring("public://".length).replace(/\\/g, path.sep);
+        let filePath = (req.url as string).substring("public://".length).replace(/\\/g, path.sep);
+        if (filePath.endsWith(path.sep)) {
+            filePath = filePath.substring(0, filePath.length - 1);
+        }
         const fileContent = await fs.promises.readFile(path.join(publicFolder, filePath))
         return new Response(fileContent);
     })
