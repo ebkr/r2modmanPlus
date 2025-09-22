@@ -15,9 +15,15 @@ export function resolve(...paths: string[]) {
 export function extname(...args: string[]) {
     return ipcRenderer.sendSync('node:path:extname', ...args)
 }
+
 export function relative(...args: string[]) {
     return ipcRenderer.sendSync('node:path:relative', ...args)
 }
+
 export function dirname(...args: string[]) {
     return ipcRenderer.sendSync('node:path:dirname', ...args)
+}
+
+export function sep() {
+    return ipcRenderer.sendSync('node:path:sep')
 }

@@ -20,4 +20,7 @@ export function hookPathIpc(browserWindow: BrowserWindow) {
     ipcMain.on("node:path:dirname", (event, pathAsString: string) => {
         event.returnValue = path.dirname(pathAsString);
     });
+    ipcMain.on("node:path:sep", (event) => {
+        event.returnValue = path.sep;
+    })
 }
