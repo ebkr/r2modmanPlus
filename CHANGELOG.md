@@ -1,3 +1,9 @@
+### 3.2.7
+### Changes
+- GTK version issue preventing launches should no longer be present
+- Resonite Renderer path in mods (affecting AudioBridge) should now resolve as intended
+- First-time install of Linux wrapper is now written to disk correctly
+
 ### 3.2.6
 #### Changes
 - Linux wrapper is now resolved correctly if not previously present
