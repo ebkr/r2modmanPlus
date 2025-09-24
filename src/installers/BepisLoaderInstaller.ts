@@ -12,20 +12,13 @@ export class BepisLoaderInstaller implements PackageInstaller {
 
     async uninstall(args: InstallArgs) {
         /*
-        Resonite deals with two mod loaders. As it's currently the only game using BepisLoader, for now we'll hard-code
-        mod loader packages and we'll remove the appropriate folders. We'll only remove the renderer for now.
-         */
-        const { profile } = args;
-        const modList = await ProfileModList.getModList(profile);
-        if (modList instanceof R2Error) {
-            throw modList;
-        }
+        There are two mod loaders for Resonite, and we currently can't guarantee uninstall one without
+        uninstalling the other.
 
-        const hasRendererModLoaderInstalled = modList.some(value => value.getName() === 'ResoniteModding-BepInExRenderer');
-        if (!hasRendererModLoaderInstalled) {
-            const rendererPath = profile.joinToProfilePath('Renderer');
-            await FileUtils.recursiveRemoveDirectoryIfExists(rendererPath);
-        }
+        There are scenarios where BepisLoader installs after the BepInEx Renderer package, but in the same install queue.
+        This means that it will detect BepisLoader as being currently installed, and since the mod list hasn't been updated yet,
+        it reports that the Renderer package isn't installed and attempts to uninstall.
+         */
     }
 
 }
