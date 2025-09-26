@@ -4,11 +4,11 @@
             <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
             <button class="button is-danger" @click="cancel">Cancel</button>
         </div>
-        <div id="config-entry-main" v-if="configurationFile">
+        <div id="config-entry-main" v-if="configurationFileHolder.configurationFile">
             <div id="config-entry-sections">
                 <h3 class='subtitle is-3'>Sections</h3>
                 <ul>
-                    <template v-for="(section, sectionIndex) in configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
+                    <template v-for="(section, sectionIndex) in configurationFileHolder.configurationFile.sections" :key="`li-section-${sectionIndex}-${section.sectionName}`">
                         <li v-if="section.sectionName.length > 0">
                             <a :href="`#${sectionIndex}`">{{ section.sectionName }}</a>
                         </li>
@@ -17,7 +17,7 @@
                 <hr/>
             </div>
             <div id="config-entries">
-                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFile.sections">
+                <div class="outer-row margin-top margin-right" v-for="(section, sectionIndex) of configurationFileHolder.configurationFile.sections">
                     <div class="section-title" :id="sectionIndex.toString()">
                         <p class="title is-6" @click="() => toggleSectionVisibility(section)">{{ section.sectionName }}</p>
                         <p v-if="collapsedSections.includes(section)" class="smaller-font">({{ section.entries.length }} hidden)</p>
@@ -56,6 +56,13 @@
                                         </select>
                                     </div>
                                 </template>
+                                <template v-else-if="entry.displayType === 'multi-select'">
+                                    <MultiSelect
+                                        placeholder="Select an option"
+                                        :selected="entry.value.split(',')"
+                                        :options="getSelectOptions(entry)"
+                                        @selection-changed="(newSelection) => updateEntryMultiSelect(entry, newSelection)"/>
+                                </template>
                                 <template v-else>
                                     <div class="settings-input-container">
                                         <input type="text" class="input" v-model="entry.value"/>
@@ -72,13 +79,14 @@
 
 <script lang="ts" setup>
 import ConfigFile from "../../model/file/ConfigFile";
+import MultiSelect from '../input/MultiSelect.vue';
 import {
     buildConfigurationFileFromPath, ConfigurationEntry,
     ConfigurationFile,
     ConfigurationSection,
     getSelectOptions, saveConfigurationFile
 } from '../../utils/ConfigUtils';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 export type ConfigEntryEditorProps = {
     configFile: ConfigFile;
@@ -89,12 +97,14 @@ const emits = defineEmits<{
     (e: 'changed'): void
 }>();
 
-const configurationFile = ref<ConfigurationFile | null>(null);
+const configurationFileHolder = reactive({
+    configurationFile: {} as ConfigurationFile,
+});
 const collapsedSections = ref<ConfigurationSection[]>([]);
 const entriesWithExpandedComments = ref<ConfigurationEntry[]>([]);
 
 buildConfigurationFileFromPath(props.configFile.getPath())
-    .then(value => configurationFile.value = value);
+    .then(value => configurationFileHolder.configurationFile = reactive(value));
 
 function toggleSectionVisibility(section: ConfigurationSection) {
     const collapsedSectionIndex = collapsedSections.value.indexOf(section);
@@ -106,7 +116,7 @@ function toggleSectionVisibility(section: ConfigurationSection) {
 }
 
 function save() {
-    saveConfigurationFile(configurationFile.value!);
+    saveConfigurationFile(configurationFileHolder.configurationFile);
     emits('changed');
 }
 
@@ -145,6 +155,10 @@ function toggleEntryExpansion(entry: ConfigurationEntry) {
     } else {
         entriesWithExpandedComments.value.push(entry);
     }
+}
+
+function updateEntryMultiSelect(entry: ConfigurationEntry, newSelections: string[]) {
+    entry.value = newSelections.map(value => value.trim()).join(', ');
 }
 
 </script>
