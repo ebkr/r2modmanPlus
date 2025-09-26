@@ -100,8 +100,8 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
 
         // Skip isProtonGame check if user has explicitly declared launch behaviour.
         const manualLaunchType = await getLaunchType(game);
-        if (manualLaunchType !== EnumResolver.from<LaunchType>(LaunchType, LaunchType.AUTO)) {
-            return manualLaunchType === EnumResolver.from<LaunchType>(LaunchType, LaunchType.PROTON);
+        if (manualLaunchType !== LaunchType.AUTO) {
+            return manualLaunchType === LaunchType.PROTON;
         }
 
         try {

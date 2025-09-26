@@ -129,11 +129,13 @@ import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
 import path from '../providers/node/path/path';
 import { UpdateRequestItemBody } from '../store/modules/SplashModule';
-import FileUtils from "../utils/FileUtils";
-import {areWrapperArgumentsProvided, isProtonRequired} from '../utils/LaunchUtils';
+import FileUtils from '../utils/FileUtils';
+import { areWrapperArgumentsProvided, getDeterminedLaunchType } from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
 import Buffer from '../providers/node/buffer/buffer';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
+import ManagerSettings from '../r2mm/manager/ManagerSettings';
+import { LaunchType } from '../model/real_enums/launch/LaunchType';
 
 const store = getStore<State>();
 const router = useRouter();
@@ -166,21 +168,19 @@ function checkForUpdates() {
 async function moveToNextScreen() {
     if (appWindow.getPlatform() === 'linux') {
         const activeGame: Game = store.state.activeGame;
-
-        if (!(await isProtonRequired(activeGame))) {
+        const settings = await ManagerSettings.getSingleton(activeGame);
+        if (!(await getDeterminedLaunchType(activeGame, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON)) {
             console.log('Not proton game');
             await ensureWrapperInGameFolder();
             if (!(await areWrapperArgumentsProvided(activeGame))) {
-                router.push({name: 'linux'});
-                return;
+                return router.push({name: 'linux'});
             }
         }
     } else if (appWindow.getPlatform() === 'darwin') {
         await ensureWrapperInGameFolder();
-        router.push({name: 'linux'});
-        return;
+        return router.push({name: 'linux'});
     }
-    router.push({name: 'profiles'});
+    return router.push({name: 'profiles'});
 }
 
 async function ensureWrapperInGameFolder() {

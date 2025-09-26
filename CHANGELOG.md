@@ -1,5 +1,14 @@
+### 3.2.8
+#### Changes
+- Config Editor
+  - Config Editor headers are now less obtrusive
+  - Config Editor now supports multi-select options
+  - When loading a large number of config files, a spinner is shown instead of hanging the application
+  - "Show more" functionality now restricts per line length until selected
+- Linux Native/Proton detection and install fixes
+
 ### 3.2.7
-### Changes
+#### Changes
 - GTK version issue preventing launches should no longer be present
 - Resonite Renderer path in mods (affecting AudioBridge) should now resolve as intended
 - First-time install of Linux wrapper is now written to disk correctly
