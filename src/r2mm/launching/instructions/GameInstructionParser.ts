@@ -1,11 +1,13 @@
 import { DynamicGameInstruction } from './DynamicGameInstruction';
 import Profile from '../../../model/Profile';
 import Game from '../../../model/game/Game';
-import path from "../../../providers/node/path/path";
+import path from '../../../providers/node/path/path';
 import FsProvider from '../../../providers/generic/file/FsProvider';
 import R2Error from '../../../model/errors/R2Error';
-import { isProtonRequired } from '../../../utils/LaunchUtils';
+import { getDeterminedLaunchType } from '../../../utils/LaunchUtils';
 import appWindow from '../../../providers/node/app/app_window';
+import ManagerSettings from '../../../r2mm/manager/ManagerSettings';
+import { LaunchType } from '../../../model/real_enums/launch/LaunchType';
 
 export default class GameInstructionParser {
 
@@ -41,17 +43,18 @@ export default class GameInstructionParser {
     private static async bepInExPreloaderPathResolver(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
             if (["linux"].includes(appWindow.getPlatform().toLowerCase())) {
-                const isProton = await isProtonRequired(game);
+                const settings = await ManagerSettings.getSingleton(game);
+                const isProton = await GameInstructionParser.isProton(game);
                 const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath("BepInEx", "core"));
                 const preloaderPath = path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]!);
                 return `${isProton ? 'Z:' : ''}${preloaderPath}`;
             } else {
                 const corePath = profile.joinToProfilePath("BepInEx", "core");
                 return path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]);
+                        .filter((x: string) => ["BepInEx.Unity.Mono.Preloader.dll", "BepInEx.Unity.IL2CPP.dll", "BepInEx.Preloader.dll", "BepInEx.IL2CPP.dll"].includes(x))[0]!);
             }
         } catch (e) {
             const err: Error = e as Error;
@@ -83,21 +86,26 @@ export default class GameInstructionParser {
     private static async bepInExRendererPreloaderPath(game: Game, profile: Profile): Promise<string | R2Error> {
         try {
             if (['linux'].includes(appWindow.getPlatform().toLowerCase())) {
-                const isProton = await isProtonRequired(game);
+                const isProton = await GameInstructionParser.isProton(game);
                 const corePath = await FsProvider.instance.realpath(profile.joinToProfilePath('BepInEx', 'core'));
                 const preloaderPath = path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ['BepInEx.Unity.Mono.Preloader.dll', 'BepInEx.Unity.IL2CPP.dll', 'BepInEx.Preloader.dll', 'BepInEx.IL2CPP.dll'].includes(x))[0]);
+                        .filter((x: string) => ['BepInEx.Unity.Mono.Preloader.dll', 'BepInEx.Unity.IL2CPP.dll', 'BepInEx.Preloader.dll', 'BepInEx.IL2CPP.dll'].includes(x))[0]!);
                 return `${isProton ? 'Z:' : ''}${preloaderPath}`;
             } else {
                 const corePath = profile.joinToProfilePath('Renderer', 'BepInEx', 'core');
                 return path.join(corePath,
                     (await FsProvider.instance.readdir(corePath))
-                        .filter((x: string) => ['BepInEx.Unity.Mono.Preloader.dll', 'BepInEx.Unity.IL2CPP.dll', 'BepInEx.Preloader.dll', 'BepInEx.IL2CPP.dll'].includes(x))[0]);
+                        .filter((x: string) => ['BepInEx.Unity.Mono.Preloader.dll', 'BepInEx.Unity.IL2CPP.dll', 'BepInEx.Preloader.dll', 'BepInEx.IL2CPP.dll'].includes(x))[0]!);
             }
         } catch (e) {
             // The Renderer doesn't have to be installed, so instead we'll do nothing with it.
             return '';
         }
+    }
+
+    private static async isProton(game: Game) {
+        const settings = await ManagerSettings.getSingleton(game);
+        return await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
     }
 }

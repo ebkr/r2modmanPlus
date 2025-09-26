@@ -1,6 +1,6 @@
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import LinuxGameDirectoryResolver from '../../../manager/linux/GameDirectoryResolver';
-import path from "../../../../providers/node/path/path";
+import path from '../../../../providers/node/path/path';
 import GameRunnerProvider from '../../../../providers/generic/game/GameRunnerProvider';
 import Game from '../../../../model/game/Game';
 import R2Error from '../../../../model/errors/R2Error';
@@ -12,7 +12,8 @@ import ChildProcess from '../../../../providers/node/child_process/child_process
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
-import {isProtonRequired} from "../../../../utils/LaunchUtils";
+import { getDeterminedLaunchType } from '../../../../utils/LaunchUtils';
+import { LaunchType } from '../../../../model/real_enums/launch/LaunchType';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -22,8 +23,8 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
-
-        const isProton = await isProtonRequired(game);
+        const settings = await ManagerSettings.getSingleton(game);
+        const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
         if (isProton instanceof R2Error) {
             return isProton;
         }
