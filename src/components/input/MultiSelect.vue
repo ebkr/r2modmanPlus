@@ -48,7 +48,6 @@ const visibleSelectedOptions = computed(() => {
 
 function updateSelection(event: InputEvent) {
     const target = event.target as HTMLSelectElement;
-    console.log([...props.selected, target.value]);
     emits('selection-changed', [...props.selected, target.value]);
     target.selectedIndex = 0;
 }
