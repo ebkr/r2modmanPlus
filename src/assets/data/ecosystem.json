@@ -19843,7 +19843,9 @@
           "steamFolderName": "Hollow Knight Silksong",
           "dataFolderName": "Hollow Knight Silksong_Data",
           "exeNames": [
-            "Hollow Knight Silksong.exe"
+            "Hollow Knight Silksong.exe",
+            "Hollow Knight Silksong.app",
+            "Hollow Knight Silksong"
           ],
           "packageLoader": "bepinex",
           "meta": {
