@@ -29,6 +29,9 @@
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
                     <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
                 </span>
+                <span class='card-header-icon' v-if="key.getNsfwFlag()">
+                    <i class="fas fa-pause-circle" v-tooltip.left="'Mod marked as NSFW'"></i>
+                </span>
             </template>
         </OnlineRowCard>
     </div>

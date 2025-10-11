@@ -33,7 +33,6 @@ const activeTab = ref<"README" | "CHANGELOG" | "Dependencies">("README");
 const loadingPanel = ref<boolean>(true);
 const dependencies = ref<ThunderstoreMod[]>([]);
 const isNsfw = computed<boolean>(() => props.mod?.getNsfwFlag())
-const isPackagePreviewExpanded = ref<boolean>(true);
 
 const maxPanelWidth = ref(getMaxPanelWidth());
 
@@ -196,7 +195,7 @@ function dragEnd(event: DragEvent) {
                 <h2 class="subtitle">
                     By {{ mod.getOwner() }}
                 </h2>
-                <details id="package-preview-details">
+                <details id="package-preview-details" open="true">
                     <summary class='card-timestamp non-selectable'>Package information</summary>
                     <div class="notification is-warning margin-top" v-if="isNsfw">
                         <p>This mod may contain potentially explicit material</p>
