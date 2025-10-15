@@ -66,7 +66,7 @@
     "@babel/core": "^7.4.0",
     "@babel/preset-typescript": "^7.14.5",
     "@quasar/app-vite": "^2.2.1",
-    "@types/adm-zip": "^0.4.34",
+    "@types/adm-zip": "^0.5.7",
     "@types/async-lock": "^1.1.2",
     "@types/chai": "^4.2.11",
     "@types/fs-extra": "^8.0.1",
