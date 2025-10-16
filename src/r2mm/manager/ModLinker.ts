@@ -124,11 +124,18 @@ export default class ModLinker {
                         }
                     } else {
                         if ((await fs.lstat(profile.joinToProfilePath(file))).isDirectory()) {
+                            // TODO: define folders that UMMInstaller places in the root of the
+                            // profile folder to prevent them from being copied to game directory.
+                            // The if-block of this else-block copies the doorstop dll (and other
+                            // files at the root of the profile folder, exluding mods.yml) to the
+                            // game dir.
                             const exclusionsList = [
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
                                 "_state", "userlibs", "qmods", "shimloader",
                                 "returnofmodding", "gdweave", "renderer"
+                                // TODO: add "umm", or something generic like "modloader" so we
+                                // don't need to add a separate entry for each mod laoder in the future.
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {

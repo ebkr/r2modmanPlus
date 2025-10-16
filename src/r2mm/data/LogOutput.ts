@@ -51,6 +51,7 @@ export default class LogOutput {
                 fs.exists(Profile.getActiveProfile().joinToProfilePath('GDWeave', 'GDWeave.log'))
                     .then(value => this._exists = value);
                 break;
+            // TODO: Might want to add PackageLoader.UMM here
         }
     }
 

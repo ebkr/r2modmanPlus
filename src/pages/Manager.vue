@@ -432,6 +432,7 @@ async function copyLogToClipboard() {
         case PackageLoader.GDWEAVE:
             logOutputPath = path.join(profile.value.getProfilePath(), "GDWeave", "GDWeave.log");
             break;
+        // TODO: Might want to add PackageLoader.UMM here
     }
     const text = (await fs.readFile(logOutputPath)).toString();
     if (text.length >= 1992) {
