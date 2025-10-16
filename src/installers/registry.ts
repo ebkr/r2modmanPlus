@@ -10,6 +10,7 @@ import { GDWeaveInstaller, GDWeavePluginInstaller } from './GDWeaveInstaller';
 import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } from './RecursiveMelonLoaderInstaller';
 import { DirectCopyInstaller } from './DirectCopyInstaller';
 import { BepisLoaderInstaller } from './BepisLoaderInstaller';
+import { UMMInstaller, UMMPluginInstaller } from './UMMInstaller';
 import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
 /**
@@ -28,6 +29,7 @@ const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
+    [PackageLoader.UMM]: new UMMInstaller(),
 };
 
 export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
@@ -52,6 +54,7 @@ const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingPluginInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderPluginInstaller(),
+    [PackageLoader.UMM]: new UMMPluginInstaller(),
 };
 
 function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
