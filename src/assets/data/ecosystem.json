@@ -6,7 +6,7 @@
       "label": "20-minutes-till-dawn",
       "meta": {
         "displayName": "20 Minutes Till Dawn",
-        "iconUrl": "20MinutesTillDawn.jpg"
+        "iconUrl": "20-minutes-till-dawn.webp"
       },
       "distributions": [
         {
@@ -22,7 +22,7 @@
         {
           "meta": {
             "displayName": "20 Minutes Till Dawn",
-            "iconUrl": "20MinutesTillDawn.jpg"
+            "iconUrl": "20-minutes-till-dawn.webp"
           },
           "internalFolderName": "20MinutesTillDawn",
           "dataFolderName": "MinutesTillDawn_Data",
@@ -99,7 +99,7 @@
       "label": "9-kings",
       "meta": {
         "displayName": "9 Kings",
-        "iconUrl": "9Kings.png"
+        "iconUrl": "9-kings.webp"
       },
       "distributions": [
         {
@@ -111,7 +111,7 @@
         {
           "meta": {
             "displayName": "9 Kings",
-            "iconUrl": "9Kings.png"
+            "iconUrl": "9-kings.webp"
           },
           "internalFolderName": "9Kings",
           "dataFolderName": "9Kings_Data",
@@ -224,7 +224,7 @@
       "label": "across-the-obelisk",
       "meta": {
         "displayName": "Across the Obelisk",
-        "iconUrl": "AcrossTheObelisk.png"
+        "iconUrl": "across-the-obelisk.webp"
       },
       "distributions": [
         {
@@ -236,7 +236,7 @@
         {
           "meta": {
             "displayName": "Across the Obelisk",
-            "iconUrl": "AcrossTheObelisk.png"
+            "iconUrl": "across-the-obelisk.webp"
           },
           "internalFolderName": "AcrossTheObelisk",
           "dataFolderName": "AcrossTheObelisk_Data",
@@ -309,7 +309,7 @@
       "label": "against-the-storm",
       "meta": {
         "displayName": "Against the Storm",
-        "iconUrl": "AgainstTheStorm.png"
+        "iconUrl": "against-the-storm.webp"
       },
       "distributions": [
         {
@@ -321,7 +321,7 @@
         {
           "meta": {
             "displayName": "Against the Storm",
-            "iconUrl": "AgainstTheStorm.png"
+            "iconUrl": "against-the-storm.webp"
           },
           "internalFolderName": "AgainstTheStorm",
           "dataFolderName": "Against the Storm_Data",
@@ -432,7 +432,7 @@
       "label": "against",
       "meta": {
         "displayName": "AGAINST",
-        "iconUrl": "AGAINST.jpg"
+        "iconUrl": "against.webp"
       },
       "distributions": [
         {
@@ -444,7 +444,7 @@
         {
           "meta": {
             "displayName": "AGAINST",
-            "iconUrl": "AGAINST.jpg"
+            "iconUrl": "against.webp"
           },
           "internalFolderName": "AGAINST",
           "dataFolderName": "AGAINST_Data",
@@ -514,7 +514,7 @@
       "label": "ale-and-tale-tavern",
       "meta": {
         "displayName": "Ale & Tale Tavern",
-        "iconUrl": "AleAndTaleTavern.png"
+        "iconUrl": "ale-and-tale-tavern.webp"
       },
       "distributions": [
         {
@@ -526,7 +526,7 @@
         {
           "meta": {
             "displayName": "Ale & Tale Tavern",
-            "iconUrl": "AleAndTaleTavern.png"
+            "iconUrl": "ale-and-tale-tavern.webp"
           },
           "internalFolderName": "AleAndTaleTavern",
           "dataFolderName": "Ale and Tale Tavern_Data",
@@ -639,7 +639,7 @@
       "label": "aloft",
       "meta": {
         "displayName": "Aloft",
-        "iconUrl": "Aloft.png"
+        "iconUrl": "aloft.webp"
       },
       "distributions": [
         {
@@ -651,7 +651,7 @@
         {
           "meta": {
             "displayName": "Aloft",
-            "iconUrl": "Aloft.png"
+            "iconUrl": "aloft.webp"
           },
           "internalFolderName": "Aloft",
           "dataFolderName": "Aloft_Data",
@@ -721,7 +721,7 @@
       "label": "among-us",
       "meta": {
         "displayName": "Among Us",
-        "iconUrl": "AmongUs.png"
+        "iconUrl": "among-us.webp"
       },
       "distributions": [
         {
@@ -745,7 +745,7 @@
         {
           "meta": {
             "displayName": "Among Us",
-            "iconUrl": "AmongUs.png"
+            "iconUrl": "among-us.webp"
           },
           "internalFolderName": "AmongUs",
           "dataFolderName": "Among Us_Data",
@@ -877,7 +877,7 @@
       "label": "ancient-dungeon-vr",
       "meta": {
         "displayName": "Ancient Dungeon VR",
-        "iconUrl": "ancient-dungeon-vr.png"
+        "iconUrl": "ancient-dungeon-vr.webp"
       },
       "distributions": [
         {
@@ -893,7 +893,7 @@
         {
           "meta": {
             "displayName": "Ancient Dungeon VR",
-            "iconUrl": "ancient-dungeon-vr.png"
+            "iconUrl": "ancient-dungeon-vr.webp"
           },
           "internalFolderName": "AncientDungeonVR",
           "dataFolderName": "Ancient_Dungeon_Data",
@@ -970,7 +970,7 @@
       "label": "aneurism-iv",
       "meta": {
         "displayName": "ANEURISM IV",
-        "iconUrl": "ANEURISM_IV.png"
+        "iconUrl": "aneurism-iv.webp"
       },
       "distributions": [
         {
@@ -982,7 +982,7 @@
         {
           "meta": {
             "displayName": "ANEURISM IV",
-            "iconUrl": "ANEURISM_IV.png"
+            "iconUrl": "aneurism-iv.webp"
           },
           "internalFolderName": "ANEURISMIV",
           "dataFolderName": "ANEURISM IV_Data",
@@ -1096,7 +1096,7 @@
       "label": "another-crabs-treasure",
       "meta": {
         "displayName": "Another Crab's Treasure",
-        "iconUrl": "AnotherCrabsTreasure.png"
+        "iconUrl": "another-crabs-treasure.webp"
       },
       "distributions": [
         {
@@ -1108,7 +1108,7 @@
         {
           "meta": {
             "displayName": "Another Crab's Treasure",
-            "iconUrl": "AnotherCrabsTreasure.png"
+            "iconUrl": "another-crabs-treasure.webp"
           },
           "internalFolderName": "AnotherCrabsTreasure",
           "dataFolderName": "AnotherCrabsTreasure_Data",
@@ -1225,7 +1225,7 @@
       "label": "arcus-chroma",
       "meta": {
         "displayName": "Arcus Chroma",
-        "iconUrl": "ArcusChroma.png"
+        "iconUrl": "arcus-chroma.webp"
       },
       "distributions": [
         {
@@ -1237,7 +1237,7 @@
         {
           "meta": {
             "displayName": "Arcus Chroma",
-            "iconUrl": "ArcusChroma.png"
+            "iconUrl": "arcus-chroma.webp"
           },
           "internalFolderName": "ArcusChroma",
           "dataFolderName": "Arcus Chroma_Data",
@@ -1350,7 +1350,7 @@
       "label": "aska",
       "meta": {
         "displayName": "ASKA",
-        "iconUrl": "ASKA.png"
+        "iconUrl": "aska.webp"
       },
       "distributions": [
         {
@@ -1362,7 +1362,7 @@
         {
           "meta": {
             "displayName": "ASKA",
-            "iconUrl": "ASKA.png"
+            "iconUrl": "aska.webp"
           },
           "internalFolderName": "ASKA",
           "dataFolderName": "ASKA_Data",
@@ -1475,7 +1475,7 @@
       "label": "atlyss",
       "meta": {
         "displayName": "ATLYSS",
-        "iconUrl": "ATLYSS.png"
+        "iconUrl": "atlyss.webp"
       },
       "distributions": [
         {
@@ -1487,7 +1487,7 @@
         {
           "meta": {
             "displayName": "ATLYSS",
-            "iconUrl": "ATLYSS.png"
+            "iconUrl": "atlyss.webp"
           },
           "internalFolderName": "ATLYSS",
           "dataFolderName": "ATLYSS_Data",
@@ -1629,7 +1629,7 @@
       "label": "atomicrops",
       "meta": {
         "displayName": "Atomicrops",
-        "iconUrl": "Atomicrops.jpg"
+        "iconUrl": "atomicrops.webp"
       },
       "distributions": [
         {
@@ -1641,7 +1641,7 @@
         {
           "meta": {
             "displayName": "Atomicrops",
-            "iconUrl": "Atomicrops.jpg"
+            "iconUrl": "atomicrops.webp"
           },
           "internalFolderName": "Atomicrops",
           "dataFolderName": "Atomicrops_Data",
@@ -1751,7 +1751,7 @@
       "label": "atrio-the-dark-wild",
       "meta": {
         "displayName": "Atrio: The Dark Wild",
-        "iconUrl": "atrio-the-dark-wild.jpg"
+        "iconUrl": "atrio-the-dark-wild.webp"
       },
       "distributions": [
         {
@@ -1763,7 +1763,7 @@
         {
           "meta": {
             "displayName": "Atrio: The Dark Wild",
-            "iconUrl": "atrio-the-dark-wild.jpg"
+            "iconUrl": "atrio-the-dark-wild.webp"
           },
           "internalFolderName": "AtrioTheDarkWild",
           "dataFolderName": "Atrio_Data",
@@ -1876,7 +1876,7 @@
       "label": "back-to-the-dawn",
       "meta": {
         "displayName": "Back to the Dawn",
-        "iconUrl": "BackToTheDawn.png"
+        "iconUrl": "back-to-the-dawn.webp"
       },
       "distributions": [
         {
@@ -1888,7 +1888,7 @@
         {
           "meta": {
             "displayName": "Back to the Dawn",
-            "iconUrl": "BackToTheDawn.png"
+            "iconUrl": "back-to-the-dawn.webp"
           },
           "internalFolderName": "BacktotheDawn",
           "dataFolderName": "Back To The Dawn_Data",
@@ -2010,7 +2010,7 @@
       "label": "backpack-hero",
       "meta": {
         "displayName": "Backpack Hero",
-        "iconUrl": "BackpackHero.jpg"
+        "iconUrl": "backpack-hero.webp"
       },
       "distributions": [
         {
@@ -2022,7 +2022,7 @@
         {
           "meta": {
             "displayName": "Backpack Hero",
-            "iconUrl": "BackpackHero.jpg"
+            "iconUrl": "backpack-hero.webp"
           },
           "internalFolderName": "BackpackHero",
           "dataFolderName": "Backpack Hero_Data",
@@ -2111,7 +2111,7 @@
       "label": "balatro",
       "meta": {
         "displayName": "Balatro",
-        "iconUrl": "Balatro.png"
+        "iconUrl": "balatro.webp"
       },
       "distributions": [
         {
@@ -2123,7 +2123,7 @@
         {
           "meta": {
             "displayName": "Balatro",
-            "iconUrl": "Balatro.png"
+            "iconUrl": "balatro.webp"
           },
           "internalFolderName": "Balatro",
           "dataFolderName": "Balatro_Data",
@@ -2191,7 +2191,7 @@
       "label": "below-the-stone",
       "meta": {
         "displayName": "Below the Stone",
-        "iconUrl": "BelowTheStone.png"
+        "iconUrl": "below-the-stone.webp"
       },
       "distributions": [
         {
@@ -2203,7 +2203,7 @@
         {
           "meta": {
             "displayName": "Below the Stone",
-            "iconUrl": "BelowTheStone.png"
+            "iconUrl": "below-the-stone.webp"
           },
           "internalFolderName": "BelowTheStone",
           "dataFolderName": "Below The Stone_Data",
@@ -2317,7 +2317,7 @@
       "label": "betrayal-beach",
       "meta": {
         "displayName": "Betrayal Beach",
-        "iconUrl": "BetrayalBeach.png"
+        "iconUrl": "betrayal-beach.webp"
       },
       "distributions": [
         {
@@ -2329,7 +2329,7 @@
         {
           "meta": {
             "displayName": "Betrayal Beach",
-            "iconUrl": "BetrayalBeach.png"
+            "iconUrl": "betrayal-beach.webp"
           },
           "internalFolderName": "BetrayalBeach",
           "dataFolderName": "Betrayal Beach_Data",
@@ -2442,7 +2442,7 @@
       "label": "bomb-rush-cyberfunk",
       "meta": {
         "displayName": "Bomb Rush Cyberfunk",
-        "iconUrl": "BombRushCyberfunk.jpg"
+        "iconUrl": "bomb-rush-cyberfunk.webp"
       },
       "distributions": [
         {
@@ -2462,7 +2462,7 @@
         {
           "meta": {
             "displayName": "Bomb Rush Cyberfunk",
-            "iconUrl": "BombRushCyberfunk.jpg"
+            "iconUrl": "bomb-rush-cyberfunk.webp"
           },
           "internalFolderName": "BombRushCyberfunk",
           "dataFolderName": "Bomb Rush Cyberfunk_Data",
@@ -2599,7 +2599,7 @@
       "label": "bonelab",
       "meta": {
         "displayName": "BONELAB",
-        "iconUrl": "BONELAB.jpg"
+        "iconUrl": "bonelab.webp"
       },
       "distributions": [
         {
@@ -2615,7 +2615,7 @@
         {
           "meta": {
             "displayName": "BONELAB",
-            "iconUrl": "BONELAB.jpg"
+            "iconUrl": "bonelab.webp"
           },
           "internalFolderName": "BONELAB",
           "dataFolderName": "BONELAB_Steam_Windows64",
@@ -2799,7 +2799,7 @@
       "label": "boneworks",
       "meta": {
         "displayName": "BONEWORKS",
-        "iconUrl": "BONEWORKS.jpg"
+        "iconUrl": "boneworks.webp"
       },
       "distributions": [
         {
@@ -2815,7 +2815,7 @@
         {
           "meta": {
             "displayName": "BONEWORKS",
-            "iconUrl": "BONEWORKS.jpg"
+            "iconUrl": "boneworks.webp"
           },
           "internalFolderName": "BONEWORKS",
           "dataFolderName": "BONEWORKS_Data",
@@ -2999,7 +2999,7 @@
       "label": "bopl-battle",
       "meta": {
         "displayName": "Bopl Battle",
-        "iconUrl": "BoplBattle.png"
+        "iconUrl": "bopl-battle.webp"
       },
       "distributions": [
         {
@@ -3011,7 +3011,7 @@
         {
           "meta": {
             "displayName": "Bopl Battle",
-            "iconUrl": "BoplBattle.png"
+            "iconUrl": "bopl-battle.webp"
           },
           "internalFolderName": "BoplBattle",
           "dataFolderName": "BoplBattle_Data",
@@ -3122,7 +3122,7 @@
       "label": "brotato",
       "meta": {
         "displayName": "Brotato",
-        "iconUrl": "brotato.jpg"
+        "iconUrl": "brotato.webp"
       },
       "distributions": [
         {
@@ -3134,7 +3134,7 @@
         {
           "meta": {
             "displayName": "Brotato",
-            "iconUrl": "brotato.jpg"
+            "iconUrl": "brotato.webp"
           },
           "internalFolderName": "Brotato",
           "dataFolderName": "",
@@ -3213,7 +3213,7 @@
       "label": "castle-story",
       "meta": {
         "displayName": "Castle Story",
-        "iconUrl": "CastleStory.png"
+        "iconUrl": "castle-story.webp"
       },
       "distributions": [
         {
@@ -3225,7 +3225,7 @@
         {
           "meta": {
             "displayName": "Castle Story",
-            "iconUrl": "CastleStory.png"
+            "iconUrl": "castle-story.webp"
           },
           "internalFolderName": "CastleStory",
           "dataFolderName": "Castle Story_Data",
@@ -3336,7 +3336,7 @@
       "label": "cats-are-liquid",
       "meta": {
         "displayName": "Cats are Liquid - A Better Place",
-        "iconUrl": "CatsAreLiquidABP.jpg"
+        "iconUrl": "cats-are-liquid-abp.webp"
       },
       "distributions": [
         {
@@ -3352,7 +3352,7 @@
         {
           "meta": {
             "displayName": "Cats are Liquid - A Better Place",
-            "iconUrl": "CatsAreLiquidABP.jpg"
+            "iconUrl": "cats-are-liquid-abp.webp"
           },
           "internalFolderName": "CatsAreLiquidABP",
           "dataFolderName": "CaL-ABP-Windows_Data",
@@ -3432,7 +3432,7 @@
       "label": "chrono-ark",
       "meta": {
         "displayName": "Chrono Ark",
-        "iconUrl": "ChronoArk.jpg"
+        "iconUrl": "chrono-ark.webp"
       },
       "distributions": [
         {
@@ -3444,7 +3444,7 @@
         {
           "meta": {
             "displayName": "Chrono Ark",
-            "iconUrl": "ChronoArk.jpg"
+            "iconUrl": "chrono-ark.webp"
           },
           "internalFolderName": "ChronoArk",
           "dataFolderName": "ChronoArk_Data",
@@ -3514,7 +3514,7 @@
       "label": "cities-skylines-ii",
       "meta": {
         "displayName": "Cities: Skylines II",
-        "iconUrl": "CitiesSkylines2.png"
+        "iconUrl": "cities-skylines-2.webp"
       },
       "distributions": [
         {
@@ -3530,7 +3530,7 @@
         {
           "meta": {
             "displayName": "Cities: Skylines II",
-            "iconUrl": "CitiesSkylines2.png"
+            "iconUrl": "cities-skylines-2.webp"
           },
           "internalFolderName": "CitiesSkylines2",
           "dataFolderName": "CitiesSkylines2_Data",
@@ -3644,7 +3644,7 @@
       "label": "content-warning",
       "meta": {
         "displayName": "Content Warning",
-        "iconUrl": "ContentWarning.png"
+        "iconUrl": "content-warning.webp"
       },
       "distributions": [
         {
@@ -3656,7 +3656,7 @@
         {
           "meta": {
             "displayName": "Content Warning",
-            "iconUrl": "ContentWarning.png"
+            "iconUrl": "content-warning.webp"
           },
           "internalFolderName": "ContentWarning",
           "dataFolderName": "Content Warning_Data",
@@ -3850,7 +3850,7 @@
       "label": "core-keeper",
       "meta": {
         "displayName": "Core Keeper",
-        "iconUrl": "CoreKeeper.png"
+        "iconUrl": "core-keeper.webp"
       },
       "distributions": [
         {
@@ -3862,7 +3862,7 @@
         {
           "meta": {
             "displayName": "Core Keeper",
-            "iconUrl": "CoreKeeper.png"
+            "iconUrl": "core-keeper.webp"
           },
           "internalFolderName": "CoreKeeper",
           "dataFolderName": "CoreKeeper_Data",
@@ -3934,7 +3934,7 @@
       "label": "cult-of-the-lamb",
       "meta": {
         "displayName": "Cult of the Lamb",
-        "iconUrl": "Cotl.jpg"
+        "iconUrl": "cult-of-the-lamb.webp"
       },
       "distributions": [
         {
@@ -3950,7 +3950,7 @@
         {
           "meta": {
             "displayName": "Cult of the Lamb",
-            "iconUrl": "Cotl.jpg"
+            "iconUrl": "cult-of-the-lamb.webp"
           },
           "internalFolderName": "COTL",
           "dataFolderName": "Cult Of The Lamb_Data",
@@ -4026,7 +4026,7 @@
       "label": "dale-dawson-stationery-supplies",
       "meta": {
         "displayName": "Dale & Dawson Stationery Supplies",
-        "iconUrl": "DaleAndDawson.png"
+        "iconUrl": "dale-and-dawson.webp"
       },
       "distributions": [
         {
@@ -4038,7 +4038,7 @@
         {
           "meta": {
             "displayName": "Dale & Dawson Stationery Supplies",
-            "iconUrl": "DaleAndDawson.png"
+            "iconUrl": "dale-and-dawson.webp"
           },
           "internalFolderName": "DaleAndDawson",
           "dataFolderName": "DDSS_Data",
@@ -4111,7 +4111,7 @@
       "label": "deep-rock-galactic-survivor",
       "meta": {
         "displayName": "Deep Rock Galactic: Survivor",
-        "iconUrl": "DeepRockGalacticSurvivor.png"
+        "iconUrl": "deep-rock-galactic-survivor.webp"
       },
       "distributions": [
         {
@@ -4123,7 +4123,7 @@
         {
           "meta": {
             "displayName": "Deep Rock Galactic: Survivor",
-            "iconUrl": "DeepRockGalacticSurvivor.png"
+            "iconUrl": "deep-rock-galactic-survivor.webp"
           },
           "internalFolderName": "DeepRockGalacticSurvivor",
           "dataFolderName": "DRG Survivor_Data",
@@ -4235,7 +4235,7 @@
       "label": "depo",
       "meta": {
         "displayName": "DEPO : Death Epileptic Pixel Origins",
-        "iconUrl": "DEPO.png"
+        "iconUrl": "depo.webp"
       },
       "distributions": [
         {
@@ -4247,7 +4247,7 @@
         {
           "meta": {
             "displayName": "DEPO : Death Epileptic Pixel Origins",
-            "iconUrl": "DEPO.png"
+            "iconUrl": "depo.webp"
           },
           "internalFolderName": "DEPO",
           "dataFolderName": "DEPO_Data",
@@ -4360,7 +4360,7 @@
       "label": "disco-elysium",
       "meta": {
         "displayName": "Disco Elysium",
-        "iconUrl": "DiscoElysium.webp"
+        "iconUrl": "disco-elysium.webp"
       },
       "distributions": [
         {
@@ -4372,7 +4372,7 @@
         {
           "meta": {
             "displayName": "Disco Elysium",
-            "iconUrl": "DiscoElysium.webp"
+            "iconUrl": "disco-elysium.webp"
           },
           "internalFolderName": "DiscoElysium",
           "dataFolderName": "disco_Data",
@@ -4484,7 +4484,7 @@
       "label": "distance",
       "meta": {
         "displayName": "Distance",
-        "iconUrl": "Distance.png"
+        "iconUrl": "distance.webp"
       },
       "distributions": [
         {
@@ -4496,7 +4496,7 @@
         {
           "meta": {
             "displayName": "Distance",
-            "iconUrl": "Distance.png"
+            "iconUrl": "distance.webp"
           },
           "internalFolderName": "Distance",
           "dataFolderName": "Distance_Data",
@@ -4700,7 +4700,7 @@
       "label": "dome-keeper",
       "meta": {
         "displayName": "Dome Keeper",
-        "iconUrl": "dome-keeper.jpg"
+        "iconUrl": "dome-keeper.webp"
       },
       "distributions": [
         {
@@ -4712,7 +4712,7 @@
         {
           "meta": {
             "displayName": "Dome Keeper",
-            "iconUrl": "dome-keeper.jpg"
+            "iconUrl": "dome-keeper.webp"
           },
           "internalFolderName": "DomeKeeper",
           "dataFolderName": "",
@@ -4789,7 +4789,7 @@
       "label": "dredge",
       "meta": {
         "displayName": "Dredge",
-        "iconUrl": "Dredge.png"
+        "iconUrl": "dredge.webp"
       },
       "distributions": [
         {
@@ -4801,7 +4801,7 @@
         {
           "meta": {
             "displayName": "DREDGE",
-            "iconUrl": "Dredge.png"
+            "iconUrl": "dredge.webp"
           },
           "internalFolderName": "Dredge",
           "dataFolderName": "DREDGE_Data",
@@ -4910,7 +4910,7 @@
       "label": "dusk",
       "meta": {
         "displayName": "DUSK",
-        "iconUrl": "DUSK.png"
+        "iconUrl": "dusk.webp"
       },
       "distributions": [
         {
@@ -4922,7 +4922,7 @@
         {
           "meta": {
             "displayName": "DUSK",
-            "iconUrl": "DUSK.png"
+            "iconUrl": "dusk.webp"
           },
           "internalFolderName": "DUSK",
           "dataFolderName": "Dusk_Data",
@@ -5036,7 +5036,7 @@
       "label": "dyson-sphere-program",
       "meta": {
         "displayName": "Dyson Sphere Program",
-        "iconUrl": "DysonSphereProgram.png"
+        "iconUrl": "dyson-sphere-program.webp"
       },
       "distributions": [
         {
@@ -5052,7 +5052,7 @@
         {
           "meta": {
             "displayName": "Dyson Sphere Program",
-            "iconUrl": "DysonSphereProgram.png"
+            "iconUrl": "dyson-sphere-program.webp"
           },
           "internalFolderName": "DysonSphereProgram",
           "dataFolderName": "DSPGAME_Data",
@@ -5128,7 +5128,7 @@
       "label": "ena-dream-bbq",
       "meta": {
         "displayName": "ENA: Dream BBQ",
-        "iconUrl": "None"
+        "iconUrl": "ena-dream-bbq.webp"
       },
       "distributions": [
         {
@@ -5140,7 +5140,7 @@
         {
           "meta": {
             "displayName": "ENA: Dream BBQ",
-            "iconUrl": "ENADreamBBQ.png"
+            "iconUrl": "ena-dream-bbq.webp"
           },
           "internalFolderName": "ENADreamBBQ",
           "dataFolderName": "ENA-4-DreamBBQ_Data",
@@ -5253,7 +5253,7 @@
       "label": "enter-the-gungeon",
       "meta": {
         "displayName": "Enter the Gungeon",
-        "iconUrl": "EnterTheGungeon.jpg"
+        "iconUrl": "enter-the-gungeon.webp"
       },
       "distributions": [
         {
@@ -5273,7 +5273,7 @@
         {
           "meta": {
             "displayName": "Enter the Gungeon",
-            "iconUrl": "EnterTheGungeon.jpg"
+            "iconUrl": "enter-the-gungeon.webp"
           },
           "internalFolderName": "ETG",
           "dataFolderName": "EtG_Data",
@@ -5353,7 +5353,7 @@
       "label": "erenshor",
       "meta": {
         "displayName": "Erenshor",
-        "iconUrl": "Erenshor.jpg"
+        "iconUrl": "erenshor.webp"
       },
       "distributions": [
         {
@@ -5365,7 +5365,7 @@
         {
           "meta": {
             "displayName": "Erenshor",
-            "iconUrl": "Erenshor.jpg"
+            "iconUrl": "erenshor.webp"
           },
           "internalFolderName": "Erenshor",
           "dataFolderName": "Erenshor_Data",
@@ -5474,7 +5474,7 @@
       "label": "five-nights-at-freddys-into-the-pit",
       "meta": {
         "displayName": "Five Nights at Freddy's: Into the Pit",
-        "iconUrl": "FiveNightsAtFreddysIntoThePit.png"
+        "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
       },
       "distributions": [
         {
@@ -5486,7 +5486,7 @@
         {
           "meta": {
             "displayName": "Five Nights at Freddy's: Into the Pit",
-            "iconUrl": "FiveNightsAtFreddysIntoThePit.png"
+            "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
           },
           "internalFolderName": "FiveNightsAtFreddysIntoThePit",
           "dataFolderName": "Five Nights at Freddy's Into the Pit_Data",
@@ -5599,7 +5599,7 @@
       "label": "for-the-king",
       "meta": {
         "displayName": "For The King",
-        "iconUrl": "ForTheKing.png"
+        "iconUrl": "for-the-king.webp"
       },
       "distributions": [
         {
@@ -5615,7 +5615,7 @@
         {
           "meta": {
             "displayName": "For The King",
-            "iconUrl": "ForTheKing.png"
+            "iconUrl": "for-the-king.webp"
           },
           "internalFolderName": "ForTheKing",
           "dataFolderName": "FTK_Data",
@@ -5691,7 +5691,7 @@
       "label": "gang-beasts",
       "meta": {
         "displayName": "Gang Beasts",
-        "iconUrl": "GangBeasts.png"
+        "iconUrl": "gang-beasts.webp"
       },
       "distributions": [
         {
@@ -5703,7 +5703,7 @@
         {
           "meta": {
             "displayName": "Gang Beasts",
-            "iconUrl": "GangBeasts.png"
+            "iconUrl": "gang-beasts.webp"
           },
           "internalFolderName": "GangBeasts",
           "dataFolderName": "Gang Beasts_Data",
@@ -5776,7 +5776,7 @@
       "label": "garfield-kart-furious-racing",
       "meta": {
         "displayName": "Garfield Kart - Furious Racing",
-        "iconUrl": "garfield-kart-furious-racing.png"
+        "iconUrl": "garfield-kart-furious-racing.webp"
       },
       "distributions": [
         {
@@ -5788,7 +5788,7 @@
         {
           "meta": {
             "displayName": "Garfield Kart - Furious Racing",
-            "iconUrl": "garfield-kart-furious-racing.png"
+            "iconUrl": "garfield-kart-furious-racing.webp"
           },
           "internalFolderName": "GarfieldKartFuriousRacing",
           "dataFolderName": "GarfieldKartFuriousRacing_Data",
@@ -5897,7 +5897,7 @@
       "label": "gatekeeper",
       "meta": {
         "displayName": "Gatekeeper",
-        "iconUrl": "Gatekeeper.png"
+        "iconUrl": "gatekeeper.webp"
       },
       "distributions": [
         {
@@ -5909,7 +5909,7 @@
         {
           "meta": {
             "displayName": "Gatekeeper",
-            "iconUrl": "Gatekeeper.png"
+            "iconUrl": "gatekeeper.webp"
           },
           "internalFolderName": "Gatekeeper",
           "dataFolderName": "Gatekeeper_Data",
@@ -6023,7 +6023,7 @@
       "label": "gladio-mori",
       "meta": {
         "displayName": "Gladio Mori",
-        "iconUrl": "GladioMori.png"
+        "iconUrl": "gladio-mori.webp"
       },
       "distributions": [
         {
@@ -6035,7 +6035,7 @@
         {
           "meta": {
             "displayName": "Gladio Mori",
-            "iconUrl": "GladioMori.png"
+            "iconUrl": "gladio-mori.webp"
           },
           "internalFolderName": "GladioMori",
           "dataFolderName": "Gladio Mori_Data",
@@ -6145,7 +6145,7 @@
       "label": "gloomwood",
       "meta": {
         "displayName": "Gloomwood",
-        "iconUrl": "Gloomwood.png"
+        "iconUrl": "gloomwood.webp"
       },
       "distributions": [
         {
@@ -6157,7 +6157,7 @@
         {
           "meta": {
             "displayName": "Gloomwood",
-            "iconUrl": "Gloomwood.png"
+            "iconUrl": "gloomwood.webp"
           },
           "internalFolderName": "Gloomwood",
           "dataFolderName": "Gloomwood_Data",
@@ -6269,7 +6269,7 @@
       "label": "goodbye-volcano-high",
       "meta": {
         "displayName": "Goodbye Volcano High",
-        "iconUrl": "GoodbyeVolcanoHigh.png"
+        "iconUrl": "goodbye-volcano-high.webp"
       },
       "distributions": [
         {
@@ -6281,7 +6281,7 @@
         {
           "meta": {
             "displayName": "Goodbye Volcano High",
-            "iconUrl": "GoodbyeVolcanoHigh.png"
+            "iconUrl": "goodbye-volcano-high.webp"
           },
           "internalFolderName": "GoodbyeVolcanoHigh",
           "dataFolderName": "Goodbye Volcano High_Data",
@@ -6394,7 +6394,7 @@
       "label": "gorebox",
       "meta": {
         "displayName": "GoreBox",
-        "iconUrl": "GoreBox.png"
+        "iconUrl": "gore-box.webp"
       },
       "distributions": [
         {
@@ -6406,7 +6406,7 @@
         {
           "meta": {
             "displayName": "GoreBox",
-            "iconUrl": "GoreBox.png"
+            "iconUrl": "gore-box.webp"
           },
           "internalFolderName": "GoreBox",
           "dataFolderName": "GoreBox_Data",
@@ -6520,7 +6520,7 @@
       "label": "green-hell-vr",
       "meta": {
         "displayName": "Green Hell VR",
-        "iconUrl": "GreenHellVR.png"
+        "iconUrl": "green-hell-vr.webp"
       },
       "distributions": [
         {
@@ -6536,7 +6536,7 @@
         {
           "meta": {
             "displayName": "Green Hell VR",
-            "iconUrl": "GreenHellVR.png"
+            "iconUrl": "green-hell-vr.webp"
           },
           "internalFolderName": "GreenHellVR",
           "dataFolderName": "GHVR_Data",
@@ -6612,7 +6612,7 @@
       "label": "gtfo",
       "meta": {
         "displayName": "GTFO",
-        "iconUrl": "GTFO.jpg"
+        "iconUrl": "gtfo.webp"
       },
       "distributions": [
         {
@@ -6624,7 +6624,7 @@
         {
           "meta": {
             "displayName": "GTFO",
-            "iconUrl": "GTFO.jpg"
+            "iconUrl": "gtfo.webp"
           },
           "internalFolderName": "GTFO",
           "dataFolderName": "GTFO_Data",
@@ -6708,7 +6708,7 @@
       "label": "guilty-as-sock",
       "meta": {
         "displayName": "Guilty as Sock!",
-        "iconUrl": "GuiltyasSock.png"
+        "iconUrl": "guilty-as-sock.webp"
       },
       "distributions": [
         {
@@ -6720,7 +6720,7 @@
         {
           "meta": {
             "displayName": "Guilty as Sock!",
-            "iconUrl": "GuiltyasSock.png"
+            "iconUrl": "guilty-as-sock.webp"
           },
           "internalFolderName": "GuiltyasSock",
           "dataFolderName": "StandaloneWindows64_Data",
@@ -6833,7 +6833,7 @@
       "label": "h3vr",
       "meta": {
         "displayName": "H3VR",
-        "iconUrl": "H3VR.png"
+        "iconUrl": "h3vr.webp"
       },
       "distributions": [
         {
@@ -6845,7 +6845,7 @@
         {
           "meta": {
             "displayName": "H3VR",
-            "iconUrl": "H3VR.png"
+            "iconUrl": "h3vr.webp"
           },
           "internalFolderName": "H3VR",
           "dataFolderName": "h3vr_Data",
@@ -6928,7 +6928,7 @@
       "label": "hades-ii",
       "meta": {
         "displayName": "Hades 2",
-        "iconUrl": "Hades2.png"
+        "iconUrl": "hades-2.webp"
       },
       "distributions": [
         {
@@ -6944,7 +6944,7 @@
         {
           "meta": {
             "displayName": "Hades II",
-            "iconUrl": "Hades2.png"
+            "iconUrl": "hades-2.webp"
           },
           "internalFolderName": "HadesII",
           "dataFolderName": "",
@@ -7018,7 +7018,7 @@
       "label": "hard-bullet",
       "meta": {
         "displayName": "Hard Bullet",
-        "iconUrl": "HardBullet.jpg"
+        "iconUrl": "hard-bullet.webp"
       },
       "distributions": [
         {
@@ -7030,7 +7030,7 @@
         {
           "meta": {
             "displayName": "Hard Bullet",
-            "iconUrl": "HardBullet.jpg"
+            "iconUrl": "hard-bullet.webp"
           },
           "internalFolderName": "HardBullet",
           "dataFolderName": "Hard Bullet_Data",
@@ -7126,7 +7126,7 @@
       "label": "hard-time-3",
       "meta": {
         "displayName": "Hard Time III",
-        "iconUrl": "HardTime3.png"
+        "iconUrl": "hard-time-3.webp"
       },
       "distributions": [
         {
@@ -7138,7 +7138,7 @@
         {
           "meta": {
             "displayName": "Hard Time III",
-            "iconUrl": "HardTime3.png"
+            "iconUrl": "hard-time-3.webp"
           },
           "internalFolderName": "HardTime3",
           "dataFolderName": "Hard Time III_Data",
@@ -7275,7 +7275,7 @@
       "label": "hotds",
       "meta": {
         "displayName": "House of the Dying Sun",
-        "iconUrl": "HOTDS.jpg"
+        "iconUrl": "house-of-the-dying-sun.webp"
       },
       "distributions": [
         {
@@ -7287,7 +7287,7 @@
         {
           "meta": {
             "displayName": "House of the Dying Sun",
-            "iconUrl": "HOTDS.jpg"
+            "iconUrl": "house-of-the-dying-sun.webp"
           },
           "internalFolderName": "HOTDS",
           "dataFolderName": "dyingsun_Data",
@@ -7359,7 +7359,7 @@
       "label": "human-fall-flat",
       "meta": {
         "displayName": "Human Fall Flat",
-        "iconUrl": "None"
+        "iconUrl": "human-fall-flat.webp"
       },
       "distributions": [
         {
@@ -7371,7 +7371,7 @@
         {
           "meta": {
             "displayName": "Human Fall Flat",
-            "iconUrl": "HumanFallFlat.png"
+            "iconUrl": "human-fall-flat.webp"
           },
           "internalFolderName": "HumanFallFlat",
           "dataFolderName": "Human_Data",
@@ -7484,7 +7484,7 @@
       "label": "i-am-your-beast",
       "meta": {
         "displayName": "I Am Your Beast",
-        "iconUrl": "IAmYourBeast.webp"
+        "iconUrl": "i-am-your-beast.webp"
       },
       "distributions": [
         {
@@ -7496,7 +7496,7 @@
         {
           "meta": {
             "displayName": "I Am Your Beast",
-            "iconUrl": "IAmYourBeast.webp"
+            "iconUrl": "i-am-your-beast.webp"
           },
           "internalFolderName": "IAmYourBeast",
           "dataFolderName": "I Am Your Beast_Data",
@@ -7609,7 +7609,7 @@
       "label": "inscryption",
       "meta": {
         "displayName": "Inscryption",
-        "iconUrl": "Inscryption.png"
+        "iconUrl": "inscryption.webp"
       },
       "distributions": [
         {
@@ -7625,7 +7625,7 @@
         {
           "meta": {
             "displayName": "Inscryption",
-            "iconUrl": "Inscryption.png"
+            "iconUrl": "inscryption.webp"
           },
           "internalFolderName": "Inscryption",
           "dataFolderName": "Inscryption_Data",
@@ -7699,7 +7699,7 @@
       "label": "labyrinthine",
       "meta": {
         "displayName": "Labyrinthine",
-        "iconUrl": "Labyrinthine.png"
+        "iconUrl": "labyrinthine.webp"
       },
       "distributions": [
         {
@@ -7711,7 +7711,7 @@
         {
           "meta": {
             "displayName": "Labyrinthine",
-            "iconUrl": "Labyrinthine.png"
+            "iconUrl": "labyrinthine.webp"
           },
           "internalFolderName": "Labyrinthine",
           "dataFolderName": "Labyrinthine_Data",
@@ -7789,7 +7789,7 @@
       "label": "last-train-outta-wormtown",
       "meta": {
         "displayName": "Last Train Outta' Wormtown",
-        "iconUrl": "LastTrainOuttaWormtown.png"
+        "iconUrl": "last-train-outta-wormtown.webp"
       },
       "distributions": [
         {
@@ -7801,7 +7801,7 @@
         {
           "meta": {
             "displayName": "Last Train Outta' Wormtown",
-            "iconUrl": "LastTrainOuttaWormtown.png"
+            "iconUrl": "last-train-outta-wormtown.webp"
           },
           "internalFolderName": "LastTrainOuttaWormtown",
           "dataFolderName": "Last Train Out Of WormTown_Data",
@@ -7930,7 +7930,7 @@
       "label": "lethal-company",
       "meta": {
         "displayName": "Lethal Company",
-        "iconUrl": "LethalCompany.png"
+        "iconUrl": "lethal-company.webp"
       },
       "distributions": [
         {
@@ -7942,7 +7942,7 @@
         {
           "meta": {
             "displayName": "Lethal Company",
-            "iconUrl": "LethalCompany.png"
+            "iconUrl": "lethal-company.webp"
           },
           "internalFolderName": "LethalCompany",
           "dataFolderName": "Lethal Company_Data",
@@ -8144,7 +8144,7 @@
       "label": "lethal-league-blaze",
       "meta": {
         "displayName": "Lethal League Blaze",
-        "iconUrl": "LethalLeagueBlaze.png"
+        "iconUrl": "lethal-league-blaze.webp"
       },
       "distributions": [
         {
@@ -8156,7 +8156,7 @@
         {
           "meta": {
             "displayName": "Lethal League Blaze",
-            "iconUrl": "LethalLeagueBlaze.png"
+            "iconUrl": "lethal-league-blaze.webp"
           },
           "internalFolderName": "LethalLeagueBlaze",
           "dataFolderName": "LLBlaze_Data",
@@ -8231,7 +8231,7 @@
       "label": "lost-skies",
       "meta": {
         "displayName": "Lost Skies",
-        "iconUrl": "LostSkies.png"
+        "iconUrl": "lost-skies.webp"
       },
       "distributions": [
         {
@@ -8243,7 +8243,7 @@
         {
           "meta": {
             "displayName": "Lost Skies",
-            "iconUrl": "LostSkies.png"
+            "iconUrl": "lost-skies.webp"
           },
           "internalFolderName": "LostSkies",
           "dataFolderName": "LostSkies_Data",
@@ -8362,7 +8362,7 @@
       "label": "lycans",
       "meta": {
         "displayName": "Lycans",
-        "iconUrl": "Lycans.png"
+        "iconUrl": "lycans.webp"
       },
       "distributions": [
         {
@@ -8374,7 +8374,7 @@
         {
           "meta": {
             "displayName": "Lycans",
-            "iconUrl": "Lycans.png"
+            "iconUrl": "lycans.webp"
           },
           "internalFolderName": "Lycans",
           "dataFolderName": "Lycans_Data",
@@ -8483,7 +8483,7 @@
       "label": "magicite",
       "meta": {
         "displayName": "Magicite",
-        "iconUrl": "None"
+        "iconUrl": "magicite.webp"
       },
       "distributions": [
         {
@@ -8495,7 +8495,7 @@
         {
           "meta": {
             "displayName": "Magicite",
-            "iconUrl": "Magicite.png"
+            "iconUrl": "magicite.webp"
           },
           "internalFolderName": "Magicite",
           "dataFolderName": "Magicite_Data",
@@ -8607,7 +8607,7 @@
       "label": "magicraft",
       "meta": {
         "displayName": "Magicraft",
-        "iconUrl": "Magicraft.png"
+        "iconUrl": "magicraft.webp"
       },
       "distributions": [
         {
@@ -8619,7 +8619,7 @@
         {
           "meta": {
             "displayName": "Magicraft",
-            "iconUrl": "Magicraft.png"
+            "iconUrl": "magicraft.webp"
           },
           "internalFolderName": "Magicraft",
           "dataFolderName": "Magicraft_Data",
@@ -8726,7 +8726,7 @@
       "label": "mechanica",
       "meta": {
         "displayName": "Mechanica",
-        "iconUrl": "Mechanica.jpg"
+        "iconUrl": "mechanica.webp"
       },
       "distributions": [
         {
@@ -8738,7 +8738,7 @@
         {
           "meta": {
             "displayName": "Mechanica",
-            "iconUrl": "Mechanica.jpg"
+            "iconUrl": "mechanica.webp"
           },
           "internalFolderName": "Mechanica",
           "dataFolderName": "Mechanica_Data",
@@ -8808,7 +8808,7 @@
       "label": "meeple-station",
       "meta": {
         "displayName": "Meeple Station",
-        "iconUrl": "MeepleStation.png"
+        "iconUrl": "meeple-station.webp"
       },
       "distributions": [
         {
@@ -8820,7 +8820,7 @@
         {
           "meta": {
             "displayName": "Meeple Station",
-            "iconUrl": "MeepleStation.png"
+            "iconUrl": "meeple-station.webp"
           },
           "internalFolderName": "MeepleStation",
           "dataFolderName": "MeepleStation_Data",
@@ -8931,7 +8931,7 @@
       "label": "miside",
       "meta": {
         "displayName": "MiSide",
-        "iconUrl": "MiSide.webp"
+        "iconUrl": "miside.webp"
       },
       "distributions": [
         {
@@ -8943,7 +8943,7 @@
         {
           "meta": {
             "displayName": "MiSide",
-            "iconUrl": "MiSide.webp"
+            "iconUrl": "miside.webp"
           },
           "internalFolderName": "MiSide",
           "dataFolderName": "MiSideFull_Data",
@@ -9057,7 +9057,7 @@
       "label": "monster-train-2",
       "meta": {
         "displayName": "Monster Train 2",
-        "iconUrl": "MonsterTrain2.png"
+        "iconUrl": "monster-train-2.webp"
       },
       "distributions": [
         {
@@ -9069,7 +9069,7 @@
         {
           "meta": {
             "displayName": "Monster Train 2",
-            "iconUrl": "MonsterTrain2.png"
+            "iconUrl": "monster-train-2.webp"
           },
           "internalFolderName": "MonsterTrain2",
           "dataFolderName": "MonsterTrain2_Data",
@@ -9186,7 +9186,7 @@
       "label": "muck",
       "meta": {
         "displayName": "Muck",
-        "iconUrl": "Muck.png"
+        "iconUrl": "muck.webp"
       },
       "distributions": [
         {
@@ -9198,7 +9198,7 @@
         {
           "meta": {
             "displayName": "Muck",
-            "iconUrl": "Muck.png"
+            "iconUrl": "muck.webp"
           },
           "internalFolderName": "Muck",
           "dataFolderName": "Muck_Data",
@@ -9269,7 +9269,7 @@
       "label": "my-dream-setup",
       "meta": {
         "displayName": "My Dream Setup",
-        "iconUrl": "MyDreamSetup.png"
+        "iconUrl": "my-dream-setup.webp"
       },
       "distributions": [
         {
@@ -9281,7 +9281,7 @@
         {
           "meta": {
             "displayName": "My Dream Setup",
-            "iconUrl": "MyDreamSetup.png"
+            "iconUrl": "my-dream-setup.webp"
           },
           "internalFolderName": "MyDreamSetup",
           "dataFolderName": "MDS_Data",
@@ -9403,7 +9403,7 @@
       "label": "nasb",
       "meta": {
         "displayName": "Nickelodeon All‑Star Brawl",
-        "iconUrl": "NASB.jpg"
+        "iconUrl": "nickelodeon-all-star-brawl.webp"
       },
       "distributions": [
         {
@@ -9415,7 +9415,7 @@
         {
           "meta": {
             "displayName": "Nickelodeon All‑Star Brawl",
-            "iconUrl": "NASB.jpg"
+            "iconUrl": "nickelodeon-all-star-brawl.webp"
           },
           "internalFolderName": "NASB",
           "dataFolderName": "Nickelodeon All-Star Brawl_Data",
@@ -9520,7 +9520,7 @@
       "label": "nearly-dead",
       "meta": {
         "displayName": "Nearly Dead",
-        "iconUrl": "NearlyDead.png"
+        "iconUrl": "nearly-dead.webp"
       },
       "distributions": [
         {
@@ -9532,7 +9532,7 @@
         {
           "meta": {
             "displayName": "Nearly Dead",
-            "iconUrl": "NearlyDead.png"
+            "iconUrl": "nearly-dead.webp"
           },
           "internalFolderName": "NearlyDead",
           "dataFolderName": "Nearly Dead_Data",
@@ -9604,7 +9604,7 @@
       "label": "nine-sols",
       "meta": {
         "displayName": "Nine Sols",
-        "iconUrl": "NineSols.png"
+        "iconUrl": "nine-sols.webp"
       },
       "distributions": [
         {
@@ -9616,7 +9616,7 @@
         {
           "meta": {
             "displayName": "Nine Sols",
-            "iconUrl": "NineSols.png"
+            "iconUrl": "nine-sols.webp"
           },
           "internalFolderName": "NineSols",
           "dataFolderName": "Nine Sols_Data",
@@ -9729,7 +9729,7 @@
       "label": "northstar",
       "meta": {
         "displayName": "Titanfall 2",
-        "iconUrl": "Titanfall2.jpg"
+        "iconUrl": "titanfall-2.webp"
       },
       "distributions": [
         {
@@ -9745,7 +9745,7 @@
         {
           "meta": {
             "displayName": "Titanfall 2",
-            "iconUrl": "Titanfall2.jpg"
+            "iconUrl": "titanfall-2.webp"
           },
           "internalFolderName": "Titanfall2",
           "dataFolderName": "",
@@ -9809,7 +9809,7 @@
       "label": "odd-remedy",
       "meta": {
         "displayName": "Odd Remedy",
-        "iconUrl": "OddRemedy.png"
+        "iconUrl": "odd-remedy.webp"
       },
       "distributions": [
         {
@@ -9821,7 +9821,7 @@
         {
           "meta": {
             "displayName": "Odd Remedy",
-            "iconUrl": "OddRemedy.png"
+            "iconUrl": "odd-remedy.webp"
           },
           "internalFolderName": "OddRemedy",
           "dataFolderName": "OddRemedy_Data",
@@ -9934,7 +9934,7 @@
       "label": "old-market-simulator",
       "meta": {
         "displayName": "Old Market Simulator",
-        "iconUrl": "OldMarketSimulator.png"
+        "iconUrl": "old-market-simulator.webp"
       },
       "distributions": [
         {
@@ -9946,7 +9946,7 @@
         {
           "meta": {
             "displayName": "Old Market Simulator",
-            "iconUrl": "OldMarketSimulator.png"
+            "iconUrl": "old-market-simulator.webp"
           },
           "internalFolderName": "OldMarketSimulator",
           "dataFolderName": "Old Market Simulator_Data",
@@ -10060,7 +10060,7 @@
       "label": "outward",
       "meta": {
         "displayName": "Outward",
-        "iconUrl": "Outward.jpg"
+        "iconUrl": "outward.webp"
       },
       "distributions": [
         {
@@ -10092,7 +10092,7 @@
         {
           "meta": {
             "displayName": "Outward",
-            "iconUrl": "Outward.jpg"
+            "iconUrl": "outward.webp"
           },
           "internalFolderName": "Outward",
           "dataFolderName": "Outward_Data",
@@ -10166,7 +10166,7 @@
         {
           "meta": {
             "displayName": "Outward Definitive",
-            "iconUrl": "OutwardDe.jpg"
+            "iconUrl": "outward-de.webp"
           },
           "internalFolderName": "OutwardDe",
           "dataFolderName": "Outward Definitive Edition_Data",
@@ -10244,7 +10244,7 @@
       "label": "painting-vr",
       "meta": {
         "displayName": "Painting VR",
-        "iconUrl": "PaintingVr.png"
+        "iconUrl": "painting-vr.webp"
       },
       "distributions": [
         {
@@ -10256,7 +10256,7 @@
         {
           "meta": {
             "displayName": "Painting VR",
-            "iconUrl": "PaintingVr.png"
+            "iconUrl": "painting-vr.webp"
           },
           "internalFolderName": "PaintingVr",
           "dataFolderName": "PaintingVr_Data",
@@ -10329,7 +10329,7 @@
       "label": "palworld",
       "meta": {
         "displayName": "Palworld",
-        "iconUrl": "Palworld.png"
+        "iconUrl": "palworld.webp"
       },
       "distributions": [
         {
@@ -10341,7 +10341,7 @@
         {
           "meta": {
             "displayName": "Palworld",
-            "iconUrl": "Palworld.png"
+            "iconUrl": "palworld.webp"
           },
           "internalFolderName": "Palworld",
           "dataFolderName": "Pal",
@@ -10410,7 +10410,7 @@
       "label": "panicore",
       "meta": {
         "displayName": "Panicore",
-        "iconUrl": "Panicore.png"
+        "iconUrl": "panicore.webp"
       },
       "distributions": [
         {
@@ -10422,7 +10422,7 @@
         {
           "meta": {
             "displayName": "Panicore",
-            "iconUrl": "Panicore.png"
+            "iconUrl": "panicore.webp"
           },
           "internalFolderName": "Panicore",
           "dataFolderName": "Panicore",
@@ -10492,7 +10492,7 @@
       "label": "paquerette-down-the-bunburrows",
       "meta": {
         "displayName": "Paquerette Down the Bunburrows",
-        "iconUrl": "PaqueretteDownTheBunburrows.png"
+        "iconUrl": "paquerette-down-the-bunburrows.webp"
       },
       "distributions": [
         {
@@ -10504,7 +10504,7 @@
         {
           "meta": {
             "displayName": "Paquerette Down the Bunburrows",
-            "iconUrl": "PaqueretteDownTheBunburrows.png"
+            "iconUrl": "paquerette-down-the-bunburrows.webp"
           },
           "internalFolderName": "PaqueretteDownTheBunburrows",
           "dataFolderName": "Paquerette Down the Bunburrows_Data",
@@ -10618,7 +10618,7 @@
       "label": "patch-quest",
       "meta": {
         "displayName": "Patch Quest",
-        "iconUrl": "patch-quest.jpg"
+        "iconUrl": "patch-quest.webp"
       },
       "distributions": [
         {
@@ -10630,7 +10630,7 @@
         {
           "meta": {
             "displayName": "Patch Quest",
-            "iconUrl": "patch-quest.jpg"
+            "iconUrl": "patch-quest.webp"
           },
           "internalFolderName": "PatchQuest",
           "dataFolderName": "PatchQuest_Data",
@@ -10755,7 +10755,7 @@
       "label": "peak",
       "meta": {
         "displayName": "PEAK",
-        "iconUrl": "PEAK.webp"
+        "iconUrl": "peak.webp"
       },
       "distributions": [
         {
@@ -10767,7 +10767,7 @@
         {
           "meta": {
             "displayName": "PEAK",
-            "iconUrl": "PEAK.webp"
+            "iconUrl": "peak.webp"
           },
           "internalFolderName": "PEAK",
           "dataFolderName": "PEAK_Data",
@@ -10939,7 +10939,7 @@
       "label": "peaks-of-yore",
       "meta": {
         "displayName": "Peaks of Yore",
-        "iconUrl": "PeaksOfYore.png"
+        "iconUrl": "peaks-of-yore.webp"
       },
       "distributions": [
         {
@@ -10951,7 +10951,7 @@
         {
           "meta": {
             "displayName": "Peaks of Yore",
-            "iconUrl": "PeaksOfYore.png"
+            "iconUrl": "peaks-of-yore.webp"
           },
           "internalFolderName": "PeaksOfYore",
           "dataFolderName": "Peaks of Yore_Data",
@@ -11065,7 +11065,7 @@
       "label": "peglin",
       "meta": {
         "displayName": "Peglin",
-        "iconUrl": "Peglin.jpg"
+        "iconUrl": "peglin.webp"
       },
       "distributions": [
         {
@@ -11081,7 +11081,7 @@
         {
           "meta": {
             "displayName": "Peglin",
-            "iconUrl": "Peglin.jpg"
+            "iconUrl": "peglin.webp"
           },
           "internalFolderName": "Peglin",
           "dataFolderName": "Peglin_Data",
@@ -11155,7 +11155,7 @@
       "label": "plasma",
       "meta": {
         "displayName": "Plasma",
-        "iconUrl": "Plasma.jpg"
+        "iconUrl": "plasma.webp"
       },
       "distributions": [
         {
@@ -11167,7 +11167,7 @@
         {
           "meta": {
             "displayName": "Plasma",
-            "iconUrl": "Plasma.jpg"
+            "iconUrl": "plasma.webp"
           },
           "internalFolderName": "Plasma",
           "dataFolderName": "Plasma_Data",
@@ -11284,7 +11284,7 @@
       "label": "potion-craft",
       "meta": {
         "displayName": "Potion Craft",
-        "iconUrl": "PotionCraft.jpg"
+        "iconUrl": "potion-craft.webp"
       },
       "distributions": [
         {
@@ -11296,7 +11296,7 @@
         {
           "meta": {
             "displayName": "Potion Craft",
-            "iconUrl": "PotionCraft.jpg"
+            "iconUrl": "potion-craft.webp"
           },
           "internalFolderName": "PotionCraft",
           "dataFolderName": "Potion Craft_Data",
@@ -11368,7 +11368,7 @@
       "label": "pulsar-lost-colony",
       "meta": {
         "displayName": "Pulsar: Lost Colony",
-        "iconUrl": "PulsarLostColony.png"
+        "iconUrl": "pulsar-lost-colony.webp"
       },
       "distributions": [
         {
@@ -11380,7 +11380,7 @@
         {
           "meta": {
             "displayName": "Pulsar: Lost Colony",
-            "iconUrl": "PulsarLostColony.png"
+            "iconUrl": "pulsar-lost-colony.webp"
           },
           "internalFolderName": "PulsarLostColony",
           "dataFolderName": "PULSAR_LostColony_Data",
@@ -11494,7 +11494,7 @@
       "label": "ravenfield",
       "meta": {
         "displayName": "Ravenfield",
-        "iconUrl": "Ravenfield.jpg"
+        "iconUrl": "ravenfield.webp"
       },
       "distributions": [
         {
@@ -11506,7 +11506,7 @@
         {
           "meta": {
             "displayName": "Ravenfield",
-            "iconUrl": "Ravenfield.jpg"
+            "iconUrl": "ravenfield.webp"
           },
           "internalFolderName": "Ravenfield",
           "dataFolderName": "ravenfield_Data",
@@ -11578,7 +11578,7 @@
       "label": "receiver-2",
       "meta": {
         "displayName": "Receiver 2",
-        "iconUrl": "receiver-2.jpg"
+        "iconUrl": "receiver-2.webp"
       },
       "distributions": [
         {
@@ -11590,7 +11590,7 @@
         {
           "meta": {
             "displayName": "Receiver 2",
-            "iconUrl": "receiver-2.jpg"
+            "iconUrl": "receiver-2.webp"
           },
           "internalFolderName": "Receiver2",
           "dataFolderName": "Receiver2_Data",
@@ -11715,7 +11715,7 @@
       "label": "repo",
       "meta": {
         "displayName": "R.E.P.O.",
-        "iconUrl": "REPO.png"
+        "iconUrl": "repo.webp"
       },
       "distributions": [
         {
@@ -11727,7 +11727,7 @@
         {
           "meta": {
             "displayName": "R.E.P.O.",
-            "iconUrl": "REPO.png"
+            "iconUrl": "repo.webp"
           },
           "internalFolderName": "REPO",
           "dataFolderName": "REPO_Data",
@@ -11871,7 +11871,7 @@
       "label": "return-of-the-obra-dinn",
       "meta": {
         "displayName": "Return of the Obra Dinn",
-        "iconUrl": "ObraDinn.png"
+        "iconUrl": "obra-dinn.webp"
       },
       "distributions": [
         {
@@ -11883,7 +11883,7 @@
         {
           "meta": {
             "displayName": "Return of the Obra Dinn",
-            "iconUrl": "ObraDinn.png"
+            "iconUrl": "obra-dinn.webp"
           },
           "internalFolderName": "ObraDinn",
           "dataFolderName": "ObraDinn_Data",
@@ -11996,7 +11996,7 @@
       "label": "risk-of-rain-returns",
       "meta": {
         "displayName": "Risk of Rain Returns",
-        "iconUrl": "RiskOfRainReturns.png"
+        "iconUrl": "risk-of-rain-returns.webp"
       },
       "distributions": [
         {
@@ -12008,7 +12008,7 @@
         {
           "meta": {
             "displayName": "Risk of Rain Returns",
-            "iconUrl": "RiskOfRainReturns.png"
+            "iconUrl": "risk-of-rain-returns.webp"
           },
           "internalFolderName": "RiskofRainReturns",
           "dataFolderName": "",
@@ -12123,7 +12123,7 @@
       "label": "riskofrain2",
       "meta": {
         "displayName": "Risk of Rain 2",
-        "iconUrl": "RiskOfRain2.jpg"
+        "iconUrl": "risk-of-rain-2.webp"
       },
       "distributions": [
         {
@@ -12143,7 +12143,7 @@
         {
           "meta": {
             "displayName": "Risk of Rain 2",
-            "iconUrl": "RiskOfRain2.jpg"
+            "iconUrl": "risk-of-rain-2.webp"
           },
           "internalFolderName": "RiskOfRain2",
           "dataFolderName": "Risk of Rain 2_Data",
@@ -12215,7 +12215,7 @@
         {
           "meta": {
             "displayName": "Risk of Rain 2 Dedicated Server",
-            "iconUrl": "RiskOfRain2.jpg"
+            "iconUrl": "risk-of-rain-2.webp"
           },
           "internalFolderName": "RiskOfRain2",
           "dataFolderName": "Risk of Rain 2_Data",
@@ -12287,7 +12287,7 @@
       "label": "rogue-genesia",
       "meta": {
         "displayName": "Rogue : Genesia",
-        "iconUrl": "RogueGenesia.jpg"
+        "iconUrl": "rogue-genesia.webp"
       },
       "distributions": [
         {
@@ -12299,7 +12299,7 @@
         {
           "meta": {
             "displayName": "Rogue : Genesia",
-            "iconUrl": "RogueGenesia.jpg"
+            "iconUrl": "rogue-genesia.webp"
           },
           "internalFolderName": "RogueGenesia",
           "dataFolderName": "Rogue Genesia_Data",
@@ -12371,7 +12371,7 @@
       "label": "rogue-tower",
       "meta": {
         "displayName": "Rogue Tower",
-        "iconUrl": "RogueTower.jpg"
+        "iconUrl": "rogue-tower.webp"
       },
       "distributions": [
         {
@@ -12383,7 +12383,7 @@
         {
           "meta": {
             "displayName": "Rogue Tower",
-            "iconUrl": "RogueTower.jpg"
+            "iconUrl": "rogue-tower.webp"
           },
           "internalFolderName": "RogueTower",
           "dataFolderName": "Rogue Tower_Data",
@@ -12455,7 +12455,7 @@
       "label": "rounds",
       "meta": {
         "displayName": "ROUNDS",
-        "iconUrl": "ROUNDS.png"
+        "iconUrl": "rounds.webp"
       },
       "distributions": [
         {
@@ -12467,7 +12467,7 @@
         {
           "meta": {
             "displayName": "ROUNDS",
-            "iconUrl": "ROUNDS.png"
+            "iconUrl": "rounds.webp"
           },
           "internalFolderName": "ROUNDS",
           "dataFolderName": "Rounds_Data",
@@ -12537,7 +12537,7 @@
       "label": "rumble",
       "meta": {
         "displayName": "RUMBLE",
-        "iconUrl": "RUMBLE.png"
+        "iconUrl": "rumble.webp"
       },
       "distributions": [
         {
@@ -12549,7 +12549,7 @@
         {
           "meta": {
             "displayName": "RUMBLE",
-            "iconUrl": "RUMBLE.png"
+            "iconUrl": "rumble.webp"
           },
           "internalFolderName": "RUMBLE",
           "dataFolderName": "RUMBLE_Data",
@@ -12672,7 +12672,7 @@
       "label": "sailwind",
       "meta": {
         "displayName": "Sailwind",
-        "iconUrl": "Sailwind.png"
+        "iconUrl": "sailwind.webp"
       },
       "distributions": [
         {
@@ -12684,7 +12684,7 @@
         {
           "meta": {
             "displayName": "Sailwind",
-            "iconUrl": "Sailwind.png"
+            "iconUrl": "sailwind.webp"
           },
           "internalFolderName": "Sailwind",
           "dataFolderName": "Sailwind_Data",
@@ -12792,7 +12792,7 @@
       "label": "schedule-i",
       "meta": {
         "displayName": "Schedule I",
-        "iconUrl": "ScheduleI.png"
+        "iconUrl": "schedule-i.webp"
       },
       "distributions": [
         {
@@ -12804,7 +12804,7 @@
         {
           "meta": {
             "displayName": "Schedule I",
-            "iconUrl": "ScheduleI.png"
+            "iconUrl": "schedule-i.webp"
           },
           "internalFolderName": "ScheduleI",
           "dataFolderName": "Schedule I_Data",
@@ -12892,7 +12892,7 @@
       "label": "screw-drivers",
       "meta": {
         "displayName": "Screw Drivers",
-        "iconUrl": "ScrewDrivers.png"
+        "iconUrl": "screw-drivers.webp"
       },
       "distributions": [
         {
@@ -12904,7 +12904,7 @@
         {
           "meta": {
             "displayName": "Screw Drivers",
-            "iconUrl": "ScrewDrivers.png"
+            "iconUrl": "screw-drivers.webp"
           },
           "internalFolderName": "ScrewDrivers",
           "dataFolderName": "Screw Drivers_Data",
@@ -13017,7 +13017,7 @@
       "label": "shadows-of-doubt",
       "meta": {
         "displayName": "Shadows of Doubt",
-        "iconUrl": "shadows-of-doubt.jpg"
+        "iconUrl": "shadows-of-doubt.webp"
       },
       "distributions": [
         {
@@ -13033,7 +13033,7 @@
         {
           "meta": {
             "displayName": "Shadows of Doubt",
-            "iconUrl": "shadows-of-doubt.jpg"
+            "iconUrl": "shadows-of-doubt.webp"
           },
           "internalFolderName": "ShadowsofDoubt",
           "dataFolderName": "ShadowsofDoubt_Data",
@@ -13168,7 +13168,7 @@
       "label": "shadows-over-loathing",
       "meta": {
         "displayName": "Shadows Over Loathing",
-        "iconUrl": "shadows-over-loathing.jpg"
+        "iconUrl": "shadows-over-loathing.webp"
       },
       "distributions": [
         {
@@ -13180,7 +13180,7 @@
         {
           "meta": {
             "displayName": "Shadows Over Loathing",
-            "iconUrl": "shadows-over-loathing.jpg"
+            "iconUrl": "shadows-over-loathing.webp"
           },
           "internalFolderName": "ShadowsOverLoathing",
           "dataFolderName": "ShadowsOverLoathing_Data",
@@ -13289,7 +13289,7 @@
       "label": "shapez-2",
       "meta": {
         "displayName": "Shapez 2",
-        "iconUrl": "Shapez2.png"
+        "iconUrl": "shapez-2.webp"
       },
       "distributions": [
         {
@@ -13301,7 +13301,7 @@
         {
           "meta": {
             "displayName": "Shapez 2",
-            "iconUrl": "Shapez2.png"
+            "iconUrl": "shapez-2.webp"
           },
           "internalFolderName": "Shapez2",
           "dataFolderName": "shapez 2_Data",
@@ -13415,7 +13415,7 @@
       "label": "skul-the-hero-slayer",
       "meta": {
         "displayName": "Skul: The Hero Slayer",
-        "iconUrl": "skul-the-hero-slayer.jpg"
+        "iconUrl": "skul-the-hero-slayer.webp"
       },
       "distributions": [
         {
@@ -13427,7 +13427,7 @@
         {
           "meta": {
             "displayName": "Skul: The Hero Slayer",
-            "iconUrl": "skul-the-hero-slayer.jpg"
+            "iconUrl": "skul-the-hero-slayer.webp"
           },
           "internalFolderName": "SkulTheHeroSlayer",
           "dataFolderName": "Skul_Data",
@@ -13534,7 +13534,7 @@
       "label": "slipstream-rogue-space",
       "meta": {
         "displayName": "Slipstream: Rogue Space",
-        "iconUrl": "SlipstreamRogueSpace.png"
+        "iconUrl": "slipstream-rogue-space.webp"
       },
       "distributions": [
         {
@@ -13546,7 +13546,7 @@
         {
           "meta": {
             "displayName": "Slipstream: Rogue Space",
-            "iconUrl": "SlipstreamRogueSpace.png"
+            "iconUrl": "slipstream-rogue-space.webp"
           },
           "internalFolderName": "SlipstreamRogueSpace",
           "dataFolderName": "Slipstream_Win_Data",
@@ -13656,7 +13656,7 @@
       "label": "songs-of-conquest",
       "meta": {
         "displayName": "Songs of Conquest",
-        "iconUrl": "SongsOfConquest.png"
+        "iconUrl": "songs-of-conquest.webp"
       },
       "distributions": [
         {
@@ -13668,7 +13668,7 @@
         {
           "meta": {
             "displayName": "Songs of Conquest",
-            "iconUrl": "SongsOfConquest.png"
+            "iconUrl": "songs-of-conquest.webp"
           },
           "internalFolderName": "SongsOfConquest",
           "dataFolderName": "SongsOfConquest_Data",
@@ -13782,7 +13782,7 @@
       "label": "sons-of-the-forest",
       "meta": {
         "displayName": "Sons Of The Forest",
-        "iconUrl": "sons-of-the-forest.jpg"
+        "iconUrl": "sons-of-the-forest.webp"
       },
       "distributions": [
         {
@@ -13794,7 +13794,7 @@
         {
           "meta": {
             "displayName": "Sons Of The Forest",
-            "iconUrl": "sons-of-the-forest.jpg"
+            "iconUrl": "sons-of-the-forest.webp"
           },
           "internalFolderName": "SonsOfTheForest",
           "dataFolderName": "SonsOfTheForest_Data",
@@ -13907,7 +13907,7 @@
       "label": "stacklands",
       "meta": {
         "displayName": "Stacklands",
-        "iconUrl": "Stacklands.jpg"
+        "iconUrl": "stacklands.webp"
       },
       "distributions": [
         {
@@ -13919,7 +13919,7 @@
         {
           "meta": {
             "displayName": "Stacklands",
-            "iconUrl": "Stacklands.jpg"
+            "iconUrl": "stacklands.webp"
           },
           "internalFolderName": "Stacklands",
           "dataFolderName": "Stacklands_Data",
@@ -13989,7 +13989,7 @@
       "label": "starsand",
       "meta": {
         "displayName": "Starsand",
-        "iconUrl": "Starsand.png"
+        "iconUrl": "starsand.webp"
       },
       "distributions": [
         {
@@ -14005,7 +14005,7 @@
         {
           "meta": {
             "displayName": "Starsand",
-            "iconUrl": "Starsand.png"
+            "iconUrl": "starsand.webp"
           },
           "internalFolderName": "Starsand",
           "dataFolderName": "Starsand_Data",
@@ -14079,7 +14079,7 @@
       "label": "straftat",
       "meta": {
         "displayName": "STRAFTAT",
-        "iconUrl": "STRAFTAT.png"
+        "iconUrl": "straftat.webp"
       },
       "distributions": [
         {
@@ -14091,7 +14091,7 @@
         {
           "meta": {
             "displayName": "STRAFTAT",
-            "iconUrl": "STRAFTAT.png"
+            "iconUrl": "straftat.webp"
           },
           "internalFolderName": "STRAFTAT",
           "dataFolderName": "STRAFTAT_Data",
@@ -14207,7 +14207,7 @@
       "label": "subnautica-below-zero",
       "meta": {
         "displayName": "Subnautica: Below Zero",
-        "iconUrl": "SubnauticaBelowZero.png"
+        "iconUrl": "subnautica-below-zero.webp"
       },
       "distributions": [
         {
@@ -14223,7 +14223,7 @@
         {
           "meta": {
             "displayName": "Subnautica: Below Zero",
-            "iconUrl": "SubnauticaBelowZero.png"
+            "iconUrl": "subnautica-below-zero.webp"
           },
           "internalFolderName": "SubnauticaBZ",
           "dataFolderName": "SubnauticaZero_Data",
@@ -14312,7 +14312,7 @@
       "label": "subnautica",
       "meta": {
         "displayName": "Subnautica",
-        "iconUrl": "Subnautica.png"
+        "iconUrl": "subnautica.webp"
       },
       "distributions": [
         {
@@ -14332,7 +14332,7 @@
         {
           "meta": {
             "displayName": "Subnautica",
-            "iconUrl": "Subnautica.png"
+            "iconUrl": "subnautica.webp"
           },
           "internalFolderName": "Subnautica",
           "dataFolderName": "Subnautica_Data",
@@ -14421,7 +14421,7 @@
       "label": "subterranauts",
       "meta": {
         "displayName": "Subterranauts",
-        "iconUrl": "Subterranauts.png"
+        "iconUrl": "subterranauts.webp"
       },
       "distributions": [
         {
@@ -14433,7 +14433,7 @@
         {
           "meta": {
             "displayName": "Subterranauts",
-            "iconUrl": "Subterranauts.png"
+            "iconUrl": "subterranauts.webp"
           },
           "internalFolderName": "Subterranauts",
           "dataFolderName": "Subterranauts_Data",
@@ -14547,7 +14547,7 @@
       "label": "subterror",
       "meta": {
         "displayName": "Subterror",
-        "iconUrl": "Subterror.png"
+        "iconUrl": "subterror.webp"
       },
       "distributions": [
         {
@@ -14559,7 +14559,7 @@
         {
           "meta": {
             "displayName": "Subterror",
-            "iconUrl": "Subterror.png"
+            "iconUrl": "subterror.webp"
           },
           "internalFolderName": "Subterror",
           "dataFolderName": "Subterror_Data",
@@ -14671,7 +14671,7 @@
       "label": "sulfur",
       "meta": {
         "displayName": "SULFUR",
-        "iconUrl": "SULFUR.png"
+        "iconUrl": "sulfur.webp"
       },
       "distributions": [
         {
@@ -14683,7 +14683,7 @@
         {
           "meta": {
             "displayName": "SULFUR",
-            "iconUrl": "SULFUR.png"
+            "iconUrl": "sulfur.webp"
           },
           "internalFolderName": "SULFUR",
           "dataFolderName": "Sulfur_Data",
@@ -14796,7 +14796,7 @@
       "label": "sun-haven",
       "meta": {
         "displayName": "Sun Haven",
-        "iconUrl": "sun-haven.jpg"
+        "iconUrl": "sun-haven.webp"
       },
       "distributions": [
         {
@@ -14808,7 +14808,7 @@
         {
           "meta": {
             "displayName": "Sun Haven",
-            "iconUrl": "sun-haven.jpg"
+            "iconUrl": "sun-haven.webp"
           },
           "internalFolderName": "SunHaven",
           "dataFolderName": "SunHaven_Data",
@@ -14918,7 +14918,7 @@
       "label": "sunkenland",
       "meta": {
         "displayName": "Sunkenland",
-        "iconUrl": "Sunkenland.jpg"
+        "iconUrl": "sunkenland.webp"
       },
       "distributions": [
         {
@@ -14930,7 +14930,7 @@
         {
           "meta": {
             "displayName": "Sunkenland",
-            "iconUrl": "Sunkenland.jpg"
+            "iconUrl": "sunkenland.webp"
           },
           "internalFolderName": "Sunkenland",
           "dataFolderName": "Sunkenland_Data",
@@ -15038,7 +15038,7 @@
       "label": "supermarket-together",
       "meta": {
         "displayName": "Supermarket Together",
-        "iconUrl": "SupermarketTogether.png"
+        "iconUrl": "supermarket-together.webp"
       },
       "distributions": [
         {
@@ -15050,7 +15050,7 @@
         {
           "meta": {
             "displayName": "Supermarket Together",
-            "iconUrl": "SupermarketTogether.png"
+            "iconUrl": "supermarket-together.webp"
           },
           "internalFolderName": "SupermarketTogether",
           "dataFolderName": "Supermarket Together_Data",
@@ -15161,7 +15161,7 @@
       "label": "talespire",
       "meta": {
         "displayName": "TaleSpire",
-        "iconUrl": "TaleSpire.jpg"
+        "iconUrl": "tale-spire.webp"
       },
       "distributions": [
         {
@@ -15173,7 +15173,7 @@
         {
           "meta": {
             "displayName": "TaleSpire",
-            "iconUrl": "TaleSpire.jpg"
+            "iconUrl": "tale-spire.webp"
           },
           "internalFolderName": "TaleSpire",
           "dataFolderName": "TaleSpire_Data",
@@ -15245,7 +15245,7 @@
       "label": "tank-team",
       "meta": {
         "displayName": "Tank Team",
-        "iconUrl": "TankTeam.png"
+        "iconUrl": "tank-team.webp"
       },
       "distributions": [
         {
@@ -15257,7 +15257,7 @@
         {
           "meta": {
             "displayName": "Tank Team",
-            "iconUrl": "TankTeam.png"
+            "iconUrl": "tank-team.webp"
           },
           "internalFolderName": "TankTeam",
           "dataFolderName": "Tank Team_Data",
@@ -15370,7 +15370,7 @@
       "label": "tcg-card-shop-simulator",
       "meta": {
         "displayName": "TCG Card Shop Simulator",
-        "iconUrl": "TCGCardShopSimulator.png"
+        "iconUrl": "tcg-card-shop-simulator.webp"
       },
       "distributions": [
         {
@@ -15382,7 +15382,7 @@
         {
           "meta": {
             "displayName": "TCG Card Shop Simulator",
-            "iconUrl": "TCGCardShopSimulator.png"
+            "iconUrl": "tcg-card-shop-simulator.webp"
           },
           "internalFolderName": "TCGCardShopSimulator",
           "dataFolderName": "Card Shop Simulator_Data",
@@ -15532,7 +15532,7 @@
       "label": "techtonica",
       "meta": {
         "displayName": "Techtonica",
-        "iconUrl": "techtonica.png"
+        "iconUrl": "techtonica.webp"
       },
       "distributions": [
         {
@@ -15544,7 +15544,7 @@
         {
           "meta": {
             "displayName": "Techtonica",
-            "iconUrl": "techtonica.png"
+            "iconUrl": "techtonica.webp"
           },
           "internalFolderName": "Techtonica",
           "dataFolderName": "Techtonica_Data",
@@ -15653,7 +15653,7 @@
       "label": "the-ouroboros-king",
       "meta": {
         "displayName": "The Ouroboros King",
-        "iconUrl": "the-ouroboros-king.jpg"
+        "iconUrl": "the-ouroboros-king.webp"
       },
       "distributions": [
         {
@@ -15665,7 +15665,7 @@
         {
           "meta": {
             "displayName": "The Ouroboros King",
-            "iconUrl": "the-ouroboros-king.jpg"
+            "iconUrl": "the-ouroboros-king.webp"
           },
           "internalFolderName": "TheOuroborosKing",
           "dataFolderName": "The Ouroboros King_Data",
@@ -15775,7 +15775,7 @@
       "label": "the-planet-crafter",
       "meta": {
         "displayName": "The Planet Crafter",
-        "iconUrl": "the-planet-crafter.jpg"
+        "iconUrl": "the-planet-crafter.webp"
       },
       "distributions": [
         {
@@ -15787,7 +15787,7 @@
         {
           "meta": {
             "displayName": "The Planet Crafter",
-            "iconUrl": "the-planet-crafter.jpg"
+            "iconUrl": "the-planet-crafter.webp"
           },
           "internalFolderName": "ThePlanetCrafter",
           "dataFolderName": "ThePlanetCrafter_Data",
@@ -15897,7 +15897,7 @@
       "label": "thronefall",
       "meta": {
         "displayName": "Thronefall",
-        "iconUrl": "thronefall.png"
+        "iconUrl": "thronefall.webp"
       },
       "distributions": [
         {
@@ -15909,7 +15909,7 @@
         {
           "meta": {
             "displayName": "Thronefall",
-            "iconUrl": "thronefall.png"
+            "iconUrl": "thronefall.webp"
           },
           "internalFolderName": "Thronefall",
           "dataFolderName": "Thronefall_Data",
@@ -16018,7 +16018,7 @@
       "label": "timberborn",
       "meta": {
         "displayName": "Timberborn",
-        "iconUrl": "Timberborn.png"
+        "iconUrl": "timberborn.webp"
       },
       "distributions": [
         {
@@ -16038,7 +16038,7 @@
         {
           "meta": {
             "displayName": "Timberborn",
-            "iconUrl": "Timberborn.png"
+            "iconUrl": "timberborn.webp"
           },
           "internalFolderName": "Timberborn",
           "dataFolderName": "Timberborn_Data",
@@ -16125,7 +16125,7 @@
       "label": "totally-accurate-battle-simulator",
       "meta": {
         "displayName": "TABS",
-        "iconUrl": "TotallyAccurateBattleSimulator.jpg"
+        "iconUrl": "totally-accurate-battle-simulator.webp"
       },
       "distributions": [
         {
@@ -16145,7 +16145,7 @@
         {
           "meta": {
             "displayName": "TABS",
-            "iconUrl": "TotallyAccurateBattleSimulator.jpg"
+            "iconUrl": "totally-accurate-battle-simulator.webp"
           },
           "internalFolderName": "TABS",
           "dataFolderName": "TotallyAccurateBattleSimulator_Data",
@@ -16225,7 +16225,7 @@
       "label": "touhou-lost-branch-of-legend",
       "meta": {
         "displayName": "Touhou: Lost Branch of Legend",
-        "iconUrl": "TouhouLostBranchOfLegend.jpg"
+        "iconUrl": "touhou-lost-branch-of-legend.webp"
       },
       "distributions": [
         {
@@ -16237,7 +16237,7 @@
         {
           "meta": {
             "displayName": "TouhouLostBranchOfLegend",
-            "iconUrl": "TouhouLostBranchOfLegend.jpg"
+            "iconUrl": "touhou-lost-branch-of-legend.webp"
           },
           "internalFolderName": "TouhouLostBranchOfLegend",
           "dataFolderName": "LBoL_Data",
@@ -16393,7 +16393,7 @@
       "label": "trombone-champ",
       "meta": {
         "displayName": "Trombone Champ",
-        "iconUrl": "TromboneChamp.jpg"
+        "iconUrl": "trombone-champ.webp"
       },
       "distributions": [
         {
@@ -16405,7 +16405,7 @@
         {
           "meta": {
             "displayName": "Trombone Champ",
-            "iconUrl": "TromboneChamp.jpg"
+            "iconUrl": "trombone-champ.webp"
           },
           "internalFolderName": "TromboneChamp",
           "dataFolderName": "TromboneChamp_Data",
@@ -16477,7 +16477,7 @@
       "label": "ultimate-chicken-horse",
       "meta": {
         "displayName": "Ultimate Chicken Horse",
-        "iconUrl": "ultimate-chicken-horse.jpg"
+        "iconUrl": "ultimate-chicken-horse.webp"
       },
       "distributions": [
         {
@@ -16489,7 +16489,7 @@
         {
           "meta": {
             "displayName": "Ultimate Chicken Horse",
-            "iconUrl": "ultimate-chicken-horse.jpg"
+            "iconUrl": "ultimate-chicken-horse.webp"
           },
           "internalFolderName": "UltimateChickenHorse",
           "dataFolderName": "UltimateChickenHorse_Data",
@@ -16602,7 +16602,7 @@
       "label": "ultrakill",
       "meta": {
         "displayName": "ULTRAKILL",
-        "iconUrl": "ULTRAKILL.jpg"
+        "iconUrl": "ultrakill.webp"
       },
       "distributions": [
         {
@@ -16614,7 +16614,7 @@
         {
           "meta": {
             "displayName": "ULTRAKILL",
-            "iconUrl": "ULTRAKILL.jpg"
+            "iconUrl": "ultrakill.webp"
           },
           "internalFolderName": "ULTRAKILL",
           "dataFolderName": "ULTRAKILL_Data",
@@ -16737,7 +16737,7 @@
       "label": "v-rising",
       "meta": {
         "displayName": "V Rising",
-        "iconUrl": "VRising.jpg"
+        "iconUrl": "v-rising.webp"
       },
       "distributions": [
         {
@@ -16749,7 +16749,7 @@
         {
           "meta": {
             "displayName": "V Rising",
-            "iconUrl": "VRising.jpg"
+            "iconUrl": "v-rising.webp"
           },
           "internalFolderName": "VRising",
           "dataFolderName": "VRising_Data",
@@ -16821,7 +16821,7 @@
       "label": "valheim",
       "meta": {
         "displayName": "Valheim",
-        "iconUrl": "Valheim.jpg"
+        "iconUrl": "valheim.webp"
       },
       "distributions": [
         {
@@ -16841,7 +16841,7 @@
         {
           "meta": {
             "displayName": "Valheim",
-            "iconUrl": "Valheim.jpg"
+            "iconUrl": "valheim.webp"
           },
           "internalFolderName": "Valheim",
           "dataFolderName": "valheim_Data",
@@ -16997,7 +16997,7 @@
       "label": "vertigo-2",
       "meta": {
         "displayName": "Vertigo 2",
-        "iconUrl": "Vertigo2.png"
+        "iconUrl": "vertigo-2.webp"
       },
       "distributions": [
         {
@@ -17009,7 +17009,7 @@
         {
           "meta": {
             "displayName": "Vertigo 2",
-            "iconUrl": "Vertigo2.png"
+            "iconUrl": "vertigo-2.webp"
           },
           "internalFolderName": "Vertigo2",
           "dataFolderName": "vertigo2_Data",
@@ -17117,7 +17117,7 @@
       "label": "voices-of-the-void",
       "meta": {
         "displayName": "Voices of the Void",
-        "iconUrl": "VotV.png"
+        "iconUrl": "voices-of-the-void.webp"
       },
       "distributions": [
         {
@@ -17129,7 +17129,7 @@
         {
           "meta": {
             "displayName": "Voices of the Void",
-            "iconUrl": "VotV.png"
+            "iconUrl": "voices-of-the-void.webp"
           },
           "internalFolderName": "VotV",
           "dataFolderName": "VotV",
@@ -17227,7 +17227,7 @@
       "label": "void-crew",
       "meta": {
         "displayName": "Void Crew",
-        "iconUrl": "VoidCrew.png"
+        "iconUrl": "void-crew.webp"
       },
       "distributions": [
         {
@@ -17239,7 +17239,7 @@
         {
           "meta": {
             "displayName": "Void Crew",
-            "iconUrl": "VoidCrew.png"
+            "iconUrl": "void-crew.webp"
           },
           "internalFolderName": "VoidCrew",
           "dataFolderName": "VoidCrew_Data",
@@ -17371,7 +17371,7 @@
       "label": "vtol-vr",
       "meta": {
         "displayName": "VTOL VR",
-        "iconUrl": "VtolVR.jpg"
+        "iconUrl": "vtol-vr.webp"
       },
       "distributions": [
         {
@@ -17383,7 +17383,7 @@
         {
           "meta": {
             "displayName": "VTOL VR",
-            "iconUrl": "VtolVR.jpg"
+            "iconUrl": "vtol-vr.webp"
           },
           "internalFolderName": "VTOL_VR",
           "dataFolderName": "VTOLVR_Data",
@@ -17453,7 +17453,7 @@
       "label": "we-love-katamari-reroll-royal-reverie",
       "meta": {
         "displayName": "We Love Katamari REROLL+ Royal Reverie",
-        "iconUrl": "WLKRR.jpg"
+        "iconUrl": "we-love-katamari-reroll-royal-reverie.webp"
       },
       "distributions": [
         {
@@ -17465,7 +17465,7 @@
         {
           "meta": {
             "displayName": "We Love Katamari REROLL+ Royal Reverie",
-            "iconUrl": "WLKRR.jpg"
+            "iconUrl": "we-love-katamari-reroll-royal-reverie.webp"
           },
           "internalFolderName": "WeLoveKatamariRerollRoyalReverie",
           "dataFolderName": "WeLoveKatamariRerollRoyalReverie_Data",
@@ -17574,7 +17574,7 @@
       "label": "webfishing",
       "meta": {
         "displayName": "WEBFISHING",
-        "iconUrl": "WEBFISHING.png"
+        "iconUrl": "webfishing.webp"
       },
       "distributions": [
         {
@@ -17586,7 +17586,7 @@
         {
           "meta": {
             "displayName": "WEBFISHING",
-            "iconUrl": "WEBFISHING.png"
+            "iconUrl": "webfishing.webp"
           },
           "internalFolderName": "WEBFISHING",
           "dataFolderName": "",
@@ -17657,7 +17657,7 @@
       "label": "west-of-loathing",
       "meta": {
         "displayName": "West of Loathing",
-        "iconUrl": "west-of-loathing.jpg"
+        "iconUrl": "west-of-loathing.webp"
       },
       "distributions": [
         {
@@ -17669,7 +17669,7 @@
         {
           "meta": {
             "displayName": "West of Loathing",
-            "iconUrl": "west-of-loathing.jpg"
+            "iconUrl": "west-of-loathing.webp"
           },
           "internalFolderName": "WestofLoathing",
           "dataFolderName": "WestofLoathing_Data",
@@ -17778,7 +17778,7 @@
       "label": "white-knuckle",
       "meta": {
         "displayName": "White Knuckle",
-        "iconUrl": "WhiteKnuckle.png"
+        "iconUrl": "white-knuckle.webp"
       },
       "distributions": [
         {
@@ -17790,7 +17790,7 @@
         {
           "meta": {
             "displayName": "White Knuckle",
-            "iconUrl": "WhiteKnuckle.png"
+            "iconUrl": "white-knuckle.webp"
           },
           "internalFolderName": "WhiteKnuckle",
           "dataFolderName": "White Knuckle_Data",
@@ -17939,7 +17939,7 @@
       "label": "wildfrost",
       "meta": {
         "displayName": "Wildfrost",
-        "iconUrl": "wildfrost.jpg"
+        "iconUrl": "wildfrost.webp"
       },
       "distributions": [
         {
@@ -17951,7 +17951,7 @@
         {
           "meta": {
             "displayName": "Wildfrost",
-            "iconUrl": "wildfrost.jpg"
+            "iconUrl": "wildfrost.webp"
           },
           "internalFolderName": "Wildfrost",
           "dataFolderName": "Wildfrost_Data",
@@ -18060,7 +18060,7 @@
       "label": "wizard-of-legend",
       "meta": {
         "displayName": "Wizard of Legend",
-        "iconUrl": "WizardOfLegend.jpg"
+        "iconUrl": "wizard-of-legend.webp"
       },
       "distributions": [
         {
@@ -18072,7 +18072,7 @@
         {
           "meta": {
             "displayName": "Wizard of Legend",
-            "iconUrl": "WizardOfLegend.jpg"
+            "iconUrl": "wizard-of-legend.webp"
           },
           "internalFolderName": "WizardOfLegend",
           "dataFolderName": "WizardOfLegend_Data",
@@ -18144,7 +18144,7 @@
       "label": "wizard-with-a-gun",
       "meta": {
         "displayName": "Wizard with a Gun",
-        "iconUrl": "WizardWithAGun.jpg"
+        "iconUrl": "wizard-with-a-gun.webp"
       },
       "distributions": [
         {
@@ -18156,7 +18156,7 @@
         {
           "meta": {
             "displayName": "Wizard With A Gun",
-            "iconUrl": "WizardWithAGun.jpg"
+            "iconUrl": "wizard-with-a-gun.webp"
           },
           "internalFolderName": "WizardWithAGun",
           "dataFolderName": "wizardwithagun_Data",
@@ -18266,7 +18266,7 @@
       "label": "wrestling-empire",
       "meta": {
         "displayName": "Wrestling Empire",
-        "iconUrl": "wrestling-empire.jpg"
+        "iconUrl": "wrestling-empire.webp"
       },
       "distributions": [
         {
@@ -18278,7 +18278,7 @@
         {
           "meta": {
             "displayName": "Wrestling Empire",
-            "iconUrl": "wrestling-empire.jpg"
+            "iconUrl": "wrestling-empire.webp"
           },
           "internalFolderName": "WrestlingEmpire",
           "dataFolderName": "Wrestling Empire_Data",
@@ -18415,7 +18415,7 @@
       "label": "zort",
       "meta": {
         "displayName": "Zort",
-        "iconUrl": "zort.png"
+        "iconUrl": "zort.webp"
       },
       "distributions": [
         {
@@ -18427,7 +18427,7 @@
         {
           "meta": {
             "displayName": "Zort",
-            "iconUrl": "zort.png"
+            "iconUrl": "zort.webp"
           },
           "internalFolderName": "Zort",
           "dataFolderName": "Zort_Data",
@@ -21679,7 +21679,7 @@
       "label": "pigface",
       "meta": {
         "displayName": "PIGFACE",
-        "iconUrl": "PIGFACE.png"
+        "iconUrl": "pigface.webp"
       },
       "distributions": [],
       "r2modman": [
@@ -21699,7 +21699,7 @@
           "packageLoader": "bepinex",
           "meta": {
             "displayName": "PIGFACE",
-            "iconUrl": "PIGFACE.png"
+            "iconUrl": "pigface.webp"
           },
           "settingsIdentifier": "PIGFACE",
           "internalFolderName": "PIGFACE",
