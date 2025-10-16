@@ -232,6 +232,7 @@
                             "gdweave",
                             "recursive-melonloader",
                             "bepisloader",
+                            "umm",
                             "none"
                           ]
                         },
@@ -383,6 +384,7 @@
                   "gdweave",
                   "recursive-melonloader",
                   "bepisloader",
+                  "umm",
                   "none"
                 ]
               }
