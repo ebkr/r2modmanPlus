@@ -1574,6 +1574,9 @@
           "audio": {
             "label": "Audio"
           },
+          "quests": {
+            "label": "Quests"
+          },
           "maps": {
             "label": "Maps"
           },
@@ -18745,6 +18748,83 @@
       },
       "r2modman": null
     },
+    "an-unfinished-game": {
+      "uuid": "dc4ff876-263d-4e67-9dd9-9fb42203e6c3",
+      "label": "an-unfinished-game",
+      "meta": {
+        "displayName": "An Unfinished Game",
+        "iconUrl": "an-unfinished-game.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2919990"
+            }
+          ],
+          "steamFolderName": "An Unfinished Game",
+          "dataFolderName": "UnfinishedGame_Data",
+          "exeNames": [
+            "UnfinishedGame.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "An Unfinished Game",
+            "iconUrl": "an-unfinished-game.webp"
+          },
+          "settingsIdentifier": "AnUnfinishedGame",
+          "internalFolderName": "AnUnfinishedGame",
+          "packageIndex": "https://thunderstore.io/c/an-unfinished-game/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "An Unfinished Game",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "astroneer": {
       "uuid": "43c1b6fb-f9a5-4d25-847f-c3eda4f2bf5a",
       "label": "astroneer",
@@ -18983,6 +19063,124 @@
         "discordUrl": "https://discord.com/invite/DqKwJyugGv",
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
+        ]
+      }
+    },
+    "clover-pit": {
+      "uuid": "dc3c6f53-dbc6-497a-a922-1977b5df0751",
+      "label": "clover-pit",
+      "meta": {
+        "displayName": "CloverPit",
+        "iconUrl": "clover-pit.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3314790"
+            }
+          ],
+          "steamFolderName": "CloverPit",
+          "dataFolderName": "CloverPit_Data",
+          "exeNames": [
+            "CloverPit.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "CloverPit",
+            "iconUrl": "clover-pit.webp"
+          },
+          "settingsIdentifier": "CloverPit",
+          "internalFolderName": "CloverPit",
+          "packageIndex": "https://thunderstore.io/c/clover-pit/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "CloverPit",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": " https://discord.gg/zTAZ9erd5g",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
         ]
       }
     },
@@ -19273,6 +19471,124 @@
       },
       "r2modman": null
     },
+    "easy-delivery-co": {
+      "uuid": "3f5f3de7-0056-48d1-b5fe-55bb4f395874",
+      "label": "easy-delivery-co",
+      "meta": {
+        "displayName": "Easy Delivery Co",
+        "iconUrl": "easy-delivery-co.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3293010"
+            }
+          ],
+          "steamFolderName": "Easy Delivery Co",
+          "dataFolderName": "EasyDeliveryCo_Data",
+          "exeNames": [
+            "EasyDeliveryCo.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Easy Delivery Co",
+            "iconUrl": "easy-delivery-co.webp"
+          },
+          "settingsIdentifier": "EasyDeliveryCo",
+          "internalFolderName": "EasyDeliveryCo",
+          "packageIndex": "https://thunderstore.io/c/easy-delivery-co/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Easy Delivery Co",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/TDkZWmrET3",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "endless-space-2": {
       "uuid": "5e4137bc-7823-44b1-a39b-0765cb6477b4",
       "label": "endless-space-2",
@@ -19367,6 +19683,124 @@
         }
       },
       "r2modman": null
+    },
+    "grey-hack": {
+      "uuid": "40ea6b48-e390-42f9-9454-d49ade3212eb",
+      "label": "grey-hack",
+      "meta": {
+        "displayName": "Grey Hack",
+        "iconUrl": "grey-hack.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "605230"
+            }
+          ],
+          "steamFolderName": "Grey Hack",
+          "dataFolderName": "Grey Hack_Data",
+          "exeNames": [
+            "Grey Hack.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Grey Hack",
+            "iconUrl": "grey-hack.webp"
+          },
+          "settingsIdentifier": "GreyHack",
+          "internalFolderName": "GreyHack",
+          "packageIndex": "https://thunderstore.io/c/grey-hack/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Grey Hack",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/greyhack",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "hollow-knight-silksong": {
       "uuid": "b8fc6f53-5269-4768-b7ec-f09742f0b0bc",
@@ -19624,6 +20058,85 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "jump-space": {
+      "uuid": "0749aeb4-0675-405a-b247-c4180035066b",
+      "label": "jump-space",
+      "meta": {
+        "displayName": "Jump Space",
+        "iconUrl": "jump-space.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1757300"
+            }
+          ],
+          "steamFolderName": "JumpSpace",
+          "dataFolderName": "Jump Space_Data",
+          "exeNames": [
+            "Jump Space.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Jump Space",
+            "iconUrl": "jump-space.webp"
+          },
+          "settingsIdentifier": "JumpSpace",
+          "internalFolderName": "JumpSpace",
+          "packageIndex": "https://thunderstore.io/c/jump-space/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Jump Space",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/jumpspace",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ],
+        "shortDescription": "Jump Space (formerly Jump Ship) is a mission based co-op PvE for 1-4 players, where you are the crew of a spaceship."
       }
     },
     "kerbal-space-program-2": {
@@ -20296,6 +20809,124 @@
         "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "megabonk": {
+      "uuid": "861f9f61-8f2d-4d32-bf15-c2fdd1b5e0f5",
+      "label": "megabonk",
+      "meta": {
+        "displayName": "Megabonk",
+        "iconUrl": "megabonk.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3405340"
+            }
+          ],
+          "steamFolderName": "Megabonk",
+          "dataFolderName": "Megabonk_Data",
+          "exeNames": [
+            "Megabonk.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Megabonk",
+            "iconUrl": "megabonk.webp"
+          },
+          "settingsIdentifier": "Megabonk",
+          "internalFolderName": "Megabonk",
+          "packageIndex": "https://thunderstore.io/c/megabonk/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Megabonk",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/9VCRuEYTcq",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack_IL2CPP"
         ]
       }
     },
@@ -21440,6 +22071,121 @@
       },
       "r2modman": null
     },
+    "slashers-keep": {
+      "uuid": "3df67cc6-8ba1-41c8-829f-62694ee4da4a",
+      "label": "slashers-keep",
+      "meta": {
+        "displayName": "Slasher's Keep",
+        "iconUrl": "slashers-keep.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "598060"
+            }
+          ],
+          "steamFolderName": "Slasher's Keep",
+          "dataFolderName": "SlashersKeep_Data",
+          "exeNames": [
+            "SlashersKeep.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Slasher's Keep",
+            "iconUrl": "slashers-keep.webp"
+          },
+          "settingsIdentifier": "SlashersKeep",
+          "internalFolderName": "SlashersKeep",
+          "packageIndex": "https://thunderstore.io/c/slashers-keep/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Slasher's Keep",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      }
+    },
     "spaghetti-kart": {
       "uuid": "e9398d86-9fc8-4a68-83e0-90bdacc50289",
       "label": "spaghetti-kart",
@@ -22331,6 +23077,9 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "quests": {
+          "label": "Quests"
         },
         "maps": {
           "label": "Maps"
@@ -27211,6 +27960,46 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "an-unfinished-game": {
+      "displayName": "An Unfinished Game",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "astroneer": {
       "displayName": "Astroneer",
       "categories": {
@@ -27326,6 +28115,47 @@
       "discordUrl": "https://discord.com/invite/DqKwJyugGv",
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
+      ]
+    },
+    "clover-pit": {
+      "displayName": "CloverPit",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": " https://discord.gg/zTAZ9erd5g",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
       ]
     },
     "cobalt-core": {
@@ -27506,6 +28336,47 @@
         "Thunderstore-unreal_shimloader"
       ]
     },
+    "easy-delivery-co": {
+      "displayName": "Easy Delivery Co",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/TDkZWmrET3",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "endless-space-2": {
       "displayName": "Endless Space 2",
       "categories": {
@@ -27580,6 +28451,47 @@
           ]
         }
       }
+    },
+    "grey-hack": {
+      "displayName": "Grey Hack",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/greyhack",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "hollow-knight-silksong": {
       "displayName": "Hollow Knight: Silksong",
@@ -27659,6 +28571,48 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "jump-space": {
+      "displayName": "Jump Space",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/jumpspace",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ],
+      "shortDescription": "Jump Space (formerly Jump Ship) is a mission based co-op PvE for 1-4 players, where you are the crew of a spaceship."
     },
     "kerbal-space-program-2": {
       "displayName": "Kerbal Space Program 2",
@@ -27917,6 +28871,47 @@
       "wikiUrl": "https://gldym.github.io/posts/Animal-Spa-En/",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
+      ]
+    },
+    "megabonk": {
+      "displayName": "Megabonk",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/9VCRuEYTcq",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack_IL2CPP"
       ]
     },
     "mirrors-edge": {
@@ -28500,6 +29495,44 @@
       },
       "wikiUrl": "https://gamebanana.com/games/16121",
       "discordUrl": "https://discord.com/invite/shipofharkinian",
+      "autolistPackageIds": []
+    },
+    "slashers-keep": {
+      "displayName": "Slasher's Keep",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "autolistPackageIds": []
     },
     "spaghetti-kart": {
@@ -29190,6 +30223,11 @@
       "packageId": "ResoniteModding-BepInExRenderer",
       "rootFolder": "BepInExPack",
       "loader": "bepisloader"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_SlashersKeep",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
     }
   ]
 }
