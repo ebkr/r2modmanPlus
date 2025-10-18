@@ -154,12 +154,13 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         const profileContents = await FsProvider.instance.readdir(profile.getProfilePath());
         const gameStartScriptIndex = profileContents.map(value => value.toLowerCase()).findIndex(value => value === 'start_game_bepinex.sh');
         if (gameStartScriptIndex >= 0) {
-            const newFileContent =
+            let newFileContent = "";
+            const newFileContentLines =
                 (await FsProvider.instance.readFile(profile.joinToProfilePath(profileContents[gameStartScriptIndex]!)))
                     .toString()
                     .split('\n')
                     .map(async (line) => {
-                        if (line.startsWith('exec="')) {
+                        if (line.startsWith('executable_name="')) {
                             const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(game);
                             if (gameDirectory instanceof R2Error) {
                                 throw gameDirectory;
@@ -171,12 +172,15 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
                                     .includes(dirItem.toLowerCase()));
                             if (matchingExecutables.length > 0) {
                                 const executableName = matchingExecutables[0]
-                                return `exec="$BASEDIR/${executableName}"`;
+                                return `executable_name="$BASEDIR/${executableName}"`;
                             }
                         }
                         return line;
-                    })
-                    .join('\n');
+                    });
+            for (const line of newFileContentLines) {
+                newFileContent += (await line) + '\n';
+            }
+            newFileContent = newFileContent.trim();
             await FsProvider.instance.writeFile(profile.joinToProfilePath(profileContents[gameStartScriptIndex]!), newFileContent);
         }
     }
