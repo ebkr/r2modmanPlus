@@ -25,9 +25,6 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
         const settings = await ManagerSettings.getSingleton(game);
         const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
-        if (isProton instanceof R2Error) {
-            return isProton;
-        }
 
         if (isProton) {
             // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
@@ -48,6 +45,12 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             } catch (e) {
                 const err: Error = e as Error;
                 return new R2Error("Failed to make sh file executable", err.message, "You may need to run the manager with elevated privileges.");
+            }
+
+            try {
+                await this.setGameExecutableNameInWrapper(game, profile);
+            } catch (e) {
+                return e as R2Error;
             }
         }
 
@@ -119,7 +122,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         let begin = 0;
         // Get section begin
         for (let index = 0; index < split.length; index++) {
-            if (split[index].startsWith(section)) {
+            if (split[index]!.startsWith(section)) {
                 begin = index + 2; // We need to skip the timestamp line
                 break;
             }
@@ -128,7 +131,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         // Get end
         let end = 0;
         for (let index = begin; index < split.length; index++) {
-            if (split[index].length == 0) {
+            if (split[index]!.length == 0) {
                 end = index;
                 break;
             }
@@ -136,7 +139,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         // Check for key and fix it eventually, then return
         for (let index = begin; index < end; index++) {
-            if (split[index].startsWith(`"${key}"`)) {
+            if (split[index]!.startsWith(`"${key}"`)) {
                 split[index] = `"${key}"="${value}"`;
                 return split.join("\n");
             }
@@ -145,5 +148,36 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         // Append key and return
         split.splice(end, 0, `"${key}"="${value}"`);
         return split.join("\n");
+    }
+
+    private async setGameExecutableNameInWrapper(game: Game, profile: Profile) {
+        const profileContents = await FsProvider.instance.readdir(profile.getProfilePath());
+        const gameStartScriptIndex = profileContents.map(value => value.toLowerCase()).findIndex(value => value === 'start_game_bepinex.sh');
+        if (gameStartScriptIndex >= 0) {
+            const newFileContent =
+                (await FsProvider.instance.readFile(profile.joinToProfilePath(profileContents[gameStartScriptIndex]!)))
+                    .toString()
+                    .split('\n')
+                    .map(async (line) => {
+                        if (line.startsWith('exec="')) {
+                            const gameDirectory = await GameDirectoryResolverProvider.instance.getDirectory(game);
+                            if (gameDirectory instanceof R2Error) {
+                                throw gameDirectory;
+                            }
+                            const matchingExecutables = (await FsProvider.instance.readdir(gameDirectory!))
+                                .filter(dirItem => game.exeName
+                                    .map(exeName => exeName.toLowerCase())
+                                    .filter(exeName => !exeName.endsWith(".exe"))
+                                    .includes(dirItem.toLowerCase()));
+                            if (matchingExecutables.length > 0) {
+                                const executableName = matchingExecutables[0]
+                                return `exec="$BASEDIR/${executableName}"`;
+                            }
+                        }
+                        return line;
+                    })
+                    .join('\n');
+            await FsProvider.instance.writeFile(profile.joinToProfilePath(profileContents[gameStartScriptIndex]!), newFileContent);
+        }
     }
 }
