@@ -1,3 +1,18 @@
+### 3.2.9
+#### Games added
+- Megabonk
+- An Unfinished Game
+- Easy Delivery Co
+- Jump Space
+- CloverPit
+- Grey Hack
+- Slasher's Keep
+
+#### Changes
+- Hollow Knight: Silksong Linux can now be selected
+- NSFW indicator in the preview panel and mod list row in the online section
+- Preview metadata can be collapsed to reveal allow for more preview space
+
 ### 3.2.8
 #### Changes
 - Config Editor
