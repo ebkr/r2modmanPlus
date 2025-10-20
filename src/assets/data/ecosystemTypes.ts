@@ -22,7 +22,8 @@ export interface ThunderstoreEcosyste {
 }
 
 export interface Category {
-    label: string;
+    hidden?: boolean;
+    label:   string;
 }
 
 export interface Section {
@@ -311,6 +312,7 @@ const typeMap: any = {
         { json: "wikiUrl", js: "wikiUrl", typ: u(undefined, "") },
     ], false),
     "Category": o([
+        { json: "hidden", js: "hidden", typ: u(undefined, true) },
         { json: "label", js: "label", typ: "" },
     ], false),
     "Section": o([

@@ -93,6 +93,9 @@
                       "properties": {
                         "label": {
                           "type": "string"
+                        },
+                        "hidden": {
+                          "type": "boolean"
                         }
                       },
                       "required": [

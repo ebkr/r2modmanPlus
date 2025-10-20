@@ -1562,6 +1562,9 @@
           "modpacks": {
             "label": "Modpacks"
           },
+          "bundles": {
+            "label": "Bundles"
+          },
           "tools": {
             "label": "Tools"
           },
@@ -1597,13 +1600,20 @@
           "mods": {
             "name": "Mods",
             "excludeCategories": [
-              "modpacks"
+              "modpacks",
+              "bundles"
             ]
           },
           "modpacks": {
             "name": "Modpacks",
             "requireCategories": [
               "modpacks"
+            ]
+          },
+          "bundles": {
+            "name": "Bundles",
+            "requireCategories": [
+              "bundles"
             ]
           }
         },
@@ -11140,130 +11150,6 @@
         }
       ]
     },
-    "pigface": {
-      "uuid": "edc46cc0-7891-4a35-a68f-0933bbb6f49e",
-      "label": "pigface",
-      "meta": {
-        "displayName": "PIGFACE",
-        "iconUrl": "PIGFACE.png"
-      },
-      "distributions": [
-        {
-          "platform": "steam",
-          "identifier": "3746840"
-        }
-      ],
-      "r2modman": [
-        {
-          "meta": {
-            "displayName": "PIGFACE",
-            "iconUrl": "PIGFACE.png"
-          },
-          "internalFolderName": "PIGFACE",
-          "dataFolderName": "Pigface_Data",
-          "distributions": [
-            {
-              "platform": "steam",
-              "identifier": "3746840"
-            }
-          ],
-          "settingsIdentifier": "PIGFACE",
-          "packageIndex": "https://thunderstore.io/c/pigface/api/v1/package-listing-index/",
-          "steamFolderName": "PIGFACE Demo",
-          "exeNames": [
-            "Pigface.exe"
-          ],
-          "gameInstanceType": "game",
-          "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [
-            "pf"
-          ],
-          "packageLoader": "bepinex",
-          "installRules": [
-            {
-              "route": "BepInEx/plugins",
-              "defaultFileExtensions": [
-                ".dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            },
-            {
-              "route": "BepInEx/core",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/patchers",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/monomod",
-              "defaultFileExtensions": [
-                ".mm.dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/config",
-              "defaultFileExtensions": [],
-              "trackingMethod": "none",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            }
-          ],
-          "relativeFileExclusions": null
-        }
-      ],
-      "thunderstore": {
-        "displayName": "PIGFACE",
-        "categories": {
-          "mods": {
-            "label": "Mods"
-          },
-          "modpacks": {
-            "label": "Modpacks"
-          },
-          "tools": {
-            "label": "Tools"
-          },
-          "libraries": {
-            "label": "Libraries"
-          },
-          "misc": {
-            "label": "Misc"
-          },
-          "audio": {
-            "label": "Audio"
-          }
-        },
-        "sections": {
-          "mods": {
-            "name": "Mods",
-            "excludeCategories": [
-              "modpacks"
-            ]
-          },
-          "modpacks": {
-            "name": "Modpacks",
-            "requireCategories": [
-              "modpacks"
-            ]
-          }
-        },
-        "autolistPackageIds": [
-          "BepInEx-BepInExPack"
-        ]
-      }
-    },
     "plasma": {
       "uuid": "18cea92d-ed64-4107-8f49-79b55ad6cb39",
       "label": "plasma",
@@ -19162,6 +19048,33 @@
           },
           "audio": {
             "label": "Audio"
+          },
+          "charms": {
+            "label": "Charms"
+          },
+          "symbols": {
+            "label": "Symbols"
+          },
+          "patterns": {
+            "label": "Patterns"
+          },
+          "modifiers": {
+            "label": "Modifiers"
+          },
+          "localization": {
+            "label": "Localization"
+          },
+          "phone-options": {
+            "label": "Phone Options"
+          },
+          "memory-packs": {
+            "label": "Memory Packs"
+          },
+          "gameplay": {
+            "label": "Gameplay"
+          },
+          "tweaks": {
+            "label": "Tweaks"
           }
         },
         "sections": {
@@ -19843,7 +19756,9 @@
           "steamFolderName": "Hollow Knight Silksong",
           "dataFolderName": "Hollow Knight Silksong_Data",
           "exeNames": [
-            "Hollow Knight Silksong.exe"
+            "Hollow Knight Silksong.exe",
+            "Hollow Knight Silksong.app",
+            "Hollow Knight Silksong"
           ],
           "packageLoader": "bepinex",
           "meta": {
@@ -19903,6 +19818,7 @@
       ],
       "thunderstore": {
         "displayName": "Hollow Knight: Silksong",
+        "discordUrl": "https://discord.gg/VDsg3HmWuB",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -19910,17 +19826,41 @@
           "modpacks": {
             "label": "Modpacks"
           },
-          "tools": {
-            "label": "Tools"
-          },
           "libraries": {
             "label": "Libraries"
           },
-          "misc": {
-            "label": "Misc"
+          "utility": {
+            "label": "Utility"
+          },
+          "cosmetic": {
+            "label": "Cosmetic"
+          },
+          "accessibility": {
+            "label": "Accessibility"
+          },
+          "custom-tools": {
+            "label": "Custom Tools"
+          },
+          "custom-crests": {
+            "label": "Custom Crests"
+          },
+          "boss": {
+            "label": "Boss"
+          },
+          "expansion": {
+            "label": "Expansion"
+          },
+          "tools": {
+            "label": "(Deprecated category) Tools",
+            "hidden": true
           },
           "audio": {
-            "label": "Audio"
+            "label": "(Deprecated category) Audio",
+            "hidden": true
+          },
+          "misc": {
+            "label": "(Deprecated category) Misc",
+            "hidden": true
           }
         },
         "sections": {
@@ -21734,6 +21674,125 @@
       },
       "r2modman": null
     },
+    "pigface": {
+      "uuid": "edc46cc0-7891-4a35-a68f-0933bbb6f49e",
+      "label": "pigface",
+      "meta": {
+        "displayName": "PIGFACE",
+        "iconUrl": "PIGFACE.png"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3341650"
+            }
+          ],
+          "steamFolderName": "PIGFACE",
+          "dataFolderName": "Pigface_Data",
+          "exeNames": [
+            "Pigface.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "PIGFACE",
+            "iconUrl": "PIGFACE.png"
+          },
+          "settingsIdentifier": "PIGFACE",
+          "internalFolderName": "PIGFACE",
+          "packageIndex": "https://thunderstore.io/c/pigface/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            "pf"
+          ],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "PIGFACE",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "r5reloaded": {
       "uuid": "35a9dbb7-a4f8-4faf-a032-66352aa690cc",
       "label": "r5reloaded",
@@ -23066,6 +23125,9 @@
         "modpacks": {
           "label": "Modpacks"
         },
+        "bundles": {
+          "label": "Bundles"
+        },
         "tools": {
           "label": "Tools"
         },
@@ -23101,13 +23163,20 @@
         "mods": {
           "name": "Mods",
           "excludeCategories": [
-            "modpacks"
+            "modpacks",
+            "bundles"
           ]
         },
         "modpacks": {
           "name": "Modpacks",
           "requireCategories": [
             "modpacks"
+          ]
+        },
+        "bundles": {
+          "name": "Bundles",
+          "requireCategories": [
+            "bundles"
           ]
         }
       },
@@ -25779,46 +25848,6 @@
         "BepInEx-BepInExPack"
       ]
     },
-    "pigface": {
-      "displayName": "PIGFACE",
-      "categories": {
-        "mods": {
-          "label": "Mods"
-        },
-        "modpacks": {
-          "label": "Modpacks"
-        },
-        "tools": {
-          "label": "Tools"
-        },
-        "libraries": {
-          "label": "Libraries"
-        },
-        "misc": {
-          "label": "Misc"
-        },
-        "audio": {
-          "label": "Audio"
-        }
-      },
-      "sections": {
-        "mods": {
-          "name": "Mods",
-          "excludeCategories": [
-            "modpacks"
-          ]
-        },
-        "modpacks": {
-          "name": "Modpacks",
-          "requireCategories": [
-            "modpacks"
-          ]
-        }
-      },
-      "autolistPackageIds": [
-        "BepInEx-BepInExPack"
-      ]
-    },
     "plasma": {
       "displayName": "Plasma",
       "categories": {
@@ -28137,6 +28166,33 @@
         },
         "audio": {
           "label": "Audio"
+        },
+        "charms": {
+          "label": "Charms"
+        },
+        "symbols": {
+          "label": "Symbols"
+        },
+        "patterns": {
+          "label": "Patterns"
+        },
+        "modifiers": {
+          "label": "Modifiers"
+        },
+        "localization": {
+          "label": "Localization"
+        },
+        "phone-options": {
+          "label": "Phone Options"
+        },
+        "memory-packs": {
+          "label": "Memory Packs"
+        },
+        "gameplay": {
+          "label": "Gameplay"
+        },
+        "tweaks": {
+          "label": "Tweaks"
         }
       },
       "sections": {
@@ -28495,6 +28551,7 @@
     },
     "hollow-knight-silksong": {
       "displayName": "Hollow Knight: Silksong",
+      "discordUrl": "https://discord.gg/VDsg3HmWuB",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -28502,17 +28559,41 @@
         "modpacks": {
           "label": "Modpacks"
         },
-        "tools": {
-          "label": "Tools"
-        },
         "libraries": {
           "label": "Libraries"
         },
-        "misc": {
-          "label": "Misc"
+        "utility": {
+          "label": "Utility"
+        },
+        "cosmetic": {
+          "label": "Cosmetic"
+        },
+        "accessibility": {
+          "label": "Accessibility"
+        },
+        "custom-tools": {
+          "label": "Custom Tools"
+        },
+        "custom-crests": {
+          "label": "Custom Crests"
+        },
+        "boss": {
+          "label": "Boss"
+        },
+        "expansion": {
+          "label": "Expansion"
+        },
+        "tools": {
+          "label": "(Deprecated category) Tools",
+          "hidden": true
         },
         "audio": {
-          "label": "Audio"
+          "label": "(Deprecated category) Audio",
+          "hidden": true
+        },
+        "misc": {
+          "label": "(Deprecated category) Misc",
+          "hidden": true
         }
       },
       "sections": {
@@ -29273,6 +29354,46 @@
       },
       "wikiUrl": "https://phasmophobia.fandom.com/wiki/Main_Page",
       "discordUrl": "https://discord.gg/phasmophobia"
+    },
+    "pigface": {
+      "displayName": "PIGFACE",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "r5reloaded": {
       "displayName": "R5Reloaded",
@@ -30226,6 +30347,16 @@
     },
     {
       "packageId": "BepInEx-BepInExPack_SlashersKeep",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_BadNorth",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_LostSkies",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
     }
