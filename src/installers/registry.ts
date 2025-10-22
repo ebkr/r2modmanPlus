@@ -63,7 +63,8 @@ function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {
         loader === PackageLoader.BEPISLOADER ||
         loader === PackageLoader.GODOTML ||
         loader === PackageLoader.MELONLOADER ||
-        loader === PackageLoader.NORTHSTAR
+        loader === PackageLoader.NORTHSTAR ||
+        loader === PackageLoader.UMM
     );
 }
 

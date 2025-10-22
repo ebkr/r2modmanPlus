@@ -10,53 +10,10 @@ import FileWriteError from '../model/errors/FileWriteError';
 import FsProvider from '../providers/generic/file/FsProvider';
 import FileUtils from '../utils/FileUtils';
 
-/**
- * TODO: define install and uninstall methods for the UMM mod loader package.
- * This is used for the mod loader only, not the mods themselves. Mod loader package
- * installers don't support the disable/enable functionality.
- *
- * I've provided some example implementations, feel free to adjust them as needed.
- * Check the other installer implementations in this folder for ideas.
- *
- * As discussed in the Discord, ideally this would be universal UMM support, not
- * Broforce exclusive.
- */
 export class UMMInstaller implements PackageInstaller {
-    /**
-     * This assumes the package zip to have a following structure.
-     * UMM-UMM.zip
-     * ├ UMM
-     * │ └ whatever files UMM requires
-     * ├ someDoorstop.dll
-     * ├ manifest.json (ignored by installer)
-     * ├ icon.png (ignored by installer)
-     * ├ README.md (ignored by installer)
-     * └ CHANGELOG.md (optional, ignored by installer)
-     *
-     * Adjust as needed. Also worth noting that this ignores the "rootFolder" defined
-     * in the ecosystem.json file for simplicity's sake. If you think the root folder
-     * might differ for different games, it can be loaded dynamically in the installer
-     * method, check other installer implementation for examples.
-     */
-    private static readonly TRACKED = ['someDoorstop.dll', 'UMM'];
 
-    /**
-     * TODO: When install is called, the files from the package zip have already
-     * been downloaded and extracted into the cache folder. This method should do
-     * whatever is required for them to be placed in the proper locations in the
-     * profile folder. After the mod installation the profile folder should contain:
-     *
-     * ProfileFolder
-     * ├ _state (folder used internally by mod manager, not relevant here)
-     * ├ UMM (or some other name, folder containing mod loader files)
-     * ├ mods.yml (mod manager internal file for tracking mod states)
-     * └ someDoorstop.dll
-     *
-     * The idea is to keep the root of the profile relatively clear, as all contents
-     * not excluded in ModLinker.performLink will get copied to game folder. If installed
-     * mods are not placed under UMM folder, they can have their own folder in the profile
-     * root, but this should be excluded in ModLinker.
-     */
+    private static readonly TRACKED = ['UMM', 'doorstop_config.ini', 'winhttp.dll'];
+
     async install(args: InstallArgs): Promise<void> {
         const { packagePath, profile } = args;
 
@@ -71,9 +28,6 @@ export class UMMInstaller implements PackageInstaller {
         }
     }
 
-    /**
-     * TODO: this should undo whatever the install method did to the profile folder.
-     */
     async uninstall(args: InstallArgs): Promise<void> {
         try {
             for (const fileOrFolder of UMMInstaller.TRACKED) {
