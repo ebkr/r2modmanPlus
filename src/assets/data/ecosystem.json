@@ -46,7 +46,8 @@
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "mtd",
-            "20mtd"
+            "20mtd",
+            "黎明前的20分钟"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -256,7 +257,8 @@
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "ato",
-            "ao"
+            "ao",
+            "横跨方尖碑"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -340,7 +342,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ats"
+            "ats",
+            "风暴之城"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -1127,7 +1130,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "act"
+            "act",
+            "蟹蟹寻宝奇遇"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -1660,7 +1664,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ac"
+            "ac",
+            "辐射谷物语"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -1782,7 +1787,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "adw"
+            "adw",
+            "阿特里奥：黑暗的荒野"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -2043,7 +2049,8 @@
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
             "bh",
-            "farlands"
+            "farlands",
+            "背包英雄"
           ],
           "packageLoader": "melonloader",
           "installRules": [
@@ -2141,7 +2148,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "小丑牌"
+          ],
           "packageLoader": "lovely",
           "installRules": [],
           "relativeFileExclusions": null
@@ -3152,7 +3161,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "土豆兄弟"
+          ],
           "packageLoader": "godotml",
           "installRules": [
             {
@@ -3244,7 +3255,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "cs"
+            "cs",
+            "城堡故事"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -3379,7 +3391,8 @@
           "additionalSearchStrings": [
             "calabp",
             "cal",
-            "abp"
+            "abp",
+            "猫是液体"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -3462,7 +3475,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "超时空方舟"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -3553,7 +3568,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "cs2"
+            "cs2",
+            "都市：天际线2"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -3675,7 +3691,9 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "cw"
+            "cw",
+            "前方高能",
+            "内容警告"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -3881,7 +3899,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ck"
+            "ck",
+            "地心护核者"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -3973,7 +3992,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "cotl"
+            "cotl",
+            "咩咩启示录"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -4731,7 +4751,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "dk"
+            "dk",
+            "穹顶守护者"
           ],
           "packageLoader": "godotml",
           "installRules": [
@@ -4819,7 +4840,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "渔帆暗涌"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -5075,7 +5098,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "DSP"
+            "DSP",
+            "戴森球计划"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -5300,7 +5324,9 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "etg"
+            "etg",
+            "挺进地牢",
+            "挺进枪牢"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -5638,7 +5664,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ftk"
+            "ftk",
+            "为了吾王"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -5807,7 +5834,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "gkfr"
+            "gkfr",
+            "加菲猫卡丁车：激情竞速"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -6559,7 +6587,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ghvr"
+            "ghvr",
+            "绿色地狱VR"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -6967,7 +6996,9 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "h2"
+            "h2",
+            "黑帝斯2",
+            "哈迪斯2"
           ],
           "packageLoader": "return-of-modding",
           "installRules": [],
@@ -7049,7 +7080,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "hb"
+            "hb",
+            "硬弹"
           ],
           "packageLoader": "melonloader",
           "installRules": [
@@ -7306,7 +7338,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "hotds"
+            "hotds",
+            "垂死的太阳"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -7647,7 +7680,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "邪恶冥刻"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -7820,7 +7855,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ltow"
+            "ltow",
+            "末班车离开虫镇"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -7961,7 +7997,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "lc"
+            "lc",
+            "致命公司"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -8178,7 +8215,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "LLB"
+            "LLB",
+            "致命联盟：火焰"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -8637,7 +8675,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "魔法工艺"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -8839,7 +8879,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ms"
+            "ms",
+            "米宝空间站"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -9551,7 +9592,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "nd"
+            "nd",
+            "快死了"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -9772,7 +9814,8 @@
             "northstar",
             "ns",
             "tf2",
-            "tf|2"
+            "tf|2",
+            "泰坦陨落2"
           ],
           "packageLoader": "northstar",
           "installRules": [
@@ -10118,7 +10161,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "物质世界"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -10192,7 +10237,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "物质世界：决定版"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -10360,7 +10407,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "palworld"
+            "palworld",
+            "幻兽帕鲁"
           ],
           "packageLoader": "shimloader",
           "installRules": [],
@@ -10649,7 +10697,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "pq"
+            "pq",
+            "拼贴冒险传"
           ],
           "packageLoader": "melonloader",
           "installRules": [
@@ -11103,7 +11152,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "哥布林弹球"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -11315,7 +11366,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "pc"
+            "pc",
+            "药剂工艺"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -11525,7 +11577,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "rf"
+            "rf",
+            "战地模拟器"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -11609,7 +11662,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "rec2"
+            "rec2",
+            "接收者2"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -12027,7 +12081,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "rorr"
+            "rorr",
+            "雨中冒险：回归"
           ],
           "packageLoader": "return-of-modding",
           "installRules": [],
@@ -12166,7 +12221,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ROR2"
+            "ROR2",
+            "雨中冒险2"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -12234,7 +12290,8 @@
           "gameInstanceType": "server",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "ROR2"
+            "ROR2",
+            "雨中冒险2"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -12318,7 +12375,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "rg"
+            "rg",
+            "罗格：救世传说"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -12402,7 +12460,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "rt"
+            "rt",
+            "巨塔"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -13056,7 +13115,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "sod"
+            "sod",
+            "凶影疑云"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -13199,7 +13259,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "sol"
+            "sol",
+            "憎恶之影"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -13445,7 +13506,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "小骨：英雄杀手"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -13813,7 +13876,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "sotf"
+            "sotf",
+            "森林之子"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -13937,7 +14001,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "堆叠大陆"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -14027,7 +14093,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "星辰沙海"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -14248,7 +14316,9 @@
           "additionalSearchStrings": [
             "bz",
             "sbz",
-            "s:bz"
+            "s:bz",
+            "深海迷航：零度之下",
+            "美丽水世界：零度之下"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -14358,7 +14428,10 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "深海迷航",
+            "美丽水世界"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -14827,7 +14900,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "sh"
+            "sh",
+            "太阳港"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -14948,7 +15022,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "沉没之地"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -15563,7 +15639,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "tt"
+            "tt",
+            "星核工厂"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -15684,7 +15761,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "tok"
+            "tok",
+            "衔尾蛇国王"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -15806,7 +15884,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "tpc"
+            "tpc",
+            "星球工匠"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -15928,7 +16007,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "tf"
+            "tf",
+            "王权陨落"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16065,7 +16145,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "TB"
+            "TB",
+            "海狸浮生记"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16172,7 +16253,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "Totally Accurate Battle Simulator"
+            "Totally Accurate Battle Simulator",
+            "全面战争模拟器"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16256,7 +16338,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "lbol"
+            "lbol",
+            "东方光耀夜"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16424,7 +16507,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "tc"
+            "tc",
+            "长号冠军"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16508,7 +16592,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "uch"
+            "uch",
+            "超级鸡马"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16768,7 +16853,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "vrising"
+            "vrising",
+            "夜族崛起"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -16864,7 +16950,9 @@
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "英灵神殿"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -16938,7 +17026,9 @@
           ],
           "gameInstanceType": "server",
           "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [],
+          "additionalSearchStrings": [
+            "英灵神殿"
+          ],
           "packageLoader": "bepinex",
           "installRules": [
             {
@@ -17258,7 +17348,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "vc"
+            "vc",
+            "虚空航船"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -17484,7 +17575,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "wlkrr"
+            "wlkrr",
+            "人见人爱的块魂 安可+ 国王大人的小小回忆"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -17688,7 +17780,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "wol"
+            "wol",
+            "憎恶之西"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -17970,7 +18063,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "wfrst"
+            "wfrst",
+            "雪居之地"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -18091,7 +18185,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "wol"
+            "wol",
+            "传说法师"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -18175,7 +18270,8 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "wizgun"
+            "wizgun",
+            "荒野枪巫"
           ],
           "packageLoader": "bepinex",
           "installRules": [
@@ -18297,7 +18393,9 @@
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
           "additionalSearchStrings": [
-            "we"
+            "we",
+            "摔跤帝国",
+            "摔角帝国"
           ],
           "packageLoader": "bepinex",
           "installRules": [
