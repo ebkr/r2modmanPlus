@@ -10,6 +10,21 @@ import { DynamicGameInstruction } from '../../instructions/DynamicGameInstructio
 import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
 import ConfigLine from '../../../../model/file/ConfigLine';
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
+import path from '../../../../providers/node/path/path';
+import ModLinker from '../../../../r2mm/manager/ModLinker';
+
+type EgsInstallationListEntry = {
+    InstallLocation: string;
+    NamespaceId: string;
+    ItemId: string;
+    ArtifactId: string;
+    AppVersion: string;
+    AppName: string;
+}
+
+type EgsInstalledDataFormat = {
+    InstallationList: EgsInstallationListEntry[];
+}
 
 export default class EgsGameRunner extends GameRunnerProvider {
 
@@ -59,6 +74,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
                 return updateResult;
             }
         }
+        await ModLinker.link(profile.asImmutableProfile(), game);
         return this.start(game, args);
     }
 
@@ -75,6 +91,7 @@ export default class EgsGameRunner extends GameRunnerProvider {
                 return updateResult;
             }
         }
+        await ModLinker.link(profile.asImmutableProfile(), game);
         return this.start(game, instructions.vanillaParameters);
     }
 
@@ -82,7 +99,8 @@ export default class EgsGameRunner extends GameRunnerProvider {
         try {
             // Ignore errors to allow Thunderstore Mod Manager build without errors
             // @ts-ignore
-            window.electron.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`)
+            const launchString = await this.getLaunchString(game);
+            window.electron.openExternal(launchString);
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to start the game", err.message, null);
@@ -109,5 +127,28 @@ export default class EgsGameRunner extends GameRunnerProvider {
             const err: Error = e as Error;
             return new R2Error("Failed to update doorstop_config.ini", err.message, null);
         }
+    }
+
+    private async getLaunchString(game: Game): Promise<string> {
+        let namespaceId = "";
+        let itemId = "";
+        let artifactId = "";
+
+        const fileContent = (await FsProvider.instance.readFile(path.join('C:', 'ProgramData', 'Epic', 'UnrealEngineLauncher', 'LauncherInstalled.dat'))).toString();
+        const installedData: EgsInstalledDataFormat = JSON.parse(fileContent);
+
+        try {
+            const entry = installedData.InstallationList!.filter(value => value.AppName.toLowerCase() === game.activePlatform.storeIdentifier?.toLowerCase())[0]!;
+            namespaceId = entry.NamespaceId;
+            itemId = entry.ItemId;
+            artifactId = entry.ArtifactId;
+        } catch (e) {
+            const err: Error = e as Error;
+            throw new R2Error('Failed to read LauncherInstalled.dat', err.message);
+        }
+
+        const protocol = 'com.epicgames.launcher://apps/';
+        const launchArgs = "?action=launch&silent=true";
+        return `${protocol}${namespaceId}%3A${itemId}%3A${artifactId}${launchArgs}`;
     }
 }
