@@ -12,24 +12,19 @@ import R2Error from '../../../../../../src/model/errors/R2Error';
 import ProfileInstallerProvider from '../../../../../../src/providers/ror2/installing/ProfileInstallerProvider';
 import {describe, beforeEach, test, expect} from 'vitest';
 
-/**
- * TODO: this just a ~copy-paste of ReturnOfModding tests. What
- * this should contain for UMM naturally depends on the implementation.
- * You'll probably want to call installLogicBeforeEach to make the tests
- * even run, but beyond that it's up to you whether to use the existing
- * helpers or not. This is a bit of a mess, sorry.
- */
-
 describe('UMMInstaller Tests', () => {
     beforeEach(
         () => installLogicBeforeEach("Broforce")
     );
 
-    test('Installs and uninstalls the package loader', async () => {
-        const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
+    test('Installs and uninstalls the UMM package loader', async () => {
+        const pkg = createManifest("UMM", "UMM");
         const sourceToExpectedDestination = {
-            "ReturnOfModdingPack/version.dll": "version.dll",  // RoRR
-            "ReturnOfModdingPack/d3d12.dll": "d3d12.dll",  // Hades 2
+            "UMM/Core/0Harmony.dll": "UMM/Core/0Harmony.dll",
+            "UMM/Core/0Harmony.xml": "UMM/Core/0Harmony.xml",
+            "UMM/Core/UnityModManager.dll": "UMM/Core/UnityModManager.dll",
+            "doorstop_config.ini": "doorstop_config.ini",
+            "winhttp.dll": "winhttp.dll",
         };
         const expectedAfterUninstall: string[] = [];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
@@ -43,9 +38,9 @@ describe('UMMInstaller Tests', () => {
     });
 
     test('Disabling/enabling the mod loader does nothing', async () => {
-        const pkg = createManifest("ReturnOfModding", "ReturnOfModding");
+        const pkg = createManifest("UMM", "UMM");
         const profile = new ImmutableProfile("TestProfile");
-        const loaders = ["version.dll", "d3d12.dll"];
+        const loaders = ["UMM/Core/UnityModManager.dll", "doorstop_config.ini", "winhttp.dll"];
         await createFilesIntoProfile(loaders);
 
         await ProfileInstallerProvider.instance.disableMod(pkg, profile);
@@ -58,27 +53,42 @@ describe('UMMInstaller Tests', () => {
     });
 });
 
-describe('UMMPluginInstaller Tests', () => {
+describe('UMM Mod Tests (using InstallRules)', () => {
     beforeEach(
         () => installLogicBeforeEach("Broforce")
     );
 
-    test('Installs and uninstalls a package', async () => {
-        const pkg = createManifest("HelperFunctions", "Klehrik");
+    test('Installs and uninstalls a UMM mod to Mods folder', async () => {
+        const pkg = createManifest("BroMaker", "TestAuthor");
         const name = pkg.getName();
         const sourceToExpectedDestination = {
-            "README.md": `ReturnOfModding/plugins/${name}/README.md`,
-            "CHANGELOG.md": `ReturnOfModding/plugins/${name}/CHANGELOG.md`,
-            "manifest.json": `ReturnOfModding/plugins/${name}/manifest.json`,
-            "icon.png": `ReturnOfModding/plugins/${name}/icon.png`,
-            "main.lua": `ReturnOfModding/plugins/${name}/main.lua`,
-            "custom-folder/file.txt": `ReturnOfModding/plugins/${name}/custom-folder/file.txt`,
-            "plugins_data/data.dat": `ReturnOfModding/plugins_data/${name}/data.dat`,
-            "config/config.cfg": `ReturnOfModding/config/${name}/config.cfg`,
+            "Mods/BroMaker/BroMakerLib.dll": `UMM/Mods/${name}/BroMaker/BroMakerLib.dll`,
+            "Mods/BroMaker/Info.json": `UMM/Mods/${name}/BroMaker/Info.json`,
+            "README.md": `UMM/Mods/${name}/README.md`,
+            "manifest.json": `UMM/Mods/${name}/manifest.json`,
+            "icon.png": `UMM/Mods/${name}/icon.png`,
         };
-        const expectedAfterUninstall: string[] = [
-            `ReturnOfModding/config/${name}/config.cfg`,
-        ];
+        const expectedAfterUninstall: string[] = [];
+        await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
+
+        await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
+        await expectFilesToBeCopied(sourceToExpectedDestination);
+
+        const result = await ProfileInstallerProvider.instance.uninstallMod(pkg, Profile.getActiveProfile().asImmutableProfile());
+        expect(result instanceof R2Error).toBeFalsy();
+        await expectFilesToBeRemoved(sourceToExpectedDestination, expectedAfterUninstall);
+    });
+
+    test('Installs a BroMaker bro to BroMaker_Storage folder', async () => {
+        const pkg = createManifest("CustomBro", "TestAuthor");
+        const name = pkg.getName();
+        const sourceToExpectedDestination = {
+            "BroMaker_Storage/Custom Bro/CustomBro.json": `UMM/BroMaker_Storage/${name}/Custom Bro/CustomBro.json`,
+            "BroMaker_Storage/Custom Bro/CustomBro.mod.json": `UMM/BroMaker_Storage/${name}/Custom Bro/CustomBro.mod.json`,
+            "BroMaker_Storage/Custom Bro/CustomBro.dll": `UMM/BroMaker_Storage/${name}/Custom Bro/CustomBro.dll`,
+            "BroMaker_Storage/Custom Bro/sprite.png": `UMM/BroMaker_Storage/${name}/Custom Bro/sprite.png`,
+        };
+        const expectedAfterUninstall: string[] = [];
         await createPackageFilesIntoCache(pkg, Object.keys(sourceToExpectedDestination));
 
         await ProfileInstallerProvider.instance.installMod(pkg, Profile.getActiveProfile().asImmutableProfile());
@@ -90,14 +100,13 @@ describe('UMMPluginInstaller Tests', () => {
     });
 
     test('Disabling/enabling a mod renames files', async () => {
-        const pkg = createManifest("HelperFunctions", "Klehrik");
+        const pkg = createManifest("BroMaker", "TestAuthor");
         const profile = new ImmutableProfile("TestProfile");
         const name = pkg.getName();
         const files = [
-            `ReturnOfModding/plugins/${name}/main.lua`,
-            `ReturnOfModding/plugins_data/${name}/data.dat`,
-            `ReturnOfModding/plugins_data/${name}/cache/cache.dat`,
-            `ReturnOfModding/config/${name}/config.cfg`,
+            `UMM/Mods/${name}/BroMaker/BroMakerLib.dll`,
+            `UMM/Mods/${name}/README.md`,
+            `UMM/Mods/${name}/manifest.json`,
         ];
         await createFilesIntoProfile(files);
 
