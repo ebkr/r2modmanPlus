@@ -7,14 +7,12 @@ import GameInstructionParser from '../../instructions/GameInstructionParser';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
-import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
-import ConfigLine from '../../../../model/file/ConfigLine';
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
 import path from '../../../../providers/node/path/path';
 import ModLinker from '../../../../r2mm/manager/ModLinker';
 import { buildConfigurationFileFromPath, saveConfigurationFile } from 'src/utils/ConfigUtils';
 
-type EgsInstallationListEntry = {
+export type EgsInstallationListEntry = {
     InstallLocation: string;
     NamespaceId: string;
     ItemId: string;
@@ -23,7 +21,7 @@ type EgsInstallationListEntry = {
     AppName: string;
 }
 
-type EgsInstalledDataFormat = {
+export type EgsInstalledDataFormat = {
     InstallationList: EgsInstallationListEntry[];
 }
 
@@ -107,6 +105,12 @@ export default class EgsGameRunner extends GameRunnerProvider {
             const generalDoorstopSection = doorstopConfigurationFile.sections.find(section => section.sectionName === 'General')!;
             generalDoorstopSection.entries.find(entry => entry.entryName === 'target_assembly')!.value = preloaderPath;
             generalDoorstopSection.entries.find(entry => entry.entryName === 'enabled')!.value = Boolean(enabled).toString();
+        } else {
+            throw new R2Error(
+                "Unsupported Doorstop version",
+                "The version of Unity Doorstop is unsupported. This is likely due to a BepInEx update.",
+                "Either downgrade your BepInEx version or wait for a manager update"
+            );
         }
 
         await saveConfigurationFile(doorstopConfigurationFile);
