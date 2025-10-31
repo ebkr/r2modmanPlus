@@ -18952,6 +18952,110 @@
         ]
       }
     },
+    "broforce": {
+      "uuid": "dcebc888-06d8-436f-b7e7-ed08713f68bd",
+      "label": "broforce",
+      "meta": {
+        "displayName": "Broforce",
+        "iconUrl": "broforce.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "274190"
+            }
+          ],
+          "steamFolderName": "Broforce",
+          "dataFolderName": "Broforce_beta_Data",
+          "exeNames": [
+            "Broforce_beta.exe"
+          ],
+          "packageLoader": "umm",
+          "meta": {
+            "displayName": "Broforce",
+            "iconUrl": "broforce.webp"
+          },
+          "settingsIdentifier": "Broforce",
+          "internalFolderName": "Broforce",
+          "packageIndex": "https://thunderstore.io/c/broforce/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "UMM/Mods",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "UMM/BroMaker_Storage",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "UMM/DM_Wardrobes",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Broforce",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "bros": {
+            "label": "Bros"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
+        "discordUrl": "https://discord.com/invite/freelives",
+        "autolistPackageIds": []
+      }
+    },
     "clover-pit": {
       "uuid": "dc3c6f53-dbc6-497a-a922-1977b5df0751",
       "label": "clover-pit",
@@ -28146,6 +28250,49 @@
         "LavaGang-MelonLoader"
       ]
     },
+    "broforce": {
+      "displayName": "Broforce",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "bros": {
+          "label": "Bros"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/alexneargarder/BroforceMods/wiki",
+      "discordUrl": "https://discord.com/invite/freelives",
+      "autolistPackageIds": []
+    },
     "clover-pit": {
       "displayName": "CloverPit",
       "categories": {
@@ -30359,6 +30506,11 @@
       "packageId": "BepInEx-BepInExPack_LostSkies",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
+    },
+    {
+      "packageId": "UMM-UMM",
+      "rootFolder": "UMM",
+      "loader": "umm"
     }
   ]
 }
