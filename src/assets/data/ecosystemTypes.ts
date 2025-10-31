@@ -117,6 +117,7 @@ export enum Loader {
     RECURSIVE_MELONLOADER = "recursive-melonloader",
     RETURN_OF_MODDING = "return-of-modding",
     SHIMLOADER = "shimloader",
+    UMM = "umm",
 }
 
 export interface ModloaderPackage {
@@ -405,5 +406,6 @@ const typeMap: any = {
         "recursive-melonloader",
         "return-of-modding",
         "shimloader",
+        "umm",
     ],
 };
