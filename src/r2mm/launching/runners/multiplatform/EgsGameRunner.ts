@@ -7,9 +7,23 @@ import GameInstructionParser from '../../instructions/GameInstructionParser';
 import FsProvider from '../../../../providers/generic/file/FsProvider';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { DynamicGameInstruction } from '../../instructions/DynamicGameInstruction';
-import BepInExConfigUtils from '../../../../utils/BepInExConfigUtils';
-import ConfigLine from '../../../../model/file/ConfigLine';
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
+import path from '../../../../providers/node/path/path';
+import ModLinker from '../../../../r2mm/manager/ModLinker';
+import { buildConfigurationFileFromPath, saveConfigurationFile } from '../../../../utils/ConfigUtils';
+
+export type EgsInstallationListEntry = {
+    InstallLocation: string;
+    NamespaceId: string;
+    ItemId: string;
+    ArtifactId: string;
+    AppVersion: string;
+    AppName: string;
+}
+
+export type EgsInstalledDataFormat = {
+    InstallationList: EgsInstallationListEntry[];
+}
 
 export default class EgsGameRunner extends GameRunnerProvider {
 
@@ -24,57 +38,18 @@ export default class EgsGameRunner extends GameRunnerProvider {
             return args
         }
         if (game.packageLoader === PackageLoader.BEPINEX) {
-            // Enable doorstop and set preloader path
-            const preloaderPath = await GameInstructionParser.parse(DynamicGameInstruction.BEPINEX_PRELOADER_PATH, game, profile);
-            if (preloaderPath instanceof R2Error) {
-                return preloaderPath;
-            }
-
-            let doorstopUpdateVars: {[section: string]: {[key: string]: string}};
-            const doorstopVersion = await getUnityDoorstopVersion(profile);
-            if (doorstopVersion === 3) {
-                doorstopUpdateVars = {
-                    UnityDoorstop: {
-                        targetAssembly: preloaderPath,
-                        enabled: "true"
-                    }
-                };
-            } else if (doorstopVersion === 4) {
-                doorstopUpdateVars = {
-                    General: {
-                        ["target_assembly"]: preloaderPath,
-                        enabled: "true"
-                    }
-                };
-            } else {
-                return new R2Error(
-                    "Unsupported Doorstop version",
-                    "The version of Unity Doorstop is unsupported. This is likely due to a BepInEx update.",
-                    "Either downgrade your BepInEx version or wait for a manager update"
-                );
-            }
-
-            const updateResult = await this.updateDoorstopConfigVars(profile, doorstopUpdateVars);
-            if (updateResult instanceof R2Error) {
-                return updateResult;
-            }
+            await this.setDoorstopEnabled(profile, game, true);
         }
+        await ModLinker.link(profile.asImmutableProfile(), game);
         return this.start(game, args);
     }
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
         if (game.packageLoader === PackageLoader.BEPINEX) {
-            // Disable doorstop
-            const updateResult = await this.updateDoorstopConfigVars(profile, {
-                UnityDoorstop: {
-                    enabled: "false"
-                }
-            });
-            if (updateResult instanceof R2Error) {
-                return updateResult;
-            }
+            await this.setDoorstopEnabled(profile, game, false);
         }
+        await ModLinker.link(profile.asImmutableProfile(), game);
         return this.start(game, instructions.vanillaParameters);
     }
 
@@ -82,32 +57,62 @@ export default class EgsGameRunner extends GameRunnerProvider {
         try {
             // Ignore errors to allow Thunderstore Mod Manager build without errors
             // @ts-ignore
-            window.electron.openPath(`com.epicgames.launcher://apps/${game.activePlatform.storeIdentifier}?action=launch&silent=true`)
+            const launchString = await this.getLaunchString(game);
+            window.electron.openExternal(launchString);
         } catch (e) {
             const err: Error = e as Error;
             return new R2Error("Failed to start the game", err.message, null);
         }
     }
 
-    private async updateDoorstopConfigVars(profile: Profile, data: {[section: string]: {[key: string]: string}}): Promise<R2Error | undefined> {
-        const fs = FsProvider.instance;
-        const doorstopConfigPath = profile.joinToProfilePath("doorstop_config.ini");
+    private async getLaunchString(game: Game): Promise<string> {
+        let namespaceId = "";
+        let itemId = "";
+        let artifactId = "";
+
+        const fileContent = (await FsProvider.instance.readFile(path.join('C:', 'ProgramData', 'Epic', 'UnrealEngineLauncher', 'LauncherInstalled.dat'))).toString();
+        const installedData: EgsInstalledDataFormat = JSON.parse(fileContent);
+
         try {
-            if (await fs.exists(doorstopConfigPath)) {
-                const originalConfigText = (await fs.readFile(doorstopConfigPath)).toString();
-                const breakdown = await BepInExConfigUtils.getBepInExConfigBreakdown(doorstopConfigPath);
-                for (const section of Object.keys(data)) {
-                    for (const key of Object.keys(data[section])) {
-                        breakdown[section][key] = new ConfigLine(data[section][key], breakdown[section][key].comments, breakdown[section][key].allowedValues);
-                    }
-                }
-                await BepInExConfigUtils.updateBepInExConfigFile(doorstopConfigPath, originalConfigText, breakdown);
-            } else {
-                return new R2Error("doorstop_config.ini not found in profile folder", "BepInEx must be installed.", "https://github.com/ebkr/r2modmanPlus/wiki/Why-aren't-my-mods-working%3F#corrupted-bepinex-installation");
-            }
+            const entry = installedData.InstallationList!.filter(value => value.AppName.toLowerCase() === game.activePlatform.storeIdentifier?.toLowerCase())[0]!;
+            namespaceId = entry.NamespaceId;
+            itemId = entry.ItemId;
+            artifactId = entry.ArtifactId;
         } catch (e) {
             const err: Error = e as Error;
-            return new R2Error("Failed to update doorstop_config.ini", err.message, null);
+            throw new R2Error('Failed to read LauncherInstalled.dat', err.message);
         }
+
+        const protocol = 'com.epicgames.launcher://apps/';
+        const launchArgs = "?action=launch&silent=true";
+        return `${protocol}${namespaceId}%3A${itemId}%3A${artifactId}${launchArgs}`;
+    }
+
+    private async setDoorstopEnabled(profile: Profile, game: Game, enabled: boolean): Promise<void> {
+        const doorstopConfigurationFile = await buildConfigurationFileFromPath(profile.joinToProfilePath("doorstop_config.ini"));
+        const doorstopVersion = await getUnityDoorstopVersion(profile);
+
+        const preloaderPath = await GameInstructionParser.parse(DynamicGameInstruction.BEPINEX_PRELOADER_PATH, game, profile);
+        if (preloaderPath instanceof R2Error) {
+            throw preloaderPath;
+        }
+
+        if (doorstopVersion === 3) {
+            const unityDoorstopSection = doorstopConfigurationFile.sections.find(section => section.sectionName === 'UnityDoorstop')!;
+            unityDoorstopSection.entries.find(entry => entry.entryName === 'targetAssembly')!.value = preloaderPath;
+            unityDoorstopSection.entries.find(entry => entry.entryName === 'enabled')!.value = Boolean(enabled).toString();
+        } else if (doorstopVersion === 4) {
+            const generalDoorstopSection = doorstopConfigurationFile.sections.find(section => section.sectionName === 'General')!;
+            generalDoorstopSection.entries.find(entry => entry.entryName === 'target_assembly')!.value = preloaderPath;
+            generalDoorstopSection.entries.find(entry => entry.entryName === 'enabled')!.value = Boolean(enabled).toString();
+        } else {
+            throw new R2Error(
+                "Unsupported Doorstop version",
+                "The version of Unity Doorstop is unsupported. This is likely due to a BepInEx update.",
+                "Either downgrade your BepInEx version or wait for a manager update"
+            );
+        }
+
+        await saveConfigurationFile(doorstopConfigurationFile);
     }
 }
