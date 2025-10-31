@@ -18,7 +18,8 @@ export default class GameInstructionParser {
         [DynamicGameInstruction.PROFILE_NAME, GameInstructionParser.profileNameResolver],
         [DynamicGameInstruction.NORTHSTAR_DIRECTORY, GameInstructionParser.northstarDirectoryResolver],
         [DynamicGameInstruction.GDWEAVE_FOLDER, GameInstructionParser.gdweaveFolderResolver],
-        [DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH, GameInstructionParser.bepInExRendererPreloaderPath]
+        [DynamicGameInstruction.BEPINEX_RENDERER_PRELOADER_PATH, GameInstructionParser.bepInExRendererPreloaderPath],
+        [DynamicGameInstruction.UMM_PRELOADER_PATH, GameInstructionParser.ummPreloaderResolver]
     ]);
 
     public static async parse(launchString: string, game: Game, profile: Profile): Promise<string | R2Error> {
@@ -102,6 +103,10 @@ export default class GameInstructionParser {
             // The Renderer doesn't have to be installed, so instead we'll do nothing with it.
             return '';
         }
+    }
+
+    private static async ummPreloaderResolver(game: Game, profile: Profile): Promise<string | R2Error> {
+        return profile.joinToProfilePath("UMM", "Core", "UnityModManager.dll");
     }
 
     private static async isProton(game: Game) {

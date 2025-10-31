@@ -250,7 +250,7 @@ export default class GenericProfileInstaller extends ProfileInstallerProvider {
         // Uninstallation logic for regular mods.
         // TODO: Move to work through the installer interface
         const profilePath = profile.getProfilePath();
-        const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding"];
+        const searchLocations = ["BepInEx", "shimloader", "ReturnOfModding", "UMM"];
         for (const searchLocation of searchLocations) {
             const bepInExLocation: string = path.join(profilePath, searchLocation);
             if (!(await fs.exists(bepInExLocation))) {

@@ -6,4 +6,5 @@ export enum DynamicGameInstruction {
     NORTHSTAR_DIRECTORY = "@northstarDirectory",
     GDWEAVE_FOLDER = "@gdweaveFolder",
     BEPINEX_RENDERER_PRELOADER_PATH = "@bepInExRendererPreloaderPath",
+    UMM_PRELOADER_PATH = "@ummPreloaderPath",
 }
