@@ -10,7 +10,7 @@ import { DynamicGameInstruction } from '../../instructions/DynamicGameInstructio
 import { getUnityDoorstopVersion } from '../../../../utils/UnityDoorstopUtils';
 import path from '../../../../providers/node/path/path';
 import ModLinker from '../../../../r2mm/manager/ModLinker';
-import { buildConfigurationFileFromPath, saveConfigurationFile } from 'src/utils/ConfigUtils';
+import { buildConfigurationFileFromPath, saveConfigurationFile } from '../../../../utils/ConfigUtils';
 
 export type EgsInstallationListEntry = {
     InstallLocation: string;
