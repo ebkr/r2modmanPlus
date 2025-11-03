@@ -5469,131 +5469,6 @@
         "discordUrl": "https://discord.gg/6zptX24a"
       }
     },
-    "five-nights-at-freddys-into-the-pit": {
-      "uuid": "ec590bff-7655-4946-acf1-476782de86d5",
-      "label": "five-nights-at-freddys-into-the-pit",
-      "meta": {
-        "displayName": "Five Nights at Freddy's: Into the Pit",
-        "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
-      },
-      "distributions": [
-        {
-          "platform": "steam",
-          "identifier": "2638370"
-        }
-      ],
-      "r2modman": [
-        {
-          "meta": {
-            "displayName": "Five Nights at Freddy's: Into the Pit",
-            "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
-          },
-          "internalFolderName": "FiveNightsAtFreddysIntoThePit",
-          "dataFolderName": "Five Nights at Freddy's Into the Pit_Data",
-          "distributions": [
-            {
-              "platform": "steam",
-              "identifier": "2638370"
-            }
-          ],
-          "settingsIdentifier": "FiveNightsAtFreddysIntoThePit",
-          "packageIndex": "https://thunderstore.io/c/five-nights-at-freddys-into-the-pit/api/v1/package-listing-index/",
-          "steamFolderName": "Five Nights at Freddy's Into the Pit",
-          "exeNames": [
-            "Five Nights at Freddy's Into the Pit.exe"
-          ],
-          "gameInstanceType": "game",
-          "gameSelectionDisplayMode": "visible",
-          "additionalSearchStrings": [
-            ""
-          ],
-          "packageLoader": "bepinex",
-          "installRules": [
-            {
-              "route": "BepInEx/plugins",
-              "defaultFileExtensions": [
-                ".dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            },
-            {
-              "route": "BepInEx/core",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/patchers",
-              "defaultFileExtensions": [],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/monomod",
-              "defaultFileExtensions": [
-                ".mm.dll"
-              ],
-              "trackingMethod": "subdir",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            },
-            {
-              "route": "BepInEx/config",
-              "defaultFileExtensions": [],
-              "trackingMethod": "none",
-              "subRoutes": [],
-              "isDefaultLocation": false
-            }
-          ],
-          "relativeFileExclusions": null
-        }
-      ],
-      "thunderstore": {
-        "displayName": "Five Nights at Freddy's: Into the Pit",
-        "categories": {
-          "mods": {
-            "label": "Mods"
-          },
-          "modpacks": {
-            "label": "Modpacks"
-          },
-          "tools": {
-            "label": "Tools"
-          },
-          "libraries": {
-            "label": "Libraries"
-          },
-          "misc": {
-            "label": "Misc"
-          },
-          "audio": {
-            "label": "Audio"
-          }
-        },
-        "sections": {
-          "mods": {
-            "name": "Mods",
-            "excludeCategories": [
-              "modpacks"
-            ]
-          },
-          "modpacks": {
-            "name": "Modpacks",
-            "requireCategories": [
-              "modpacks"
-            ]
-          }
-        },
-        "discordUrl": "https://discord.gg/technical-fnaf-664239645441261588",
-        "autolistPackageIds": [
-          "BepInEx-BepInExPack"
-        ]
-      }
-    },
     "for-the-king": {
       "uuid": "4d8ab61e-eb93-4fab-b076-b73ae450b73f",
       "label": "for-the-king",
@@ -19654,6 +19529,139 @@
       },
       "r2modman": null
     },
+    "five-nights-at-freddys-into-the-pit": {
+      "uuid": "ec590bff-7655-4946-acf1-476782de86d5",
+      "label": "five-nights-at-freddys-into-the-pit",
+      "meta": {
+        "displayName": "Five Nights at Freddy's: Into the Pit",
+        "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
+      },
+      "distributions": [
+        {
+          "platform": "steam",
+          "identifier": "2638370"
+        },
+        {
+          "platform": "epic-games-store",
+          "identifier": "a0fbc3eb950341e290ae20a7d02cc501"
+        }
+      ],
+      "r2modman": [
+        {
+          "meta": {
+            "displayName": "Five Nights at Freddy's: Into the Pit",
+            "iconUrl": "five-nights-at-freddys-into-the-pit.webp"
+          },
+          "internalFolderName": "FiveNightsAtFreddysIntoThePit",
+          "dataFolderName": "Five Nights at Freddy's Into the Pit_Data",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2638370"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "a0fbc3eb950341e290ae20a7d02cc501"
+            }
+          ],
+          "settingsIdentifier": "FiveNightsAtFreddysIntoThePit",
+          "packageIndex": "https://thunderstore.io/c/five-nights-at-freddys-into-the-pit/api/v1/package-listing-index/",
+          "steamFolderName": "Five Nights at Freddy's Into the Pit",
+          "exeNames": [
+            "Five Nights at Freddy's Into the Pit.exe"
+          ],
+          "gameInstanceType": "game",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [
+            ""
+          ],
+          "packageLoader": "bepinex",
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": true
+            },
+            {
+              "route": "BepInEx/core",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/patchers",
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/monomod",
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            },
+            {
+              "route": "BepInEx/config",
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": [],
+              "isDefaultLocation": false
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Five Nights at Freddy's: Into the Pit",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/technical-fnaf-664239645441261588",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "gear-blocks": {
       "uuid": "0ba1984d-33a7-4c8d-89da-85c0246f5af1",
       "label": "gear-blocks",
@@ -20971,6 +20979,83 @@
         "discordUrl": "https://discord.gg/9VCRuEYTcq",
         "autolistPackageIds": [
           "BepInEx-BepInExPack_IL2CPP"
+        ]
+      }
+    },
+    "mimesis": {
+      "uuid": "aeebfea4-fe72-4535-9cea-0b880b5d270c",
+      "label": "mimesis",
+      "meta": {
+        "displayName": "Mimesis",
+        "iconUrl": "mimesis.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2827200"
+            }
+          ],
+          "steamFolderName": "MIMESIS",
+          "dataFolderName": "MIMESIS_Data",
+          "exeNames": [
+            "MIMESIS.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Mimesis",
+            "iconUrl": "mimesis.webp"
+          },
+          "settingsIdentifier": "Mimesis",
+          "internalFolderName": "Mimesis",
+          "packageIndex": "https://thunderstore.io/c/mimesis/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Mimesis",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
         ]
       }
     },
@@ -24367,47 +24452,6 @@
       },
       "wikiUrl": "https://erenshor.fandom.com/wiki/Erenshor_Wiki",
       "discordUrl": "https://discord.gg/6zptX24a"
-    },
-    "five-nights-at-freddys-into-the-pit": {
-      "displayName": "Five Nights at Freddy's: Into the Pit",
-      "categories": {
-        "mods": {
-          "label": "Mods"
-        },
-        "modpacks": {
-          "label": "Modpacks"
-        },
-        "tools": {
-          "label": "Tools"
-        },
-        "libraries": {
-          "label": "Libraries"
-        },
-        "misc": {
-          "label": "Misc"
-        },
-        "audio": {
-          "label": "Audio"
-        }
-      },
-      "sections": {
-        "mods": {
-          "name": "Mods",
-          "excludeCategories": [
-            "modpacks"
-          ]
-        },
-        "modpacks": {
-          "name": "Modpacks",
-          "requireCategories": [
-            "modpacks"
-          ]
-        }
-      },
-      "discordUrl": "https://discord.gg/technical-fnaf-664239645441261588",
-      "autolistPackageIds": [
-        "BepInEx-BepInExPack"
-      ]
     },
     "gang-beasts": {
       "displayName": "Gang Beasts",
@@ -28618,6 +28662,47 @@
       },
       "discordUrl": "https://discord.gg/KZRVjVEe5v"
     },
+    "five-nights-at-freddys-into-the-pit": {
+      "displayName": "Five Nights at Freddy's: Into the Pit",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/technical-fnaf-664239645441261588",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "gear-blocks": {
       "displayName": "GearBlocks",
       "categories": {
@@ -29140,6 +29225,46 @@
       "discordUrl": "https://discord.gg/9VCRuEYTcq",
       "autolistPackageIds": [
         "BepInEx-BepInExPack_IL2CPP"
+      ]
+    },
+    "mimesis": {
+      "displayName": "Mimesis",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
       ]
     },
     "mirrors-edge": {
