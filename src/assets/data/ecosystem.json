@@ -19568,7 +19568,8 @@
           "packageIndex": "https://thunderstore.io/c/five-nights-at-freddys-into-the-pit/api/v1/package-listing-index/",
           "steamFolderName": "Five Nights at Freddy's Into the Pit",
           "exeNames": [
-            "Five Nights at Freddy's Into the Pit.exe"
+            "Five Nights at Freddy's Into the Pit.exe",
+            "FNaFIntoThePit.exe"
           ],
           "gameInstanceType": "game",
           "gameSelectionDisplayMode": "visible",
@@ -20884,7 +20885,8 @@
           "steamFolderName": "Megabonk",
           "dataFolderName": "Megabonk_Data",
           "exeNames": [
-            "Megabonk.exe"
+            "Megabonk.exe",
+            "Megabonk.x86_64"
           ],
           "packageLoader": "bepinex",
           "meta": {
