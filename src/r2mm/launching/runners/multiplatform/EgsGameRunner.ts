@@ -89,7 +89,11 @@ export default class EgsGameRunner extends GameRunnerProvider {
     }
 
     private async setDoorstopEnabled(profile: Profile, game: Game, enabled: boolean): Promise<void> {
-        const doorstopConfigurationFile = await buildConfigurationFileFromPath(profile.joinToProfilePath("doorstop_config.ini"));
+        const doorstopPath = profile.joinToProfilePath("doorstop_config.ini");
+        if (!(await FsProvider.instance.exists(doorstopPath))) {
+            return;
+        }
+        const doorstopConfigurationFile = await buildConfigurationFileFromPath(doorstopPath);
         const doorstopVersion = await getUnityDoorstopVersion(profile);
 
         const preloaderPath = await GameInstructionParser.parse(DynamicGameInstruction.BEPINEX_PRELOADER_PATH, game, profile);
