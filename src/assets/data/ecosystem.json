@@ -18749,6 +18749,127 @@
         ]
       }
     },
+    "bendy-and-the-ink-machine": {
+      "uuid": "a1979509-361c-4029-8daa-20bc5ba3553d",
+      "label": "bendy-and-the-ink-machine",
+      "meta": {
+        "displayName": "Bendy and the Ink Machine",
+        "iconUrl": "bendy-and-the-ink-machine.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "622650"
+            },
+            {
+              "platform": "epic-games-store",
+              "identifier": "39700e23ec114d7581aedea23779ce2d"
+            }
+          ],
+          "steamFolderName": "Bendy and the Ink Machine",
+          "dataFolderName": "Bendy and the Ink Machine_Data",
+          "exeNames": [
+            "Bendy and the Ink Machine.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Bendy and the Ink Machine",
+            "iconUrl": "bendy-and-the-ink-machine.webp"
+          },
+          "settingsIdentifier": "BendyAndTheInkMachine",
+          "internalFolderName": "BendyAndTheInkMachine",
+          "packageIndex": "https://thunderstore.io/c/bendy-and-the-ink-machine/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Bendy and the Ink Machine",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "beton-brutal": {
       "uuid": "2216ad36-7433-468c-addf-3db3ddc2d947",
       "label": "beton-brutal",
@@ -19663,6 +19784,83 @@
         ]
       }
     },
+    "forsaken-frontiers": {
+      "uuid": "8f216ccf-ed2e-4158-a09f-a60bc9586f25",
+      "label": "forsaken-frontiers",
+      "meta": {
+        "displayName": "Forsaken Frontiers",
+        "iconUrl": "forsaken-frontiers.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2810780"
+            }
+          ],
+          "steamFolderName": "Forsaken Frontiers",
+          "dataFolderName": "Forsaken Frontiers_Data",
+          "exeNames": [
+            "Forsaken Frontiers.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Forsaken Frontiers",
+            "iconUrl": "forsaken-frontiers.webp"
+          },
+          "settingsIdentifier": "ForsakenFrontiers",
+          "internalFolderName": "ForsakenFrontiers",
+          "packageIndex": "https://thunderstore.io/c/forsaken-frontiers/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Forsaken Frontiers",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "gear-blocks": {
       "uuid": "0ba1984d-33a7-4c8d-89da-85c0246f5af1",
       "label": "gear-blocks",
@@ -20185,7 +20383,7 @@
             ]
           }
         },
-        "discordUrl": "https://discord.gg/jumpspace",
+        "discordUrl": "https://discord.gg/JPnBe9ujTN",
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ],
@@ -22269,6 +22467,123 @@
         "discordUrl": "https://discord.gg/vCDJK9xyvm",
         "wikiUrl": "https://modding.resonite.net",
         "autolistPackageIds": []
+      }
+    },
+    "return-from-core": {
+      "uuid": "24c83122-c208-4384-906f-fd99b3194a65",
+      "label": "return-from-core",
+      "meta": {
+        "displayName": "Return From Core",
+        "iconUrl": "return-from-core.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2171630"
+            }
+          ],
+          "steamFolderName": "Return From Core/Return From Core",
+          "dataFolderName": "Return From Core_Data",
+          "exeNames": [
+            "Return From Core.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Return From Core",
+            "iconUrl": "return-from-core.webp"
+          },
+          "settingsIdentifier": "ReturnFromCore",
+          "internalFolderName": "ReturnFromCore",
+          "packageIndex": "https://thunderstore.io/c/return-from-core/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Return From Core",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
       }
     },
     "ship-of-harkinian": {
@@ -28255,6 +28570,46 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "bendy-and-the-ink-machine": {
+      "displayName": "Bendy and the Ink Machine",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "beton-brutal": {
       "displayName": "BETON BRUTAL",
       "categories": {
@@ -28705,6 +29060,46 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "forsaken-frontiers": {
+      "displayName": "Forsaken Frontiers",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "gear-blocks": {
       "displayName": "GearBlocks",
       "categories": {
@@ -28923,7 +29318,7 @@
           ]
         }
       },
-      "discordUrl": "https://discord.gg/jumpspace",
+      "discordUrl": "https://discord.gg/JPnBe9ujTN",
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ],
@@ -29851,6 +30246,46 @@
       "discordUrl": "https://discord.gg/vCDJK9xyvm",
       "wikiUrl": "https://modding.resonite.net",
       "autolistPackageIds": []
+    },
+    "return-from-core": {
+      "displayName": "Return From Core",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "ship-of-harkinian": {
       "displayName": "Ship of Harkinian",
