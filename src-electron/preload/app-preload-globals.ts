@@ -13,7 +13,7 @@ export function getPlatform(): string {
 }
 
 export async function checkForApplicationUpdates(): Promise<void> {
-    return ipcRenderer.invoke('update-app');
+    return ipcRenderer.send('update-app');
 }
 
 export function getStaticsDirectory(): string {
