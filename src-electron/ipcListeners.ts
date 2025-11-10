@@ -18,11 +18,8 @@ ipcMain.on('get-browser-window', () => {
     browserWindow.webContents.send('receive-browser-window', browserWindow);
 });
 
-ipcMain.handle('update-app', async () => {
-    if (typeof process.env.APPIMAGE !== 'undefined' || !process.execPath.startsWith(os.tmpdir())) {
-        electronUpdater.autoUpdater.autoDownload = true;
-        await electronUpdater.autoUpdater.checkForUpdatesAndNotify();
-    }
+ipcMain.on('update-app', () => {
+    electronUpdater.autoUpdater.checkForUpdatesAndNotify();
 });
 
 ipcMain.on('install-via-thunderstore', (installString) => {
