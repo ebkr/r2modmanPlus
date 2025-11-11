@@ -37,7 +37,7 @@ const isNsfw = computed<boolean>(() => props.mod?.getNsfwFlag())
 const maxPanelWidth = ref(getMaxPanelWidth());
 
 function getMaxPanelWidth(): number {
-    return window.outerWidth - document.getElementsByClassName("nav-column")[0].scrollWidth;
+    return window.outerWidth - document.getElementsByClassName("nav-column")[0]!.scrollWidth;
 }
 
 function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
@@ -45,7 +45,7 @@ function setActiveTab(tab: "README" | "CHANGELOG" | "Dependencies") {
 }
 
 function fetchDataFor(mod: ThunderstoreMod, type: "readme" | "changelog"): Promise<string> {
-    return fetch(transformPackageUrl(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/latest/${type}/`))
+    return fetch(transformPackageUrl(`https://thunderstore.io/api/cyberstorm/package/${mod.getOwner()}/${mod.getName()}/v/${mod.getLatestVersion()}/${type}/`))
         .then(res => {
             if (!res.ok) {
                 throw new Error(`No ${type} available for ${mod.getName()}`)

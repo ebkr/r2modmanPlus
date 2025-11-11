@@ -128,7 +128,6 @@ import { getStore } from '../providers/generic/store/StoreProvider';
 import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
 import path from '../providers/node/path/path';
-import { UpdateRequestItemBody } from '../store/modules/SplashModule';
 import FileUtils from '../utils/FileUtils';
 import { areWrapperArgumentsProvided, getDeterminedLaunchType } from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
@@ -150,20 +149,6 @@ const view = ref<string>('main');
 const splashText = computed(() => store.state.splash.splashText);
 
 store.commit('splash/initialiseRequests');
-
-// Ensure that the manager isn't outdated.
-function checkForUpdates() {
-    store.dispatch('splash/setSplashText', 'Preparing');
-    window.app.checkForApplicationUpdates()
-        .then(async () => {
-            store.commit('splash/updateRequestItem', {
-                requestName: 'UpdateCheck',
-                value: 100
-            } as UpdateRequestItemBody);
-            await store.dispatch('splash/getThunderstoreMods');
-            moveToNextScreen();
-        })
-}
 
 async function moveToNextScreen() {
     if (appWindow.getPlatform() === 'linux') {
@@ -207,8 +192,5 @@ async function ensureWrapperInGameFolder() {
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
 }
 
-onMounted(() => {
-    store.dispatch('splash/setSplashText', 'Checking for updates');
-    setTimeout(checkForUpdates, 100);
-})
+onMounted(moveToNextScreen)
 </script>

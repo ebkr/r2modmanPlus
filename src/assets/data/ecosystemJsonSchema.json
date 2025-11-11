@@ -93,6 +93,9 @@
                       "properties": {
                         "label": {
                           "type": "string"
+                        },
+                        "hidden": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -232,6 +235,7 @@
                             "gdweave",
                             "recursive-melonloader",
                             "bepisloader",
+                            "umm",
                             "none"
                           ]
                         },
@@ -383,6 +387,7 @@
                   "gdweave",
                   "recursive-melonloader",
                   "bepisloader",
+                  "umm",
                   "none"
                 ]
               }

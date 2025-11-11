@@ -359,6 +359,10 @@ function isAnyGameSelected() {
 }
 
 onMounted(async () => {
+
+    // Check for updates in the background
+    window.app.checkForApplicationUpdates()
+
     runningMigration.value = true;
     await store.dispatch('checkMigrations');
     runningMigration.value = false;
