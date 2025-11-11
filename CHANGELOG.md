@@ -1,3 +1,20 @@
+### 3.2.10
+#### Games added
+- Bendy and the Ink Machine
+- Forsaken Frontiers
+- Return From Core
+- Mimesis
+- Five Nights at Freddy's: Into the Pit
+  - EGS support
+- Broforce
+- Megabonk
+  - Linux executable can now be selected
+
+#### Bugs fixed
+- Being offline no longer prevents the manager from loading into a game
+- Updates are now checked on app startup instead of after game selection
+- EGS games can be launched again
+
 ### 3.2.9
 #### Games added
 - Megabonk
