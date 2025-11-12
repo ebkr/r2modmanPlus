@@ -10,7 +10,7 @@ export function hookZipIpc(browserWindow: BrowserWindow) {
         return new Promise((resolve, reject) => {
             const adm = new AdmZip(zip);
             outputFolder = outputFolder.replace(/\\/g, '/');
-            adm.extractAllToAsync(outputFolder, true, error => {
+            adm.extractAllToAsync(outputFolder, true, true, error => {
                 if (error) {
                     reject(error);
                 } else {
@@ -56,7 +56,7 @@ export function hookZipIpc(browserWindow: BrowserWindow) {
                 {
                     throw new Error("Entry " + target + " would extract outside of expected folder");
                 }
-                adm.extractEntryTo(target, outputPath, true, true);
+                adm.extractEntryTo(target, outputPath, true, true, true);
                 return resolve(undefined);
             } catch (e) {
                 reject(e);
