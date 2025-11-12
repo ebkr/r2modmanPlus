@@ -192,5 +192,12 @@ async function ensureWrapperInGameFolder() {
     await FsProvider.instance.chmod(path.join(PathResolver.MOD_ROOT, wrapperName), 0o755);
 }
 
-onMounted(moveToNextScreen)
+onMounted(async () => {
+    store.commit('splash/updateRequestItem', {
+        requestName: 'UpdateCheck',
+        value: 100
+    } as UpdateRequestItemBody);
+    await store.dispatch('splash/getThunderstoreMods');
+    moveToNextScreen();
+})
 </script>
