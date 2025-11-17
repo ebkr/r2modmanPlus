@@ -1,4 +1,13 @@
 export type SettingsMessageFormat = {
+    title: {
+        subtitle: string;
+    },
+    actions: {
+        search: {
+            text: string,
+            placeholder: string,
+        }
+    },
     groups: {
         all: string;
         profile: string;
