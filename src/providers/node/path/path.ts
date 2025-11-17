@@ -30,7 +30,7 @@ const nodePath: NodePathProvider = {
     extname: path => getImplementation().extname(path),
     basename: path => getImplementation().basename(path),
     relative: (pathOne, pathTwo) => getImplementation().relative(pathOne, pathTwo),
-    resolve: paths => getImplementation().resolve(paths),
+    resolve: (...paths) => getImplementation().resolve(...paths),
     get sep() { return getImplementation().sep }
 };
 
