@@ -1,4 +1,15 @@
-export const SettingsTranslation = {
+import {SettingsMessageFormat} from "src/i18n/base/pages/SettingsMessageFormat";
+
+export const SettingsTranslation: SettingsMessageFormat = {
+    title: {
+        subtitle: 'Options avancées pour {appName} : {version}',
+    },
+    actions: {
+        search: {
+            text: 'Recherche:',
+            placeholder: 'Rechercher un paramètre',
+        }
+    },
     groups: {
         all: 'Tous',
         profile: 'Profil',

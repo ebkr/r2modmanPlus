@@ -406,16 +406,16 @@ function emitInvoke(invoked: string) {
 
 <template>
     <div id="settings-view">
-        <Hero title='Settings'
-              :subtitle='`Advanced options for ${appName}: ` + managerVersionNumber.toString()'
+        <Hero :title='t(`translations.pages.manager.navigation.otherActions.settings`)'
+              :subtitle='t(`translations.pages.settings.title.subtitle`, { appName: appName, version: managerVersionNumber.toString() })'
               heroType='primary'/>
         <div class="margin-right">
             <div class="sticky-top sticky-top--opaque sticky-top--no-shadow sticky-top--no-padding">
                 <div class='border-at-bottom'>
                     <div class='card is-shadowless is-square'>
                         <div class='card-header-title'>
-                            <span class="non-selectable margin-right">Search:</span>
-                            <input v-model='search' class="input" type="text" placeholder="Search for a setting"/>
+                            <span class="non-selectable margin-right">{{ t(`translations.pages.settings.actions.search.text`) }}</span>
+                            <input v-model='search' class="input" type="text" :placeholder="t(`translations.pages.settings.actions.search.placeholder`)"/>
                         </div>
                     </div>
                 </div>
