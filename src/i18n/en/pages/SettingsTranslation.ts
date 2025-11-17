@@ -1,6 +1,15 @@
 import {SettingsMessageFormat} from "../../base/pages/SettingsMessageFormat";
 
 export const SettingsTranslation: SettingsMessageFormat = {
+    title: {
+        subtitle: 'Advanced options for {appName}: {version}'
+    },
+    actions: {
+        search: {
+            text: 'Search:',
+            placeholder: 'Search for a setting',
+        }
+    },
     groups: {
         all: 'All',
         profile: 'Profile',
