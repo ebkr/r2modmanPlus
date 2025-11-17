@@ -14,6 +14,7 @@ import GameInstructionParser from '../../instructions/GameInstructionParser';
 import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
 import { getDeterminedLaunchType } from '../../../../utils/LaunchUtils';
 import { LaunchType } from '../../../../model/real_enums/launch/LaunchType';
+import childProcess from '../../../../providers/node/child_process/child_process';
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -25,9 +26,6 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
         const settings = await ManagerSettings.getSingleton(game);
         const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
-        if (isProton instanceof R2Error) {
-            return isProton;
-        }
 
         if (isProton) {
             // BepInEx uses winhttp, GDWeave uses winmm. More can be added later.
@@ -67,14 +65,24 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-        if(steamDir instanceof R2Error) {
-            return steamDir;
-        }
 
-        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
+        let steamExecutable: string;
+        // try {
+        //     steamExecutable = (childProcess.execSync("which steam")).trim();
+        // } catch (error) {
+        //     console.log(error)
+            if(steamDir instanceof R2Error) {
+                return steamDir;
+            }
+            steamExecutable = `${steamDir}/steam.sh`;
+        // }
+
+        console.log('steam exec:', `"${steamExecutable}"`);
+        LoggerProvider.instance.Log(LogSeverity.INFO, `Steam executable to call is: ${steamExecutable}`);
 
         try {
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
+
+            const cmd = `"${steamExecutable.trim()}" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await ChildProcess.exec(cmd);
         } catch(err) {

@@ -224,7 +224,7 @@ export default defineConfig((ctx) => {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman'],
+                    target: ['flatpak'],
                     icon: 'src/assets/icon',
                     maintainer: 'ebkr',
                     vendor: 'ebkr',
