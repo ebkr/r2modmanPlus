@@ -5,6 +5,10 @@ import { defineConfig } from '#q-app/wrappers';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig((ctx) => {
+
+    const isFlatpakTarget = process.env.BUILD_FLATPAK === "true";
+    console.log("isFlatpakTarget", isFlatpakTarget);
+
     return {
         // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
         // preFetch: true,
@@ -127,7 +131,7 @@ export default defineConfig((ctx) => {
             //   pwaRegisterServiceWorker: 'src-pwa/register-service-worker',
             //   pwaServiceWorker: 'src-pwa/custom-service-worker',
             //   pwaManifestFile: 'src-pwa/manifest.json',
-            electronMain: process.env.NODE_ENV === 'development' ? 'src-electron/electron-main.dev' : 'src-electron/electron-main',
+            electronMain: process.env.NODE_ENV === 'development' ? 'src-electron/electron-main.dev.ts' : 'src-electron/electron-main.ts',
             electronPreload: 'src-electron/electron-preload'
             //   bexManifestFile: 'src-bex/manifest.json
         },
@@ -185,8 +189,6 @@ export default defineConfig((ctx) => {
             // extendElectronMainConf (esbuildConf) {},
             // extendElectronPreloadConf (esbuildConf) {},
 
-            // extendPackageJson (json) {},
-
             // Electron preload scripts (if any) from /src-electron, WITHOUT file extension
             preloadScripts: [ 'electron-preload' ],
 
@@ -211,7 +213,7 @@ export default defineConfig((ctx) => {
             builder: {
                 // https://www.electron.build/configuration/configuration
 
-                appId: 'ebkr-r2modman',
+                appId: isFlatpakTarget ? 'com.github.ebkr.r2modman' : 'ebkr-r2modman',
                 win: {
                     target: ['nsis', 'portable'],
                     icon: 'src/assets/icon.ico'
@@ -224,7 +226,13 @@ export default defineConfig((ctx) => {
                     include: 'build/installer.nsh'
                 },
                 linux: {
-                    target: ['flatpak'],
+                    target: (() => {
+                        if (isFlatpakTarget) {
+                            return ['flatpak']
+                        } else {
+                            return ['AppImage']
+                        }
+                    })(),
                     icon: 'src/assets/icon',
                     maintainer: 'ebkr',
                     vendor: 'ebkr',
@@ -232,7 +240,7 @@ export default defineConfig((ctx) => {
                     category: 'Game',
                     mimeTypes: [
                         "x-scheme-handler/ror2mm"
-                    ]
+                    ],
                 },
                 mac: {
                     category: "games",
