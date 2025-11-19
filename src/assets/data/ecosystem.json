@@ -12759,7 +12759,7 @@
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ],
-        "discordUrl": "https://discord.gg/9Z5RKEYSzq"
+        "discordUrl": "https://discord.gg/UD4K4chKak"
       }
     },
     "screw-drivers": {
@@ -18509,6 +18509,121 @@
       },
       "r2modman": null
     },
+    "aeruta": {
+      "uuid": "70e4bc07-8642-44f1-a0a5-575eac59bd60",
+      "label": "aeruta",
+      "meta": {
+        "displayName": "Aeruta",
+        "iconUrl": "aeruta.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2286780"
+            }
+          ],
+          "steamFolderName": "Aeruta",
+          "dataFolderName": "Aeruta_Data",
+          "exeNames": [
+            "Aeruta.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Aeruta",
+            "iconUrl": "aeruta.webp"
+          },
+          "settingsIdentifier": "Aeruta",
+          "internalFolderName": "Aeruta",
+          "packageIndex": "https://thunderstore.io/c/aeruta/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Aeruta",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      }
+    },
     "an-unfinished-game": {
       "uuid": "dc4ff876-263d-4e67-9dd9-9fb42203e6c3",
       "label": "an-unfinished-game",
@@ -18746,6 +18861,83 @@
         "discordUrl": "https://discord.gg/bNeqTNB23c",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
+        ]
+      }
+    },
+    "beetleball": {
+      "uuid": "4746944a-59d5-4038-8a13-f9710a4c4bb7",
+      "label": "beetleball",
+      "meta": {
+        "displayName": "Beetleball",
+        "iconUrl": "beetleball.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3821880"
+            }
+          ],
+          "steamFolderName": "BeetleBall Playtest",
+          "dataFolderName": "Beetleball_Data",
+          "exeNames": [
+            "Beetleball.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Beetleball",
+            "iconUrl": "beetleball.webp"
+          },
+          "settingsIdentifier": "Beetleball",
+          "internalFolderName": "Beetleball",
+          "packageIndex": "https://thunderstore.io/c/beetleball/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Beetleball",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
         ]
       }
     },
@@ -19782,6 +19974,121 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "football-manager-26": {
+      "uuid": "dff631a2-171a-4bd1-af49-92a0c81eb49b",
+      "label": "football-manager-26",
+      "meta": {
+        "displayName": "Football Manager 26",
+        "iconUrl": "football-manager-26.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3551340"
+            }
+          ],
+          "steamFolderName": "Football Manager 26",
+          "dataFolderName": "fm_Data",
+          "exeNames": [
+            "fm.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Football Manager 26",
+            "iconUrl": "football-manager-26.webp"
+          },
+          "settingsIdentifier": "FootballManager26",
+          "internalFolderName": "FootballManager26",
+          "packageIndex": "https://thunderstore.io/c/football-manager-26/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Football Manager 26",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
       }
     },
     "forsaken-frontiers": {
@@ -21220,6 +21527,7 @@
       ],
       "thunderstore": {
         "displayName": "Mimesis",
+        "discordUrl": "https://discord.gg/FjPTPRMRn",
         "categories": {
           "mods": {
             "label": "Mods"
@@ -21444,6 +21752,122 @@
           }
         },
         "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
+        "autolistPackageIds": []
+      }
+    },
+    "necropolis": {
+      "uuid": "4b70da56-339a-4ab2-b9a8-eb11b0042805",
+      "label": "necropolis",
+      "meta": {
+        "displayName": "Necropolis",
+        "iconUrl": "necropolis.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "384490"
+            }
+          ],
+          "steamFolderName": "Necropolis",
+          "dataFolderName": "Necropolis_Data",
+          "exeNames": [
+            "Necropolis.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Necropolis",
+            "iconUrl": "necropolis.webp"
+          },
+          "settingsIdentifier": "Necropolis",
+          "internalFolderName": "Necropolis",
+          "packageIndex": "https://thunderstore.io/c/necropolis/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Necropolis",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/2233yFQ",
         "autolistPackageIds": []
       }
     },
@@ -22850,6 +23274,124 @@
       },
       "r2modman": null
     },
+    "super-fantasy-kingdom": {
+      "uuid": "fe0fa301-b037-4cbc-84e1-300a44bd3eb0",
+      "label": "super-fantasy-kingdom",
+      "meta": {
+        "displayName": "Super Fantasy Kingdom",
+        "iconUrl": "super-fantasy-kingdom.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2289750"
+            }
+          ],
+          "steamFolderName": "Super Fantasy Kingdom",
+          "dataFolderName": "Super Fantasy Kingdom_Data",
+          "exeNames": [
+            "Super Fantasy Kingdom.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Super Fantasy Kingdom",
+            "iconUrl": "super-fantasy-kingdom.webp"
+          },
+          "settingsIdentifier": "SuperFantasyKingdom",
+          "internalFolderName": "SuperFantasyKingdom",
+          "packageIndex": "https://thunderstore.io/c/super-fantasy-kingdom/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Super Fantasy Kingdom",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.com/invite/bdjvSJJwCX",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "super-mario-3d-world": {
       "uuid": "88c3d6ea-d7d4-4225-819c-bac4f86b79d6",
       "label": "super-mario-3d-world",
@@ -23022,6 +23564,83 @@
         },
         "wikiUrl": "https://vellum.fandom.com/wiki/Vellum_Wiki",
         "discordUrl": "https://discord.gg/vellum",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
+    "vigil": {
+      "uuid": "af2cd83f-99c0-4fa7-a319-e8022b0aea78",
+      "label": "vigil",
+      "meta": {
+        "displayName": "Vigil",
+        "iconUrl": "vigil.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3817090"
+            }
+          ],
+          "steamFolderName": "Vigil",
+          "dataFolderName": "Vigil_Data",
+          "exeNames": [
+            "Vigil.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Vigil",
+            "iconUrl": "vigil.webp"
+          },
+          "settingsIdentifier": "Vigil",
+          "internalFolderName": "Vigil",
+          "packageIndex": "https://thunderstore.io/c/vigil/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Vigil",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
         "autolistPackageIds": [
           "LavaGang-MelonLoader"
         ]
@@ -26781,7 +27400,7 @@
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ],
-      "discordUrl": "https://discord.gg/9Z5RKEYSzq"
+      "discordUrl": "https://discord.gg/UD4K4chKak"
     },
     "screw-drivers": {
       "displayName": "Screw Drivers",
@@ -28454,6 +29073,44 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "aeruta": {
+      "displayName": "Aeruta",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
+    },
     "an-unfinished-game": {
       "displayName": "An Unfinished Game",
       "categories": {
@@ -28568,6 +29225,46 @@
       "discordUrl": "https://discord.gg/bNeqTNB23c",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
+      ]
+    },
+    "beetleball": {
+      "displayName": "Beetleball",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
       ]
     },
     "bendy-and-the-ink-machine": {
@@ -29059,6 +29756,44 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "football-manager-26": {
+      "displayName": "Football Manager 26",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
     },
     "forsaken-frontiers": {
       "displayName": "Forsaken Frontiers",
@@ -29626,6 +30361,7 @@
     },
     "mimesis": {
       "displayName": "Mimesis",
+      "discordUrl": "https://discord.gg/FjPTPRMRn",
       "categories": {
         "mods": {
           "label": "Mods"
@@ -29763,6 +30499,45 @@
         }
       },
       "discordUrl": "https://discord.com/invite/F8cJ2ePRej",
+      "autolistPackageIds": []
+    },
+    "necropolis": {
+      "displayName": "Necropolis",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/2233yFQ",
       "autolistPackageIds": []
     },
     "ostranauts": {
@@ -30444,6 +31219,47 @@
       "discordUrl": "https://discord.com/invite/shipofharkinian",
       "autolistPackageIds": []
     },
+    "super-fantasy-kingdom": {
+      "displayName": "Super Fantasy Kingdom",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.com/invite/bdjvSJJwCX",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "super-mario-3d-world": {
       "displayName": "Super Mario 3D World",
       "categories": {
@@ -30560,6 +31376,46 @@
       },
       "wikiUrl": "https://vellum.fandom.com/wiki/Vellum_Wiki",
       "discordUrl": "https://discord.gg/vellum",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
+    "vigil": {
+      "displayName": "Vigil",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
       "autolistPackageIds": [
         "LavaGang-MelonLoader"
       ]
@@ -31066,6 +31922,21 @@
     },
     {
       "packageId": "BepInEx-BepInExPack_LostSkies",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_FootballManager26",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Aeruta",
+      "rootFolder": "BepInExPack",
+      "loader": "bepinex"
+    },
+    {
+      "packageId": "BepInEx-BepInExPack_Necropolis",
       "rootFolder": "BepInExPack",
       "loader": "bepinex"
     },
