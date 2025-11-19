@@ -29,6 +29,7 @@ declare global {
             buffer: NodeBufferProvider
         },
         app: {
+            checkForApplicationUpdates: () => Promise<void>;
             getPlatform: () => string;
             restart: () => void;
             hookModInstallProtocol: (callback: (data: any) => void) => void;
