@@ -9,6 +9,7 @@
 
 #### Fixes
 - PEAK image has been restored
+- Steam directory resolution improvements on Linux platforms (thanks to @RossBrunton)
 
 ### 3.2.10
 #### Games added
