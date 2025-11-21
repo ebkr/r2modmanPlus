@@ -26,6 +26,14 @@ const OVERRIDES: Modloaders = {
             new VersionNumber('0.5.4'),
         ),
     ],
+    Beetleball: [
+        new ModLoaderPackageMapping(
+            'LavaGang-MelonLoader',
+            '',
+            PackageLoader.MELONLOADER,
+            new VersionNumber('0.7.0'),
+        ),
+    ],
 }
 
 export const MOD_LOADER_VARIANTS: Modloaders = Object.fromEntries(
