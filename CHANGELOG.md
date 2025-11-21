@@ -1,3 +1,15 @@
+### 3.2.11
+#### Games added
+- Aeruta
+- Beetleball (playtest version)
+- Football Manager 26
+- Necropolis
+- Super Fantasy Kingdom
+- Vigil
+
+#### Fixes
+- PEAK image has been restored
+
 ### 3.2.10
 #### Games added
 - Bendy and the Ink Machine
