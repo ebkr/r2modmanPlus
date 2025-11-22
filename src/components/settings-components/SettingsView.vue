@@ -299,6 +299,23 @@ let settingsList = [
         'fa-file-alt',
         () => emitInvoke('ShowDependencyStrings')
     ),
+    new SettingsRow(
+        'Other',
+        'Launch as Flatpak (Linux)',
+        'Launch Steam via flatpak',
+        async () => {
+            switch (settings.value.getContext().global.linuxUseFlatpak) {
+                case null:
+                    return 'Automatic';
+                case true:
+                    return 'Flatpak';
+                case false:
+                    return 'Native';
+            }
+        },
+        'fa-exchange-alt',
+        () => emitInvoke('ToggleLinuxUseFlatpak')
+    ),
 ];
 
 watch(search, () => {

@@ -55,26 +55,51 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
         if (args instanceof R2Error) {
             return args
         }
-        return this.start(game, args);
+        return this.start(game, args, profile.getProfilePath());
     }
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return this.start(game, instructions.vanillaParameters);
+        return this.start(game, instructions.vanillaParameters, null);
     }
 
-    async start(game: Game, args: string): Promise<void | R2Error> {
+    async start(game: Game, args: string, profiledir: string | null): Promise<void | R2Error> {
 
         const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
         if(steamDir instanceof R2Error) {
             return steamDir;
         }
+        let as_flatpak = settings.getContext().global.linuxUseFlatpak;
+        if (as_flatpak === null) {
+            // Assume that if the path contains the flatpak directory we must want to use flatpak
+            as_flatpak = steamDir.includes("/com.valvesoftware.Steam/");
+        }
+
+        if (as_flatpak && profiledir) {
+            // Ensure we have permission to read our config dir
+            let visible = true;
+            const check_cmd = `flatpak run --command='sh' com.valvesoftware.Steam -c 'ls "${profiledir}"'`;
+            await ChildProcess.exec(check_cmd, undefined, (err: Error) => {
+                if (err) {
+                    visible = false;
+                }
+            });
+            if (!visible) {
+                throw new R2Error('Flatpak Permissions Error',
+                    `The directory "${profiledir}" is not visible from within the Flatpak container`,
+                    '`flatpak override com.valvesoftware.Steam --user --filesystem="${XDG_CONFIG_HOME:-$HOME/.config}/r2modmanPlus-local"` to grant access, then restart Steam.');
+            }
+        }
 
         LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
 
         try {
-            const cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
+            let cmd = `"${steamDir}/steam.sh" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
+            if (as_flatpak) {
+                cmd = `flatpak run com.valvesoftware.Steam ${cmd}`;
+            }
+
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await ChildProcess.exec(cmd);
         } catch(err) {
