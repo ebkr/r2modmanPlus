@@ -15332,70 +15332,99 @@
           "modpacks": {
             "label": "Modpacks"
           },
+          "apps": {
+            "label": "Apps"
+          },
+          "asset-replacement": {
+            "label": "Asset Replacement"
+          },
+          "audio": {
+            "label": "Audio"
+          },
+          "cards": {
+            "label": "Cards"
+          },
+          "decoration": {
+            "label": "Decoration"
+          },
+          "expansions": {
+            "label": "Expansions"
+          },
+          "furniture": {
+            "label": "Furniture"
+          },
+          "items": {
+            "label": "Items"
+          },
+          "npcs": {
+            "label": "NPCs"
+          },
+          "phone-related": {
+            "label": "Phone Related"
+          },
+          "qol": {
+            "label": "QOL"
+          },
+          "sellables": {
+            "label": "Sellables"
+          },
+          "sets": {
+            "label": "Sets"
+          },
+          "shop": {
+            "label": "Shop"
+          },
+          "themes": {
+            "label": "Themes"
+          },
           "tools": {
             "label": "Tools"
           },
           "misc": {
             "label": "Misc"
           },
-          "audio": {
-            "label": "Audio"
+          "0-62-branch": {
+            "label": "0.62 Branch"
           },
-          "sets": {
-            "label": "Sets"
-          },
-          "expansions": {
-            "label": "Expansions"
-          },
-          "cards": {
-            "label": "Cards"
-          },
-          "npcs": {
-            "label": "NPCs"
-          },
-          "items": {
-            "label": "Items"
-          },
-          "asset-replacement": {
-            "label": "Asset Replacement"
-          },
-          "qol": {
-            "label": "QOL"
-          },
-          "phone-related": {
-            "label": "Phone Related"
-          },
-          "furniture": {
-            "label": "Furniture"
-          },
-          "decoration": {
-            "label": "Decoration"
-          },
-          "shop": {
-            "label": "Shop"
-          },
-          "apps": {
-            "label": "Apps"
-          },
-          "themes": {
-            "label": "Themes"
+          "manual-dependencies": {
+            "label": "Requires Manual Dependencies"
           }
         },
         "sections": {
-          "mods": {
-            "name": "Mods",
+          "main": {
+            "name": "Main Branch",
+            "excludeCategories": [
+              "modpacks",
+              "0-62-branch"
+            ]
+          },
+          "main-modpacks": {
+            "name": "Main Branch Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ],
+            "excludeCategories": [
+              "0-62-branch"
+            ]
+          },
+          "0-62": {
+            "name": "0.62 Branch",
+            "requireCategories": [
+              "0-62-branch"
+            ],
             "excludeCategories": [
               "modpacks"
             ]
           },
-          "modpacks": {
-            "name": "Modpacks",
+          "0-62-modpacks": {
+            "name": "0.62 Branch Modpacks",
             "requireCategories": [
-              "modpacks"
+              "modpacks",
+              "0-62-branch"
             ]
           }
         },
-        "wikiUrl": "",
+        "wikiUrl": "https://tcg-card-shop-simulator.notion.site/3f8c9de6b54c47a9b80329b40bdd3c2c?v=04938d1088de49e5a55734d498f081ef",
         "discordUrl": "https://discord.gg/kCp4mRAVUE",
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
@@ -20744,6 +20773,124 @@
         "discordUrl": "https://discord.gg/Hu2cTCr2m2"
       },
       "r2modman": null
+    },
+    "keywe": {
+      "uuid": "352f09ba-5156-49f2-ad1f-ac33efa508ec",
+      "label": "keywe",
+      "meta": {
+        "displayName": "KeyWe",
+        "iconUrl": "keywe.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1242980"
+            }
+          ],
+          "steamFolderName": "KeyWe",
+          "dataFolderName": "KeyWe_Data",
+          "exeNames": [
+            "KeyWe.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "KeyWe",
+            "iconUrl": "keywe.webp"
+          },
+          "settingsIdentifier": "KeyWe",
+          "internalFolderName": "KeyWe",
+          "packageIndex": "https://thunderstore.io/c/keywe/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "KeyWe",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/Q9YVCsxqNN",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "lens-island": {
       "uuid": "5dd42723-fd94-4592-8a87-b509d5402a72",
@@ -28071,70 +28218,99 @@
         "modpacks": {
           "label": "Modpacks"
         },
+        "apps": {
+          "label": "Apps"
+        },
+        "asset-replacement": {
+          "label": "Asset Replacement"
+        },
+        "audio": {
+          "label": "Audio"
+        },
+        "cards": {
+          "label": "Cards"
+        },
+        "decoration": {
+          "label": "Decoration"
+        },
+        "expansions": {
+          "label": "Expansions"
+        },
+        "furniture": {
+          "label": "Furniture"
+        },
+        "items": {
+          "label": "Items"
+        },
+        "npcs": {
+          "label": "NPCs"
+        },
+        "phone-related": {
+          "label": "Phone Related"
+        },
+        "qol": {
+          "label": "QOL"
+        },
+        "sellables": {
+          "label": "Sellables"
+        },
+        "sets": {
+          "label": "Sets"
+        },
+        "shop": {
+          "label": "Shop"
+        },
+        "themes": {
+          "label": "Themes"
+        },
         "tools": {
           "label": "Tools"
         },
         "misc": {
           "label": "Misc"
         },
-        "audio": {
-          "label": "Audio"
+        "0-62-branch": {
+          "label": "0.62 Branch"
         },
-        "sets": {
-          "label": "Sets"
-        },
-        "expansions": {
-          "label": "Expansions"
-        },
-        "cards": {
-          "label": "Cards"
-        },
-        "npcs": {
-          "label": "NPCs"
-        },
-        "items": {
-          "label": "Items"
-        },
-        "asset-replacement": {
-          "label": "Asset Replacement"
-        },
-        "qol": {
-          "label": "QOL"
-        },
-        "phone-related": {
-          "label": "Phone Related"
-        },
-        "furniture": {
-          "label": "Furniture"
-        },
-        "decoration": {
-          "label": "Decoration"
-        },
-        "shop": {
-          "label": "Shop"
-        },
-        "apps": {
-          "label": "Apps"
-        },
-        "themes": {
-          "label": "Themes"
+        "manual-dependencies": {
+          "label": "Requires Manual Dependencies"
         }
       },
       "sections": {
-        "mods": {
-          "name": "Mods",
+        "main": {
+          "name": "Main Branch",
+          "excludeCategories": [
+            "modpacks",
+            "0-62-branch"
+          ]
+        },
+        "main-modpacks": {
+          "name": "Main Branch Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ],
+          "excludeCategories": [
+            "0-62-branch"
+          ]
+        },
+        "0-62": {
+          "name": "0.62 Branch",
+          "requireCategories": [
+            "0-62-branch"
+          ],
           "excludeCategories": [
             "modpacks"
           ]
         },
-        "modpacks": {
-          "name": "Modpacks",
+        "0-62-modpacks": {
+          "name": "0.62 Branch Modpacks",
           "requireCategories": [
-            "modpacks"
+            "modpacks",
+            "0-62-branch"
           ]
         }
       },
-      "wikiUrl": "",
+      "wikiUrl": "https://tcg-card-shop-simulator.notion.site/3f8c9de6b54c47a9b80329b40bdd3c2c?v=04938d1088de49e5a55734d498f081ef",
       "discordUrl": "https://discord.gg/kCp4mRAVUE",
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
@@ -30096,6 +30272,47 @@
         }
       },
       "discordUrl": "https://discord.gg/Hu2cTCr2m2"
+    },
+    "keywe": {
+      "displayName": "KeyWe",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/Q9YVCsxqNN",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "lens-island": {
       "displayName": "Len's Island",
