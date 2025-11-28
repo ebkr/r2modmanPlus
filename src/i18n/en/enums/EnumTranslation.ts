@@ -28,5 +28,9 @@ export const EnumTranslation: EnumMessageFormat = {
         AUTO: 'Auto',
         NATIVE: 'Native',
         PROTON: 'Proton',
+    },
+    sortConfigFile: {
+        NAME: 'Name',
+        LAST_UPDATED: 'Last updated'
     }
 }

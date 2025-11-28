@@ -1,6 +1,3 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 import { DateTimeFormat, MessageFormat } from '../index';
 import {GameSelectionTranslation} from "./pages/GameSelectionTranslation";
 import {SplashTranslation} from "./pages/SplashTranslation";
@@ -10,6 +7,7 @@ import { ManagerTranslation } from './pages/ManagerTranslation';
 import {EnumTranslation} from "./enums/EnumTranslation";
 import {HelpTranslation} from './pages/HelpTranslation';
 import {SettingsTranslation} from "./pages/SettingsTranslation";
+import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
 
 const message: MessageFormat = {
     metadata: {
@@ -24,6 +22,7 @@ const message: MessageFormat = {
             manager: ManagerTranslation,
             help: HelpTranslation,
             settings: SettingsTranslation,
+            configEditor: ConfigEditorTranslation,
         },
         platforms: PlatformTranslation,
         enums: EnumTranslation,

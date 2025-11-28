@@ -7,6 +7,7 @@ import { DateTimeFormat } from 'src/i18n';
 import { EnumTranslation } from './enums/EnumTranslation';
 import { HelpTranslation } from './pages/HelpTranslation';
 import { SettingsTranslation } from './pages/SettingsTranslation';
+import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
 
 const message = {
     metadata: {
@@ -21,6 +22,7 @@ const message = {
             manager: ManagerTranslation,
             help: HelpTranslation,
             settings: SettingsTranslation,
+            configEditor: ConfigEditorTranslation
         },
         platforms: PlatformTranslation,
         enums: EnumTranslation
