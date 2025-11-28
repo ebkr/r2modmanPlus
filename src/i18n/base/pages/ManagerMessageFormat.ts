@@ -22,6 +22,7 @@ export type ManagerMessageFormat = {
         profileSwitcher: {
             label: string;
             gameIconAltText: string;
+            close: string;
         }
     },
     installed: {
@@ -219,7 +220,7 @@ export type ManagerMessageFormat = {
                 copyLaunchArgs: string;
                 update: string;
             }
-        }
+        },
     },
     online: {
         modals: {
