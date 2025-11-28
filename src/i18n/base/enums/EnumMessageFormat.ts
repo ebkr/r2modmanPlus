@@ -28,5 +28,9 @@ export type EnumMessageFormat = {
         AUTO: string;
         NATIVE: string;
         PROTON: string;
+    },
+    sortConfigFile: {
+        NAME: string;
+        LAST_UPDATED: string;
     }
 }
