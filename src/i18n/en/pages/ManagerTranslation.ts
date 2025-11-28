@@ -23,7 +23,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
         },
         profileSwitcher: {
             label: 'Profile',
-            gameIconAltText: 'Game image'
+            gameIconAltText: 'Game image',
+            close: 'Close',
         }
     },
     installed: {

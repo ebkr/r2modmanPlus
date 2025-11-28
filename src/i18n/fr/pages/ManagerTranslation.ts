@@ -23,7 +23,8 @@ export const ManagerTranslation: ManagerMessageFormat = {
         },
         profileSwitcher: {
             label: 'Profil',
-            gameIconAltText: 'Image du jeu'
+            gameIconAltText: 'Image du jeu',
+            close: 'Fermer',
         },
     },
     installed: {
@@ -186,6 +187,7 @@ export const ManagerTranslation: ManagerMessageFormat = {
             downloadProgress: 'Téléchargement en cours : {progress}% sur {totalSize}',
             installProgress: 'Installation en cours : {progress}% terminée',
             waitingForDownload: 'Installation en cours : en attente de la fin du téléchargement',
+            extractionProgress: 'Extraction : {progress}% de {totalSize}'
         },
         downloadModVersionSelect: {
             title: 'Sélectionnez une version de {modName} à télécharger',

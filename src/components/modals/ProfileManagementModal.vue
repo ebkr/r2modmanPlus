@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import ModalCard from '../ModalCard.vue';
-import { computed, getCurrentInstance, onMounted } from 'vue';
+import { computed } from 'vue';
 import SettingsItem from '../settings-components/SettingsItem.vue';
-import VueRouter from 'vue-router';
+import { useRouter } from 'vue-router';
 import R2Error from '../../model/errors/R2Error';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
-let router!: VueRouter;
-
-onMounted(() => {
-    router = getCurrentInstance()!.proxy.$router;
-})
+const router = useRouter();
+const { t } = useI18n();
 
 const isOpen = computed(() => store.state.modals.isProfileManagementModalOpen);
 
@@ -52,39 +50,41 @@ async function importLocalMod() {
 <template>
     <ModalCard id="profile-management-modal" :can-close="true" :is-active="isOpen" @close-modal="closeModal">
         <template v-slot:header>
-            <h2 class='modal-title non-selectable'>Profile</h2>
+            <h2 class='modal-title non-selectable'>{{ t('translations.pages.manager.navigation.profileSwitcher.label') }}</h2>
         </template>
         <template v-slot:body>
             <SettingsItem
-                action="Change profile"
-                description="Return to the profile selection screen"
+                :action="t('translations.pages.settings.profile.changeProfile.title')"
+                :description="t('translations.pages.settings.profile.changeProfile.description')"
                 icon="fa-file-import"
                 :value="async () => undefined"
                 @click="changeProfile" />
             <SettingsItem
-                action="Export profile as a file"
-                description="Export your mod list and configs as a file"
+                :action="t('translations.pages.settings.profile.exportProfileAsFile.title')"
+                :description="t('translations.pages.settings.profile.exportProfileAsFile.description')"
                 icon="fa-file-alt"
                 :value="async () => undefined"
                 @click="exportProfileAsFile"
             />
             <SettingsItem
-                action="Export profile as code"
-                description="Export your mod list and configs as a code"
+                :action="t('translations.pages.settings.profile.exportProfileAsCode.title')"
+                :description="t('translations.pages.settings.profile.exportProfileAsCode.description')"
                 icon="fa-cloud-upload-alt"
                 :value="async () => undefined"
                 @click="exportProfileAsCode"
             />
             <SettingsItem
-                action="Import local mod"
-                description="Install a mod offline from your files"
+                :action="t('translations.pages.settings.profile.importLocalMod.title')"
+                :description="t('translations.pages.settings.profile.importLocalMod.description')"
                 icon="fa-file-import"
-                :value="async () => 'Not all mods can be installed locally'"
+                :value="async () => t('translations.pages.settings.profile.importLocalMod.value')"
                 @click="importLocalMod"
             />
         </template>
         <template v-slot:footer>
-            <button class="button is-info" @click="closeModal">Close</button>
+            <button class="button is-info" @click="closeModal">
+                {{ t('translations.pages.manager.navigation.profileSwitcher.close') }}
+            </button>
         </template>
     </ModalCard>
 </template>
