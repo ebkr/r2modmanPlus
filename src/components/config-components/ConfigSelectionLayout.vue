@@ -1,42 +1,40 @@
 <template>
     <div>
         <Hero
-            title="Config editor"
-            subtitle="Select a configuration file to edit"
+            :title="t('translations.pages.configEditor.hero.title')"
+            :subtitle="t('translations.pages.configEditor.hero.subtitle')"
             hero-type="primary"
         />
         <div class="notification is-warning is-square">
             <div class="container">
-                <p>
-                    Configuration files are generated after launching the game, with the mod installed, at least once.
-                </p>
+                <p>{{ t('translations.pages.configEditor.warning.content') }}</p>
             </div>
         </div>
         <div class='is-shadowless'>
             <div class='no-padding-left card-header-title'>
 
                 <div class="input-group input-group--flex margin-right">
-                    <label for="config-search" class="non-selectable">Search</label>
+                    <label for="config-search" class="non-selectable">{{ t('translations.pages.configEditor.actions.search.label') }}</label>
                     <input
                         v-model="filterText"
                         id="config-search"
                         class="input margin-right"
                         type="text"
-                        placeholder="Search for config files"
+                        :placeholder="t('translations.pages.configEditor.actions.search.placeholder')"
                         autocomplete="off"
                     />
                 </div>
 
                 <div class="input-group margin-right">
-                    <label for="config-sort-order" class="non-selectable">Sort</label>
+                    <label for="config-sort-order" class="non-selectable">{{ t('translations.pages.configEditor.actions.sort.label') }}</label>
                     <select id="config-sort-order" class="select select--content-spacing margin-right margin-right--half-width" v-model="sortOrder">
-                        <option v-for="(key, index) in getSortOrderOptions()" :key="`${index}-deprecated-position-option`">
-                            {{key}}
+                        <option v-for="(key, index) in SortConfigFile" :key="`${index}-deprecated-position-option`" :value="key">
+                            {{ t(`translations.enums.sortConfigFile.${EnumResolver.from(SortConfigFile, key)}`) }}
                         </option>
                     </select>
                     <select id="config-sort-direction" class="select select--content-spacing" v-model="sortDirection">
-                        <option v-for="(key, index) in getSortDirectionOptions()" :key="`${index}-deprecated-position-option`">
-                            {{key}}
+                        <option v-for="(key, index) in SortDirection" :key="`${index}-deprecated-position-option`" :value="key">
+                            {{ t(`translations.enums.sortDirection.${EnumResolver.from(SortDirection, key)}`) }}
                         </option>
                     </select>
                 </div>
@@ -51,9 +49,9 @@
                     <template v-slot:title>
                         <span>{{file.getName()}}</span>
                     </template>
-                    <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
-                    <a class='card-footer-item' @click="openConfig(file)">Open File</a>
-                    <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
+                    <a class='card-footer-item' @click="editConfig(file)">{{ t('translations.pages.configEditor.actions.editConfig' )}}</a>
+                    <a class='card-footer-item' @click="openConfig(file)">{{ t('translations.pages.configEditor.actions.openFile' )}}</a>
+                    <a class='card-footer-item' @click="deleteConfig(file)">{{ t('translations.pages.configEditor.actions.delete' )}}</a>
                 </ExpandableCard>
             </div>
         </div>
@@ -76,8 +74,11 @@ import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import path from '../../providers/node/path/path';
+import { useI18n } from 'vue-i18n';
+import EnumResolver from '../../model/enums/_EnumResolver';
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 const emits = defineEmits<{
     (e: 'edit', file: ConfigFile): void;

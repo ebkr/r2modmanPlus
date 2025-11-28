@@ -2,16 +2,20 @@
     <div>
         <Hero
             :title="configFile.getName()"
-            subtitle="Editing config file"
+            :subtitle="t('translations.pages.configEditor.editConfig.subtitle')"
             hero-type="primary"
         />
         <br/>
         <div class="sticky-top sticky-top--buttons margin-right">
-            <button class="button is-info margin-right margin-right--half-width" @click="save">Save</button>
-            <button class="button is-danger" @click="cancel">Cancel</button>
+            <button class="button is-info margin-right margin-right--half-width" @click="save">
+                {{ t('translations.pages.configEditor.editConfig.actions.save') }}
+            </button>
+            <button class="button is-danger" @click="cancel">
+                {{ t('translations.pages.configEditor.editConfig.actions.cancel') }}
+            </button>
         </div>
         <div v-if="configFile.getPath().toLowerCase().endsWith('.cfg')" class="margin-right non-selectable">
-            <h3 class='subtitle is-3'>Sections</h3>
+            <h3 class='subtitle is-3'>{{ t('translations.pages.configEditor.editConfig.sections') }}</h3>
             <ul>
                 <li v-for="(value, key) in dumpedConfigVariables" :key="`${key}-${value.toString()}-tab`">
                     <a :href="`#${key}`">{{ key }}</a>
@@ -30,8 +34,10 @@
                                 <span class="pre selectable" v-if="!line.commentsExpanded">{{getCommentDisplayShort(line.comments)}}</span>
                                 <span class="pre selectable" v-else>{{getCommentDisplay(line.comments)}}</span>
                                 <a @click="toggleEntryExpansion(key, variable)">
-                                    <span v-if="!line.commentsExpanded">Show more</span>
-                                    <span v-else>Show less</span>
+                                    <span v-if="!line.commentsExpanded">
+                                        {{ t('translations.pages.configEditor.editConfig.actions.showMore') }}
+                                    </span>
+                                    <span v-else>{{ t('translations.pages.configEditor.editConfig.actions.showLess') }}</span>
                                 </a>
                             </template>
                             <span class="pre" v-else>{{getCommentDisplay(line.comments)}}</span>
@@ -79,14 +85,17 @@
 import ConfigLine from '../../model/file/ConfigLine';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import ConfigFile from '../../model/file/ConfigFile';
-import { DeferredInput, Hero } from '../all';
+import { Hero } from '../all';
 import QuillEditor from '../QuillEditor.vue';
 import BepInExConfigUtils from '../../utils/BepInExConfigUtils';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type ConfigEditLayoutProps = {
     configFile: ConfigFile;
 }
+
+const { t, d, messages, locale } = useI18n();
 
 const props = defineProps<ConfigEditLayoutProps>();
 const emits = defineEmits<{
