@@ -19653,6 +19653,56 @@
       },
       "r2modman": null
     },
+    "dinosaur-planet-recompiled": {
+      "uuid": "7d372a07-edb8-4267-b791-bd8a9b2c9381",
+      "label": "dinosaur-planet-recompiled",
+      "meta": {
+        "displayName": "Dinosaur Planet: Recompiled",
+        "iconUrl": "dinosaur-planet-recompiled.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Dinosaur Planet: Recompiled",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://github.com/DinosaurPlanetRecomp/dino-recomp?tab=readme-ov-file#creating-mods",
+        "discordUrl": "https://discord.gg/SUrA4aV7UW",
+        "autolistPackageIds": []
+      }
+    },
     "dread-hunger": {
       "uuid": "8b1ef87d-8ca8-4204-9cf3-7b7bc8262e37",
       "label": "dread-hunger",
@@ -23320,6 +23370,124 @@
           }
         },
         "autolistPackageIds": []
+      }
+    },
+    "smushi-come-home": {
+      "uuid": "2f046569-38e0-4bfd-91ae-fc39a7442cd7",
+      "label": "smushi-come-home",
+      "meta": {
+        "displayName": "Smushi Come Home",
+        "iconUrl": "smushi-come-home.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1740300"
+            }
+          ],
+          "steamFolderName": "Smushi Come Home",
+          "dataFolderName": "Smushi Come Home_Data",
+          "exeNames": [
+            "Smushi Come Home.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Smushi Come Home",
+            "iconUrl": "smushi-come-home.webp"
+          },
+          "settingsIdentifier": "SmushiComeHome",
+          "internalFolderName": "SmushiComeHome",
+          "packageIndex": "https://thunderstore.io/c/smushi-come-home/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Smushi Come Home",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/CtD5hvkHAB",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
       }
     },
     "spaghetti-kart": {
@@ -29771,6 +29939,46 @@
         }
       }
     },
+    "dinosaur-planet-recompiled": {
+      "displayName": "Dinosaur Planet: Recompiled",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://github.com/DinosaurPlanetRecomp/dino-recomp?tab=readme-ov-file#creating-mods",
+      "discordUrl": "https://discord.gg/SUrA4aV7UW",
+      "autolistPackageIds": []
+    },
     "dread-hunger": {
       "displayName": "Dread Hunger",
       "categories": {
@@ -31356,6 +31564,47 @@
         }
       },
       "autolistPackageIds": []
+    },
+    "smushi-come-home": {
+      "displayName": "Smushi Come Home",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/CtD5hvkHAB",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "spaghetti-kart": {
       "displayName": "Spaghetti Kart",
