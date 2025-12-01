@@ -19288,6 +19288,10 @@
             {
               "platform": "steam",
               "identifier": "3314790"
+            },
+            {
+              "platform": "xbox-game-pass",
+              "identifier": "FutureFriendsGames.CloverPit"
             }
           ],
           "steamFolderName": "CloverPit",
