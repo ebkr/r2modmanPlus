@@ -11,6 +11,7 @@ import { RecursiveMelonLoaderInstaller, RecursiveMelonLoaderPluginInstaller } fr
 import { DirectCopyInstaller } from './DirectCopyInstaller';
 import { BepisLoaderInstaller } from './BepisLoaderInstaller';
 import { UMMInstaller } from './UMMInstaller';
+import { RivetInstaller, RivetModInstaller } from './RivetInstaller';
 import { PackageLoader } from '../model/schema/ThunderstoreSchema';
 
 /**
@@ -30,6 +31,7 @@ const PackageLoaderInstallers: Record<LoaderInstallers, PackageInstaller> = {
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderInstaller(),
     [PackageLoader.UMM]: new UMMInstaller(),
+    [PackageLoader.RIVET]: new RivetInstaller(),
 };
 
 export function getPackageLoaderInstaller(loader: PackageLoader): PackageInstaller|null {
@@ -54,6 +56,7 @@ const PluginInstallers: Record<PluginInstallers, PackageInstaller> = {
     [PackageLoader.RECURSIVE_MELONLOADER]: new RecursiveMelonLoaderPluginInstaller(),
     [PackageLoader.RETURN_OF_MODDING]: new ReturnOfModdingPluginInstaller(),
     [PackageLoader.SHIMLOADER]: new ShimloaderPluginInstaller(),
+    [PackageLoader.RIVET]: new RivetModInstaller(),
 };
 
 function isPluginInstaller(loader: PackageLoader): loader is PluginInstallers {

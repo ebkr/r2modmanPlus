@@ -1,0 +1,94 @@
+import path from "../providers/node/path/path";
+
+import {
+    disableModByRenamingFiles,
+    enableModByRenamingFiles,
+    InstallArgs,
+    PackageInstaller,
+} from "./PackageInstaller";
+
+import FileWriteError from "../model/errors/FileWriteError";
+import FsProvider from "../providers/generic/file/FsProvider";
+import FileUtils from "../utils/FileUtils";
+
+export class RivetInstaller implements PackageInstaller {
+    private static readonly TRACKED = ["version.dll"];
+
+    async install(args: InstallArgs): Promise<void> {
+        const { packagePath, profile } = args;
+
+        try {
+            for (const file of RivetInstaller.TRACKED) {
+                const cachePath = path.join(packagePath, file);
+                const profilePath = profile.joinToProfilePath(file);
+                await FileUtils.copyFileOrFolder(cachePath, profilePath);
+            }
+        } catch (e) {
+            throw FileWriteError.fromThrownValue(e, "Failed to install Rivet mod");
+        }
+    }
+}
+
+export class RivetModInstaller implements PackageInstaller {
+    private getModsPath(args: InstallArgs): string {
+        return args.profile.joinToProfilePath("Mods", args.mod.getName());
+    }
+
+    private getUserDataPath(args: InstallArgs): string {
+        return args.profile.joinToProfilePath("UserData", args.mod.getName());
+    }
+
+    private throwActionError(e: unknown, action: string): void {
+        const name = `Failed to ${action} Rivet mod`;
+        const solution = "Is the game still running?";
+        throw FileWriteError.fromThrownValue(e, name, solution);
+    }
+
+    async install(args: InstallArgs): Promise<void> {
+        const files = await FsProvider.instance.readdir(args.packagePath);
+        const modsPath = this.getModsPath(args);
+        await FileUtils.ensureDirectory(modsPath);
+
+        try {
+            for (const item of files) {
+                const sourceFull = path.join(args.packagePath, item);
+
+                if (item === "UserData") {
+                    const userDataPath = this.getUserDataPath(args);
+                    await FileUtils.ensureDirectory(userDataPath);
+                    await FileUtils.copyFileOrFolder(sourceFull, userDataPath);
+                } else {
+                    const targetPath = path.join(modsPath, item);
+                    await FileUtils.copyFileOrFolder(sourceFull, targetPath);
+                }
+            }
+        } catch (e) {
+            this.throwActionError(e, "install");
+        }
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        try {
+            FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
+            FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
+        } catch (e) {
+            this.throwActionError(e, "uninstall");
+        }
+    }
+
+    async disable(args: InstallArgs): Promise<void> {
+        try {
+            await disableModByRenamingFiles(this.getModsPath(args));
+        } catch (e) {
+            this.throwActionError(e, "disable");
+        }
+    }
+
+    async enable(args: InstallArgs): Promise<void> {
+        try {
+            await enableModByRenamingFiles(this.getModsPath(args));
+        } catch (e) {
+            this.throwActionError(e, "enable");
+        }
+    }
+}
