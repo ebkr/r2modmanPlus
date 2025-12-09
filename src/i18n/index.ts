@@ -1,5 +1,6 @@
 import langEn, { dateTimeFormat as enDateTimeFormat } from './en';
 import langFr, { dateTimeFormat as frDateTimeFormat } from './fr';
+import langzhCN, { dateTimeFormat as zhCNDateTimeFormat } from './zh-CN';
 import { PlatformMessageFormat } from './base/platforms/PlatformMessageFormat';
 import { GameSelectionMessageFormat } from './base/pages/GameSelectionMessageFormat';
 import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
@@ -7,15 +8,18 @@ import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMess
 import { ManagerMessageFormat } from './base/pages/ManagerMessageFormat';
 import {EnumMessageFormat} from "./base/enums/EnumMessageFormat";
 import { HelpMessageFormat } from './base/pages/HelpMessageFormat';
+import { SettingsMessageFormat } from './base/pages/SettingsMessageFormat';
 
 export default {
     'en': langEn,
     'fr': langFr,
+    'zh-CN': langzhCN,
 };
 
 export const datetimeFormats = {
     [langEn.metadata.locale]: enDateTimeFormat,
     [langFr.metadata.locale]: frDateTimeFormat,
+    [langzhCN.metadata.locale]: zhCNDateTimeFormat,
 };
 
 // TODO - Use for language selection screens
@@ -33,7 +37,7 @@ export type MessageFormat = {
             profileSelection: ProfileSelectionMessageFormat,
             manager: ManagerMessageFormat,
             help: HelpMessageFormat,
-            // settings: SettingsMessageFormat,
+            settings: SettingsMessageFormat,
         },
         platforms: PlatformMessageFormat;
         enums: EnumMessageFormat;
