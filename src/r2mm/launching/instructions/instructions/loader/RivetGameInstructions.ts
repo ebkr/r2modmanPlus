@@ -25,7 +25,7 @@ export default class RivetGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `-rivetEnable true -rivetTarget ${profile.joinToProfilePath("rivet.dll")} -rivetDirectory ${profile.joinToProfilePath("Mods")} -rivetLog ${profile.joinToProfilePath("Rivet", "RivetLoader.log")}`,
+            moddedParameters: `-rivetEnable true -rivetTarget ${profile.joinToProfilePath("Rivet", "Loader.dll")} -rivetDirectory ${profile.joinToProfilePath("Rivet", "Mods")} -rivetLog ${profile.joinToProfilePath("Rivet", "Rivet.log")}`,
             vanillaParameters: `-rivetEnable false`
         }
     }

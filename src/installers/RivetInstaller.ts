@@ -12,7 +12,7 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 
 export class RivetInstaller implements PackageInstaller {
-    private static readonly TRACKED = ["version.dll"];
+    private static readonly TRACKED = ["version.dll", "Rivet"];
 
     async install(args: InstallArgs): Promise<void> {
         const { packagePath, profile } = args;
@@ -31,11 +31,11 @@ export class RivetInstaller implements PackageInstaller {
 
 export class RivetModInstaller implements PackageInstaller {
     private getModsPath(args: InstallArgs): string {
-        return args.profile.joinToProfilePath("Mods", args.mod.getName());
+        return args.profile.joinToProfilePath("Rivet", "Mods", args.mod.getName());
     }
 
     private getUserDataPath(args: InstallArgs): string {
-        return args.profile.joinToProfilePath("UserData", args.mod.getName());
+        return args.profile.joinToProfilePath("Rivet", "UserData", args.mod.getName());
     }
 
     private throwActionError(e: unknown, action: string): void {
@@ -69,8 +69,8 @@ export class RivetModInstaller implements PackageInstaller {
 
     async uninstall(args: InstallArgs): Promise<void> {
         try {
-            FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
-            FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
+            await FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
+            await FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
         } catch (e) {
             this.throwActionError(e, "uninstall");
         }

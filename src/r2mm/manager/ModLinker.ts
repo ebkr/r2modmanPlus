@@ -88,6 +88,11 @@ export default class ModLinker {
                 return path.join(installDirectory, game.dataFolderName, "Binaries", "Win64");
             }
             return null;
+        } else if (game.packageLoader == PackageLoader.RIVET) {
+            if (lowercased === "version.dll") {
+                return path.join(installDirectory, "Release");
+            }
+            return null;
         } else {
             return installDirectory;
         }
@@ -128,7 +133,8 @@ export default class ModLinker {
                                 "bepinex", "bepinex_server", "mods",
                                 "melonloader", "plugins", "userdata",
                                 "_state", "userlibs", "qmods", "shimloader",
-                                "returnofmodding", "gdweave", "renderer", "umm"
+                                "returnofmodding", "gdweave", "renderer", "umm",
+                                "rivet"
                             ];
 
                             if (!exclusionsList.includes(file.toLowerCase())) {
