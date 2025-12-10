@@ -1,4 +1,5 @@
 import path from "../providers/node/path/path";
+import fs from "../providers/node/fs/fs";
 
 import {
     disableModByRenamingFiles,
@@ -19,17 +20,34 @@ export class RivetInstaller implements PackageInstaller {
 
         try {
             for (const file of RivetInstaller.TRACKED) {
-                const cachePath = path.join(packagePath, file);
+                const packDir = path.join(packagePath, "RivetPack")
+                const cachePath = path.join(packDir, file);
+
                 const profilePath = profile.joinToProfilePath(file);
                 await FileUtils.copyFileOrFolder(cachePath, profilePath);
             }
         } catch (e) {
-            throw FileWriteError.fromThrownValue(e, "Failed to install Rivet mod");
+            throw FileWriteError.fromThrownValue(e, "Failed to install Rivet loader");
+        }
+    }
+
+    async uninstall(args: InstallArgs): Promise<void> {
+        const { packagePath, profile } = args;
+
+        try {
+            // Delete `version.dll` file
+            const versionDllPath = profile.joinToProfilePath("version.dll");
+            fs.unlink(versionDllPath);
+
+            const rivetDirPath = profile.joinToProfilePath("Rivet");
+            await FileUtils.recursiveRemoveDirectoryIfExists(rivetDirPath);
+        } catch (e) {
+            throw FileWriteError.fromThrownValue(e, "Failed to uninstall Rivet loader");
         }
     }
 }
 
-export class RivetModInstaller implements PackageInstaller {
+export class RivetPluginInstaller implements PackageInstaller {
     private getModsPath(args: InstallArgs): string {
         return args.profile.joinToProfilePath("Rivet", "Mods", args.mod.getName());
     }
