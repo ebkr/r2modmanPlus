@@ -13,7 +13,7 @@ import FsProvider from "../providers/generic/file/FsProvider";
 import FileUtils from "../utils/FileUtils";
 
 export class RivetInstaller implements PackageInstaller {
-    private static readonly TRACKED = ["version.dll", "Rivet"];
+    private static readonly TRACKED = ["version.dll", "Rivet.ini", "Rivet"];
 
     async install(args: InstallArgs): Promise<void> {
         const { packagePath, profile } = args;
