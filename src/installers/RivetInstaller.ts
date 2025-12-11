@@ -1,5 +1,4 @@
 import path from "../providers/node/path/path";
-import fs from "../providers/node/fs/fs";
 
 import {
     disableModByRenamingFiles,
@@ -34,15 +33,38 @@ export class RivetInstaller implements PackageInstaller {
     async uninstall(args: InstallArgs): Promise<void> {
         const { packagePath, profile } = args;
 
-        try {
-            // Delete `version.dll` file
-            const versionDllPath = profile.joinToProfilePath("version.dll");
-            fs.unlink(versionDllPath);
+        for (const file of RivetInstaller.TRACKED) {
+            const profilePath = profile.joinToProfilePath(file);
 
-            const rivetDirPath = profile.joinToProfilePath("Rivet");
-            await FileUtils.recursiveRemoveDirectoryIfExists(rivetDirPath);
-        } catch (e) {
-            throw FileWriteError.fromThrownValue(e, "Failed to uninstall Rivet loader");
+            if (!(await FsProvider.instance.exists(profilePath))) {
+                continue;
+            }
+
+            if (file === "Rivet") {
+                // Remove everything apart from Mods
+                const rivetContents = await FsProvider.instance.readdir(profilePath);
+                for (const item of rivetContents) {
+                    if (item.toLowerCase() === "mods") {
+                        continue;
+                    }
+
+                    const itemPath = path.join(profilePath, item);
+                    if ((await FsProvider.instance.stat(itemPath)).isDirectory()) {
+                        await FileUtils.recursiveRemoveDirectoryIfExists(itemPath);
+                    } else {
+                        await FsProvider.instance.unlink(itemPath);
+                    }
+                }
+
+                // Keep going to next tracked file
+                continue;
+            }
+
+            if ((await FsProvider.instance.stat(profilePath)).isDirectory()) {
+                await FileUtils.recursiveRemoveDirectoryIfExists(profilePath);
+            } else {
+                await FsProvider.instance.unlink(profilePath);
+            }
         }
     }
 }
@@ -50,10 +72,6 @@ export class RivetInstaller implements PackageInstaller {
 export class RivetPluginInstaller implements PackageInstaller {
     private getModsPath(args: InstallArgs): string {
         return args.profile.joinToProfilePath("Rivet", "Mods", args.mod.getName());
-    }
-
-    private getUserDataPath(args: InstallArgs): string {
-        return args.profile.joinToProfilePath("Rivet", "UserData", args.mod.getName());
     }
 
     private throwActionError(e: unknown, action: string): void {
@@ -71,14 +89,8 @@ export class RivetPluginInstaller implements PackageInstaller {
             for (const item of files) {
                 const sourceFull = path.join(args.packagePath, item);
 
-                if (item === "UserData") {
-                    const userDataPath = this.getUserDataPath(args);
-                    await FileUtils.ensureDirectory(userDataPath);
-                    await FileUtils.copyFileOrFolder(sourceFull, userDataPath);
-                } else {
-                    const targetPath = path.join(modsPath, item);
-                    await FileUtils.copyFileOrFolder(sourceFull, targetPath);
-                }
+                const targetPath = path.join(modsPath, item);
+                await FileUtils.copyFileOrFolder(sourceFull, targetPath);
             }
         } catch (e) {
             this.throwActionError(e, "install");
@@ -88,7 +100,6 @@ export class RivetPluginInstaller implements PackageInstaller {
     async uninstall(args: InstallArgs): Promise<void> {
         try {
             await FileUtils.recursiveRemoveDirectoryIfExists(this.getModsPath(args));
-            await FileUtils.recursiveRemoveDirectoryIfExists(this.getUserDataPath(args));
         } catch (e) {
             this.throwActionError(e, "uninstall");
         }
