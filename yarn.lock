@@ -1979,6 +1979,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-yaml@npm:^4":
+  version: 4.0.9
+  resolution: "@types/js-yaml@npm:4.0.9"
+  checksum: 10c0/24de857aa8d61526bbfbbaa383aa538283ad17363fcd5bb5148e2c7f604547db36646440e739d78241ed008702a8920665d1add5618687b6743858fae00da211
+  languageName: node
+  linkType: hard
+
 "@types/jsdom@npm:^21.1.7":
   version: 21.1.7
   resolution: "@types/jsdom@npm:21.1.7"
@@ -6978,6 +6985,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-yaml@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "js-yaml@npm:4.1.1"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10c0/561c7d7088c40a9bb53cc75becbfb1df6ae49b34b5e6e5a81744b14ae8667ec564ad2527709d1a6e7d5e5fa6d483aa0f373a50ad98d42fde368ec4a190d4fae7
+  languageName: node
+  linkType: hard
+
 "jsesc@npm:^3.0.2":
   version: 3.0.2
   resolution: "jsesc@npm:3.0.2"
@@ -8744,6 +8762,7 @@ __metadata:
     "@types/async-lock": "npm:^1.1.2"
     "@types/chai": "npm:^4.2.11"
     "@types/fs-extra": "npm:^8.0.1"
+    "@types/js-yaml": "npm:^4"
     "@types/jsdom": "npm:^21.1.7"
     "@types/lodash.debounce": "npm:^4.0.7"
     "@types/node": "npm:^20.19.1"
@@ -8783,6 +8802,7 @@ __metadata:
     glob-parent: "npm:^6.0.2"
     highlight.js: "npm:^10.4.1"
     identity-obj-proxy: "npm:^3.0.0"
+    js-yaml: "npm:^4.1.1"
     lodash.debounce: "npm:^4.0.8"
     mock-require: "npm:^3.0.3"
     modern-normalize: "npm:^3.0.1"
