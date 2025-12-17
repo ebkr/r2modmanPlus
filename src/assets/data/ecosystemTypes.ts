@@ -116,6 +116,7 @@ export enum Loader {
     NORTHSTAR = "northstar",
     RECURSIVE_MELONLOADER = "recursive-melonloader",
     RETURN_OF_MODDING = "return-of-modding",
+    RIVET = "rivet",
     SHIMLOADER = "shimloader",
     UMM = "umm",
 }
@@ -405,6 +406,7 @@ const typeMap: any = {
         "northstar",
         "recursive-melonloader",
         "return-of-modding",
+        "rivet",
         "shimloader",
         "umm",
     ],
