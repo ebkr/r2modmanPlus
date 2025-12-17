@@ -435,6 +435,9 @@ async function copyLogToClipboard() {
         case PackageLoader.UMM:
             logOutputPath = path.join(profile.value.getProfilePath(), "UMM", "Core", "Log.txt");
             break;
+        case PackageLoader.RIVET:
+            logOutputPath = path.join(profile.value.getProfilePath(), "Rivet", "RivetLoader.log");
+            break;
     }
     const text = (await fs.readFile(logOutputPath)).toString();
     if (text.length >= 1992) {
