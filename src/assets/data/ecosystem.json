@@ -19491,6 +19491,123 @@
       },
       "r2modman": null
     },
+    "crime-simulator": {
+      "uuid": "ae24513f-4737-4dfd-8fbd-6879ffdd88d2",
+      "label": "crime-simulator",
+      "meta": {
+        "displayName": "Crime Simulator",
+        "iconUrl": "crime-simulator.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2737070"
+            }
+          ],
+          "steamFolderName": "Crime Simulator",
+          "dataFolderName": "Crime Simulator_Data",
+          "exeNames": [
+            "Crime Simulator.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Crime Simulator",
+            "iconUrl": "crime-simulator.webp"
+          },
+          "settingsIdentifier": "CrimeSimulator",
+          "internalFolderName": "CrimeSimulator",
+          "packageIndex": "https://thunderstore.io/c/crime-simulator/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Crime Simulator",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "darkwater": {
       "uuid": "fde8a66c-d967-4505-adf3-5d9fe27bcc58",
       "label": "darkwater",
@@ -20699,6 +20816,56 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "hytale": {
+      "uuid": "a656c998-825b-4ab6-a733-e0ed025994f7",
+      "label": "hytale",
+      "meta": {
+        "displayName": "Hytale",
+        "iconUrl": "hytale.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "Hytale",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://hytalemodding.xyz/",
+        "discordUrl": "https://discord.gg/KrHK7B39pY",
+        "autolistPackageIds": []
       }
     },
     "jump-space": {
@@ -23209,6 +23376,86 @@
         "autolistPackageIds": [
           "BepInEx-BepInExPack"
         ]
+      }
+    },
+    "scrap-mechanic": {
+      "uuid": "4dc5616f-8de7-43d0-b067-17fa00031a9d",
+      "label": "scrap-mechanic",
+      "meta": {
+        "displayName": "Scrap Mechanic",
+        "iconUrl": "scrap-mechanic.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "387990"
+            }
+          ],
+          "steamFolderName": "Scrap Mechanic",
+          "dataFolderName": "Data",
+          "exeNames": [
+            "ScrapMechanic.exe"
+          ],
+          "packageLoader": "rivet",
+          "meta": {
+            "displayName": "Scrap Mechanic",
+            "iconUrl": "scrap-mechanic.webp"
+          },
+          "settingsIdentifier": "ScrapMechanic",
+          "internalFolderName": "ScrapMechanic",
+          "packageIndex": "https://thunderstore.io/c/scrap-mechanic/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Scrap Mechanic",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "bug-fixes": {
+            "label": "Bug Fixes"
+          },
+          "content": {
+            "label": "Content"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "wikiUrl": "https://scrapmechanictools.com/",
+        "discordUrl": "https://discord.gg/SxMyMnHryw",
+        "autolistPackageIds": []
       }
     },
     "ship-of-harkinian": {
@@ -29866,6 +30113,46 @@
       },
       "discordUrl": "https://discord.gg/m8jhYA4TvV"
     },
+    "crime-simulator": {
+      "displayName": "Crime Simulator",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "darkwater": {
       "displayName": "Darkwater",
       "categories": {
@@ -30404,6 +30691,46 @@
       "autolistPackageIds": [
         "BepInEx-BepInExPack"
       ]
+    },
+    "hytale": {
+      "displayName": "Hytale",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://hytalemodding.xyz/",
+      "discordUrl": "https://discord.gg/KrHK7B39pY",
+      "autolistPackageIds": []
     },
     "jump-space": {
       "displayName": "Jump Space",
@@ -31491,6 +31818,49 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "scrap-mechanic": {
+      "displayName": "Scrap Mechanic",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "bug-fixes": {
+          "label": "Bug Fixes"
+        },
+        "content": {
+          "label": "Content"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "wikiUrl": "https://scrapmechanictools.com/",
+      "discordUrl": "https://discord.gg/SxMyMnHryw",
+      "autolistPackageIds": []
+    },
     "ship-of-harkinian": {
       "displayName": "Ship of Harkinian",
       "categories": {
@@ -32414,6 +32784,11 @@
       "packageId": "UMM-UMM",
       "rootFolder": "UMM",
       "loader": "umm"
+    },
+    {
+      "packageId": "ReDoIngMods-Rivet",
+      "rootFolder": "Rivet",
+      "loader": "rivet"
     }
   ]
 }
