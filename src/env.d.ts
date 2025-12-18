@@ -44,6 +44,7 @@ declare global {
             openPath: (path: string) => void;
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
+            getEnvironmentVariables: () => Record<string, string>;
         }
     }
 }

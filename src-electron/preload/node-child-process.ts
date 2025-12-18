@@ -7,3 +7,7 @@ export function execSync(identifier: string, path: string, options: any) {
 export function exec(path: string, options: any) {
     return ipcRenderer.invoke('node:child_process:exec', path, options);
 }
+
+export function spawnSync(path: string, args: string[], options: object) {
+    return ipcRenderer.sendSync('node:child_process:spawnSync', path, options);
+}

@@ -214,6 +214,38 @@ export default defineConfig((ctx) => {
                 // https://www.electron.build/configuration/configuration
 
                 appId: isFlatpakTarget ? 'com.github.ebkr.r2modman' : 'ebkr-r2modman',
+
+                flatpak: {
+                    finishArgs: [
+                        // Access to flatpak-spawn
+                        "--talk-name=org.freedesktop.Flatpak.Development",
+
+                        // Filesystem full access
+                        "--filesystem=home",
+                        "--filesystem=/mnt",
+                        "--filesystem=host",
+
+                        // Allows the manager to use IPC - Useful to prevent multiple instances
+                        "--share=ipc",
+
+                        // Display server permissions
+                        "--socket=x11",
+                        "--socket=wayland",
+
+                        // IO
+                        "--socket=session-bus",
+                        "--device=all",
+
+                        // Network access
+                        "--share=network",
+
+                        // Additional requirements for Steam
+                        "--socket=pulseaudio",
+                        "--socket=system-bus",
+                    ],
+
+                },
+
                 win: {
                     target: ['nsis', 'portable'],
                     icon: 'src/assets/icon.ico'

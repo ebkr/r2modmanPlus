@@ -1,26 +1,18 @@
 #!/bin/sh
 
-STEAM_EXECUTABLE=""
+# Required for Steam
+export DISPLAY
+export XAUTHORITY
 
-i=0; max=$#
-while [ $i -lt $max ]; do
-    case $1 in
-        --steam-executable)
-            if [ -n "$2" ]; then
-                STEAM_EXECUTABLE="$2"
-                shift
-                i=$((i+1))
-            else
-                echo "The --steam-executable argument must be provided"
-                exit 1
-            fi
-        ;;
-        *)
-            set -- "$@" "$1"
-        ;;
-    esac
-    shift
-    i=$((i+1))
-done
+# Game relevant
+export WINEDLLOVERRIDES
+export STEAM_RUNTIME
 
-exec "$STEAM_EXECUTABLE" "$@"
+if [ $# -eq 0 ]; then
+    echo "Error: flatpak-spawn arguments must be provided" >&2
+    exit 1
+fi
+
+echo "Executing: /usr/bin/flatpak-spawn $@" >&1
+
+exec flatpak-spawn "$@"
