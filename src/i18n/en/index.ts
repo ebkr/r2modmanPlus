@@ -8,6 +8,7 @@ import {EnumTranslation} from "./enums/EnumTranslation";
 import {HelpTranslation} from './pages/HelpTranslation';
 import {SettingsTranslation} from "./pages/SettingsTranslation";
 import { ConfigEditorTranslation } from './pages/ConfigEditorTranslation';
+import { DownloadMonitorTranslation } from './pages/DownloadMonitorTranslation';
 
 const message: MessageFormat = {
     metadata: {
@@ -23,6 +24,7 @@ const message: MessageFormat = {
             help: HelpTranslation,
             settings: SettingsTranslation,
             configEditor: ConfigEditorTranslation,
+            downloadMonitor: DownloadMonitorTranslation
         },
         platforms: PlatformTranslation,
         enums: EnumTranslation,
@@ -39,5 +41,5 @@ export const dateTimeFormat: DateTimeFormat = {
     },
 }
 
-// Exported separately to enforce validation on exported type
+// Exported separately to enforce validation on the exported type
 export default message;
