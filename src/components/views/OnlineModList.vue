@@ -8,35 +8,52 @@
             <template v-slot:title>
                 <span v-if="key.isPinned()">
                     <span class="tag is-info margin-right margin-right--half-width"
-                          v-tooltip.right="'Pinned on Thunderstore'">
-                        Pinned
+                          v-tooltip.right="t('translations.pages.manager.online.modList.tooltips.pinned.long')">
+                        {{ t('translations.pages.manager.online.modList.tooltips.pinned.short') }}
                     </span>
-                    <span class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></span>
+                    <span class="selectable">{{key.getName()}} <span class="card-byline">{{ t('translations.pages.manager.online.modList.mod.author', { author: key.getOwner() }) }}</span></span>
                 </span>
                 <span v-else-if="isModDeprecated(key)">
                     <span class="tag is-danger margin-right margin-right--half-width"
-                          v-tooltip.right="'This mod is potentially broken'">
-                        Deprecated
+                          v-tooltip.right="t('translations.pages.manager.online.modList.tooltips.deprecated.long')">
+                        {{ t('translations.pages.manager.online.modList.tooltips.deprecated.short') }}
                     </span>
-                    <strike class="selectable">{{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span></strike>
+                    <strike class="selectable">{{key.getName()}} <span class="card-byline">{{ t('translations.pages.manager.online.modList.mod.author', { author: key.getOwner() }) }}</span></strike>
                 </span>
                 <span v-else class='selectable'>
-                    {{key.getName()}} <span class="card-byline">by {{key.getOwner()}}</span>
+                    {{key.getName()}} <span class="card-byline">{{ t('translations.pages.manager.online.modList.mod.author', { author: key.getOwner() }) }}</span>
                 </span>
             </template>
             <template v-slot:other-icons>
                 <DonateIconButton :mod="key" :extraRenderCondition="!readOnly"/>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
-                    <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
+                    <i class='fas fa-check' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.installed')"></i>
                 </span>
             </template>
             <template v-slot:description>
-                <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
-                <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
+                <p class='card-timestamp'>
+                  <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.lastUpdated">
+                    <template v-slot:date>
+                        <span class="font-weight-normal">
+                            {{ d(key.getDateUpdated(), 'long', messages[locale].metadata.locale) }}
+                        </span>
+                    </template>
+                  </i18n-t>
+                </p>
+                <p class='card-timestamp'>
+                  <i18n-t tag="strong" keypath="translations.pages.manager.online.previewPanel.metadata.categories">
+                    <template v-slot:categories>
+                      <span class="font-weight-normal">{{ getReadableCategories(key) }}</span>
+                    </template>
+                  </i18n-t>
+                </p>
             </template>
-            <a class='card-footer-item' v-if="!readOnly" @click='showDownloadModal(key)'>Download</a>
+            <a class='card-footer-item' v-if="!readOnly" @click='showDownloadModal(key)'>
+              {{ t('translations.pages.manager.online.modList.actions.download') }}
+            </a>
             <ExternalLink :url="key.getPackageUrl()" class='card-footer-item'>
-                Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
+              {{ t('translations.pages.manager.online.modList.actions.website') }}
+              <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </ExternalLink>
             <template v-if="!readOnly">
                 <DonateButton :mod="key"/>
@@ -64,8 +81,10 @@ import { valueToReadableDate } from '../../utils/DateUtils';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, onMounted, ref } from 'vue';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 type OnlineModListProps = {
     pagedModList: ThunderstoreMod[];
@@ -111,3 +130,9 @@ onMounted(() => {
 });
 
 </script>
+
+<style lang="scss" scoped>
+.font-weight-normal {
+  font-weight: normal;
+}
+</style>

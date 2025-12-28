@@ -12,8 +12,10 @@ import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
 import { computed, ref, watch } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t, d, messages, locale } = useI18n();
 
 type LocalModCardProps = {
     mod: ManifestV2;
@@ -194,21 +196,18 @@ function dependencyStringToModName(x: string) {
                 <span v-if="isDeprecated"
                     class="tag is-danger margin-right margin-right--half-width"
                     v-tooltip.right="'This mod is deprecated and could be broken'">
-                    Deprecated
+                    {{ t('translations.pages.manager.installed.localModCard.labels.deprecated') }}
                 </span>
                 <span v-if="!mod.isEnabled()"
                     class="tag is-warning margin-right margin-right--half-width"
                     v-tooltip.right="'This mod will not be used in-game'">
-                    Disabled
+                    {{ t('translations.pages.manager.installed.localModCard.labels.disabled') }}
                 </span>
                 <span class="card-title selectable">
                     <component :is="mod.isEnabled() ? 'span' : 'strike'" class="selectable">
-                        {{mod.getDisplayName()}}
+                        {{ mod.getDisplayName() }}
                         <span class="selectable card-byline">
-                            v{{mod.getVersionNumber()}}
-                        </span>
-                        <span :class="`card-byline ${mod.isEnabled() && 'selectable'}`">
-                            by {{mod.getAuthorName()}}
+                            {{ t('translations.pages.manager.installed.localModCard.display.byline', { version: mod.getVersionNumber(), author: mod.getAuthorName() }) }}
                         </span>
                     </component>
                 </span>
@@ -216,7 +215,9 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <template v-slot:description>
-            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0"><strong>Installed on:</strong> {{ getReadableDate(mod.getInstalledAtTime()) }}</p>
+            <p class='card-timestamp' v-if="mod.getInstalledAtTime() !== 0">
+                {{ t('translations.pages.manager.installed.localModCard.display.installedAt', { formattedDate: d(mod.getInstalledAtTime(), 'long', messages[locale].metadata.locale)}) }}
+            </p>
         </template>
 
         <!-- Show icon button row even when card is collapsed -->
@@ -225,11 +226,12 @@ function dependencyStringToModName(x: string) {
             <span v-if="!isLatestVersion"
                 @click.prevent.stop="updateMod()"
                 class='card-header-icon'>
-                <i class='fas fa-cloud-upload-alt' v-tooltip.left="'An update is available'"></i>
+                <i class='fas fa-cloud-upload-alt'
+                   v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.updateAvailable')"></i>
             </span>
             <span v-if="disabledDependencies.length || missingDependencies.length"
                 class='card-header-icon'>
-                <i v-tooltip.left="`There is an issue with the dependencies for this mod`"
+                <i v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.dependencyIssue')"
                     class='fas fa-exclamation-circle'
                 ></i>
             </span>
@@ -241,47 +243,51 @@ function dependencyStringToModName(x: string) {
                         type="checkbox"
                         :class="['switch', 'is-small', {'switch is-info' : mod.isEnabled()}]"
                         :checked="mod.isEnabled()" />
-                    <label :for="`switch-${mod.getName()}`"
-                        v-tooltip.left="mod.isEnabled() ? 'Disable' : 'Enable'"></label>
+                    <label v-if="mod.isEnabled()"
+                           :for="`switch-${mod.getName()}`"
+                           v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.disable')"></label>
+                    <label v-else
+                           :for="`switch-${mod.getName()}`"
+                           v-tooltip.left="t('translations.pages.manager.installed.localModCard.tooltips.enable')"></label>
                 </div>
             </span>
         </template>
 
         <!-- Show bottom button row -->
         <a @click="uninstallMod()" class='card-footer-item'>
-            Uninstall
+            {{ t('translations.pages.manager.installed.localModCard.actions.uninstall') }}
         </a>
 
         <a v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='card-footer-item'>
-            Disable
+            {{ t('translations.pages.manager.installed.localModCard.actions.disable') }}
         </a>
         <a v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='card-footer-item' >
-            Enable
+            {{ t('translations.pages.manager.installed.localModCard.actions.enable') }}
         </a>
 
         <a @click="viewAssociatedMods()" class='card-footer-item'>
-            Associated
+            {{ t('translations.pages.manager.installed.localModCard.actions.associated') }}
         </a>
 
         <ExternalLink :url="mod.getWebsiteUrl()" class="card-footer-item">
-            Website
+            {{ t('translations.pages.manager.installed.localModCard.actions.openWebsite') }}
             <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
         </ExternalLink>
 
         <a v-if="!isLatestVersion" @click="updateMod()" class='card-footer-item'>
-            Update
+            {{ t('translations.pages.manager.installed.localModCard.actions.update') }}
         </a>
 
         <a v-if="missingDependencies.length"
             @click="downloadDependency(missingDependencies[0])"
             class='card-footer-item'>
-            Download dependency
+            {{ t('translations.pages.manager.installed.localModCard.actions.downloadDependency') }}
         </a>
 
         <a v-if="disabledDependencies.length"
             @click="enableMod(disabledDependencies[0])"
             class='card-footer-item'>
-            Enable {{disabledDependencies[0].getDisplayName()}}
+            {{ t('translations.pages.manager.installed.localModCard.actions.enableSpecific', { dependencyName: disabledDependencies[0].getDisplayName() }) }}
         </a>
 
         <DonateButton :mod="tsMod"/>

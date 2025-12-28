@@ -7,10 +7,11 @@
                         <i class="fas fa-exclamation fa-5x"></i>
                     </div>
                     <br/>
-                    <h3 class="title is-4">Looks like you don't have any mods installed</h3>
+                    <h3 class="title is-4">
+                        {{ t('translations.pages.manager.installed.noModsInstalled.title') }}
+                    </h3>
                     <h4 class="subtitle is-5">
-                        Click the Online tab on the left, or click
-                        <a @click="$router.push({name: 'manager.online'})">here</a>.
+                        {{ t('translations.pages.manager.installed.noModsInstalled.content') }}
                     </h4>
                 </div>
             </div>
@@ -21,8 +22,10 @@
                     <div class="margin-bottom">
                         <div class="notification is-warning margin-right">
                             <span>
-                                You have {{ numberOfModsWithUpdates }} available mod update{{ numberOfModsWithUpdates > 1 ? "s" : ""}}.
-                                Would you like to <a @click="store.commit('openUpdateAllModsModal')">update all</a>?
+                                {{ t('translations.pages.manager.installed.updatableModsBanner.text', numberOfModsWithUpdates, { named: { numberOfModsWithUpdates: numberOfModsWithUpdates } }) }}
+                                <a @click="store.commit('openUpdateAllModsModal')">
+                                    {{ t('translations.pages.manager.installed.updatableModsBanner.updateAction') }}
+                                </a>
                             </span>
                             <a class="float-right cursor-pointer" @click="store.commit('profile/dismissUpdateAll')">
                                 <i class="fas fa-times" />
@@ -42,8 +45,10 @@ import ManifestV2 from '../../model/ManifestV2';
 import LocalModListProvider from '../../providers/components/loaders/LocalModListProvider';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
+import { useI18n } from 'vue-i18n';
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 // const LocalModList = computed(() => LocalModListProvider.provider);
 const LocalModList = defineAsyncComponent(() => LocalModListProvider.provider());

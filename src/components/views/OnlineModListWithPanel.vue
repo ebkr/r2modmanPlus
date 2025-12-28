@@ -16,18 +16,18 @@
             </template>
             <template v-slot:other-icons>
                 <span class='card-header-icon' v-if="isModDeprecated(key)">
-                    <i class='fas fa-exclamation-triangle' v-tooltip.left="'This mod is potentially broken'"></i>
+                    <i class='fas fa-exclamation-triangle' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.deprecated.long')"></i>
                 </span>
                 <span class='card-header-icon' v-if="key.isPinned() && !readOnly">
-                    <i class='fas fa-map-pin' v-tooltip.left="'Pinned on Thunderstore'"></i>
+                    <i class='fas fa-map-pin' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.pinned.long')"></i>
                 </span>
                 <span class='card-header-icon' v-if="key.getDonationLink() && !readOnly">
                     <ExternalLink :url="key.getDonationLink()" target="external" tag="span">
-                        <i class='fas fa-heart' v-tooltip.left="'Donate to the mod author'"></i>
+                        <i class='fas fa-heart' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.donate')"></i>
                     </ExternalLink>
                 </span>
                 <span class='card-header-icon' v-if="isThunderstoreModInstalled(key) && !readOnly">
-                    <i class='fas fa-check' v-tooltip.left="'Mod already installed'"></i>
+                    <i class='fas fa-check' v-tooltip.left="t('translations.pages.manager.online.modList.tooltips.installed')"></i>
                 </span>
             </template>
         </OnlineRowCard>
@@ -43,8 +43,10 @@ import OnlineRowCard from '../OnlineRowCard.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed } from 'vue';
+import {useI18n} from "vue-i18n";
 
 const store = getStore<State>();
+const { t } = useI18n();
 
 type OnlineModListWithPanelProps = {
     pagedModList?: ThunderstoreMod[];
