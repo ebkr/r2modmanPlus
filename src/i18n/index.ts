@@ -7,6 +7,9 @@ import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMess
 import { ManagerMessageFormat } from './base/pages/ManagerMessageFormat';
 import {EnumMessageFormat} from "./base/enums/EnumMessageFormat";
 import { HelpMessageFormat } from './base/pages/HelpMessageFormat';
+import { SettingsMessageFormat } from './base/pages/SettingsMessageFormat';
+import { ConfigEditorMessageFormat } from './base/pages/ConfigEditorMessageFormat';
+import { DownloadMonitorMessageFormat } from './base/pages/DownloadMonitorMessageFormat';
 
 export default {
     'en': langEn,
@@ -33,7 +36,9 @@ export type MessageFormat = {
             profileSelection: ProfileSelectionMessageFormat,
             manager: ManagerMessageFormat,
             help: HelpMessageFormat,
-            // settings: SettingsMessageFormat,
+            settings: SettingsMessageFormat,
+            configEditor: ConfigEditorMessageFormat,
+            downloadMonitor: DownloadMonitorMessageFormat,
         },
         platforms: PlatformMessageFormat;
         enums: EnumMessageFormat;
