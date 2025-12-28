@@ -6,6 +6,7 @@ import { SplashMessageFormat } from './base/pages/SplashMessageFormat';
 import { ProfileSelectionMessageFormat } from './base/pages/ProfileSelectionMessageFormat';
 import { ManagerMessageFormat } from './base/pages/ManagerMessageFormat';
 import {EnumMessageFormat} from "./base/enums/EnumMessageFormat";
+import { HelpMessageFormat } from './base/pages/HelpMessageFormat';
 
 export default {
     'en': langEn,
@@ -31,6 +32,7 @@ export type MessageFormat = {
             splash: SplashMessageFormat,
             profileSelection: ProfileSelectionMessageFormat,
             manager: ManagerMessageFormat,
+            help: HelpMessageFormat,
         },
         platforms: PlatformMessageFormat;
         enums: EnumMessageFormat;

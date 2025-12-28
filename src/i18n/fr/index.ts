@@ -5,6 +5,7 @@ import {ProfileSelectionTranslation} from "./pages/ProfileSelectionTranslation";
 import {ManagerTranslation} from './pages/ManagerTranslation';
 import { DateTimeFormat } from 'src/i18n';
 import { EnumTranslation } from './enums/EnumTranslation';
+import { HelpTranslation } from './pages/HelpTranslation';
 
 const message = {
     metadata: {
@@ -17,6 +18,7 @@ const message = {
             splash: SplashTranslation,
             profileSelection: ProfileSelectionTranslation,
             manager: ManagerTranslation,
+            help: HelpTranslation,
         },
         platforms: PlatformTranslation,
         enums: EnumTranslation
