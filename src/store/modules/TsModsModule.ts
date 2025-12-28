@@ -345,7 +345,7 @@ export const TsModsModule = {
 
         async getActiveGameCacheStatus({commit, state, rootState}): Promise<string> {
             if (state.isThunderstoreModListUpdateInProgress) {
-                return "Online mod list is currently updating, please wait for the operation to complete";
+                return 'updating';
             }
 
             // Only check the status once, as this is used in the settings
@@ -354,17 +354,17 @@ export const TsModsModule = {
                 let status = '';
                 try {
                     status = (await PackageDb.hasEntries(rootState.activeGame.internalFolderName))
-                        ? `${rootState.activeGame.displayName} has a local copy of online mod list`
-                        : `${rootState.activeGame.displayName} has no local copy stored`;
+                        ? `hasCopy`
+                        : `doesNotHaveCopy`;
                 } catch (e) {
                     console.error(e);
-                    status = 'Error occurred while checking mod list status';
+                    status = 'errorOccurred';
                 }
 
                 commit('setActiveGameCacheStatus', status);
             }
 
-            return state.activeGameCacheStatus || 'Unknown status';
+            return state.activeGameCacheStatus || 'unknown';
         },
 
         async prewarmCache({rootGetters, commit}) {
