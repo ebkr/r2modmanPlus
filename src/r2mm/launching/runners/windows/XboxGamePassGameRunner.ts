@@ -42,7 +42,7 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
             const gameExecutable = (await FsProvider.instance.readdir(gameDir))
                 .find((x: string) => "gamelaunchhelper.exe" === x);
 
-            const mappedArgs = args.map(value => `"${value}"`);
+            const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
 

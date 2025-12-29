@@ -78,7 +78,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         const executableNamePart = `"${steamExecutable}"`;
         const appLaunchPart = `-applaunch ${game.activePlatform.storeIdentifier}`;
-        const modLoaderArgumentsPart = args.map(value => `"${value}"`);
+        const modLoaderArgumentsPart = args.map(value => `"${value}"`).join(' ');
         const userDefinedArgsPart = `${settings.getContext().gameSpecific.launchParameters}`;
 
         const executionParts = [

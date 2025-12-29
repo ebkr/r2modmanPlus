@@ -52,7 +52,7 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
         }
 
         try{
-            const mappedArgs = args.map(value => `"${value}"`);
+            const mappedArgs = args.map(value => `"${value}"`).join(' ');
             const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await ChildProcess.exec(cmd);

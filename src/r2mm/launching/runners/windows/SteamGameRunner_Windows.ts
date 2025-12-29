@@ -37,7 +37,7 @@ export default class SteamGameRunner_Windows extends GameRunnerProvider {
                 return resolve(steamDir);
             }
 
-            const mappedArgs = args.map(value => `"${value}"`);
+            const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
             LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
