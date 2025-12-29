@@ -6,22 +6,21 @@ import R2Error from '../../../../model/errors/R2Error';
 import Profile from '../../../../model/Profile';
 import ManagerSettings from '../../../manager/ManagerSettings';
 import GameDirectoryResolverProvider from '../../../../providers/ror2/game/GameDirectoryResolverProvider';
-import LoggerProvider, { LogSeverity } from '../../../../providers/ror2/logging/LoggerProvider';
+import LoggerProvider, {LogSeverity} from '../../../../providers/ror2/logging/LoggerProvider';
 import childProcess from '../../../../providers/node/child_process/child_process';
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
-import { PackageLoader } from '../../../../model/schema/ThunderstoreSchema';
-import { getDeterminedLaunchType } from '../../../../utils/LaunchUtils';
-import { LaunchType } from '../../../../model/real_enums/launch/LaunchType';
+import {PackageLoader} from '../../../../model/schema/ThunderstoreSchema';
+import {getDeterminedLaunchType} from '../../../../utils/LaunchUtils';
+import {LaunchType} from '../../../../model/real_enums/launch/LaunchType';
 import InteractionProvider from "src/providers/ror2/system/InteractionProvider";
 import PathResolver from "src/r2mm/manager/PathResolver";
-import { parse as shellParse } from "shell-quote";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
-    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+    public async getGameArguments(game: Game, profile: Profile) {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList!, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -58,10 +57,10 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return this.start(game, instructions.vanillaParameters, {});
+        return this.start(game, instructions.vanillaParameterList, {});
     }
 
-    async start(game: Game, args: string, proxyArgs: Record<string, string>): Promise<void | R2Error> {
+    async start(game: Game, args: string[], proxyArgs: Record<string, string>): Promise<void | R2Error> {
 
         const env = await InteractionProvider.instance.getEnvironmentVariables();
         if (env.STEAM_RUNTIME) { proxyArgs['STEAM_RUNTIME'] = `${env.STEAM_RUNTIME}` }
@@ -79,7 +78,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         const executableNamePart = `"${steamExecutable}"`;
         const appLaunchPart = `-applaunch ${game.activePlatform.storeIdentifier}`;
-        const modLoaderArgumentsPart = `${args}`;
+        const modLoaderArgumentsPart = [args].map(value => `"${value}"`);
         const userDefinedArgsPart = `${settings.getContext().gameSpecific.launchParameters}`;
 
         const executionParts = [
@@ -97,18 +96,28 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
             if (env.FLATPAK_ID) {
                 console.log("Launching flatpak")
-                const out = childProcess.execSync(
-                    `${PathResolver.MOD_ROOT}/steam_executable_launch.sh --host ${commandString}`,
-                    {
-                        env: {
-                            ...env,
-                            ...proxyArgs
-                        },
-                        stdio: 'inherit'
-                    });
-                console.log("Output:", out);
+
+                const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
+
+                const lineArgs = isProton ? ['--'] : [ // Use `--` as a blank stub
+                    `${PathResolver.MOD_ROOT}/linux_wrapper.sh`
+                ]
+
+                // Write an argument per line for the web start wrapper.
+                // TODO - Add support for user args via the manager, maybe we're happy to ignore for Flatpak?
+                // We could just disable the setting?
+                lineArgs.push(
+                    ...args
+                );
+
+                await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
+
+                // We do a cheeky hack so that we don't need to parse args and instead let the wrapper script pick them up.
+                // --r2-modded let's the web wrapper know that we want to start modded.
+                childProcess.execSync(
+                    `${PathResolver.MOD_ROOT}/steam_executable_launch.sh --host ${executableNamePart} steam://run/${game.activePlatform.storeIdentifier}/`);
             } else {
-                console.log("Launching standard")
+                console.log("Launching standard", commandString)
                 childProcess.execSync(
                     commandString,
                     {

@@ -156,6 +156,7 @@ async function moveToNextScreen() {
         const settings = await ManagerSettings.getSingleton(activeGame);
         await ensureWrapperInGameFolder('linux_wrapper.sh');
         await ensureWrapperInGameFolder('steam_executable_launch.sh');
+        await ensureWrapperInGameFolder('web_start_wrapper.sh');
         if (!(await getDeterminedLaunchType(activeGame, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON)) {
             if (!(await areWrapperArgumentsProvided(activeGame))) {
                 return router.push({name: 'linux'});
@@ -168,7 +169,7 @@ async function moveToNextScreen() {
     return router.push({name: 'profiles'});
 }
 
-type WrapperScript = 'linux_wrapper.sh' | 'steam_executable_launch.sh';
+type WrapperScript = 'linux_wrapper.sh' | 'steam_executable_launch.sh' | 'web_start_wrapper.sh';
 
 async function ensureWrapperInGameFolder(wrapperName: WrapperScript) {
     const staticsDirectory = window.app.getStaticsDirectory();

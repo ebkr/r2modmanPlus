@@ -214,6 +214,7 @@ export default defineConfig((ctx) => {
                 // https://www.electron.build/configuration/configuration
 
                 appId: isFlatpakTarget ? 'com.github.ebkr.r2modman' : 'ebkr-r2modman',
+                compression: 'store',
 
                 flatpak: {
                     finishArgs: [

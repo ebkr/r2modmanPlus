@@ -7,8 +7,8 @@ export default class ReturnOfModdingGameInstructions extends GameInstructionGene
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `--rom_modding_root_folder "${profile.getProfilePath()}"`,
-            vanillaParameters: "--rom_enabled false"
+            moddedParameterList: ['--rom_modding_root_folder', profile.getProfilePath()],
+            vanillaParameterList: ['--rom_enabled', 'false']
         };
     }
 }
