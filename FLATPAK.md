@@ -40,7 +40,7 @@ Getting Flatpak to invoke Steam has been rough. Steam, when launched from a Flat
 
 So what's the fix?
 
-The best solution I've come up with so far, and at the time of writing is yet to work fully, is to have a wrapper script that reads additional arguments via a separate file. Since we're doing things this way, it means we can also use the `steam://` protocol as we don't need to pass any additional arguments to the game process anymore, and we let the xdg handle opening the executable. It also means it likely works with Steam installed via Flatpak as we don't try to start multiple instances.
+The best solution I've come up with so far is to have a wrapper script that reads additional arguments via a separate file. Since we're doing things this way, it means we can also use the `steam://` protocol as we don't need to pass any additional arguments to the game process anymore, and we let the xdg handle opening the executable. It also means it likely works with Steam installed via Flatpak as we don't try to start multiple instances.
 
 ### Quirks
 
