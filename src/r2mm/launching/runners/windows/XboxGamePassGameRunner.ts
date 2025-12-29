@@ -12,9 +12,9 @@ import FsProvider from '../../../../providers/generic/file/FsProvider';
 
 export default class XboxGamePassGameRunner extends GameRunnerProvider {
 
-    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+    public async getGameArguments(game: Game, profile: Profile): Promise<string[] | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -27,10 +27,10 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return this.start(game, instructions.vanillaParameters);
+        return this.start(game, instructions.vanillaParameterList);
     }
 
-    async start(game: Game, args: string): Promise<void | R2Error> {
+    async start(game: Game, args: string[]): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
             let gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
@@ -42,9 +42,11 @@ export default class XboxGamePassGameRunner extends GameRunnerProvider {
             const gameExecutable = (await FsProvider.instance.readdir(gameDir))
                 .find((x: string) => "gamelaunchhelper.exe" === x);
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+            const mappedArgs = args.map(value => `"${value}"`);
 
-            ChildProcess.exec(`"${gameExecutable}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, {
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}/${gameExecutable} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+
+            ChildProcess.exec(`"${gameExecutable}" ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, {
                 cwd: gameDir,
                 windowsHide: false,
             }, (err => {

@@ -14,9 +14,9 @@ import GameInstructionParser from '../../instructions/GameInstructionParser';
 
 export default class SteamGameRunner_Darwin extends GameRunnerProvider {
 
-    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+    public async getGameArguments(game: Game, profile: Profile): Promise<string[] | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -29,10 +29,10 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return this.start(game, instructions.vanillaParameters);
+        return this.start(game, instructions.vanillaParameterList);
     }
 
-    async start(game: Game, args: string): Promise<void | R2Error> {
+    async start(game: Game, args: string[]): Promise<void | R2Error> {
         const settings = await ManagerSettings.getSingleton(game);
         const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
         if(steamDir instanceof R2Error) {
@@ -52,7 +52,8 @@ export default class SteamGameRunner_Darwin extends GameRunnerProvider {
         }
 
         try{
-            const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`;
+            const mappedArgs = args.map(value => `"${value}"`);
+            const cmd = `"${steamExecutable}/Contents/MacOS/steam_osx" -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`;
             LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${cmd}`);
             await ChildProcess.exec(cmd);
         } catch(err){

@@ -20,7 +20,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
     public async getGameArguments(game: Game, profile: Profile) {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parseList(instructions.moddedParameterList!, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -78,7 +78,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         const executableNamePart = `"${steamExecutable}"`;
         const appLaunchPart = `-applaunch ${game.activePlatform.storeIdentifier}`;
-        const modLoaderArgumentsPart = [args].map(value => `"${value}"`);
+        const modLoaderArgumentsPart = args.map(value => `"${value}"`);
         const userDefinedArgsPart = `${settings.getContext().gameSpecific.launchParameters}`;
 
         const executionParts = [
@@ -99,21 +99,20 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
                 const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
 
-                const lineArgs = isProton ? ['--'] : [ // Use `--` as a blank stub
+                // If Proton, there is no wrapper script.
+                // We instead add a stub argument which is `--`.
+                // This value doesn't matter and can be changed if required to a suitable ignored value.
+                // If native, we need to chainload into the linux_wrapper.sh file.
+                const lineArgs = isProton ? ['--'] : [
                     `${PathResolver.MOD_ROOT}/linux_wrapper.sh`
                 ]
 
-                // Write an argument per line for the web start wrapper.
-                // TODO - Add support for user args via the manager, maybe we're happy to ignore for Flatpak?
-                // We could just disable the setting?
                 lineArgs.push(
                     ...args
                 );
 
                 await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
 
-                // We do a cheeky hack so that we don't need to parse args and instead let the wrapper script pick them up.
-                // --r2-modded let's the web wrapper know that we want to start modded.
                 childProcess.execSync(
                     `${PathResolver.MOD_ROOT}/steam_executable_launch.sh --host ${executableNamePart} steam://run/${game.activePlatform.storeIdentifier}/`);
             } else {
