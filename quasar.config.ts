@@ -74,7 +74,7 @@ export default defineConfig((ctx) => {
             viteVuePluginOptions: {
                 template: {
                     compilerOptions: {
-                        isCustomElement: (tag) => ["strike"].includes(tag)
+                        isCustomElement: (tag: string) => ["strike"].includes(tag)
                     }
                 }
             },
@@ -225,6 +225,8 @@ export default defineConfig((ctx) => {
                         "--filesystem=home",
                         "--filesystem=/mnt",
                         "--filesystem=host",
+                        "--filesystem=~/.var/app/com.valvesoftware.Steam:rw",
+                        "--filesystem=~/.local/share/Steam:rw",
 
                         // Allows the manager to use IPC - Useful to prevent multiple instances
                         "--share=ipc",
