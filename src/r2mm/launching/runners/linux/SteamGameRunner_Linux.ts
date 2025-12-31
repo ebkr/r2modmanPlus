@@ -15,6 +15,7 @@ import {getDeterminedLaunchType, isManagerRunningOnFlatpak} from '../../../../ut
 import {LaunchType} from '../../../../model/real_enums/launch/LaunchType';
 import InteractionProvider from "../../../../providers/ror2/system/InteractionProvider";
 import PathResolver from "../../../manager/PathResolver";
+import { parse as parseShell } from "shell-quote";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -108,7 +109,8 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
                 ]
 
                 lineArgs.push(
-                    ...args
+                    ...args,
+                    ...parseShell(userDefinedArgsPart)
                 );
 
                 await FsProvider.instance.writeFile(path.join(PathResolver.MOD_ROOT, 'wrapper_args.txt'), lineArgs.join('\n'))
