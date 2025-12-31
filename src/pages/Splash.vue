@@ -129,7 +129,7 @@ import { useRouter } from 'vue-router';
 import { useSplashComposable } from '../components/composables/SplashComposable';
 import path from '../providers/node/path/path';
 import FileUtils from '../utils/FileUtils';
-import { areWrapperArgumentsProvided, getDeterminedLaunchType } from '../utils/LaunchUtils';
+import { areWrapperArgumentsProvided, getDeterminedLaunchType, isManagerRunningOnFlatpak } from '../utils/LaunchUtils';
 import appWindow from '../providers/node/app/app_window';
 import Buffer from '../providers/node/buffer/buffer';
 import ProtocolProvider from '../providers/generic/protocol/ProtocolProvider';
@@ -157,7 +157,8 @@ async function moveToNextScreen() {
         await ensureWrapperInGameFolder('linux_wrapper.sh');
         await ensureWrapperInGameFolder('steam_executable_launch.sh');
         await ensureWrapperInGameFolder('web_start_wrapper.sh');
-        if (!(await getDeterminedLaunchType(activeGame, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON)) {
+        const gameIsProton = await getDeterminedLaunchType(activeGame, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
+        if (!gameIsProton || await isManagerRunningOnFlatpak()) {
             if (!(await areWrapperArgumentsProvided(activeGame))) {
                 return router.push({name: 'linux'});
             }

@@ -217,6 +217,8 @@ export default defineConfig((ctx) => {
                 compression: 'store',
 
                 flatpak: {
+                    runtimeVersion: "25.08",
+                    baseVersion: "25.08",
                     finishArgs: [
                         // Access to flatpak-spawn
                         "--talk-name=org.freedesktop.Flatpak.Development",

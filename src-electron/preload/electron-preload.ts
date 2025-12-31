@@ -31,6 +31,6 @@ export function copyToClipboard(value: string) {
     ipcRenderer.sendSync('electron:clipboard:copyText', value);
 }
 
-export function getEnvironmentVariables() {
+export async function getEnvironmentVariables() {
     return ipcRenderer.invoke('electron:getEnvironmentVariables');
 }

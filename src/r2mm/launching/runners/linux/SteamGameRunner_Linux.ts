@@ -11,10 +11,10 @@ import childProcess from '../../../../providers/node/child_process/child_process
 import GameInstructions from '../../instructions/GameInstructions';
 import GameInstructionParser from '../../instructions/GameInstructionParser';
 import {PackageLoader} from '../../../../model/schema/ThunderstoreSchema';
-import {getDeterminedLaunchType} from '../../../../utils/LaunchUtils';
+import {getDeterminedLaunchType, isManagerRunningOnFlatpak} from '../../../../utils/LaunchUtils';
 import {LaunchType} from '../../../../model/real_enums/launch/LaunchType';
-import InteractionProvider from "src/providers/ror2/system/InteractionProvider";
-import PathResolver from "src/r2mm/manager/PathResolver";
+import InteractionProvider from "../../../../providers/ror2/system/InteractionProvider";
+import PathResolver from "../../../manager/PathResolver";
 
 export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
@@ -94,7 +94,7 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
 
         try {
 
-            if (env.FLATPAK_ID) {
+            if (await isManagerRunningOnFlatpak()) {
                 console.log("Launching flatpak")
 
                 const isProton = await getDeterminedLaunchType(game, settings.getLaunchType() || LaunchType.AUTO) === LaunchType.PROTON;
