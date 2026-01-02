@@ -11,19 +11,13 @@
 
         <div class="mod-list-content">
             <div class="draggable-content">
-                <draggable v-model='draggableList'
-                           group="local-mods"
-                           handle=".handle"
-                           @start="drag=store.getters['profile/canSortMods']"
-                           @end="drag=false"
-                           :force-fallback="true"
-                           :scroll-sensitivity="100"
-                           item-key="id">
-                    <template #item="{element}">
-                        <local-mod-card
-                            :mod="element" />
+                <Suspense>
+                    <LocalModDraggableList/>
+
+                    <template #fallback>
+                        <SkeletonLocalModCard :mod="mod" v-for="mod of visibleModList"/>
                     </template>
-                </draggable>
+                </Suspense>
             </div>
         </div>
 
@@ -32,36 +26,20 @@
 </template>
 
 <script lang="ts" setup>
-import Draggable from 'vuedraggable';
-import R2Error from '../../model/errors/R2Error';
-import { ImmutableProfile } from '../../model/Profile';
 import AssociatedModsModal from './LocalModList/AssociatedModsModal.vue';
 import DisableModModal from './LocalModList/DisableModModal.vue';
 import UninstallModModal from './LocalModList/UninstallModModal.vue';
-import LocalModCard from './LocalModList/LocalModCard.vue';
 import SearchAndSort from './LocalModList/SearchAndSort.vue';
 import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
+import SkeletonLocalModCard from './LocalModList/SkeletonLocalModCard.vue';
 
 const store = getStore<State>();
 
-const profile = computed<ImmutableProfile>(() => store.getters['profile/activeProfile'].asImmutableProfile());
-const draggableList = computed({
-    get() {
-        return store.getters['profile/visibleModList'];
-    },
-    set(newList: string) {
-        try {
-            store.dispatch(
-                'profile/saveModListToDisk',
-                {mods: newList, profile: profile.value}
-            );
-        } catch (e) {
-            store.commit('error/handleError', R2Error.fromThrownValue(e));
-        }
-    }
-});
+const LocalModDraggableList = defineAsyncComponent(() => import('./LocalModList/LocalModDraggableList.vue'));
+
+const visibleModList = computed(() => store.getters['profile/visibleModList']);
 </script>
 
 <style lang="scss" scoped>

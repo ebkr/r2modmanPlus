@@ -45,7 +45,7 @@ export default class ProfileModList {
                 const parsedYaml: any = parseYaml(fileContent) || [];
                 for(let modIndex in parsedYaml){
                     const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
-                    await this.setIconPath(mod, profile);
+                    this.setIconPath(mod, profile);
                     parsedYaml[modIndex] = mod;
                 }
                 return parsedYaml;
@@ -71,7 +71,14 @@ export default class ProfileModList {
     public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
-            const yamlModList: string = stringifyYaml(modList);
+            const yamlModList: string = stringifyYaml(modList, {
+                replacer: (key, value) => {
+                    if (key === 'icon') {
+                        return undefined;
+                    }
+                    return value;
+                }
+            });
             try {
                 await fs.writeFile(
                     profile.joinToProfilePath('mods.yml'),
