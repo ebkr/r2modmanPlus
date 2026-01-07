@@ -27,5 +27,11 @@ function openLink() {
     &:focus, &:hover, &:active {
         color: var(--v2-link-active-text-color);
     }
+
+    &.button {
+        &:hover {
+            color: var(--v2-link-text-color);
+        }
+    }
 }
 </style>

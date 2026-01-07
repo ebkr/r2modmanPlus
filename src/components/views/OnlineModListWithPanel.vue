@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="online-cards">
         <OnlineRowCard
             v-for='(key, index) in pagedModList' :key="`online-${key.getFullName()}-${index}`"
             :image="getImageUrl(key)"
@@ -85,3 +85,9 @@ function emitCardClick(mod: ThunderstoreMod) {
 }
 
 </script>
+
+<style scoped lang="scss">
+#online-cards {
+    min-width: min-content;
+}
+</style>

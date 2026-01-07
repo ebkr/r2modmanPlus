@@ -1,15 +1,5 @@
 <template>
 	<div class="manager-main-view">
-		<div class='notification is-warning' v-if="portableUpdateAvailable">
-			<div class='container'>
-				<p>
-					An update is available.
-					<ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
-                        Click here to go to the release page.
-					</ExternalLink>
-				</p>
-			</div>
-		</div>
 		<div id='steamIncorrectDir' :class="['modal', {'is-active':(showSteamIncorrectDirectoryModal !== false)}]">
 			<div class="modal-background" @click="showSteamIncorrectDirectoryModal = false"></div>
 			<div class='modal-content'>
@@ -137,14 +127,11 @@
 </template>
 
 <script lang='ts' setup>
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
-import { ExternalLink } from '../components/all';
+import { computed, onMounted, ref } from 'vue';
 import PathResolver from '../r2mm/manager/PathResolver';
 import { SteamInstallationValidator } from '../r2mm/manager/SteamInstallationValidator';
-import VersionNumber from '../model/VersionNumber';
 import R2Error from '../model/errors/R2Error';
 import ThemeManager from '../r2mm/manager/ThemeManager';
-import ManagerInformation from '../_managerinf/ManagerInformation';
 import { DataFolderProvider } from '../providers/ror2/system/DataFolderProvider';
 import InteractionProvider from '../providers/ror2/system/InteractionProvider';
 import os from '../providers/node/os/os';
@@ -164,16 +151,14 @@ import DownloadProgressModal from '../components/views/DownloadProgressModal.vue
 import UpdateAllInstalledModsModal from '../components/views/UpdateAllInstalledModsModal.vue';
 import { getStore } from '../providers/generic/store/StoreProvider';
 import { State } from '../store';
-import VueRouter from 'vue-router';
+import { useRouter } from 'vue-router';
 import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
 
 const store = getStore<State>();
-let router!: VueRouter;
+const router = useRouter();
 
-const portableUpdateAvailable = ref<boolean>(false);
-const updateTagName = ref<string>('');
 const isValidatingSteamInstallation = ref<boolean>(false);
 const showSteamIncorrectDirectoryModal = ref<boolean>(false);
 const showRor2IncorrectDirectoryModal = ref<boolean>(false);
@@ -360,39 +345,6 @@ async function toggleDarkTheme() {
     ThemeManager.apply();
 }
 
-function isManagerUpdateAvailable() {
-    if (!ManagerInformation.IS_PORTABLE) {
-        return;
-    }
-    fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
-        .then(response => response.json())
-        .then((parsed: any) => {
-            parsed.sort((a: any, b: any) => {
-                if (b !== null) {
-                    const versionA = new VersionNumber(a.name);
-                    const versionB = new VersionNumber(b.name);
-                    return versionA.isNewerThan(versionB);
-                }
-                return 1;
-            });
-            let foundMatch = false;
-            parsed.forEach((release: any) => {
-                if (!foundMatch && !release.draft) {
-                    const releaseVersion = new VersionNumber(release.name);
-                    if (releaseVersion.isNewerThan(ManagerInformation.VERSION)) {
-                        portableUpdateAvailable.value = true;
-                        updateTagName.value = release.tag_name;
-                        foundMatch = true;
-                        return;
-                    }
-                }
-            });
-        }).catch(err => {
-        // Do nothing, potentially offline. Try next launch.
-    });
-    return;
-}
-
 function showLaunchParameters() {
     GameInstructions.getInstructionsForGame(activeGame.value, profile.value).then(instructions => {
         vanillaLaunchArgs.value = instructions.vanillaParameters;
@@ -551,9 +503,7 @@ store.dispatch('profile/loadOrderingSettings');
 store.commit('modFilters/reset');
 
 onMounted(async () => {
-    router = getCurrentInstance()!.proxy.$router;
     launchParametersModel.value = settings.value.getContext().gameSpecific.launchParameters;
-    isManagerUpdateAvailable();
 })
 
 </script>

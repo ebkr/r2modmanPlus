@@ -8,10 +8,20 @@
 }
 
 .card-header-title {
-    align-items: center;
+    //align-items: center;
     color: var(--card-header-color,var(--text-strong,#363636));
     display: flex;
     flex-grow: 1;
     font-weight: 700;
     padding: 0.75rem 1rem;
+}
+
+.expandable-card__title {
+    display: flex;
+    flex-direction: row;
+
+    & > * {
+        flex: 1;
+        width: 100%;
+    }
 }

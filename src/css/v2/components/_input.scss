@@ -1,8 +1,10 @@
 .input, .select select, .textarea {
-    background-color: var(--input-background-color,var(--background,#fff));
+    background-color: var(--input-background-color, var(--background,#fff));
+    filter: brightness(95%);
     border-color: var(--input-border-color,var(--border,#e1e1e1));
     border-radius: 4px;
     color: var(--input-color,var(--text-strong,#363636));
+    border-width: 2px;
 
     &::placeholder {
         color: var(--input-placeholder-color, var(--text-strong,#363636));

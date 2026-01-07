@@ -102,7 +102,9 @@ function fetchAll(modToLoad: ThunderstoreMod) {
             }
         });
 
-    buildDependencies(modToLoad).then(value => dependencies.value = value);
+    buildDependencies(modToLoad)
+        .then(value => value.sort((a, b) => a.getName().localeCompare(b.getName())))
+        .then(value => dependencies.value = value);
     fetchChangelog(modToLoad);
 }
 
@@ -149,7 +151,7 @@ function showDownloadModal(mod: ThunderstoreMod) {
 }
 
 
-const previewPanelWidth = ref(500);
+const previewPanelWidth = ref(450);
 ManagerSettings.getSingleton(store.state.activeGame)
     .then(async settings => previewPanelWidth.value = await settings.getPreviewPanelWidth())
 
@@ -209,7 +211,7 @@ function dragEnd(event: DragEvent) {
                     <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(mod)}}</p>
                 </details>
             </div>
-            <div class="sticky-top inherit-background-colour sticky-top--no-shadow sticky-top--opaque no-margin sticky-top--no-padding">
+            <div class="sticky-top sticky-top--no-shadow sticky-top--inherit no-margin sticky-top--no-padding">
                 <div class="button-group">
                     <button class="button is-info" @click="showDownloadModal(mod)">Download</button>
                     <ExternalLink tag="button" class="button" :url="props.mod.getPackageUrl()">View online</ExternalLink>
@@ -275,6 +277,8 @@ function dragEnd(event: DragEvent) {
     display: flex;
     flex-direction: row;
     max-width: 80vw;
+    background-color: var(--preview-panel-background-color);
+    margin-left: 1rem;
 }
 
 .c-drag-pane {
@@ -296,6 +300,7 @@ function dragEnd(event: DragEvent) {
     display: flex;
     flex-flow: column;
     margin: 1rem;
+    margin-left: 2rem;
     color: var(--v2-primary-text-color);
     min-width: 350px;
 
@@ -305,7 +310,7 @@ function dragEnd(event: DragEvent) {
 
     &__content {
         flex: 1;
-        padding: 1rem;
+        padding: 1rem 0;
         display: block;
         height: max-content;
         overflow-y: auto;
@@ -323,5 +328,9 @@ function dragEnd(event: DragEvent) {
 
 .close-button {
     float: right;
+}
+
+summary {
+    cursor: pointer;
 }
 </style>
