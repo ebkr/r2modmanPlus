@@ -94,4 +94,8 @@ onMounted(async () => {
 .card-footer {
     padding-left: 0.5rem;
 }
+
+.handle {
+    cursor: grab;
+}
 </style>
