@@ -34,7 +34,7 @@
                 <p class='card-timestamp'><strong>Last updated:</strong> {{getReadableDate(key.getDateUpdated())}}</p>
                 <p class='card-timestamp'><strong>Categories:</strong> {{getReadableCategories(key)}}</p>
             </template>
-            <a class='card-footer-item' v-if="!readOnly" @click='showDownloadModal(key)'>Download</a>
+            <button class='button' v-if="!readOnly" @click='showDownloadModal(key)'>Download</button>
             <ExternalLink :url="key.getPackageUrl()" class='button'>
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </ExternalLink>
