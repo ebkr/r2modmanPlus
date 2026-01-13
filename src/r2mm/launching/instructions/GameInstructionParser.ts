@@ -38,7 +38,6 @@ export default class GameInstructionParser {
     }
 
     public static async parseList(args: string[], game: Game, profile: Profile): Promise<string[] | R2Error> {
-        args.forEach(arg => this.parse(arg, game, profile));
         const parsedArgs: string[] = [];
         for (const arg of args) {
             const parsedArg = await this.parse(arg, game, profile);
