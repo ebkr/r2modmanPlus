@@ -18774,6 +18774,84 @@
       },
       "r2modman": null
     },
+    "baby-steps": {
+      "uuid": "02ecb2ec-5bd1-402c-ab52-b87b3abc5d90",
+      "label": "baby-steps",
+      "meta": {
+        "displayName": "Baby Steps",
+        "iconUrl": "baby-steps.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1281040"
+            }
+          ],
+          "steamFolderName": "Baby Steps",
+          "dataFolderName": "BabySteps_Data",
+          "exeNames": [
+            "BabySteps.exe"
+          ],
+          "packageLoader": "recursive-melonloader",
+          "meta": {
+            "displayName": "Baby Steps",
+            "iconUrl": "baby-steps.webp"
+          },
+          "settingsIdentifier": "BabySteps",
+          "internalFolderName": "BabySteps",
+          "packageIndex": "https://thunderstore.io/c/baby-steps/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Baby Steps",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/YvjKGjkn2B",
+        "autolistPackageIds": [
+          "LavaGang-MelonLoader"
+        ]
+      }
+    },
     "bad-north": {
       "uuid": "f59327ea-5b65-4817-b347-7c08fdda0fdd",
       "label": "bad-north",
@@ -19273,6 +19351,123 @@
         "autolistPackageIds": []
       }
     },
+    "chill-with-you": {
+      "uuid": "5090345c-21f2-421f-a53d-13b47a25beae",
+      "label": "chill-with-you",
+      "meta": {
+        "displayName": "Chill with You : Lo-Fi Story",
+        "iconUrl": "chill-with-you.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3548580"
+            }
+          ],
+          "steamFolderName": "Chill with You Lo-Fi Story",
+          "dataFolderName": "Chill With You_Data",
+          "exeNames": [
+            "Chill With You.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Chill with You : Lo-Fi Story",
+            "iconUrl": "chill-with-you.webp"
+          },
+          "settingsIdentifier": "ChillWithYouLoFiStory",
+          "internalFolderName": "ChillWithYouLoFiStory",
+          "packageIndex": "https://thunderstore.io/c/chill-with-you/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Chill with You : Lo-Fi Story",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "clover-pit": {
       "uuid": "dc3c6f53-dbc6-497a-a922-1977b5df0751",
       "label": "clover-pit",
@@ -19490,6 +19685,239 @@
         "discordUrl": "https://discord.gg/m8jhYA4TvV"
       },
       "r2modman": null
+    },
+    "crab-game": {
+      "uuid": "4b436497-2041-42ac-88b4-29206515b48d",
+      "label": "crab-game",
+      "meta": {
+        "displayName": "Crab Game",
+        "iconUrl": "crab-game.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "1782210"
+            }
+          ],
+          "steamFolderName": "Crab Game",
+          "dataFolderName": "Crab Game_Data",
+          "exeNames": [
+            "Crab Game.exe",
+            "Crab Game.x86_64"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Crab Game",
+            "iconUrl": "crab-game.webp"
+          },
+          "settingsIdentifier": "CrabGame",
+          "internalFolderName": "CrabGame",
+          "packageIndex": "https://thunderstore.io/c/crab-game/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Crab Game",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/jBGMZqndT3"
+      }
+    },
+    "crawlspace-2": {
+      "uuid": "83a9df7d-ebe5-4113-ae5b-e9426530e096",
+      "label": "crawlspace-2",
+      "meta": {
+        "displayName": "Crawlspace 2",
+        "iconUrl": "crawlspace-2.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2258670"
+            }
+          ],
+          "steamFolderName": "Crawlspace 2",
+          "dataFolderName": "VRFighter_Data",
+          "exeNames": [
+            "VRFighter.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Crawlspace 2",
+            "iconUrl": "crawlspace-2.webp"
+          },
+          "settingsIdentifier": "Crawlspace2",
+          "internalFolderName": "Crawlspace2",
+          "packageIndex": "https://thunderstore.io/c/crawlspace-2/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Crawlspace 2",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "crime-simulator": {
       "uuid": "ae24513f-4737-4dfd-8fbd-6879ffdd88d2",
@@ -20414,6 +20842,123 @@
         }
       },
       "r2modman": null
+    },
+    "goblin-buster": {
+      "uuid": "055b8ac0-3163-41b7-a244-da5672210f37",
+      "label": "goblin-buster",
+      "meta": {
+        "displayName": "Goblin Buster: Incremental Tower Defense",
+        "iconUrl": "goblin-buster-incremental-tower-defense.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2482250"
+            }
+          ],
+          "steamFolderName": "Goblin Buster",
+          "dataFolderName": "Goblin Buster_Data",
+          "exeNames": [
+            "Goblin Buster.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Goblin Buster: Incremental Tower Defense",
+            "iconUrl": "goblin-buster-incremental-tower-defense.webp"
+          },
+          "settingsIdentifier": "GoblinBusterIncrementalTowerDefense",
+          "internalFolderName": "GoblinBusterIncrementalTowerDefense",
+          "packageIndex": "https://thunderstore.io/c/goblin-buster/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Goblin Buster: Incremental Tower Defense",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "grey-hack": {
       "uuid": "40ea6b48-e390-42f9-9454-d49ade3212eb",
@@ -21935,6 +22480,124 @@
         ]
       }
     },
+    "mine-mogul": {
+      "uuid": "ba3dd205-6083-4113-bad9-fa3d365635b8",
+      "label": "mine-mogul",
+      "meta": {
+        "displayName": "MineMogul",
+        "iconUrl": "mine-mogul.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3846120"
+            }
+          ],
+          "steamFolderName": "MineMogul",
+          "dataFolderName": "MineMogul_Data",
+          "exeNames": [
+            "MineMogul.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "MineMogul",
+            "iconUrl": "mine-mogul.webp"
+          },
+          "settingsIdentifier": "MineMogul",
+          "internalFolderName": "MineMogul",
+          "packageIndex": "https://thunderstore.io/c/mine-mogul/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "MineMogul",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/QyWQS6ESj5",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "mirrors-edge": {
       "uuid": "bd2699ab-0ebf-4411-aab3-2132063361b0",
       "label": "mirrors-edge",
@@ -21982,6 +22645,54 @@
         "discordUrl": "https://discord.gg/gV8QW6F"
       },
       "r2modman": null
+    },
+    "my-winter-car": {
+      "uuid": "2c1534b9-6b36-4f54-90bb-65615478cac5",
+      "label": "my-winter-car",
+      "meta": {
+        "displayName": "My Winter Car",
+        "iconUrl": "my-winter-car.webp"
+      },
+      "distributions": [],
+      "r2modman": null,
+      "thunderstore": {
+        "displayName": "My Winter Car",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": []
+      }
     },
     "mycopunk": {
       "uuid": "ae70137d-e23a-46d1-bae2-56916f686018",
@@ -22237,6 +22948,124 @@
         },
         "discordUrl": "https://discord.gg/2233yFQ",
         "autolistPackageIds": []
+      }
+    },
+    "nuclear-option": {
+      "uuid": "fa3f7e0d-f894-4eb5-b417-2dd2a9b531c9",
+      "label": "nuclear-option",
+      "meta": {
+        "displayName": "Nuclear Option",
+        "iconUrl": "nuclear-option.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2168680"
+            }
+          ],
+          "steamFolderName": "Nuclear Option",
+          "dataFolderName": "NuclearOption_Data",
+          "exeNames": [
+            "NuclearOption.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Nuclear Option",
+            "iconUrl": "nuclear-option.webp"
+          },
+          "settingsIdentifier": "NuclearOption",
+          "internalFolderName": "NuclearOption",
+          "packageIndex": "https://thunderstore.io/c/nuclear-option/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Nuclear Option",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/nuclear-option",
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
       }
     },
     "ostranauts": {
@@ -22974,6 +23803,123 @@
         ]
       }
     },
+    "pushing-it-together-sisyphus": {
+      "uuid": "ca4df913-b688-459c-bb60-f56951a5b6a0",
+      "label": "pushing-it-together-sisyphus",
+      "meta": {
+        "displayName": "Pushing it! Together - Sisyphus Co-op",
+        "iconUrl": "pushing-it-together-sisyphus-co-op.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3298460"
+            }
+          ],
+          "steamFolderName": "Pushing It! Together Sisyphus Co-op",
+          "dataFolderName": "Pushing it! Together_Data",
+          "exeNames": [
+            "Pushing it! Together.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Pushing it! Together - Sisyphus Co-op",
+            "iconUrl": "pushing-it-together-sisyphus-co-op.webp"
+          },
+          "settingsIdentifier": "PushingItTogetherSisyphusCoOp",
+          "internalFolderName": "PushingItTogetherSisyphusCoOp",
+          "packageIndex": "https://thunderstore.io/c/pushing-it-together-sisyphus/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Pushing it! Together - Sisyphus Co-op",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
+    },
     "r5reloaded": {
       "uuid": "35a9dbb7-a4f8-4faf-a032-66352aa690cc",
       "label": "r5reloaded",
@@ -23096,6 +24042,84 @@
         "discordUrl": "https://discord.gg/GcJSMUGJyD",
         "autolistPackageIds": [],
         "shortDescription": "Modded Apex Legends!"
+      }
+    },
+    "random-access-mayhem": {
+      "uuid": "64dcbac2-cc02-4338-99b4-00af4b38450b",
+      "label": "random-access-mayhem",
+      "meta": {
+        "displayName": "RAM: Random Access Mayhem",
+        "iconUrl": "random-access-mayhem.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "2256450"
+            }
+          ],
+          "steamFolderName": "RAM Random Access Mayhem",
+          "dataFolderName": "",
+          "exeNames": [
+            "RAM.exe"
+          ],
+          "packageLoader": "godotml",
+          "meta": {
+            "displayName": "RAM: Random Access Mayhem",
+            "iconUrl": "random-access-mayhem.webp"
+          },
+          "settingsIdentifier": "RamRandomAccessMayhem",
+          "internalFolderName": "RamRandomAccessMayhem",
+          "packageIndex": "https://thunderstore.io/c/random-access-mayhem/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "RAM: Random Access Mayhem",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "discordUrl": "https://discord.gg/rmAGykYpxQ",
+        "autolistPackageIds": [
+          "GodotModding-GodotModLoader"
+        ]
       }
     },
     "resonite": {
@@ -24055,6 +25079,123 @@
         "autolistPackageIds": []
       },
       "r2modman": null
+    },
+    "unfair-flips": {
+      "uuid": "747c7cd7-8b91-45fd-b734-72fb313cf39b",
+      "label": "unfair-flips",
+      "meta": {
+        "displayName": "Unfair Flips",
+        "iconUrl": "unfair-flips.webp"
+      },
+      "distributions": [],
+      "r2modman": [
+        {
+          "gameInstanceType": "game",
+          "distributions": [
+            {
+              "platform": "steam",
+              "identifier": "3925760"
+            }
+          ],
+          "steamFolderName": "Unfair Flips",
+          "dataFolderName": "Unfair Flips_Data",
+          "exeNames": [
+            "Unfair Flips.exe"
+          ],
+          "packageLoader": "bepinex",
+          "meta": {
+            "displayName": "Unfair Flips",
+            "iconUrl": "unfair-flips.webp"
+          },
+          "settingsIdentifier": "UnfairFlips",
+          "internalFolderName": "UnfairFlips",
+          "packageIndex": "https://thunderstore.io/c/unfair-flips/api/v1/package-listing-index/",
+          "gameSelectionDisplayMode": "visible",
+          "additionalSearchStrings": [],
+          "installRules": [
+            {
+              "route": "BepInEx/plugins",
+              "isDefaultLocation": true,
+              "defaultFileExtensions": [
+                ".dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/core",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/patchers",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/monomod",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [
+                ".mm.dll"
+              ],
+              "trackingMethod": "subdir",
+              "subRoutes": []
+            },
+            {
+              "route": "BepInEx/config",
+              "isDefaultLocation": false,
+              "defaultFileExtensions": [],
+              "trackingMethod": "none",
+              "subRoutes": []
+            }
+          ],
+          "relativeFileExclusions": null
+        }
+      ],
+      "thunderstore": {
+        "displayName": "Unfair Flips",
+        "categories": {
+          "mods": {
+            "label": "Mods"
+          },
+          "modpacks": {
+            "label": "Modpacks"
+          },
+          "tools": {
+            "label": "Tools"
+          },
+          "libraries": {
+            "label": "Libraries"
+          },
+          "misc": {
+            "label": "Misc"
+          },
+          "audio": {
+            "label": "Audio"
+          }
+        },
+        "sections": {
+          "mods": {
+            "name": "Mods",
+            "excludeCategories": [
+              "modpacks"
+            ]
+          },
+          "modpacks": {
+            "name": "Modpacks",
+            "requireCategories": [
+              "modpacks"
+            ]
+          }
+        },
+        "autolistPackageIds": [
+          "BepInEx-BepInExPack"
+        ]
+      }
     },
     "vellum": {
       "uuid": "940cd817-fa5b-464e-88a3-0de6d04388c0",
@@ -29780,6 +30921,47 @@
       "discordUrl": "https://discord.gg/astroneer-modding-774729322674126858",
       "autolistPackageIds": []
     },
+    "baby-steps": {
+      "displayName": "Baby Steps",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/YvjKGjkn2B",
+      "autolistPackageIds": [
+        "LavaGang-MelonLoader"
+      ]
+    },
     "bad-north": {
       "displayName": "Bad North",
       "categories": {
@@ -29986,6 +31168,46 @@
       "discordUrl": "https://discord.com/invite/freelives",
       "autolistPackageIds": []
     },
+    "chill-with-you": {
+      "displayName": "Chill with You : Lo-Fi Story",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "clover-pit": {
       "displayName": "CloverPit",
       "categories": {
@@ -30112,6 +31334,84 @@
         }
       },
       "discordUrl": "https://discord.gg/m8jhYA4TvV"
+    },
+    "crab-game": {
+      "displayName": "Crab Game",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/jBGMZqndT3"
+    },
+    "crawlspace-2": {
+      "displayName": "Crawlspace 2",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "crime-simulator": {
       "displayName": "Crime Simulator",
@@ -30546,6 +31846,46 @@
           ]
         }
       }
+    },
+    "goblin-buster": {
+      "displayName": "Goblin Buster: Incremental Tower Defense",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "grey-hack": {
       "displayName": "Grey Hack",
@@ -31156,6 +32496,47 @@
         "LavaGang-MelonLoader"
       ]
     },
+    "mine-mogul": {
+      "displayName": "MineMogul",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/QyWQS6ESj5",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "mirrors-edge": {
       "displayName": "Mirror's Edge",
       "categories": {
@@ -31193,6 +32574,44 @@
         }
       },
       "discordUrl": "https://discord.gg/gV8QW6F"
+    },
+    "my-winter-car": {
+      "displayName": "My Winter Car",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": []
     },
     "mycopunk": {
       "displayName": "Mycopunk",
@@ -31295,6 +32714,47 @@
       },
       "discordUrl": "https://discord.gg/2233yFQ",
       "autolistPackageIds": []
+    },
+    "nuclear-option": {
+      "displayName": "Nuclear Option",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/nuclear-option",
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "ostranauts": {
       "displayName": "Ostranauts",
@@ -31595,6 +33055,46 @@
         "BepInEx-BepInExPack"
       ]
     },
+    "pushing-it-together-sisyphus": {
+      "displayName": "Pushing it! Together - Sisyphus Co-op",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
+    },
     "r5reloaded": {
       "displayName": "R5Reloaded",
       "sections": {},
@@ -31698,6 +33198,47 @@
       "discordUrl": "https://discord.gg/GcJSMUGJyD",
       "autolistPackageIds": [],
       "shortDescription": "Modded Apex Legends!"
+    },
+    "random-access-mayhem": {
+      "displayName": "RAM: Random Access Mayhem",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "discordUrl": "https://discord.gg/rmAGykYpxQ",
+      "autolistPackageIds": [
+        "GodotModding-GodotModLoader"
+      ]
     },
     "resonite": {
       "displayName": "Resonite",
@@ -32177,6 +33718,46 @@
       },
       "discordUrl": "https://discord.gg/vXmCVnsPE5",
       "autolistPackageIds": []
+    },
+    "unfair-flips": {
+      "displayName": "Unfair Flips",
+      "categories": {
+        "mods": {
+          "label": "Mods"
+        },
+        "modpacks": {
+          "label": "Modpacks"
+        },
+        "tools": {
+          "label": "Tools"
+        },
+        "libraries": {
+          "label": "Libraries"
+        },
+        "misc": {
+          "label": "Misc"
+        },
+        "audio": {
+          "label": "Audio"
+        }
+      },
+      "sections": {
+        "mods": {
+          "name": "Mods",
+          "excludeCategories": [
+            "modpacks"
+          ]
+        },
+        "modpacks": {
+          "name": "Modpacks",
+          "requireCategories": [
+            "modpacks"
+          ]
+        }
+      },
+      "autolistPackageIds": [
+        "BepInEx-BepInExPack"
+      ]
     },
     "vellum": {
       "displayName": "Vellum",
