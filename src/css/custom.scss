@@ -496,29 +496,21 @@ code {
     line-height: 2rem;
 }
 
-$thumb-color: $scrollbar-background;
-$thumb-hover: $scrollbar-background-hover;
-
 * {
-    scrollbar-color: $thumb-color transparent;
+    scrollbar-color: $scrollbar-background transparent;
     scrollbar-gutter: both-edges;
-
-    &::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
 
     &::-webkit-scrollbar-track {
         background: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: $thumb-color;
+        background: $scrollbar-background;
         border-radius: 10px;
         border: 2px solid transparent;
 
         &:hover {
-            background: $thumb-hover;
+            background: $scrollbar-background-hover;
         }
     }
 }
