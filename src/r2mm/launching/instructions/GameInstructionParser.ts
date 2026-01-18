@@ -118,6 +118,11 @@ export default class GameInstructionParser {
     }
 
     private static async ummPreloaderResolver(game: Game, profile: Profile): Promise<string | R2Error> {
+        if (["linux"].includes(appWindow.getPlatform().toLowerCase())) {
+            const isProton = await GameInstructionParser.isProton(game);
+            const ummPath = await FsProvider.instance.realpath(profile.joinToProfilePath("UMM", "Core", "UnityModManager.dll"));
+            return `${isProton ? 'Z:' : ''}${ummPath}`;
+        }
         return profile.joinToProfilePath("UMM", "Core", "UnityModManager.dll");
     }
 

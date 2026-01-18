@@ -40,6 +40,8 @@ fi
 
 if test -f "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh"; then
     exec "$BASEDIR/profiles/$R2PROFILE/run_bepinex.sh" "$@"
+elif test -f "$BASEDIR/profiles/$R2PROFILE/run_umm.sh"; then
+    exec "$BASEDIR/profiles/$R2PROFILE/run_umm.sh" "$@"
 else
-   exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" "$@"
+    exec "$BASEDIR/profiles/$R2PROFILE/start_game_bepinex.sh" "$@"
 fi

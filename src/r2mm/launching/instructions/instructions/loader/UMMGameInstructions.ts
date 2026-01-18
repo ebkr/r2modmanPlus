@@ -4,6 +4,7 @@ import Game from '../../../../../model/game/Game';
 import Profile from '../../../../../model/Profile';
 import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 import { getUnityDoorstopVersion } from '../../../../../utils/UnityDoorstopUtils';
+import appWindow from '../../../../../providers/node/app/app_window';
 
 export default class UMMGameInstructions extends GameInstructionGenerator {
 
@@ -15,11 +16,17 @@ export default class UMMGameInstructions extends GameInstructionGenerator {
         }
     }
 
+    private getProfileArgs(profile: Profile): string[] {
+        if (["linux", "darwin"].includes(appWindow.getPlatform().toLowerCase())) {
+            return ['--r2profile', DynamicGameInstruction.PROFILE_NAME];
+        }
+        return ['--profile', profile.getProfilePath()];
+    }
+
     private async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
             moddedParameterList: [
-                '--profile',
-                profile.getProfilePath(),
+                ...this.getProfileArgs(profile),
                 '--doorstop-enable',
                 'true',
                 '--doorstop-target',
@@ -32,8 +39,7 @@ export default class UMMGameInstructions extends GameInstructionGenerator {
     private async genDoorstopV4(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
             moddedParameterList: [
-                '--profile',
-                profile.getProfilePath(),
+                ...this.getProfileArgs(profile),
                 '--doorstop-enabled',
                 'true',
                 '--doorstop-target-assembly',
