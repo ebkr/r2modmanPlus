@@ -18,6 +18,7 @@
     "publish": "quasar build --mode electron --publish always",
     "publish-win": "quasar build --mode electron -T win32 --publish always",
     "publish-linux": "quasar build --mode electron -T linux --publish always",
+    "publish-flatpak": "BUILD_FLATPAK=true quasar build --mode electron -T linux --publish always",
     "test": "vitest run ./test/vitest"
   },
   "dependencies": {
