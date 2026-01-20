@@ -248,41 +248,41 @@ function dependencyStringToModName(x: string) {
         </template>
 
         <!-- Show bottom button row -->
-        <a @click="uninstallMod()" class='card-footer-item'>
+        <button @click="uninstallMod()" class='button'>
             Uninstall
-        </a>
+        </button>
 
-        <a v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='card-footer-item'>
+        <button v-if="canBeDisabled && mod.isEnabled()" @click="disableMod()" class='button'>
             Disable
-        </a>
-        <a v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='card-footer-item' >
+        </button>
+        <button v-else-if="canBeDisabled && !mod.isEnabled()" @click="enableMod(mod)" class='button' >
             Enable
-        </a>
+        </button>
 
-        <a @click="viewAssociatedMods()" class='card-footer-item'>
+        <button @click="viewAssociatedMods()" class='button'>
             Associated
-        </a>
+        </button>
 
-        <ExternalLink :url="mod.getWebsiteUrl()" class="card-footer-item">
+        <ExternalLink :url="mod.getWebsiteUrl()" class="button">
             Website
             <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
         </ExternalLink>
 
-        <a v-if="!isLatestVersion" @click="updateMod()" class='card-footer-item'>
+        <button v-if="!isLatestVersion" @click="updateMod()" class='button'>
             Update
-        </a>
+        </button>
 
-        <a v-if="missingDependencies.length"
+        <button v-if="missingDependencies.length"
             @click="downloadDependency(missingDependencies[0])"
-            class='card-footer-item'>
+            class='button'>
             Download dependency
-        </a>
+        </button>
 
-        <a v-if="disabledDependencies.length"
+        <button v-if="disabledDependencies.length"
             @click="enableMod(disabledDependencies[0])"
-            class='card-footer-item'>
+            class='button'>
             Enable {{disabledDependencies[0].getDisplayName()}}
-        </a>
+        </button>
 
         <DonateButton v-if="tsMod" :mod="tsMod"/>
     </ExpandableCard>

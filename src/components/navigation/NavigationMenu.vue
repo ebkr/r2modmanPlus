@@ -142,7 +142,9 @@ async function launchGame(mode: LaunchMode) {
 .menu {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 1rem);
+    height: calc(100vh);
+    //background-color: rgba(11, 20, 32, 0.46);
+    padding-right: 1rem;
 
     & > * {
         flex: 1;
@@ -161,7 +163,6 @@ async function launchGame(mode: LaunchMode) {
     align-items: center;
     cursor: pointer;
     border-radius: 5px;
-    margin-bottom: -1rem;
 
     &:hover {
         background-color: var(--menu-item-hover-background-color, #e9eaed);
@@ -184,6 +185,11 @@ async function launchGame(mode: LaunchMode) {
 
 .tagged-link__content {
     padding-right: 0.75rem;
+}
+
+.profile-select {
+    padding: 0.2rem 0.1rem;
+    width: 100px;
 }
 
 </style>

@@ -59,9 +59,12 @@
                     <template v-slot:title>
                         <span>{{ file.getName() }}</span>
                     </template>
-                    <a class='card-footer-item' @click="editConfig(file)">Edit Config</a>
-                    <a class='card-footer-item' @click="openConfig(file)">Open File</a>
-                    <a class='card-footer-item' @click="deleteConfig(file)">Delete</a>
+                    <button class='button' @click="editConfig(file)">Edit Config</button>
+                    <button class='button' @click="openConfig(file)">Open File</button>
+                    <button class='button' @click="deleteConfig(file)">
+                        <i class="fas fa-trash margin-right margin-right--half-width"/>
+                        Delete
+                    </button>
                 </ExpandableCard>
             </div>
         </div>

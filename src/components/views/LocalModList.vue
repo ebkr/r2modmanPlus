@@ -7,6 +7,8 @@
         <UninstallModModal />
         <AssociatedModsModal />
 
+        <ManagerUpdateBanner/>
+
         <slot name="above-list"></slot>
 
         <div class="mod-list-content">
@@ -34,6 +36,7 @@ import { getStore } from '../../providers/generic/store/StoreProvider';
 import { State } from '../../store';
 import { computed, defineAsyncComponent } from 'vue';
 import SkeletonLocalModCard from './LocalModList/SkeletonLocalModCard.vue';
+import ManagerUpdateBanner from '../banner/ManagerUpdateBanner.vue';
 
 const store = getStore<State>();
 
