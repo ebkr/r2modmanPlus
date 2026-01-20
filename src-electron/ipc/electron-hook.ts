@@ -17,4 +17,8 @@ export function hookElectronIpc(browserWindow: BrowserWindow) {
         clipboard.writeText(text);
         event.returnValue = true;
     });
+
+    ipcMain.handle('electron:getEnvironmentVariables', (event) => {
+        return JSON.stringify(process.env);
+    })
 }

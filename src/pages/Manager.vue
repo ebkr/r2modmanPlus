@@ -74,7 +74,7 @@
 				<h2 class='modal-title'>Set custom launch parameters</h2>
 			</template>
 			<template v-slot:body>
-				<p>Some parameters are provided by default:</p>
+				<p>Some arguments are provided by default:</p>
 				<br/>
 				<p>Modded:
 					<br/>
@@ -155,6 +155,7 @@ import { useRouter } from 'vue-router';
 import path from '../providers/node/path/path';
 import LaunchTypeModal from "../components/modals/launch-type/LaunchTypeModal.vue";
 import appWindow from '../providers/node/app/app_window';
+import GameInstructionParser from "../r2mm/launching/instructions/GameInstructionParser";
 
 const store = getStore<State>();
 const router = useRouter();
@@ -347,14 +348,20 @@ async function toggleDarkTheme() {
 
 function showLaunchParameters() {
     GameInstructions.getInstructionsForGame(activeGame.value, profile.value).then(instructions => {
-        vanillaLaunchArgs.value = instructions.vanillaParameters;
+        vanillaLaunchArgs.value = instructions.vanillaParameterList.map(value => `"${value}"`).join(' ');
     });
 
     GameRunnerProvider.instance.getGameArguments(activeGame.value, profile.value).then(target => {
         if (target instanceof R2Error) {
             doorstopTarget.value = "";
         } else {
-            doorstopTarget.value = target;
+            GameInstructionParser.parseList(target, activeGame.value, profile.value)
+                .then(instructions => {
+                    if (instructions instanceof R2Error) {
+                        throw instructions;
+                    }
+                    doorstopTarget.value = instructions.map(value => `"${value}"`).join(' ');
+                })
         }
     });
 

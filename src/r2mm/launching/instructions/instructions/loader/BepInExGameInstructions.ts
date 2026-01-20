@@ -19,36 +19,63 @@ export default class BepInExGameInstructions extends GameInstructionGenerator {
     }
 
     private async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {
-        let extraArguments = "";
+
+        const launchArgs: string[] = [
+            '--doorstop-enable',
+            'true',
+            '--doorstop-target',
+            DynamicGameInstruction.BEPINEX_PRELOADER_PATH
+        ];
+
         if (["linux", "darwin"].includes(appWindow.getPlatform().toLowerCase())) {
-            extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
+
+            launchArgs.push(
+                '--r2profile',
+                DynamicGameInstruction.PROFILE_NAME
+            );
             if (game.instanceType === GameInstanceType.SERVER) {
-                extraArguments += ` --server`;
+                launchArgs.push('--server');
             }
             if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
-                extraArguments += ` --doorstop-dll-search-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
+                launchArgs.push(
+                    '--doorstop-dll-search-override',
+                    DynamicGameInstruction.BEPINEX_CORLIBS
+                );
             }
         }
         return {
-            moddedParameters: `--doorstop-enable true --doorstop-target "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
-            vanillaParameters: `--doorstop-enable false`
+            moddedParameterList: launchArgs,
+            vanillaParameterList: ['--doorstop-enable', 'false']
         };
     }
 
     private async genDoorstopV4(game: Game, profile: Profile): Promise<GameInstruction> {
-        let extraArguments = "";
+
+        const launchArgs: string[] = [
+            '--doorstop-enabled',
+            'true',
+            '--doorstop-target-assembly',
+            DynamicGameInstruction.BEPINEX_PRELOADER_PATH
+        ];
+
         if (["linux", "darwin"].includes(appWindow.getPlatform().toLowerCase())) {
-            extraArguments += ` --r2profile "${DynamicGameInstruction.PROFILE_NAME}"`;
+            launchArgs.push(
+                '--r2profile',
+                DynamicGameInstruction.PROFILE_NAME
+            );
             if (game.instanceType === GameInstanceType.SERVER) {
-                extraArguments += ` --server`;
+                launchArgs.push('--server');
             }
             if (await FsProvider.instance.exists(Profile.getActiveProfile().joinToProfilePath("unstripped_corlib"))) {
-                extraArguments += ` --doorstop-mono-dll-search-path-override "${DynamicGameInstruction.BEPINEX_CORLIBS}"`;
+                launchArgs.push(
+                    '--doorstop-mono-dll-search-path-override',
+                    DynamicGameInstruction.BEPINEX_CORLIBS
+                );
             }
         }
         return {
-            moddedParameters: `--doorstop-enabled true --doorstop-target-assembly "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"${extraArguments.trimEnd()}`,
-            vanillaParameters: `--doorstop-enabled false`
+            moddedParameterList: launchArgs,
+            vanillaParameterList: ['--doorstop-enable', 'false']
         };
     }
 

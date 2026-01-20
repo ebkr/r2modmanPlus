@@ -37,6 +37,18 @@ export default class GameInstructionParser {
         return resolvedString;
     }
 
+    public static async parseList(args: string[], game: Game, profile: Profile): Promise<string[] | R2Error> {
+        const parsedArgs: string[] = [];
+        for (const arg of args) {
+            const parsedArg = await this.parse(arg, game, profile);
+            if (parsedArg instanceof R2Error) {
+                return parsedArg;
+            }
+            parsedArgs.push(parsedArg);
+        }
+        return parsedArgs;
+    }
+
     private static async profileDirectoryResolver(game: Game, profile: Profile): Promise<string> {
         return profile.getProfilePath();
     }

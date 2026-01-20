@@ -18,8 +18,8 @@ describe("CustomInstructions", () => {
 
     test("Returns empty launch args by default", async () => {
         const expected = {
-            moddedParameters: "",
-            vanillaParameters: ""
+            moddedParameterList: [],
+            vanillaParameterList: []
         };
 
         const actual = await new CustomInstructions().generate(game, profile);
@@ -29,8 +29,8 @@ describe("CustomInstructions", () => {
 
     test("Handles basic strings", async () => {
         const expected = {
-            moddedParameters: "--foo bar --baz -q",
-            vanillaParameters: "--sleep 8"
+            moddedParameterList: ["--foo", "bar", "--baz", "-q"],
+            vanillaParameterList: ["--sleep", "8"]
         };
 
         const actual = await new CustomInstructions(() => expected).generate(game, profile);
@@ -40,13 +40,13 @@ describe("CustomInstructions", () => {
 
     test("Handles dynamic instructions", async () => {
         const expected = {
-            moddedParameters: '--bep "@bepInExPreloaderPath"',
-            vanillaParameters: "@profileName"
+            moddedParameterList: ['--bep', '@bepInExPreloaderPath'],
+            vanillaParameterList: ["@profileName"]
         };
 
         const actualParameters = {
-            moddedParameters: `--bep "${DynamicGameInstruction.BEPINEX_PRELOADER_PATH}"`,
-            vanillaParameters: DynamicGameInstruction.PROFILE_NAME
+            moddedParameterList: ['--bep', DynamicGameInstruction.BEPINEX_PRELOADER_PATH],
+            vanillaParameterList: [DynamicGameInstruction.PROFILE_NAME]
         };
 
         const actual = await new CustomInstructions(() => actualParameters).generate(game, profile);
@@ -58,8 +58,8 @@ describe("CustomInstructions", () => {
 describe("ModsPathInstructions", () => {
     test("Uses predefined values", async () => {
         const expected = {
-            moddedParameters: `--mods-path "${path.join("@profileDirectory", "mods")}"`,
-            vanillaParameters: ""
+            moddedParameterList: ['--mods-path', path.join("@profileDirectory", "mods")],
+            vanillaParameterList: []
         };
 
         const actual = await new ModsPathInstructions().generate(game, profile);

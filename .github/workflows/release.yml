@@ -17,6 +17,9 @@ jobs:
           - kind: windows
             os: windows-latest
             platform: win
+          - kind: flatpak
+            os: ubuntu-latest
+            platform: flatpak
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +32,7 @@ jobs:
       - name: Install Yarn dependencies
         run: yarn install --immutable
 
-      - if: matrix.platform == 'linux'
+      - if: matrix.platform == 'linux' || matrix.platform == 'flatpak'
         name: Install bsdtar # Required by electron-builder when targeting pacman.
         run: |
           sudo apt-get update -y

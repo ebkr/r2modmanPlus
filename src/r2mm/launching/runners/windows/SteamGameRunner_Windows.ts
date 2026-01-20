@@ -11,9 +11,9 @@ import GameInstructionParser from '../../instructions/GameInstructionParser';
 
 export default class SteamGameRunner_Windows extends GameRunnerProvider {
 
-    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+    public async getGameArguments(game: Game, profile: Profile): Promise<string[] | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -26,10 +26,10 @@ export default class SteamGameRunner_Windows extends GameRunnerProvider {
 
     public async startVanilla(game: Game, profile: Profile): Promise<void | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return this.start(game, instructions.vanillaParameters);
+        return this.start(game, instructions.vanillaParameterList);
     }
 
-    async start(game: Game, args: string): Promise<void | R2Error> {
+    async start(game: Game, args: string[]): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
             const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
@@ -37,10 +37,12 @@ export default class SteamGameRunner_Windows extends GameRunnerProvider {
                 return resolve(steamDir);
             }
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+            const mappedArgs = args.map(value => `"${value}"`).join(' ');
 
-            ChildProcess.exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`, undefined, (err => {
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`);
+
+            ChildProcess.exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${mappedArgs} ${settings.getContext().gameSpecific.launchParameters}`, undefined, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);

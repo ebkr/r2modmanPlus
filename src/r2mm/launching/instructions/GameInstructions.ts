@@ -16,8 +16,8 @@ import UMMGameInstructions from './instructions/loader/UMMGameInstructions';
 import RivetGameInstructions from './instructions/loader/RivetGameInstructions';
 
 export interface GameInstruction {
-    moddedParameters: string,
-    vanillaParameters: string
+    vanillaParameterList: string[],
+    moddedParameterList: string[]
 }
 
 export default class GameInstructions {
