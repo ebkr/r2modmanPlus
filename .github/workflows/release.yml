@@ -38,6 +38,21 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
 
+      - if: matrix.platform == 'flatpak'
+        name: Cache Flatpak runtimes
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/flatpak
+          key: flatpak-${{ runner.os }}-25.08
+
+      - if: matrix.platform == 'flatpak'
+        name: Install Flatpak and flatpak-builder
+        run: |
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08
+          flatpak install --user -y flathub org.electronjs.Electron2.BaseApp//25.08
+
       - name: Release project
         id: build
         uses: StarUbiquitous/command-output@v1.0.1
