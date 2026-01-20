@@ -9,7 +9,7 @@ import { LogSeverity } from '../../../providers/ror2/logging/LoggerProvider';
 import Dependants from '../../../r2mm/mods/Dependants';
 import { valueToReadableDate } from '../../../utils/DateUtils';
 import { splitToNameAndVersion } from '../../../utils/DependencyUtils';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getStore } from '../../../providers/generic/store/StoreProvider';
 import { State } from '../../../store';
 
@@ -34,7 +34,7 @@ const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](p
 const localModList = computed(() => store.state.profile.modList);
 const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
 
-function updateDependencies() {
+async function updateDependencies() {
     if (props.mod.getDependencies().length === 0) {
         return;
     }
@@ -167,9 +167,9 @@ function viewAssociatedMods() {
     store.commit('openAssociatedModsModal', props.mod);
 }
 
-function created() {
+onMounted(() => {
     updateDependencies();
-}
+})
 
 // Need to wrap util call in method to allow access from Vue context
 function getReadableDate(value: number): string {
@@ -284,7 +284,7 @@ function dependencyStringToModName(x: string) {
             Enable {{disabledDependencies[0].getDisplayName()}}
         </a>
 
-        <DonateButton :mod="tsMod"/>
+        <DonateButton v-if="tsMod" :mod="tsMod"/>
     </ExpandableCard>
 </template>
 

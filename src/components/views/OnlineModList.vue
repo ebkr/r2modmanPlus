@@ -39,7 +39,7 @@
                 Website <i class="fas fa-external-link-alt margin-left margin-left--half-width"></i>
             </ExternalLink>
             <template v-if="!readOnly">
-                <DonateButton :mod="key"/>
+                <DonateButton v-if="key" :mod="key"/>
             </template>
             <div class='card-footer-item non-selectable'>
                 <span><i class='fas fa-download'/> {{key.getDownloadCount()}}</span>
