@@ -15,27 +15,13 @@ async function isManagerUpdateAvailable() {
     return fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
         .then(response => response.json())
         .then((parsed: any) => {
-            parsed.sort((a: any, b: any) => {
-                if (b !== null) {
-                    const versionA = new VersionNumber(a.name);
-                    const versionB = new VersionNumber(b.name);
-                    return versionA.isNewerThan(versionB);
+            portableUpdateAvailable.value = parsed.find((release: any) => {
+                if (release.draft) {
+                    return false;
                 }
-                return 1;
-            });
-            let foundMatch = false;
-            parsed.forEach((release: any) => {
-                if (!foundMatch && !release.draft) {
-                    const releaseVersion = new VersionNumber(release.name);
-                    if (releaseVersion.isNewerThan(ManagerInformation.VERSION)) {
-                        portableUpdateAvailable.value = true;
-                        updateTagName.value = release.tag_name;
-                        foundMatch = true;
-                        return;
-                    }
-                }
-            });
-            portableUpdateAvailable.value = true;
+                const releaseVersion = new VersionNumber(release.name);
+                return releaseVersion.isNewerThan(ManagerInformation.VERSION);
+            }) !== undefined;
         }).catch(err => {
         // Do nothing, potentially offline. Try next launch.
     });
