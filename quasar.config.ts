@@ -59,7 +59,7 @@ export default defineConfig((ctx) => {
             // vueDevtools,
             // vueOptionsAPI: false,
 
-            rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
+            rebuildCache: false, // rebuilds Vite/linter/etc cache on startup
 
             publicPath: '/',
             // analyze: true,
@@ -267,7 +267,7 @@ export default defineConfig((ctx) => {
                         if (isFlatpakTarget) {
                             return ['flatpak']
                         } else {
-                            return ['AppImage']
+                            return ['AppImage', 'tar.gz', 'deb', 'rpm', 'pacman']
                         }
                     })(),
                     icon: 'src/assets/icon',
