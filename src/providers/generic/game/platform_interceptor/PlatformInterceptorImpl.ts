@@ -71,6 +71,7 @@ function buildRunners(runners: PlatformRunnersType): LoaderRunnersType {
         [PackageLoader.GDWEAVE]: runners,
         [PackageLoader.RECURSIVE_MELONLOADER]: runners,
         [PackageLoader.UMM]: runners,
+        [PackageLoader.RIVET]: runners,
     }
 }
 

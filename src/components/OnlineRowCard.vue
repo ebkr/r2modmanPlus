@@ -40,6 +40,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .card-header-title {
-    word-break: break-all;
+    word-break: auto-phrase;
 }
 </style>

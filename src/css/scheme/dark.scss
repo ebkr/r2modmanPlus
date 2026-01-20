@@ -16,7 +16,7 @@
     // overriding variables with dark theme colors
 
     --card-expand-shadow-color: rgba(0, 0, 0, 0.46);
-    --card-expand-background-color: rgba(255, 255, 255, 0.045);
+    --card-expand-background-color: rgba(0, 0, 0, 0.2);
 
     --background: #{$night-1};
     --text: #{$night-c};
@@ -65,6 +65,7 @@
     --panel-block-hover-background-color: #{$night-2};
 
     --code-font-color: #ffb583;
+    --preview-panel-background-color: #1b2837;
 }
 
 html.html--dark {

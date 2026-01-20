@@ -236,6 +236,7 @@
                             "recursive-melonloader",
                             "bepisloader",
                             "umm",
+                            "rivet",
                             "none"
                           ]
                         },
@@ -388,6 +389,7 @@
                   "recursive-melonloader",
                   "bepisloader",
                   "umm",
+                  "rivet",
                   "none"
                 ]
               }

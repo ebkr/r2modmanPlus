@@ -10,7 +10,9 @@
                                 <img v-if="store.state.profile.funkyMode" :src='ProtocolProvider.getPublicAssetUrl("/funky_mode.png")' alt='Funky mode' class='image-overlap'/>
                             </figure>
                         </div>
-                        <span ref="title" class='card-header-title'><slot name='title'></slot></span>
+                        <span ref="title" class='card-header-title expandable-card__title'>
+                            <slot name='title'></slot>
+                        </span>
                         <slot name='other-icons'></slot>
                         <!-- Allow movement of mod order -->
                         <a v-if='showSort' class='card-header-icon handle'>
@@ -24,7 +26,7 @@
                         </a>
                     </header>
                 </div>
-                <div class='card-content' v-show='visible' v-if="description !== ''">
+                <div class='mod-card-content' v-show='visible' v-if="description !== ''">
                     <div class='content'>
                         <p ref="description">{{description}}</p>
                         <slot name='description'></slot>
@@ -82,6 +84,18 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .card-header-title {
-    word-break: break-all;
+    word-break: auto-phrase;
+}
+
+.mod-card-content {
+    padding: 0.5em 1rem;
+}
+
+.card-footer {
+    padding-left: 0.5rem;
+}
+
+.handle {
+    cursor: grab;
 }
 </style>

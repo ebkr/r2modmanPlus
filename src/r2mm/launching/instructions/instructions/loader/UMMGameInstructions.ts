@@ -16,17 +16,30 @@ export default class UMMGameInstructions extends GameInstructionGenerator {
     }
 
     private async genDoorstopV3(game: Game, profile: Profile): Promise<GameInstruction> {
-        let extraArguments = "";
         return {
-            moddedParameters: `--profile "${profile.getProfilePath()}" --doorstop-enable true --doorstop-target "${DynamicGameInstruction.UMM_PRELOADER_PATH}"`,
-            vanillaParameters: `--doorstop-enable false`
+            moddedParameterList: [
+                '--profile',
+                profile.getProfilePath(),
+                '--doorstop-enable',
+                'true',
+                '--doorstop-target',
+                DynamicGameInstruction.UMM_PRELOADER_PATH
+            ],
+            vanillaParameterList: ['--doorstop-enable', 'false']
         };
     }
 
     private async genDoorstopV4(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `--profile "${profile.getProfilePath()}" --doorstop-enabled true --doorstop-target-assembly "${DynamicGameInstruction.UMM_PRELOADER_PATH}"`,
-            vanillaParameters: `--doorstop-enabled false`
+            moddedParameterList: [
+                '--profile',
+                profile.getProfilePath(),
+                '--doorstop-enabled',
+                'true',
+                '--doorstop-target-assembly',
+                DynamicGameInstruction.UMM_PRELOADER_PATH
+            ],
+            vanillaParameterList: ['--doorstop-enabled', 'false']
         };
     }
 }

@@ -1,4 +1,4 @@
-import * as yaml from 'yaml';
+import { load as parseYaml, dump as stringifyYaml } from "js-yaml";
 import { ImmutableProfile } from '../../model/Profile';
 import FsProvider from '../../providers/generic/file/FsProvider';
 import FileNotFoundError from '../../model/errors/FileNotFoundError';
@@ -42,10 +42,10 @@ export default class ProfileModList {
         try {
             try {
                 const fileContent = (await fs.readFile(profile.joinToProfilePath('mods.yml'))).toString();
-                const parsedYaml = yaml.parse(fileContent) || [];
+                const parsedYaml: any = parseYaml(fileContent) || [];
                 for(let modIndex in parsedYaml){
                     const mod = new ManifestV2().fromJsObject(parsedYaml[modIndex]);
-                    await this.setIconPath(mod, profile);
+                    this.setIconPath(mod, profile);
                     parsedYaml[modIndex] = mod;
                 }
                 return parsedYaml;
@@ -71,7 +71,14 @@ export default class ProfileModList {
     public static async saveModList(profile: ImmutableProfile, modList: ManifestV2[]): Promise<R2Error | null> {
         const fs = FsProvider.instance;
         try {
-            const yamlModList: string = yaml.stringify(modList);
+            const yamlModList: string = stringifyYaml(modList, {
+                replacer: (key, value) => {
+                    if (key === 'icon') {
+                        return undefined;
+                    }
+                    return value;
+                }
+            });
             try {
                 await fs.writeFile(
                     profile.joinToProfilePath('mods.yml'),
@@ -118,7 +125,7 @@ export default class ProfileModList {
         if (saveError !== null) {
             return saveError;
         }
-        return this.getModList(profile);
+        return currentModList;
     }
 
     public static async removeMod(mod: ManifestV2, profile: ImmutableProfile): Promise<ManifestV2[] | R2Error> {
@@ -131,16 +138,15 @@ export default class ProfileModList {
         if (saveError !== null) {
             return saveError;
         }
-        // Return mod list, or R2 error. We don't care at this point.
-        return this.getModList(profile);
+        return newModList;
     }
 
-    public static async updateMods(mods: ManifestV2[], profile: ImmutableProfile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
+    public static async updateMods(modsToUpdate: ManifestV2[], profile: ImmutableProfile, apply: (mod: ManifestV2) => void): Promise<ManifestV2[] | R2Error> {
         const list: ManifestV2[] | R2Error = await this.getModList(profile);
         if (list instanceof R2Error) {
             return list;
         }
-        for (let mod of mods) {
+        for (let mod of modsToUpdate) {
             list.filter((filteringMod: ManifestV2) => filteringMod.getName() === mod.getName())
                 .forEach((filteringMod: ManifestV2) => {
                     apply(filteringMod);
@@ -150,7 +156,7 @@ export default class ProfileModList {
         if (saveErr instanceof R2Error) {
             return saveErr;
         }
-        return this.getModList(profile);
+        return list;
     }
 
     public static async updateMod(mod: ManifestV2, profile: ImmutableProfile, apply: (mod: ManifestV2) => Promise<void>): Promise<ManifestV2[] | R2Error> {
@@ -176,7 +182,7 @@ export default class ProfileModList {
         const exportModList: ExportMod[] = list.map((manifestMod: ManifestV2) => ExportMod.fromManifest(manifestMod));
         const exportFormat = new ExportFormat(profile.getProfileName(), exportModList);
         const builder = ZipProvider.instance.zipBuilder();
-        await builder.addBuffer("export.r2x", Buffer.from(yaml.stringify(exportFormat)));
+        await builder.addBuffer("export.r2x", Buffer.from(stringifyYaml(exportFormat)));
         if (await FsProvider.instance.exists(profile.joinToProfilePath("BepInEx", "config"))) {
             await builder.addFolder("config", profile.joinToProfilePath('BepInEx', 'config'));
         }

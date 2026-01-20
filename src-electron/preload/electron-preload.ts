@@ -30,3 +30,7 @@ export async function selectFileDialog(options: any) {
 export function copyToClipboard(value: string) {
     ipcRenderer.sendSync('electron:clipboard:copyText', value);
 }
+
+export async function getEnvironmentVariables() {
+    return ipcRenderer.invoke('electron:getEnvironmentVariables');
+}

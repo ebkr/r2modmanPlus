@@ -25,6 +25,8 @@ export default abstract class InteractionProvider {
 
     public abstract copyToClipboard(value: string): void;
 
+    public abstract getEnvironmentVariables(): Promise<Record<string, string>>;
+
 }
 
 export interface InteractionProviderFolderProperties {

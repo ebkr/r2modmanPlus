@@ -8,17 +8,19 @@ import FsProvider from '../../../../../providers/generic/file/FsProvider';
 export default class MelonLoaderGameInstructions extends GameInstructionGenerator {
 
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
-        let moddedParameters = `--melonloader.basedir "${DynamicGameInstruction.PROFILE_DIRECTORY}"`;
+        const launchArgs = [
+            '--melonloader.basedir',
+            DynamicGameInstruction.PROFILE_DIRECTORY
+        ]
 
         const mlZeroPointFiveAssemblyExists = await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Managed', 'Assembly-CSharp.dll'));
         const mlZeroPointSixAssemblyExists = await FsProvider.instance.exists(profile.joinToProfilePath('MelonLoader', 'Il2CppAssemblies', 'Assembly-CSharp.dll'));
-
         if (!mlZeroPointFiveAssemblyExists && !mlZeroPointSixAssemblyExists) {
-            moddedParameters += ' --melonloader.agfregenerate';
+            launchArgs.push('--melonloader.agfregenerate');
         }
         return {
-            moddedParameters: moddedParameters,
-            vanillaParameters: `--no-mods`
+            moddedParameterList: launchArgs,
+            vanillaParameterList: ['--no-mods']
         };
     }
 }

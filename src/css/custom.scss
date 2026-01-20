@@ -90,6 +90,10 @@ select {
         background-color: $scheme-background;
     }
 
+    &--inherit-background {
+        background-color: inherit;
+    }
+
     &--no-shadow {
         box-shadow: 0 0;
     }
@@ -130,13 +134,17 @@ select {
 }
 
 .row-card {
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.1s, box-shadow 0.2s linear;
     border-bottom: 1px solid $scheme-border;
-    margin: 0 0 4px;
+    border-radius: 5px;
 
     &--expanded {
         //border-bottom-width: 0;
+        background-color: $card-expand-background-color;
+    }
+
+    &:hover {
         background-color: $card-expand-background-color;
     }
 }
@@ -146,41 +154,19 @@ select {
 }
 
 .disabled-card {
-    .mod-logo, .card-title, .card-content {
+    .mod-logo, .card-title, .mod-card-content {
         opacity: 0.6;
     }
 }
 
-.card-footer-borderless, .card-footer-borderless .card-footer-item {
-    border: none !important;
-    // these two lines allow the hover effect's pseudo-element to position itself behind the element's text, with a bit of a margin
-    position: relative;
-    z-index: 1;
+.card-footer {
+    display: flex;
+    border: 0;
+    flex-wrap: wrap;
 }
 
-.card-footer-item:not(.non-selectable) {
-
-    &::before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        z-index: -1;
-        background-color: transparent;
-        border: 1px solid $scheme-border-secondary;
-        border-radius: 4px;
-    }
-
-    &:hover, &:active, &:focus {
-        color: #ffffff;
-        &::before {
-            background-color: $scheme-primary;
-            border: 0;
-        }
-    }
+.card-action {
+    flex: 1;
 }
 
 .card-byline, .card-timestamp {
@@ -466,6 +452,7 @@ code {
 
 .select {
     padding-left: 0.5em;
+    border-width: 2px;
 }
 
 .full-height--minus-em {
@@ -507,4 +494,23 @@ code {
     margin: 0;
     padding: 0;
     line-height: 2rem;
+}
+
+* {
+    scrollbar-color: $scrollbar-background transparent;
+    scrollbar-gutter: both-edges;
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $scrollbar-background;
+        border-radius: 10px;
+        border: 2px solid transparent;
+
+        &:hover {
+            background: $scrollbar-background-hover;
+        }
+    }
 }

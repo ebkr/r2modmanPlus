@@ -27,9 +27,9 @@ export type EgsInstalledDataFormat = {
 
 export default class EgsGameRunner extends GameRunnerProvider {
 
-    public async getGameArguments(game: Game, profile: Profile): Promise<string | R2Error> {
+    public async getGameArguments(game: Game, profile: Profile): Promise<string[] | R2Error> {
         const instructions = await GameInstructions.getInstructionsForGame(game, profile);
-        return await GameInstructionParser.parse(instructions.moddedParameters, game, profile);
+        return await GameInstructionParser.parseList(instructions.moddedParameterList, game, profile);
     }
 
     public async startModded(game: Game, profile: Profile): Promise<void | R2Error> {
@@ -50,10 +50,10 @@ export default class EgsGameRunner extends GameRunnerProvider {
             await this.setDoorstopEnabled(profile, game, false);
         }
         await ModLinker.link(profile.asImmutableProfile(), game);
-        return this.start(game, instructions.vanillaParameters);
+        return this.start(game, instructions.vanillaParameterList);
     }
 
-    async start(game: Game, args: string): Promise<void | R2Error> {
+    async start(game: Game, args: string[]): Promise<void | R2Error> {
         try {
             // Ignore errors to allow Thunderstore Mod Manager build without errors
             // @ts-ignore

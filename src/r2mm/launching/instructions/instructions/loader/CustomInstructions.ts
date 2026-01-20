@@ -15,8 +15,8 @@ export class CustomInstructions extends GameInstructionGenerator {
         } else {
             this.instructions = () => {
                 return {
-                    moddedParameters: '',
-                    vanillaParameters: ''
+                    moddedParameterList: [],
+                    vanillaParameterList: []
                 };
             };
         }
@@ -31,8 +31,11 @@ export class ModsPathInstructions extends CustomInstructions {
     constructor() {
         super(() => {
             return {
-                moddedParameters: `--mods-path "${path.join(DynamicGameInstruction.PROFILE_DIRECTORY, "mods")}"`,
-                vanillaParameters: ''
+                moddedParameterList: [
+                    '--mods-path',
+                    path.join(DynamicGameInstruction.PROFILE_DIRECTORY, 'mods')
+                ],
+                vanillaParameterList: []
             };
         });
     }

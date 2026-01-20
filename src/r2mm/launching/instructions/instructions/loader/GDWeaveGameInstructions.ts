@@ -7,8 +7,8 @@ import { DynamicGameInstruction } from '../../DynamicGameInstruction';
 export default class GDWeaveGameInstructions extends GameInstructionGenerator {
     public async generate(game: Game, profile: Profile): Promise<GameInstruction> {
         return {
-            moddedParameters: `--gdweave-folder-override="${DynamicGameInstruction.GDWEAVE_FOLDER}"`,
-            vanillaParameters: "--gdweave-disable"
+            moddedParameterList: [`--gdweave-folder-override=${DynamicGameInstruction.GDWEAVE_FOLDER}`],
+            vanillaParameterList: ["--gdweave-disable"]
         };
     }
 }

@@ -127,7 +127,7 @@ export default class GameDirectoryResolverImpl extends GameDirectoryResolverProv
             const depotKeys = Object.keys(installedDepots);
             let depotKey: string;
             if (depotKeys.length > 0) {
-                depotKey = depotKeys[0];
+                depotKey = depotKeys[0]!;
             } else {
                 depotKey = DepotLoader.DEPOT_DEFAULT_KEY;
             }

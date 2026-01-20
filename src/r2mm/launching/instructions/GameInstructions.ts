@@ -13,10 +13,11 @@ import ReturnOfModdingGameInstructions from './instructions/loader/ReturnOfModdi
 import GDWeaveGameInstructions from './instructions/loader/GDWeaveGameInstructions';
 import BepisLoaderGameInstructions from './instructions/loader/BepisLoaderGameInstructions';
 import UMMGameInstructions from './instructions/loader/UMMGameInstructions';
+import RivetGameInstructions from './instructions/loader/RivetGameInstructions';
 
 export interface GameInstruction {
-    moddedParameters: string,
-    vanillaParameters: string
+    vanillaParameterList: string[],
+    moddedParameterList: string[]
 }
 
 export default class GameInstructions {
@@ -37,7 +38,8 @@ export default class GameInstructions {
         [PackageLoader.LOVELY, new LovelyGameInstructions()],
         [PackageLoader.RETURN_OF_MODDING, new ReturnOfModdingGameInstructions()],
         [PackageLoader.GDWEAVE, new GDWeaveGameInstructions()],
-        [PackageLoader.UMM, new UMMGameInstructions()]
+        [PackageLoader.UMM, new UMMGameInstructions()],
+        [PackageLoader.RIVET, new RivetGameInstructions()],
     ]);
 
     public static async getInstructionsForGame(game: Game, profile: Profile): Promise<GameInstruction> {

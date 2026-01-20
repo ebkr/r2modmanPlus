@@ -1,3 +1,51 @@
+### 3.2.12
+#### Games added
+- KeyWe
+- Smushi Come Home
+- Crime Simulator
+- Scrap Mechanic
+- Baby Steps
+- Chill with You : Lo-Fi Story
+- Crawlspace 2
+- Goblin Buster: Incremental Tower Defense
+- MineMogul
+- Nuclear Option
+- Pushing it! Together - Sisyphus Co-op
+- RAM: Random Access Mayhem
+- Unfair Flips
+- RV There Yet
+- Crab Game
+- Cloverpit
+  - Xbox Game Pass PC support
+
+#### Performance
+- Mods.yml file size has been reduced by 99.35%
+  - This results in huge improvements to the performance of profiles
+  - You'll need to perform a changing action on the profile for it to take effect. This can be:
+    - Mod re-ordering
+    - Install/Uninstall/Enable/Disable
+- Local mod list is loaded asynchronously and is visible far quicker than before
+  - Significantly reduces time spent hanging waiting for the mod list to load
+
+#### Design changes
+- Mod card buttons have been made consistent and no longer take up the entire space
+  - Easier to visually scan
+  - Less mouse movement required
+- The online preview panel now has a different background colour
+- Scrollbars are now app-styled rather than native
+- Other tweaks to improve the user experience
+
+#### Flatpak builds
+
+Flatpack builds are now available for Linux users in the r2modman GitHub repository:
+https://github.com/ebkr/r2modmanPlus/releases/latest
+
+These builds are ideal for Steam Deck and can run in Game Mode.
+
+> There are currently issues with Steam Deck's `Gamescope` compositor where dropdowns appear under the window.
+You can use arrows to work around this. I'll look into a solution further down the line.
+This issue is not present when running in Desktop Mode.
+
 ### 3.2.11
 #### Games added
 - Aeruta
