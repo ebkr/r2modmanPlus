@@ -23676,15 +23676,7 @@
           "additionalSearchStrings": [
             "pad"
           ],
-          "installRules": [
-            {
-              "route": "mods",
-              "defaultFileExtensions": [],
-              "trackingMethod": "package-zip",
-              "subRoutes": [],
-              "isDefaultLocation": true
-            }
-          ],
+          "installRules": [],
           "relativeFileExclusions": null
         }
       ],
