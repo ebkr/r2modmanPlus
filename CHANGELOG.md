@@ -1,3 +1,8 @@
+### 3.2.13
+#### Fixes
+- Linux behaviour used to automatically set WINEDLLOVERRIDES. This has been restored for now.
+- Launch argument display fixed in the Help section (Thanks to @alexneargarder).
+
 ### 3.2.12
 #### Games added
 - KeyWe
@@ -16,21 +21,22 @@
 - RV There Yet
 - Crab Game
 - Cloverpit
-  - Xbox Game Pass PC support
+    - Xbox Game Pass PC support
 
 #### Performance
 - Mods.yml file size has been reduced by 99.35%
-  - This results in huge improvements to the performance of profiles
-  - You'll need to perform a changing action on the profile for it to take effect. This can be:
-    - Mod re-ordering
-    - Install/Uninstall/Enable/Disable
+    - This results in huge improvements to the performance of profiles
+    - You'll need to perform a changing action on the profile for it to take effect. This can be:
+        - Mod re-ordering
+        - Install/Uninstall/Enable/Disable
+    - Once done, accessing the profiles screen should be near instant
 - Local mod list is loaded asynchronously and is visible far quicker than before
-  - Significantly reduces time spent hanging waiting for the mod list to load
+    - Significantly reduces time spent hanging waiting for the mod list to load
 
 #### Design changes
 - Mod card buttons have been made consistent and no longer take up the entire space
-  - Easier to visually scan
-  - Less mouse movement required
+    - Easier to visually scan
+    - Less mouse movement required
 - The online preview panel now has a different background colour
 - Scrollbars are now app-styled rather than native
 - Other tweaks to improve the user experience
