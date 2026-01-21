@@ -36,7 +36,9 @@ export default class SteamGameRunner_Linux extends GameRunnerProvider {
             const proxyDll = game.packageLoader == PackageLoader.GDWEAVE ? "winmm" : "winhttp";
             const promise = await this.ensureWineWillLoadDllOverride(game, proxyDll);
             if (promise instanceof R2Error) {
-                return promise;
+                // We no longer want to display an error as launch args should be set correctly.
+                // A console error still allows it to be discoverable.
+                console.error(promise);
             }
             proxyArgs['WINEDLLOVERRIDES'] = `"${proxyDll}=n,b"`
         } else {
