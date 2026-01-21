@@ -52,6 +52,7 @@ import { NodeFsImplementation } from './providers/node/fs/NodeFsImplementation';
 import { useRouter } from 'vue-router';
 import { ProtocolProviderImplementation } from './providers/generic/protocol/ProtocolProviderImplementation';
 import { provideProtocolImplementation } from './providers/generic/protocol/ProtocolProvider';
+import { closePackageDatabase } from './r2mm/manager/PackageDexieStore';
 
 const store = baseStore;
 const router = useRouter();
@@ -138,6 +139,24 @@ onMounted(async () => {
 
     store.commit('updateModLoaderPackageNames');
     store.dispatch('tsMods/updateExclusions');
+
+    // Listen for cleanup request from main process
+    window.electron.onCleanupRequest(async () => {
+        console.log('Cleanup request received from main process');
+        try {
+            // Close both databases
+            await Promise.all([
+                ManagerSettings.cleanup(),
+                closePackageDatabase()
+            ]);
+            console.log('Database cleanup completed successfully');
+        } catch (error) {
+            console.error('Error during database cleanup:', error);
+        } finally {
+            // Signal completion to main process regardless of success/failure
+            window.electron.signalCleanupComplete();
+        }
+    });
 });
 
 watchEffect(() => {

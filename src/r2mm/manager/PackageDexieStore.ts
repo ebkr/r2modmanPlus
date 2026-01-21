@@ -178,3 +178,19 @@ async function getPackgeVersionFromDatabase(community: string, packageName: stri
 
     return ver;
 }
+
+/**
+ * Closes the package database connection properly.
+ * This ensures all pending transactions are completed and file locks are released.
+ * Note: Does not block new operations - allows in-progress cache updates to complete.
+ */
+export async function closePackageDatabase(): Promise<void> {
+    try {
+        console.debug("Closing PackageDexieStore");
+        // db.close() will wait for any pending transactions (like bulkPut) to complete
+        await db.close();
+        console.debug("PackageDexieStore closed successfully");
+    } catch (e) {
+        console.error("Error closing PackageDexieStore:", e);
+    }
+}

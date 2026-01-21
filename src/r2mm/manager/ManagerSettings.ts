@@ -236,4 +236,14 @@ export default class ManagerSettings {
     public logActiveGameInDexieStore() {
         console.debug(`Active game in Dexie store: "${ManagerSettings.DEXIE_STORE.activeGame.settingsIdentifier}".`);
     }
+
+    /**
+     * Closes the database connection properly on application shutdown.
+     * This ensures all pending transactions are completed and file locks are released.
+     */
+    public static async cleanup(): Promise<void> {
+        if (ManagerSettings.DEXIE_STORE) {
+            await ManagerSettings.DEXIE_STORE.closeDatabase();
+        }
+    }
 }

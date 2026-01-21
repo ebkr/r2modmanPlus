@@ -45,6 +45,8 @@ declare global {
             openExternal: (path: string) => void;
             selectFile: (path: string) => void;
             getEnvironmentVariables: () => Record<string, string>;
+            onCleanupRequest: (callback: () => void) => (() => void);
+            signalCleanupComplete: () => void;
         }
     }
 }

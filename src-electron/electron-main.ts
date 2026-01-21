@@ -140,6 +140,54 @@ app.whenReady().then(() => {
     })
 });
 
+let isQuitting = false;
+let cleanupTimeout: NodeJS.Timeout | null = null;
+
+app.on('before-quit', async (e) => {
+    if (!isQuitting && mainWindow && !mainWindow.isDestroyed()) {
+        e.preventDefault();
+        isQuitting = true;
+
+        console.log('Application quitting - requesting database cleanup from renderer');
+
+        // Set a timeout to force quit if cleanup takes too long (10 seconds)
+        cleanupTimeout = setTimeout(() => {
+            console.warn('Database cleanup timeout - forcing quit');
+            if (cleanupTimeout) {
+                clearTimeout(cleanupTimeout);
+                cleanupTimeout = null;
+            }
+            app.quit();
+        }, 10000);
+
+        try {
+            // Send cleanup request to renderer
+            mainWindow.webContents.send('app:request-cleanup');
+
+            // Wait for the cleanup IPC handler to be called
+            // The renderer will call this when cleanup is done
+            ipcMain.once('app:cleanup-complete', () => {
+                console.log('Database cleanup confirmed by renderer');
+                if (cleanupTimeout) {
+                    clearTimeout(cleanupTimeout);
+                    cleanupTimeout = null;
+                }
+                // Allow a small delay to ensure all transactions are committed
+                setTimeout(() => {
+                    app.quit();
+                }, 100);
+            });
+        } catch (error) {
+            console.error('Error during cleanup coordination:', error);
+            if (cleanupTimeout) {
+                clearTimeout(cleanupTimeout);
+                cleanupTimeout = null;
+            }
+            app.quit();
+        }
+    }
+});
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();

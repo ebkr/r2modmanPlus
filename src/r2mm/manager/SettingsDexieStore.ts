@@ -16,6 +16,7 @@ export default class SettingsDexieStore extends Dexie {
     activeGame: Game;
     games: Dexie.Table<GameSettingsInterface, string>;
     global: Dexie.Table<SettingsInterface, number>;
+    private isClosing: boolean = false;
 
     constructor(game: Game) {
         super(SETTINGS_DB_NAME);
@@ -140,6 +141,12 @@ export default class SettingsDexieStore extends Dexie {
     }
 
     public async save(holder: ManagerSettingsInterfaceHolder) {
+        // Prevent new save operations during shutdown
+        if (this.isClosing) {
+            console.warn('SettingsDexieStore: Ignoring save request during shutdown');
+            return;
+        }
+
         const update = async () => {
             // Update global settings.
             await this.global.toArray().then(async result => {
@@ -162,6 +169,24 @@ export default class SettingsDexieStore extends Dexie {
         }
 
         await this.transaction("rw!", this.global, this.games, update);
+    }
+
+    /**
+     * Closes the database connection properly.
+     * This ensures all pending transactions are completed and file locks are released.
+     */
+    public async closeDatabase(): Promise<void> {
+        // Set flag to prevent new operations
+        this.isClosing = true;
+
+        try {
+            console.debug("Closing SettingsDexieStore for game", this.activeGame.settingsIdentifier);
+            // Wait for any pending transactions to complete, then close
+            await this.close();
+            console.debug("SettingsDexieStore closed successfully");
+        } catch (e) {
+            console.error("Error closing SettingsDexieStore:", e);
+        }
     }
 }
 

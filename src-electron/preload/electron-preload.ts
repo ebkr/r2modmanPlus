@@ -34,3 +34,13 @@ export function copyToClipboard(value: string) {
 export async function getEnvironmentVariables() {
     return ipcRenderer.invoke('electron:getEnvironmentVariables');
 }
+
+export function onCleanupRequest(callback: () => void) {
+    ipcRenderer.on('app:request-cleanup', callback);
+    // Return unsubscribe function
+    return () => ipcRenderer.removeListener('app:request-cleanup', callback);
+}
+
+export function signalCleanupComplete() {
+    ipcRenderer.send('app:cleanup-complete');
+}
