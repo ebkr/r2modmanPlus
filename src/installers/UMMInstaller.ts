@@ -12,7 +12,14 @@ import FileUtils from '../utils/FileUtils';
 
 export class UMMInstaller implements PackageInstaller {
 
-    private static readonly TRACKED = ['UMM/Core', 'doorstop_config.ini', 'winhttp.dll'];
+    private static readonly TRACKED = [
+        'UMM/Core',
+        'doorstop_config.ini',
+        'winhttp.dll',
+        '.doorstop_version',
+        'doorstop_libs',
+        'run_umm.sh'
+    ];
 
     async install(args: InstallArgs): Promise<void> {
         const { packagePath, profile } = args;
@@ -20,6 +27,9 @@ export class UMMInstaller implements PackageInstaller {
         try {
             for (const fileOrFolder of UMMInstaller.TRACKED) {
                 const cachePath = path.join(packagePath, fileOrFolder);
+                if (!(await FsProvider.instance.exists(cachePath))) {
+                    continue;
+                }
                 const profilePath = profile.joinToProfilePath(fileOrFolder);
                 await FsProvider.instance.mkdirs(path.dirname(profilePath));
                 await FileUtils.copyFileOrFolder(cachePath, profilePath);
