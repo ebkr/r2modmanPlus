@@ -32,32 +32,30 @@ const canBeDisabled = computed(() => !store.getters['isModLoader'](props.mod.get
 const isDeprecated = computed(() => store.state.tsMods.deprecated.get(props.mod.getName()) || false);
 const isLatestVersion = computed(() => store.getters['tsMods/isLatestVersion'](props.mod));
 const localModList = computed(() => store.state.profile.modList);
+const modMap = computed((): Map<string, ManifestV2> => store.getters['profile/modMap']);
 const tsMod = computed(() => store.getters['tsMods/tsMod'](props.mod));
 
-async function updateDependencies() {
+function updateDependencies() {
     if (props.mod.getDependencies().length === 0) {
         return;
     }
 
     const dependencies = props.mod.getDependencies();
-    const dependencyNames = dependencies.map(dependencyStringToModName);
     const foundDependencies: ManifestV2[] = [];
 
-    for (const mod of localModList.value) {
-        if (foundDependencies.length === dependencyNames.length) {
-            break;
-        }
-
-        if (dependencyNames.includes(mod.getName())) {
+    for (const depString of dependencies) {
+        const depName = dependencyStringToModName(depString);
+        const mod = modMap.value.get(depName);
+        if (mod !== undefined) {
             foundDependencies.push(mod);
         }
     }
 
-    const foundNames = foundDependencies.map((mod) => mod.getName());
+    const foundNames = new Set(foundDependencies.map((mod) => mod.getName()));
 
     disabledDependencies.value = foundDependencies.filter((d) => !d.isEnabled());
     missingDependencies.value = dependencies.filter(
-        (d) => !foundNames.includes(dependencyStringToModName(d))
+        (d) => !foundNames.has(dependencyStringToModName(d))
     );
 }
 
