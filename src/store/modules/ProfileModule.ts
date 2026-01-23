@@ -89,6 +89,14 @@ export default {
             return state.modList;
         },
 
+        modMap(state): Map<string, ManifestV2> {
+            const map = new Map<string, ManifestV2>();
+            for (const mod of state.modList) {
+                map.set(mod.getName(), mod);
+            }
+            return map;
+        },
+
         // Swap the ManifestV2s to ThunderstoreMods as the latter knows the version number
         // of the latest version, which we need when showing how mods will be updated.
         modsWithUpdates(state, _getters, _rootState, rootGetters): ThunderstoreMod[] {
