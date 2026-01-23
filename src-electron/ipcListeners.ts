@@ -1,4 +1,4 @@
-import { ipcMain, dialog, App, BrowserWindow } from 'electron';
+import { ipcMain, dialog, App, BrowserWindow, Menu, MenuItem } from 'electron';
 import electronUpdater from 'electron-updater';
 import os from 'os';
 import { fileURLToPath } from 'url';
@@ -72,3 +72,19 @@ ipcMain.on('get-statics-directory', (event) => {
     const __dirname = path.dirname(__filename);
     event.returnValue = __dirname;
 });
+
+ipcMain.on('electron:showContextMenu', (event, options: any) => {
+    const templateItems: MenuItem[] = [];
+    templateItems.push(new MenuItem({
+        label: 'Copy',
+        role: 'copy'
+    }));
+    if (!options.readonly) {
+        templateItems.push(new MenuItem({
+            label: 'Paste',
+            role: 'paste'
+        }));
+    }
+    const menu = Menu.buildFromTemplate(templateItems);
+    menu.popup();
+})
