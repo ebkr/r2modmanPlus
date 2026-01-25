@@ -77,3 +77,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: core.setFailed('It seems the build process failed silently. See previous step for more info.')
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          path: 'dist/electron/Packaged'
