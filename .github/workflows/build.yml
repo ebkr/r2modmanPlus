@@ -82,4 +82,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: 'dist/electron/Packaged'
-          name: 'build-artifacts-${{matrix.platform}}'
+          name: 'r2modman-${{ matrix.platform }}-build-${{ github.sha }}'
